@@ -1,0 +1,23 @@
+{ 
+    "type": "minecraft:crafting_shapeless",
+
+    "ingredients": 
+    [
+
+    {
+      "item": "minecraft:iron_ingot"
+    },
+
+    {
+      "item": "minecraft:coal",
+      "data": 0
+    }
+    
+    ],
+
+    "result": 
+    {
+        "item": "pubgmc:steel_dust",
+        "count": 2
+    }
+}
