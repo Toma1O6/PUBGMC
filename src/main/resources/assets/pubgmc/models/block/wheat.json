@@ -1,0 +1,35 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "0": "pubgmc:blocks/wheat",
+        "particle": "pubgmc:blocks/wheat"
+    },
+    "elements": [
+        {
+            "from": [-1, 0, 13.5],
+            "to": [22, 16, 13.5],
+            "rotation": {"angle": -45, "axis": "y", "origin": [16, 8, 8]},
+            "faces": {
+                "north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "east": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "south": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "west": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+            }
+        },
+        {
+            "from": [-9, 0, 5.5],
+            "to": [14, 16, 5.5],
+            "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 0]},
+            "faces": {
+                "north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "east": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "south": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "west": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+                "down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+            }
+        }
+    ]
+}
