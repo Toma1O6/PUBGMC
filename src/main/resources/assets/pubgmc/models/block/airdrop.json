@@ -1,0 +1,13 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "particle": "pubgmc:blocks/carepackagebottom",
+        "down": "pubgmc:blocks/carepackagebottom",
+        "up": "pubgmc:blocks/carepackagetop",
+        "east": "pubgmc:blocks/carepackageside",
+        "west": "pubgmc:blocks/carepackageside",
+        "north": "pubgmc:blocks/carepackageside",
+        "south": "pubgmc:blocks/carepackageside"
+        
+    }
+}
