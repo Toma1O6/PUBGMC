@@ -1,3 +1,22 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
 
-src/main/
-eclipse/.recommenders/snipmatch/repositories/http___git_eclipse_org_gitroot_recommenders_org_eclipse_recommenders_snipmatch_snippets_git/
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
