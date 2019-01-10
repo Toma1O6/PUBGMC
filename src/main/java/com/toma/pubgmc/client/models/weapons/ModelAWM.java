@@ -15,6 +15,9 @@ public class ModelAWM extends ModelGun
 	private final ModelRenderer base;
 	private final ModelRenderer mag;
 	private final ModelRenderer trigger;
+	
+	private boolean in;
+	private double x,y,z;
 
 	public ModelAWM()
 	{
@@ -101,12 +104,31 @@ public class ModelAWM extends ModelGun
 		
 		if(aim && enableADS(stack))
 		{
+			if(!in)
+			{
+				in = true;
+				x = 0;
+				y = 0;
+				z = 0;
+			}
+			
+			if(x < 26.65) x += 0.3d;
+			if(y > -12.6) y -= 0.15d;
+			if(z < 12) z += 0.15;
+			
+			if(x > 26.65) x = 26.65;
+			if(y < -12.6) y = -12.6;
+			if(z > 12) z = 12;
+			
 			rotateModelForADSRendering();
-			GlStateManager.translate(26.65, -12.6, 12.0);
+			//GlStateManager.translate(26.65, -12.6, 12.0);
+			GlStateManager.translate(x, y, z);
 			
 			if(hasRedDot(stack)) GlStateManager.translate(0, 3, 0);
 			else if(hasHoloSight(stack)) GlStateManager.translate(0, 4.75, 0);
 		}
+		
+		else in = false;
 		
 		renderParts();
 		GlStateManager.popMatrix();
