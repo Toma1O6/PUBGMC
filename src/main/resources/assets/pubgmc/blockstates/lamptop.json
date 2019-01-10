@@ -1,0 +1,13 @@
+{
+    "variants":
+    {
+        "facing=north,on=false": { "model": "pubgmc:lamptop_off", "y": 180 },
+        "facing=east,on=false": { "model": "pubgmc:lamptop_off", "y": 270 },
+        "facing=south,on=false": { "model": "pubgmc:lamptop_off" },
+        "facing=west,on=false": { "model": "pubgmc:lamptop_off", "y": 90 },
+        "facing=north,on=true": { "model": "pubgmc:lamptop", "y": 180 },
+        "facing=east,on=true": { "model": "pubgmc:lamptop", "y": 270 },
+        "facing=south,on=true": { "model": "pubgmc:lamptop" },
+        "facing=west,on=true": { "model": "pubgmc:lamptop", "y": 90 }
+    }
+}

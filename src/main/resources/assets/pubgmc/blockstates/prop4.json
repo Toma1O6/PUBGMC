@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:prop4" },
+        "facing=east": { "model": "pubgmc:prop4", "y": 90 },
+        "facing=south": { "model": "pubgmc:prop4", "y": 180 },
+        "facing=west": { "model": "pubgmc:prop4", "y": 270 }
+    }
+}

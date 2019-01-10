@@ -1,0 +1,7 @@
+{
+    "variants":
+     {
+        "debug=false": { "model": "pubgmc:loot_spawner" },
+        "debug=true": { "model": "pubgmc:loot_spawner_debug" }
+     }
+}

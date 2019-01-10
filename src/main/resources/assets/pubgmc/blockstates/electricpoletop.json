@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:electricpoletop" },
+        "facing=east": { "model": "pubgmc:electricpoletop", "y": 90 },
+        "facing=south": { "model": "pubgmc:electricpoletop", "y": 180 },
+        "facing=west": { "model": "pubgmc:electricpoletop", "y": 270 }
+    }
+}

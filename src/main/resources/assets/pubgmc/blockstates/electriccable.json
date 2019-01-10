@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:electriccable" },
+        "facing=east": { "model": "pubgmc:electriccable", "y": 90 },
+        "facing=south": { "model": "pubgmc:electriccable", "y": 180 },
+        "facing=west": { "model": "pubgmc:electriccable", "y": 270 }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:chair" },
+        "facing=east": { "model": "pubgmc:chair", "y": 90 },
+        "facing=south": { "model": "pubgmc:chair", "y": 180 },
+        "facing=west": { "model": "pubgmc:chair", "y": 270 }
+    }
+}

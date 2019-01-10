@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:fence" },
+        "facing=east": { "model": "pubgmc:fence", "y": 90 },
+        "facing=south": { "model": "pubgmc:fence", "y": 180 },
+        "facing=west": { "model": "pubgmc:fence", "y": 270 }
+    }
+}
