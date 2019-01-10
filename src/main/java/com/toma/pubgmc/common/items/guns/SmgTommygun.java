@@ -31,8 +31,8 @@ public class SmgTommygun extends GunBase
 		this.canSwitchMode(true);
 		this.setAutoFiremode(true);
 		this.setGunType(GunType.SMG);
-		this.setVerticalRecoil(1.5f);
-		this.setHorizontalRecoil(0.5f);
+		this.setVerticalRecoil(2f);
+		this.setHorizontalRecoil(0.75f);
 		
 		this.setGunSound(PMCSounds.gun_tommy_gun);
 		this.setGunSilencedSound(PMCSounds.gun_tommy_gun_silenced);

@@ -32,8 +32,8 @@ public class SmgUmp9 extends GunBase
 		this.setHasTwoRoundBurst(true);
 		this.setAutoFiremode(true);
 		this.setGunType(GunType.SMG);
-		this.setVerticalRecoil(1.5f);
-		this.setHorizontalRecoil(0.5f);
+		this.setVerticalRecoil(1.75f);
+		this.setHorizontalRecoil(1f);
 		
 		this.setGunSound(PMCSounds.gun_ump9);
 		this.setGunSilencedSound(PMCSounds.gun_ump9_silenced);

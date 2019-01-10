@@ -31,7 +31,7 @@ public class SmgMicroUzi extends GunBase
 		this.canSwitchMode(true);
 		this.setAutoFiremode(true);
 		this.setGunType(GunType.SMG);
-		this.setVerticalRecoil(1.5f);
+		this.setVerticalRecoil(2f);
 		this.setHorizontalRecoil(1f);
 		
 		this.setGunSound(PMCSounds.gun_micro_uzi);
