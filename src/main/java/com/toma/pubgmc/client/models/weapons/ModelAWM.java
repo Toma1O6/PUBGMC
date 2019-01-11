@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -12,15 +13,17 @@ import net.minecraft.item.ItemStack;
 
 public class ModelAWM extends ModelGun
 {
+	private final AimAnimation aim_animation;
 	private final ModelRenderer base;
 	private final ModelRenderer mag;
 	private final ModelRenderer trigger;
-	
-	private boolean in;
-	private double x,y,z;
 
 	public ModelAWM()
 	{
+		aim_animation = new AimAnimation(26.65d, -12.6d, 12d, 1f);
+		aim_animation.setInvertedCoords(false, true, false);
+		
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -104,31 +107,14 @@ public class ModelAWM extends ModelGun
 		
 		if(aim && enableADS(stack))
 		{
-			if(!in)
-			{
-				in = true;
-				x = 0;
-				y = 0;
-				z = 0;
-			}
-			
-			if(x < 26.65) x += 0.3d;
-			if(y > -12.6) y -= 0.15d;
-			if(z < 12) z += 0.15;
-			
-			if(x > 26.65) x = 26.65;
-			if(y < -12.6) y = -12.6;
-			if(z > 12) z = 12;
 			
 			rotateModelForADSRendering();
-			//GlStateManager.translate(26.65, -12.6, 12.0);
-			GlStateManager.translate(x, y, z);
 			
 			if(hasRedDot(stack)) GlStateManager.translate(0, 3, 0);
 			else if(hasHoloSight(stack)) GlStateManager.translate(0, 4.75, 0);
 		}
 		
-		else in = false;
+		aim_animation.processAnimation(aim);
 		
 		renderParts();
 		GlStateManager.popMatrix();

@@ -2,7 +2,9 @@ package com.toma.pubgmc.animation;
 
 public interface IGunAnimation
 {
-	public PMCAnimation getZoomInAnimation();
-	public PMCAnimation getZoomOutAnimation();
-	public PMCAnimation getReloadAnimation();
+	/**
+	 * This will move the weapon into it's cords.
+	 * Has to run every tick for smooth movement
+	 */
+	public void processAnimation(boolean scopeIn);
 }
