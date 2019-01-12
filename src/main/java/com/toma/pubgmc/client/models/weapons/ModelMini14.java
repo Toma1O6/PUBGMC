@@ -117,7 +117,12 @@ public class ModelMini14 extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderMini14(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderMini14(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	

@@ -116,7 +116,12 @@ public class ModelQBU extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderQBU(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderQBU(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	

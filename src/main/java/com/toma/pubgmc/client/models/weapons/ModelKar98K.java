@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -20,6 +21,8 @@ public class ModelKar98K extends ModelGun
 
 	public ModelKar98K()
 	{
+		animation_held.setWeaponType(false);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -108,7 +111,12 @@ public class ModelKar98K extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderKar98K(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderKar98K(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	

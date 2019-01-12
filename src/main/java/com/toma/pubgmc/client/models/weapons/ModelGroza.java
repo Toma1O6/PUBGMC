@@ -95,12 +95,12 @@ public class ModelGroza extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderGroza(aim, stack);
-			renderSilencer(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2x(stack);
-			render4x(stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderGroza(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -127,6 +127,12 @@ public class ModelGroza extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderSilencer(aim, stack);
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2x(stack);
+		render4x(stack);
 	}
 	
 	private void renderSilencer(boolean aim, ItemStack stack)

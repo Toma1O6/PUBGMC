@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models;
 
+import com.toma.pubgmc.animation.HeldAnimations;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -21,6 +22,7 @@ public abstract class ModelGun extends ModelBase
 {	
 	public ModelTransformationHelper transform = ModelTransformationHelper.instance;
 	public ModelDebugger debug = ModelDebugger.instance;
+	public HeldAnimations animation_held;
 	
 	private final ModelSilencerPistol silencer_pistol = new ModelSilencerPistol();
 	private final ModelSilencer silencer = new ModelSilencer();
@@ -32,6 +34,13 @@ public abstract class ModelGun extends ModelBase
 	private final ModelScope4X scope4x = new ModelScope4X();
 	private final ModelScope8X scope8x = new ModelScope8X();
 	private final ModelScope15X scope15x = new ModelScope15X();
+	
+	public ModelGun()
+	{
+		HeldAnimations anim = new HeldAnimations();
+		anim.setWeaponType(false);
+		animation_held = anim;
+	}
 	
 	public abstract void render(ItemStack stack);
 	

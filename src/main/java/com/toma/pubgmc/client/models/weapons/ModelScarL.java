@@ -132,14 +132,12 @@ public class ModelScarL extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aim = data.isAiming();
 			
-			renderScarL(aim, stack);
-			renderSilencer(aim, stack);
-			renderAngledGrip(aim, stack);
-			renderVerticalGrip(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2X(stack);
-			render4X(stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderScarL(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -167,6 +165,14 @@ public class ModelScarL extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderSilencer(aim, stack);
+		renderAngledGrip(aim, stack);
+		renderVerticalGrip(aim, stack);
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2X(stack);
+		render4X(stack);
 	}
 	
 	private void renderSilencer(boolean aim, ItemStack stack)

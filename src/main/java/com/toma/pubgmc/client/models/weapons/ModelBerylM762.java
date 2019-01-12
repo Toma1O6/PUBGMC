@@ -126,14 +126,12 @@ public class ModelBerylM762 extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderM762(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2x(stack);
-			render4x(stack);
-			renderSilencer(aim, stack);
-			renderVerticalGrip(aim, stack);
-			renderAngledGrip(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderM762(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -160,6 +158,14 @@ public class ModelBerylM762 extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2x(stack);
+		render4x(stack);
+		renderSilencer(aim, stack);
+		renderVerticalGrip(aim, stack);
+		renderAngledGrip(aim, stack);
 	}
 	
 	private void renderRedDot(boolean aim, ItemStack stack)

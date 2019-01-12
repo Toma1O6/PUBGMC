@@ -113,12 +113,12 @@ public class ModelAKM extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderAKM(aim, stack);
-			renderSilencer(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2X(stack);
-			render4X(stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderAKM(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -145,6 +145,12 @@ public class ModelAKM extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderSilencer(aim, stack);
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2X(stack);
+		render4X(stack);
 	}
 	
 	private void renderSilencer(boolean aim, ItemStack stack)

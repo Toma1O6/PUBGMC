@@ -152,11 +152,12 @@ public class ModelM249 extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderM249(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2x(stack);
-			render4x(stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderM249(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -182,6 +183,11 @@ public class ModelM249 extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2x(stack);
+		render4x(stack);
 	}
 	
 	private void renderRedDot(boolean aim, ItemStack stack)

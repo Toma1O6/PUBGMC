@@ -117,14 +117,12 @@ public class ModelM416 extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aim = data.isAiming();
 			
-			renderM416(aim, stack);
-			renderSilencer(aim, stack);
-			renderVerticalGrip(aim, stack);
-			renderAngledGrip(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2X(stack);
-			render4X(stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderM416(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -153,6 +151,14 @@ public class ModelM416 extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderSilencer(aim, stack);
+		renderVerticalGrip(aim, stack);
+		renderAngledGrip(aim, stack);
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2X(stack);
+		render4X(stack);
 	}
 	
 	private void renderSilencer(boolean aim, ItemStack stack)

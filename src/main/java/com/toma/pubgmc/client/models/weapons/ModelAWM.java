@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -13,15 +14,16 @@ import net.minecraft.item.ItemStack;
 
 public class ModelAWM extends ModelGun
 {
-	private final AimAnimation aim_animation;
+	private final AimAnimation animation_aim;
 	private final ModelRenderer base;
 	private final ModelRenderer mag;
 	private final ModelRenderer trigger;
 
 	public ModelAWM()
 	{
-		aim_animation = new AimAnimation(-0.557d, 0.255d, 0.2d, 1f);
-		aim_animation.setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.557d, 0.255d, 0.2d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_held.setWeaponType(false);
 		
 		
 		textureWidth = 128;
@@ -97,6 +99,7 @@ public class ModelAWM extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
+				animation_held.runAnimation(player.isSprinting());
 				handleAnimationPosition(aim, stack);
 				renderAWM(aim, stack);
 			}
@@ -131,22 +134,22 @@ public class ModelAWM extends ModelGun
 	{
 		if(enableADS(stack))
 		{
-			if(!hasScopeAtachment(stack) && aim_animation.getFinalY() != 0.255d)
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.255d)
 			{
-				aim_animation.setYModifier(0.255d);
+				animation_aim.setYModifier(0.255d);
 			}
 			
-			else if(hasRedDot(stack) && aim_animation.getFinalY() != 0.205d)
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.205d)
 			{
-				aim_animation.setYModifier(0.205d);
+				animation_aim.setYModifier(0.205d);
 			}
 			
-			else if(hasHoloSight(stack) && aim_animation.getFinalY() != 0.169d)
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.169d)
 			{
-				aim_animation.setYModifier(0.169d);
+				animation_aim.setYModifier(0.169d);
 			}
 			
-			aim_animation.processAnimation(aim);
+			animation_aim.processAnimation(aim);
 		}
 	}
 	

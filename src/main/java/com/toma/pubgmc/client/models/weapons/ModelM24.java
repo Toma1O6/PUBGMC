@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -20,6 +21,9 @@ public class ModelM24 extends ModelGun
 
 	public ModelM24()
 	{
+		animation_held.setWeaponType(false);
+		
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -99,7 +103,13 @@ public class ModelM24 extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
-			renderM24(aim, stack);
+			
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderM24(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	

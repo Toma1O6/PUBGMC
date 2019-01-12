@@ -129,7 +129,12 @@ public class ModelSKS extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
-			renderSKS(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderSKS(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	

@@ -137,14 +137,13 @@ public class ModelMK47Mutant extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
-			renderMK47(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2x(stack);
-			render4x(stack);
-			renderSilencer(aim, stack);
-			renderVerticalGrip(aim, stack);
-			renderAngledGrip(aim, stack);
+			
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderMK47(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -172,6 +171,14 @@ public class ModelMK47Mutant extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2x(stack);
+		render4x(stack);
+		renderSilencer(aim, stack);
+		renderVerticalGrip(aim, stack);
+		renderAngledGrip(aim, stack);
 	}
 	
 	private void renderRedDot(boolean aim, ItemStack stack)

@@ -118,7 +118,12 @@ public class ModelSLR extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderSLR(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderSLR(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	

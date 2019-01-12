@@ -111,14 +111,12 @@ public class ModelQBZ extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderQBZ(aim, stack);
-			renderRedDot(aim, stack);
-			renderHolo(aim, stack);
-			render2X(stack);
-			render4X(stack);
-			renderSilencer(aim, stack);
-			renderVerticalGrip(aim, stack);
-			renderAngledGrip(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderQBZ(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -146,6 +144,14 @@ public class ModelQBZ extends ModelGun
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
+		
+		renderRedDot(aim, stack);
+		renderHolo(aim, stack);
+		render2X(stack);
+		render4X(stack);
+		renderSilencer(aim, stack);
+		renderVerticalGrip(aim, stack);
+		renderAngledGrip(aim, stack);
 	}
 	
 	private void renderRedDot(boolean aim, ItemStack stack)

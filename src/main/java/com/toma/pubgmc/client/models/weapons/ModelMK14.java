@@ -127,7 +127,12 @@ public class ModelMK14 extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderMK14(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				animation_held.runAnimation(player.isSprinting());
+				renderMK14(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
