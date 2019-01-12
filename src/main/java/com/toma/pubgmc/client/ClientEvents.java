@@ -261,7 +261,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	
@@ -467,11 +467,11 @@ public class ClientEvents
     	{
     		if(sp.isSneaking())
     		{
-    			ModelDebugger.X += 0.1;
+    			ModelDebugger.X += ModelDebugger.SMALL_MODIFIER;
     		}
     		else
     		{
-    			ModelDebugger.X += 1;
+    			ModelDebugger.X += ModelDebugger.MODIFIER;
     		}
     	}
     	
@@ -479,11 +479,11 @@ public class ClientEvents
     	{
     		if(sp.isSneaking())
     		{
-    			ModelDebugger.X -= 0.1;
+    			ModelDebugger.X -= ModelDebugger.SMALL_MODIFIER;
     		}
     		else
     		{
-    			ModelDebugger.X -= 1;
+    			ModelDebugger.X -= ModelDebugger.MODIFIER;
     		}
     	}
     	
@@ -491,11 +491,11 @@ public class ClientEvents
     	{
     		if(sp.isSneaking())
     		{
-    			ModelDebugger.Y += 0.1;
+    			ModelDebugger.Y += ModelDebugger.SMALL_MODIFIER;
     		}
     		else
     		{
-    			ModelDebugger.Y += 1;
+    			ModelDebugger.Y += ModelDebugger.MODIFIER;
     		}
     	}
     	
@@ -503,11 +503,11 @@ public class ClientEvents
     	{
     		if(sp.isSneaking())
     		{
-    			ModelDebugger.Y -= 0.1;
+    			ModelDebugger.Y -= ModelDebugger.SMALL_MODIFIER;
     		}
     		else
     		{
-    			ModelDebugger.Y -= 1;
+    			ModelDebugger.Y -= ModelDebugger.MODIFIER;
     		}
     	}
     	
@@ -515,11 +515,11 @@ public class ClientEvents
     	{
     		if(sp.isSneaking())
     		{
-    			ModelDebugger.Z += 0.1;
+    			ModelDebugger.Z += ModelDebugger.SMALL_MODIFIER;
     		}
     		else
     		{
-    			ModelDebugger.Z += 1;
+    			ModelDebugger.Z += ModelDebugger.MODIFIER;
     		}
     	}
     	
@@ -527,11 +527,11 @@ public class ClientEvents
     	{
     		if(sp.isSneaking())
     		{
-    			ModelDebugger.Z -= 0.1;
+    			ModelDebugger.Z -= ModelDebugger.SMALL_MODIFIER;
     		}
     		else
     		{
-    			ModelDebugger.Z -= 1;
+    			ModelDebugger.Z -= ModelDebugger.MODIFIER;
     		}
     	}
     	
@@ -1261,7 +1261,6 @@ public class ClientEvents
     	HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_green.png"));
     	HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_yellow.png"));
     	HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_blue.png"));
-    	Pubgmc.logger.log(Level.INFO, "Initialized scope variants");
     }
     
     private static int getScopeTypeID(int scope, int color)

@@ -20,8 +20,8 @@ public class ModelAWM extends ModelGun
 
 	public ModelAWM()
 	{
-		aim_animation = new AimAnimation(26.65d, -12.6d, 12d, 1f);
-		aim_animation.setInvertedCoords(false, true, false);
+		aim_animation = new AimAnimation(-0.557d, 0.255d, 0.2d, 1f);
+		aim_animation.setInvertedCoords(true, false, false);
 		
 		
 		textureWidth = 128;
@@ -95,7 +95,12 @@ public class ModelAWM extends ModelGun
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
 			
-			renderAWM(aim, stack);
+			GlStateManager.pushMatrix();
+			{
+				handleAnimationPosition(aim, stack);
+				renderAWM(aim, stack);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -107,39 +112,52 @@ public class ModelAWM extends ModelGun
 		
 		if(aim && enableADS(stack))
 		{
-			
 			rotateModelForADSRendering();
-			
-			if(hasRedDot(stack)) GlStateManager.translate(0, 3, 0);
-			else if(hasHoloSight(stack)) GlStateManager.translate(0, 4.75, 0);
 		}
-		
-		aim_animation.processAnimation(aim);
 		
 		renderParts();
 		GlStateManager.popMatrix();
 		
-		if(hasSilencer(stack)) renderSilencer(aim, stack);
-		if(hasRedDot(stack)) renderRedDot(aim, stack);
-		else if(hasHoloSight(stack)) renderHolo(aim, stack);
+		if(hasSilencer(stack)) renderSilencer(stack);
+		if(hasRedDot(stack)) renderRedDot(stack);
+		else if(hasHoloSight(stack)) renderHolo(stack);
 		else if(has2X(stack)) render2x(stack);
 		else if(has4X(stack)) render4x(stack);
 		else if(has8X(stack)) render8x(stack);
 		else if(has15X(stack)) render15x(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void handleAnimationPosition(boolean aim, ItemStack stack)
 	{
-		if(aim) {
-			renderRedDot(36.8, -16.4, 20, 1f, stack);
-		} else renderRedDot(-0.5, -2.8, 4, 1f, stack);
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && aim_animation.getFinalY() != 0.255d)
+			{
+				aim_animation.setYModifier(0.255d);
+			}
+			
+			else if(hasRedDot(stack) && aim_animation.getFinalY() != 0.205d)
+			{
+				aim_animation.setYModifier(0.205d);
+			}
+			
+			else if(hasHoloSight(stack) && aim_animation.getFinalY() != 0.169d)
+			{
+				aim_animation.setYModifier(0.169d);
+			}
+			
+			aim_animation.processAnimation(aim);
+		}
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim) {
-			renderHolo(29.15, -12.5, 14, 1f, stack);
-		} else renderHolo(-2.1, -3.2, -1, 1f, stack);
+		renderRedDot(-0.5, -2.8, 4, 1f, stack);
+	}
+	
+	private void renderHolo(ItemStack stack)
+	{
+		renderHolo(-1.9, -3.2, -1, 1f, stack);
 	}
 	
 	private void render2x(ItemStack stack)
@@ -162,21 +180,9 @@ public class ModelAWM extends ModelGun
 		renderScope15X(0, -1, -2, 1f, stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderSniperSilencer(-16, 6.3, 1, 1f, stack);
-			}
-			else if(hasHoloSight(stack))
-			{
-				renderSniperSilencer(-16, 5.5, 1, 1f, stack);
-			}
-			else renderSniperSilencer(-16, 8.4, 1, 1f, stack);
-		}
-		else renderSniperSilencer(0, 1.2, -5, 1f, stack);
+		renderSniperSilencer(0, 1.2, -5, 1f, stack);
 	}
 	
 	private void renderParts()

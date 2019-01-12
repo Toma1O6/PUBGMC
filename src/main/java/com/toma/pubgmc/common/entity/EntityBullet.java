@@ -259,6 +259,7 @@ public class EntityBullet extends Entity
         	
         	else if(!block.isReplaceable(world, pos))
         	{
+        		world.playSound(null, posX, posY, posZ, SoundEvents.BLOCK_GLASS_HIT, SoundCategory.BLOCKS, 1f, 1f);
         		this.setDead();
         	}
         }

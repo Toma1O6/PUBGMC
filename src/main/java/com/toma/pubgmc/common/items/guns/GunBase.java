@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.animation.AnimationPoint;
-import com.toma.pubgmc.animation.PMCAnimation;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
@@ -37,8 +35,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author Toma1O6
@@ -71,7 +67,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	private boolean hasTwoRoundBurst = false;
 	private SoundEvent gun_shoot, gun_silenced;
 	
-	private PMCAnimation zoomIN, zoomOUT;
 	private ItemAmmo ammoItem;
 	private int ammoCount = 0;
 	
