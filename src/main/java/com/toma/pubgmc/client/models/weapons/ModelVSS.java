@@ -145,7 +145,7 @@ public class ModelVSS extends ModelGun
 		{
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderVSS();
 			}
 			GlStateManager.popMatrix();

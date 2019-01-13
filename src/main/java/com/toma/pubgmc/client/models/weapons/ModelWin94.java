@@ -1,8 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.sun.jna.platform.win32.SetupApi;
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -11,14 +10,18 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
 public class ModelWin94 extends ModelGun
 {
 	private final ModelRenderer base;
 
-	public ModelWin94() {
+	public ModelWin94()
+	{
+		animation_aim = new AimAnimation(-0.5625d, 0.365d, 0.29d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1f, 1.3f, 1f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -60,28 +63,25 @@ public class ModelWin94 extends ModelGun
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
-			if(data.isAiming())
+			GlStateManager.pushMatrix();
 			{
-				GlStateManager.pushMatrix();
-				{
-					transform.defaultPistolTransform();
-					GlStateManager.scale(0.5999999, 0.5999999, 0.5999999);
-					GlStateManager.translate(-0.2, 15.0, 4.0);
-					GlStateManager.translate(31.200000000000003, -20.599999999999994, 18.0);
-					base.render(1f);
-				}
-				GlStateManager.popMatrix();
+				animation_held.run(player.isSprinting());
+				animation_aim.run(data.isAiming());
+				renderWin(data.isAiming());
 			}
-			else
-			{
-				GlStateManager.pushMatrix();
-				transform.defaultPistolTransform();
-				GlStateManager.scale(0.5999999, 0.5999999, 0.5999999);
-				GlStateManager.translate(-0.2, 15.0, 4.0);
-				base.render(1f);
-				GlStateManager.popMatrix();
-			}
+			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void renderWin(boolean aim)
+	{
+		GlStateManager.pushMatrix();
+		transform.defaultPistolTransform();
+		GlStateManager.scale(0.59, 0.59, 0.59);
+		GlStateManager.translate(-0.2, 15, 4);
+		if(aim) rotateModelForADSRendering();
+		base.render(1f);
+		GlStateManager.popMatrix();
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

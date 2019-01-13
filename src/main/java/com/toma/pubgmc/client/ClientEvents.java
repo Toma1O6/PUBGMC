@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.logging.log4j.Level;
-
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.models.ModelGhillie;
@@ -261,7 +259,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			e.setCanceled(true);
+    			//e.setCanceled(true);
     		}
     	}
     	
@@ -706,8 +704,11 @@ public class ClientEvents
         if(player != null && player.getCapability(PlayerDataProvider.PLAYER_DATA, null) != null)
         {
         	//This takes care of vehicle controls
-            handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), gs.keyBindSprint.isKeyDown(), player);
-            handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
+        	if(ev.phase == Phase.END)
+        	{
+                handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), gs.keyBindSprint.isKeyDown(), player);
+                handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
+        	}
         	
         	//Automatic fire is handled here because Mouse input event is acting weirdly
         	if(Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown() && ev.phase == Phase.END)
@@ -1352,6 +1353,7 @@ public class ClientEvents
     	{
     		EntityParachute chute = (EntityParachute)player.getRidingEntity();
     		
+    		//chute.handlePlayerInput(down, up, right, left);
     		PacketHandler.INSTANCE.sendToServer(new PacketHandleParachuteInputs(down, up, right, left));
     	}
     }

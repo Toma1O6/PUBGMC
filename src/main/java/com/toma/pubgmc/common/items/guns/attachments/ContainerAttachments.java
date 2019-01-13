@@ -10,7 +10,6 @@ import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.Slot;

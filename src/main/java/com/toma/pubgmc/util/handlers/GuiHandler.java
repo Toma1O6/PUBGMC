@@ -1,6 +1,5 @@
 package com.toma.pubgmc.util.handlers;
 
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.gui.GuiAirdrop;
 import com.toma.pubgmc.client.gui.GuiBigAirdrop;
 import com.toma.pubgmc.client.gui.GuiGunWorkbench;

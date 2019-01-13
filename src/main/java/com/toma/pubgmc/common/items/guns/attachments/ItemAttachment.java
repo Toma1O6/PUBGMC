@@ -1,7 +1,6 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;

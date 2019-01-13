@@ -1,13 +1,10 @@
 package com.toma.pubgmc.client.models;
 
-import com.toma.pubgmc.init.PMCItems;
-
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 
 public class ModelGhillie extends ModelBiped
 {

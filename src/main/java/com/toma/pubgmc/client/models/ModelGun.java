@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.animation.HeldAnimations;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
@@ -23,6 +24,7 @@ public abstract class ModelGun extends ModelBase
 	public ModelTransformationHelper transform = ModelTransformationHelper.instance;
 	public ModelDebugger debug = ModelDebugger.instance;
 	public HeldAnimations animation_held;
+	public AimAnimation animation_aim;
 	
 	private final ModelSilencerPistol silencer_pistol = new ModelSilencerPistol();
 	private final ModelSilencer silencer = new ModelSilencer();

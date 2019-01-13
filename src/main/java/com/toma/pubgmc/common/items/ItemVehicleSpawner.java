@@ -1,13 +1,11 @@
 package com.toma.pubgmc.common.items;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
-import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.util.VehicleSpawnerRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -28,7 +26,7 @@ public class ItemVehicleSpawner extends PMCItem
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) 
 	{
-		ItemStack stack = player.getHeldItem(hand);
+		/*ItemStack stack = player.getHeldItem(hand);
 		int meta = this.getMetadata(stack);
 		
 		if(!worldIn.isRemote)
@@ -43,7 +41,7 @@ public class ItemVehicleSpawner extends PMCItem
 			}
 			
 			return EnumActionResult.SUCCESS;
-		}
+		}*/
 		
 		return EnumActionResult.PASS;
 	}

@@ -118,7 +118,7 @@ public class ModelQBU extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderQBU(aim, stack);
 			}
 			GlStateManager.popMatrix();

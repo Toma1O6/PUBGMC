@@ -2,7 +2,6 @@ package com.toma.pubgmc.common.entity.vehicles;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class EntityTestVehicle extends EntityVehicle

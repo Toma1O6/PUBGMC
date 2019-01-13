@@ -140,7 +140,7 @@ public class ModelMK47Mutant extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderMK47(aim, stack);
 			}
 			GlStateManager.popMatrix();

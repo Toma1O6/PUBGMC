@@ -115,7 +115,7 @@ public class ModelAKM extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderAKM(aim, stack);
 			}
 			GlStateManager.popMatrix();

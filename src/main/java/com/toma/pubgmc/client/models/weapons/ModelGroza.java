@@ -97,7 +97,7 @@ public class ModelGroza extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderGroza(aim, stack);
 			}
 			GlStateManager.popMatrix();

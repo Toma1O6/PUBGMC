@@ -3,7 +3,6 @@ package com.toma.pubgmc.common.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.jna.platform.unix.X11.XClientMessageEvent.Data;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;

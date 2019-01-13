@@ -1,7 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -21,6 +21,11 @@ public class ModelUmp9 extends ModelGun
 
 	public ModelUmp9()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.14d, 0.14d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1.4f, 1f, 1f);
+		animation_held.setWeaponType(true);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -97,86 +102,28 @@ public class ModelUmp9 extends ModelGun
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
-			if(data.isAiming())
-			{
-				renderUmp(true, stack);
-				
-				if(hasSilencer(stack))
-				{
-					renderSilencer(true, stack);
-				}
-				
-				if(hasVerticalGrip(stack))
-				{
-					renderGripVertical(true, stack);
-				}
-				
-				else if(hasAngledGrip(stack))
-				{
-					renderGripAngled(true, stack);
-				}
-				
-				if(hasRedDot(stack))
-				{
-					renderRedDotSight(true, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderHolographic(true, stack);
-				}
-				
-				else if(has2X(stack))
-				{
-					render2X(stack);
-				}
-				
-				else if(has4X(stack))
-				{
-					render4X(stack);
-				}
-			}
-			
-			else
-			{
-				renderUmp(false, stack);
-				
-				if(hasSilencer(stack))
-				{
-					renderSilencer(false, stack);
-				}
-				
-				if(hasVerticalGrip(stack))
-				{
-					renderGripVertical(false, stack);
-				}
-				
-				else if(hasAngledGrip(stack))
-				{
-					renderGripAngled(false, stack);
-				}
-				
-				if(hasRedDot(stack))
-				{
-					renderRedDotSight(false, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderHolographic(false, stack);
-				}
-				
-				else if(has2X(stack))
-				{
-					render2X(stack);
-				}
-				
-				else if(has4X(stack))
-				{
-					render4X(stack);
-				}
-			}
+			GlStateManager.pushMatrix();
+			handleAnimations(data.isAiming(), player.isSprinting(), stack);
+			renderUmp(data.isAiming(), stack);
+			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.14d)
+				animation_aim.setYModifier(0.14d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.06d)
+				animation_aim.setYModifier(0.06d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.03d)
+				animation_aim.setYModifier(0.03d);
+			
+			animation_aim.run(aim);
+		}
+		
+		animation_held.run(sprint);
 	}
 	
 	private void renderUmp(boolean aim, ItemStack stack)
@@ -186,61 +133,34 @@ public class ModelUmp9 extends ModelGun
 		
 		if(aim && enableADS(stack))
 		{
-			GlStateManager.translate(18.65, -4.4, 8.0);
-			
-			if(hasRedDot(stack))
-			{
-				GlStateManager.translate(0.0, 2.6, 0.0);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				GlStateManager.translate(0.0, 2.6, 0.0);
-			}
+			rotateModelForADSRendering();
 		}
 		
 		renderAll();
 		GlStateManager.popMatrix();
+		
+		renderSilencer(stack);
+		renderGripVertical(stack);
+		renderGripAngled(stack);
+		renderRedDotSight(stack);
+		renderHolographic(stack);
+		render2X(stack);
+		render4X(stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderSMGSilencer(-18.6, 4.3, -6.7, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderSMGSilencer(-18.6, 4.2, -6.7, 1f, stack);
-			}
-			
-			else renderSMGSilencer(-18.6, 7, -6.7, 1f, stack);
-		}
-		
-		else renderSMGSilencer(0, 2.3, -15, 1f, stack);
+		renderSMGSilencer(0, 2.3, -15, 1f, stack);
 	}
 	
-	private void renderRedDotSight(boolean aim, ItemStack stack)
+	private void renderRedDotSight(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderRedDot(23.0, -17.3, 9, 1.6f, stack);
-		}
-		
-		else renderRedDot(-0.3, -14.9, -2.7, 1.6f, stack);
+		renderRedDot(-0.3, -14.9, -2.7, 1.6f, stack);
 	}
 	
-	private void renderHolographic(boolean aim, ItemStack stack)
+	private void renderHolographic(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderHolo(20.69, -14.0, 1.0, 1.4f, stack);
-		}
-		
-		else renderHolo(-1.5, -13.1, -7, 1.4f, stack);
+		renderHolo(-1.5, -13.1, -7, 1.4f, stack);
 	}
 	
 	private void render2X(ItemStack stack)
@@ -253,44 +173,14 @@ public class ModelUmp9 extends ModelGun
 		renderScope4X(8, 5, -11, 1f, stack);
 	}
 	
-	private void renderGripVertical(boolean aim, ItemStack stack)
+	private void renderGripVertical(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderVerticalGrip(27.4, -3, 10.0, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderVerticalGrip(27.4, -2, 10.0, 1f, stack);
-			}
-			
-			else renderVerticalGrip(0, 0, 0, 1f, stack);
-		}
-		
-		else renderVerticalGrip(0, 0, 0, 1f, stack);
+		renderVerticalGrip(0, 0, 0, 1f, stack);
 	}
 	
-	private void renderGripAngled(boolean aim, ItemStack stack)
+	private void renderGripAngled(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderAngledGrip(-17.9, -1.4, -9, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderAngledGrip(-17.9, -1.4, -9, 1f, stack);
-			}
-			
-			else renderAngledGrip(-17.9, -4, -9, 1f, stack);
-		}
-		
-		else renderAngledGrip(0, 0, 0, 1f, stack);
+		renderAngledGrip(0, 0, 0, 1f, stack);
 	}
 	
 	private void renderAll()

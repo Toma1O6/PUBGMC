@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.PMCItemBlock;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Items;

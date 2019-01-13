@@ -135,7 +135,7 @@ public class ModelM16A4 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderM16A4(aim, stack);
 			}
 			GlStateManager.popMatrix();

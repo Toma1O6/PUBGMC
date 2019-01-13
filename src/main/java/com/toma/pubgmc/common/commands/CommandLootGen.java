@@ -3,10 +3,7 @@ package com.toma.pubgmc.common.commands;
 import java.util.Collections;
 import java.util.List;
 
-import com.toma.pubgmc.common.blocks.BlockLootSpawner;
-import com.toma.pubgmc.common.blocks.PMCBlock;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
-import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCItems;
 
 import net.minecraft.block.state.IBlockState;
@@ -14,7 +11,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;

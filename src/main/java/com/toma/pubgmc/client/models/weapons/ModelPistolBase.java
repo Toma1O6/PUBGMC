@@ -3,11 +3,9 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
 import com.toma.pubgmc.client.models.atachments.ModelSilencerPistol;
-import com.toma.pubgmc.common.items.guns.GunBase;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
 public abstract class ModelPistolBase extends ModelGun

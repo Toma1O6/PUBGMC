@@ -3,7 +3,6 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
-import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -14,7 +13,6 @@ import net.minecraft.item.ItemStack;
 
 public class ModelAWM extends ModelGun
 {
-	private final AimAnimation animation_aim;
 	private final ModelRenderer base;
 	private final ModelRenderer mag;
 	private final ModelRenderer trigger;
@@ -99,7 +97,7 @@ public class ModelAWM extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				handleAnimationPosition(aim, stack);
 				renderAWM(aim, stack);
 			}
@@ -149,7 +147,7 @@ public class ModelAWM extends ModelGun
 				animation_aim.setYModifier(0.169d);
 			}
 			
-			animation_aim.processAnimation(aim);
+			animation_aim.run(aim);
 		}
 	}
 	

@@ -1,40 +1,23 @@
 package com.toma.pubgmc.client.renderer;
 
-import java.util.List;
-
 import org.lwjgl.opengl.GL11;
 
-import com.toma.pubgmc.client.models.weapons.ModelP92;
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.common.items.heal.ItemAdrenalineSyringe;
 import com.toma.pubgmc.common.items.heal.ItemBandage;
 import com.toma.pubgmc.common.items.heal.ItemEnergyDrink;
 import com.toma.pubgmc.common.items.heal.ItemFirstAidKit;
-import com.toma.pubgmc.common.items.heal.ItemMedkit;
 import com.toma.pubgmc.common.items.heal.ItemPainkiller;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
 
-import net.minecraft.block.BlockPortal;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.animation.FastTESR;
-import scala.collection.parallel.ParIterableLike.Min;
 
 public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLootSpawner>
 {

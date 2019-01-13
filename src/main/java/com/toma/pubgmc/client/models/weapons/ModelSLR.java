@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -24,6 +25,10 @@ public class ModelSLR extends ModelGun
 
 	public ModelSLR()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.28d, 0.3d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1f, 1f, 1.3f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -120,7 +125,8 @@ public class ModelSLR extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
+				handleAnimations(aim, stack);
 				renderSLR(aim, stack);
 			}
 			GlStateManager.popMatrix();
@@ -133,27 +139,17 @@ public class ModelSLR extends ModelGun
 		transform.defaultSRTransform();
 		GlStateManager.translate(0.0, 2.0, 5.0);
 		
-		if(aim && enableADS(stack))
-		{
-			GlStateManager.rotate(0.2f, 0, 1f, 0);
-			GlStateManager.rotate(0.5f, 1f, 0, 0);
-			GlStateManager.translate(26.6, -13.2, 16.0);
-			
-			if(hasRedDot(stack))
-				GlStateManager.translate(0, 3.8, 0);
-			else if(hasHoloSight(stack))
-				GlStateManager.translate(0, 6, 0);
-		}
+		if(aim) rotateModelForADSRendering();
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
 		if(hasSilencer(stack))
-			renderSilencer(aim, stack);
+			renderSilencer(stack);
 		if(hasRedDot(stack))
-			renderRedDot(aim, stack);
+			renderRedDot(stack);
 		else if(hasHoloSight(stack))
-			renderHolo(aim, stack);
+			renderHolo(stack);
 		else if(has2X(stack))
 			render2x(stack);
 		else if(has4X(stack))
@@ -164,22 +160,37 @@ public class ModelSLR extends ModelGun
 			render15x(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void handleAnimations(boolean aim, ItemStack stack)
 	{
-		if(aim)
+		if(enableADS(stack))
 		{
-			renderRedDot(28.25, -17, 18, 1.3f, stack);
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.28d)
+			{
+				animation_aim.setYModifier(0.28d);
+			}
+			
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.2d)
+			{
+				animation_aim.setYModifier(0.2d);
+			}
+			
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.155d)
+			{
+				animation_aim.setYModifier(0.155d);
+			}
+			
+			animation_aim.run(aim);
 		}
-		else renderRedDot(-0.3, -7, 1, 1.3f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderHolo(22.4, -13.8, 11, 1.3f, stack);	
-		}
-		else renderHolo(-1.5, -7.1, -3, 1.3f, stack);
+		renderRedDot(-0.45, -6.7, 1, 1.3f, stack);
+	}
+	
+	private void renderHolo(ItemStack stack)
+	{
+		renderHolo(-1.5, -7.1, -3, 1.3f, stack);
 	}
 	
 	private void render2x(ItemStack stack)
@@ -202,23 +213,9 @@ public class ModelSLR extends ModelGun
 		renderScope15X(0, 0, 0, 1f, stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderSniperSilencer(-16, 5.3, 9, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderSniperSilencer(-16, 4, 9, 1f, stack);
-			}
-			
-			else renderSniperSilencer(-16, 8, 9, 1f, stack);
-		}
-		else renderSniperSilencer(0, 0, 0, 1f, stack);
+		renderSniperSilencer(0, 0, 0, 1f, stack);
 	}
 	
 	private void renderParts(boolean hasScope)

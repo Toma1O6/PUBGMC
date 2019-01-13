@@ -52,7 +52,7 @@ public class EntityParachute extends Entity
 			}
 			
 			if(!world.isRemote)
-			{	
+			{
 				motionY = -0.2d;
 				handleParachuteDirectionState();
 				Vec3d vec = this.getLookVec();
@@ -209,13 +209,10 @@ public class EntityParachute extends Entity
 	
 	public void handlePlayerInput(boolean down, boolean up, boolean right, boolean left)
 	{
-		if(user != null)
-		{
-			this.inputDown = up;
-			this.inputUp = down;
-			this.inputRight = right;
-			this.inputLeft = left;
-		}
+		this.inputDown = up;
+		this.inputUp = down;
+		this.inputRight = right;
+		this.inputLeft = left;
 	}
 	
 	public void setColor(int colorID)

@@ -1,8 +1,6 @@
 package com.toma.pubgmc.client.renderer;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.models.atachments.ModelSilencerPistol;
 import com.toma.pubgmc.client.models.weapons.ModelAKM;
 import com.toma.pubgmc.client.models.weapons.ModelAUG;
 import com.toma.pubgmc.client.models.weapons.ModelAWM;
@@ -38,16 +36,9 @@ import com.toma.pubgmc.client.models.weapons.ModelUmp9;
 import com.toma.pubgmc.client.models.weapons.ModelVSS;
 import com.toma.pubgmc.client.models.weapons.ModelVector;
 import com.toma.pubgmc.client.models.weapons.ModelWin94;
-import com.toma.pubgmc.common.capability.IPlayerData;
-import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.init.PMCItems;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.BannerTextures;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

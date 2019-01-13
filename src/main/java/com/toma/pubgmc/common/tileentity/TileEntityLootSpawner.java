@@ -248,7 +248,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 			//Actual gun gen
 			if(ConfigHandler.enableGunLoot)
 			{
-				//Flare gun 1% spawn
+				//Flare gun 0.5% spawn
 				if(Math.random() * 100 <= 0.5)
 				{
 					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.FLARE_GUN));
@@ -258,8 +258,8 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 					}
 				}
 				
-				//Sniper rifles 5% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 5 && (lootType == 0 || lootType == 6 || lootType == 7))
+				//Sniper rifles 2% spawn, airdrop wep disabled
+				else if(Math.random() * 100 <= 2 && (lootType == 0 || lootType == 6 || lootType == 7))
 				{
 					addSRs(airdroploot);
 					
@@ -270,8 +270,8 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 					}
 				}
 				
-				//DMRs 10% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 10 && (lootType == 0 || lootType == 5 || lootType == 7))
+				//DMRs 3% spawn, airdrop wep disabled
+				else if(Math.random() * 100 <= 3 && (lootType == 0 || lootType == 5 || lootType == 7))
 				{
 					addDMRs(airdroploot);
 					
@@ -282,8 +282,8 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 					}
 				}
 				
-				//Assault rifles 20% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 20 && (lootType == 0 || lootType == 4))
+				//Assault rifles 15% spawn, airdrop wep disabled
+				else if(Math.random() * 100 <= 15 && (lootType == 0 || lootType == 4))
 				{
 					addARs(airdroploot);
 					
@@ -576,7 +576,11 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 			AMMO.add(new ItemStack(PMCItems.AMMO_SHOTGUN, 10));
 			AMMO.add(new ItemStack(PMCItems.AMMO_556, 30));
 			AMMO.add(new ItemStack(PMCItems.AMMO_762, 30));
-			AMMO.add(new ItemStack(PMCItems.AMMO_FLARE, 1));
+			
+			if(Math.random() * 100 <= 3)
+			{
+				AMMO.add(new ItemStack(PMCItems.AMMO_FLARE, 1));
+			}
 			
 			if(airdrop)
 			{

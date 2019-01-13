@@ -1,12 +1,6 @@
 package com.toma.pubgmc.common.tileentity;
 
-import com.toma.pubgmc.common.blocks.BlockLandMine;
-import com.toma.pubgmc.common.entity.EntityBullet;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

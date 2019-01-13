@@ -119,7 +119,7 @@ public class ModelM416 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderM416(aim, stack);
 			}
 			GlStateManager.popMatrix();

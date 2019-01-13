@@ -1,7 +1,5 @@
 package com.toma.pubgmc.common.commands;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 
 import com.toma.pubgmc.Pubgmc;
@@ -16,7 +14,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
 public class CommandResetPlayerData extends CommandBase

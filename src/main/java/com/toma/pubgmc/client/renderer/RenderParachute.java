@@ -2,19 +2,14 @@ package com.toma.pubgmc.client.renderer;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.opengl.GL11;
-
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelParachute;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.entity.EntityParachute;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 
 public class RenderParachute extends Render<EntityParachute>
 {

@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -24,6 +25,10 @@ public class ModelScarL extends ModelGun
 
 	public ModelScarL() 
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.245d, 0.225d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1.3f, 1f, 1.25f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -134,7 +139,8 @@ public class ModelScarL extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
+				handleAnimation(aim, stack);
 				renderScarL(aim, stack);
 			}
 			GlStateManager.popMatrix();
@@ -150,124 +156,66 @@ public class ModelScarL extends ModelGun
 		if(aim && enableADS(stack))
 		{
 			rotateModelForADSRendering();
-			GlStateManager.translate(26.575, -11.39, 0.0);
-			
-			if(hasRedDot(stack))
-			{
-				GlStateManager.translate(0, 2.4, 0);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				GlStateManager.translate(0.0, 4.4, 0.0);
-			}
 		}
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
-		renderSilencer(aim, stack);
-		renderAngledGrip(aim, stack);
-		renderVerticalGrip(aim, stack);
-		renderRedDot(aim, stack);
-		renderHolo(aim, stack);
+		renderSilencer(stack);
+		renderAngledGrip(stack);
+		renderVerticalGrip(stack);
+		renderRedDot(stack);
+		renderHolo(stack);
 		render2X(stack);
 		render4X(stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void handleAnimation(boolean aim, ItemStack stack)
 	{
-		if(hasSilencer(stack))
+		if(enableADS(stack))
 		{
-			if(aim && enableADS(stack))
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.245d)
 			{
-				if(hasRedDot(stack))
-				{
-					renderARSilencer(-18.6, 5.4, -1, 1f, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderARSilencer(-18.6, 4, -1, 1f, stack);
-				}
-				
-				else renderARSilencer(-18.6, 7.2, -1, 1f, stack);
+				animation_aim.setYModifier(0.245d);
 			}
 			
-			else renderARSilencer(0, -0.9, -2, 1f, stack);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.185d)
+			{
+				animation_aim.setYModifier(0.185d);
+			}
+			
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.14d)
+			{
+				animation_aim.setYModifier(0.14d);
+			}
+			
+			animation_aim.run(aim);
 		}
 	}
 	
-	private void renderAngledGrip(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(hasAngledGrip(stack))
-		{
-			if(aim && enableADS(stack))
-			{
-				if(hasRedDot(stack))
-				{
-					renderAngledGrip(-18, -3.1, 3, 1f, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderAngledGrip(-18, -1.7, 3, 1f, stack);
-				}
-				
-				else renderAngledGrip(-18, -4.8, 3, 1f, stack);
-			}
-			
-			else renderAngledGrip(0.6, 3.1, 3, 1f, stack);
-		}
+		renderARSilencer(0, -0.9, -2, 1f, stack);
 	}
 	
-	private void renderVerticalGrip(boolean aim, ItemStack stack)
+	private void renderAngledGrip(ItemStack stack)
 	{
-		if(hasVerticalGrip(stack))
-		{
-			if(aim && enableADS(stack))
-			{
-				if(hasRedDot(stack))
-				{
-					renderVerticalGrip(27.2, -5, -6, 1f, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderVerticalGrip(27.2, -3, -6, 1f, stack);
-				}
-				
-				else renderVerticalGrip(27.2, -8, -6, 1f, stack);
-			}
-			
-			else renderVerticalGrip(-0.8, 4.6, -6, 1f, stack);
-		}
+		renderAngledGrip(0.6, 3.1, 3, 1f, stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderVerticalGrip(ItemStack stack)
 	{
-		if(hasRedDot(stack))
-		{
-			if(aim)
-			{
-				renderRedDot(24.5, -17.4, 3, 1.5f, stack);
-			}
-			
-			else renderRedDot(-0.3, -9.1, 3, 1.5f, stack);
-		}
+		renderVerticalGrip(-0.8, 4.6, -6, 1f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(hasHoloSight(stack))
-		{
-			if(aim)
-			{
-				renderHolo(20.8, -14.2, 1, 1.4f, stack);
-			}
-			
-			else renderHolo(-1.4, -8.4, 0, 1.4f, stack);
-		}
+		renderRedDot(-0.3, -9.1, 3, 1.5f, stack);
+	}
+	
+	private void renderHolo(ItemStack stack)
+	{
+		renderHolo(-1.4, -8.4, 0, 1.4f, stack);
 	}
 	
 	private void render2X(ItemStack stack)

@@ -154,7 +154,7 @@ public class ModelM249 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderM249(aim, stack);
 			}
 			GlStateManager.popMatrix();

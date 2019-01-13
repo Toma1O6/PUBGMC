@@ -20,7 +20,6 @@ import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityMolotov;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
-import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.init.PMCBlocks;
@@ -60,7 +59,7 @@ public class Pubgmc
 	/** Some basic stuff **/
 	public static final String MOD_ID = "pubgmc";
 	public static final String NAME = "PUBGMC";
-	public static final String VERSION = "1.3.0";
+	public static final String VERSION = "1.4.0-a";
 	public static final String ACCEPTED_VERSIONS = "[1.12.2]";
 	public static final String CLIENT_PROXY_CLASS = "com.toma.pubgmc.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";
@@ -140,7 +139,7 @@ public class Pubgmc
 		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":molotov"), EntityMolotov.class, Pubgmc.MOD_ID + ":molotov_entity", 3, instance, 64, 20, true);
 		//EntityRegistry.registerModEntity(new ResourceLocation(Main.MOD_ID + ":flashbang"), EntityFlashbang.class, Main.MOD_ID + ":flashbang", 4, this, 64, 80, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":flare"), EntityFlare.class, Pubgmc.MOD_ID + ":flare_entity", 5, instance, 64, 80, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":parachute"), EntityParachute.class, Pubgmc.MOD_ID + ":parachute", 6, instance, 256, 20, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":parachute"), EntityParachute.class, Pubgmc.MOD_ID + ":parachute", 6, instance, 256, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":testvehicle"), EntityTestVehicle.class, MOD_ID + ":testvehicle", 7, instance, 256, 50, true);
 		
 		registerVehicles();

@@ -1,7 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -18,6 +18,11 @@ public class ModelSawedOff extends ModelGun
 
 	public ModelSawedOff()
 	{
+		animation_aim = new AimAnimation(-0.545d, 0.455d, 0.285d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1.2f, 1.85f, 1.2f);
+		animation_held.setWeaponType(true);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -47,23 +52,28 @@ public class ModelSawedOff extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
-			if(data != null && data.isAiming())
-			{
-				GlStateManager.pushMatrix();
-				transform.defaultPistolTransform();
-				GlStateManager.translate(18.2, -15.2, 10.0);
-				base.render(1f);
-				GlStateManager.popMatrix();
-			}
-			
-			else
-			{
-				GlStateManager.pushMatrix();
-				transform.defaultPistolTransform();
-				base.render(1f);
-				GlStateManager.popMatrix();
-			}
+
+			GlStateManager.pushMatrix();
+			handleAnimations(data.isAiming(), player.isSprinting(), stack);
+			renderSawedOff(data.isAiming(), stack);
+			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		animation_aim.run(aim);
+		animation_held.run(sprint);
+	}
+	
+	private void renderSawedOff(boolean aim, ItemStack stack)
+	{
+		GlStateManager.pushMatrix();
+		{
+			transform.defaultPistolTransform();
+			if(aim) rotateModelForADSRendering();
+			base.render(1f);
+		}
+		GlStateManager.popMatrix();
 	}
 }

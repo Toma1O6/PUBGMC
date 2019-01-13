@@ -113,7 +113,7 @@ public class ModelQBZ extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderQBZ(aim, stack);
 			}
 			GlStateManager.popMatrix();

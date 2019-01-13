@@ -110,7 +110,7 @@ public class ModelAUG extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderAUG(aim, stack);
 			}
 			GlStateManager.popMatrix();

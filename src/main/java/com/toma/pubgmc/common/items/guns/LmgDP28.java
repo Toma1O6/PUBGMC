@@ -1,10 +1,9 @@
 package com.toma.pubgmc.common.items.guns;
 
-import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;

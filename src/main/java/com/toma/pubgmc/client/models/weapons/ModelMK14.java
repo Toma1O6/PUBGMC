@@ -129,7 +129,7 @@ public class ModelMK14 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.runAnimation(player.isSprinting());
+				animation_held.run(player.isSprinting());
 				renderMK14(aim, stack);
 			}
 			GlStateManager.popMatrix();
