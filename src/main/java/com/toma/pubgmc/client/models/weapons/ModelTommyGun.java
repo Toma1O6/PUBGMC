@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -23,6 +24,11 @@ public class ModelTommyGun extends ModelGun
 
 	public ModelTommyGun() 
 	{
+		animation_aim = new AimAnimation(-0.56, 0.39d, 0.35d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1f, 1.4f, 1.4f);
+		animation_held.setWeaponType(true);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -97,13 +103,24 @@ public class ModelTommyGun extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aiming = data.isAiming();
 			
+			GlStateManager.pushMatrix();
+			handleAnimations(aiming, player.isSprinting(), stack);
 			renderTommyGun(aiming, stack);
-			
-			if(hasSilencer(stack))
-			{
-				renderSilencer(aiming, stack);
-			}
+			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.39d)
+				animation_aim.setYModifier(0.39d);
+			
+			animation_aim.run(aim);
+		}
+		
+		animation_held.run(sprint);
 	}
 	
 	private void renderTommyGun(boolean aim, ItemStack stack)
@@ -115,21 +132,17 @@ public class ModelTommyGun extends ModelGun
 		if(aim && enableADS(stack))
 		{
 			rotateModelForADSRendering();
-			GlStateManager.translate(18.66, -12.7, 14);
 		}
 		
 		renderParts(grip);
 		GlStateManager.popMatrix();
+		
+		renderSilencer(stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			renderSMGSilencer(-17, 5.3, -20.6, 1.1f, stack);
-		}
-		
-		else renderSMGSilencer(0, -6, -31, 1.1f, stack);
+		renderSMGSilencer(0, -6, -31, 1.1f, stack);
 	}
 	
 	private void renderParts(boolean hasGrip)

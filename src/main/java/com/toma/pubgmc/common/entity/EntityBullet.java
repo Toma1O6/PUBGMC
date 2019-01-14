@@ -12,6 +12,7 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
+import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.block.Block;
@@ -71,23 +72,48 @@ public class EntityBullet extends Entity
         
         IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         
-        if(data.isAiming() && type != GunType.SHOTGUN)
-        {
-            this.motionX = direct.x * velocity;
-            this.motionY = direct.y * velocity;
-            this.motionZ = direct.z * velocity;
-        }
-        
-        else
-        {
-            this.motionX = direct.x * velocity + (rand.nextDouble() - 0.5);
-            this.motionY = direct.y * velocity + (rand.nextDouble() - 0.5);
-            this.motionZ = direct.z * velocity + (rand.nextDouble() - 0.5);
-        }
+        calculateBulletHeading(direct, shooter, data.isAiming());
 
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         
         updateHeading();
+    }
+    
+    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, boolean aim)
+    {
+    	if(!shooter.isSprinting())
+    	{
+    		if(aim && type != GunType.SHOTGUN)
+    		{
+                this.motionX = rotVec.x * velocity;
+                this.motionY = rotVec.y * velocity;
+                this.motionZ = rotVec.z * velocity;
+    		}
+    		
+    		else
+    		{
+    			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
+                this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
+                this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+    		}
+    	}
+    	
+    	else
+    	{
+    		if(type == GunType.SMG || type == GunType.PISTOL || shooter.getHeldItemMainhand().getItem() == PMCItems.SAWED_OFF)
+    		{
+    			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
+                this.motionY = rotVec.y * velocity + 5.7d + (rand.nextDouble() - 0.5);
+                this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+    		}
+    		
+    		else
+    		{
+    			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
+                this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
+                this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+    		}
+    	}
     }
     
     private void updateHeading()
