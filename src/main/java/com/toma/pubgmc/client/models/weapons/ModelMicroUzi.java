@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -17,6 +18,11 @@ public class ModelMicroUzi extends ModelGun
 
 	public ModelMicroUzi()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.21d, 0.23d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim.setMovementMultiplier(1f, 1f, 1f);
+		animation_held.setWeaponType(true);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -51,27 +57,25 @@ public class ModelMicroUzi extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			boolean aim = data.isAiming();
 			
-			if(data.isAiming())
+			GlStateManager.pushMatrix();
 			{
-				renderUzi(true, stack);
-				
-				if(hasSilencer(stack))
-				{
-					renderSilencer(true, stack);
-				}
+				handleAnimations(aim, player.isSprinting(), stack);
+				renderUzi(aim, stack);
 			}
-			
-			else
-			{
-				renderUzi(false, stack);
-				
-				if(hasSilencer(stack))
-				{
-					renderSilencer(false, stack);
-				}
-			}
+			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			animation_aim.run(aim);
+		}
+		
+		animation_held.run(sprint);
 	}
 	
 	private void renderUzi(boolean aim, ItemStack stack)
@@ -81,22 +85,12 @@ public class ModelMicroUzi extends ModelGun
 		
 		if(aim)
 		{
-			GlStateManager.translate(18.699999999999996, -6.600000000000001, 5.0);
+			rotateModelForADSRendering();
 		}
 		
 		uzi.render(1f);
 		GlStateManager.popMatrix();
-	}
-	
-	private void renderSilencer(boolean aim, ItemStack stack)
-	{
-		GlStateManager.pushMatrix();
-		if(aim)
-		{
-			renderSMGSilencer(-18.7, 7, 4.8, 1f, stack);
-		}
 		
-		else renderSMGSilencer(0.1, 0, 0, 1f, stack);
-		GlStateManager.popMatrix();
+		renderSMGSilencer(0.1, 0, 0, 1f, stack);
 	}
 }

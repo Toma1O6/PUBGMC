@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -22,6 +23,9 @@ public class ModelMK47Mutant extends ModelGun
 
 	public ModelMK47Mutant()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -140,11 +144,28 @@ public class ModelMK47Mutant extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
+				handleAnimations(aim, player.isSprinting(), stack);
 				renderMK47(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.265d)
+				animation_aim.setYModifier(0.265d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.21d)
+				animation_aim.setYModifier(0.21d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.155d)
+				animation_aim.setYModifier(0.155d);
+			
+			animation_aim.run(aim);
+		}
+		
+		animation_held.run(sprint);
 	}
 	
 	private void renderMK47(boolean aim, ItemStack stack)
@@ -156,49 +177,28 @@ public class ModelMK47Mutant extends ModelGun
 		if(aim && enableADS(stack))
 		{
 			rotateModelForADSRendering();
-			GlStateManager.translate(26.5, -12.2, 14.0);
-			
-			if(hasRedDot(stack))
-			{
-				GlStateManager.translate(0, 2.6, 0);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				GlStateManager.translate(0, 4.8, 0);
-			}
 		}
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
-		renderRedDot(aim, stack);
-		renderHolo(aim, stack);
+		renderRedDot(stack);
+		renderHolo(stack);
 		render2x(stack);
 		render4x(stack);
-		renderSilencer(aim, stack);
-		renderVerticalGrip(aim, stack);
-		renderAngledGrip(aim, stack);
+		renderSilencer(stack);
+		renderVerticalGrip(stack);
+		renderAngledGrip(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderRedDot(28.2, -17, 15, 1.3f, stack);
-		}
-		
-		else renderRedDot(-0.4, -6.3, 0, 1.3f, stack);
+		renderRedDot(-0.4, -6.3, 0, 1.3f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderHolo(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderHolo(22.3, -13.8, 10, 1.3f, stack);
-		}
-		
-		else renderHolo(-1.5, -7.2, -2, 1.3f, stack);
+		renderHolo(-1.5, -7.2, -2, 1.3f, stack);
 	}
 	
 	private void render2x(ItemStack stack)
@@ -211,64 +211,19 @@ public class ModelMK47Mutant extends ModelGun
 		renderScope4X(7.9, 10.8, -11, 1f, stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderARSilencer(-18.6, 6.2, 7, 1f, stack);	
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderARSilencer(-18.6, 4.8, 7, 1f, stack);
-			}
-			
-			else renderARSilencer(-18.6, 7.8, 7, 1f, stack);
-		}
-		
-		else renderARSilencer(0, -0.6, -3, 1f, stack);
+		renderARSilencer(0, -0.6, -3, 1f, stack);
 	}
 	
-	private void renderVerticalGrip(boolean aim, ItemStack stack)
+	private void renderVerticalGrip(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderVerticalGrip(27, -6, 1, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderVerticalGrip(27, -3, 1, 1f, stack);
-			}
-			
-			else renderVerticalGrip(27, -8, 1, 1f, stack);
-		}
-		
-		else renderVerticalGrip(0, 4, -12, 1f, stack);
+		renderVerticalGrip(0, 4, -12, 1f, stack);
 	}
 	
-	private void renderAngledGrip(boolean aim, ItemStack stack)
+	private void renderAngledGrip(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderAngledGrip(-18, -4, -3, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderAngledGrip(-18, -2, -3, 1f, stack);
-			}
-			
-			else renderAngledGrip(-18, -5.3, -3, 1f, stack);
-		}
-		
-		else renderAngledGrip(0, 3, 7, 1f, stack);
+		renderAngledGrip(0, 3, 7, 1f, stack);
 	}
 	
 	private void renderParts(boolean hasScope)
