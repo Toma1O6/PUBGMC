@@ -93,11 +93,9 @@ public class EntityMolotov extends Entity
             
             createParticles(world);
             
-            List list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(this.posX - 4, this.posY, this.posZ - 4, this.posX + 4, this.posY + 1.5, this.posZ + 4));
-            for(int i = 0; i < list.size(); i++)
+            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(this.posX - 4, this.posY, this.posZ - 4, this.posX + 4, this.posY + 1.5, this.posZ + 4));
+            for(Entity entity : list)
             {
-            	Entity entity = (Entity) list.get(i);
-            	
             	if(entity instanceof EntityLiving)
             	{
             		EntityLiving entityliv = (EntityLiving)entity;

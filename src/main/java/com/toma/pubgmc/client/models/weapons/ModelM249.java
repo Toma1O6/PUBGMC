@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -25,6 +26,9 @@ public class ModelM249 extends ModelGun
 
 	public ModelM249()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.125d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -154,11 +158,28 @@ public class ModelM249 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
+				handleAnimations(aim, player.isSprinting(), stack);
 				renderM249(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.265d)
+				animation_aim.setYModifier(0.265d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.195d)
+				animation_aim.setYModifier(0.195d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.15d)
+				animation_aim.setYModifier(0.15d);
+			
+			animation_aim.run(aim);
+		}
+		
+		animation_held.run(sprint);
 	}
 	
 	private void renderM249(boolean aim, ItemStack stack)
@@ -169,44 +190,26 @@ public class ModelM249 extends ModelGun
 		
 		if(aim && enableADS(stack))
 		{
-			GlStateManager.translate(26.6, -12.8, 0.0);
-			if(hasRedDot(stack))
-			{
-				GlStateManager.translate(0.0, 3.4, 0.0);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				GlStateManager.translate(0, 5.4, 0);
-			}
+			rotateModelForADSRendering();
 		}
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
-		renderRedDot(aim, stack);
-		renderHolo(aim, stack);
+		renderRedDot(stack);
+		renderHolo(stack);
 		render2x(stack);
 		render4x(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderRedDot(28.3, -17, 13, 1.3f, stack);
-		}
-		
-		else renderRedDot(-0.4, -7, 5, 1.3f, stack);
+		renderRedDot(-0.4, -7, 5, 1.3f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderHolo(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderHolo(22.4, -14, 8, 1.3f, stack);
-		}
-		else renderHolo(-1.5, -7.3, 0, 1.3f, stack);
+		renderHolo(-1.5, -7.3, 0, 1.3f, stack);
 	}
 	
 	private void render2x(ItemStack stack)
