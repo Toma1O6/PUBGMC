@@ -47,7 +47,7 @@ public class CommandLootGen extends CommandBase
 					TileEntity tee = world.loadedTileEntityList.get(i);
 					if(tee instanceof TileEntityLootSpawner && !world.isRemote)
 					{
-						((TileEntityLootSpawner) tee).generateLoot(false, true, 0);
+						((TileEntityLootSpawner) tee).generateLoot(false, true, 0, false, 1);
 						world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 					}
 				}
@@ -87,12 +87,6 @@ public class CommandLootGen extends CommandBase
 						
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							/*BlockPos pos = te.getPos();
-							EntityItem itemEnt = new EntityItem(world, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, new ItemStack(PMCItems.IBLOCK));
-							itemEnt.motionX = 0;
-							itemEnt.motionY = 0;
-							itemEnt.motionZ = 0;
-							world.spawnEntity(itemEnt);*/
 							TileEntityLootSpawner te = (TileEntityLootSpawner)tee;
 							
 							for(int j = 0; j < te.getSizeInventory(); j++)
@@ -122,7 +116,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(true, true, 0);
+							((TileEntityLootSpawner)tee).generateLoot(true, true, 0, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -138,7 +132,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, false, 0);
+							((TileEntityLootSpawner)tee).generateLoot(false, false, 0, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -154,7 +148,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 1);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 1, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -170,7 +164,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 2);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 2, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -186,7 +180,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 3);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 3, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -202,7 +196,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 4);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 4, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -218,7 +212,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 5);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 5, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -234,7 +228,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 6);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 6, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}
@@ -250,7 +244,7 @@ public class CommandLootGen extends CommandBase
 						TileEntity tee = world.loadedTileEntityList.get(i);
 						if(tee instanceof TileEntityLootSpawner)
 						{
-							((TileEntityLootSpawner)tee).generateLoot(false, true, 7);
+							((TileEntityLootSpawner)tee).generateLoot(false, true, 7, false, 1);
 							world.notifyBlockUpdate(tee.getPos(), world.getBlockState(tee.getPos()), world.getBlockState(tee.getPos()), 3);
 							
 						}

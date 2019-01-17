@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -21,6 +22,9 @@ public class ModelGroza extends ModelGun
 
 	public ModelGroza()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.135d, 0.28d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -97,11 +101,27 @@ public class ModelGroza extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
+				handleAnimations(aim, player.isSprinting(), stack);
 				renderGroza(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.135d)
+				animation_aim.setYModifier(0.135d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.0575d)
+				animation_aim.setYModifier(0.0575d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.01d)
+				animation_aim.setYModifier(0.01d);
+			
+			animation_aim.run(aim);
+		}
+		animation_held.run(sprint);
 	}
 	
 	private void renderGroza(boolean aim, ItemStack stack)
@@ -112,67 +132,32 @@ public class ModelGroza extends ModelGun
 		
 		if(aim && enableADS(stack))
 		{
-			GlStateManager.translate(26.65, -6.3, 15);
-			
-			if(hasRedDot(stack))
-			{
-				GlStateManager.translate(0, 3.5, 0);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				GlStateManager.translate(0, 5, 0);
-			}
+			rotateModelForADSRendering();
 		}
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
-		renderSilencer(aim, stack);
-		renderRedDot(aim, stack);
-		renderHolo(aim, stack);
+		renderSilencer(stack);
+		renderRedDot(stack);
+		renderHolo(stack);
 		render2x(stack);
 		render4x(stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderARSilencer(-18.6, -0.3, 19, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderARSilencer(-18.6, -1.5, 19, 1f, stack);
-			}
-			
-			else renderARSilencer(-18.6, 2.3, 19, 1f, stack);
-		}
-		
-		else renderARSilencer(0, -2.3, 9, 1f, stack);
+		renderARSilencer(0, -2.3, 9, 1f, stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderRedDot(28.3, -17, 17, 1.3f, stack);
-		}
-		
-		else renderRedDot(-0.3, -14, 0, 1.3f, stack);
+		renderRedDot(-0.42, -14, 0, 1.3f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderHolo(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderHolo(22.4, -13.9, 10, 1.3f, stack);
-		}
-		
-		else renderHolo(-1.6, -13.2, -4, 1.3f, stack);
+		renderHolo(-1.5, -13.2, -4, 1.3f, stack);
 	}
 	
 	private void render2x(ItemStack stack)

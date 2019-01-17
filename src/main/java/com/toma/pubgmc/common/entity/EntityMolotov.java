@@ -174,19 +174,24 @@ public class EntityMolotov extends Entity
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound)
 	{
+		compound.setDouble("posX", this.posX);
+		compound.setDouble("posY", this.posY);
+		compound.setDouble("posZ", this.posZ);
+		compound.setDouble("motionX", this.motionX);
+		compound.setDouble("motionY", this.motionY);
+		compound.setDouble("motionZ", this.motionZ);
 		compound.setInteger("fuse", this.fuse);
-		compound.setInteger("id", this.id);
-		compound.setInteger("delay", this.damageDelay);
 	}
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound) 
 	{
-		compound.getInteger("fuse");
-		compound.getInteger("id");
-		compound.getInteger("delay");
+		posX = compound.getDouble("posX");
+		posY = compound.getDouble("posY");
+		posZ = compound.getDouble("posZ");
+		motionX = compound.getDouble("motionX");
+		motionY = compound.getDouble("motionY");
+		motionZ = compound.getDouble("motionZ");
+		fuse = compound.getInteger("fuse");
 	}
-	
-	
-	
 }

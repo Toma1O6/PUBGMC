@@ -19,6 +19,7 @@ public class EntityParachute extends Entity
 	public EntityParachute(World world)
 	{
 		super(world);
+		preventEntitySpawning = true;
 	}
 	
 	public EntityParachute(World world, Entity user)

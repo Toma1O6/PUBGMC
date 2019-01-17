@@ -61,6 +61,7 @@ public class EntityVehicle extends Entity
 	{
 		super(world);
 		setSize(1f, 1f);
+		preventEntitySpawning = true;
 	}
 	
 	public EntityVehicle(World world, int x, int y, int z, boolean waterVehicle)
@@ -438,7 +439,6 @@ public class EntityVehicle extends Entity
 		fuel = compound.getFloat("fuel");
 		currentSpeed = compound.getFloat("speed");
 		isBroken = compound.getBoolean("isBroken");
-		System.out.println(health);
 	}
 	
 	@Override

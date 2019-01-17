@@ -30,6 +30,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
 		super(worldIn);
 		this.setSize(0.1f, 0.1f);
 		this.setInvisible(false);
+		preventEntitySpawning = true;
 	}
 	
     public EntityFlare(World worldIn, EntityLivingBase shooter)

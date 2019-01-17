@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -22,6 +23,9 @@ public class ModelBerylM762 extends ModelGun
 
 	public ModelBerylM762()
 	{
+		animation_aim = new AimAnimation(-0.56d, 0.26d, 0.18d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -128,11 +132,26 @@ public class ModelBerylM762 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
+				handleAnimations(aim, player.isSprinting(), stack);
 				renderM762(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.26d)
+				animation_aim.setYModifier(0.26d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.175d)
+				animation_aim.setYModifier(0.175d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.135d)
+				animation_aim.setYModifier(0.135d);
+			animation_aim.run(aim);
+		}
+		animation_held.run(sprint);
 	}
 	
 	private void renderM762(boolean aim, ItemStack stack)
@@ -144,48 +163,28 @@ public class ModelBerylM762 extends ModelGun
 		if(aim && enableADS(stack))
 		{
 			rotateModelForADSRendering();
-			GlStateManager.translate(26.5, -11.9, 9);
-			
-			if(hasRedDot(stack))
-			{
-				GlStateManager.translate(0.0, 3.6, 0.0);
-			}
-			else if(hasHoloSight(stack))
-			{
-				GlStateManager.translate(0, 5.3, 0);
-			}
 		}
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
-		renderRedDot(aim, stack);
-		renderHolo(aim, stack);
+		renderRedDot(stack);
+		renderHolo(stack);
 		render2x(stack);
 		render4x(stack);
-		renderSilencer(aim, stack);
-		renderVerticalGrip(aim, stack);
-		renderAngledGrip(aim, stack);
+		renderSilencer(stack);
+		renderVerticalGrip(stack);
+		renderAngledGrip(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderRedDot(28.2, -16.9, 15, 1.3f, stack);
-		}
-		
-		else renderRedDot(-0.3, -8, 5, 1.3f, stack);
+		renderRedDot(-0.4, -8, 5, 1.3f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderHolo(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderHolo(22.3, -13.8, 9, 1.3f, stack);
-		}
-		
-		else renderHolo(-1.5, -8, 0, 1.3f, stack);
+		renderHolo(-1.5, -8, 0, 1.3f, stack);
 	}
 	
 	private void render2x(ItemStack stack)
@@ -198,64 +197,19 @@ public class ModelBerylM762 extends ModelGun
 		renderScope4X(7.8, 9.8, -6, 1f, stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderARSilencer(-18.6, 5, 0, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderARSilencer(-18.6, 3.7, 0, 1f, stack);
-			}
-			
-			else renderARSilencer(-18.6, 7, 0, 1f, stack);
-		}
-		
-		else renderARSilencer(0, -1, -7, 1f, stack);	
+		renderARSilencer(0, -1, -7, 1f, stack);	
 	}
 	
-	private void renderVerticalGrip(boolean aim, ItemStack stack)
+	private void renderVerticalGrip(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderVerticalGrip(27.8, -4, 10, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderVerticalGrip(27.8, -2.2, 10, 1f, stack);
-			}
-			
-			else renderVerticalGrip(27.8, -8, 10, 1f, stack);
-		}
-		
-		else renderVerticalGrip(-1, 4, 0, 1f, stack);
+		renderVerticalGrip(-1, 4, 0, 1f, stack);
 	}
 	
-	private void renderAngledGrip(boolean aim, ItemStack stack)
+	private void renderAngledGrip(ItemStack stack)
 	{
-		if(aim && enableADS(stack))
-		{
-			if(hasRedDot(stack))
-			{
-				renderAngledGrip(-18, -2.6, -8, 1f, stack);
-			}
-			
-			else if(hasHoloSight(stack))
-			{
-				renderAngledGrip(-18, -1.4, -8, 1f, stack);
-			}
-			
-			else renderAngledGrip(-18, -5, -8, 1f, stack);
-		}
-		
-		else renderAngledGrip(0.7, 3, -2, 1f, stack);	
+		renderAngledGrip(0.7, 3, -2, 1f, stack);	
 	}
 	
 	private void renderParts(boolean hasScope)

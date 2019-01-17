@@ -224,7 +224,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	 * @param addAmmo - Decides if ammo will be generated with guns
 	 * @param lootType - 0 = all, 1 = pistol, 2 = shotguns, 3 = smgs, 4 = ar + lmg, 5 = dmr, 6 = sr, 7 = dmr + sr
 	 */
-	public void generateLoot(boolean airdroploot, boolean addAmmo, int lootType)
+	public void generateLoot(boolean airdroploot, boolean addAmmo, int lootType, boolean randomAmmo, double chanceMultiplier)
 	{
 		slot = -1;
 		this.inventory.clear();
@@ -233,23 +233,23 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		addBackpackLoot(rand.nextInt(26));
 		addCommonHealing();
 		addWearableLoot(rand.nextInt(26));
-		addAmmoLoot(false, airdroploot);
+		addAmmoLoot(randomAmmo, airdroploot);
 		
 		addRareHealing(rand.nextInt(12));
 		
 		//Rare meds
-		if(Math.random() * 100 <= 10)
+		if(Math.random() * 100 <= 10 * chanceMultiplier)
 		{
 			setInventorySlotContents(getEmptySlot(), RARE_HEAL.get(rand.nextInt(RARE_HEAL.size())));
 		}
 		
-		if(Math.random() * 100 <= 45)
+		if(Math.random() * 100 <= 45 * chanceMultiplier)
 		{	
 			//Actual gun gen
 			if(ConfigHandler.enableGunLoot)
 			{
 				//Flare gun 0.5% spawn
-				if(Math.random() * 100 <= 0.5)
+				if(Math.random() * 100 <= 0.5 * chanceMultiplier)
 				{
 					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.FLARE_GUN));
 					if(addAmmo)
@@ -259,7 +259,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Sniper rifles 2% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 2 && (lootType == 0 || lootType == 6 || lootType == 7))
+				else if(Math.random() * 100 <= 2 * chanceMultiplier && (lootType == 0 || lootType == 6 || lootType == 7))
 				{
 					addSRs(airdroploot);
 					
@@ -271,7 +271,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//DMRs 3% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 3 && (lootType == 0 || lootType == 5 || lootType == 7))
+				else if(Math.random() * 100 <= 3 * chanceMultiplier && (lootType == 0 || lootType == 5 || lootType == 7))
 				{
 					addDMRs(airdroploot);
 					
@@ -283,7 +283,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Assault rifles 15% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 15 && (lootType == 0 || lootType == 4))
+				else if(Math.random() * 100 <= 15 * chanceMultiplier && (lootType == 0 || lootType == 4))
 				{
 					addARs(airdroploot);
 					
@@ -295,7 +295,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//SMGs 20% spawn 
-				else if(Math.random() * 100 <= 20 && (lootType == 0 || lootType == 3))
+				else if(Math.random() * 100 <= 20 * chanceMultiplier && (lootType == 0 || lootType == 3))
 				{
 					addSMGs();
 					
@@ -307,7 +307,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Shotguns 35% spawn
-				else if(Math.random() * 100 <= 35 && (lootType == 0 || lootType == 2))
+				else if(Math.random() * 100 <= 35 * chanceMultiplier && (lootType == 0 || lootType == 2))
 				{
 					addShotguns();
 					
@@ -332,28 +332,28 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 			}
 		}
 		
-		if(Math.random() * 100 <= 15)
+		if(Math.random() * 100 <= 15 * chanceMultiplier)
 		{
 			setInventorySlotContents(getEmptySlot(), THROWABLES.get(rand.nextInt(THROWABLES.size())));
 		}
-		else if(Math.random() * 100 <= 20)
+		else if(Math.random() * 100 <= 20 * chanceMultiplier)
 		{
 			setInventorySlotContents(getEmptySlot(), WEARABLE.get(rand.nextInt(WEARABLE.size())));
 		}
-		else if(Math.random() * 100 <= 15)
+		else if(Math.random() * 100 <= 15 * chanceMultiplier)
 		{
 			setInventorySlotContents(getEmptySlot(), BACKPACKS.get(rand.nextInt(BACKPACKS.size())));
 		}
-		else if(Math.random() * 100 <= 25)
+		else if(Math.random() * 100 <= 25 * chanceMultiplier)
 		{
 			setInventorySlotContents(getEmptySlot(), COMMON_HEAL.get(rand.nextInt(COMMON_HEAL.size())));
 		}
-		else if(Math.random() * 100 <= 35)
+		else if(Math.random() * 100 <= 35 * chanceMultiplier)
 		{
 			setInventorySlotContents(getEmptySlot(), AMMO.get(rand.nextInt(AMMO.size())));
 		}
 		
-		if(Math.random() * 100 <= 20)
+		if(Math.random() * 100 <= 20 * chanceMultiplier)
 		{
 			addAttachments(airdroploot);
 			setInventorySlotContents(getEmptySlot(), ATTACHMENTS.get(rand.nextInt(ATTACHMENTS.size())));
@@ -370,6 +370,23 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	private void generateAmmoForCurrentWeapon(ItemStack stack)
 	{
 		GunBase gun = (GunBase)stack.getItem();
+		if(gun == PMCItems.KAR98K || gun == PMCItems.M24)
+		{
+			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+			
+			if(Math.random() * 100 <= 75)
+			{
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+				
+				if(Math.random() * 100 <= 25)
+				{
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+				}
+			}
+			
+			return;
+		}
+		
 		if(gun.getGunType() != GunType.PISTOL)
 		{
 			if(gun.getAmmoType() == AmmoType.AMMO9MM)
@@ -567,8 +584,23 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		
 		if(randomCount)
 		{
-			int count = rand.nextInt(30);
+			AMMO.add(new ItemStack(PMCItems.AMMO_9MM, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCItems.AMMO_45ACP, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCItems.AMMO_SHOTGUN, rand.nextInt(10)));
+			AMMO.add(new ItemStack(PMCItems.AMMO_556, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCItems.AMMO_762, rand.nextInt(30)));
+			
+			if(Math.random() * 100 <= 3)
+			{
+				AMMO.add(new ItemStack(PMCItems.AMMO_FLARE, 1));
+			}
+			
+			if(airdrop)
+			{
+				AMMO.add(new ItemStack(PMCItems.AMMO_300M, rand.nextInt(6)));
+			}
 		}
+		
 		else
 		{
 			AMMO.add(new ItemStack(PMCItems.AMMO_9MM, 30));

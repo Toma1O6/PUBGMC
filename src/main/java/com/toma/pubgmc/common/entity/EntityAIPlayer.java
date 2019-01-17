@@ -8,5 +8,6 @@ public class EntityAIPlayer extends EntityMob
 	public EntityAIPlayer(World worldIn)
 	{
 		super(worldIn);
+		preventEntitySpawning = true;
 	}
 }

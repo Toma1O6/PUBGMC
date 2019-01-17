@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -20,7 +21,8 @@ public class ModelKar98K extends ModelGun
 
 	public ModelKar98K()
 	{
-		animation_held.setWeaponType(false);
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -112,11 +114,26 @@ public class ModelKar98K extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
+				handleAnimations(aim, player.isSprinting(), stack);
 				renderKar98K(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.265d)
+				animation_aim.setYModifier(0.265d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.19d)
+				animation_aim.setYModifier(0.19d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.145d)
+				animation_aim.setYModifier(0.145d);
+			animation_aim.run(aim);
+		}
+		animation_held.run(sprint);
 	}
 	
 	private void renderKar98K(boolean aim, ItemStack stack)
@@ -128,39 +145,28 @@ public class ModelKar98K extends ModelGun
 		if(aim && enableADS(stack))
 		{
 			rotateModelForADSRendering();
-			GlStateManager.translate(26.6, -12.3, 15.0);
-			
-			if(hasRedDot(stack)) GlStateManager.translate(0, 3.4, 0);
-			else if(hasHoloSight(stack)) GlStateManager.translate(0, 5.4, 0);
 		}
 		
 		renderParts(hasScopeAtachment(stack));
 		GlStateManager.popMatrix();
 		
-		if(hasSilencer(stack)) renderSilencer(aim, stack);
-		if(hasRedDot(stack)) renderRedDot(aim, stack);
-		else if(hasHoloSight(stack)) renderHolo(aim, stack);
+		if(hasSilencer(stack)) renderSilencer(stack);
+		if(hasRedDot(stack)) renderRedDot(stack);
+		else if(hasHoloSight(stack)) renderHolo(stack);
 		else if(has2X(stack)) render2x(stack);
 		else if(has4X(stack)) render4x(stack);
 		else if(has8X(stack)) render8x(stack);
 		else if(has15X(stack)) render15x(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim) {
-			renderRedDot(28.25, -17, 7, 1.3f, stack);
-		}
-		
-		else renderRedDot(-0.5, -7.2, -9, 1.3f, stack);
+		renderRedDot(-0.5, -7.2, -9, 1.3f, stack);
 	}
 	
-	private void renderHolo(boolean aim, ItemStack stack)
+	private void renderHolo(ItemStack stack)
 	{
-		if(aim) {
-			renderHolo(22.35, -13.8, 1, 1.3f, stack);
-		}
-		else renderHolo(-1.5, -7.7, -11, 1.3f, stack);
+		renderHolo(-1.5, -7.7, -11, 1.3f, stack);
 	}
 	
 	private void render2x(ItemStack stack)
@@ -183,17 +189,9 @@ public class ModelKar98K extends ModelGun
 		renderScope15X(0, -1, -11, 1f, stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim && enableADS(stack)) {
-			if(hasRedDot(stack)) {
-				renderSniperSilencer(-16, 6, 3, 1f, stack);
-			} else if(hasHoloSight(stack)) {
-				renderSniperSilencer(-16, 4.4, 3, 1f, stack);
-			} else renderSniperSilencer(-16, 7.8, 3, 1f, stack);
-		}
-		
-		else renderSniperSilencer(0, 0.4, -5, 1f, stack);
+		renderSniperSilencer(0, 0.4, -5, 1f, stack);
 	}
 	
 	private void renderParts(boolean hasScope)

@@ -15,11 +15,8 @@ import net.minecraft.world.World;
 public class EntityGrenade extends Entity
 {
 	public EntityLivingBase thrower;
-	private int id;
 	private int fuse;
 	protected float velocity = 0.5f;
-	private double bounce = 0.15d;
-	private double bounce_small = 0.8d;
 	
 
 	public EntityGrenade(World worldIn) 
@@ -147,15 +144,25 @@ public class EntityGrenade extends Entity
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound)
 	{
+		compound.setDouble("posX", this.posX);
+		compound.setDouble("posY", this.posY);
+		compound.setDouble("posZ", this.posZ);
+		compound.setDouble("motionX", this.motionX);
+		compound.setDouble("motionY", this.motionY);
+		compound.setDouble("motionZ", this.motionZ);
 		compound.setInteger("fuse", this.fuse);
-		compound.setInteger("id", this.id);
 	}
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound) 
 	{
-		compound.getInteger("fuse");
-		compound.getInteger("id");
+		posX = compound.getDouble("posX");
+		posY = compound.getDouble("posY");
+		posZ = compound.getDouble("posZ");
+		motionX = compound.getDouble("motionX");
+		motionY = compound.getDouble("motionY");
+		motionZ = compound.getDouble("motionZ");
+		fuse = compound.getInteger("fuse");
 	}
 	
 	public void setFuse(int fuse)

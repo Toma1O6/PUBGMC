@@ -51,6 +51,7 @@ public class EntityBullet extends Entity
 	{
 		super(worldIn);
 		this.setSize(0.1f, 0.1f);
+		preventEntitySpawning = true;
 	}
 	
     public EntityBullet(World worldIn, EntityLivingBase shooter, GunBase gun)
@@ -307,21 +308,23 @@ public class EntityBullet extends Entity
     	compound.setDouble("movx", this.motionX);
     	compound.setDouble("movy", this.motionY);
     	compound.setDouble("movz", this.motionZ);
-    	compound.setInteger("id", this.shooterId);
-    	compound.setString("shooter", this.shooter.getName());
+    	compound.setInteger("lifespan", this.ticksExisted);
+    	compound.setFloat("bullet_damage", this.damage);
+    	compound.setDouble("bullet_velocity", this.velocity);
     }
     
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
-    	compound.getDouble("x");
-    	compound.getDouble("y");
-    	compound.getDouble("z");
-    	compound.getDouble("movx");
-    	compound.getDouble("movy");
-    	compound.getDouble("movz");
-    	compound.getInteger("id");
-    	compound.getString("shooter");
+    	posX = compound.getDouble("x");
+    	posY = compound.getDouble("y");
+    	posZ = compound.getDouble("z");
+    	motionX = compound.getDouble("movx");
+    	motionY = compound.getDouble("movy");
+    	motionZ = compound.getDouble("movz");
+    	ticksExisted = compound.getInteger("lifespan");
+    	damage = compound.getFloat("bullet_damage");
+    	velocity = compound.getDouble("bullet_velocity");
     }
     
     public EntityLivingBase getShooter()

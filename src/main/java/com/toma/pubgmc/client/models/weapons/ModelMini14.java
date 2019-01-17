@@ -125,7 +125,6 @@ public class ModelMini14 extends ModelGun
 			GlStateManager.pushMatrix();
 			{
 				handleAnimations(aim, player.isSprinting(), stack);
-				if(aim) debug.translateModel();
 				renderMini14(aim, stack);
 			}
 			GlStateManager.popMatrix();
