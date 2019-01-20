@@ -417,7 +417,7 @@ public class CommandLootGenerate extends CommandBase
 		{
 			if(args[0].equalsIgnoreCase("set"))
 			{
-				return getListOfStringsMatchingLastWord(args, new String[] {"airdropLoot","ammoLoot","randomAmmoCount","chance","weapon"});
+				return getListOfStringsMatchingLastWord(args, new String[] {"airdropLoot","ammoLoot","randomAmmoCount","chance","weapon","help"});
 			}
 		}
 		
@@ -453,14 +453,15 @@ public class CommandLootGenerate extends CommandBase
 		for(int i = 0; i < c.length; i++)
 		{
 			if(Character.isDigit(c[i]) || c[i] == '.')
-			{
+			{	
+				if(alreadyUsedDot && c[i] == '.')
+				{
+					valid = false;
+				}
+				
 				if(c[i] == '.' && !alreadyUsedDot)
 				{
 					alreadyUsedDot = true;
-				}
-				else
-				{
-					return false;
 				}
 				
 				continue;
