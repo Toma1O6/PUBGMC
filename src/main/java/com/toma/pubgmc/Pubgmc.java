@@ -12,7 +12,7 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataStorage;
 import com.toma.pubgmc.common.commands.CommandAirdrop;
 import com.toma.pubgmc.common.commands.CommandClearPlayerCrates;
 import com.toma.pubgmc.common.commands.CommandLeave;
-import com.toma.pubgmc.common.commands.CommandLootGen;
+import com.toma.pubgmc.common.commands.CommandLootGenerate;
 import com.toma.pubgmc.common.commands.CommandResetPlayerData;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.entity.EntityFlare;
@@ -120,7 +120,7 @@ public class Pubgmc
 	public void serverInit(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new CommandLeave());
-		event.registerServerCommand(new CommandLootGen());
+		event.registerServerCommand(new CommandLootGenerate());
 		event.registerServerCommand(new CommandClearPlayerCrates());
 		event.registerServerCommand(new CommandAirdrop());
 		event.registerServerCommand(new CommandResetPlayerData());

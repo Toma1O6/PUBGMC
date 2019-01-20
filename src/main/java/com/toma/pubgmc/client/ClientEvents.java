@@ -157,7 +157,6 @@ public class ClientEvents
 		ModelResourceLocation location;
 		IBakedModel main;
 		
-		//Weapons
 		for(int i = 0; i < GunBase.GUNS.size(); i++)
 		{
 			GunBase gun = GunBase.GUNS.get(i);
@@ -259,7 +258,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	
@@ -1322,14 +1321,7 @@ public class ClientEvents
     
     private static int get4xIDFromGun(GunBase gun)
     {
-    	int id = 0;
-    	
-    	if(gun.getGunType() == GunType.SNIPER)
-    	{
-    		id = 1;
-    	}
-    	
-    	return id;
+    	return gun.getGunType() == GunType.SNIPER ? 1 : 0;
     }
     
     private void handleVehicleControls(boolean forward, boolean back, boolean right, boolean left, boolean boost, EntityPlayer player)

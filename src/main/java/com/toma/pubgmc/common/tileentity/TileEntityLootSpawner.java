@@ -24,6 +24,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.GuiNotification;
 
 public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 {
@@ -31,6 +32,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	private String customName;
 	private final Random rand = new Random();
 	private int slot;
+	private List<GunType> weapons = new ArrayList<GunType>();
 	
 	//Loot related - guns
 	private static final List<ItemStack> PISTOLS = new ArrayList<ItemStack>();
@@ -224,10 +226,11 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	 * @param addAmmo - Decides if ammo will be generated with guns
 	 * @param lootType - 0 = all, 1 = pistol, 2 = shotguns, 3 = smgs, 4 = ar + lmg, 5 = dmr, 6 = sr, 7 = dmr + sr
 	 */
-	public void generateLoot(boolean airdroploot, boolean addAmmo, int lootType, boolean randomAmmo, double chanceMultiplier)
+	public void generateLoot(boolean airdroploot, boolean addAmmo, boolean randomAmmo, double chanceMultiplier, List<GunType> weaponList)
 	{
 		slot = -1;
 		this.inventory.clear();
+		this.weapons = weaponList;
 		
 		addGrenadeLoot();
 		addBackpackLoot(rand.nextInt(26));
@@ -259,7 +262,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Sniper rifles 2% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 2 * chanceMultiplier && (lootType == 0 || lootType == 6 || lootType == 7))
+				else if(Math.random() * 100 <= 2 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SNIPER)))
 				{
 					addSRs(airdroploot);
 					
@@ -271,7 +274,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//DMRs 3% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 3 * chanceMultiplier && (lootType == 0 || lootType == 5 || lootType == 7))
+				else if(Math.random() * 100 <= 3 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SNIPER)))
 				{
 					addDMRs(airdroploot);
 					
@@ -283,7 +286,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Assault rifles 15% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 15 * chanceMultiplier && (lootType == 0 || lootType == 4))
+				else if(Math.random() * 100 <= 15 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.AR)))
 				{
 					addARs(airdroploot);
 					
@@ -295,7 +298,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//SMGs 20% spawn 
-				else if(Math.random() * 100 <= 20 * chanceMultiplier && (lootType == 0 || lootType == 3))
+				else if(Math.random() * 100 <= 20 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SMG)))
 				{
 					addSMGs();
 					
@@ -307,7 +310,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Shotguns 35% spawn
-				else if(Math.random() * 100 <= 35 * chanceMultiplier && (lootType == 0 || lootType == 2))
+				else if(Math.random() * 100 <= 35 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SHOTGUN)))
 				{
 					addShotguns();
 					
@@ -319,7 +322,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//If none of the above is successful then pistol will be generated
-				else if(lootType == 0 || lootType == 1)
+				else if(weapons.contains(GunType.ALL) || weapons.contains(GunType.PISTOL))
 				{
 					addPistols();
 					
