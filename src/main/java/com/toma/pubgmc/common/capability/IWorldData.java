@@ -77,7 +77,7 @@ public interface IWorldData
 	{
 		private boolean airdropWep, ammoLoot, randomAmmoCount;
 		private double chance;
-		private List<GunType> weaponTypes;
+		private List<GunType> weaponTypes = new ArrayList<GunType>();
 		
 		@Override
 		public void toggleAirdropWeapons(boolean enable)
@@ -172,6 +172,10 @@ public interface IWorldData
 			{
 				weaponTypes.add(GunType.values()[i]);
 			}
+			
+			//serves no purpose for loot gen
+			if(weaponTypes.contains(GunType.LMG))
+				removeWeaponTypeFromLootGeneration(GunType.LMG);
 		}
 	}
 	

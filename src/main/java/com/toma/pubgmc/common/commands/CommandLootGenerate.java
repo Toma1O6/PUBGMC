@@ -1,9 +1,10 @@
 package com.toma.pubgmc.common.commands;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.toma.pubgmc.common.capability.IWorldData;
+import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.init.PMCItems;
@@ -18,15 +19,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 public class CommandLootGenerate extends CommandBase
 {
-	//TODO CONVERT TO CAPABILITIES
-	private boolean airdropLoot, randomAmmoLoot, ammoLoot;
-	private List<GunType> weapons = new ArrayList<GunType>();
-	private double chance;
-	
 	@Override
 	public String getName()
 	{
@@ -48,9 +45,12 @@ public class CommandLootGenerate extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-		if(weapons.isEmpty())
+		IWorldData worldData = null;
+		
+		if(sender.getEntityWorld().hasCapability(WorldDataProvider.WORLD_DATA, null))
 		{
-			resetWeapons();
+			worldData = sender.getEntityWorld().getCapability(WorldDataProvider.WORLD_DATA, null);
+			if(worldData.getWeaponList().isEmpty()) worldData.resetWeaponLootGeneration();
 		}
 		
 		if(args.length == 0)
@@ -60,11 +60,11 @@ public class CommandLootGenerate extends CommandBase
 		
 		else if(args.length > 0)
 		{
-			executeBasic(server, sender, args);
+			executeBasic(server, sender, args, worldData);
 		}
 	}
 	
-	private void executeBasic(MinecraftServer server, ICommandSender sender, String[] args)
+	private void executeBasic(MinecraftServer server, ICommandSender sender, String[] args, IWorldData data)
 	{
 		World world = sender.getEntityWorld();
 		if(args[0].equalsIgnoreCase("help"))
@@ -86,21 +86,22 @@ public class CommandLootGenerate extends CommandBase
 		
 		else if(args[0].equalsIgnoreCase("info"))
 		{
-			sender.sendMessage(new TextComponentString("Airdrop Loot: " + airdropLoot));
-			sender.sendMessage(new TextComponentString("Ammo Loot: " + ammoLoot));
-			sender.sendMessage(new TextComponentString("Random Ammo Count: " + randomAmmoLoot));
-			sender.sendMessage(new TextComponentString("Weapons: " + weapons));
-			sender.sendMessage(new TextComponentString("Chance Multiplier: " + "x" + chance));
+			sender.sendMessage(new TextComponentString("Airdrop Loot: " + data.hasAirdropWeapons()));
+			sender.sendMessage(new TextComponentString("Ammo Loot: " + data.isAmmoLootEnabled()));
+			sender.sendMessage(new TextComponentString("Random Ammo Count: " + data.isRandomAmmoCountEnabled()));
+			sender.sendMessage(new TextComponentString("Weapons: " + data.getWeaponList()));
+			sender.sendMessage(new TextComponentString("Chance Multiplier: " + "x" + data.getLootChanceMultiplier()));
 		}
 		
 		else if(args[0].equalsIgnoreCase("reset"))
 		{
-			airdropLoot = false;
-			ammoLoot = true;
-			randomAmmoLoot = false;
-			resetWeapons();
-			chance = 1d;
-			sender.sendMessage(new TextComponentString("Reseting all values..."));
+			data.toggleAirdropWeapons(false);
+			data.toggleAmmoLoot(true);
+			data.toggleRandomAmmoCount(false);
+			resetWeapons(data);
+			data.setLootChanceMultiplier(1d);
+			if(shouldSendCommandFeedback(world.getGameRules()))
+				sender.sendMessage(new TextComponentString("Reseting all values..."));
 		}
 		
 		else if(args[0].equalsIgnoreCase("generate"))
@@ -111,15 +112,17 @@ public class CommandLootGenerate extends CommandBase
 				if(te instanceof TileEntityLootSpawner)
 				{
 					count++;
-					if(weapons.isEmpty()) resetWeapons();
 					
-					((TileEntityLootSpawner)te).generateLoot(airdropLoot, ammoLoot, randomAmmoLoot, chance, weapons);
+					((TileEntityLootSpawner)te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
 					world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
 				}
 			}
 			
-			if(count == 0) sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't locate any loot spawners, try again."));
-			else sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Generated loot inside " + TextFormatting.YELLOW + count + TextFormatting.GREEN + " loot spawners"));
+			if(shouldSendCommandFeedback(world.getGameRules()))
+			{
+				if(count == 0) sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't locate any loot spawners, try again."));
+				else sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Generated loot inside " + TextFormatting.YELLOW + count + TextFormatting.GREEN + " loot spawners"));
+			}
 		}
 		
 		else if(args[0].equalsIgnoreCase("clear"))
@@ -133,7 +136,8 @@ public class CommandLootGenerate extends CommandBase
 				}
 			}
 			
-			sender.sendMessage(new TextComponentString("Cleared loot inside all loaded loot spawners"));
+			if(shouldSendCommandFeedback(world.getGameRules()))
+				sender.sendMessage(new TextComponentString("Cleared loot inside all loaded loot spawners"));
 		}
 		
 		else if(args[0].equalsIgnoreCase("show"))
@@ -152,7 +156,8 @@ public class CommandLootGenerate extends CommandBase
 				}
 			}
 			
-			sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Currently showing " + TextFormatting.YELLOW + counter + TextFormatting.GREEN + " loot spawners"));
+			if(shouldSendCommandFeedback(world.getGameRules()))
+				sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Currently showing " + TextFormatting.YELLOW + counter + TextFormatting.GREEN + " loot spawners"));
 		}
 		
 		else if(args[0].equalsIgnoreCase("set"))
@@ -181,20 +186,23 @@ public class CommandLootGenerate extends CommandBase
 			
 			else if(args[1].equalsIgnoreCase("airdropLoot"))
 			{
-				airdropLoot = !airdropLoot;
-				sender.sendMessage(new TextComponentString("Airdrop loot: " + airdropLoot));
+				data.toggleAirdropWeapons(!data.hasAirdropWeapons());
+				if(shouldSendCommandFeedback(world.getGameRules()))
+					sender.sendMessage(new TextComponentString("Airdrop loot: " + data.hasAirdropWeapons()));
 			}
 			
 			else if(args[1].equalsIgnoreCase("randomAmmoCount"))
 			{
-				randomAmmoLoot = !randomAmmoLoot;
-				sender.sendMessage(new TextComponentString("Random ammo count: " + randomAmmoLoot));
+				data.toggleRandomAmmoCount(!data.isRandomAmmoCountEnabled());
+				if(shouldSendCommandFeedback(world.getGameRules()))
+					sender.sendMessage(new TextComponentString("Random ammo count: " + data.isRandomAmmoCountEnabled()));
 			}
 			
 			else if(args[1].equalsIgnoreCase("ammoLoot"))
 			{
-				ammoLoot = !ammoLoot;
-				sender.sendMessage(new TextComponentString("Ammo loot: " + ammoLoot));
+				data.toggleAmmoLoot(!data.isAmmoLootEnabled());
+				if(shouldSendCommandFeedback(world.getGameRules()))
+					sender.sendMessage(new TextComponentString("Ammo loot: " + data.isAmmoLootEnabled()));
 			}
 			
 			else if(args[1].equalsIgnoreCase("chance"))
@@ -212,14 +220,15 @@ public class CommandLootGenerate extends CommandBase
 				
 				else 
 				{
-					chance = Double.parseDouble(args[2]);
-					sender.sendMessage(new TextComponentString("Chance multiplier: " + chance));
+					data.setLootChanceMultiplier(Double.parseDouble(args[2]));
+					if(shouldSendCommandFeedback(world.getGameRules()))
+						sender.sendMessage(new TextComponentString("Chance multiplier: " + data.getLootChanceMultiplier()));
 				}
 			}
 			
 			else if(args[1].equalsIgnoreCase("weapon"))
 			{
-				handleWeaponLoot(args, server, sender);
+				handleWeaponLoot(args, server, sender, data);
 			}
 			
 			else
@@ -227,9 +236,14 @@ public class CommandLootGenerate extends CommandBase
 				sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown operation, try /loot set help"));
 			}
 		}
+		
+		else
+		{
+			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown operation, try /loot help"));
+		}
 	}
 	
-	private void handleWeaponLoot(String[] args, MinecraftServer server, ICommandSender sender)
+	private void handleWeaponLoot(String[] args, MinecraftServer server, ICommandSender sender, IWorldData data)
 	{
 		if(args.length < 3)
 		{
@@ -265,9 +279,9 @@ public class CommandLootGenerate extends CommandBase
 			{
 				case "pistol":
 				{
-					if(!weapons.contains(GunType.PISTOL)) 
+					if(!data.getWeaponList().contains(GunType.PISTOL)) 
 					{
-						weapons.add(GunType.PISTOL);
+						data.addWeaponTypeToLootGeneration(GunType.PISTOL);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added pistols into loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
@@ -276,9 +290,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "smg":
 				{
-					if(!weapons.contains(GunType.SMG))
+					if(!data.getWeaponList().contains(GunType.SMG))
 					{
-						weapons.add(GunType.SMG);
+						data.addWeaponTypeToLootGeneration(GunType.SMG);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added SMGs into loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
@@ -287,9 +301,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "shotgun":
 				{
-					if(!weapons.contains(GunType.SHOTGUN))
+					if(!data.getWeaponList().contains(GunType.SHOTGUN))
 					{
-						weapons.add(GunType.SHOTGUN);
+						data.addWeaponTypeToLootGeneration(GunType.SHOTGUN);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added shotguns into loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
@@ -298,9 +312,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "ar":
 				{
-					if(!weapons.contains(GunType.AR)) 
+					if(!data.getWeaponList().contains(GunType.AR)) 
 					{
-						weapons.add(GunType.AR);
+						data.addWeaponTypeToLootGeneration(GunType.AR);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added assault rifles into loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
@@ -309,9 +323,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "sniper":
 				{
-					if(!weapons.contains(GunType.SNIPER))
+					if(!data.getWeaponList().contains(GunType.SNIPER))
 					{
-						weapons.add(GunType.SNIPER);
+						data.addWeaponTypeToLootGeneration(GunType.SNIPER);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added sniper rifles into loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
@@ -338,9 +352,9 @@ public class CommandLootGenerate extends CommandBase
 			{
 				case "pistol":
 				{
-					if(weapons.contains(GunType.PISTOL)) 
+					if(data.getWeaponList().contains(GunType.PISTOL)) 
 					{
-						weapons.remove(GunType.PISTOL);
+						data.removeWeaponTypeFromLootGeneration(GunType.PISTOL);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed pistols from loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
@@ -349,9 +363,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "smg":
 				{
-					if(weapons.contains(GunType.SMG))
+					if(data.getWeaponList().contains(GunType.SMG))
 					{
-						weapons.remove(GunType.SMG);
+						data.removeWeaponTypeFromLootGeneration(GunType.SMG);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed SMGs from loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
@@ -360,9 +374,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "shotgun":
 				{
-					if(weapons.contains(GunType.SHOTGUN))
+					if(data.getWeaponList().contains(GunType.SHOTGUN))
 					{
-						weapons.remove(GunType.SHOTGUN);
+						data.removeWeaponTypeFromLootGeneration(GunType.SHOTGUN);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed shotguns from loot generation!"));
 					} 
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
@@ -371,9 +385,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "ar":
 				{
-					if(weapons.contains(GunType.AR)) 
+					if(data.getWeaponList().contains(GunType.AR)) 
 					{
-						weapons.remove(GunType.AR);
+						data.removeWeaponTypeFromLootGeneration(GunType.AR);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed assault rifles from loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
@@ -382,9 +396,9 @@ public class CommandLootGenerate extends CommandBase
 				
 				case "sniper":
 				{
-					if(weapons.contains(GunType.SNIPER)) 
+					if(data.getWeaponList().contains(GunType.SNIPER)) 
 					{
-						weapons.remove(GunType.SNIPER);
+						data.removeWeaponTypeFromLootGeneration(GunType.SNIPER);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed sniper rifles from loot generation!"));
 					} 
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
@@ -402,10 +416,15 @@ public class CommandLootGenerate extends CommandBase
 		else if(args[2].equalsIgnoreCase("get"))
 		{
 			sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Weapon types:"));
-			for(GunType type : weapons)
+			for(GunType type : data.getWeaponList())
 			{
 				sender.sendMessage(new TextComponentString(TextFormatting.GREEN + " - " + type.name()));
 			}
+		}
+		
+		else
+		{
+			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown operation, try /loot set weapon help"));
 		}
 	}
 	
@@ -478,12 +497,13 @@ public class CommandLootGenerate extends CommandBase
 		return valid;
 	}
 	
-	private void resetWeapons()
+	private void resetWeapons(IWorldData data)
 	{
-		weapons.clear();
-		for(int i = 0; i < GunType.values().length; i++)
-		{
-			weapons.add(GunType.values()[i]);
-		}
+		data.resetWeaponLootGeneration();
+	}
+	
+	private boolean shouldSendCommandFeedback(GameRules rules)
+	{
+		return rules.getBoolean("sendCommandFeedback");
 	}
 }

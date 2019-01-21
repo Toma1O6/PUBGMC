@@ -32,6 +32,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	private String customName;
 	private final Random rand = new Random();
 	private int slot;
+	private boolean randomAmmo = false;
 	private List<GunType> weapons = new ArrayList<GunType>();
 	
 	//Loot related - guns
@@ -231,6 +232,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		slot = -1;
 		this.inventory.clear();
 		this.weapons = weaponList;
+		this.randomAmmo = randomAmmo;
 		
 		addGrenadeLoot();
 		addBackpackLoot(rand.nextInt(26));
@@ -373,17 +375,30 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	private void generateAmmoForCurrentWeapon(ItemStack stack)
 	{
 		GunBase gun = (GunBase)stack.getItem();
+		int pistolAmmoCount = 15;
+		int defAR = 30;
+		int shotguns = 5;
+		int awm = 10;
+		
+		if(randomAmmo)
+		{
+			pistolAmmoCount = rand.nextInt(16);
+			defAR = rand.nextInt(31);
+			shotguns = rand.nextInt(6);
+			awm = rand.nextInt(11);
+		}
+		
 		if(gun == PMCItems.KAR98K || gun == PMCItems.M24)
 		{
-			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
 			
 			if(Math.random() * 100 <= 75)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
 				
 				if(Math.random() * 100 <= 25)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
 				}
 			}
 			
@@ -394,84 +409,84 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		{
 			if(gun.getAmmoType() == AmmoType.AMMO9MM)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, 30));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, 30));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, 30));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO45ACP)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, 30));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, 30));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, 30));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO12G)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, 5));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, shotguns));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, 5));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, shotguns));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, 5));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, shotguns));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO556)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, 30));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, 30));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, 30));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO762)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 30));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 30));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 30));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO300M)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, 10));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, awm));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, 10));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, awm));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, 10));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, awm));
 					}
 				}
 			}
@@ -480,42 +495,42 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		{
 			if(gun.getAmmoType() == AmmoType.AMMO9MM)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, 15));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, pistolAmmoCount));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, 15));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, pistolAmmoCount));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, 15));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, pistolAmmoCount));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO45ACP)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, 15));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, pistolAmmoCount));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, 15));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, pistolAmmoCount));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, 15));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, pistolAmmoCount));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO762)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, 15));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
 					}
 				}
 			}
