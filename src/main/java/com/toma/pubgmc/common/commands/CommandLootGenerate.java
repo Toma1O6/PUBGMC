@@ -22,9 +22,10 @@ import net.minecraft.world.World;
 
 public class CommandLootGenerate extends CommandBase
 {
-	private boolean airdropLoot = false, randomAmmoLoot = false, ammoLoot = true;
+	//TODO CONVERT TO CAPABILITIES
+	private boolean airdropLoot, randomAmmoLoot, ammoLoot;
 	private List<GunType> weapons = new ArrayList<GunType>();
-	private double chance = 1d;
+	private double chance;
 	
 	@Override
 	public String getName()
@@ -47,7 +48,11 @@ public class CommandLootGenerate extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-		if(weapons.isEmpty()) weapons.add(GunType.ALL);
+		if(weapons.isEmpty())
+		{
+			resetWeapons();
+		}
+		
 		if(args.length == 0)
 		{
 			throw new WrongUsageException("You must specify operation. Use /loot help", new Object[0]);
@@ -93,8 +98,7 @@ public class CommandLootGenerate extends CommandBase
 			airdropLoot = false;
 			ammoLoot = true;
 			randomAmmoLoot = false;
-			weapons.clear();
-			weapons.add(GunType.ALL);
+			resetWeapons();
 			chance = 1d;
 			sender.sendMessage(new TextComponentString("Reseting all values..."));
 		}
@@ -107,7 +111,7 @@ public class CommandLootGenerate extends CommandBase
 				if(te instanceof TileEntityLootSpawner)
 				{
 					count++;
-					if(weapons.isEmpty()) weapons.add(GunType.ALL);
+					if(weapons.isEmpty()) resetWeapons();
 					
 					((TileEntityLootSpawner)te).generateLoot(airdropLoot, ammoLoot, randomAmmoLoot, chance, weapons);
 					world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
@@ -256,8 +260,6 @@ public class CommandLootGenerate extends CommandBase
 				sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown operation, try /loot set weapon help"));
 				return;
 			}
-			
-			if(weapons.contains(GunType.ALL)) weapons.remove(GunType.ALL);
 			
 			switch(args[3])
 			{
@@ -474,5 +476,14 @@ public class CommandLootGenerate extends CommandBase
 		}
 		
 		return valid;
+	}
+	
+	private void resetWeapons()
+	{
+		weapons.clear();
+		for(int i = 0; i < GunType.values().length; i++)
+		{
+			weapons.add(GunType.values()[i]);
+		}
 	}
 }

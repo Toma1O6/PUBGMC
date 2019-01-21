@@ -3,6 +3,7 @@ package com.toma.pubgmc.common;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.items.ItemGrenade;
 import com.toma.pubgmc.common.items.ItemMolotov;
@@ -52,6 +53,12 @@ public class CommonEvents
 			EntityPlayer player = (EntityPlayer) e.getObject();
 			e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":playerdata"), new PlayerDataProvider());
 		}
+	}
+	
+	@SubscribeEvent
+	public void attachWorldCapability(AttachCapabilitiesEvent<World> e)
+	{
+		e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new WorldDataProvider());
 	}
 	
 	//Tick event function which fires on all players

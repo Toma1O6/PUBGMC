@@ -22,16 +22,14 @@ public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 {
 	
 	private final Type type;
-	private final GunType gunType;
 	
-	public ItemAttachment(String name, Type attachment, GunType guntypes) 
+	public ItemAttachment(String name, Type attachment) 
 	{
 		super(name);
 		setMaxStackSize(1);
 		setCreativeTab(Pubgmc.pmcitemstab);
 		
 		this.type = attachment;
-		this.gunType = guntypes;
 		TileEntityGunWorkbench.ATTACHMENT.add(this);
 	}
 	

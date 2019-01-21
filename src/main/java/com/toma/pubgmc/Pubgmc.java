@@ -7,6 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.toma.pubgmc.common.CommonEvents;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.capability.IWorldData;
+import com.toma.pubgmc.common.capability.IWorldData.WorldData;
+import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataStorage;
 import com.toma.pubgmc.common.commands.CommandAirdrop;
@@ -87,7 +90,8 @@ public class Pubgmc
 		PacketHandler.initialize();
 		
 		MinecraftForge.EVENT_BUS.register(new CommonEvents());
-		CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData.class);
+		CapabilityManager.INSTANCE.register(IWorldData.class, new WorldDataStorage(), WorldData::new);
+		CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
 		ConfigHandler.registerConfig(event);
 		
 		proxy.preInit(event);

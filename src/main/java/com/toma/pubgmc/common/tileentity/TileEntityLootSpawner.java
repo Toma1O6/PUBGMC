@@ -262,7 +262,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Sniper rifles 2% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 2 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SNIPER)))
+				else if(Math.random() * 100 <= 2 * chanceMultiplier && weapons.contains(GunType.SNIPER))
 				{
 					addSRs(airdroploot);
 					
@@ -274,7 +274,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//DMRs 3% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 3 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SNIPER)))
+				else if(Math.random() * 100 <= 3 * chanceMultiplier && weapons.contains(GunType.SNIPER))
 				{
 					addDMRs(airdroploot);
 					
@@ -286,7 +286,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Assault rifles 15% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 15 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.AR)))
+				else if(Math.random() * 100 <= 15 * chanceMultiplier && weapons.contains(GunType.AR))
 				{
 					addARs(airdroploot);
 					
@@ -298,7 +298,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//SMGs 20% spawn 
-				else if(Math.random() * 100 <= 20 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SMG)))
+				else if(Math.random() * 100 <= 20 * chanceMultiplier && weapons.contains(GunType.SMG))
 				{
 					addSMGs();
 					
@@ -310,7 +310,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Shotguns 35% spawn
-				else if(Math.random() * 100 <= 35 * chanceMultiplier && (weapons.contains(GunType.ALL) || weapons.contains(GunType.SHOTGUN)))
+				else if(Math.random() * 100 <= 35 * chanceMultiplier && weapons.contains(GunType.SHOTGUN))
 				{
 					addShotguns();
 					
@@ -322,7 +322,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//If none of the above is successful then pistol will be generated
-				else if(weapons.contains(GunType.ALL) || weapons.contains(GunType.PISTOL))
+				else if(weapons.contains(GunType.PISTOL))
 				{
 					addPistols();
 					

@@ -764,7 +764,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	
 	public enum GunType
 	{
-		PISTOL, SHOTGUN, SMG, AR, LMG, SNIPER, ALL, BIG_WEP;
+		PISTOL, SHOTGUN, SMG, AR, LMG, SNIPER;
 	}
 	
 	public void setHasTwoRoundBurst(boolean hasTwoRoundBurst)
