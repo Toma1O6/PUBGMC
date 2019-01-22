@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.google.common.primitives.Ints;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 
@@ -38,26 +39,10 @@ public interface IWorldData
 		public NBTBase writeNBT(Capability<IWorldData> cap, IWorldData i, EnumFacing side)
 		{
 			NBTTagCompound c = new NBTTagCompound();
-			List<Integer> ints = new ArrayList<Integer>();
-			
-			int[] arr = {0,1,2,3,4,5};
-			
-			if(i.getWeaponList() != null && !i.getWeaponList().isEmpty())
-			{
-				for(int j = 0; j < i.getWeaponList().size(); j++)
-				{
-					GunType type = i.getWeaponList().get(j);
-					ints.add(type.ordinal());
-				}
-				
-				arr = ArrayUtils.toPrimitive(ints.toArray(new Integer[0]));
-			}
-			
 			c.setBoolean("airdropWeapons", i.hasAirdropWeapons());
 			c.setBoolean("ammoLoot", i.isAmmoLootEnabled());
 			c.setBoolean("randomAmmo", i.isRandomAmmoCountEnabled());
 			c.setDouble("chance", i.getLootChanceMultiplier());
-			c.setIntArray("weapons", arr);
 			
 			return c;
 		}
@@ -69,7 +54,6 @@ public interface IWorldData
 			instance.toggleAmmoLoot(((NBTTagCompound)nbt).getBoolean("ammoLoot"));
 			instance.toggleRandomAmmoCount(((NBTTagCompound)nbt).getBoolean("randomAmmo"));
 			instance.setLootChanceMultiplier(((NBTTagCompound)nbt).getDouble("chance"));
-			instance.setWeaponList(((NBTTagCompound)nbt).getIntArray("weapons"));
 		}
 	}
 	

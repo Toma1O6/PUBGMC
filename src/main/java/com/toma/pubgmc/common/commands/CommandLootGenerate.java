@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.commands;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -422,6 +423,13 @@ public class CommandLootGenerate extends CommandBase
 			}
 		}
 		
+		else if(args[2].equalsIgnoreCase("reset"))
+		{
+			data.resetWeaponLootGeneration();
+			if(shouldSendCommandFeedback(sender.getEntityWorld().getGameRules()))
+				sender.sendMessage(new TextComponentString("Resetting all weapons..."));
+		}
+		
 		else
 		{
 			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown operation, try /loot set weapon help"));
@@ -500,6 +508,18 @@ public class CommandLootGenerate extends CommandBase
 	private void resetWeapons(IWorldData data)
 	{
 		data.resetWeaponLootGeneration();
+	}
+	
+	private List<GunType> getWeaponsFromList(List<Integer> list)
+	{
+		List<GunType> wep = new ArrayList<GunType>();
+		for(int i = 0; i < list.size(); i++)
+		{
+			int j = list.get(i);
+			wep.add(GunType.values()[j]);
+		}
+		
+		return wep;
 	}
 	
 	private boolean shouldSendCommandFeedback(GameRules rules)

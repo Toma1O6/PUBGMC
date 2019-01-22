@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class PUBGMCUtil 
@@ -54,5 +55,10 @@ public class PUBGMCUtil
 	public static void sendSoundPacket(SoundEvent event, float volume, float pitch, BlockPos pos, TargetPoint target)
 	{
 		PacketHandler.INSTANCE.sendToAllAround(new PacketSound(event, volume, 1f, pos.getX(), pos.getY(), pos.getZ()), target);
+	}
+	
+	public static boolean shouldSendCommandFeedback(World world)
+	{
+		return world.getGameRules().getBoolean("sendCommandFeedback");
 	}
 }

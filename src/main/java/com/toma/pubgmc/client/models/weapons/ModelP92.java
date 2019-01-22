@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -19,6 +20,10 @@ public class ModelP92 extends ModelGun
 
 	public ModelP92()
 	{
+		animation_aim = new AimAnimation(-0.65d, 0.31d, 0.24d, 1f);
+		animation_aim.setInvertedCoords(true, false, false);
+		animation_held.setWeaponType(true);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -69,9 +74,24 @@ public class ModelP92 extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
-			
+			handleAnimations(aim, player.isSprinting(), stack);
 			renderP92(aim, stack);
 		}
+	}
+	
+	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.31d)
+				animation_aim.setYModifier(0.31d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.23d)
+				animation_aim.setYModifier(0.23d);
+			
+			animation_aim.run(aim);
+		}
+		
+		animation_held.run(sprint);
 	}
 	
 	private void renderP92(boolean aim, ItemStack stack)
@@ -83,40 +103,23 @@ public class ModelP92 extends ModelGun
 		if(aim && enableADS(stack))
 		{
 			rotateModelForADSRendering();
-			GlStateManager.translate(21.65, -10.2, 11.0);
-			
-			if(hasRedDot(stack)) {
-				GlStateManager.translate(0, 2, 0);
-			}
 		}
 		
 		renderParts();
 		GlStateManager.popMatrix();
 		
-		if(hasSilencer(stack)) renderSilencer(aim, stack);
-		if(hasRedDot(stack)) renderRedDot(aim, stack);
+		if(hasSilencer(stack)) renderSilencer(stack);
+		if(hasRedDot(stack)) renderRedDot(stack);
 	}
 	
-	private void renderRedDot(boolean aim, ItemStack stack)
+	private void renderRedDot(ItemStack stack)
 	{
-		if(aim)
-		{
-			renderRedDot(28.25, -17, 11, 1.3f, stack);
-		}
-		else renderRedDot(-5.1, -5.3, -4, 1.3f, stack);
+		renderRedDot(-5.05, -5.3, -4, 1.3f, stack);
 	}
 	
-	private void renderSilencer(boolean aim, ItemStack stack)
+	private void renderSilencer(ItemStack stack)
 	{
-		if(aim)
-		{
-			if(hasRedDot(stack))
-			{
-				renderPistolSilencer(-4.5, -2, -0.2, 1.2f, stack);
-			}
-			else renderPistolSilencer(-4.5, -1.5, -0.2, 1.2f, stack);
-		}
-		else renderPistolSilencer(0.9, -4, -2.8, 1.2f, stack);
+		renderPistolSilencer(0.9, -4, -2.8, 1.2f, stack);
 	}
 	
 	private void renderParts()

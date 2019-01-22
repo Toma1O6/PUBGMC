@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.commands;
 import java.util.Random;
 
 import com.toma.pubgmc.init.PMCBlocks;
+import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -10,6 +12,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -83,8 +86,12 @@ public class CommandAirdrop extends CommandBase
 					world.spawnEntity(efb);
 				}
 				
+				//TODO
+				//world.playSound(player, pos.getX(), pos.getY() - 40, pos.getZ(), PMCSounds., SoundCategory.NEUTRAL, 1f, 1f);
+				
 				//Tell the player about the drop
-				player.sendMessage(new TextComponentString(TextFormatting.RED + "Airdrop is nearby. Go for it"));
+				if(PUBGMCUtil.shouldSendCommandFeedback(world))
+					player.sendMessage(new TextComponentString(TextFormatting.RED + "Airdrop is nearby. Go for it"));
 				
 				//Small chance to spawn multiple airdrop, but never more than 10
 				//Also this will get another player, so it will be rare if you play with others and get multiple drops
