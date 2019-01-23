@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.capability;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -44,6 +45,12 @@ public interface IWorldData
 			c.setBoolean("randomAmmo", i.isRandomAmmoCountEnabled());
 			c.setDouble("chance", i.getLootChanceMultiplier());
 			
+			//Pretty weird way for handling this, but atleast it works
+			for(int j = 0; j < i.getWeaponList().size(); j++)
+			{
+				c.setInteger("weapon" + j, i.getWeaponList().get(j).ordinal());
+			}
+			
 			return c;
 		}
 		
@@ -54,6 +61,10 @@ public interface IWorldData
 			instance.toggleAmmoLoot(((NBTTagCompound)nbt).getBoolean("ammoLoot"));
 			instance.toggleRandomAmmoCount(((NBTTagCompound)nbt).getBoolean("randomAmmo"));
 			instance.setLootChanceMultiplier(((NBTTagCompound)nbt).getDouble("chance"));
+			for(int j = 0; j < GunType.values().length; j++)
+			{
+				instance.addWeaponTypeToLootGeneration(GunType.values()[((NBTTagCompound)nbt).getInteger("weapon" + j)]);
+			}
 		}
 	}
 	
