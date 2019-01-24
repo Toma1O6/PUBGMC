@@ -51,7 +51,7 @@ public class CommandLootGenerate extends CommandBase
 		if(sender.getEntityWorld().hasCapability(WorldDataProvider.WORLD_DATA, null))
 		{
 			worldData = sender.getEntityWorld().getCapability(WorldDataProvider.WORLD_DATA, null);
-			if(worldData.getWeaponList().isEmpty()) worldData.resetWeaponLootGeneration();
+			//if(worldData.getWeaponList().isEmpty()) worldData.resetWeaponLootGeneration();
 		}
 		
 		if(args.length == 0)
@@ -87,11 +87,11 @@ public class CommandLootGenerate extends CommandBase
 		
 		else if(args[0].equalsIgnoreCase("info"))
 		{
-			sender.sendMessage(new TextComponentString("Airdrop Loot: " + data.hasAirdropWeapons()));
-			sender.sendMessage(new TextComponentString("Ammo Loot: " + data.isAmmoLootEnabled()));
-			sender.sendMessage(new TextComponentString("Random Ammo Count: " + data.isRandomAmmoCountEnabled()));
-			sender.sendMessage(new TextComponentString("Weapons: " + data.getWeaponList()));
-			sender.sendMessage(new TextComponentString("Chance Multiplier: " + "x" + data.getLootChanceMultiplier()));
+			sender.sendMessage(new TextComponentString(getDefaultInfoFormat("Airdrop Weapons: ") + getTextColorFormatting(data.hasAirdropWeapons())));
+			sender.sendMessage(new TextComponentString(getDefaultInfoFormat("Ammo Loot: ") + getTextColorFormatting(data.isAmmoLootEnabled())));
+			sender.sendMessage(new TextComponentString(getDefaultInfoFormat("Random Ammo Count: ") + getTextColorFormatting(data.isRandomAmmoCountEnabled())));
+			sender.sendMessage(new TextComponentString(getDefaultInfoFormat("Weapons: ") + getColorBasedOnList(data.getWeaponList())));
+			sender.sendMessage(new TextComponentString(getDefaultInfoFormat("Chance Multiplier: ") + getNumberFormatting(data.getLootChanceMultiplier()) + "x"));
 		}
 		
 		else if(args[0].equalsIgnoreCase("reset"))
@@ -525,5 +525,42 @@ public class CommandLootGenerate extends CommandBase
 	private boolean shouldSendCommandFeedback(GameRules rules)
 	{
 		return rules.getBoolean("sendCommandFeedback");
+	}
+	
+	private String getTextColorFormatting(boolean input)
+	{
+		return input ? TextFormatting.GREEN + "" + input : TextFormatting.RED + "" + input;
+	}
+	
+	private String getNumberFormatting(double input)
+	{
+		if(input <= 0)
+			return TextFormatting.RED + "" + input;
+		else if(input > 0 && input < 1.5)
+			return TextFormatting.YELLOW + "" + input;
+		else if(input >= 1.5 && input < 5)
+			return TextFormatting.GREEN + "" + input;
+		else
+			return TextFormatting.DARK_GREEN + "" + input;
+	}
+	
+	private String getColorBasedOnList(List<GunType> list)
+	{
+		//Max size == GunType.values().lenght !!
+		
+		switch(list.size())
+		{
+			case 0: return TextFormatting.DARK_RED + "" + list;
+			case 1: return TextFormatting.RED + "" + list;
+			case 2: return TextFormatting.GOLD + "" + list;
+			case 3: return TextFormatting.YELLOW + "" + list;
+			case 4: return TextFormatting.GREEN + "" + list;
+			default: return TextFormatting.DARK_GREEN + "" + list;
+		}
+	}
+	
+	private String getDefaultInfoFormat(String textToShow)
+	{
+		return TextFormatting.GRAY + textToShow;
 	}
 }
