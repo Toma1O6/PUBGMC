@@ -142,7 +142,7 @@ public interface IWorldData
 		@Override
 		public void addWeaponTypeToLootGeneration(GunType typeToAdd)
 		{
-			if(!weaponTypes.contains(typeToAdd))
+			if(!weaponTypes.contains(typeToAdd) && typeToAdd != GunType.LMG)
 				weaponTypes.add(typeToAdd);
 		}
 		

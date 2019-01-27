@@ -75,6 +75,7 @@ public class ClientEvents
     private static final ResourceLocation BOOST_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_overlay.png");
 	private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
 	private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
+	private static final int AIM_TIME = 18;
     
     /** Random Number Generator **/
     private final Random rand = new Random();
@@ -115,6 +116,9 @@ public class ClientEvents
 	/** IDs for different red dot sight styles and colors **/
 	private int currentColor = 0;
 	private int currentType = 0;
+	
+	/** **/
+	private int aimingTime;
 	
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post e)
@@ -700,8 +704,11 @@ public class ClientEvents
         GameSettings gs = Minecraft.getMinecraft().gameSettings;
         
         //We have to check this otherwise it would crash in the menu since this event is running as soon as your minecraft client is started
-        if(player != null && player.getCapability(PlayerDataProvider.PLAYER_DATA, null) != null)
+        if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
         {
+        	//Get the player capability
+            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            
         	//This takes care of vehicle controls
         	if(ev.phase == Phase.END)
         	{
@@ -714,8 +721,6 @@ public class ClientEvents
         	{	
         		if(player.getHeldItemMainhand().getItem() instanceof GunBase)
         		{
-    				IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-    				
         			if(ConfigHandler.enableGuns)
         			{
             			GunBase gun = (GunBase)player.getHeldItemMainhand().getItem();
@@ -803,8 +808,6 @@ public class ClientEvents
         		}
         	}
         	
-        	//Get the player capability
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if(data.isAiming())
             {
             	if(aimSlot != player.inventory.currentItem)
@@ -868,11 +871,12 @@ public class ClientEvents
         }
         
         //Disabling the third person view to make true first person experience
-		if(ev.phase == Phase.END && player != null && player.getCapability(PlayerDataProvider.PLAYER_DATA, null) != null)
+		if(ev.phase == Phase.END && player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			ItemStack itemstack = player.getHeldItemMainhand();
 			Item item = itemstack.getItem();
+	    	//Get the player capability
+	        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			if(player.getRidingEntity() instanceof EntityParachute && !player.capabilities.isCreativeMode)
 			{
@@ -1321,7 +1325,7 @@ public class ClientEvents
     
     private static int get4xIDFromGun(GunBase gun)
     {
-    	return gun.getGunType() == GunType.SNIPER ? 1 : 0;
+    	return gun.getGunType() == GunType.DMR || gun.getGunType() == GunType.SR ? 1 : 0;
     }
     
     private void handleVehicleControls(boolean forward, boolean back, boolean right, boolean left, boolean boost, EntityPlayer player)

@@ -143,7 +143,10 @@ public class InventoryAttachments extends InventoryBasic
 							case AR: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_AR));
 							break;
 							
-							case SNIPER: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_SNIPER));
+							case DMR: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_SNIPER));
+							break;
+							
+							case SR: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_SNIPER));
 							break;
 							
 							default: break;
@@ -162,7 +165,10 @@ public class InventoryAttachments extends InventoryBasic
 							case AR: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_AR));
 							break;
 							
-							case SNIPER: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_SNIPER));
+							case DMR: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_SNIPER));
+							break;
+							
+							case SR: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_SNIPER));
 							break;
 							
 							default: break;
@@ -230,7 +236,7 @@ public class InventoryAttachments extends InventoryBasic
 						{
 							case PISTOL: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SNIPER)); break;
 							case SHOTGUN: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SHOTGUN)); break;
-							case SNIPER: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SNIPER)); break;
+							case SR: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SNIPER)); break;
 							default: break;
 						}
 					}
@@ -252,7 +258,8 @@ public class InventoryAttachments extends InventoryBasic
 							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_PISTOL)); break;
 							case SMG: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SMG)); break;
 							case AR: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_AR)); break;
-							case SNIPER: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)); break;
+							case DMR: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)); break;
+							case SR: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)); break;
 							default: break;
 						}
 					}
@@ -264,7 +271,8 @@ public class InventoryAttachments extends InventoryBasic
 							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_PISTOL)); break;
 							case SMG: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SMG)); break;
 							case AR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_AR)); break;
-							case SNIPER: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)); break;
+							case DMR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)); break;
+							case SR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)); break;
 							default: break;
 						}
 					}
@@ -276,7 +284,8 @@ public class InventoryAttachments extends InventoryBasic
 							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL)); break;
 							case SMG: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG)); break;
 							case AR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR)); break;
-							case SNIPER: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
+							case DMR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
+							case SR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
 							default: break;
 						}
 					}

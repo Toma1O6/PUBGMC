@@ -31,7 +31,7 @@ public class SrM24 extends GunBase
 		this.setFireRate(35);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
-		this.setGunType(GunType.SNIPER);
+		this.setGunType(GunType.SR);
 		this.setHorizontalRecoil(1.25f);
 		this.setVerticalRecoil(4.5f);
 		this.canSwitchMode(false);

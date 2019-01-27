@@ -31,7 +31,7 @@ public class SrKar98K extends GunBase
 		this.setFireRate(30);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.KAR98K);
-		this.setGunType(GunType.SNIPER);
+		this.setGunType(GunType.SR);
 		this.setHorizontalRecoil(1.25f);
 		this.setVerticalRecoil(4.5f);
 		this.canSwitchMode(false);

@@ -65,7 +65,12 @@ public class DamageSourceGun extends EntityDamageSourceIndirect
 				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[4] + " " + indirect.getName() + " using " + weapon.getDisplayName());
 			}
 			
-			case SNIPER:
+			case DMR:
+			{
+				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[3] + " " + indirect.getName() + " using " + weapon.getDisplayName());
+			}
+			
+			case SR:
 			{
 				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[3] + " " + indirect.getName() + " using " + weapon.getDisplayName());
 			}

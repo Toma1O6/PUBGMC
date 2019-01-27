@@ -264,7 +264,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Sniper rifles 2% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 2 * chanceMultiplier && weapons.contains(GunType.SNIPER))
+				else if(Math.random() * 100 <= 2 * chanceMultiplier && weapons.contains(GunType.SR))
 				{
 					addSRs(airdroploot);
 					
@@ -276,7 +276,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//DMRs 3% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 3 * chanceMultiplier && weapons.contains(GunType.SNIPER))
+				else if(Math.random() * 100 <= 3 * chanceMultiplier && weapons.contains(GunType.DMR))
 				{
 					addDMRs(airdroploot);
 					

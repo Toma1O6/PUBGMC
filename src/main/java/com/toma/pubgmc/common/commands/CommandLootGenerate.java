@@ -51,7 +51,6 @@ public class CommandLootGenerate extends CommandBase
 		if(sender.getEntityWorld().hasCapability(WorldDataProvider.WORLD_DATA, null))
 		{
 			worldData = sender.getEntityWorld().getCapability(WorldDataProvider.WORLD_DATA, null);
-			//if(worldData.getWeaponList().isEmpty()) worldData.resetWeaponLootGeneration();
 		}
 		
 		if(args.length == 0)
@@ -322,11 +321,22 @@ public class CommandLootGenerate extends CommandBase
 					break;
 				}
 				
-				case "sniper":
+				case "dmr":
 				{
-					if(!data.getWeaponList().contains(GunType.SNIPER))
+					if(!data.getWeaponList().contains(GunType.DMR))
 					{
-						data.addWeaponTypeToLootGeneration(GunType.SNIPER);
+						data.addWeaponTypeToLootGeneration(GunType.DMR);
+						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added DMRs into loot generation!"));
+					}
+					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
+					break;
+				}
+				
+				case "sr":
+				{
+					if(!data.getWeaponList().contains(GunType.SR))
+					{
+						data.addWeaponTypeToLootGeneration(GunType.SR);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added sniper rifles into loot generation!"));
 					}
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is already registered in loot generation!"));
@@ -335,7 +345,7 @@ public class CommandLootGenerate extends CommandBase
 				
 				default:
 				{
-					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, smg, ar, sniper]."));
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, smg, ar, dmr, sr]."));
 					break;
 				}
 			}
@@ -395,11 +405,22 @@ public class CommandLootGenerate extends CommandBase
 					break;
 				}
 				
-				case "sniper":
+				case "dmr":
 				{
-					if(data.getWeaponList().contains(GunType.SNIPER)) 
+					if(data.getWeaponList().contains(GunType.DMR)) 
 					{
-						data.removeWeaponTypeFromLootGeneration(GunType.SNIPER);
+						data.removeWeaponTypeFromLootGeneration(GunType.DMR);
+						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed DMRs from loot generation!"));
+					} 
+					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
+					break;
+				}
+				
+				case "sr":
+				{
+					if(data.getWeaponList().contains(GunType.SR)) 
+					{
+						data.removeWeaponTypeFromLootGeneration(GunType.SR);
 						sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed sniper rifles from loot generation!"));
 					} 
 					else sender.sendMessage(new TextComponentString(TextFormatting.RED + "Weapon type is not registered in loot generation!"));
@@ -408,7 +429,7 @@ public class CommandLootGenerate extends CommandBase
 				
 				default:
 				{
-					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, smg, ar, sniper]."));
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, smg, ar, dmr, sr]."));
 					break;
 				}
 			}
@@ -467,7 +488,7 @@ public class CommandLootGenerate extends CommandBase
 		{
 			if(args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("remove"))
 			{
-				return getListOfStringsMatchingLastWord(args, new String[] {"pistol","shotgun","smg","ar","sniper"});
+				return getListOfStringsMatchingLastWord(args, new String[] {"pistol","shotgun","smg","ar","dmr","sr"});
 			}
 		}
 		
@@ -546,8 +567,6 @@ public class CommandLootGenerate extends CommandBase
 	
 	private String getColorBasedOnList(List<GunType> list)
 	{
-		//Max size == GunType.values().lenght !!
-		
 		switch(list.size())
 		{
 			case 0: return TextFormatting.DARK_RED + "" + list;

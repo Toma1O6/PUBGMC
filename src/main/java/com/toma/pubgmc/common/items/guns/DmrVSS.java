@@ -29,7 +29,7 @@ public class DmrVSS extends GunBase
 		this.setFireRate(2);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
-		this.setGunType(GunType.SNIPER);
+		this.setGunType(GunType.DMR);
 		this.setHorizontalRecoil(0.5f);
 		this.setVerticalRecoil(1.5f);
 		this.canSwitchMode(true);
