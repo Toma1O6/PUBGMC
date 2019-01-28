@@ -75,7 +75,9 @@ public class CommandLootGenerate extends CommandBase
 					"- show >> fills all loaded loot spawners with loot to make it easier for spotting",
 					"- info >> info about current loot setting",
 					"- reset >> reset all current setting to default",
-					"- set >> here you can set multiple things for loot generation"
+					"- set >> here you can set multiple things for loot generation",
+					"- delete >> delete all loaded loot spawners",
+					"- count >> Total count of all loaded loot spawners"
 					};
 			
 			for(int i = 0; i < messages.length; i++)
@@ -234,6 +236,46 @@ public class CommandLootGenerate extends CommandBase
 			else
 			{
 				sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown operation, try /loot set help"));
+			}
+		}
+		
+		else if(args[0].equalsIgnoreCase("count"))
+		{
+			int total = 0;
+			for(TileEntity te : world.loadedTileEntityList)
+			{
+				if(te instanceof TileEntityLootSpawner)
+				{
+					total++;
+				}
+			}
+			sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Loaded loot spawners: " + TextFormatting.YELLOW + total + TextFormatting.GREEN + "."));
+		}
+		
+		else if(args[0].equalsIgnoreCase("delete"))
+		{
+			int count = 0;
+			List<TileEntityLootSpawner> teList = new ArrayList<TileEntityLootSpawner>();
+			
+			for(TileEntity te : world.loadedTileEntityList)
+			{
+				if(te instanceof TileEntityLootSpawner)
+				{
+					count++;
+					teList.add((TileEntityLootSpawner)te);
+				}
+			}
+			
+			for(TileEntityLootSpawner te : teList)
+			{
+				te.clear();
+				world.setBlockToAir(te.getPos());
+			}
+			
+			if(shouldSendCommandFeedback(world.getGameRules()))
+			{
+				if(count == 0) sender.sendMessage(new TextComponentString(TextFormatting.RED + "There are no loaded loot spawners!"));
+				else sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed " + TextFormatting.YELLOW + count + TextFormatting.GREEN + " loot spawners!"));
 			}
 		}
 		
@@ -461,7 +503,7 @@ public class CommandLootGenerate extends CommandBase
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
 	{
 		if(args.length == 1)
-			return getListOfStringsMatchingLastWord(args, new String[] {"help","info","clear","generate","set","reset"});
+			return getListOfStringsMatchingLastWord(args, new String[] {"help","info","clear","generate","set","reset","count","delete","show"});
 		
 		else if(args.length == 2)
 		{
@@ -529,18 +571,6 @@ public class CommandLootGenerate extends CommandBase
 	private void resetWeapons(IWorldData data)
 	{
 		data.resetWeaponLootGeneration();
-	}
-	
-	private List<GunType> getWeaponsFromList(List<Integer> list)
-	{
-		List<GunType> wep = new ArrayList<GunType>();
-		for(int i = 0; i < list.size(); i++)
-		{
-			int j = list.get(i);
-			wep.add(GunType.values()[j]);
-		}
-		
-		return wep;
 	}
 	
 	private boolean shouldSendCommandFeedback(GameRules rules)
