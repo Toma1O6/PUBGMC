@@ -380,6 +380,11 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		}
 	}
 	
+	public ItemStack getAmmoItemStack()
+	{
+		return new ItemStack(getAmmoFromGun());
+	}
+	
 	public boolean hasAmmo(ItemStack itemStack)
 	{
 		return itemStack.getTagCompound().getInteger("ammo") > 0;

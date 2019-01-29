@@ -75,7 +75,7 @@ public class CommandAirdrop extends CommandBase
 				}
 				
 				//Calculate the position where the block will be spawned
-				pos = new BlockPos((int)player.posX + xPos, (int)player.posY + 40, (int)player.posZ + zPos);
+				pos = new BlockPos((int)player.posX + xPos, (int)player.posY + 80, (int)player.posZ + zPos);
 				
 				//Spawn the block entity
 				if(!world.isRemote)
@@ -86,8 +86,7 @@ public class CommandAirdrop extends CommandBase
 					world.spawnEntity(efb);
 				}
 				
-				//TODO
-				//world.playSound(player, pos.getX(), pos.getY() - 40, pos.getZ(), PMCSounds., SoundCategory.NEUTRAL, 1f, 1f);
+				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);
 				
 				//Tell the player about the drop
 				if(PUBGMCUtil.shouldSendCommandFeedback(world))

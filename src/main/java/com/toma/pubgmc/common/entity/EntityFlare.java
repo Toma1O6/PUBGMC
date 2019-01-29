@@ -3,6 +3,7 @@ package com.toma.pubgmc.common.entity;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.init.PMCBlocks;
+import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -95,6 +97,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
         	
         	if(timer >= 400 && !world.isRemote)
         	{
+        		world.playSound(null, posX, posY, posZ, PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);
         		EntityFallingBlock block = new EntityFallingBlock(world, (int)posX + 0.5, posY, (int)posZ + 0.5, PMCBlocks.BIG_AIRDROP.getDefaultState());
         		world.createExplosion(this, posX, posY, posZ, 3.0f, false);
         		world.spawnEntity(block);

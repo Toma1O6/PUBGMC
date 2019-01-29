@@ -1,6 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -27,6 +29,7 @@ public class ModelSawedOff extends ModelGun
 		animation_aim = new AimAnimation(-0.56d, 0.295d, 0.265d, 1f);
 		animation_aim.setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
+		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -97,16 +100,17 @@ public class ModelSawedOff extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
 			GlStateManager.pushMatrix();
-			handleAnimations(data.isAiming(), player.isSprinting(), stack);
+			handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 			renderSawedOff(data.isAiming(), stack);
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		animation_aim.run(aim);
 		animation_held.run(sprint);
+		animation_reload.run(reload);
 	}
 	
 	private void renderSawedOff(boolean aim, ItemStack stack)

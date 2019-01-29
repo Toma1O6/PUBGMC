@@ -140,6 +140,7 @@ public class ModelScarL extends ModelGun
 			GlStateManager.pushMatrix();
 			{
 				animation_held.run(player.isSprinting());
+				animation_reload.run(data.isReloading());
 				handleAnimation(aim, stack);
 				renderScarL(aim, stack);
 			}

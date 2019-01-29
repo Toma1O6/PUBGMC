@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
 import net.minecraft.client.Minecraft;
@@ -73,13 +74,13 @@ public class ModelP92 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
-			handleAnimations(aim, player.isSprinting(), stack);
-			renderP92(aim, stack);
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
+			renderP92(data.isAiming(), stack);
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -90,7 +91,7 @@ public class ModelP92 extends ModelGun
 			
 			animation_aim.run(aim);
 		}
-		
+		animation_reload.run(reload);
 		animation_held.run(sprint);
 	}
 	

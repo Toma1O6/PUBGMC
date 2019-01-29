@@ -98,5 +98,6 @@
     "reload.awm": { "category": "player", "sounds": [{ "name": "pubgmc:reload_awm", "stream": "false" }]},
     
     "gun.noammo": { "category": "player", "sounds": [{ "name": "pubgmc:gun_noammo", "stream": "false" }]},
-    "bullet.whizz": { "category": "player", "sounds": [{ "name": "pubgmc:bullet_whizz", "stream": "false" }]}
+    "bullet.whizz": { "category": "player", "sounds": [{ "name": "pubgmc:bullet_whizz", "stream": "false" }]},
+    "plane.fly_by": { "category": "master", "sounds": [{ "name": "pubgmc:airplane", "stream": "false" }]}
 }

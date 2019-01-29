@@ -1,7 +1,10 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +28,7 @@ public class ModelM24 extends ModelGun
 		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.335d, 1f);
 		animation_aim.setInvertedCoords(true, false, false);
 		animation_aim.setMovementMultiplier(1f, 1f, 1.5f);
+		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -104,18 +108,18 @@ public class ModelM24 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), stack);
-				renderM24(aim, stack);
+				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
+				renderM24(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -129,6 +133,7 @@ public class ModelM24 extends ModelGun
 			animation_aim.run(aim);
 		}
 		animation_held.run(sprint);
+		animation_reload.run(reload);
 	}
 	
 	private void renderM24(boolean aim, ItemStack stack)

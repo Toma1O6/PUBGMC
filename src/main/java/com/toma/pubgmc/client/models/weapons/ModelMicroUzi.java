@@ -61,20 +61,20 @@ public class ModelMicroUzi extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), stack);
+				handleAnimations(aim, player.isSprinting(), data.isReloading(), stack);
 				renderUzi(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
 			animation_aim.run(aim);
 		}
-		
+		animation_reload.run(reload);
 		animation_held.run(sprint);
 	}
 	

@@ -75,14 +75,14 @@ public class ModelP1911 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), stack);
+				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderP1911(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -93,6 +93,7 @@ public class ModelP1911 extends ModelGun
 			animation_aim.run(aim);
 		}
 		animation_held.run(sprint);
+		animation_reload.run(reload);
 	}
 	
 	private void renderP1911(boolean aim, ItemStack stack)

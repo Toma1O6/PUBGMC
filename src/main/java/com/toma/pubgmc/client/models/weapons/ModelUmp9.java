@@ -103,13 +103,13 @@ public class ModelUmp9 extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();
-			handleAnimations(data.isAiming(), player.isSprinting(), stack);
+			handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 			renderUmp(data.isAiming(), stack);
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -122,7 +122,7 @@ public class ModelUmp9 extends ModelGun
 			
 			animation_aim.run(aim);
 		}
-		
+		animation_reload.run(reload);
 		animation_held.run(sprint);
 	}
 	

@@ -139,14 +139,14 @@ public class ModelM16A4 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), stack);
+				handleAnimations(aim, player.isSprinting(), data.isReloading(), stack);
 				renderM16A4(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -160,6 +160,7 @@ public class ModelM16A4 extends ModelGun
 			animation_aim.run(aim);
 		}
 		animation_held.run(sprint);
+		animation_reload.run(reload);
 	}
 	
 	private void renderM16A4(boolean aim, ItemStack stack)

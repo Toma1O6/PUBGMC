@@ -2,6 +2,8 @@ package com.toma.pubgmc.client.models;
 
 import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.animation.HeldAnimations;
+import com.toma.pubgmc.animation.SimpleReloadAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -14,6 +16,7 @@ import com.toma.pubgmc.client.models.atachments.ModelSilencerPistol;
 import com.toma.pubgmc.client.models.atachments.ModelVerticalGrip;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
+import com.toma.pubgmc.common.capability.IPlayerData;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,6 +28,7 @@ public abstract class ModelGun extends ModelBase
 	public ModelDebugger debug = ModelDebugger.instance;
 	public HeldAnimations animation_held;
 	public AimAnimation animation_aim;
+	public SimpleReloadAnimation animation_reload;
 	
 	private final ModelSilencerPistol silencer_pistol = new ModelSilencerPistol();
 	private final ModelSilencer silencer = new ModelSilencer();
@@ -42,6 +46,7 @@ public abstract class ModelGun extends ModelBase
 		HeldAnimations anim = new HeldAnimations();
 		anim.setWeaponType(false);
 		animation_held = anim;
+		animation_reload = new SimpleReloadAnimation(ReloadStyle.NORMAL);
 	}
 	
 	public abstract void render(ItemStack stack);

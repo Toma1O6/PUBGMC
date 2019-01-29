@@ -104,13 +104,13 @@ public class ModelTommyGun extends ModelGun
 			boolean aiming = data.isAiming();
 			
 			GlStateManager.pushMatrix();
-			handleAnimations(aiming, player.isSprinting(), stack);
+			handleAnimations(aiming, player.isSprinting(), data.isReloading(), stack);
 			renderTommyGun(aiming, stack);
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -119,7 +119,7 @@ public class ModelTommyGun extends ModelGun
 			
 			animation_aim.run(aim);
 		}
-		
+		animation_reload.run(reload);
 		animation_held.run(sprint);
 	}
 	

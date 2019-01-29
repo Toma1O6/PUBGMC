@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
 import net.minecraft.client.Minecraft;
@@ -97,18 +98,18 @@ public class ModelGroza extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), stack);
-				renderGroza(aim, stack);
+				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
+				renderGroza(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -122,6 +123,7 @@ public class ModelGroza extends ModelGun
 			animation_aim.run(aim);
 		}
 		animation_held.run(sprint);
+		animation_reload.run(reload);
 	}
 	
 	private void renderGroza(boolean aim, ItemStack stack)

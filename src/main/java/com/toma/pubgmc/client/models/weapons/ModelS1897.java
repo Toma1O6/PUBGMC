@@ -1,6 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerData;
@@ -25,6 +27,7 @@ public class ModelS1897 extends ModelGun
 		animation_aim = new AimAnimation(-0.525d, 0.31d, 0.315d, 1.2f);
 		animation_aim.setInvertedCoords(true, false, false);
 		animation_aim.setMovementMultiplier(1f, 1.2f, 1.3f);
+		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -70,14 +73,14 @@ public class ModelS1897 extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), stack);
+				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderS1897(data.isAiming(),stack);
 			}
 			GlStateManager.popMatrix();
 		}
 	}
 	
-	private void handleAnimations(boolean aim, boolean sprint, ItemStack stack)
+	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
 	{
 		if(enableADS(stack))
 		{
@@ -85,6 +88,7 @@ public class ModelS1897 extends ModelGun
 			animation_aim.run(aim);
 		}
 		animation_held.run(sprint);
+		animation_reload.run(reload);
 	}
 	
 	private void renderS1897(boolean aim, ItemStack stack)

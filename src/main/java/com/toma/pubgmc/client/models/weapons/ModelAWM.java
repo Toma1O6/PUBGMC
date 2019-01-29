@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
 import net.minecraft.client.Minecraft;
@@ -93,13 +94,14 @@ public class ModelAWM extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			boolean aim = player.getCapability(PlayerDataProvider.PLAYER_DATA, null).isAiming();
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();
 			{
 				animation_held.run(player.isSprinting());
-				handleAnimationPosition(aim, stack);
-				renderAWM(aim, stack);
+				animation_reload.run(data.isReloading());
+				handleAnimationPosition(data.isAiming(), stack);
+				renderAWM(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}

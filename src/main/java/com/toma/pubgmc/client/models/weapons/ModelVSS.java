@@ -1,6 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -143,8 +145,10 @@ public class ModelVSS extends ModelGun
 		
 		if(player != null)
 		{
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
+				animation_reload.run(data.isReloading());
 				animation_held.run(player.isSprinting());
 				renderVSS();
 			}

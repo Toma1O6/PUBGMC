@@ -1,6 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.AimAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation;
+import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -21,6 +23,7 @@ public class ModelWin94 extends ModelGun
 		animation_aim = new AimAnimation(-0.5625d, 0.365d, 0.29d, 1f);
 		animation_aim.setInvertedCoords(true, false, false);
 		animation_aim.setMovementMultiplier(1f, 1.3f, 1f);
+		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -67,6 +70,7 @@ public class ModelWin94 extends ModelGun
 			{
 				animation_held.run(player.isSprinting());
 				animation_aim.run(data.isAiming());
+				animation_reload.run(data.isReloading());
 				renderWin(data.isAiming());
 			}
 			GlStateManager.popMatrix();
