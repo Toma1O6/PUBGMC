@@ -24,16 +24,22 @@ public interface IPlayerData
 	public void addBoost(float boost);
 	public void removeBoost(float boost);
 	public float getBoost();
-	
 	public int setBackpackLevel(int level);
 	public int getBackpackLevel();
 	public boolean hasEquippedNV(boolean nv);
 	public boolean getEquippedNV();
 	
+	//grenades
 	public boolean setGrenadeCooking(boolean cooking);
 	public boolean isGrenadeCooking();
 	public int setCookingTime(int time);
 	public int getCookingTime();
+	
+	//scope variants
+	public void setScopeType(int type);
+	public int getScopeType();
+	public void setScopeColor(int color);
+	public int getScopeColor();
 	
 	public class PlayerDataStorage implements IStorage<IPlayerData>
 	{
@@ -51,6 +57,8 @@ public interface IPlayerData
 			c.setBoolean("eqnv", instance.getEquippedNV());
 			c.setBoolean("cooking", instance.isGrenadeCooking());
 			c.setInteger("cookTime", instance.getCookingTime());
+			c.setInteger("scopetype", instance.getScopeType());
+			c.setInteger("scopecolor", instance.getScopeColor());
 			return c;
 		}
 		
@@ -67,6 +75,8 @@ public interface IPlayerData
 			instance.hasEquippedNV(((NBTTagCompound)nbt).getBoolean("eqnv"));
 			instance.setGrenadeCooking(((NBTTagCompound)nbt).getBoolean("cooking"));
 			instance.setCookingTime(((NBTTagCompound)nbt).getInteger("cookingTime"));
+			instance.setScopeType(((NBTTagCompound)nbt).getInteger("scopetype"));
+			instance.setScopeColor(((NBTTagCompound)nbt).getInteger("scopecolor"));
 		}
 	}
 	
@@ -83,6 +93,9 @@ public interface IPlayerData
 		private boolean eqNV;
 		private boolean cooking;
 		private int cookTime;
+		
+		private int scopetype;
+		private int scopecolor;
 		
 		@Override
 		public int getCookingTime()
@@ -214,6 +227,30 @@ public interface IPlayerData
 		public void removeBoost(float boost)
 		{
 			this.boost -= boost;
+		}
+		
+		@Override
+		public void setScopeType(int type)
+		{
+			this.scopetype = type;
+		}
+		
+		@Override
+		public int getScopeType()
+		{
+			return scopetype;
+		}
+		
+		@Override
+		public void setScopeColor(int color)
+		{
+			this.scopecolor = color;
+		}
+		
+		@Override
+		public int getScopeColor() 
+		{
+			return scopecolor;
 		}
 	}
 	

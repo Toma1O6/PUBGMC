@@ -26,6 +26,7 @@ import com.toma.pubgmc.common.network.server.PacketNightVision;
 import com.toma.pubgmc.common.network.server.PacketOpenGui;
 import com.toma.pubgmc.common.network.server.PacketReload;
 import com.toma.pubgmc.common.network.server.PacketReloading;
+import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.init.PMCItems;
@@ -312,13 +313,13 @@ public class ClientEvents
         				
         				if(stack.getTagCompound().getInteger("scope") == 1)
         				{
-            				ImageUtil.drawCustomSizedImage(mc, SCOPES.get(getScopeTypeID(currentType, currentColor)), left, top, 17, 17, true);
+            				ImageUtil.drawCustomSizedImage(mc, SCOPES.get(getScopeTypeID(data.getScopeType(), data.getScopeColor())), left, top, 17, 17, true);
         					
         				}
         				
         				else if(stack.getTagCompound().getInteger("scope") == 2)
         				{
-        					ImageUtil.drawCustomSizedImage(mc, HOLOS.get(getHoloID(currentColor)), left, top, 17, 17, true);
+        					ImageUtil.drawCustomSizedImage(mc, HOLOS.get(getHoloID(data.getScopeColor())), left, top, 17, 17, true);
         				}
         				
         				else if(stack.getTagCompound().getInteger("scope") == 3)
@@ -569,13 +570,13 @@ public class ClientEvents
     	/** NORMAL MODE ========================================================================== **/
     	
     	/** Scope Variants */
-    	if(KeyBinds.CHANGE_SCOPETYPE.isPressed() && canSwitchType(sp.getHeldItemMainhand()))
+    	if(KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null)))
     	{
-    		switchScopeType();
+    		switchScopeType(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
     	}
-    	if(KeyBinds.CHANGE_SCOPECOLOR.isPressed())
+    	if(KeyBinds.CHANGE_SCOPECOLOR.isPressed() && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
     	{
-    		switchScopeColor();
+    		switchScopeColor(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
     	}
     	
     	if(ConfigHandler.enableGuns)
@@ -1321,20 +1322,25 @@ public class ClientEvents
     	return id;
     }
     
-    private void switchScopeType()
+    private void switchScopeType(IPlayerData data)
     {
     	if(currentType < 2) {
     		currentType ++;
     	}
     	else currentType = 0;
+    	data.setScopeType(currentType);
+    	PacketHandler.INSTANCE.sendToServer(new PacketSetScopeVariants(currentType, currentColor));
     }
     
-    private void switchScopeColor()
+    private void switchScopeColor(IPlayerData data)
     {
-    	if(currentColor < 3) {
+    	if(currentColor < 3)
+    	{
     		currentColor ++;
     	}
     	else currentColor = 0;
+    	data.setScopeColor(currentColor);
+    	PacketHandler.INSTANCE.sendToServer(new PacketSetScopeVariants(currentType, currentColor));
     }
     
     private boolean canSwitchType(ItemStack heldStack)
@@ -1368,8 +1374,8 @@ public class ClientEvents
     	{
     		EntityParachute chute = (EntityParachute)player.getRidingEntity();
     		
-    		//chute.handlePlayerInput(down, up, right, left);
-    		PacketHandler.INSTANCE.sendToServer(new PacketHandleParachuteInputs(down, up, right, left));
+    		chute.handleInputs(down, up, right, left);
+    		PacketHandler.INSTANCE.sendToServer(new PacketHandleParachuteInputs(up, down, right, left));
     	}
     }
 }

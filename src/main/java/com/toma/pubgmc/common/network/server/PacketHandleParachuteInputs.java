@@ -53,7 +53,7 @@ public class PacketHandleParachuteInputs implements IMessage, IMessageHandler<Pa
 			{
 				EntityParachute chute = (EntityParachute)player.getRidingEntity();
 				
-				chute.handlePlayerInput(message.pitchDown, message.pitchUp, message.right, message.left);
+				chute.handleInputs(message.pitchDown, message.pitchUp, message.right, message.left);
 			}
 		});
 		return null;

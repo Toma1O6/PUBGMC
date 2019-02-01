@@ -279,6 +279,8 @@ public class CommonEvents
 				packet.setHasNV(data.getEquippedNV());
 				packet.setLevel(data.getBackpackLevel());
 				packet.setReloading(data.isReloading());
+				packet.setScopeType(data.getScopeType());
+				packet.setScopeColor(data.getScopeColor());
 				PacketHandler.INSTANCE.sendTo(packet, (EntityPlayerMP)player);
 			}
 		}

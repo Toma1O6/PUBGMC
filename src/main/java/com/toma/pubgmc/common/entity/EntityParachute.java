@@ -1,11 +1,16 @@
 package com.toma.pubgmc.common.entity;
 
+import com.jcraft.jorbis.Block;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class EntityParachute extends Entity
@@ -28,7 +33,6 @@ public class EntityParachute extends Entity
 		setPosition(user.posX, user.posY, user.posZ);
 		setSilent(true);
 		setSize(1f, 1f);
-		setColor(rand.nextInt(EnumDyeColor.values().length));
 		this.user = user;
 		rotationYaw = user.rotationYaw;
 		
@@ -40,67 +44,127 @@ public class EntityParachute extends Entity
 	@Override
 	public void onUpdate()
 	{	
-		if(!this.isBeingRidden())
+		if(!this.isBeingRidden() && ticksExisted > 2)
 		{
 			setDead();
 		}
 		
 		else
-		{	
-			if(color == -1)
-			{
-				color = handleColorState();
-			}
+		{
+			Entity entity = this.getControllingPassenger();
+			BlockPos pos = entity.getPosition();
+			motionY = -0.2d;
 			
-			if(!world.isRemote)
+			if(onGround || isInWater() || isInLava())
 			{
-				motionY = -0.2d;
-				handleParachuteDirectionState();
-				Vec3d vec = this.getLookVec();
-				float speedModifier = 1f;
-				
-				if(rotationPitch > 0f)
-				{
-					speedModifier = rotationPitch / 100;
-					speedModifier *= 1.75f;
-					speedModifier = 1 - speedModifier;
-				}
-				
-				motionX = vec.x * 0.7d * speedModifier;
-				motionZ = vec.z * 0.7d * speedModifier;
-				
-				if(vec.y < 0)
-				{
-					motionY -= this.rotationPitch / 60f;
-				}
-			}
-			
-			if(this.onGround || this.isInLava() || this.isInWater())
-			{
-				if(this.isBeingRidden())
-				{
-					if(motionY < -0.55f && this.onGround)
-					{
-						Entity entity = getPassengers().get(0);
-						
-						if(!entity.getIsInvulnerable() && !entity.isDead)
-						{
-							entity.attackEntityFrom(DamageSource.FALL, (float)(-motionY * 8));
-						}
-					}
-				}
 				setDead();
 			}
+			
+			if(entity instanceof EntityPlayer)
+			{
+				EntityPlayer player = (EntityPlayer)entity;
+				handleMovement(player);
+			}
+			
+			if(!world.isAirBlock(new BlockPos(pos.getX()-1, pos.getY(), pos.getZ())) ||
+					!world.isAirBlock(new BlockPos(pos.getX()+1, pos.getY(), pos.getZ())) ||
+					!world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1)) ||
+					!world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)))
+				setDead();
 		}
 		
 		move(MoverType.SELF, motionX, motionY, motionZ);
 		super.onUpdate();
 	}
 	
-	private int handleColorState()
+	@Override
+	protected void doBlockCollisions()
 	{
-		int color = rand.nextInt(EnumDyeColor.values().length);
-		return color;
+		super.doBlockCollisions();
+	}
+	
+	protected void handleMovement(EntityPlayer user)
+	{	
+		if(inputUp && !inputDown)
+		{
+			if(this.rotationPitch < 35f)
+			{
+				rotationPitch += 2f;
+			}
+		}
+		
+		if(inputDown && !inputUp)
+		{
+			if(this.rotationPitch > 0)
+			{
+				rotationPitch -= 2f;
+				if(rotationPitch < 0) rotationPitch = 0f;
+			}
+		}
+		
+		if(inputRight && !inputLeft)
+		{
+			if(turnModifier < MAX_TURN_MODIFIER)
+			{
+				turnModifier += 0.5f;
+			}
+		}
+		
+		if(inputLeft && !inputRight)
+		{
+			if(turnModifier > -MAX_TURN_MODIFIER)
+			{
+				turnModifier -= 0.5f;
+			}
+		}
+		
+		this.rotationYaw += turnModifier;
+		
+		if(noHorizontalMovementInput() && turnModifier != 0)
+		{
+			if(turnModifier > 0 && turnModifier - 0.25f < 0) turnModifier = 0f;
+			if(turnModifier < 0 && turnModifier + 0.25f > 0) turnModifier = 0f;
+			if(turnModifier > 0) turnModifier -= 0.25f;
+			if(turnModifier < 0) turnModifier += 0.25f;
+		}
+		
+		if(noVerticalMovementInput() && rotationPitch != 0)
+		{
+			if(rotationPitch > 0) rotationPitch -= 0.5f;
+			if(rotationPitch < 0) rotationPitch = 0f;
+		}
+		
+		float speedModifier = 1f;
+		Vec3d lookVec = this.getLookVec();
+		if(rotationPitch > 0) speedModifier = 1 - (rotationPitch/100)*1.75f;
+
+		motionX = lookVec.x * speedModifier * 0.7d;
+		motionZ = lookVec.z * speedModifier * 0.7d;
+	}
+	
+	@Override
+	public void onAddedToWorld()
+	{
+		handleColorState();
+		super.onAddedToWorld();
+	}
+	
+	@Override
+	public void applyOrientationToEntity(Entity entityToUpdate) 
+	{
+		entityToUpdate.rotationYaw = this.rotationYaw;
+		entityToUpdate.rotationPitch = this.rotationPitch;
+	}
+	
+	@Override
+	public Entity getControllingPassenger()
+	{
+		return this.isBeingRidden() ? this.getPassengers().get(0) : null;
+	}
+	
+	private void handleColorState()
+	{
+		color = rand.nextInt(EnumDyeColor.values().length);
 	}
 	
 	@Override
@@ -130,67 +194,28 @@ public class EntityParachute extends Entity
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound)
 	{
-		//color = color.values()[compound.getInteger("chute")];
+		posX = compound.getDouble("posX");
+		posY = compound.getDouble("posY");
+		posZ = compound.getDouble("posZ");
+		motionX = compound.getDouble("motionX");
+		motionY = compound.getDouble("motionY");
+		motionZ = compound.getDouble("motionZ");
 	}
 	
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound)
 	{
-		//compound.setInteger("chute", color.ordinal());
+		compound.setDouble("posX", posX);
+		compound.setDouble("posY", posY);
+		compound.setDouble("posZ", posZ);
+		compound.setDouble("motionX", motionX);
+		compound.setDouble("motionY", motionY);
+		compound.setDouble("motionZ", motionZ);
 	}
 
 	@Override
 	protected void entityInit() 
 	{
-	}
-	
-	private void handleParachuteDirectionState()
-	{	
-		if(inputRight && !inputLeft && turnModifier < MAX_TURN_MODIFIER)
-		{
-			this.turnModifier += 0.5f;
-		}
-		
-		if(inputLeft && !inputRight && turnModifier > -MAX_TURN_MODIFIER)
-		{
-			this.turnModifier -= 0.5f;
-		}
-		
-		if(inputDown && !inputUp)
-		{
-			if(this.rotationPitch < 30f)
-			{
-				this.rotationPitch += 2f;
-			}
-		}
-		
-		if(inputUp && !inputDown)
-		{
-			if(this.rotationPitch > 0f)
-			{
-				this.rotationPitch -= 2f;
-			}
-		}
-		
-		if(noVerticalMovementInput() && rotationPitch > 0f)
-		{
-			this.rotationPitch -= 0.5f;
-		}
-		
-		if(noHorizontalMovementInput())
-		{
-			if(turnModifier > 0f)
-			{
-				turnModifier -= 0.2f;
-			}
-			
-			else if(turnModifier < 0f)
-			{
-				turnModifier += 0.2f;
-			}
-		}
-		
-		this.rotationYaw += turnModifier;
 	}
 	
 	private boolean noInput()
@@ -208,7 +233,7 @@ public class EntityParachute extends Entity
 		return !this.inputDown && !this.inputUp;
 	}
 	
-	public void handlePlayerInput(boolean down, boolean up, boolean right, boolean left)
+	public void handleInputs(boolean down, boolean up, boolean right, boolean left)
 	{
 		this.inputDown = up;
 		this.inputUp = down;

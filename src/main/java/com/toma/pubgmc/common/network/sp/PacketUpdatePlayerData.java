@@ -19,6 +19,8 @@ public class PacketUpdatePlayerData implements IMessage, IMessageHandler<PacketU
 	private boolean hasNV;
 	private int grenadeCookTime;
 	private boolean isGrenadeCooking;
+	private int scopetype;
+	private int scopecolor;
 	
 	public PacketUpdatePlayerData() {
 		// TODO Auto-generated constructor stub
@@ -34,6 +36,8 @@ public class PacketUpdatePlayerData implements IMessage, IMessageHandler<PacketU
 		hasNV = buf.readBoolean();
 		grenadeCookTime = buf.readInt();
 		isGrenadeCooking = buf.readBoolean();
+		scopetype = buf.readInt();
+		scopecolor = buf.readInt();
 	}
 	
 	@Override
@@ -46,6 +50,8 @@ public class PacketUpdatePlayerData implements IMessage, IMessageHandler<PacketU
 		buf.writeBoolean(hasNV);
 		buf.writeInt(grenadeCookTime);
 		buf.writeBoolean(isGrenadeCooking);
+		buf.writeInt(scopetype);
+		buf.writeInt(scopecolor);
 	}
 	
 	@Override
@@ -64,6 +70,8 @@ public class PacketUpdatePlayerData implements IMessage, IMessageHandler<PacketU
 				data.hasEquippedNV(message.hasNV);
 				data.setCookingTime(message.grenadeCookTime);
 				data.setGrenadeCooking(message.isGrenadeCooking);
+				data.setScopeType(message.scopetype);
+				data.setScopeColor(message.scopecolor);
 			}
 		}
 		return null;
@@ -115,5 +123,15 @@ public class PacketUpdatePlayerData implements IMessage, IMessageHandler<PacketU
 
 	public void setGrenadeCooking(boolean isGrenadeCooking) {
 		this.isGrenadeCooking = isGrenadeCooking;
+	}
+	
+	public void setScopeType(int type)
+	{
+		this.scopetype = type;
+	}
+	
+	public void setScopeColor(int color)
+	{
+		this.scopecolor = color;
 	}
 }

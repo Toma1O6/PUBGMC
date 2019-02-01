@@ -10,6 +10,7 @@ import com.toma.pubgmc.common.network.server.PacketNightVision;
 import com.toma.pubgmc.common.network.server.PacketOpenGui;
 import com.toma.pubgmc.common.network.server.PacketReload;
 import com.toma.pubgmc.common.network.server.PacketReloading;
+import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
@@ -32,22 +33,36 @@ public class PacketHandler
 	 */
 	public static void initialize()
 	{
-		INSTANCE.registerMessage(PacketAim.class, PacketAim.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketReload.class, PacketReload.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketFiremode.class, PacketFiremode.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketNightVision.class, PacketNightVision.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketReloading.class, PacketReloading.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketSyncConfig.class, PacketSyncConfig.class, nextID(), Side.CLIENT);
-		INSTANCE.registerMessage(PacketUpdateBoostValue.class, PacketUpdateBoostValue.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketReloadingSP.class, PacketReloadingSP.class, nextID(), Side.CLIENT);
-		INSTANCE.registerMessage(PacketUpdatePlayerData.class, PacketUpdatePlayerData.class, nextID(), Side.CLIENT);
-		INSTANCE.registerMessage(PacketShoot.class, PacketShoot.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketOpenGui.class, PacketOpenGui.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketSound.class, PacketSound.class, nextID(), Side.CLIENT);
-		INSTANCE.registerMessage(PacketCreateNBT.class, PacketCreateNBT.class, nextID(), Side.CLIENT);
-		INSTANCE.registerMessage(PacketCraft.class, PacketCraft.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketHandleParachuteInputs.class, PacketHandleParachuteInputs.class, nextID(), Side.SERVER);
-		INSTANCE.registerMessage(PacketHandleVehicleInputs.class, PacketHandleVehicleInputs.class, nextID(), Side.SERVER);
+		//server packets
+		registerServer(PacketAim.class);
+		registerServer(PacketReload.class);
+		registerServer(PacketFiremode.class);
+		registerServer(PacketNightVision.class);
+		registerServer(PacketReloading.class);
+		registerServer(PacketUpdateBoostValue.class);
+		registerServer(PacketShoot.class);
+		registerServer(PacketOpenGui.class);
+		registerServer(PacketCraft.class);
+		registerServer(PacketHandleParachuteInputs.class);
+		registerServer(PacketHandleVehicleInputs.class);
+		registerServer(PacketSetScopeVariants.class);
+		
+		//client packets
+		registerClient(PacketSyncConfig.class);
+		registerClient(PacketReloadingSP.class);
+		registerClient(PacketUpdatePlayerData.class);
+		registerClient(PacketSound.class);
+		registerClient(PacketCreateNBT.class);
+	}
+	
+	private static void registerClient(Class packetClass)
+	{
+		INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.CLIENT);
+	}
+	
+	private static void registerServer(Class packetClass)
+	{
+		INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.SERVER);
 	}
 	
 	private static int nextID()
