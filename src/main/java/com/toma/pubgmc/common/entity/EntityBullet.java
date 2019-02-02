@@ -37,7 +37,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -49,8 +48,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -298,7 +295,6 @@ public class EntityBullet extends Entity
         	
             if(headshot) {
             	damage *= 2.5f;
-            	shooter.sendMessage(new TextComponentString(TextFormatting.RED + "" + TextFormatting.BOLD + "HEADSHOT!"));
             	offset = entity.posY + entity.getEyeHeight();
             } else offset = vec.y;
         	

@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.entity;
 
 import com.jcraft.jorbis.Block;
+import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -8,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
@@ -57,6 +59,7 @@ public class EntityParachute extends Entity
 			
 			if(onGround || isInWater() || isInLava())
 			{
+				world.playSound(null, posX, posY, posZ, PMCSounds.chute_land, SoundCategory.MASTER, 1f, 1f);
 				setDead();
 			}
 			

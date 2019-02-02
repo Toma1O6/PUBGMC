@@ -65,6 +65,7 @@ public class PMCSounds
 	//other
 	public static SoundEvent gun_win94, gun_crossbow, gun_m249, gun_dp28;
 	public static SoundEvent airdrop_plane_fly_by;
+	public static SoundEvent chute_open, chute_land;
 	
 /**========================================[UTIL]==========================================================**/	
 	
@@ -177,6 +178,8 @@ public class PMCSounds
 		gun_noammo = registerSound("gun.noammo");
 		bullet_whizz = registerSound("bullet.whizz");
 		airdrop_plane_fly_by = registerSound("plane.fly_by");
+		chute_open = registerSound("chute.open");
+		chute_land = registerSound("chute.land");
 	}
 	
 	private static SoundEvent registerSound(String name)

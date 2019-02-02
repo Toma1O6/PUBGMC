@@ -8,6 +8,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
+import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,6 +50,8 @@ public class ItemParachute extends PMCItem implements ICraftable
 					stack.shrink(1);
 				}
 			}
+			
+			else playerIn.playSound(PMCSounds.chute_open, 1f, 1f);
 			
 			playerIn.startRiding(chute);
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);

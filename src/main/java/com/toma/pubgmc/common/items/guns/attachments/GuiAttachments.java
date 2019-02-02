@@ -37,17 +37,17 @@ public class GuiAttachments extends GuiContainer
 	{
 		mc.renderEngine.bindTexture(TEXTURE);
 		
-		for(int i = 1; i < inv.getSizeInventory(); i++)
+		/*for(int i = 1; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
-			if(!stack.isEmpty())
+			if(stack.isEmpty())
 			{
 				for(FieldType type : FieldType.values())
 				{
 					ImageUtil.drawCustomSizedImage(mc, type.getIcon(), 0, 0, 0, 0, true);
 				}
 			}
-		}
+		}*/
 		
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
