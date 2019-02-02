@@ -213,4 +213,9 @@ public class ContainerAttachments extends Container
 			InventoryHelper.dropInventoryItems(playerIn.world, playerIn, inv);
 		}
 	}
+	
+	public InventoryAttachments getAttachmentInventory()
+	{
+		return inv;
+	}
 }

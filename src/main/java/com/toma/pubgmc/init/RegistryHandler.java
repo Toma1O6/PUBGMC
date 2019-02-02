@@ -152,9 +152,9 @@ public class RegistryHandler
 	public static void registerItems(Register<Item> event)
 	{
 		final Item[] ITEMS = {
-				new ItemBackpack("backpack1"),
-				new ItemBackpack("backpack2"),
-				new ItemBackpack("backpack3"),
+				new ItemBackpack("backpack1").addDescription("Right Click to equip"),
+				new ItemBackpack("backpack2").addDescription("Right Click to equip"),
+				new ItemBackpack("backpack3").addDescription("Right Click to equip"),
 				new ItemBandage("bandage"),
 				new ItemFirstAidKit("firstaidkit"),
 				new ItemMedkit("medkit"),
@@ -163,7 +163,7 @@ public class RegistryHandler
 				new ItemAdrenalineSyringe("adrenalinesyringe"),
 				new PMCItem("iblock").setMaxStackSize(1),
 				new ItemGhillie("ghillie_suit"),
-				new ItemNVGoggles("nv_goggles"),
+				new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
 				new FlareGun("flare_gun"),
 				new PistolP92("p92"),
 				new PistolP1911("p1911"),

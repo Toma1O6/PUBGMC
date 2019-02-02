@@ -32,8 +32,8 @@ public class ArBerylM762 extends GunBase
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.AR);
-		this.setHorizontalRecoil(2.75f);
-		this.setVerticalRecoil(5.5f);
+		this.setHorizontalRecoil(2.0f);
+		this.setVerticalRecoil(4f);
 		this.canSwitchMode(true);
 		this.setAutoFiremode(true);
 		this.setBurstFire(true);

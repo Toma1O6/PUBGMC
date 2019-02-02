@@ -9,8 +9,9 @@ import net.minecraft.util.text.TextComponentString;
 
 public class PMCDamageSources extends DamageSource
 {
-	public static final DamageSource WEAPON_GENERIC = new DamageSource("genericWeapon");
-	public static final DamageSource VEHICLE = new DamageSource("vehicle");
+	public static final DamageSource WEAPON_GENERIC = new DamageSource("genericWeapon").setDamageBypassesArmor();
+	public static final DamageSource WEAPON_HEADSHOT = new DamageSource("genericWeaponHS").setDamageBypassesArmor();
+	public static final DamageSource VEHICLE = new DamageSource("vehicle").setDamageBypassesArmor();
 	
 	private Entity ent;
 	

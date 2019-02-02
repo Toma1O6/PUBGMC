@@ -77,12 +77,6 @@ public class EntityParachute extends Entity
 		super.onUpdate();
 	}
 	
-	@Override
-	protected void doBlockCollisions()
-	{
-		super.doBlockCollisions();
-	}
-	
 	protected void handleMovement(EntityPlayer user)
 	{	
 		if(inputUp && !inputDown)
@@ -106,7 +100,7 @@ public class EntityParachute extends Entity
 		{
 			if(turnModifier < MAX_TURN_MODIFIER)
 			{
-				turnModifier += 0.5f;
+				turnModifier += 0.4f;
 			}
 		}
 		
@@ -114,7 +108,7 @@ public class EntityParachute extends Entity
 		{
 			if(turnModifier > -MAX_TURN_MODIFIER)
 			{
-				turnModifier -= 0.5f;
+				turnModifier -= 0.4f;
 			}
 		}
 		

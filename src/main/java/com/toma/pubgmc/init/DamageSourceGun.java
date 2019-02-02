@@ -18,15 +18,23 @@ public class DamageSourceGun extends EntityDamageSourceIndirect
 	private ItemStack weapon;
 	private Entity source;
 	private Entity indirect;
+	private static final String[] HS_MESSAGES = new String[] {"headshotted", "shot right into head", "blew head of"};
 	private static final String[] DEATH_MESSAGES = {"shot", "killed", "shredded", "sniped", "obliterated"};
 	private final Random rand = new Random();
+	private boolean headshot;
 	
-	public DamageSourceGun(String damageType, Entity source, @Nullable Entity indirect, ItemStack weapon)
+	public DamageSourceGun(String damageType, Entity source, @Nullable Entity indirect, ItemStack weapon, boolean headshot)
 	{
 		super(damageType, source, indirect);
 		this.weapon = weapon;
 		this.source = source;
 		this.indirect = indirect;
+		this.headshot = headshot;
+	}
+	
+	private String[] getMessageType()
+	{
+		return headshot ? HS_MESSAGES : DEATH_MESSAGES;
 	}
 	
 	@Override
@@ -34,49 +42,9 @@ public class DamageSourceGun extends EntityDamageSourceIndirect
 	{
 		TextComponentString message = null;
 		GunBase gun = (GunBase)weapon.getItem();
-		switch(gun.getGunType())
-		{
-			case PISTOL: 
-			{
-				int i = rand.nextInt(2);
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			case SMG:
-			{
-				int i = rand.nextInt(2);
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			case AR:
-			{
-				int i = rand.nextInt(2);
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			case LMG: 
-			{
-				int i = rand.nextInt(3);
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			case SHOTGUN: 
-			{
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[4] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			case DMR:
-			{
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[3] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			case SR:
-			{
-				return message = new TextComponentString(source.getName() + " " + DEATH_MESSAGES[3] + " " + indirect.getName() + " using " + weapon.getDisplayName());
-			}
-			
-			default: return message;
-		}
+		String[] s = getMessageType();
+		int i = rand.nextInt(s.length);
+		return message = new TextComponentString(source.getName() + " " + s[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
 	}
 	
 	@Override

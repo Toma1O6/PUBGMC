@@ -3,24 +3,37 @@ PUBGMC TODO LIST
 ** This doesn't mean it will be 100% added **
 ** Feel free to suggest anything what comes to your mind **
 
-HIGH PRIORITY
-- Basic animations
-- Pistol & Shotgun model overhaul
-- Vehicles
-- Proning
-- Better ghillie suit
-- Better /loot command control
-- Playing plane sound when airdrop is spawned
 
-LOW PRIORITY
-- Crate with skins for some weapons (gold, silver etc)
-- More props
-- 3D sound system
-- Hostile entity which can shoot you
-- Riot shield
-- Official map
-
-MAYBE ?
-- Planes (for jumping off or for delivering airdrops)
-- Playzone
-- Teams
+|-----------------------------------------------------------------------------------------|
+|    HIGH PRIORITY:                                                                       |
+|-----------------------------------------------------------------------------------------|
+| - Better damage calculation based on armor (for headshots damage only helmet etc)
+| - Pistol & Shotgun model overhaul - finish R45, R1895, Flare Gun, S12K animations
+| - Vehicles
+| - Proning
+| - Better ghillie suit -> Model is done, TODO animations when player is moving
+|
+|-----------------------------------------------------------------------------------------|
+|    LOW PRIORITY:                                                                        |
+|-----------------------------------------------------------------------------------------|
+| - Render round magazine for Tommy Gun when extended mag is attached
+| - Crate with skins for some weapons (gold, silver etc)
+| - More props
+| - 3D sound system
+| - Hostile entity which can shoot you
+| - Riot shield
+| - Official map
+|
+|-----------------------------------------------------------------------------------------|
+|    FINISHED:                                                                            |
+|-----------------------------------------------------------------------------------------|
+| - Basic animations
+| - Better /loot command control
+| - Playing plane sound when airdrop is spawned
+|
+|-----------------------------------------------------------------------------------------|
+|    MAYBE?                                                                               |
+|-----------------------------------------------------------------------------------------|
+| - Planes (for jumping off or for delivering airdrops)
+| - Playzone
+| - Teams

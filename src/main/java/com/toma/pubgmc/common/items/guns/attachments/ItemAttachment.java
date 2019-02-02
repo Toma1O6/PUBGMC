@@ -16,6 +16,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
@@ -70,6 +71,7 @@ public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn)
 	{
+		tooltip.add(TextFormatting.BOLD + "Add attachment to weapon throught attachment GUI - press P");
 		switch(type)
 		{
 			case SCOPE: {

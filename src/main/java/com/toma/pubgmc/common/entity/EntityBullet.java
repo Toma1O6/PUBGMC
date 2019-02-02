@@ -8,6 +8,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.DamageSourceGun;
@@ -20,18 +21,38 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityEvoker;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntityStray;
+import net.minecraft.entity.monster.EntityVindicator;
+import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class EntityBullet extends Entity
@@ -196,12 +217,8 @@ public class EntityBullet extends Entity
         {
             this.onHit(raytraceresult);
         }
-
-        this.posX += this.motionX;
-        this.posY += this.motionY;
-        this.posZ += this.motionZ;
-
-        this.setPosition(this.posX, this.posY, this.posZ);
+        
+        move(MoverType.SELF, motionX, motionY, motionZ);
     }  
     
     @Nullable
@@ -240,24 +257,6 @@ public class EntityBullet extends Entity
     {
         Entity entity = raytraceResultIn.entityHit;
 
-        if(entity != null && !world.isRemote)
-        {
-            DamageSourceGun gunsource = new DamageSourceGun("generic", shooter, entity, stack);
-
-            if(world.getGameRules().getBoolean("weaponKnockback"))
-            {
-                entity.attackEntityFrom(gunsource, damage);
-            }
-            else
-            {
-            	entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
-            }
-            
-            
-            entity.hurtResistantTime = 0;
-            this.setDead();
-        }
-        
         if(raytraceResultIn.getBlockPos() != null)
         {
         	BlockPos pos = raytraceResultIn.getBlockPos();
@@ -282,11 +281,128 @@ public class EntityBullet extends Entity
         	
         	else if(!block.isReplaceable(world, pos))
         	{
-        		world.playSound(null, posX, posY, posZ, SoundEvents.BLOCK_GLASS_HIT, SoundCategory.BLOCKS, 1f, 1f);
+        		WorldServer server = world.getMinecraftServer().getWorld(0);
+        		Vec3d hitvec = raytraceResultIn.hitVec;
+        		server.spawnParticle(EnumParticleTypes.BLOCK_CRACK, true, hitvec.x, hitvec.y, hitvec.z, 10, rand.nextDouble()/5, rand.nextDouble()/5, rand.nextDouble()/5, 0.02d, Block.getIdFromBlock(block));
+        		world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5f, block.getSoundType().getPitch() * 0.8f);
         		this.setDead();
         	}
         }
-    }   
+        
+        if(entity != null && !world.isRemote)
+        {
+        	boolean headshot = canEntityGetHeadshot(entity) && posY >= entity.getPosition().getY() + entity.getEyeHeight() && ticksExisted > 1;
+        	double offset = 0f;
+        	Vec3d vec = raytraceResultIn.hitVec;
+            WorldServer server = world.getMinecraftServer().getWorld(0);
+        	
+            if(headshot) {
+            	damage *= 2.5f;
+            	shooter.sendMessage(new TextComponentString(TextFormatting.RED + "" + TextFormatting.BOLD + "HEADSHOT!"));
+            	offset = entity.posY + entity.getEyeHeight();
+            } else offset = vec.y;
+        	
+            server.spawnParticle(EnumParticleTypes.BLOCK_CRACK, true, vec.x, offset, vec.z, 2*Math.round(damage), rand.nextDouble()/2, rand.nextDouble()/2, rand.nextDouble()/2, 0.02d, Block.getIdFromBlock(Blocks.REDSTONE_BLOCK));
+
+            onEntityHit(headshot, entity);
+            entity.hurtResistantTime = 0;
+            this.setDead();
+        }
+    }
+    
+    protected void onEntityHit(boolean isHeadshot, Entity entity)
+    {
+    	if(world.getGameRules().getBoolean("weaponKnockback"))
+    	{
+            DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();
+            
+    		if(entity instanceof EntityPlayer)
+    		{
+    			EntityPlayer player = (EntityPlayer)entity;
+    			getCalculatedDamage(player, isHeadshot);
+    		}
+    		
+    		entity.attackEntityFrom(gunsource, damage);
+    	}
+    	
+    	else
+    	{
+    		if(entity instanceof EntityPlayer)
+    		{
+    			EntityPlayer player = (EntityPlayer)entity;
+    			getCalculatedDamage(player, isHeadshot);
+    		}
+    		
+    		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
+    	}
+    }
+    
+    /**
+     * Calculates damage based on player armor and applies damage to the right part of the armor
+     * Damage reduction:
+     * <ul>
+     * <li> 30% For level 1 armor
+     * <li> 40% For level 2 armor
+     * <li> 60% For level 3 armor
+     * </ul>
+     * @param player - the player who got hit
+     * @param baseDamage - base weapon damage
+     * @param isHeadShot
+     */
+    private void getCalculatedDamage(EntityPlayer player, boolean isHeadShot)
+    {
+    	float baseDamage = damage;
+    	
+    	if(isHeadShot)
+    	{
+        	ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        	
+    		if(head.getItem() == PMCItems.ARMOR1HELMET)
+    		{
+    			damage *= 0.7f;
+    		}
+    		
+    		else if(head.getItem() == PMCItems.ARMOR2HELMET)
+    		{
+    			damage *= 0.6f;
+    		}
+    		
+    		else if(head.getItem() == PMCItems.ARMOR3HELMET)
+    		{
+    			damage *= 0.4f;
+    		}
+    		
+        	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ArmorBase)
+        	{
+        		head.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.55f), player);
+        	}
+    	}
+    	
+    	else
+    	{
+        	ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        	
+    		if(body.getItem() == PMCItems.ARMOR1BODY)
+    		{
+    			damage *= 0.7f;
+    		}
+    		
+    		else if(body.getItem() == PMCItems.ARMOR2BODY)
+    		{
+    			damage *= 0.6f;
+    		}
+    		
+    		else if(body.getItem() == PMCItems.ARMOR3BODY)
+    		{
+    			damage *= 0.5f;
+    		}
+    		
+        	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ArmorBase)
+        	{
+        		body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), player);
+        	}
+    	}
+    }
     
     @Override
     public boolean isInRangeToRenderDist(double distance)
@@ -325,6 +441,11 @@ public class EntityBullet extends Entity
     	ticksExisted = compound.getInteger("lifespan");
     	damage = compound.getFloat("bullet_damage");
     	velocity = compound.getDouble("bullet_velocity");
+    }
+    
+    private boolean canEntityGetHeadshot(Entity e)
+    {
+    	return e instanceof EntityZombie || e instanceof EntitySkeleton || e instanceof EntityCreeper || e instanceof EntityWitch || e instanceof EntityPigZombie || e instanceof EntityEnderman || e instanceof EntityWitherSkeleton || e instanceof EntityPlayer || e instanceof EntityVillager || e instanceof EntityEvoker || e instanceof EntityStray || e instanceof EntityVindicator;
     }
     
     public EntityLivingBase getShooter()

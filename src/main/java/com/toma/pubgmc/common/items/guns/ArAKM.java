@@ -32,8 +32,8 @@ public class ArAKM extends GunBase
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.AR);
-		this.setHorizontalRecoil(2.25f);
-		this.setVerticalRecoil(4.5f);
+		this.setHorizontalRecoil(2f);
+		this.setVerticalRecoil(4f);
 		this.canSwitchMode(true);
 		this.setAutoFiremode(true);
 		
