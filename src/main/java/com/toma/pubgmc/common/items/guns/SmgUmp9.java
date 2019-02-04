@@ -61,12 +61,10 @@ public class SmgUmp9 extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item at)
+	public List<Item> acceptedAttachments()
 	{
-		return at == PMCItems.QUICKDRAW_MAG_SMG || at == PMCItems.EXTENDED_MAG_SMG || at == PMCItems.EXTENDED_QUICKDRAW_MAG_SMG
-				|| at == PMCItems.COMPENSATOR_SMG || at == PMCItems.SILENCER_SMG
-				|| at == PMCItems.RED_DOT || at == PMCItems.HOLOGRAPHIC || at == PMCItems.SCOPE2X || at == PMCItems.SCOPE4X
-				|| at == PMCItems.GRIP_VERTICAL || at == PMCItems.GRIP_ANGLED;
+		addSMGAttachments();
+		return super.acceptedAttachments();
 	}
 	
 	@Override

@@ -44,7 +44,7 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == GUI_CRATE) return new ContainerPlayerCrate(player.inventory, (TileEntityPlayerCrate)world.getTileEntity(new BlockPos(x, y, z)));
 		
-		if(ID == GUI_ATTACHMENTS) return new ContainerAttachments(player.inventory);
+		if(ID == GUI_ATTACHMENTS) return new ContainerAttachments(player.inventory, player);
 		
 		if(ID == GUI_GUNCRAFTINGTABLE) return new ContainerGunWorkbench((TileEntityGunWorkbench)world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
 		
@@ -62,7 +62,7 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == GUI_CRATE) return new GuiPlayerCrate(player.inventory, (TileEntityPlayerCrate)world.getTileEntity(new BlockPos(x, y, z)));
 		
-		if(ID == GUI_ATTACHMENTS) return new GuiAttachments(player.inventory);
+		if(ID == GUI_ATTACHMENTS) return new GuiAttachments(player.inventory, player);
 		
 		if(ID == GUI_GUNCRAFTINGTABLE) return new GuiGunWorkbench((TileEntityGunWorkbench)world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
 		

@@ -1,7 +1,5 @@
 package com.toma.pubgmc.animation;
 
-import com.toma.pubgmc.common.capability.IPlayerData;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 

@@ -6,6 +6,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
 
 import net.minecraft.command.CommandBase;
@@ -50,9 +51,7 @@ public class CommandResetPlayerData extends CommandBase
 					data.setCookingTime(0);
 					data.setGrenadeCooking(false);
 					
-					PacketHandler.INSTANCE.sendTo(new PacketUpdatePlayerData(), player);
-					System.out.println(data.isUsingNV() + " ");
-					
+					PacketHandler.sendToClient(new PacketClientCapabilitySync(data), player);
 					Pubgmc.logger.log(Level.INFO, "Removed data for " + player.getName());
 				}
 				

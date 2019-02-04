@@ -11,6 +11,8 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCItems;
@@ -25,8 +27,10 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityEvoker;
+import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.entity.monster.EntityStray;
 import net.minecraft.entity.monster.EntityVindicator;
 import net.minecraft.entity.monster.EntityWitch;
@@ -49,7 +53,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class EntityBullet extends Entity
@@ -253,8 +256,29 @@ public class EntityBullet extends Entity
     protected void onHit(RayTraceResult raytraceResultIn)
     {
         Entity entity = raytraceResultIn.entityHit;
-
-        if(raytraceResultIn.getBlockPos() != null)
+        if(entity != null)
+        {
+        	if(!world.isRemote)
+        	{
+            	boolean headshot = canEntityGetHeadshot(entity) && posY >= entity.getPosition().getY() + entity.getEyeHeight() && ticksExisted > 1;
+            	double offset = 0f;
+            	Vec3d vec = raytraceResultIn.hitVec;
+            	
+                if(headshot)
+                {
+                	damage *= 2.5f;
+                	offset = entity.posY + entity.getEyeHeight();
+                }
+                else offset = vec.y;
+                
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, offset, vec.z, Blocks.REDSTONE_BLOCK), this.dimension);
+                onEntityHit(headshot, entity);
+                entity.hurtResistantTime = 0;
+                this.setDead();
+        	}
+        }
+        
+        else if(raytraceResultIn.getBlockPos() != null && !world.isRemote)
         {
         	BlockPos pos = raytraceResultIn.getBlockPos();
         	IBlockState state = world.getBlockState(pos);
@@ -278,31 +302,11 @@ public class EntityBullet extends Entity
         	
         	else if(!block.isReplaceable(world, pos))
         	{
-        		WorldServer server = world.getMinecraftServer().getWorld(0);
         		Vec3d hitvec = raytraceResultIn.hitVec;
-        		server.spawnParticle(EnumParticleTypes.BLOCK_CRACK, true, hitvec.x, hitvec.y, hitvec.z, 10, rand.nextDouble()/5, rand.nextDouble()/5, rand.nextDouble()/5, 0.02d, Block.getIdFromBlock(block));
+        		PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, hitvec, block), this.dimension);
         		world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5f, block.getSoundType().getPitch() * 0.8f);
         		this.setDead();
         	}
-        }
-        
-        if(entity != null && !world.isRemote)
-        {
-        	boolean headshot = canEntityGetHeadshot(entity) && posY >= entity.getPosition().getY() + entity.getEyeHeight() && ticksExisted > 1;
-        	double offset = 0f;
-        	Vec3d vec = raytraceResultIn.hitVec;
-            WorldServer server = world.getMinecraftServer().getWorld(0);
-        	
-            if(headshot) {
-            	damage *= 2.5f;
-            	offset = entity.posY + entity.getEyeHeight();
-            } else offset = vec.y;
-        	
-            server.spawnParticle(EnumParticleTypes.BLOCK_CRACK, true, vec.x, offset, vec.z, 2*Math.round(damage), rand.nextDouble()/2, rand.nextDouble()/2, rand.nextDouble()/2, 0.02d, Block.getIdFromBlock(Blocks.REDSTONE_BLOCK));
-
-            onEntityHit(headshot, entity);
-            entity.hurtResistantTime = 0;
-            this.setDead();
         }
     }
     
@@ -441,7 +445,7 @@ public class EntityBullet extends Entity
     
     private boolean canEntityGetHeadshot(Entity e)
     {
-    	return e instanceof EntityZombie || e instanceof EntitySkeleton || e instanceof EntityCreeper || e instanceof EntityWitch || e instanceof EntityPigZombie || e instanceof EntityEnderman || e instanceof EntityWitherSkeleton || e instanceof EntityPlayer || e instanceof EntityVillager || e instanceof EntityEvoker || e instanceof EntityStray || e instanceof EntityVindicator;
+    	return e instanceof EntityZombie || e instanceof EntitySkeleton || e instanceof EntityCreeper || e instanceof EntityWitch || e instanceof EntityPigZombie || e instanceof EntityEnderman || e instanceof EntityWitherSkeleton || e instanceof EntityPlayer || e instanceof EntityVillager || e instanceof EntityEvoker || e instanceof EntityStray || e instanceof EntityVindicator || e instanceof EntityIronGolem || e instanceof EntitySnowman;
     }
     
     public EntityLivingBase getShooter()

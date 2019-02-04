@@ -59,10 +59,12 @@ public class SmgMicroUzi extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item at)
+	public List<Item> acceptedAttachments()
 	{
-		return at == PMCItems.QUICKDRAW_MAG_SMG || at == PMCItems.EXTENDED_MAG_SMG || at == PMCItems.EXTENDED_QUICKDRAW_MAG_SMG
-				|| at == PMCItems.COMPENSATOR_SMG || at == PMCItems.SILENCER_SMG;
+		addMagazines();
+		attachments.add(PMCItems.SILENCER_SMG);
+		attachments.add(PMCItems.COMPENSATOR_SMG);
+		return super.acceptedAttachments();
 	}
 	
 	@Override

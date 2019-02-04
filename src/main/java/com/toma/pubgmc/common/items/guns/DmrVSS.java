@@ -60,10 +60,11 @@ public class DmrVSS extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment)
+	public List<Item> acceptedAttachments()
 	{
-		return attachment == PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER || attachment == PMCItems.EXTENDED_MAG_SNIPER || attachment == PMCItems.QUICKDRAW_MAG_SNIPER
-				|| attachment == PMCItems.CHEEKPAD;
+		addMagazines();
+		attachments.add(PMCItems.CHEEKPAD);
+		return super.acceptedAttachments();
 	}
 	
 	@Override

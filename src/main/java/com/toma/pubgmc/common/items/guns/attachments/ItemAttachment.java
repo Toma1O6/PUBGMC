@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.PMCItem;
-import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCItems;

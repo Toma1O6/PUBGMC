@@ -16,7 +16,6 @@ import com.toma.pubgmc.client.models.atachments.ModelSilencerPistol;
 import com.toma.pubgmc.client.models.atachments.ModelVerticalGrip;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
-import com.toma.pubgmc.common.capability.IPlayerData;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;

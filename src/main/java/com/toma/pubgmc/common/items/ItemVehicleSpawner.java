@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.util.VehicleSpawnerRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;

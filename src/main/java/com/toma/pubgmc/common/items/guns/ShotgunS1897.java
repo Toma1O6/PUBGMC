@@ -101,9 +101,10 @@ public class ShotgunS1897 extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment)
+	public List<Item> acceptedAttachments() 
 	{
-		return attachment == PMCItems.BULLET_LOOPS_SHOTGUN;
+		addShotgunAttachments();
+		return super.acceptedAttachments();
 	}
 	
 	@Override

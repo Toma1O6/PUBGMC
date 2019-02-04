@@ -1,7 +1,6 @@
 package com.toma.pubgmc.common.commands;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;

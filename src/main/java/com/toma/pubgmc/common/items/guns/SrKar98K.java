@@ -3,8 +3,6 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
-import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
@@ -49,11 +47,13 @@ public class SrKar98K extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment)
+	public List<Item> acceptedAttachments()
 	{
-		return ((ItemAttachment)attachment).getType() == Type.SCOPE
-				|| attachment == PMCItems.COMPENSATOR_SNIPER || attachment == PMCItems.SILENCER_SNIPER
-				|| attachment == PMCItems.BULLET_LOOPS_SNIPER || attachment == PMCItems.CHEEKPAD;
+		addScopes();
+		attachments.add(PMCItems.SILENCER_SNIPER);
+		attachments.add(PMCItems.COMPENSATOR_SNIPER);
+		attachments.add(PMCItems.BULLET_LOOPS_SNIPER);
+		return super.acceptedAttachments();
 	}
 	
 	@Override

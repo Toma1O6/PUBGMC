@@ -1,8 +1,5 @@
 package com.toma.pubgmc.client.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.lwjgl.input.Keyboard;
 
 import com.toma.pubgmc.Pubgmc;

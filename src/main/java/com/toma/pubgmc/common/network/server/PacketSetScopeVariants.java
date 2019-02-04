@@ -50,8 +50,6 @@ public class PacketSetScopeVariants implements IMessage, IMessageHandler<PacketS
 				IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 				data.setScopeType(message.scopetype);
 				data.setScopeColor(message.scopecolor);
-				Pubgmc.logger.info("Scope Type ID: " + message.scopetype);
-				Pubgmc.logger.info("Scope Color ID: " + message.scopecolor);
 			}
 		});
 		return null;

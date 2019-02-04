@@ -7,8 +7,11 @@ import com.toma.pubgmc.client.util.slots.SlotAttachment;
 import com.toma.pubgmc.client.util.slots.SlotWeapon;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryHelper;
@@ -19,14 +22,16 @@ public class ContainerAttachments extends Container
 {
 	private InventoryAttachments inv;
 	private InventoryPlayer playerInv;
+	private EntityPlayer invUser;
 	private List<Slot> slots = new ArrayList<Slot>();
 	
 	
-	public ContainerAttachments(InventoryPlayer playerInv)
+	public ContainerAttachments(InventoryPlayer playerInv, EntityPlayer player)
 	{
 		inv = new InventoryAttachments();
 		slots.clear();
 		this.playerInv = playerInv;
+		this.invUser = player;
 		
 		addSlotToContainer(new SlotWeapon(inv, 0, 80, 31));
 		slots.add(new SlotWeapon(0));
@@ -203,6 +208,13 @@ public class ContainerAttachments extends Container
 		}
 		
 		return ItemStack.EMPTY;
+	}
+	
+	@Override
+	public void detectAndSendChanges()
+	{
+		if(!invUser.world.isRemote) PacketHandler.sendToClient(new PacketUpdateAttachmentGUI(inv), (EntityPlayerMP)invUser);
+		super.detectAndSendChanges();
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.entity;
 
-import com.jcraft.jorbis.Block;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.Entity;
@@ -12,7 +11,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class EntityParachute extends Entity
@@ -46,35 +44,34 @@ public class EntityParachute extends Entity
 	@Override
 	public void onUpdate()
 	{	
-		if(!this.isBeingRidden() && ticksExisted > 2)
+		if(this.isBeingRidden())
 		{
-			setDead();
+			if(this.getControllingPassenger() != null)
+			{
+				Entity entity = this.getControllingPassenger();
+				BlockPos pos = entity.getPosition();
+				motionY = -0.2d;
+				
+				if(onGround || isInWater() || isInLava())
+				{
+					onParachuteLand();
+				}
+				
+				if(entity instanceof EntityPlayer)
+				{
+					EntityPlayer player = (EntityPlayer)entity;
+					handleMovement(player);
+				}
+				
+				if(!world.isAirBlock(new BlockPos(pos.getX()-1, pos.getY(), pos.getZ())) ||
+						!world.isAirBlock(new BlockPos(pos.getX()+1, pos.getY(), pos.getZ())) ||
+						!world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1)) ||
+						!world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)))
+					onParachuteLand();
+			}
 		}
 		
-		else
-		{
-			Entity entity = this.getControllingPassenger();
-			BlockPos pos = entity.getPosition();
-			motionY = -0.2d;
-			
-			if(onGround || isInWater() || isInLava())
-			{
-				world.playSound(null, posX, posY, posZ, PMCSounds.chute_land, SoundCategory.MASTER, 1f, 1f);
-				setDead();
-			}
-			
-			if(entity instanceof EntityPlayer)
-			{
-				EntityPlayer player = (EntityPlayer)entity;
-				handleMovement(player);
-			}
-			
-			if(!world.isAirBlock(new BlockPos(pos.getX()-1, pos.getY(), pos.getZ())) ||
-					!world.isAirBlock(new BlockPos(pos.getX()+1, pos.getY(), pos.getZ())) ||
-					!world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1)) ||
-					!world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)))
-				setDead();
-		}
+		else setDead();
 		
 		move(MoverType.SELF, motionX, motionY, motionZ);
 		super.onUpdate();
@@ -213,6 +210,13 @@ public class EntityParachute extends Entity
 	@Override
 	protected void entityInit() 
 	{
+	}
+	
+	private void onParachuteLand()
+	{
+		world.playSound(null, getPosition(), PMCSounds.chute_land, SoundCategory.MASTER, 3f, 1f);
+		this.removePassengers();
+		setDead();
 	}
 	
 	private boolean noInput()

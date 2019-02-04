@@ -264,7 +264,7 @@ public class CommonEvents
 		if(e.player instanceof EntityPlayerMP)
 		{
 			//Sync config with server
-			PacketHandler.INSTANCE.sendTo(new PacketSyncConfig(), (EntityPlayerMP)e.player);
+			PacketHandler.sendToClient(new PacketSyncConfig(), (EntityPlayerMP)e.player);
 			
 			EntityPlayerMP player = (EntityPlayerMP) e.player;
 			if(player != null && !player.world.isRemote)
@@ -274,14 +274,7 @@ public class CommonEvents
 				IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 				
 				//Sync some data from capability to client for overlay rendering 
-				PacketUpdatePlayerData packet = new PacketUpdatePlayerData();
-				packet.setBoost(data.getBoost());
-				packet.setHasNV(data.getEquippedNV());
-				packet.setLevel(data.getBackpackLevel());
-				packet.setReloading(data.isReloading());
-				packet.setScopeType(data.getScopeType());
-				packet.setScopeColor(data.getScopeColor());
-				PacketHandler.INSTANCE.sendTo(packet, (EntityPlayerMP)player);
+				PacketHandler.syncPlayerDataToClient(data, player);
 			}
 		}
 	}

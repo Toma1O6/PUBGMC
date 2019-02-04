@@ -3,8 +3,6 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
-import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
@@ -49,9 +47,10 @@ public class LmgDP28 extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment)
+	public List<Item> acceptedAttachments()
 	{
-		return ((ItemAttachment)attachment).getType() == Type.SCOPE && attachment != PMCItems.SCOPE15X && attachment != PMCItems.SCOPE8X;
+		addCloseRangeScopes();
+		return super.acceptedAttachments();
 	}
 	
 	@Override

@@ -66,6 +66,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	private GunType gunType;
 	private boolean hasTwoRoundBurst = false;
 	private SoundEvent gun_shoot, gun_silenced;
+	protected List<Item> attachments = new ArrayList<Item>();
 	
 	private ItemAmmo ammoItem;
 	private int ammoCount = 0;
@@ -90,7 +91,10 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 * @param attachment - the attachment item
 	 * @return if the attachment is supported by the weapon
 	 */
-	public abstract boolean isAtachmentAccepted(Item attachment);
+	public List<Item> acceptedAttachments()
+	{
+		return attachments;
+	}
 	
 	/**
 	 * Gets maximum possible amount of bullet gun can have loaded
@@ -780,5 +784,120 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	public boolean isHasTwoRoundBurst()
 	{
 		return hasTwoRoundBurst;
+	}
+	
+	protected void addMagazines()
+	{
+		if(gunType == GunType.PISTOL)
+		{
+			attachments.add(PMCItems.QUICKDRAW_MAG_PISTOL);
+			attachments.add(PMCItems.EXTENDED_MAG_PISTOL);
+			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL);
+		}
+		
+		else if(gunType == GunType.SMG)
+		{
+			attachments.add(PMCItems.QUICKDRAW_MAG_SMG);
+			attachments.add(PMCItems.EXTENDED_MAG_SMG);
+			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG);
+		}
+		
+		else if(gunType == gunType.AR)
+		{
+			attachments.add(PMCItems.QUICKDRAW_MAG_AR);
+			attachments.add(PMCItems.EXTENDED_MAG_AR);
+			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_AR);
+		}
+		
+		else if(gunType == GunType.DMR || gunType == GunType.SR)
+		{
+			attachments.add(PMCItems.QUICKDRAW_MAG_SNIPER);
+			attachments.add(PMCItems.EXTENDED_MAG_SNIPER);
+			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER);
+		}
+	}
+	
+	protected void addGrips()
+	{
+		attachments.add(PMCItems.GRIP_ANGLED);
+		attachments.add(PMCItems.GRIP_VERTICAL);
+	}
+	
+	protected void addCloseRangeScopes()
+	{
+		attachments.add(PMCItems.RED_DOT);
+		attachments.add(PMCItems.HOLOGRAPHIC);
+		attachments.add(PMCItems.SCOPE2X);
+		attachments.add(PMCItems.SCOPE4X);
+	}
+	
+	protected void addScopes()
+	{
+		addCloseRangeScopes();
+		attachments.add(PMCItems.SCOPE8X);
+		attachments.add(PMCItems.SCOPE15X);
+	}
+	
+	/**
+	 * <li> silencer
+	 * <li> redDot
+	 * <li> magazines
+	 */
+	protected void addPistolAttachments()
+	{
+		attachments.add(PMCItems.SILENCER_PISTOL);
+		attachments.add(PMCItems.RED_DOT);
+		addMagazines();
+	}
+	
+	/**
+	 * <li> Bullet Loops
+	 */
+	protected void addShotgunAttachments()
+	{
+		attachments.add(PMCItems.BULLET_LOOPS_SHOTGUN);
+	}
+	
+	/**
+	 * <li> silencer, compensator
+	 * <li> grips
+	 * <li> magazines
+	 * <li> Red Dot, Holo, 2X, 4X
+	 */
+	protected void addSMGAttachments()
+	{
+		attachments.add(PMCItems.SILENCER_SMG);
+		attachments.add(PMCItems.COMPENSATOR_SMG);
+		addGrips();
+		addMagazines();
+		addCloseRangeScopes();
+	}
+	
+	/**
+	 * <li> silencer, compensator
+	 * <li> grips - only grips == true
+	 * <li> magazines
+	 * <li> Red Dot, Holo, 2X, 4X
+	 */
+	protected void addARAttachments(boolean grips)
+	{
+		addCloseRangeScopes();
+		addMagazines();
+		if(grips) addGrips();
+		attachments.add(PMCItems.COMPENSATOR_AR);
+		attachments.add(PMCItems.SILENCER_AR);
+	}
+	
+	/**
+	 * <li> silencer, compensator
+	 * <li> magazines
+	 * <li> Red Dot, Holo, 2X, 4X, 8X, 15X
+	 */
+	protected void addSniperAttachments()
+	{
+		addScopes();
+		addMagazines();
+		attachments.add(PMCItems.SILENCER_SNIPER);
+		attachments.add(PMCItems.COMPENSATOR_SNIPER);
 	}
 }

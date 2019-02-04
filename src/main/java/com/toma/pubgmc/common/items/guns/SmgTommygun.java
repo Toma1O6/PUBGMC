@@ -60,11 +60,12 @@ public class SmgTommygun extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item at)
+	public List<Item> acceptedAttachments() 
 	{
-		return at == PMCItems.QUICKDRAW_MAG_SMG || at == PMCItems.EXTENDED_MAG_SMG || at == PMCItems.EXTENDED_QUICKDRAW_MAG_SMG
-				|| at == PMCItems.SILENCER_SMG
-				|| at == PMCItems.GRIP_VERTICAL;
+		addMagazines();
+		attachments.add(PMCItems.GRIP_VERTICAL);
+		attachments.add(PMCItems.SILENCER_SMG);
+		return super.acceptedAttachments();
 	}
 	
 	@Override

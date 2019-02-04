@@ -52,7 +52,7 @@ public class InventoryAttachments extends InventoryBasic
 				{
 					ItemAttachment attach = (ItemAttachment)getStackInSlot(1).getItem();
 
-					if(((GunBase)gun.getItem()).isAtachmentAccepted(attach))
+					if(((GunBase)gun.getItem()).acceptedAttachments().contains(attach))
 					{
 						gun.getTagCompound().setInteger("scope", attach.getID(getStackInSlot(1).getItem()));
 						removeStackFromSlot(1);
@@ -63,7 +63,7 @@ public class InventoryAttachments extends InventoryBasic
 				if(getStackInSlot(2).getItem() instanceof ItemAttachment)
 				{
 					ItemAttachment attach = (ItemAttachment)getStackInSlot(2).getItem();
-					if(((GunBase)gun.getItem()).isAtachmentAccepted(attach))
+					if(((GunBase)gun.getItem()).acceptedAttachments().contains(attach))
 					{
 						gun.getTagCompound().setInteger("barrel", attach.getID(getStackInSlot(2).getItem()));
 						removeStackFromSlot(2);
@@ -74,7 +74,7 @@ public class InventoryAttachments extends InventoryBasic
 				if(getStackInSlot(3).getItem() instanceof ItemAttachment)
 				{
 					ItemAttachment attach = (ItemAttachment)getStackInSlot(3).getItem();
-					if(((GunBase)gun.getItem()).isAtachmentAccepted(attach))
+					if(((GunBase)gun.getItem()).acceptedAttachments().contains(attach))
 					{
 						gun.getTagCompound().setInteger("grip", attach.getID(getStackInSlot(3).getItem()));
 						removeStackFromSlot(3);
@@ -86,7 +86,7 @@ public class InventoryAttachments extends InventoryBasic
 				{
 					ItemAttachment attach = (ItemAttachment)getStackInSlot(4).getItem();
 					
-					if(((GunBase)gun.getItem()).isAtachmentAccepted(attach))
+					if(((GunBase)gun.getItem()).acceptedAttachments().contains(attach))
 					{
 						gun.getTagCompound().setInteger("magazine", attach.getID(getStackInSlot(4).getItem()));
 						removeStackFromSlot(4);
@@ -98,7 +98,7 @@ public class InventoryAttachments extends InventoryBasic
 				{
 					ItemAttachment attach = (ItemAttachment)getStackInSlot(5).getItem();
 					
-					if(((GunBase)gun.getItem()).isAtachmentAccepted(attach))
+					if(((GunBase)gun.getItem()).acceptedAttachments().contains(attach))
 					{
 						gun.getTagCompound().setInteger("stock", attach.getID(getStackInSlot(5).getItem()));
 						removeStackFromSlot(5);

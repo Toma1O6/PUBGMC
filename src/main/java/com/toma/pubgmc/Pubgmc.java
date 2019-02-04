@@ -7,11 +7,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.toma.pubgmc.common.CommonEvents;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.capability.IPlayerData.PlayerData;
+import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataStorage;
 import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
-import com.toma.pubgmc.common.capability.IPlayerData.PlayerData;
-import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataStorage;
 import com.toma.pubgmc.common.commands.CommandAirdrop;
 import com.toma.pubgmc.common.commands.CommandClearPlayerCrates;
 import com.toma.pubgmc.common.commands.CommandLeave;
@@ -107,7 +107,7 @@ public class Pubgmc
 		
 		registerSmeltingRecipes();
 		
-		registerEntities();
+		//registerEntities();
 		proxy.init(event);
 		GameRegistry.registerWorldGenerator(new OreGen(), 4);
 		logger.log(Level.INFO, "Initialized");

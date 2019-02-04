@@ -8,7 +8,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityParachute;
@@ -76,7 +75,12 @@ public class ClientEvents
     private static final ResourceLocation BOOST_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_overlay.png");
 	private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
 	private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
-	private static final int AIM_TIME = 18;
+	
+	/** Time it takes to render red dot / holographic overlay after aiming **/
+	private static final int AIM_TIME = 10;
+	
+	/** Time since started aiming **/
+	private int aimingTicks;
     
     /** Random Number Generator **/
     private final Random rand = new Random();
@@ -117,9 +121,6 @@ public class ClientEvents
 	/** IDs for different red dot sight styles and colors **/
 	private int currentColor = 0;
 	private int currentType = 0;
-	
-	/** **/
-	private int aimingTime;
 	
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post e)
@@ -311,13 +312,13 @@ public class ClientEvents
         				int left = halfX - 8;
         				int top = halfY - 8;
         				
-        				if(stack.getTagCompound().getInteger("scope") == 1)
+        				if(stack.getTagCompound().getInteger("scope") == 1 && aimingTicks >= AIM_TIME)
         				{
             				ImageUtil.drawCustomSizedImage(mc, SCOPES.get(getScopeTypeID(data.getScopeType(), data.getScopeColor())), left, top, 17, 17, true);
         					
         				}
         				
-        				else if(stack.getTagCompound().getInteger("scope") == 2)
+        				else if(stack.getTagCompound().getInteger("scope") == 2 && aimingTicks >= AIM_TIME)
         				{
         					ImageUtil.drawCustomSizedImage(mc, HOLOS.get(getHoloID(data.getScopeColor())), left, top, 17, 17, true);
         				}
@@ -428,6 +429,7 @@ public class ClientEvents
     			{
     				if(!data.isAiming())
     				{
+    					aimingTicks = 0;
     					aimSlot = player.inventory.currentItem;
     					data.setAiming(true);
     					//We have to tell the server the player is aiming to make it work on servers
@@ -811,6 +813,8 @@ public class ClientEvents
         	
             if(data.isAiming())
             {
+            	if(aimingTicks < AIM_TIME) aimingTicks++;
+            	
             	if(aimSlot != player.inventory.currentItem)
             	{
             		setAiming(data, false);

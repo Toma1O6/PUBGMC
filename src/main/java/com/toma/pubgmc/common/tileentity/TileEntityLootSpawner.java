@@ -24,7 +24,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.GuiNotification;
 
 public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 {

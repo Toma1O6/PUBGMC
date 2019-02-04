@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.items.guns;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -65,9 +66,9 @@ public class FlareGun extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment)
+	public List<Item> acceptedAttachments()
 	{
-		return false;
+		return Collections.EMPTY_LIST;
 	}
 	
 	@Override

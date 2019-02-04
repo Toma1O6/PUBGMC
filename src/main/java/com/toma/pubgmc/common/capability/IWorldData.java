@@ -1,13 +1,8 @@
 package com.toma.pubgmc.common.capability;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.google.common.primitives.Ints;
-import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 
 import net.minecraft.nbt.NBTBase;

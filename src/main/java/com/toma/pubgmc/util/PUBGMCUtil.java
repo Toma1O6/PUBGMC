@@ -1,8 +1,10 @@
 package com.toma.pubgmc.util;
 
+import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSound;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
@@ -54,11 +56,21 @@ public class PUBGMCUtil
 	
 	public static void sendSoundPacket(SoundEvent event, float volume, float pitch, BlockPos pos, TargetPoint target)
 	{
-		PacketHandler.INSTANCE.sendToAllAround(new PacketSound(event, volume, 1f, pos.getX(), pos.getY(), pos.getZ()), target);
+		PacketHandler.INSTANCE.sendToAllAround(new PacketSound(event, volume, pitch, pos.getX(), pos.getY(), pos.getZ()), target);
 	}
 	
 	public static boolean shouldSendCommandFeedback(World world)
 	{
 		return world.getGameRules().getBoolean("sendCommandFeedback");
+	}
+	
+	public static boolean isPlayerDrivingVehicle(EntityPlayer player)
+	{
+		return player.getRidingEntity() instanceof EntityVehicle;
+	}
+	
+	public static boolean isPlayerDriverOfVehicle(EntityPlayer player)
+	{
+		return player.getRidingEntity() instanceof EntityVehicle && player.getRidingEntity().getPassengers().get(0) == player;
 	}
 }

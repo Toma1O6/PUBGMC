@@ -7,7 +7,6 @@ PUBGMC TODO LIST
 |-----------------------------------------------------------------------------------------|
 |    HIGH PRIORITY:                                                                       |
 |-----------------------------------------------------------------------------------------|
-| - Better damage calculation based on armor (for headshots damage only helmet etc)
 | - Pistol & Shotgun model overhaul - finish R45, R1895, Flare Gun, S12K animations
 | - Vehicles
 | - Proning
@@ -30,6 +29,7 @@ PUBGMC TODO LIST
 | - Basic animations
 | - Better /loot command control
 | - Playing plane sound when airdrop is spawned
+| - Better damage calculation based on armor (for headshots damage only helmet etc)
 |
 |-----------------------------------------------------------------------------------------|
 |    MAYBE?                                                                               |

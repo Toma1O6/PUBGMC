@@ -61,11 +61,10 @@ public class PistolP92 extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item a)
+	public List<Item> acceptedAttachments()
 	{
-		return a == PMCItems.QUICKDRAW_MAG_PISTOL || a == PMCItems.EXTENDED_MAG_PISTOL || a == PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL
-				|| a == PMCItems.RED_DOT
-				|| a == PMCItems.SILENCER_PISTOL;
+		addPistolAttachments();
+		return super.acceptedAttachments();
 	}
 	
 	@Override

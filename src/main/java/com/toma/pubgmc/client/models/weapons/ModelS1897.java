@@ -5,7 +5,6 @@ import com.toma.pubgmc.animation.SimpleReloadAnimation;
 import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
-import com.toma.pubgmc.common.capability.IPlayerData.PlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
 import net.minecraft.client.Minecraft;

@@ -1,6 +1,5 @@
 package com.toma.pubgmc.animation;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class HeldAnimations extends Animation

@@ -47,9 +47,10 @@ public class PistolR1895 extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment) 
+	public List<Item> acceptedAttachments()
 	{
-		return attachment == PMCItems.SILENCER_PISTOL;
+		attachments.add(PMCItems.SILENCER_PISTOL);
+		return super.acceptedAttachments();
 	}
 	
 	@Override

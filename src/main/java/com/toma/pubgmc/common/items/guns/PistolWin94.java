@@ -45,9 +45,10 @@ public class PistolWin94 extends GunBase
 	}
 	
 	@Override
-	public boolean isAtachmentAccepted(Item attachment) 
+	public List<Item> acceptedAttachments()
 	{
-		return attachment == PMCItems.BULLET_LOOPS_SNIPER;
+		attachments.add(PMCItems.BULLET_LOOPS_SNIPER);
+		return super.acceptedAttachments();
 	}
 	
 	@Override
