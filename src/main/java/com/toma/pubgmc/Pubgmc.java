@@ -107,7 +107,6 @@ public class Pubgmc
 		
 		registerSmeltingRecipes();
 		
-		//registerEntities();
 		proxy.init(event);
 		GameRegistry.registerWorldGenerator(new OreGen(), 4);
 		logger.log(Level.INFO, "Initialized");
@@ -132,21 +131,6 @@ public class Pubgmc
 		registerGamerules(event);
 		
 		logger.log(Level.INFO, "Registered commands");
-	}
-	
-	private static void registerEntities()
-	{
-		//these values will need some more work
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":bullet"), EntityBullet.class, Pubgmc.MOD_ID + ":bullet_entity", 0, instance, 64, 80, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":grenade"), EntityGrenade.class, Pubgmc.MOD_ID + ":grenade_entity", 1, instance, 64, 20, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":smokegrenade"), EntitySmokeGrenade.class, Pubgmc.MOD_ID + ":smokegrenade_entity", 2, instance, 64, 20, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":molotov"), EntityMolotov.class, Pubgmc.MOD_ID + ":molotov_entity", 3, instance, 64, 20, true);
-		//EntityRegistry.registerModEntity(new ResourceLocation(Main.MOD_ID + ":flashbang"), EntityFlashbang.class, Main.MOD_ID + ":flashbang", 4, this, 64, 80, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":flare"), EntityFlare.class, Pubgmc.MOD_ID + ":flare_entity", 5, instance, 64, 80, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":parachute"), EntityParachute.class, Pubgmc.MOD_ID + ":parachute", 6, instance, 256, 1, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(Pubgmc.MOD_ID + ":testvehicle"), EntityTestVehicle.class, MOD_ID + ":testvehicle", 7, instance, 256, 50, true);
-		
-		registerVehicles();
 	}
 	
 	/**
