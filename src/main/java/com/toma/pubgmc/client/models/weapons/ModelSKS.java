@@ -26,9 +26,7 @@ public class ModelSKS extends ModelGun
 
 	public ModelSKS()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.2625d, 0.245d, 1f);
-		animation_aim.setInvertedCoords(true, false, false);
-		animation_aim.setMovementMultiplier(1f, 1f, 1f);
+		animation_aim = new AimAnimation(-0.56d, 0.2625d, 0.245d, 1f).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

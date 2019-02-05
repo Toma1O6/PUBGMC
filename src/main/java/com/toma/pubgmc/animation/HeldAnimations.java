@@ -73,9 +73,10 @@ public class HeldAnimations extends Animation
 		GlStateManager.translate(mX, mY, mZ);
 	}
 	
-	public void setWeaponType(boolean isSmallGun)
+	public HeldAnimations setWeaponType(boolean isSmallGun)
 	{
 		this.small_weapon = isSmallGun;
+		return this;
 	}
 	
 	public boolean getWeaponType()

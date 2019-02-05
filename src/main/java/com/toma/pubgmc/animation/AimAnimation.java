@@ -132,11 +132,12 @@ public class AimAnimation extends Animation
 		GlStateManager.translate(mX, mY, mZ);
 	}
 	
-	public void setMovementMultiplier(float multiplierX, float multiplierY, float multiplierZ)
+	public AimAnimation setMovementMultiplier(float multiplierX, float multiplierY, float multiplierZ)
 	{
 		this.xModifier = multiplierX;
 		this.yModifier = multiplierY;
 		this.zModifier = multiplierZ;
+		return this;
 	}
 	
 	/**
@@ -165,11 +166,12 @@ public class AimAnimation extends Animation
 	 * @param y
 	 * @param z
 	 */
-	public void setInvertedCoords(boolean x, boolean y, boolean z)
+	public AimAnimation setInvertedCoords(boolean x, boolean y, boolean z)
 	{
 		this.invertX = x;
 		this.invertY = y;
 		this.invertZ = z;
+		return this;
 	}
 	
 	/**

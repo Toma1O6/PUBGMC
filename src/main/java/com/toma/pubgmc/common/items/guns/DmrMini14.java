@@ -26,7 +26,7 @@ public class DmrMini14 extends GunBase
 		this.setAmmoType(AmmoType.AMMO556);
 		this.setReloadTime(62);
 		this.setReloadDelay(15);
-		this.setFireRate(3);
+		this.setFireRate(1);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.DMR);

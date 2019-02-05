@@ -26,7 +26,7 @@ public class DmrQBU extends GunBase
 		this.setAmmoType(AmmoType.AMMO556);
 		this.setReloadTime(44);
 		this.setReloadDelay(10);
-		this.setFireRate(3);
+		this.setFireRate(1);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.DMR);

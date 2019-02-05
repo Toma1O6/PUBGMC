@@ -53,6 +53,7 @@ public class SrKar98K extends GunBase
 		attachments.add(PMCItems.SILENCER_SNIPER);
 		attachments.add(PMCItems.COMPENSATOR_SNIPER);
 		attachments.add(PMCItems.BULLET_LOOPS_SNIPER);
+		attachments.add(PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	

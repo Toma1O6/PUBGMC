@@ -8,6 +8,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
+import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityParachute;
@@ -264,7 +265,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			e.setCanceled(true);
+    			//e.setCanceled(true);
     		}
     	}
     	
@@ -467,7 +468,7 @@ public class ClientEvents
     {
     	EntityPlayerSP sp = Minecraft.getMinecraft().player;
     	/** DEBUGGER **/
-    	/*if(KeyBinds.TRANSLATEXPLUS.isPressed())
+    	if(KeyBinds.TRANSLATEXPLUS.isPressed())
     	{
     		if(sp.isSneaking())
     		{
@@ -567,7 +568,7 @@ public class ClientEvents
     		}
     		
     		else ModelDebugger.scale -= 0.1f;
-    	}*/
+    	}
     	
     	/** NORMAL MODE ========================================================================== **/
     	

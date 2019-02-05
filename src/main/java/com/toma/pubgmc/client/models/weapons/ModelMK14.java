@@ -24,9 +24,7 @@ public class ModelMK14 extends ModelGun
 
 	public ModelMK14()
 	{
-		animation_aim = new AimAnimation(-0.58d, 0.26d, 0.33d, 1f);
-		animation_aim.setInvertedCoords(true, false, false);
-		animation_aim.setMovementMultiplier(1f, 1.1f, 1.5f);
+		animation_aim = new AimAnimation(-0.58d, 0.26d, 0.33d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1.1f, 1.5f);
 		
 		textureWidth = 128;
 		textureHeight = 128;

@@ -51,7 +51,7 @@ public class ContainerAttachments extends Container
 		addSlotToContainer(new SlotAttachment(inv, 5, 124, 31, Type.STOCK));
 		slots.add(new SlotAttachment(Type.STOCK, 5));
 		
-		addSlotToContainer(new SlotWeapon(inv, 6, 152, 55));
+		addSlotToContainer(new Slot(inv, 6, 152, 55));
 		slots.add(new SlotWeapon(6));
 		
 		//Block slots

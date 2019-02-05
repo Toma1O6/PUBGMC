@@ -24,8 +24,7 @@ public class ModelKar98K extends ModelGun
 
 	public ModelKar98K()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d, 1f);
-		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d, 1f).setInvertedCoords(true, false, false);
 		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;

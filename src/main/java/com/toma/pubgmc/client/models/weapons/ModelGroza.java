@@ -23,8 +23,7 @@ public class ModelGroza extends ModelGun
 
 	public ModelGroza()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.135d, 0.28d, 1f);
-		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.135d, 0.28d, 1f).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

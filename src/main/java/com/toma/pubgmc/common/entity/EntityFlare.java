@@ -137,21 +137,19 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
     	compound.setDouble("movx", this.motionX);
     	compound.setDouble("movy", this.motionY);
     	compound.setDouble("movz", this.motionZ);
-    	compound.setInteger("id", this.shooterId);
-    	compound.setString("shooter", this.shooter.getName());
+    	compound.setInteger("flare_timer", this.timer);
     }
     
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
-    	compound.getDouble("x");
-    	compound.getDouble("y");
-    	compound.getDouble("z");
-    	compound.getDouble("movx");
-    	compound.getDouble("movy");
-    	compound.getDouble("movz");
-    	compound.getInteger("id");
-    	compound.getString("shooter");
+    	posX = compound.getDouble("x");
+    	posY = compound.getDouble("y");
+    	posZ = compound.getDouble("z");
+    	motionX = compound.getDouble("movx");
+    	motionY = compound.getDouble("movy");
+    	motionZ = compound.getDouble("movz");
+    	timer = compound.getInteger("flare_timer");
     }
     
     @Override

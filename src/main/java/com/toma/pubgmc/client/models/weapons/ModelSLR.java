@@ -26,9 +26,7 @@ public class ModelSLR extends ModelGun
 
 	public ModelSLR()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.28d, 0.3d, 1f);
-		animation_aim.setInvertedCoords(true, false, false);
-		animation_aim.setMovementMultiplier(1f, 1f, 1.3f);
+		animation_aim = new AimAnimation(-0.56d, 0.28d, 0.3d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1f, 1.3f);
 		
 		textureWidth = 128;
 		textureHeight = 128;

@@ -21,8 +21,7 @@ public class ModelP18C extends ModelGun
 
 	public ModelP18C()
 	{
-		animation_aim = new AimAnimation(-0.585d, 0.22d, 0.235d, 1f);
-		animation_aim.setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.585d, 0.22d, 0.235d, 1f).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;
