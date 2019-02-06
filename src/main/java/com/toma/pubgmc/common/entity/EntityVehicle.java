@@ -3,6 +3,7 @@ package com.toma.pubgmc.common.entity;
 import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.init.PMCDamageSources;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -155,6 +158,7 @@ public class EntityVehicle extends Entity
 
 		if(!isBroken)
 		{
+			checkSteps();
 			handleVehicle();
 		}
 		
@@ -189,6 +193,29 @@ public class EntityVehicle extends Entity
 		health -= amount;
 
 		return true;
+	}
+	
+	private void checkSteps()
+	{
+		Vec3d vec1 = new Vec3d(posX, posY, posZ);
+		Vec3d vec2 = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
+		RayTraceResult trace = world.rayTraceBlocks(vec1, vec2, false, true, false);
+		
+		if(trace != null)
+		{
+			if(trace.typeOfHit == Type.BLOCK)
+			{
+				BlockPos potentialCollision = new BlockPos(trace.hitVec.x, trace.hitVec.y, trace.hitVec.z);
+				Block block = world.getBlockState(potentialCollision).getBlock();
+				if(!block.isReplaceable(world, potentialCollision))
+				{
+					if(world.isAirBlock(new BlockPos(potentialCollision.getX(), potentialCollision.getY()+1, potentialCollision.getZ())))
+					{
+						setPosition(posX, posY + 1, posZ);
+					}
+				}
+			}
+		}
 	}
 	
 	private void handleAcceleration()

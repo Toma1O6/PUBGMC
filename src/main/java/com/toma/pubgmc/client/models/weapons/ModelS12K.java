@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -14,61 +15,85 @@ import net.minecraft.item.ItemStack;
 public class ModelS12K extends ModelGun
 {
 	private final ModelRenderer base;
-	private final ModelRenderer mag1;
+	private final ModelRenderer mag;
+	private final ModelRenderer magsh;
+	private final ModelRenderer trigger;
 	private final ModelRenderer handle;
+	private final ModelRenderer stock;
 	private final ModelRenderer rail;
+	private final ModelRenderer irns;
 
 	public ModelS12K()
 	{
+		animation_aim = new AimAnimation(-0.535d, 0.27d, 0.235d, 1f).setInvertedCoords(true, false, false);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
 		base = new ModelRenderer(this);
 		base.setRotationPoint(0.0F, 24.0F, 0.0F);
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -16.0F, -28.0F, 2, 2, 3, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -18.0F, -25.0F, 4, 5, 24, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.5F, -17.0F, -25.0F, 5, 5, 23, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.5F, -18.5F, -25.0F, 3, 1, 27, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.5F, -18.5F, 2.0F, 3, 1, 9, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -18.0F, -1.0F, 4, 5, 12, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.5F, -17.0F, -2.0F, 5, 5, 13, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -12.0F, -2.0F, 2, 2, 1, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -10.0F, -1.0F, 2, 1, 1, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -9.0F, 0.0F, 2, 1, 3, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -10.0F, 3.0F, 2, 1, 2, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -16.0F, 11.0F, 4, 5, 6, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -15.0F, 15.0F, 4, 6, 6, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -14.0F, 19.0F, 4, 7, 6, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -17.0F, 11.0F, 4, 1, 2, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -25.0F, -30.0F, 6, 7, 48, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -22.0F, -41.0F, 2, 2, 11, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -1.5F, -22.5F, -46.0F, 3, 3, 5, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -18.0F, 1.0F, 4, 3, 1, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -15.0F, 2.0F, 4, 1, 7, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -18.0F, 9.0F, 4, 3, 1, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -25.0F, 18.0F, 6, 7, 1, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -25.5F, -19.0F, 6, 1, 37, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.5F, -24.5F, 19.0F, 5, 4, 25, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.5F, -21.5F, 40.0F, 5, 14, 4, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.5F, -20.5F, 23.0F, 5, 4, 18, 0.0F, false));
+		base.cubeList.add(new ModelBox(base, 0, 0, -2.5F, -17.5F, 32.0F, 5, 5, 9, 0.0F, false));
 
-		mag1 = new ModelRenderer(this);
-		mag1.setRotationPoint(0f, 24.0F, 0.0F);
-		mag1.cubeList.add(new ModelBox(mag1, 0, 0, -1.0F, -14.0F, 1.0F, 2, 4, 1, 0.0F, false));
-		mag1.cubeList.add(new ModelBox(mag1, 0, 0, -1.5F, -14.0F, -10.0F, 3, 12, 6, 0.0F, false));
+		mag = new ModelRenderer(this);
+		mag.setRotationPoint(0.0F, 24.0F, 0.0F);
+		mag.cubeList.add(new ModelBox(mag, 0, 0, -2.0F, -18.0F, -9.0F, 4, 7, 10, 0.0F, false));
+
+		magsh = new ModelRenderer(this);
+		magsh.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(magsh, -0.1745F, 0.0F, 0.0F);
+		mag.addChild(magsh);
+		magsh.cubeList.add(new ModelBox(magsh, 0, 0, -2.0F, -11.0F, -11.0F, 4, 8, 10, 0.0F, false));
+
+		trigger = new ModelRenderer(this);
+		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
+		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
+		trigger.cubeList.add(new ModelBox(trigger, 0, 0, -1.0F, -19.0F, 3.0F, 2, 2, 1, 0.0F, false));
 
 		handle = new ModelRenderer(this);
-		handle.setRotationPoint(0f, 24.0F, 0.0F);
-		handle.cubeList.add(new ModelBox(handle, 0, 0, -1.5F, -12.0F, 4.0F, 3, 7, 4, 0.0F, false));
+		handle.setRotationPoint(0.0F, 24.0F, 0.0F);
+		setRotationAngle(handle, 0.1745F, 0.0F, 0.0F);
+		handle.cubeList.add(new ModelBox(handle, 0, 0, -2.0F, -16.0F, 13.0F, 4, 13, 7, 0.0F, false));
+
+		stock = new ModelRenderer(this);
+		stock.setRotationPoint(0.0F, 24.0F, 0.0F);
+		setRotationAngle(stock, -0.4363F, 0.0F, 0.0F);
+		stock.cubeList.add(new ModelBox(stock, 0, 0, -2.5F, -28.5F, 7.0F, 5, 4, 27, 0.0F, false));
 
 		rail = new ModelRenderer(this);
 		rail.setRotationPoint(0.0F, 24.0F, 0.0F);
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, 4.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, 2.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, 0.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -10.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -8.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -6.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -4.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -2.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -20.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -18.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -16.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -14.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, -12.0F, 3, 1, 1, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.5F, -19.0F, 6.0F, 3, 1, 4, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, 0.3F, -19.3F, 7.0F, 1, 1, 2, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -1.3F, -19.3F, 7.0F, 1, 1, 2, 0.0F, false));
-		rail.cubeList.add(new ModelBox(rail, 0, 0, -0.5F, -19.5F, -24.0F, 1, 2, 2, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -18.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -16.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -14.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -12.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -10.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -8.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -6.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -4.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, -2.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 0.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 2.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 4.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 6.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 8.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 10.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 12.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 14.0F, 5, 1, 1, 0.0F, false));
+		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -26.0F, 16.0F, 5, 1, 1, 0.0F, false));
+
+		irns = new ModelRenderer(this);
+		irns.setRotationPoint(0.0F, 24.0F, 0.0F);
+		irns.cubeList.add(new ModelBox(irns, 0, 0, -0.5F, -26.5F, -28.0F, 1, 2, 2, 0.0F, false));
 	}
 	
 	@Override
@@ -78,46 +103,12 @@ public class ModelS12K extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
-			if(data.isAiming() && stack.hasTagCompound())
+			GlStateManager.pushMatrix();
 			{
-				renderWeapon(true, stack);
-				
-				if(hasRedDot(stack))
-				{
-					renderRedDotScope(true, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderHolographic(true, stack);
-				}
+				handleAnimations(data, player.isSprinting(), stack);
+				renderWeapon(data.isAiming(), stack);
 			}
-			
-			else
-			{
-				renderWeapon(false, stack);
-				
-				if(hasRedDot(stack))
-				{
-					renderRedDotScope(false, stack);
-				}
-				
-				else if(hasHoloSight(stack))
-				{
-					renderHolographic(false, stack);
-				}
-				
-				else if(has2X(stack))
-				{
-					render2X(stack);
-				}
-				
-				else if(has4X(stack))
-				{
-					render4X(stack);
-				}
-			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -128,28 +119,32 @@ public class ModelS12K extends ModelGun
 		modelRenderer.rotateAngleZ = z;
 	}
 	
-	private void renderGun()
+	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.27d)
+				animation_aim.setYModifier(0.27d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.195d)
+				animation_aim.setYModifier(0.195d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.15d)
+				animation_aim.setYModifier(0.15d);
+			
+			animation_aim.run(data.isAiming());
+		}
+		animation_held.run(sprint);
+		animation_reload.run(data.isReloading());
+	}
+	
+	private void renderParts()
 	{
 		base.render(1f);
-		
-		//rotate magazine
-		GlStateManager.pushMatrix();
-		{
-			GlStateManager.rotate(-15, 1, 0, 0);
-			GlStateManager.translate(0.0, -1.3, 4.0);
-			mag1.render(1f);
-		}
-		GlStateManager.popMatrix();
-		
-		//rotate handle
-		GlStateManager.pushMatrix();
-		{
-			GlStateManager.rotate(15, 1, 0, 0);
-			GlStateManager.translate(0.0, 1.0, -3.0);
-			handle.render(1f);
-		}
-		GlStateManager.popMatrix();
+		mag.render(1f);
+		trigger.render(1f);
+		handle.render(1f);
+		stock.render(1f);
 		rail.render(1f);
+		irns.render(1f);
 	}
 	
 	private void renderWeapon(boolean aim, ItemStack stack)
@@ -157,71 +152,15 @@ public class ModelS12K extends ModelGun
 		GlStateManager.pushMatrix();
 		{
 			transform.defaultShotgunTransform();
-			
-			if(aim)
-			{
-				GlStateManager.rotate(1, 1, 0, 0);
-
-				if(enableADS(stack))
-				{
-					if(hasRedDot(stack))
-					{
-						GlStateManager.translate(0.0, 3.1, 0.0);
-					}
-					
-					else if(hasHoloSight(stack))
-					{
-						GlStateManager.translate(0, 4.9, 0);
-					}
-					
-					GlStateManager.translate(29.1, -17.4, 17.0);
-				}
-			}
-			
-			GlStateManager.translate(0.0, 5.0, 0.0);
-			renderGun();
+			GlStateManager.translate(-0.8, 9.9, -7.5);
+			if(aim && enableADS(stack)) rotateModelForADSRendering();
+			renderParts();
 		}
 		GlStateManager.popMatrix();
-	}
-	
-	private void renderRedDotScope(boolean aim, ItemStack stack)
-	{
-		GlStateManager.pushMatrix();
 		
-		if(aim)
-		{
-			renderRedDot(36.8, -16.6, 24, 1f, stack);
-		}
-		
-		else renderRedDot(1.1, 1.1, 7.0, 1f, stack);
-		
-		GlStateManager.popMatrix();
-	}
-	
-	private void renderHolographic(boolean aim, ItemStack stack)
-	{
-		GlStateManager.pushMatrix();
-		if(aim)
-		{
-			renderHolo(29.1, -12.6, 17, 1f, stack);
-		}
-		
-		else renderHolo(0, 0, 0, 1f, stack);
-		
-		GlStateManager.popMatrix();
-	}
-	
-	private void render2X(ItemStack stack)
-	{
-		GlStateManager.pushMatrix();
-		renderScope2X(12.2, 21.7, -3, 0.8f, stack);
-		GlStateManager.popMatrix();
-	}
-	
-	private void render4X(ItemStack stack)
-	{
-		GlStateManager.pushMatrix();
-		renderScope4X(12.1, 22, 0, 0.8f, stack);
-		GlStateManager.popMatrix();
+		renderRedDot(0.78, -7, 5, 1.3f, stack);
+		renderHolo(-0.4, -7.4, 0, 1.3f, stack);
+		renderScope2X(9, 10, -3, 1f, stack);
+		renderScope4X(9, 10, -3, 1f, stack);
 	}
 }
