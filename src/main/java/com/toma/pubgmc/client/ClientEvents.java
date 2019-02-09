@@ -265,7 +265,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	
@@ -468,7 +468,7 @@ public class ClientEvents
     {
     	EntityPlayerSP sp = Minecraft.getMinecraft().player;
     	/** DEBUGGER **/
-    	if(KeyBinds.TRANSLATEXPLUS.isPressed())
+    	/*if(KeyBinds.TRANSLATEXPLUS.isPressed())
     	{
     		if(sp.isSneaking())
     		{
@@ -568,7 +568,7 @@ public class ClientEvents
     		}
     		
     		else ModelDebugger.scale -= 0.1f;
-    	}
+    	}*/
     	
     	/** NORMAL MODE ========================================================================== **/
     	

@@ -18,6 +18,7 @@ import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
+import com.toma.pubgmc.world.PlayZone;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -33,6 +34,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -40,13 +42,13 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonEvents
-{	
-	private int worldTickTimer;
-	
+{
 	//Attach capability to entity
 	@SubscribeEvent
 	public void attachCapabilities(AttachCapabilitiesEvent<Entity> e)
@@ -63,6 +65,45 @@ public class CommonEvents
 	{
 		e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new WorldDataProvider());
 		e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new GameDataProvider());
+	}
+	
+	@SubscribeEvent
+	public void onWorldTick(TickEvent.WorldTickEvent e)
+	{
+		if(e.phase == Phase.END && !e.world.isRemote)
+		{
+			if(e.world.hasCapability(GameDataProvider.GAMEDATA, null))
+			{
+				IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
+				World world = e.world;
+				if(game.isPlaying())
+				{
+					game.increaseTimer();
+					
+					if(game.getTimer() > game.getZoneByID(game.getCurrentZone()).getStartOfShrinking() && game.getCurrentZone() < game.getAllZones().size())
+					{
+						PlayZone zone = game.getZoneByID(game.getCurrentZone());
+						WorldBorder border = world.getWorldBorder();
+						
+						if(game.getCurrentZone() == 0)
+						{
+							// calculate the worldBorder center based on given map center
+							// or maybe better solution would be to calculate the center of the zone
+							// when the game is supposed to start to prevent lag spikes from longer calculations
+						}
+						
+						border.setTransition(border.getSize(), zone.getFinalSize(), zone.getShrinkingTime());
+						
+						for(EntityPlayer player : world.playerEntities)
+						{
+							player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
+						}
+						
+						game.setCurrentZone(game.getCurrentZone() + 1);
+					}
+				}
+			}
+		}
 	}
 	
 	//Tick event function which fires on all players

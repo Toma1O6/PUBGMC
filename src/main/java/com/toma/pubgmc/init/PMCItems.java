@@ -140,44 +140,5 @@ public class PMCItems
 	public static final Item STEEL_INGOT = null;
 	public static final Item COPPER_INGOT = null;
 	
-	public static final Item VEHICLE_TEST = null;
-	
-	
-	/** ============ OLD STUFF ====================================*/
-	/*
-//Attachments
-	public static final Item QUICKDRAW_PISTOL_MAGAZINE = new ItemAttachment("quickdraw_pistol_magazine", Type.MAGAZINE, GunType.PISTOL);
-	public static final Item EXTENDED_PISTOL_MAGAZINE = new ItemAttachment("extended_pistol_magazine", Type.MAGAZINE, GunType.PISTOL);
-	public static final Item EXQUICKDRAW_PISTOL_MAGAZINE = new ItemAttachment("exquickdraw_pistol_magazine", Type.MAGAZINE, GunType.PISTOL);
-	public static final Item QUICKDRAW_SMG_MAGAZINE = new ItemAttachment("quickdraw_smg_magazine", Type.MAGAZINE, GunType.SMG);
-	public static final Item EXTENDED_SMG_MAGAZINE = new ItemAttachment("extended_smg_magazine", Type.MAGAZINE, GunType.SMG);
-	public static final Item EXQUICKDRAW_SMG_MAGAZINE = new ItemAttachment("exquickdraw_smg_magazine", Type.MAGAZINE, GunType.SMG);
-	public static final Item QUICKDRAW_AR_MAGAZINE = new ItemAttachment("quickdraw_ar_magazine", Type.MAGAZINE, GunType.AR);
-	public static final Item EXTENDED_AR_MAGAZINE = new ItemAttachment("extended_ar_magazine", Type.MAGAZINE, GunType.AR);
-	public static final Item EXQUICKDRAW_AR_MAGAZINE = new ItemAttachment("exquickdraw_ar_magazine", Type.MAGAZINE, GunType.AR);
-	public static final Item QUICKDRAW_SR_MAGAZINE = new ItemAttachment("quickdraw_sr_magazine", Type.MAGAZINE, GunType.SR);
-	public static final Item EXTENDED_SR_MAGAZINE = new ItemAttachment("extended_sr_magazine", Type.MAGAZINE, GunType.SR);
-	public static final Item EXQUICKDRAW_SR_MAGAZINE = new ItemAttachment("exquickdraw_sr_magazine", Type.MAGAZINE, GunType.SR);
-	
-	public static final Item GRIP_VERTICAL = new ItemAttachment("grip_vertical", Type.GRIP, GunType.AR);
-	public static final Item GRIP_ANGLED = new ItemAttachment("grip_angled", Type.GRIP, GunType.AR);
-	
-	public static final Item SILENCER_PISTOL = new ItemAttachment("silencer_pistol", Type.BARREL, GunType.PISTOL);
-	public static final Item SILENCER_SMG = new ItemAttachment("silencer_smg", Type.BARREL, GunType.SMG);
-	public static final Item SILENCER_AR = new ItemAttachment("silencer_ar", Type.BARREL, GunType.AR);
-	public static final Item SILENCER_SR = new ItemAttachment("silencer_sr", Type.BARREL, GunType.SR);
-	public static final Item COMPENSATOR_SMG = new ItemAttachment("compensator_smg", Type.BARREL, GunType.SMG);
-	public static final Item COMPENSATOR_AR = new ItemAttachment("compensator_ar", Type.BARREL, GunType.AR);
-	public static final Item COMPENSATOR_SR = new ItemAttachment("compensator_sr", Type.BARREL, GunType.SR);
-	
-	public static final Item SCOPE_REDDOT = new ItemAttachment("scope_reddot", Type.SCOPE, GunType.AR);
-	public static final Item SCOPE_HOLO = new ItemAttachment("scope_holo", Type.SCOPE, GunType.AR);
-	public static final Item SCOPE_2X = new ItemAttachment("scope_2x", Type.SCOPE, GunType.AR);
-	public static final Item SCOPE_4X = new ItemAttachment("scope_4x", Type.SCOPE, GunType.AR);
-	public static final Item SCOPE_8X = new ItemAttachment("scope_8x", Type.SCOPE, GunType.AR);
-	
-	public static final Item CHEEKPAD = new ItemAttachment("cheekpad", Type.STOCK, GunType.AR);
-	public static final Item BULLET_LOOPS = new ItemAttachment("bullet_loops", Type.STOCK, GunType.SHOTGUN);
-	public static final Item BULLET_LOOPS_SR = new ItemAttachment("bullet_loops_sr", Type.STOCK, GunType.SR);
-*/
+	//public static final Item VEHICLE_TEST = null;
 }

@@ -59,13 +59,13 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION, updateJSON = "https://minecraft.curseforge.com/projects/pubgmc-mod/files")
+@Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION)
 public class Pubgmc
 {
 	/** Some basic stuff **/
 	public static final String MOD_ID = "pubgmc";
 	public static final String NAME = "PUBGMC";
-	public static final String VERSION = "1.4.0-a";
+	public static final String VERSION = "1.4.0";
 	public static final String ACCEPTED_VERSIONS = "[1.12.2]";
 	public static final String CLIENT_PROXY_CLASS = "com.toma.pubgmc.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";
