@@ -559,6 +559,11 @@ public class EntityVehicle extends Entity
 		return turnModifier;
 	}
 	
+	public float getMaxHelth()
+	{
+		return maxHealth;
+	}
+	
 	public static EntityVehicle getVehicleByID(int id, World world, BlockPos pos)
 	{
 		switch(id)

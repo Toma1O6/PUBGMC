@@ -1,7 +1,13 @@
 package com.toma.pubgmc.common.items;
 
+import java.util.List;
+
+import com.sun.jna.platform.win32.WinDef.WPARAM;
+import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.util.VehicleSpawnerRegistry;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,49 +16,63 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class ItemVehicleSpawner extends PMCItem
 {
-	private int vehicleID;
+	private Vehicles car;
 	
-	public ItemVehicleSpawner(String name, int vehicleID)
+	public ItemVehicleSpawner(String name, Vehicles vehicle)
 	{
 		super(name);
-		setHasSubtypes(true);
+		this.car = vehicle;
 	}
 	
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) 
 	{
-		/*ItemStack stack = player.getHeldItem(hand);
-		int meta = this.getMetadata(stack);
+		ItemStack stack = player.getHeldItem(hand);
 		
 		if(!worldIn.isRemote)
 		{
-			EntityVehicle vehicle = EntityVehicle.getVehicleByID(meta, worldIn, pos);
-			vehicle.setMaxHealth(100f);
-			worldIn.spawnEntity(vehicle);
+			car.spawnEntity(worldIn, pos);
 			
 			if(!player.capabilities.isCreativeMode)
 			{
 				stack.shrink(1);
 			}
-			
-			return EnumActionResult.SUCCESS;
-		}*/
-		
+		}
 		return EnumActionResult.PASS;
 	}
 	
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+	private String formattedInfo(String s1, String value)
 	{
-		if(this.isInCreativeTab(tab))
+		return TextFormatting.GRAY + s1 + ": " + TextFormatting.YELLOW + value;
+	}
+	
+	public enum Vehicles
+	{
+		TEST,
+		UAZ;
+		
+		public void spawnEntity(World world, BlockPos pos)
 		{
-			for(int i = 0; i < VehicleSpawnerRegistry.getVehicleRegistry().size(); i++)
+			EntityVehicle vehicle = null;
+			switch(ordinal())
 			{
-				items.add(new ItemStack(this, 1, VehicleSpawnerRegistry.getVehicleRegistry().get(i).getVehicleID()));
+				case 0: vehicle = new EntityTestVehicle(world, pos.getX(), pos.getY(), pos.getZ()); break;
+				default: break;
+			}
+			
+			if(!world.isRemote)
+			{
+				if(vehicle == null)
+				{
+					throw new IllegalArgumentException("Fatal error occured while spawning vehicle!");
+				}
+				
+				world.spawnEntity(vehicle);
 			}
 		}
 	}

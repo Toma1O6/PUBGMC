@@ -10,10 +10,6 @@ public class EntityTestVehicle extends EntityVehicle
 	{
 		super(world);
 		setSize(3f, 2f);
-		setHealth(100f);
-		setFuelLevel(20f);
-		setMaxSpeed(10f);
-		setWaterVehicle(false);
 	}
 	
 	public EntityTestVehicle(World world, double x, double y, double z) 
@@ -25,8 +21,9 @@ public class EntityTestVehicle extends EntityVehicle
 	@Override
 	public void onAddedToWorld()
 	{
+		setMaxHealth(100f);
 		setHealth(100f);
-		setFuelLevel(rand.nextInt(100) + rand.nextFloat());
+		setFuelLevel(10f + rand.nextInt(90) + rand.nextFloat());
 		setMaxSpeed(5f);
 		setWaterVehicle(false);
 		super.onAddedToWorld();

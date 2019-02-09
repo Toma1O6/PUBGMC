@@ -1,6 +1,8 @@
 package com.toma.pubgmc.common;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
+import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
@@ -29,6 +31,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -59,6 +62,7 @@ public class CommonEvents
 	public void attachWorldCapability(AttachCapabilitiesEvent<World> e)
 	{
 		e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new WorldDataProvider());
+		e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new GameDataProvider());
 	}
 	
 	//Tick event function which fires on all players
@@ -328,6 +332,18 @@ public class CommonEvents
 			BlockPos p = player.getPosition();
 			World world = player.world;
 			boolean continueSearch = true;
+			
+			// implementation of gamedata, for version 1.5
+			if(world.hasCapability(GameDataProvider.GAMEDATA, null))
+			{
+				IGameData game = world.getCapability(GameDataProvider.GAMEDATA, null);
+				
+				if(game.isPlaying())
+				{
+					player.setSpawnPoint(game.getMapCenter(), true);
+					player.setGameType(GameType.SPECTATOR);
+				}
+			}
 					
 			//crate position logic
 			if(!world.isAirBlock(p))
