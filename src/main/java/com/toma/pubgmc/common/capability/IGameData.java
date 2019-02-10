@@ -36,6 +36,7 @@ public interface IGameData
 	public void setZonePhaseCount(int count);
 	public int getZonePhaseCount();
 	public void addZonePhase(PlayZone zone);
+	public void removeZonePhase(int ID);
 	public PlayZone getZoneByID(int ID);
 	public List<PlayZone> getAllZones();
 	public void setZones(List<PlayZone> zones);
@@ -225,6 +226,15 @@ public interface IGameData
 		{
 			if(zones.size() < 10)
 				zones.add(zone);
+		}
+		
+		@Override
+		public void removeZonePhase(int ID) 
+		{
+			if(ID <= zones.size())
+			{
+				zones.remove(ID);
+			}
 		}
 		
 		@Override

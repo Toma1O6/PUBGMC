@@ -76,21 +76,16 @@ public class CommonEvents
 			{
 				IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
 				World world = e.world;
-				/*if(game.isPlaying())
+				
+				if(game.isPlaying() && !game.getAllZones().isEmpty())
 				{
 					game.increaseTimer();
 					
 					if(game.getTimer() > game.getZoneByID(game.getCurrentZone()).getStartOfShrinking() && game.getCurrentZone() < game.getAllZones().size())
 					{
+						//TODO this needs many fixes
 						PlayZone zone = game.getZoneByID(game.getCurrentZone());
 						WorldBorder border = world.getWorldBorder();
-						
-						if(game.getCurrentZone() == 0)
-						{
-							// calculate the worldBorder center based on given map center
-							// or maybe better solution would be to calculate the center of the zone
-							// when the game is supposed to start to prevent lag spikes from longer calculations
-						}
 						
 						border.setTransition(border.getSize(), zone.getFinalSize(), zone.getShrinkingTime());
 						
@@ -99,9 +94,10 @@ public class CommonEvents
 							player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
 						}
 						
-						game.setCurrentZone(game.getCurrentZone() + 1);
+						if(game.getCurrentZone() + 1 < game.getAllZones().size()) game.setCurrentZone(game.getCurrentZone() + 1);
+						else game.setPlaying(false);
 					}
-				}*/
+				}
 			}
 		}
 	}

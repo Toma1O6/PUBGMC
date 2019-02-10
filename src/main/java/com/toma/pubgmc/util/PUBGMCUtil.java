@@ -95,4 +95,35 @@ public class PUBGMCUtil
 		}
 		return valid;
 	}
+	
+	public static boolean isStringDoubleOrFloat(String text)
+	{
+		char[] c = text.toCharArray();
+		boolean valid = true;
+		boolean alreadyUsedDot = false;
+		for(int i = 0; i < c.length; i++)
+		{
+			if(Character.isDigit(c[i]) || c[i] == '.')
+			{	
+				if(alreadyUsedDot && c[i] == '.')
+				{
+					valid = false;
+				}
+				
+				if(c[i] == '.' && !alreadyUsedDot)
+				{
+					alreadyUsedDot = true;
+				}
+				
+				continue;
+			}
+			
+			else
+			{
+				valid = false;
+			}
+		}
+		
+		return valid;
+	}
 }

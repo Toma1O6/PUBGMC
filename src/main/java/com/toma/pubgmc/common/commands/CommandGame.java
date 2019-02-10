@@ -6,6 +6,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.world.PlayZone;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -51,9 +52,11 @@ public class CommandGame extends CommandBase
 		{
 			"start >> starts the game",
 			"stop >> stops the game",
-			"addLocation",
-			"clearLocations",
-			"setupMap [mapCenterX, mapCenterZ, mapSize] >> border will be calculated based on these values"
+			"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
+			"clearLocations >> removes all spawn locations from your map",
+			"setupMap [mapCenterX, mapCenterZ, mapSize] >> border will be calculated based on these values",
+			"addZonePhase [timeToStartShrinking, finalSize, shrinkTime, damagePerBlock] >> adds new zone phase to your map",
+			"removeZonePhase [ID] >> removes zone phase"
 		};
 		
 		if(args[0].equalsIgnoreCase("help"))
@@ -91,6 +94,8 @@ public class CommandGame extends CommandBase
 				game.addSpawnLocation(new BlockPos(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3])), args[4]);
 				sendFeedback(world, sender, "Added location " + args[4] + " [" + args[1] + ", " + args[2] + ", " + args[3] + "]!");
 			}
+			
+			else throw new WrongUsageException("You must specify the location position and name! /game addLocation [x,y,z,name]", new Object[0]);
 		}
 		
 		else if(args[0].equalsIgnoreCase("clearLocations"))
@@ -107,6 +112,35 @@ public class CommandGame extends CommandBase
 				sendFeedback(world, sender, TextFormatting.BOLD + "New map setup:");
 				sendFeedback(world, sender, "Center: [" + args[1] + ", " + args[2] + "]");
 				sendFeedback(world, sender, "Map size: " + args[3]);
+			}
+			
+			else throw new WrongUsageException("You must specify mapCenter and size! /game setupMap [posX, posZ, size]", new Object[0]);
+		}
+		
+		else if(args[0].equalsIgnoreCase("addZonePhase"))
+		{
+			if(args.length == 5 && PUBGMCUtil.isValidNumber(args[1]) && PUBGMCUtil.isValidNumber(args[2]) && PUBGMCUtil.isValidNumber(args[3]) && PUBGMCUtil.isStringDoubleOrFloat(args[4]))
+			{
+				int shrinkStart = Integer.parseInt(args[1]);
+				int finalSize = Integer.parseInt(args[2]);
+				int shrinkTime = Integer.parseInt(args[3]);
+				float damage = Float.parseFloat(args[4]);
+				PlayZone zone = new PlayZone(game.getAllZones().size());
+				zone.setup(shrinkStart, shrinkTime, finalSize, damage);
+				game.addZonePhase(zone);
+				sendFeedback(world, sender, "Added zone with ID " + zone.getID() + ", with parameters: [" + shrinkStart + ", " + finalSize + ", " + shrinkTime + ", " + damage + "] from your map");
+			}
+			
+			else throw new WrongUsageException("You must specify zone parameters! /game addZonePhase [ticksToStartShrinking, finalSize, shrinkTime, damagePerBlock]", new Object[0]);
+		}
+		
+		else if(args[0].equalsIgnoreCase("removeZonePhase"))
+		{
+			if(args.length == 2 && PUBGMCUtil.isValidNumber(args[1]))
+			{
+				int ID = Integer.parseInt(args[1]);
+				game.removeZonePhase(ID);
+				sendFeedback(world, sender, "Removed zone with ID " + ID + " from your map");
 			}
 		}
 	}
@@ -150,6 +184,21 @@ public class CommandGame extends CommandBase
 		
 		border.setCenter(zoneCenter.getX(), zoneCenter.getZ());
 		border.setTransition(size + totalDistance);
+		
+		data.setTimer(0);
+		
+		for(EntityPlayer player : world.playerEntities)
+		{
+			player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Available locations:"));
+			if(data.getSpawnLocations().isEmpty()) player.sendMessage(new TextComponentString(TextFormatting.RED + "NONE"));
+			for(int i = 0; i < data.getSpawnLocations().size(); i++)
+			{
+				BlockPos pos = data.getSpawnLocations().get(i);
+				String locName = data.getLocationNames().get(i);
+				
+				player.sendMessage(new TextComponentString(TextFormatting.GREEN + " - " + TextFormatting.YELLOW + locName + TextFormatting.GREEN + "" + TextFormatting.ITALIC + " [" + pos.getX()+", "+pos.getY()+", "+pos.getZ() + "]"));
+			}
+		}
 	}
 	
 	private int generateZoneCenterX(BlockPos center, int size)
