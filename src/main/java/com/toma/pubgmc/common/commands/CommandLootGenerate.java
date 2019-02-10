@@ -9,6 +9,7 @@ import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.util.TileEntityUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -70,7 +71,7 @@ public class CommandLootGenerate extends CommandBase
 		if(args[0].equalsIgnoreCase("help"))
 		{
 			String[] messages = {
-					"- generate >> will generate loot with current command settings",
+					"- generate [Blockpos, range] >> will generate loot with current command settings",
 					"- clear >> clear all loaded loot spawners",
 					"- show >> fills all loaded loot spawners with loot to make it easier for spotting",
 					"- info >> info about current loot setting",
@@ -109,14 +110,45 @@ public class CommandLootGenerate extends CommandBase
 		else if(args[0].equalsIgnoreCase("generate"))
 		{
 			int count = 0;
-			for(TileEntity te : sender.getEntityWorld().loadedTileEntityList)
+			if(args.length == 5 && isValidNumber(args[1]) && isValidNumber(args[2]) && isValidNumber(args[3]) && isValidNumber(args[4]))
 			{
-				if(te instanceof TileEntityLootSpawner)
+				BlockPos gen = new BlockPos(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+				int range = Integer.parseInt(args[4]);
+				
+				if(world.isBlockLoaded(gen))
 				{
-					count++;
-					
-					((TileEntityLootSpawner)te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
-					world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
+					for(TileEntity te : world.loadedTileEntityList)
+					{
+						if(te instanceof TileEntityLootSpawner)
+						{
+							BlockPos lootPos = te.getPos();
+							int rangeX = Math.abs(gen.getX() - lootPos.getX());
+							int rangeZ = Math.abs(gen.getZ() - lootPos.getZ());
+							double totalRange = Math.sqrt(rangeX*rangeX+rangeZ*rangeZ);
+							sender.sendMessage(new TextComponentString(totalRange + ""));
+							
+							if(totalRange <= range)
+							{
+								count++;
+								((TileEntityLootSpawner) te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
+								TileEntityUtil.syncToClient(te);
+							}
+						}
+					}
+				}
+			}
+			
+			else
+			{
+				for(TileEntity te : sender.getEntityWorld().loadedTileEntityList)
+				{
+					if(te instanceof TileEntityLootSpawner)
+					{
+						count++;
+						
+						((TileEntityLootSpawner)te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
+						TileEntityUtil.syncToClient(te);
+					}
 				}
 			}
 			
@@ -565,6 +597,28 @@ public class CommandLootGenerate extends CommandBase
 			}
 		}
 		
+		return valid;
+	}
+	
+	private boolean isValidNumber(String s)
+	{
+		char[] num = s.toCharArray();
+		boolean valid = true;
+		if(num[0] == '-' || Character.isDigit(num[0]))
+		{
+			for(int i = 0; i < num.length; i++)
+			{	
+				if(i > 0)
+				{
+					if(Character.isDigit(num[i]))
+					{
+						continue;
+					}
+					
+					else valid = false;
+				}
+			}
+		}
 		return valid;
 	}
 	
