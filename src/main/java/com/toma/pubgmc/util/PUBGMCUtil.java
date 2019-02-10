@@ -73,4 +73,26 @@ public class PUBGMCUtil
 	{
 		return player.getRidingEntity() instanceof EntityVehicle && player.getRidingEntity().getPassengers().get(0) == player;
 	}
+	
+	public static boolean isValidNumber(String text)
+	{
+		char[] num = text.toCharArray();
+		boolean valid = true;
+		if(num[0] == '-' || Character.isDigit(num[0]))
+		{
+			for(int i = 0; i < num.length; i++)
+			{	
+				if(i > 0)
+				{
+					if(Character.isDigit(num[i]))
+					{
+						continue;
+					}
+					
+					else valid = false;
+				}
+			}
+		}
+		return valid;
+	}
 }

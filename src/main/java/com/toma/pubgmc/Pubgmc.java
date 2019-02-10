@@ -17,6 +17,7 @@ import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.commands.CommandAirdrop;
 import com.toma.pubgmc.common.commands.CommandClearPlayerCrates;
+import com.toma.pubgmc.common.commands.CommandGame;
 import com.toma.pubgmc.common.commands.CommandLeave;
 import com.toma.pubgmc.common.commands.CommandLootGenerate;
 import com.toma.pubgmc.common.commands.CommandResetPlayerData;
@@ -133,6 +134,7 @@ public class Pubgmc
 		event.registerServerCommand(new CommandClearPlayerCrates());
 		event.registerServerCommand(new CommandAirdrop());
 		event.registerServerCommand(new CommandResetPlayerData());
+		event.registerServerCommand(new CommandGame());
 		
 		registerGamerules(event);
 		

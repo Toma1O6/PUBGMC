@@ -76,7 +76,7 @@ public class CommonEvents
 			{
 				IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
 				World world = e.world;
-				if(game.isPlaying())
+				/*if(game.isPlaying())
 				{
 					game.increaseTimer();
 					
@@ -101,7 +101,7 @@ public class CommonEvents
 						
 						game.setCurrentZone(game.getCurrentZone() + 1);
 					}
-				}
+				}*/
 			}
 		}
 	}
