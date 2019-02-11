@@ -76,28 +76,6 @@ public class CommonEvents
 			{
 				IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
 				World world = e.world;
-				
-				if(game.isPlaying() && !game.getAllZones().isEmpty())
-				{
-					game.increaseTimer();
-					
-					if(game.getTimer() > game.getZoneByID(game.getCurrentZone()).getStartOfShrinking() && game.getCurrentZone() < game.getAllZones().size())
-					{
-						//TODO this needs many fixes
-						PlayZone zone = game.getZoneByID(game.getCurrentZone());
-						WorldBorder border = world.getWorldBorder();
-						
-						border.setTransition(border.getSize(), zone.getFinalSize(), zone.getShrinkingTime());
-						
-						for(EntityPlayer player : world.playerEntities)
-						{
-							player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
-						}
-						
-						if(game.getCurrentZone() + 1 < game.getAllZones().size()) game.setCurrentZone(game.getCurrentZone() + 1);
-						else game.setPlaying(false);
-					}
-				}
 			}
 		}
 	}
