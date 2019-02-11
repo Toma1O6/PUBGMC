@@ -54,9 +54,7 @@ public class CommandGame extends CommandBase
 			"stop >> stops the game",
 			"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
 			"clearLocations >> removes all spawn locations from your map",
-			"setupMap [mapCenterX, mapCenterZ, mapSize] >> border will be calculated based on these values",
-			"addZonePhase [timeToStartShrinking, finalSize, shrinkTime, damagePerBlock] >> adds new zone phase to your map",
-			"removeZonePhase [ID] >> removes zone phase"
+			"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values"
 		};
 		
 		if(args[0].equalsIgnoreCase("help"))
@@ -106,42 +104,16 @@ public class CommandGame extends CommandBase
 		
 		else if(args[0].equalsIgnoreCase("setupMap"))
 		{
-			if(args.length == 4 && PUBGMCUtil.isValidNumber(args[1]) && PUBGMCUtil.isValidNumber(args[2]) && PUBGMCUtil.isValidNumber(args[3]))
+			if(args.length == 5 && PUBGMCUtil.isValidNumber(args[1]) && PUBGMCUtil.isValidNumber(args[2]) && PUBGMCUtil.isValidNumber(args[3]) && PUBGMCUtil.isValidNumber(args[4]))
 			{
-				game.setMapCenter(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+				game.setMapCenter(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
 				sendFeedback(world, sender, TextFormatting.BOLD + "New map setup:");
 				sendFeedback(world, sender, "Center: [" + args[1] + ", " + args[2] + "]");
 				sendFeedback(world, sender, "Map size: " + args[3]);
+				sendFeedback(world, sender, "Zone count: " + args[4]);
 			}
 			
-			else throw new WrongUsageException("You must specify mapCenter and size! /game setupMap [posX, posZ, size]", new Object[0]);
-		}
-		
-		else if(args[0].equalsIgnoreCase("addZonePhase"))
-		{
-			if(args.length == 5 && PUBGMCUtil.isValidNumber(args[1]) && PUBGMCUtil.isValidNumber(args[2]) && PUBGMCUtil.isValidNumber(args[3]) && PUBGMCUtil.isStringDoubleOrFloat(args[4]))
-			{
-				int shrinkStart = Integer.parseInt(args[1]);
-				int finalSize = Integer.parseInt(args[2]);
-				int shrinkTime = Integer.parseInt(args[3]);
-				float damage = Float.parseFloat(args[4]);
-				PlayZone zone = new PlayZone(game.getAllZones().size());
-				zone.setup(shrinkStart, shrinkTime, finalSize, damage);
-				game.addZonePhase(zone);
-				sendFeedback(world, sender, "Added zone with ID " + zone.getID() + ", with parameters: [" + shrinkStart + ", " + finalSize + ", " + shrinkTime + ", " + damage + "] from your map");
-			}
-			
-			else throw new WrongUsageException("You must specify zone parameters! /game addZonePhase [ticksToStartShrinking, finalSize, shrinkTime, damagePerBlock]", new Object[0]);
-		}
-		
-		else if(args[0].equalsIgnoreCase("removeZonePhase"))
-		{
-			if(args.length == 2 && PUBGMCUtil.isValidNumber(args[1]))
-			{
-				int ID = Integer.parseInt(args[1]);
-				game.removeZonePhase(ID);
-				sendFeedback(world, sender, "Removed zone with ID " + ID + " from your map");
-			}
+			else throw new WrongUsageException("You must specify mapCenter and size! /game setupMap [posX, posZ, size, zoneCount]", new Object[0]);
 		}
 	}
 	
@@ -174,16 +146,30 @@ public class CommandGame extends CommandBase
 			}
 		}
 		
+		//zoneCenter = new BlockPos(data.getMapCenter().getX(), 256, data.getMapCenter().getZ());
+		
 		// ATTEMP 1
 		/*int rangeX = Math.abs(center.getX() - zoneCenter.getX());
 		int rangeZ = Math.abs(center.getZ() - zoneCenter.getZ());
 		double totalDistance = Math.sqrt(sqr(rangeX) + sqr(rangeZ));*/
 		
-		//ATEMP 2
-		int totalDistance = Math.abs(center.getX() - zoneCenter.getX()) + Math.abs(center.getZ() - zoneCenter.getZ());
+		//ATTEMP 2
+		//int totalDistance = Math.abs(center.getX() - zoneCenter.getX()) + Math.abs(center.getZ() - zoneCenter.getZ());
 		
-		border.setCenter(zoneCenter.getX(), zoneCenter.getZ());
-		border.setTransition(size + totalDistance);
+		//ATTEMPT 3
+		//double baseBorder = Math.sqrt(sqr(sqr(size)));
+		//double totalDistance = baseBorder + Math.sqrt(sqr(Math.abs(center.getX() - zoneCenter.getX())) + sqr(Math.abs(center.getZ() - zoneCenter.getZ())));
+		
+		
+		border.setCenter(zoneCenter.getX() + 0.5, zoneCenter.getZ() + 0.5);
+		
+		//ATTEMPT 4
+		int zoneSize = size*2;
+		int rx = Math.abs(center.getX() - zoneCenter.getX());
+		int rz = Math.abs(center.getZ() - zoneCenter.getZ());
+		int bonus = (int) (rx > rz ? rx : rz);
+		
+		border.setTransition(zoneSize + bonus*2);
 		
 		data.setTimer(0);
 		
@@ -222,8 +208,8 @@ public class CommandGame extends CommandBase
 	private void stopGame(IGameData data, World world)
 	{
 		WorldBorder border = world.getWorldBorder();
-		border.setCenter(data.getMapCenter().getX(), data.getMapCenter().getZ());
-		border.setTransition(1000000);
+		border.setCenter(data.getMapCenter().getX() + 0.5, data.getMapCenter().getZ() + 0.5);
+		border.setTransition(10);
 	}
 	
 	private double sqr(double num)

@@ -28,18 +28,13 @@ public interface IGameData
 	public void removeSpawnLocation(BlockPos pos);
 	public List<BlockPos> getSpawnLocations();
 	public List<String> getLocationNames();
-	public void setMapCenter(int x, int z, int size);
+	public void setMapCenter(int x, int z, int size, int count);
 	public BlockPos getMapCenter();
 	public int getMapSize();
 	
 	//zones
 	public void setZonePhaseCount(int count);
 	public int getZonePhaseCount();
-	public void addZonePhase(PlayZone zone);
-	public void removeZonePhase(int ID);
-	public PlayZone getZoneByID(int ID);
-	public List<PlayZone> getAllZones();
-	public void setZones(List<PlayZone> zones);
 	public void setCurrentZone(int zone);
 	public int getCurrentZone();
 	
@@ -58,7 +53,8 @@ public interface IGameData
 			int x = ((NBTTagCompound)nbt).getInteger("mapCenterX");
 			int z = ((NBTTagCompound)nbt).getInteger("mapCenterZ");
 			int size = ((NBTTagCompound)nbt).getInteger("mapSize");
-			instance.setMapCenter(x, z, size);
+			int zones = ((NBTTagCompound)nbt).getInteger("zoneCount");
+			instance.setMapCenter(x, z, size, zones);
 			instance.setSpawnLocationCount(((NBTTagCompound)nbt).getInteger("locationsSize"));
 			
 			for(int i = 0; i < instance.getSpawnLocationCount(); i++)
@@ -69,21 +65,6 @@ public interface IGameData
 				String name = ((NBTTagCompound)nbt).getString("locationName" + i);
 				
 				instance.addSpawnLocation(new BlockPos(px, py, pz), name);
-			}
-			
-			instance.setZonePhaseCount(((NBTTagCompound)nbt).getInteger("phaseCount"));
-			
-			for(int i = 0; i < instance.getZonePhaseCount(); i++)
-			{
-				int ID = ((NBTTagCompound)nbt).getInteger("zoneID" + i);
-				int startShrink = ((NBTTagCompound)nbt).getInteger("shrinkStart" + ID);
-				int shrinkTime = ((NBTTagCompound)nbt).getInteger("shrinkTime" + ID);
-				int finalSize = ((NBTTagCompound)nbt).getInteger("finalSize" + ID);
-				float damage = ((NBTTagCompound)nbt).getInteger("zoneDamage" + ID);
-				
-				PlayZone zone = new PlayZone(ID);
-				zone.setup(startShrink, shrinkTime, finalSize, damage);
-				instance.addZonePhase(zone);
 			}
 			
 			instance.setTimer(((NBTTagCompound)nbt).getInteger("timer"));
@@ -97,13 +78,14 @@ public interface IGameData
 			
 			if(instance.getMapCenter() == null)
 			{
-				instance.setMapCenter(0, 0, 0);
+				instance.setMapCenter(0, 0, 0, 1);
 			}
 			
 			c.setBoolean("isPlaying", instance.isPlaying());
 			c.setInteger("mapCenterX", instance.getMapCenter().getX());
 			c.setInteger("mapCenterZ", instance.getMapCenter().getZ());
 			c.setInteger("mapSize", instance.getMapSize());
+			c.setInteger("zoneCount", instance.getZonePhaseCount());
 			c.setInteger("locationsSize", instance.getSpawnLocationCount());
 			
 			for(int i = 0; i < instance.getSpawnLocationCount(); i++)
@@ -114,18 +96,6 @@ public interface IGameData
 				c.setInteger("posY" + i, pos.getY());
 				c.setInteger("posZ" + i, pos.getZ());
 				c.setString("locationName" + i, name);
-			}
-			
-			c.setInteger("phaseCount", instance.getZonePhaseCount());
-			
-			for(int i = 0; i < instance.getZonePhaseCount(); i++)
-			{
-				PlayZone zone = instance.getAllZones().get(i);
-				c.setInteger("zoneID" + i, zone.getID());
-				c.setInteger("shrinkStart" + zone.getID(), zone.getStartOfShrinking());
-				c.setInteger("shrinkTime" + zone.getID(), zone.getShrinkingTime());
-				c.setInteger("finalSize" + zone.getID(), zone.getFinalSize());
-				c.setFloat("zoneDamage" + zone.getID(), zone.getDamage());
 			}
 			
 			c.setInteger("timer", instance.getTimer());
@@ -143,7 +113,6 @@ public interface IGameData
 		int numLocations;
 		BlockPos gameZoneCenter;
 		int mapSize;
-		List<PlayZone> zones = new ArrayList<PlayZone>();
 		int zoneCount;
 		int timer;
 		int currentZone;
@@ -191,10 +160,11 @@ public interface IGameData
 		}
 		
 		@Override
-		public void setMapCenter(int x, int z, int size)
+		public void setMapCenter(int x, int z, int size, int count)
 		{
 			gameZoneCenter = new BlockPos(x, 0, z);
 			this.mapSize = size;
+			this.zoneCount = count;
 		}
 		
 		@Override
@@ -222,34 +192,6 @@ public interface IGameData
 		}
 		
 		@Override
-		public void addZonePhase(PlayZone zone) 
-		{
-			if(zones.size() < 10)
-				zones.add(zone);
-		}
-		
-		@Override
-		public void removeZonePhase(int ID) 
-		{
-			if(ID <= zones.size())
-			{
-				zones.remove(ID);
-			}
-		}
-		
-		@Override
-		public List<PlayZone> getAllZones()
-		{
-			return zones;
-		}
-		
-		@Override
-		public PlayZone getZoneByID(int ID)
-		{
-			return zones.get(ID);
-		}
-		
-		@Override
 		public int getZonePhaseCount() 
 		{
 			return zoneCount;
@@ -259,12 +201,6 @@ public interface IGameData
 		public void setZonePhaseCount(int count)
 		{
 			this.zoneCount = count;
-		}
-		
-		@Override
-		public void setZones(List<PlayZone> zones) 
-		{
-			this.zones = zones;
 		}
 		
 		@Override
