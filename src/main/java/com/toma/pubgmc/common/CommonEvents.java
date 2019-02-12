@@ -1,8 +1,8 @@
 package com.toma.pubgmc.common;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
@@ -13,12 +13,10 @@ import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
-import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
-import com.toma.pubgmc.world.PlayZone;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -34,7 +32,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
-import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -45,7 +42,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonEvents
 {

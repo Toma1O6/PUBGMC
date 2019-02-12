@@ -1,12 +1,13 @@
 package com.toma.pubgmc.common.commands;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.world.PlayZone;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -22,6 +23,8 @@ import net.minecraft.world.border.WorldBorder;
 
 public class CommandGame extends CommandBase
 {
+	private static final String[] completions = {"help","stop","addLocation","clearLocations","setupMap","zones"};
+	
 	@Override
 	public String getName()
 	{
@@ -54,7 +57,8 @@ public class CommandGame extends CommandBase
 			"stop >> stops the game",
 			"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
 			"clearLocations >> removes all spawn locations from your map",
-			"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values"
+			"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values",
+			"zones >> Prints all zone parameters"
 		};
 		
 		if(args[0].equalsIgnoreCase("help"))
@@ -115,6 +119,30 @@ public class CommandGame extends CommandBase
 			
 			else throw new WrongUsageException("You must specify mapCenter and size! /game setupMap [posX, posZ, size, zoneCount]", new Object[0]);
 		}
+		
+		else if(args[0].equalsIgnoreCase("zone"))
+		{
+			getZoneConfiguration(sender, game, world);
+		}
+		
+		else throw new WrongUsageException("Unknown operation! Try /game help for more info", new Object[0]);
+	}
+	
+	private void getZoneConfiguration(ICommandSender sender, IGameData data, World world)
+	{
+		int zoneCount = data.getZonePhaseCount();
+		int sizeMod = 100 / zoneCount;
+		
+		sendFeedback(world, sender, TextFormatting.GREEN + "Total zone phases: " + zoneCount);
+		sendFeedback(world, sender, TextFormatting.GREEN + "====================================");
+		
+		for(int i = 1; i < zoneCount+1; i++)
+		{
+			double zoneArea = 100 - i*sizeMod + 5;
+			sendFeedback(world, sender, TextFormatting.GREEN + "" + TextFormatting.BOLD + "Phase " + i + ":");
+			sendFeedback(world, sender, TextFormatting.GREEN + "Final size : " + zoneArea + "%");
+			sendFeedback(world, sender, TextFormatting.GREEN + "Map area: " + Math.abs(sqr(data.getMapSize()*2)) * (zoneArea/100) + " of " + sqr(data.getMapSize()*2) + " total blocks");
+		}
 	}
 	
 	private void sendWarningTo(ICommandSender commandSender, String message)
@@ -134,7 +162,7 @@ public class CommandGame extends CommandBase
 		BlockPos center = data.getMapCenter();
 		int size = data.getMapSize();
 		
-		BlockPos zoneCenter = new BlockPos(generateZoneCenterX(center, size), 256, generateZoneCenterZ(center, size));
+		BlockPos zoneCenter = new BlockPos(generateZoneCenterX(center, size - 5), 256, generateZoneCenterZ(center, size - 5));
 		
 		while(world.isAirBlock(zoneCenter))
 		{
@@ -142,28 +170,12 @@ public class CommandGame extends CommandBase
 			if(world.getBlockState(zoneCenter).getMaterial().isLiquid())
 			{
 				Pubgmc.logger.info("Generating new zone center...");
-				zoneCenter = new BlockPos(generateZoneCenterX(zoneCenter, size), 256, generateZoneCenterZ(zoneCenter, size));
+				zoneCenter = new BlockPos(generateZoneCenterX(zoneCenter, size - 5), 256, generateZoneCenterZ(zoneCenter, size - 5));
 			}
 		}
 		
-		//zoneCenter = new BlockPos(data.getMapCenter().getX(), 256, data.getMapCenter().getZ());
-		
-		// ATTEMP 1
-		/*int rangeX = Math.abs(center.getX() - zoneCenter.getX());
-		int rangeZ = Math.abs(center.getZ() - zoneCenter.getZ());
-		double totalDistance = Math.sqrt(sqr(rangeX) + sqr(rangeZ));*/
-		
-		//ATTEMP 2
-		//int totalDistance = Math.abs(center.getX() - zoneCenter.getX()) + Math.abs(center.getZ() - zoneCenter.getZ());
-		
-		//ATTEMPT 3
-		//double baseBorder = Math.sqrt(sqr(sqr(size)));
-		//double totalDistance = baseBorder + Math.sqrt(sqr(Math.abs(center.getX() - zoneCenter.getX())) + sqr(Math.abs(center.getZ() - zoneCenter.getZ())));
-		
-		
 		border.setCenter(zoneCenter.getX() + 0.5, zoneCenter.getZ() + 0.5);
 		
-		//ATTEMPT 4
 		int zoneSize = size*2;
 		int rx = Math.abs(center.getX() - zoneCenter.getX());
 		int rz = Math.abs(center.getZ() - zoneCenter.getZ());
@@ -209,11 +221,22 @@ public class CommandGame extends CommandBase
 	{
 		WorldBorder border = world.getWorldBorder();
 		border.setCenter(data.getMapCenter().getX() + 0.5, data.getMapCenter().getZ() + 0.5);
-		border.setTransition(10);
+		border.setTransition(data.getMapSize()*2);
 	}
 	
 	private double sqr(double num)
 	{
 		return num*num;
+	}
+	
+	@Override
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
+	{
+		if(args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, completions);
+		}
+		
+		return Collections.EMPTY_LIST;
 	}
 }

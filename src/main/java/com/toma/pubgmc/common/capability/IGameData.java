@@ -3,10 +3,10 @@ package com.toma.pubgmc.common.capability;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.world.PlayZone;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -56,25 +56,22 @@ public interface IGameData
 			int zones = ((NBTTagCompound)nbt).getInteger("zoneCount");
 			instance.setMapCenter(x, z, size, zones);
 			instance.setSpawnLocationCount(((NBTTagCompound)nbt).getInteger("locationsSize"));
-			
-			for(int i = 0; i < instance.getSpawnLocationCount(); i++)
-			{
-				int px = ((NBTTagCompound)nbt).getInteger("posX" + i);
-				int py = ((NBTTagCompound)nbt).getInteger("posY" + i);
-				int pz = ((NBTTagCompound)nbt).getInteger("posZ" + i);
-				String name = ((NBTTagCompound)nbt).getString("locationName" + i);
-				
-				instance.addSpawnLocation(new BlockPos(px, py, pz), name);
-			}
-			
 			instance.setTimer(((NBTTagCompound)nbt).getInteger("timer"));
 			instance.setCurrentZone(((NBTTagCompound)nbt).getInteger("currentZone"));
+			
+			NBTTagList list = ((NBTTagCompound)nbt).getTagList("list", 10);
+			
+			for(int i = 0; i < list.tagCount(); i++)
+			{
+				instance.addSpawnLocation(NBTUtil.getPosFromTag((NBTTagCompound)list.get(i)), ((NBTTagCompound)nbt).getString("name" + i));
+			}
 		}
 		
 		@Override
 		public NBTBase writeNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side)
 		{
 			NBTTagCompound c = new NBTTagCompound();
+			NBTTagList list = new NBTTagList();
 			
 			if(instance.getMapCenter() == null)
 			{
@@ -87,20 +84,16 @@ public interface IGameData
 			c.setInteger("mapSize", instance.getMapSize());
 			c.setInteger("zoneCount", instance.getZonePhaseCount());
 			c.setInteger("locationsSize", instance.getSpawnLocationCount());
-			
-			for(int i = 0; i < instance.getSpawnLocationCount(); i++)
-			{
-				BlockPos pos = instance.getSpawnLocations().get(i);
-				String name = instance.getLocationNames().get(i);
-				c.setInteger("posX" + i, pos.getX());
-				c.setInteger("posY" + i, pos.getY());
-				c.setInteger("posZ" + i, pos.getZ());
-				c.setString("locationName" + i, name);
-			}
-			
 			c.setInteger("timer", instance.getTimer());
 			c.setInteger("currentZone", instance.getCurrentZone());
 			
+			for(int i = 0; i < instance.getSpawnLocations().size(); i++)
+			{
+				list.appendTag(NBTUtil.createPosTag(instance.getSpawnLocations().get(i)));
+				c.setString("name" + i, instance.getLocationNames().get(i));
+			}
+			
+			c.setTag("list", list);
 			return c;
 		}
 	}
