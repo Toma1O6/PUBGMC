@@ -144,4 +144,14 @@ public class PUBGMCUtil
 		
 		return mapSize * (100/zoneCount);
 	}
+	
+	public static double getDistanceToBlockPos(BlockPos pos1, BlockPos pos2)
+	{
+		return Math.sqrt(sqr(Math.abs(pos1.getX() - pos2.getX())) + sqr(Math.abs(pos1.getZ() - pos2.getZ())));
+	}
+	
+	public static double sqr(double num)
+	{
+		return num*num;
+	}
 }

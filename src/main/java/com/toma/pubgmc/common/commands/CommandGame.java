@@ -196,6 +196,10 @@ public class CommandGame extends CommandBase
 				
 				player.sendMessage(new TextComponentString(TextFormatting.GREEN + " - " + TextFormatting.YELLOW + locName + TextFormatting.GREEN + "" + TextFormatting.ITALIC + " [" + pos.getX()+", "+pos.getY()+", "+pos.getZ() + "]"));
 			}
+			
+			int id = getClosestLocation(data, world);
+			BlockPos zonePos = data.getSpawnLocations().get(id);
+			player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is closest to the " + data.getLocationNames().get(id) + " [" + zonePos.getX() + ", " + zonePos.getZ() + "]"));
 		}
 	}
 	
@@ -222,6 +226,25 @@ public class CommandGame extends CommandBase
 		WorldBorder border = world.getWorldBorder();
 		border.setCenter(data.getMapCenter().getX() + 0.5, data.getMapCenter().getZ() + 0.5);
 		border.setTransition(data.getMapSize()*2);
+	}
+	
+	private int getClosestLocation(IGameData data, World world)
+	{
+		BlockPos center = new BlockPos(world.getWorldBorder().getCenterX(), 10, world.getWorldBorder().getCenterZ());
+
+		int id = 0;
+		double dist = 100000000d;
+		for(int i = 0; i < data.getSpawnLocations().size(); i++)
+		{
+			BlockPos pos = data.getSpawnLocations().get(i);
+			if(PUBGMCUtil.getDistanceToBlockPos(pos, center) < dist)
+			{
+				dist = PUBGMCUtil.getDistanceToBlockPos(pos, center);
+				id = i;
+			}
+		}
+		
+		return id;
 	}
 	
 	private double sqr(double num)
