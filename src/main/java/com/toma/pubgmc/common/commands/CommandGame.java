@@ -23,7 +23,7 @@ import net.minecraft.world.border.WorldBorder;
 
 public class CommandGame extends CommandBase
 {
-	private static final String[] completions = {"help","stop","addLocation","clearLocations","setupMap","zones"};
+	private static final String[] completions = {"help","stop","addLocation","clearLocations","setupMap","zone","removeLocation","locations"};
 	
 	@Override
 	public String getName()
@@ -58,7 +58,9 @@ public class CommandGame extends CommandBase
 			"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
 			"clearLocations >> removes all spawn locations from your map",
 			"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values",
-			"zones >> Prints all zone parameters"
+			"zone >> Prints all zone parameters",
+			"locations >> Prints all locations and their IDs",
+			"removeLocation [ID] >> Removes location from map"
 		};
 		
 		if(args[0].equalsIgnoreCase("help"))
@@ -84,6 +86,7 @@ public class CommandGame extends CommandBase
 			{
 				game.setPlaying(false);
 				stopGame(game, world);
+				sendFeedback(world, sender, "Stopped the game");
 			}
 			
 			else sendWarningTo(sender, "Game haven't started yet!");
@@ -104,6 +107,8 @@ public class CommandGame extends CommandBase
 		{
 			game.getSpawnLocations().clear();
 			game.setSpawnLocationCount(0);
+			game.getLocationNames().clear();
+			sendFeedback(world, sender, "Removed all locations from your map");
 		}
 		
 		else if(args[0].equalsIgnoreCase("setupMap"))
@@ -123,6 +128,45 @@ public class CommandGame extends CommandBase
 		else if(args[0].equalsIgnoreCase("zone"))
 		{
 			getZoneConfiguration(sender, game, world);
+		}
+		
+		else if(args[0].equalsIgnoreCase("locations"))
+		{
+			if(game.getSpawnLocations().isEmpty())
+			{
+				sendWarningTo(sender, "There are no locations!");
+				return;
+			}
+			
+			for(int i = 0; i < game.getSpawnLocations().size(); i++)
+			{
+				BlockPos p = game.getSpawnLocations().get(i);
+				sendFeedback(world, sender, "ID: " + i + "; Name: " + game.getLocationNames().get(i) + "; Position: " + p.getX() + "," + p.getY() + "," + p.getZ());
+			}
+		}
+		
+		else if(args[0].equalsIgnoreCase("removeLocation"))
+		{
+			if(args.length == 2 && PUBGMCUtil.isValidNumber(args[1]))
+			{
+				int ID = Integer.parseInt(args[1]);
+				
+				if(ID < game.getSpawnLocations().size())
+				{
+					String locName = game.getLocationNames().get(ID);
+					BlockPos position = game.getSpawnLocations().get(ID);
+					
+					game.getSpawnLocations().remove(ID);
+					game.setSpawnLocationCount(game.getSpawnLocationCount() - 1);
+					game.getLocationNames().remove(ID);
+					
+					sendFeedback(world, sender, "Removed location " + locName + " with ID " + ID + " and position [" + position.getX() + ", " + position.getY() + ", " + position.getZ() + "] from this map");
+				}
+				
+				else sendWarningTo(sender, "Location with ID " + ID + " doesn't exist!");
+			}
+			
+			else throw new WrongUsageException("You must specify location ID!", new Object[0]);
 		}
 		
 		else throw new WrongUsageException("Unknown operation! Try /game help for more info", new Object[0]);
@@ -162,7 +206,7 @@ public class CommandGame extends CommandBase
 		BlockPos center = data.getMapCenter();
 		int size = data.getMapSize();
 		
-		BlockPos zoneCenter = new BlockPos(generateZoneCenterX(center, size - 5), 256, generateZoneCenterZ(center, size - 5));
+		BlockPos zoneCenter = new BlockPos(generateZoneCenter(center, size, true), 256, generateZoneCenter(center, size, false));
 		
 		while(world.isAirBlock(zoneCenter))
 		{
@@ -170,7 +214,7 @@ public class CommandGame extends CommandBase
 			if(world.getBlockState(zoneCenter).getMaterial().isLiquid())
 			{
 				Pubgmc.logger.info("Generating new zone center...");
-				zoneCenter = new BlockPos(generateZoneCenterX(zoneCenter, size - 5), 256, generateZoneCenterZ(zoneCenter, size - 5));
+				zoneCenter = new BlockPos(generateZoneCenter(center, size, true), 256, generateZoneCenter(center, size, false));
 			}
 		}
 		
@@ -197,28 +241,30 @@ public class CommandGame extends CommandBase
 				player.sendMessage(new TextComponentString(TextFormatting.GREEN + " - " + TextFormatting.YELLOW + locName + TextFormatting.GREEN + "" + TextFormatting.ITALIC + " [" + pos.getX()+", "+pos.getY()+", "+pos.getZ() + "]"));
 			}
 			
-			int id = getClosestLocation(data, world);
-			BlockPos zonePos = data.getSpawnLocations().get(id);
-			player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is closest to the " + data.getLocationNames().get(id) + " [" + zonePos.getX() + ", " + zonePos.getZ() + "]"));
+			if(!data.getSpawnLocations().isEmpty())
+			{
+				int id = getClosestLocation(data, world);
+				BlockPos zonePos = data.getSpawnLocations().get(id);
+				player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is closest to the " + data.getLocationNames().get(id) + " [" + zonePos.getX() + ", " + zonePos.getZ() + "]"));
+			}
+		}
+		
+		if(data.getZonePhaseCount() != 0)
+		{
+			data.setCurrentZone(0);
 		}
 	}
 	
-	private int generateZoneCenterX(BlockPos center, int size)
+	/**
+	 * @param center - the map center
+	 * @param size - the map size
+	 * @param mode - TRUE == X Coord; FALSE == Z coord
+	 * @return random number between map center and map edge
+	 */
+	private int generateZoneCenter(BlockPos center, int size, boolean mode)
 	{
-		Random rand = new Random();
-		int nX;
-		if(rand.nextInt(2) == 1) nX = center.getX() - rand.nextInt(size);
-		else nX = center.getX() + rand.nextInt(size);
-		return nX;
-	}
-	
-	private int generateZoneCenterZ(BlockPos center, int size)
-	{
-		Random rand = new Random();
-		int nZ;
-		if(rand.nextInt(2) == 1) nZ = center.getZ() - rand.nextInt(size);
-		else nZ = center.getZ() + rand.nextInt(size);
-		return nZ;
+		final Random rand = new Random();
+		return mode ? center.getX() + (rand.nextInt(size) - rand.nextInt(size)) : center.getZ() + (rand.nextInt(size) - rand.nextInt(size));
 	}
 	
 	private void stopGame(IGameData data, World world)

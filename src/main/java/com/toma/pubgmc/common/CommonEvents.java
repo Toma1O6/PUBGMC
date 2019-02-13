@@ -32,6 +32,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -45,6 +46,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 public class CommonEvents
 {
+	private double prevDiameter = 0;
+	
 	//Attach capability to entity
 	@SubscribeEvent
 	public void attachCapabilities(AttachCapabilitiesEvent<Entity> e)
@@ -72,6 +75,41 @@ public class CommonEvents
 			{
 				IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
 				World world = e.world;
+				
+				if(game.isPlaying() && game.getZonePhaseCount() > 0 && game.getCurrentZone() < game.getZonePhaseCount() && !isZoneShrinking(world.getWorldBorder()))
+				{
+					final int phases = game.getZonePhaseCount();
+					final int phase = game.getCurrentZone();
+					final int diameter = game.getMapSize() * 2;
+					
+					game.increaseTimer();
+					//TODO check if zone is shrinking to prevent next zone calc
+					float zoneSwitchPoint = phase == 0 ? 200*(game.getMapSize()/50) : 120*(game.getMapSize()/50);
+					
+					if(game.getTimer() % 100 == 0)
+					{
+						for(EntityPlayer p : world.playerEntities)
+						{
+							p.sendMessage(new TextComponentString(game.getTimer() + ""));
+							p.sendMessage(new TextComponentString(zoneSwitchPoint + ""));
+						}
+					}
+					
+					if(game.getTimer() >= zoneSwitchPoint)
+					{
+						game.setTimer(0);
+						game.setCurrentZone(game.getCurrentZone() + 1);
+						WorldBorder brd = world.getWorldBorder();
+						double zoneArea = (100 - (phase+1)*(100/(phases)) + 5)/100d;
+						brd.setTransition(brd.getDiameter(), brd.getDiameter() * zoneArea, (long)(1000 * (phases * 10 * (diameter / 250 + 1))));
+						System.out.println(brd.getDiameter() * zoneArea);
+						
+						for(EntityPlayer p : world.playerEntities)
+						{
+							p.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
+						}
+					}
+				}
 			}
 		}
 	}
@@ -535,5 +573,10 @@ public class CommonEvents
 				stack.getTagCompound().setInteger("ammo", 0);
 			}
 		}
+	}
+	
+	private boolean isZoneShrinking(WorldBorder border)
+	{
+		return !(prevDiameter == 0) || border.getDiameter() != prevDiameter;
 	}
 }
