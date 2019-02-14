@@ -39,6 +39,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -81,11 +82,11 @@ public class CommonEvents
 					final int phases = game.getZonePhaseCount();
 					final int phase = game.getCurrentZone();
 					final int diameter = game.getMapSize() * 2;
+					float zoneSwitchPoint = phase == 0 ? 2000*(game.getMapSize()/250 + 1) : 1200*(game.getMapSize()/250 + 1);
 					
 					game.increaseTimer();
-					//TODO check if zone is shrinking to prevent next zone calc
-					float zoneSwitchPoint = phase == 0 ? 200*(game.getMapSize()/50) : 120*(game.getMapSize()/50);
 					
+					//TODO remove this
 					if(game.getTimer() % 100 == 0)
 					{
 						for(EntityPlayer p : world.playerEntities)
@@ -102,13 +103,19 @@ public class CommonEvents
 						WorldBorder brd = world.getWorldBorder();
 						double zoneArea = (100 - (phase+1)*(100/(phases)) + 5)/100d;
 						brd.setTransition(brd.getDiameter(), brd.getDiameter() * zoneArea, (long)(1000 * (phases * 10 * (diameter / 250 + 1))));
-						System.out.println(brd.getDiameter() * zoneArea);
+						brd.setDamageBuffer(1);
+						brd.setDamageAmount(phase/phases);
 						
 						for(EntityPlayer p : world.playerEntities)
 						{
 							p.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
 						}
 					}
+				}
+				
+				if(game.isPlaying() || prevDiameter == 0)
+				{
+					prevDiameter = world.getWorldBorder().getDiameter();
 				}
 			}
 		}
@@ -381,18 +388,6 @@ public class CommonEvents
 			BlockPos p = player.getPosition();
 			World world = player.world;
 			boolean continueSearch = true;
-			
-			// implementation of gamedata, for version 1.5
-			if(world.hasCapability(GameDataProvider.GAMEDATA, null))
-			{
-				IGameData game = world.getCapability(GameDataProvider.GAMEDATA, null);
-				
-				if(game.isPlaying())
-				{
-					player.setSpawnPoint(game.getMapCenter(), true);
-					player.setGameType(GameType.SPECTATOR);
-				}
-			}
 					
 			//crate position logic
 			if(!world.isAirBlock(p))
@@ -524,6 +519,32 @@ public class CommonEvents
 	}
 	
 	/**
+	 *  Event which is responsible for getting the player into the safe zone when they die
+	 */
+	@SubscribeEvent
+	public void onPlayerRespawned(PlayerEvent.PlayerRespawnEvent event)
+	{
+		EntityPlayer player = event.player;
+		World world = player.world;
+		if(world.hasCapability(GameDataProvider.GAMEDATA, null))
+		{
+			IGameData game = world.getCapability(GameDataProvider.GAMEDATA, null);
+			
+			if(game.isPlaying())
+			{
+				BlockPos tpPos = new BlockPos(game.getMapCenter().getX(), 256, game.getMapCenter().getZ());
+				while(world.isAirBlock(tpPos))
+				{
+					tpPos = new BlockPos(tpPos.getX(), tpPos.getY() - 1, tpPos.getZ());
+				}
+				
+				player.attemptTeleport(tpPos.getX() + 0.5, tpPos.getY() + 1, tpPos.getZ() + 0.5);
+				player.setGameType(GameType.SPECTATOR);
+			}
+		}
+	}
+	
+	/**
 	 * Event used for disabling block destruction when player is
 	 * holding weapon/grenade
 	 * @param e - event
@@ -577,6 +598,6 @@ public class CommonEvents
 	
 	private boolean isZoneShrinking(WorldBorder border)
 	{
-		return !(prevDiameter == 0) || border.getDiameter() != prevDiameter;
+		return border.getDiameter() != prevDiameter;
 	}
 }

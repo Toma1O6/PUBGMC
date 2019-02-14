@@ -7,6 +7,7 @@ import java.util.Random;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
+import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.command.CommandBase;
@@ -14,10 +15,16 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 
@@ -226,6 +233,8 @@ public class CommandGame extends CommandBase
 		int bonus = (int) (rx > rz ? rx : rz);
 		
 		border.setTransition(zoneSize + bonus*2);
+		border.setDamageBuffer(1);
+		border.setDamageAmount(data.getCurrentZone() / data.getZonePhaseCount());
 		
 		data.setTimer(0);
 		
@@ -238,11 +247,31 @@ public class CommandGame extends CommandBase
 				BlockPos pos = data.getSpawnLocations().get(i);
 				String locName = data.getLocationNames().get(i);
 				
-				player.sendMessage(new TextComponentString(TextFormatting.GREEN + " - " + TextFormatting.YELLOW + locName + TextFormatting.GREEN + "" + TextFormatting.ITALIC + " [" + pos.getX()+", "+pos.getY()+", "+pos.getZ() + "]"));
+				if(!data.getSpawnLocations().isEmpty())
+				{
+					ITextComponent s = new TextComponentString(TextFormatting.GREEN + " - " + TextFormatting.YELLOW + locName + TextFormatting.GREEN + " [" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]");
+					Style style = s.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + pos.getX() + " " + 256 + " " + pos.getZ())
+					{
+						@Override
+						public Action getAction()
+						{
+							for(int i = 0; i < 25; i++)
+							{
+								player.sendMessage(new TextComponentString(""));
+							}
+							return Action.RUN_COMMAND;
+						}
+					});
+					
+					style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.YELLOW + locName + TextFormatting.GREEN + " [" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]")));
+					s.setStyle(style);
+					player.sendMessage(s);
+				}
 			}
 			
 			if(!data.getSpawnLocations().isEmpty())
 			{
+				player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
 				int id = getClosestLocation(data, world);
 				BlockPos zonePos = data.getSpawnLocations().get(id);
 				player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is closest to the " + data.getLocationNames().get(id) + " [" + zonePos.getX() + ", " + zonePos.getZ() + "]"));
