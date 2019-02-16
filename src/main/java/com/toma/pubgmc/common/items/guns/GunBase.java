@@ -875,7 +875,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	
 	/**
 	 * <li> silencer, compensator
-	 * <li> grips - only grips == true
+	 * <li> grips
 	 * <li> magazines
 	 * <li> Red Dot, Holo, 2X, 4X
 	 */

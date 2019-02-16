@@ -30,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
@@ -316,7 +317,9 @@ public class CommonEvents
 			if(!e.player.world.isRemote && e.player instanceof EntityPlayer && e.player != null)
 			{
 				EntityPlayer player = e.player;
-				player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Make sure you're playing the newest version. New versions can be found on curseforge website."));
+				TextComponentString urlMessage = new TextComponentString(TextFormatting.GREEN + "Make sure you're playing the newest version. New versions can be found " + TextFormatting.BOLD + "HERE");
+				urlMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft.curseforge.com/projects/pubgmc-mod/files"));
+				player.sendMessage(urlMessage);
 				player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Current version:" + TextFormatting.BOLD + " " + Pubgmc.VERSION + TextFormatting.RESET + ", " + TextFormatting.AQUA + "author:" + TextFormatting.BOLD + " Toma1O6"));
 			}
 		}

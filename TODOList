@@ -9,12 +9,12 @@ PUBGMC TODO LIST
 |-----------------------------------------------------------------------------------------|
 | - Vehicles
 | - Proning
-| - Better ghillie suit -> Model is done, TODO animations when player is moving
-| - Command /game; To setup your maps to battle royale style (adding spawn locations, random zone generation, etc)
+| - Add G36C, Scorpion, PP-Bizon
 |
 |-----------------------------------------------------------------------------------------|
 |    LOW PRIORITY:                                                                        |
 |-----------------------------------------------------------------------------------------|
+| - Better ghillie suit -> Model is done, TODO animations when player is moving
 | - Render round magazine for Tommy Gun when extended mag is attached
 | - Crate with skins for some weapons (gold, silver etc)
 | - More props
@@ -31,6 +31,7 @@ PUBGMC TODO LIST
 | - Playing plane sound when airdrop is spawned
 | - Better damage calculation based on armor (for headshots damage only helmet etc)
 | - Attachment returning from weapon when being replaced
+| - Command /game; To setup your maps to battle royale style (adding spawn locations, random zone generation, etc)
 |
 |-----------------------------------------------------------------------------------------|
 |    MAYBE?                                                                               |

@@ -7,6 +7,8 @@ import java.util.Random;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.server.PacketTeleportPlayer;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
@@ -30,7 +32,7 @@ import net.minecraft.world.border.WorldBorder;
 
 public class CommandGame extends CommandBase
 {
-	private static final String[] completions = {"help","stop","addLocation","clearLocations","setupMap","zone","removeLocation","locations"};
+	private static final String[] completions = {"help","stop","addLocation","clearLocations","setupMap","zone","removeLocation","locations","info"};
 	
 	@Override
 	public String getName()
@@ -58,20 +60,21 @@ public class CommandGame extends CommandBase
 		
 		if(args.length == 0) throw new WrongUsageException("Wrong command, use /game help", new Object[0]);
 		
-		String[] gamehelp = 
-		{
-			"start >> starts the game",
-			"stop >> stops the game",
-			"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
-			"clearLocations >> removes all spawn locations from your map",
-			"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values",
-			"zone >> Prints all zone parameters",
-			"locations >> Prints all locations and their IDs",
-			"removeLocation [ID] >> Removes location from map"
-		};
-		
 		if(args[0].equalsIgnoreCase("help"))
 		{
+			String[] gamehelp = 
+			{
+				"start >> starts the game",
+				"stop >> stops the game",
+				"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
+				"clearLocations >> removes all spawn locations from your map",
+				"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values",
+				"zone >> Prints all zone parameters",
+				"locations >> Prints all locations and their IDs",
+				"removeLocation [ID] >> Removes location from map",
+				"info >> All information about your map setup is here"
+			};
+			
 			for(int i = 0; i < gamehelp.length; i++)
 				sender.sendMessage(new TextComponentString(TextFormatting.GREEN + gamehelp[i]));
 		}
@@ -103,7 +106,7 @@ public class CommandGame extends CommandBase
 		{
 			if(args.length == 5 && PUBGMCUtil.isValidNumber(args[1]) && PUBGMCUtil.isValidNumber(args[2]) && PUBGMCUtil.isValidNumber(args[3]))
 			{
-				game.addSpawnLocation(new BlockPos(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3])), args[4]);
+				game.addSpawnLocation(new BlockPos(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3])), args[4]);
 				sendFeedback(world, sender, "Added location " + args[4] + " [" + args[1] + ", " + args[2] + ", " + args[3] + "]!");
 			}
 			
@@ -176,6 +179,14 @@ public class CommandGame extends CommandBase
 			else throw new WrongUsageException("You must specify location ID!", new Object[0]);
 		}
 		
+		else if(args[0].equalsIgnoreCase("info"))
+		{
+			sendMessage(sender, TextFormatting.GREEN, "Map information:");
+			sendMessage(sender, TextFormatting.GREEN, "Map size: " + game.getMapSize());
+			sendMessage(sender, TextFormatting.GREEN, "Map center: [x=" + game.getMapCenter().getX() + ", z=" + game.getMapCenter().getZ() + "]");
+			sendMessage(sender, TextFormatting.GREEN, "Total zone phases: " + game.getZonePhaseCount());
+		}
+		
 		else throw new WrongUsageException("Unknown operation! Try /game help for more info", new Object[0]);
 	}
 	
@@ -205,6 +216,11 @@ public class CommandGame extends CommandBase
 	{
 		if(PUBGMCUtil.shouldSendCommandFeedback(world))
 			sender.sendMessage(new TextComponentString(TextFormatting.GRAY + feedback));
+	}
+	
+	private void sendMessage(ICommandSender sender, TextFormatting textFormat, String text)
+	{
+		sender.sendMessage(new TextComponentString(textFormat + text));
 	}
 	
 	private void startGame(IGameData data, World world)
@@ -242,6 +258,7 @@ public class CommandGame extends CommandBase
 		{
 			player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Available locations:"));
 			if(data.getSpawnLocations().isEmpty()) player.sendMessage(new TextComponentString(TextFormatting.RED + "NONE"));
+			
 			for(int i = 0; i < data.getSpawnLocations().size(); i++)
 			{
 				BlockPos pos = data.getSpawnLocations().get(i);
@@ -250,15 +267,17 @@ public class CommandGame extends CommandBase
 				if(!data.getSpawnLocations().isEmpty())
 				{
 					ITextComponent s = new TextComponentString(TextFormatting.GREEN + " - " + TextFormatting.YELLOW + locName + TextFormatting.GREEN + " [" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]");
-					Style style = s.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + pos.getX() + " " + 256 + " " + pos.getZ())
+					Style style = s.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "")
 					{
 						@Override
 						public Action getAction()
-						{
+						{	
 							for(int i = 0; i < 25; i++)
 							{
 								player.sendMessage(new TextComponentString(""));
 							}
+							
+							PacketHandler.sendToServer(new PacketTeleportPlayer(pos.getX(), pos.getZ()));
 							return Action.RUN_COMMAND;
 						}
 					});

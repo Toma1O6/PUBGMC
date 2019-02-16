@@ -61,7 +61,7 @@ public class ItemVehicleSpawner extends PMCItem
 			EntityVehicle vehicle = null;
 			switch(ordinal())
 			{
-				case 0: vehicle = new EntityTestVehicle(world, pos.getX(), pos.getY(), pos.getZ()); break;
+				case 0: vehicle = new EntityTestVehicle(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
 				default: break;
 			}
 			

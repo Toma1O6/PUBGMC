@@ -140,5 +140,5 @@ public class PMCItems
 	public static final Item STEEL_INGOT = null;
 	public static final Item COPPER_INGOT = null;
 	
-	//public static final Item VEHICLE_TEST = null;
+	public static final Item VEHICLE_TEST = null;
 }

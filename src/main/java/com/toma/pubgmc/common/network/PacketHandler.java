@@ -13,6 +13,7 @@ import com.toma.pubgmc.common.network.server.PacketReload;
 import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
+import com.toma.pubgmc.common.network.server.PacketTeleportPlayer;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
@@ -54,6 +55,7 @@ public class PacketHandler
 		registerServer(PacketHandleParachuteInputs.class);
 		registerServer(PacketHandleVehicleInputs.class);
 		registerServer(PacketSetScopeVariants.class);
+		registerServer(PacketTeleportPlayer.class);
 		
 		//client packets
 		registerClient(PacketSyncConfig.class);

@@ -7,6 +7,7 @@ import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityMolotov;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
+import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +32,8 @@ public class PMCEntities
 			registerEntity("smoke", EntitySmokeGrenade.class, 64, 20, true),
 			registerEntity("molotov", EntityMolotov.class, 64, 20, true),
 			registerEntity("flare", EntityFlare.class, 64, 80, true),
-			registerEntity("parachute", EntityParachute.class, 256, 1, true)
+			registerEntity("parachute", EntityParachute.class, 256, 1, true),
+			registerEntity("testVehicle", EntityTestVehicle.class, 256, 75, true)
 		};
 		
 		e.getRegistry().registerAll(entries);

@@ -28,7 +28,7 @@ public interface IGameData
 	public void removeSpawnLocation(BlockPos pos);
 	public List<BlockPos> getSpawnLocations();
 	public List<String> getLocationNames();
-	public void setMapCenter(int x, int z, int size, int count);
+	public void setMapCenter(double x, double z, int size, int count);
 	public BlockPos getMapCenter();
 	public int getMapSize();
 	
@@ -50,8 +50,8 @@ public interface IGameData
 		public void readNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side, NBTBase nbt) 
 		{
 			instance.setPlaying(((NBTTagCompound)nbt).getBoolean("isPlaying"));
-			int x = ((NBTTagCompound)nbt).getInteger("mapCenterX");
-			int z = ((NBTTagCompound)nbt).getInteger("mapCenterZ");
+			double x = ((NBTTagCompound)nbt).getDouble("mapCenterX");
+			double z = ((NBTTagCompound)nbt).getDouble("mapCenterZ");
 			int size = ((NBTTagCompound)nbt).getInteger("mapSize");
 			int zones = ((NBTTagCompound)nbt).getInteger("zoneCount");
 			instance.setMapCenter(x, z, size, zones);
@@ -79,8 +79,8 @@ public interface IGameData
 			}
 			
 			c.setBoolean("isPlaying", instance.isPlaying());
-			c.setInteger("mapCenterX", instance.getMapCenter().getX());
-			c.setInteger("mapCenterZ", instance.getMapCenter().getZ());
+			c.setDouble("mapCenterX", instance.getMapCenter().getX());
+			c.setDouble("mapCenterZ", instance.getMapCenter().getZ());
 			c.setInteger("mapSize", instance.getMapSize());
 			c.setInteger("zoneCount", instance.getZonePhaseCount());
 			c.setInteger("locationsSize", instance.getSpawnLocationCount());
@@ -153,9 +153,9 @@ public interface IGameData
 		}
 		
 		@Override
-		public void setMapCenter(int x, int z, int size, int count)
+		public void setMapCenter(double x, double z, int size, int count)
 		{
-			gameZoneCenter = new BlockPos(x, 0, z);
+			gameZoneCenter = new BlockPos(x, 0d, z);
 			this.mapSize = size;
 			this.zoneCount = count;
 		}
