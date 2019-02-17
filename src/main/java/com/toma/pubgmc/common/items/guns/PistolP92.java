@@ -23,7 +23,7 @@ public class PistolP92 extends GunBase
 		this.setDamage(ConfigHandler.p92);
 		this.setVelocity(7);
 		this.setGravityModifier(0.015);
-		this.setGravityStartTime(5);
+		this.setGravityStartTime(3);
 		this.setFireRate(2);
 		this.setReloadTime(25);
 		this.canSwitchMode(false);

@@ -30,6 +30,7 @@ public class PMCItems
 	public static final Item R1895 = null;
 	public static final Item R45 = null;
 	public static final Item P18C = null;
+	public static final Item SCORPION = null;
 	
 	public static final Item WIN94 = null;
 	

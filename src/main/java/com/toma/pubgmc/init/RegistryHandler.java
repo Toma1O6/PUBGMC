@@ -57,6 +57,7 @@ import com.toma.pubgmc.common.items.guns.PistolP1911;
 import com.toma.pubgmc.common.items.guns.PistolP92;
 import com.toma.pubgmc.common.items.guns.PistolR1895;
 import com.toma.pubgmc.common.items.guns.PistolR45;
+import com.toma.pubgmc.common.items.guns.PistolScorpion;
 import com.toma.pubgmc.common.items.guns.PistolWin94;
 import com.toma.pubgmc.common.items.guns.ShotgunS12K;
 import com.toma.pubgmc.common.items.guns.ShotgunS1897;
@@ -170,6 +171,7 @@ public class RegistryHandler
 				new PistolR1895("r1895"),
 				new PistolR45("r45"),
 				new PistolP18C("p18c"),
+				new PistolScorpion("scorpion"),
 				new PistolWin94("win94"),
 				new ShotgunSawedOff("sawed_off"),
 				new ShotgunS1897("s1897"),

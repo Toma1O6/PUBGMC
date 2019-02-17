@@ -36,6 +36,7 @@ public class ModelRegistryHandler
 		registerModel(PMCItems.R1895);
 		registerModel(PMCItems.R45);
 		registerModel(PMCItems.P18C);
+		registerModel(PMCItems.SCORPION);
 		registerModel(PMCItems.WIN94);
 		registerModel(PMCItems.SAWED_OFF);
 		registerModel(PMCItems.S1897);

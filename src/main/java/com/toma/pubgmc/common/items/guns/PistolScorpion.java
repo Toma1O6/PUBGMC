@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ICraftable;
+import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -18,14 +20,14 @@ public class PistolScorpion extends GunBase
 		super(name);
 		setMaxStackSize(1);
 		
-		setDamage(0);
-		setVelocity(0);
-		setGravityModifier(0);
-		setGravityStartTime(0);
-		setFireRate(0);
-		setReloadTime(0);
-		setVerticalRecoil(0);
-		setHorizontalRecoil(0);
+		setDamage(ConfigHandler.scorpion);
+		setVelocity(7);
+		setGravityModifier(0.015f);
+		setGravityStartTime(3);
+		setFireRate(1);
+		setReloadTime(50);
+		setVerticalRecoil(1.3f);
+		setHorizontalRecoil(0.25f);
 		
 		canSwitchMode(true);
 		setAutoFiremode(true);
@@ -35,10 +37,10 @@ public class PistolScorpion extends GunBase
 		setAmmoType(AmmoType.AMMO9MM);
 		setGunType(GunType.PISTOL);
 		
-		setGunSound(null);
-		setGunSilencedSound(null);
-		setGunSoundVolume(0);
-		setGunSilencedSoundVolume(0);
+		setGunSound(PMCSounds.gun_p92);
+		setGunSilencedSound(PMCSounds.gun_p92_silenced);
+		setGunSoundVolume(5f);
+		setGunSilencedSoundVolume(4f);
 	}
 	
 	@Override

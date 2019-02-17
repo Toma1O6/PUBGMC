@@ -13,12 +13,15 @@ import net.minecraft.world.World;
 public class PMCItem extends Item
 {
 	public List<String> desc = new ArrayList<String>();
+	public static final List<Item> TAB_ITEMS = new ArrayList<Item>();
 	
 	public PMCItem(String name)
 	{
 		setUnlocalizedName(name);
 		setRegistryName(name);
 		setCreativeTab(Pubgmc.pmcitemstab);
+		
+		TAB_ITEMS.add(this);
 	}
 	
 	public Item addDescription(String... strings)

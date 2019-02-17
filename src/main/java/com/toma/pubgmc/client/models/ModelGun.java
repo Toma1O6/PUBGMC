@@ -111,6 +111,11 @@ public abstract class ModelGun extends ModelBase
 		return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") > 0;
 	}
 	
+	public boolean hasExtendedMagazine(ItemStack stack)
+	{
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1;
+	}
+	
 	public void renderRedDot(double x, double y, double z, float scale, ItemStack stack)
 	{
 		if(hasRedDot(stack))

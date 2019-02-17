@@ -31,6 +31,7 @@ import com.toma.pubgmc.client.models.weapons.ModelSKS;
 import com.toma.pubgmc.client.models.weapons.ModelSLR;
 import com.toma.pubgmc.client.models.weapons.ModelSawedOff;
 import com.toma.pubgmc.client.models.weapons.ModelScarL;
+import com.toma.pubgmc.client.models.weapons.ModelScorpion;
 import com.toma.pubgmc.client.models.weapons.ModelTommyGun;
 import com.toma.pubgmc.client.models.weapons.ModelUmp9;
 import com.toma.pubgmc.client.models.weapons.ModelVSS;
@@ -52,6 +53,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	private final ModelP18C p18c = new ModelP18C();
 	private final ModelR45 r45 = new ModelR45();
 	private final ModelR1895 r1895 = new ModelR1895();
+	private final ModelScorpion scorpion = new ModelScorpion();
 	private final ModelWin94 win94 = new ModelWin94();
 	private final ModelSawedOff sawedOff = new ModelSawedOff();
 	private final ModelS1897 s1897 = new ModelS1897();
@@ -119,6 +121,12 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		{
 			bindTexture("r1895");
 			r1895.render(stack);
+		}
+		
+		else if(stack.getItem() == PMCItems.SCORPION)
+		{
+			bindTexture("m762");
+			scorpion.render(stack);
 		}
 		
 		else if(stack.getItem() == PMCItems.WIN94)

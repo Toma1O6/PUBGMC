@@ -83,7 +83,7 @@ public class GuiGunWorkbench extends GuiContainer
 		
 		if(tileentity.getCurrentCraftingMode() == CraftMode.Gun)
 		{
-			maxID = 34;
+			maxID = 35;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();

@@ -125,7 +125,7 @@ public class CommandGame extends CommandBase
 		{
 			if(args.length == 5 && PUBGMCUtil.isValidNumber(args[1]) && PUBGMCUtil.isValidNumber(args[2]) && PUBGMCUtil.isValidNumber(args[3]) && PUBGMCUtil.isValidNumber(args[4]))
 			{
-				game.setMapCenter(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+				game.setMapCenter(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
 				sendFeedback(world, sender, TextFormatting.BOLD + "New map setup:");
 				sendFeedback(world, sender, "Center: [" + args[1] + ", " + args[2] + "]");
 				sendFeedback(world, sender, "Map size: " + args[3]);
@@ -327,7 +327,7 @@ public class CommandGame extends CommandBase
 		BlockPos center = new BlockPos(world.getWorldBorder().getCenterX(), 10, world.getWorldBorder().getCenterZ());
 
 		int id = 0;
-		double dist = 100000000d;
+		double dist = Double.MAX_VALUE;
 		for(int i = 0; i < data.getSpawnLocations().size(); i++)
 		{
 			BlockPos pos = data.getSpawnLocations().get(i);

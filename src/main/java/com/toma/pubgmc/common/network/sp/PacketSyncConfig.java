@@ -23,8 +23,8 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 	int airdropLootGen, airdropRange;
 	
 	//guns
-	float p92, p1911, p18c, r1895, r45, win94, sawedoff, s1897, s686, s12k, microuzi, ump9, vector, tommygun, m16a4, m416, scarl, qbz, aug,
-	akm, m762, mk47, groza, dp28, m249, vss, mini14, qbu, sks, slr, mk14, kar98k, m24, awm;
+	float p92, p1911, p18c, r1895, r45, scorpion, win94, sawedoff, s1897, s686, s12k, microuzi, ump9, vector, tommygun, bizon,
+	m16a4, m416, scarl, g36c, qbz, aug, akm, m762, mk47, groza, dp28, m249, vss, mini14, qbu, sks, slr, mk14, kar98k, m24, awm;
 	
 	@Override
 	public void fromBytes(ByteBuf buf)
@@ -40,6 +40,7 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 		p18c = buf.readFloat();
 		r1895 = buf.readFloat();
 		r45 = buf.readFloat();
+		scorpion = buf.readFloat();
 		win94 = buf.readFloat();
 		sawedoff = buf.readFloat();
 		s1897 = buf.readFloat();
@@ -49,9 +50,11 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 		ump9 = buf.readFloat();
 		vector = buf.readFloat();
 		tommygun = buf.readFloat();
+		bizon = buf.readFloat();
 		m16a4 = buf.readFloat();
 		m416 = buf.readFloat();
 		scarl = buf.readFloat();
+		g36c = buf.readFloat();
 		qbz = buf.readFloat();
 		aug = buf.readFloat();
 		akm = buf.readFloat();
@@ -88,6 +91,7 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 		buf.writeFloat(ConfigHandler.p18c);
 		buf.writeFloat(ConfigHandler.r1895);
 		buf.writeFloat(ConfigHandler.r45);
+		buf.writeFloat(ConfigHandler.scorpion);
 		buf.writeFloat(ConfigHandler.win94);
 		buf.writeFloat(ConfigHandler.sawedoff);
 		buf.writeFloat(ConfigHandler.s1897);
@@ -97,9 +101,11 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 		buf.writeFloat(ConfigHandler.ump9);
 		buf.writeFloat(ConfigHandler.vector);
 		buf.writeFloat(ConfigHandler.tommygun);
+		buf.writeFloat(ConfigHandler.bizon);
 		buf.writeFloat(ConfigHandler.m16a4);
 		buf.writeFloat(ConfigHandler.m416);
 		buf.writeFloat(ConfigHandler.scarl);
+		buf.writeFloat(ConfigHandler.g36c);
 		buf.writeFloat(ConfigHandler.qbz);
 		buf.writeFloat(ConfigHandler.aug);
 		buf.writeFloat(ConfigHandler.akm);
@@ -141,6 +147,7 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 				ConfigHandler.p18c = p.p18c;
 				ConfigHandler.r1895 = p.r1895;
 				ConfigHandler.r45 = p.r45;
+				ConfigHandler.scorpion = p.scorpion;
 				ConfigHandler.win94 = p.win94;
 				ConfigHandler.sawedoff = p.sawedoff;
 				ConfigHandler.s1897 = p.s1897;
@@ -150,9 +157,11 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 				ConfigHandler.ump9 = p.ump9;
 				ConfigHandler.vector = p.vector;
 				ConfigHandler.tommygun = p.tommygun;
+				ConfigHandler.bizon = p.bizon;
 				ConfigHandler.m16a4 = p.m16a4;
 				ConfigHandler.m416 = p.m416;
 				ConfigHandler.scarl = p.scarl;
+				ConfigHandler.g36c = p.g36c;
 				ConfigHandler.qbz = p.qbz;
 				ConfigHandler.aug = p.aug;
 				ConfigHandler.akm = p.akm;
