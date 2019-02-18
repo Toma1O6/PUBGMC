@@ -87,16 +87,6 @@ public class CommonEvents
 					
 					game.increaseTimer();
 					
-					//TODO remove this
-					if(game.getTimer() % 100 == 0)
-					{
-						for(EntityPlayer p : world.playerEntities)
-						{
-							p.sendMessage(new TextComponentString(game.getTimer() + ""));
-							p.sendMessage(new TextComponentString(zoneSwitchPoint + ""));
-						}
-					}
-					
 					if(game.getTimer() >= zoneSwitchPoint)
 					{
 						game.setTimer(0);

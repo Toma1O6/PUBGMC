@@ -349,11 +349,6 @@ public class CommandGame extends CommandBase
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos)
 	{
-		if(args.length == 1)
-		{
-			return getListOfStringsMatchingLastWord(args, completions);
-		}
-		
-		return Collections.EMPTY_LIST;
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, completions) : Collections.EMPTY_LIST;
 	}
 }

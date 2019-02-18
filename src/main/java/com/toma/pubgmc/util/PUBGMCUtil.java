@@ -145,9 +145,16 @@ public class PUBGMCUtil
 		return mapSize * (100/zoneCount);
 	}
 	
+	/** Position calculated between X and Z coordinate of given positions **/
 	public static double getDistanceToBlockPos(BlockPos pos1, BlockPos pos2)
 	{
 		return Math.sqrt(sqr(Math.abs(pos1.getX() - pos2.getX())) + sqr(Math.abs(pos1.getZ() - pos2.getZ())));
+	}
+	
+	/** Position calculated between [xyz] of pos1 and pos2 **/
+	public static double getDistanceToBlockPos3D(BlockPos pos1, BlockPos pos2)
+	{
+		return Math.sqrt(sqr(Math.sqrt(sqr(Math.abs(pos1.getX() - pos2.getX())) + sqr(Math.abs(pos1.getZ() - pos2.getZ())))) + sqr(Math.abs(pos1.getY() - pos2.getY())));
 	}
 	
 	public static double sqr(double num)

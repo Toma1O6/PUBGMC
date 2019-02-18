@@ -83,7 +83,7 @@ public class GuiGunWorkbench extends GuiContainer
 		
 		if(tileentity.getCurrentCraftingMode() == CraftMode.Gun)
 		{
-			maxID = 35;
+			maxID = tileentity.WEAPONS.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();
@@ -91,25 +91,25 @@ public class GuiGunWorkbench extends GuiContainer
 		
 		else if(tileentity.getCurrentCraftingMode() == CraftMode.Ammo)
 		{
-			maxID = 6;
+			maxID = tileentity.AMMO.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
 		else if(tileentity.getCurrentCraftingMode() == CraftMode.Atachment)
 		{
-			maxID = 29;
+			maxID = tileentity.ATTACHMENT.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
 		else if(tileentity.getCurrentCraftingMode() == CraftMode.Clothing)
 		{
-			maxID = 11;
+			maxID = tileentity.CLOTHING.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
 		else if(tileentity.getCurrentCraftingMode() == CraftMode.Healing)
 		{
-			maxID = 5;
+			maxID = tileentity.HEALING.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();
@@ -117,7 +117,7 @@ public class GuiGunWorkbench extends GuiContainer
 		
 		else if(tileentity.getCurrentCraftingMode() == CraftMode.Throwables)
 		{
-			maxID = 2;
+			maxID = tileentity.THROWABLES.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();

@@ -37,8 +37,8 @@ public class PistolScorpion extends GunBase
 		setAmmoType(AmmoType.AMMO9MM);
 		setGunType(GunType.PISTOL);
 		
-		setGunSound(PMCSounds.gun_p92);
-		setGunSilencedSound(PMCSounds.gun_p92_silenced);
+		setGunSound(PMCSounds.gun_scorpion);
+		setGunSilencedSound(PMCSounds.gun_scorpion_silenced);
 		setGunSoundVolume(5f);
 		setGunSilencedSoundVolume(4f);
 	}
@@ -52,7 +52,7 @@ public class PistolScorpion extends GunBase
 	@Override
 	public SoundEvent getWeaponReloadSound()
 	{
-		return null;
+		return PMCSounds.reload_scorpion;
 	}
 	
 	@Override

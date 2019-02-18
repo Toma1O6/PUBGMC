@@ -9,6 +9,7 @@ import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.TileEntityUtil;
 
 import net.minecraft.command.CommandBase;
@@ -112,7 +113,7 @@ public class CommandLootGenerate extends CommandBase
 			int count = 0;
 			if(args.length == 5 && isValidNumber(args[1]) && isValidNumber(args[2]) && isValidNumber(args[3]) && isValidNumber(args[4]))
 			{
-				BlockPos gen = new BlockPos(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+				BlockPos gen = new BlockPos(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
 				int range = Integer.parseInt(args[4]);
 				
 				if(world.isBlockLoaded(gen))
@@ -122,10 +123,7 @@ public class CommandLootGenerate extends CommandBase
 						if(te instanceof TileEntityLootSpawner)
 						{
 							BlockPos lootPos = te.getPos();
-							int rangeX = Math.abs(gen.getX() - lootPos.getX());
-							int rangeZ = Math.abs(gen.getZ() - lootPos.getZ());
-							double totalRange = Math.sqrt(rangeX*rangeX+rangeZ*rangeZ);
-							sender.sendMessage(new TextComponentString(totalRange + ""));
+							double totalRange = PUBGMCUtil.getDistanceToBlockPos3D(lootPos, gen);
 							
 							if(totalRange <= range)
 							{

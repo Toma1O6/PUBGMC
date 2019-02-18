@@ -13,10 +13,10 @@ public class PMCSounds
 	public static SoundEvent gun_noammo, bullet_whizz;
 	
 	//reloading
-	public static SoundEvent reload_p92, reload_p1911, reload_r1895, reload_r45, reload_p18c, reload_win94, reload_flaregun;
+	public static SoundEvent reload_p92, reload_p1911, reload_r1895, reload_r45, reload_p18c, reload_scorpion, reload_win94, reload_flaregun;
 	public static SoundEvent reload_sawedoff, reload_s1897, reload_s686, reload_s12k;
-	public static SoundEvent reload_microuzi, reload_ump9, reload_vector, reload_tommygun;
-	public static SoundEvent reload_m16a4, reload_m416, reload_scarl, reload_qbz, reload_aug, reload_akm, reload_m762, reload_mk47, reload_groza;
+	public static SoundEvent reload_microuzi, reload_ump9, reload_vector, reload_tommygun, reload_bizon;
+	public static SoundEvent reload_m16a4, reload_m416, reload_scarl, reload_g36c, reload_qbz, reload_aug, reload_akm, reload_m762, reload_mk47, reload_groza;
 	public static SoundEvent reload_dp28, reload_m249;
 	public static SoundEvent reload_vss, reload_mini14, reload_qbu, reload_sks, reload_slr, reload_mk14;
 	public static SoundEvent reload_kar98k, reload_kar98k_single, reload_m24, reload_awm;
@@ -27,6 +27,7 @@ public class PMCSounds
 	public static SoundEvent gun_p18c, gun_p18c_silenced;
 	public static SoundEvent gun_r1895, gun_r1895_silenced;
 	public static SoundEvent gun_r45;
+	public static SoundEvent gun_scorpion, gun_scorpion_silenced;
 	public static SoundEvent gun_flare;
 	
 	//shotguns
@@ -37,11 +38,13 @@ public class PMCSounds
 	public static SoundEvent gun_ump9, gun_ump9_silenced;
 	public static SoundEvent gun_vector, gun_vector_silenced;
 	public static SoundEvent gun_tommy_gun, gun_tommy_gun_silenced;
+	public static SoundEvent gun_bizon, gun_bizon_silenced;
 	
 	//ars
 	public static SoundEvent gun_m16a4, gun_m16a4_silenced;
 	public static SoundEvent gun_m416, gun_m416_silenced;
 	public static SoundEvent gun_scarl, gun_scarl_silenced;
+	public static SoundEvent gun_g36c, gun_g36c_silenced;
 	public static SoundEvent gun_qbz, gun_qbz_silenced;
 	public static SoundEvent gun_aug, gun_aug_silenced;
 	public static SoundEvent gun_akm, gun_akm_silenced;
@@ -80,6 +83,8 @@ public class PMCSounds
 		gun_r1895 = registerSound("gun.r1895");
 		gun_r1895_silenced = registerSound("gun.r1895.silenced");
 		gun_r45 = registerSound("gun.r45");
+		gun_scorpion = registerSound("gun.scorpion");
+		gun_scorpion_silenced = registerSound("gun.scorpion.silenced");
 		gun_flare = registerSound("gun.flare");
 		
 		gun_win94 = registerSound("gun.win94");
@@ -100,6 +105,8 @@ public class PMCSounds
 		gun_vector_silenced = registerSound("gun.vector.silenced");
 		gun_tommy_gun = registerSound("gun.tommy_gun");
 		gun_tommy_gun_silenced = registerSound("gun.tommy_gun.silenced");
+		gun_bizon = registerSound("gun.bizon");
+		gun_bizon_silenced = registerSound("gun.bizon.silenced");
 		
 		gun_m16a4 = registerSound("gun.m16a4");
 		gun_m16a4_silenced = registerSound("gun.m16a4.silenced");
@@ -107,6 +114,8 @@ public class PMCSounds
 		gun_m416_silenced = registerSound("gun.m416.silenced");
 		gun_scarl = registerSound("gun.scarl");
 		gun_scarl_silenced = registerSound("gun.scarl.silenced");
+		gun_g36c = registerSound("gun.g36c");
+		gun_g36c_silenced = registerSound("gun.g36c.silenced");
 		gun_qbz = registerSound("gun.qbz");
 		gun_qbz_silenced = registerSound("gun.qbz.silenced");
 		gun_aug = registerSound("gun.aug");
@@ -143,6 +152,7 @@ public class PMCSounds
 		reload_p18c = registerSound("reload.p18c");
 		reload_r1895 = registerSound("reload.r1895");
 		reload_r45 = registerSound("reload.r45");
+		reload_scorpion = registerSound("reload.scorpion");
 		reload_win94 = registerSound("reload.win94");
 		reload_flaregun = registerSound("reload.flaregun");
 		reload_sawedoff = registerSound("reload.sawedoff");
@@ -153,9 +163,11 @@ public class PMCSounds
 		reload_ump9 = registerSound("reload.ump9");
 		reload_vector = registerSound("reload.vector");
 		reload_tommygun = registerSound("reload.tommygun");
+		reload_bizon = registerSound("reload.bizon");
 		reload_m16a4 = registerSound("reload.m16a4");
 		reload_m416 = registerSound("reload.m416");
 		reload_scarl = registerSound("reload.scarl");
+		reload_g36c = registerSound("reload.g36c");
 		reload_qbz = registerSound("reload.qbz");
 		reload_aug = registerSound("reload.aug");
 		reload_akm = registerSound("reload.akm");

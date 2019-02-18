@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -34,10 +35,10 @@ public class ArG36C extends GunBase
 		setAmmoType(AmmoType.AMMO556);
 		setGunType(GunType.AR);
 		
-		setGunSound(null);
-		setGunSilencedSound(null);
-		setGunSoundVolume(0);
-		setGunSilencedSoundVolume(0);
+		setGunSound(PMCSounds.gun_g36c);
+		setGunSilencedSound(PMCSounds.gun_g36c_silenced);
+		setGunSoundVolume(10f);
+		setGunSilencedSoundVolume(7f);
 	}
 	
 	@Override
@@ -49,7 +50,7 @@ public class ArG36C extends GunBase
 	@Override
 	public SoundEvent getWeaponReloadSound()
 	{
-		return null;
+		return PMCSounds.reload_g36c;
 	}
 	
 	@Override
