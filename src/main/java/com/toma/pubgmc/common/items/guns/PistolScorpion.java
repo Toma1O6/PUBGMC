@@ -25,7 +25,7 @@ public class PistolScorpion extends GunBase
 		setGravityModifier(0.015f);
 		setGravityStartTime(3);
 		setFireRate(1);
-		setReloadTime(50);
+		setReloadTime(57);
 		setVerticalRecoil(1.3f);
 		setHorizontalRecoil(0.25f);
 		

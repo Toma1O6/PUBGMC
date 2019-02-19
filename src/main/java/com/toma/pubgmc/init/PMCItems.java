@@ -43,6 +43,7 @@ public class PMCItems
 	public static final Item UMP9 = null;
 	public static final Item VECTOR = null;
 	public static final Item TOMMY_GUN = null;
+	public static final Item BIZON = null;
 	
 	public static final Item M16A4 = null;
 	public static final Item M416 = null;

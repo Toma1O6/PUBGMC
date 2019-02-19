@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GlStateManager;
 public class ModelDebugger
 {
 	public static final double MODIFIER = 0.1d;
-	public static final double SMALL_MODIFIER = 0.01d;
+	public static final double SMALL_MODIFIER = 0.005d;
 	
 	public static ModelDebugger instance;
 	public static double X = 0;

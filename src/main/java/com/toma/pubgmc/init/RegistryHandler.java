@@ -63,6 +63,7 @@ import com.toma.pubgmc.common.items.guns.ShotgunS12K;
 import com.toma.pubgmc.common.items.guns.ShotgunS1897;
 import com.toma.pubgmc.common.items.guns.ShotgunS686;
 import com.toma.pubgmc.common.items.guns.ShotgunSawedOff;
+import com.toma.pubgmc.common.items.guns.SmgBizon;
 import com.toma.pubgmc.common.items.guns.SmgMicroUzi;
 import com.toma.pubgmc.common.items.guns.SmgTommygun;
 import com.toma.pubgmc.common.items.guns.SmgUmp9;
@@ -181,6 +182,7 @@ public class RegistryHandler
 				new SmgUmp9("ump9"),
 				new SmgVector("vector"),
 				new SmgTommygun("tommy_gun"),
+				new SmgBizon("bizon"),
 				new ArM16A4("m16a4"),
 				new ArM416("m416"),
 				new ArScarL("scar_l"),

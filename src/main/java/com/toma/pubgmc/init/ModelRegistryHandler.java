@@ -46,6 +46,7 @@ public class ModelRegistryHandler
 		registerModel(PMCItems.UMP9);
 		registerModel(PMCItems.VECTOR);
 		registerModel(PMCItems.TOMMY_GUN);
+		registerModel(PMCItems.BIZON);
 		registerModel(PMCItems.M16A4);
 		registerModel(PMCItems.M416);
 		registerModel(PMCItems.SCAR_L);

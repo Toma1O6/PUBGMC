@@ -20,6 +20,7 @@ import com.toma.pubgmc.client.models.weapons.ModelMini14;
 import com.toma.pubgmc.client.models.weapons.ModelP18C;
 import com.toma.pubgmc.client.models.weapons.ModelP1911;
 import com.toma.pubgmc.client.models.weapons.ModelP92;
+import com.toma.pubgmc.client.models.weapons.ModelPP19Bizon;
 import com.toma.pubgmc.client.models.weapons.ModelQBU;
 import com.toma.pubgmc.client.models.weapons.ModelQBZ;
 import com.toma.pubgmc.client.models.weapons.ModelR1895;
@@ -62,6 +63,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	private final ModelMicroUzi microuzi = new ModelMicroUzi();
 	private final ModelUmp9 ump = new ModelUmp9();
 	private final ModelTommyGun tommygun = new ModelTommyGun();
+	private final ModelPP19Bizon bizon = new ModelPP19Bizon();
 	private final ModelVector vector = new ModelVector();
 	private final ModelM16A4 m16a4 = new ModelM16A4();
 	private final ModelM416 m416 = new ModelM416();
@@ -182,6 +184,12 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		{
 			bindTexture("tommygun");
 			tommygun.render(stack);
+		}
+		
+		else if(stack.getItem() == PMCItems.BIZON)
+		{
+			bindTexture("m762");
+			bizon.render(stack);
 		}
 		
 		else if(stack.getItem() == PMCItems.M16A4)
