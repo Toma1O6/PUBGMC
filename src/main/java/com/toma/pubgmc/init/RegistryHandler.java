@@ -37,6 +37,7 @@ import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.ArAKM;
 import com.toma.pubgmc.common.items.guns.ArAUG;
 import com.toma.pubgmc.common.items.guns.ArBerylM762;
+import com.toma.pubgmc.common.items.guns.ArG36C;
 import com.toma.pubgmc.common.items.guns.ArGroza;
 import com.toma.pubgmc.common.items.guns.ArM16A4;
 import com.toma.pubgmc.common.items.guns.ArM416;
@@ -186,6 +187,7 @@ public class RegistryHandler
 				new ArM16A4("m16a4"),
 				new ArM416("m416"),
 				new ArScarL("scar_l"),
+				new ArG36C("g36c"),
 				new ArQBZ("qbz"),
 				new ArAUG("aug"),
 				new ArAKM("akm"),

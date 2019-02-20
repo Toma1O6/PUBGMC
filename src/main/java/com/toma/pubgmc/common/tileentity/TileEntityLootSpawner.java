@@ -674,6 +674,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		PISTOLS.add(new ItemStack(PMCItems.R45));
 		PISTOLS.add(new ItemStack(PMCItems.P18C));
 		PISTOLS.add(new ItemStack(PMCItems.WIN94));
+		PISTOLS.add(new ItemStack(PMCItems.SCORPION));
 	}
 	
 	private void addShotguns()
@@ -694,6 +695,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		SMGS.add(new ItemStack(PMCItems.UMP9));
 		SMGS.add(new ItemStack(PMCItems.VECTOR));
 		SMGS.add(new ItemStack(PMCItems.TOMMY_GUN));
+		SMGS.add(new ItemStack(PMCItems.BIZON));
 	}
 	
 	private void addARs(boolean airdrop)
@@ -703,6 +705,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		ARS.add(new ItemStack(PMCItems.M16A4));
 		ARS.add(new ItemStack(PMCItems.M416));
 		ARS.add(new ItemStack(PMCItems.SCAR_L));
+		ARS.add(new ItemStack(PMCItems.G36C));
 		ARS.add(new ItemStack(PMCItems.QBZ));
 		ARS.add(new ItemStack(PMCItems.AKM));
 		ARS.add(new ItemStack(PMCItems.BERYL_M762));

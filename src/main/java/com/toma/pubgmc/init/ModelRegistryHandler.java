@@ -50,6 +50,7 @@ public class ModelRegistryHandler
 		registerModel(PMCItems.M16A4);
 		registerModel(PMCItems.M416);
 		registerModel(PMCItems.SCAR_L);
+		registerModel(PMCItems.G36C);
 		registerModel(PMCItems.QBZ);
 		registerModel(PMCItems.AUG);
 		registerModel(PMCItems.AKM);

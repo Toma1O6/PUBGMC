@@ -48,6 +48,7 @@ public class PMCItems
 	public static final Item M16A4 = null;
 	public static final Item M416 = null;
 	public static final Item SCAR_L = null;
+	public static final Item G36C = null;
 	public static final Item QBZ = null;
 	public static final Item AUG = null;
 	public static final Item AKM = null;

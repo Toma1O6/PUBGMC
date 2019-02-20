@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -18,14 +19,14 @@ public class ArG36C extends GunBase
 		super(name);
 		setMaxStackSize(1);
 		
-		setDamage(0);
-		setVelocity(0f);
-		setGravityModifier(0);
-		setGravityStartTime(0);
+		setDamage(ConfigHandler.g36c);
+		setVelocity(12f);
+		setGravityModifier(0.005f);
+		setGravityStartTime(5);
 		setFireRate(2);
-		setReloadTime(70);
-		setVerticalRecoil(0);
-		setHorizontalRecoil(0);
+		setReloadTime(82);
+		setVerticalRecoil(3.0f);
+		setHorizontalRecoil(1.0f);
 		
 		canSwitchMode(true);
 		setAutoFiremode(true);

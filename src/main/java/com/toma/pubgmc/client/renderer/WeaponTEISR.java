@@ -7,6 +7,7 @@ import com.toma.pubgmc.client.models.weapons.ModelAWM;
 import com.toma.pubgmc.client.models.weapons.ModelBerylM762;
 import com.toma.pubgmc.client.models.weapons.ModelDP28;
 import com.toma.pubgmc.client.models.weapons.ModelFlareGun;
+import com.toma.pubgmc.client.models.weapons.ModelG36C;
 import com.toma.pubgmc.client.models.weapons.ModelGroza;
 import com.toma.pubgmc.client.models.weapons.ModelKar98K;
 import com.toma.pubgmc.client.models.weapons.ModelM16A4;
@@ -68,6 +69,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	private final ModelM16A4 m16a4 = new ModelM16A4();
 	private final ModelM416 m416 = new ModelM416();
 	private final ModelScarL scar = new ModelScarL();
+	private final ModelG36C g36c = new ModelG36C();
 	private final ModelQBZ qbz = new ModelQBZ();
 	private final ModelAUG aug = new ModelAUG();
 	private final ModelAKM akm = new ModelAKM();
@@ -208,6 +210,12 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		{
 			bindTexture("scarl");
 			scar.render(stack);
+		}
+		
+		else if(stack.getItem() == PMCItems.G36C)
+		{
+			bindTexture("m762");
+			g36c.render(stack);
 		}
 		
 		else if(stack.getItem() == PMCItems.QBZ)

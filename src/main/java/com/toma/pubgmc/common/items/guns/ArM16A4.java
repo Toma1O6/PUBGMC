@@ -20,7 +20,7 @@ public class ArM16A4 extends GunBase
 		super(name);
 		this.setDamage(ConfigHandler.m16a4);
 		this.setVelocity(12);
-		this.setGravityModifier(0.005);
+		this.setGravityModifier(0.005f);
 		this.setGravityStartTime(8);
 		this.setAmmoType(AmmoType.AMMO556);
 		this.setReloadTime(66);
