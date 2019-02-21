@@ -33,7 +33,7 @@ public class PMCEntities
 			registerEntity("molotov", EntityMolotov.class, 64, 20, true),
 			registerEntity("flare", EntityFlare.class, 64, 80, true),
 			registerEntity("parachute", EntityParachute.class, 256, 1, true),
-			registerEntity("testVehicle", EntityTestVehicle.class, 256, 75, true)
+			registerEntity("testVehicle", EntityTestVehicle.class, 256, 30, true)
 		};
 		
 		e.getRegistry().registerAll(entries);
@@ -41,15 +41,15 @@ public class PMCEntities
 	
 	private static EntityEntry registerEntity(String name, Class<? extends Entity> entityClass, int trackingRange, int updateFrequency, boolean sendVelocityUpdates)
 	{
-		return createEntityBuilder(name).entity(entityClass).name(Pubgmc.MOD_ID + ":" + name).tracker(trackingRange, updateFrequency, sendVelocityUpdates).build();
+		return createEntityBuilder(name).entity(entityClass).tracker(trackingRange, updateFrequency, sendVelocityUpdates).build();
 	}
 	
 	private static EntityEntry registerEntity(String name, Class<? extends Entity> entityClass, int trackingRange, int updateFrequency, boolean sendVelocityUpdates, int eggPrimary, int eggSecondary)
 	{
-		return createEntityBuilder(name).entity(entityClass).name(Pubgmc.MOD_ID + ":" + name).tracker(trackingRange, updateFrequency, sendVelocityUpdates).egg(eggPrimary, eggSecondary).build();
+		return createEntityBuilder(name).entity(entityClass).tracker(trackingRange, updateFrequency, sendVelocityUpdates).egg(eggPrimary, eggSecondary).build();
 	}
 	
-	private static <E extends Entity>EntityEntryBuilder<E> createEntityBuilder(String name)
+	private static <E extends Entity> EntityEntryBuilder<E> createEntityBuilder(String name)
 	{
 		EntityEntryBuilder<E> builder = EntityEntryBuilder.create();
 		ResourceLocation regName = new ResourceLocation(Pubgmc.MOD_ID, name);

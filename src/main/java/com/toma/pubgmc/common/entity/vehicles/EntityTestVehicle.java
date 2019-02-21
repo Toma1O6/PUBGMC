@@ -9,7 +9,7 @@ public class EntityTestVehicle extends EntityVehicle
 	public EntityTestVehicle(World world)
 	{
 		super(world);
-		setSize(3f, 2f);
+		setSize(2f, 2f);
 	}
 	
 	public EntityTestVehicle(World world, double x, double y, double z) 

@@ -66,7 +66,7 @@ public class Pubgmc
 	/** Some basic stuff **/
 	public static final String MOD_ID = "pubgmc";
 	public static final String NAME = "PUBGMC";
-	public static final String VERSION = "1.4.0";
+	public static final String VERSION = "1.5.0";
 	public static final String ACCEPTED_VERSIONS = "[1.12.2]";
 	public static final String CLIENT_PROXY_CLASS = "com.toma.pubgmc.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";

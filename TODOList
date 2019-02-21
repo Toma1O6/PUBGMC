@@ -8,18 +8,18 @@ PUBGMC TODO LIST
 |    HIGH PRIORITY:                                                                       |
 |-----------------------------------------------------------------------------------------|
 | - Vehicles
-| - Proning
-| - Add G36C, Scorpion, PP-Bizon
+| - Better ghillie suit -> Model is done, TODO animations when player is moving
+| - Hostile entity which can shoot you
+| - Add Flashbang grenade
 |
 |-----------------------------------------------------------------------------------------|
 |    LOW PRIORITY:                                                                        |
 |-----------------------------------------------------------------------------------------|
-| - Better ghillie suit -> Model is done, TODO animations when player is moving
+| - Proning
 | - Render round magazine for Tommy Gun when extended mag is attached
 | - Crate with skins for some weapons (gold, silver etc)
 | - More props
 | - 3D sound system
-| - Hostile entity which can shoot you
 | - Riot shield
 | - Official map
 |
@@ -32,6 +32,7 @@ PUBGMC TODO LIST
 | - Better damage calculation based on armor (for headshots damage only helmet etc)
 | - Attachment returning from weapon when being replaced
 | - Command /game; To setup your maps to battle royale style (adding spawn locations, random zone generation, etc)
+| - Add G36C, Scorpion, PP-Bizon
 |
 |-----------------------------------------------------------------------------------------|
 |    MAYBE?                                                                               |

@@ -177,7 +177,7 @@ public class EntityVehicle extends Entity
 					e.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed);
 				}
 				
-				this.health -= currentSpeed;
+				this.health -= currentSpeed * 2.5f;
 			}
 
 			currentSpeed = 0f;
@@ -198,21 +198,36 @@ public class EntityVehicle extends Entity
 	private void checkSteps()
 	{
 		Vec3d vec1 = new Vec3d(posX, posY, posZ);
-		Vec3d vec2 = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
+		Vec3d lookVec = getLookVec();
+		Vec3d vec2 = new Vec3d(posX + lookVec.x * 2, posY + lookVec.y * 2, posZ + lookVec.z * 2);
 		RayTraceResult trace = world.rayTraceBlocks(vec1, vec2, false, true, false);
-		
+
 		if(trace != null)
 		{
 			if(trace.typeOfHit == Type.BLOCK)
 			{
-				BlockPos potentialCollision = new BlockPos(trace.hitVec.x, trace.hitVec.y, trace.hitVec.z);
+				BlockPos potentialCollision = new BlockPos(trace.getBlockPos().getX(), trace.getBlockPos().getY(), trace.getBlockPos().getZ());
 				Block block = world.getBlockState(potentialCollision).getBlock();
+				
 				if(!block.isReplaceable(world, potentialCollision))
 				{
 					if(world.isAirBlock(new BlockPos(potentialCollision.getX(), potentialCollision.getY()+1, potentialCollision.getZ())))
 					{
 						setPosition(posX, posY + 1, posZ);
 					}
+				}
+			}
+			
+			else if(trace.typeOfHit == Type.ENTITY)
+			{
+				Entity e = trace.entityHit;
+				
+				if(e.isEntityAlive() && !e.getIsInvulnerable())
+				{
+					e.motionX += motionX * currentSpeed;
+					e.motionY += motionY * currentSpeed;
+					e.motionZ += motionZ * currentSpeed;
+					e.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed * 2.5f);
 				}
 			}
 		}
@@ -239,6 +254,17 @@ public class EntityVehicle extends Entity
 	
 	private void handleTurning()
 	{
+		if(turnModifier > MAX_TURNING_MODIFIER)
+		{
+			turnModifier = MAX_TURNING_MODIFIER;
+		}
+		
+		if(turnModifier < -MAX_TURNING_MODIFIER)
+		{
+			turnModifier = -MAX_TURNING_MODIFIER;
+		}
+		
+		
 		if(isVehicleMovingBackward())
 		{
 			if(inputRight && !inputLeft && turnModifier < MAX_TURNING_MODIFIER)
@@ -378,6 +404,7 @@ public class EntityVehicle extends Entity
 		}
 	}
 	
+	//TODO remove
 	@Override
 	public void applyEntityCollision(Entity entityIn) 
 	{

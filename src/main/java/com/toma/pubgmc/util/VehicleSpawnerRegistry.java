@@ -6,6 +6,9 @@ import java.util.List;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 
+/**
+ * TODO REWORK ALL STUFF LOCATED HERE
+ */
 public class VehicleSpawnerRegistry 
 {
 	private static final List<EntityVehicle> VEHICLES = new ArrayList<EntityVehicle>();
