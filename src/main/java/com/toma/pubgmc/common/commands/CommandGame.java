@@ -17,6 +17,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -66,6 +67,7 @@ public class CommandGame extends CommandBase
 			{
 				"start >> starts the game",
 				"stop >> stops the game",
+				"reset >> resets the game",
 				"addLocation [X,Y,Z,name] >> this will add a new spawn location to your map",
 				"clearLocations >> removes all spawn locations from your map",
 				"setupMap [mapCenterX, mapCenterZ, mapSize, zoneCount] >> border will be calculated based on these values",
@@ -100,6 +102,11 @@ public class CommandGame extends CommandBase
 			}
 			
 			else sendWarningTo(sender, "Game haven't started yet!");
+		}
+		
+		else if(args[0].equalsIgnoreCase("reset"))
+		{
+			resetGame(game, world);
 		}
 		
 		else if(args[0].equalsIgnoreCase("addLocation"))
@@ -320,6 +327,27 @@ public class CommandGame extends CommandBase
 		WorldBorder border = world.getWorldBorder();
 		border.setCenter(data.getMapCenter().getX() + 0.5, data.getMapCenter().getZ() + 0.5);
 		border.setTransition(data.getMapSize()*2);
+	}
+	
+	private void resetGame(IGameData data, World world)
+	{
+		Pubgmc.logger.info("Attempting game reset...");
+		startGame(data, world);
+		stopGame(data, world);
+		
+		for(EntityPlayer player : world.playerEntities)
+		{
+			player.setHealth(20f);
+			player.inventory.clear();
+			player.sendMessage(new TextComponentString(TextFormatting.GRAY + "Game is being reset."));
+			
+			TextComponentString s = new TextComponentString(TextFormatting.GREEN + "Get back to lobby");
+			Style style = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/leave"));
+			s.setStyle(style);
+			
+			player.sendMessage(s);
+		}
+		Pubgmc.logger.info("Game has been restarted successfully.");
 	}
 	
 	private int getClosestLocation(IGameData data, World world)
