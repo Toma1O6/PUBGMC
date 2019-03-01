@@ -1,15 +1,19 @@
 package com.toma.pubgmc.util;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSound;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
@@ -157,8 +161,47 @@ public class PUBGMCUtil
 		return Math.sqrt(sqr(Math.sqrt(sqr(Math.abs(pos1.getX() - pos2.getX())) + sqr(Math.abs(pos1.getZ() - pos2.getZ())))) + sqr(Math.abs(pos1.getY() - pos2.getY())));
 	}
 	
+	public static boolean isMapSetupProperly(IGameData data)
+	{
+		boolean properSize = data.getMapSize() > 0;
+		boolean hasLocations = !data.getSpawnLocations().isEmpty();
+		
+		if(!properSize) Pubgmc.logger.error("Ivalid map size, setup your map!");
+		if(!hasLocations) Pubgmc.logger.warn("No locations, add some! (Plane won't spawn)");
+		
+		return properSize;
+	}
+	
+	public static float getAngleBetween2Points(Entity entityToRotate, BlockPos targetPos)
+	{
+		float angle = (float) (MathHelper.atan2(entityToRotate.posZ - targetPos.getZ(), entityToRotate.posX - targetPos.getX()) * (180D / Math.PI)) - 90f;
+		return angle;
+	}
+	
+	public static float updateRotation(float prevRotation, float additionalRotation)
+	{
+		float f = MathHelper.wrapDegrees(additionalRotation - prevRotation);
+		return f;
+	}
+	
+	public static void updateEntityRotation(Entity entity, BlockPos targetPos)
+	{
+		entity.rotationYaw = updateRotation(entity.rotationYaw, getAngleBetween2Points(entity, targetPos));
+	}
+	
 	public static double sqr(double num)
 	{
 		return num*num;
+	}
+	
+	public static Vec3d getPositionVec(Entity entity)
+	{
+		return new Vec3d(entity.posX, entity.posY, entity.posZ);
+	}
+	
+	public static Vec3d getMotionVec(Entity entity)
+	{
+		Vec3d base = getPositionVec(entity);
+		return new Vec3d(base.x + entity.motionX, base.y + entity.motionY, base.z + entity.motionZ);
 	}
 }

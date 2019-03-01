@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 public class BlockLandMine extends PMCBlock //implements ICraftable
 {
 	private static final AxisAlignedBB AABB = new AxisAlignedBB(0.15d, 0d, 0.15d, 0.85d, 0.1d, 0.85d);
-	public static final AxisAlignedBB COLLISION = new AxisAlignedBB(0d, 0d, 0d, 1d, 1d, 1d);
 	
 	public BlockLandMine(String name)
 	{

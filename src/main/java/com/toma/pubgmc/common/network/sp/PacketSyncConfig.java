@@ -20,7 +20,7 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 	
 	//world
 	boolean enableGunLoot, enableGuns;
-	int airdropLootGen, airdropRange;
+	int airdropLootGen, airdropRange, planeHeight, planeWaitTime;
 	
 	//guns
 	float p92, p1911, p18c, r1895, r45, scorpion, win94, sawedoff, s1897, s686, s12k, microuzi, ump9, vector, tommygun, bizon,
@@ -75,6 +75,8 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 		forceBrightness = buf.readBoolean();
 		brightnessLevel = buf.readInt();
 		nameTags = buf.readBoolean();
+		planeHeight = buf.readInt();
+		planeWaitTime = buf.readInt();
 	}
 	
 	@Override
@@ -126,6 +128,8 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 		buf.writeBoolean(ConfigHandler.forceBrightness);
 		buf.writeInt(ConfigHandler.brightness);
 		buf.writeBoolean(ConfigHandler.renderPlayerNameTags);
+		buf.writeInt(ConfigHandler.planeHeight);
+		buf.writeInt(ConfigHandler.planeWaitTime);
 	}
 	
 	@Override
@@ -182,8 +186,10 @@ public class PacketSyncConfig implements IMessage, IMessageHandler<PacketSyncCon
 				ConfigHandler.forceBrightness = p.forceBrightness;
 				ConfigHandler.brightness = p.brightnessLevel;
 				ConfigHandler.renderPlayerNameTags = p.nameTags;
+				ConfigHandler.planeHeight = p.planeHeight;
+				ConfigHandler.planeWaitTime = p.planeWaitTime;
 				
-				Pubgmc.logger.log(Level.INFO, "Config has been synced with server.");
+				Pubgmc.logger.log(Level.INFO, "Your config has been synced with server.");
 			});
 		}
 		

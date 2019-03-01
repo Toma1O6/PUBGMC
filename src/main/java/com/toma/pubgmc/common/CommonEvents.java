@@ -121,7 +121,7 @@ public class CommonEvents
 
 		//To prevent the method from being called multiple times at once
 		if(ev.phase == Phase.START && !player.world.isRemote)
-		{	
+		{
 			//Inventory limit
 			if(ConfigHandler.enableInventoryLimit)
 			{

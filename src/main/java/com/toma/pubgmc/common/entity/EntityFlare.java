@@ -7,6 +7,7 @@ import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -109,11 +110,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
         
         world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 0, 0, 0, 0);
 
-        this.posX += this.motionX;
-        this.posY += this.motionY;
-        this.posZ += this.motionZ;
-
-        this.setPosition(this.posX, this.posY, this.posZ);
+        move(MoverType.SELF, motionX, motionY, motionZ);
     }    
     
     @Override

@@ -1,28 +1,36 @@
 package com.toma.pubgmc.common.tileentity;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class TileEntityLandMine extends TileEntity implements ITickable
 {
+	private short timer = 0;
+	
 	@Override
 	public void update()
 	{
 		World world = this.getWorld();
-		if(!world.isRemote && world.getNearestAttackablePlayer(pos, 3, 2) != null)
+		timer++;
+		
+		if(timer >= 10)
 		{
-			explode(world, pos);
+			if(!world.isRemote && !world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - 2, pos.getY() - 1, pos.getZ() - 2, pos.getX() + 2, pos.getY() + 3, pos.getZ() + 2)).isEmpty())
+			{
+				explode(world, pos);
+			}
+			
+			timer = 0;
 		}
 	}
 	
 	private void explode(World world, BlockPos pos)
 	{
-		if(!world.isRemote)
-		{
-			world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 5f, false);
-			world.setBlockToAir(pos);
-		}
+		world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 5f, false);
+		world.setBlockToAir(pos);
 	}
 }

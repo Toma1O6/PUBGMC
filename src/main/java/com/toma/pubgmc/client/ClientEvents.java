@@ -8,12 +8,12 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.items.ItemAmmo;
+import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -21,7 +21,7 @@ import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketAim;
 import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
-import com.toma.pubgmc.common.network.server.PacketHandleVehicleInputs;
+import com.toma.pubgmc.common.network.server.PacketHandleVehicleInput;
 import com.toma.pubgmc.common.network.server.PacketNightVision;
 import com.toma.pubgmc.common.network.server.PacketOpenGui;
 import com.toma.pubgmc.common.network.server.PacketReload;
@@ -43,6 +43,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -74,6 +75,8 @@ public class ClientEvents
     private static final ResourceLocation BOOST = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_empty.png");
     private static final ResourceLocation BOOST_FULL = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_full.png");
     private static final ResourceLocation BOOST_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_overlay.png");
+    private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
+    private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
 	private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
 	private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
 	
@@ -243,6 +246,12 @@ public class ClientEvents
     			mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "" + ammo + TextFormatting.RESET + " | " + totalCount, x, y, 16777215);
     		}
     	}
+    	
+    	/*if(e.getType() == ElementType.TEXT && sp.getRidingEntity() instanceof EntityVehicle)
+    	{
+    		EntityVehicle car = (EntityVehicle)sp.getRidingEntity();
+    		mc.fontRenderer.drawStringWithShadow("Health: " + car.getHeath() + " ; Fuel: " + car.getFuel() + " ; Speed: " + car.speed(), 10, 10, 16777215);
+    	}*/
 	}
 	
     //All pre overlay rendering
@@ -346,6 +355,9 @@ public class ClientEvents
         			}
         		}
     		}
+    		
+    		if(ConfigHandler.armorOverlayIcons)
+    			renderArmorIcons(e, sp, res, mc, data);
     	}
     }
     
@@ -716,7 +728,7 @@ public class ClientEvents
         	//This takes care of vehicle controls
         	if(ev.phase == Phase.END)
         	{
-                handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), gs.keyBindSprint.isKeyDown(), player);
+                handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
                 handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
         	}
         	
@@ -1358,18 +1370,14 @@ public class ClientEvents
     	return gun.getGunType() == GunType.DMR || gun.getGunType() == GunType.SR ? 1 : 0;
     }
     
-    private void handleVehicleControls(boolean forward, boolean back, boolean right, boolean left, boolean boost, EntityPlayer player)
+    private void handleVehicleControls(boolean forward, boolean back, boolean right, boolean left, EntityPlayer player)
     {
     	if(player.getRidingEntity() instanceof EntityVehicle)
     	{
     		EntityVehicle vehicle = (EntityVehicle)player.getRidingEntity();
     		
-    		vehicle.handleInputs(forward, back, right, left, boost, player);
-    		
-    		if(vehicle.isPlayerDriver(player))
-    		{
-    			PacketHandler.INSTANCE.sendToServer(new PacketHandleVehicleInputs(forward, back, right, left, boost));
-    		}
+    		vehicle.handleInputs(forward, back, right, left, player);
+    		PacketHandler.sendToServer(new PacketHandleVehicleInput(forward, back, right, left, vehicle.getEntityId()));
     	}
     }
     
@@ -1382,5 +1390,57 @@ public class ClientEvents
     		chute.handleInputs(down, up, right, left);
     		PacketHandler.INSTANCE.sendToServer(new PacketHandleParachuteInputs(up, down, right, left));
     	}
+    }
+    
+    private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data)
+    {
+    	ArmorBase head = player.inventory.getStackInSlot(39).getItem() instanceof ArmorBase ? (ArmorBase)player.inventory.getStackInSlot(39).getItem() : null;
+    	ArmorBase body = player.inventory.getStackInSlot(38).getItem() instanceof ArmorBase ? (ArmorBase)player.inventory.getStackInSlot(38).getItem() : null;
+		int width = res.getScaledWidth();
+		int height = res.getScaledHeight();
+		int left = width / 2 + 93;
+		int top = height - 19;
+		int offset = 0;
+		
+    	if(head != null)
+    	{
+    		int level = head.armorLevel().getArmorLevel();
+    		ItemStack headS = player.inventory.getStackInSlot(39);
+    		ResourceLocation img = head.armorLevel().getIcon(true, level, getDamageLevel(headS));
+    		
+    		ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+    		offset += 17;
+    	}
+    	
+    	if(body != null)
+    	{
+    		int level = body.armorLevel().getArmorLevel();
+    		ItemStack bodyS = player.inventory.getStackInSlot(38);
+    		ResourceLocation img = body.armorLevel().getIcon(false, level, getDamageLevel(bodyS));
+    		
+    		ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+    		offset += 17;
+    	}
+    	
+    	if(data.getBackpackLevel() > 0)
+    	{
+    		int level = data.getBackpackLevel() - 1;
+    		
+    		ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
+    		offset += 17;
+    	}
+    	
+    	if(data.getEquippedNV())
+    	{
+    		int i = data.isUsingNV() ? 1 : 0;
+    		
+    		ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
+    	}
+    }
+    
+    private static int getDamageLevel(ItemStack stack)
+    {
+    	final double val = (double)stack.getItemDamage() / (double)stack.getMaxDamage();
+    	return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
     }
 }

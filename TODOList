@@ -21,7 +21,7 @@ PUBGMC TODO LIST
 | - More props
 | - 3D sound system
 | - Riot shield
-| - Official map
+| - Official map - being worked on
 |
 |-----------------------------------------------------------------------------------------|
 |    FINISHED:                                                                            |
@@ -33,9 +33,11 @@ PUBGMC TODO LIST
 | - Attachment returning from weapon when being replaced
 | - Command /game; To setup your maps to battle royale style (adding spawn locations, random zone generation, etc)
 | - Add G36C, Scorpion, PP-Bizon
+| - Planes (for jumping off at start of the game)
+| - Improve headshot mechanic (better raytracing math for entities)
+| - Improve molotov fire spread
 |
 |-----------------------------------------------------------------------------------------|
 |    MAYBE?                                                                               |
 |-----------------------------------------------------------------------------------------|
-| - Planes (for jumping off or for delivering airdrops)
-| - Teams
+| - Feel free to suggest anything here

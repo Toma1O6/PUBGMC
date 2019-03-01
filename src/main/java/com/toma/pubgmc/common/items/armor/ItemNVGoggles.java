@@ -38,8 +38,6 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 		ItemStack stack = playerIn.getHeldItem(handIn);
 		IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 		
-		System.out.println(data.getEquippedNV() + " ");
-		
 		if(!data.getEquippedNV())
 		{
 			data.hasEquippedNV(true);

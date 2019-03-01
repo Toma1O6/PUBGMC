@@ -37,7 +37,7 @@ public class RenderTestVehicle extends Render<EntityTestVehicle>
 			GlStateManager.translate(0, -24.5, 0);
 			GlStateManager.rotate(entity.rotationYaw, 0f, 1f, 0f);
 			bindTexture(TEXTURE);
-			vehicle.renderVehicle(entity.getTurnModifier() * 5);
+			vehicle.renderVehicle(entity.turnModifier * 5);
 		}
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);

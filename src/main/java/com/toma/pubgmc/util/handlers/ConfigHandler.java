@@ -25,6 +25,8 @@ public class ConfigHandler
 	public static boolean enableGunLoot;
 	public static int aidropRange;
 	public static boolean enableGuns;
+	public static int planeHeight;
+	public static int planeWaitTime;
 	
 	//OVERLAY
 	public static boolean imageBoostOverlay;
@@ -32,6 +34,7 @@ public class ConfigHandler
 	public static int imgOverlayY;
 	public static int overlayX;
 	public static int overlayY;
+	public static boolean armorOverlayIcons;
 	
 	//GUNS
 	public static float p92;
@@ -96,6 +99,8 @@ public class ConfigHandler
 			airdropLootGen = config.getInt("Aidrop Loot", category, 2, 0, 2, "0 = No loot; 1 = only medical loot; 2 = Gun and medical loot");
 			enableGunLoot = config.getBoolean("Gun loot generator", category, true, "Enable gun loot generation. If false only healing items and grenades will be spawned");
 			enableGuns = config.getBoolean("Enable Guns", category, true, "Use this to enable/disable weapons");
+			planeHeight = config.getInt("Plane fly height", category, 150, 25, 256, "Set default height where planes will spawn");
+			planeWaitTime = config.getInt("Plane wait time", category, 5, 0, 30, "Set time [in seconds] how long will plane wait after spawning. This is for selecting drop locations.");
 			
 		category = "Guns";
 		config.addCustomCategoryComment(category, "Gun settings");
@@ -146,6 +151,7 @@ public class ConfigHandler
 			overlayY = config.getInt("Boost overlay y-position offset", category, 0, -500, 500, "Use this to adjust your boost overlay position if you have problems with it - this is vertical movement");
 			imgOverlayX = config.getInt("Textured boost bar position x", category, 0, -1000, 1000, "Use this to adjust position of the overlay");
 			imgOverlayY = config.getInt("Textured boost bar position y", category, 0, -1000, 1000, "Use this to adjust position of the overlay");
+			armorOverlayIcons = config.getBoolean("Armor icons in HUD", category, true, "Icons indicating your state of gear will be rendered next to your hotbar");
 		
 		config.save();
 	}

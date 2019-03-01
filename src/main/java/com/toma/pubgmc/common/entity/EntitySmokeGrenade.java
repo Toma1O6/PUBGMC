@@ -12,12 +12,7 @@ import net.minecraft.world.World;
 public class EntitySmokeGrenade extends Entity
 {
 	public EntityLivingBase thrower;
-	private int id;
 	protected int fuse;
-	protected float velocity = 0.5f;
-	private double bounce = 0.15d;
-	private double bounce_small = 0.8d;
-	
 
 	public EntitySmokeGrenade(World worldIn) 
 	{

@@ -41,6 +41,10 @@ public interface IPlayerData
 	public void setScopeColor(int color);
 	public int getScopeColor();
 	
+	// map drop location distance
+	public void setDistance(double dist);
+	public double getDistance();
+	
 	public class PlayerDataStorage implements IStorage<IPlayerData>
 	{
 		@Override
@@ -96,6 +100,8 @@ public interface IPlayerData
 		
 		private int scopetype;
 		private int scopecolor;
+		
+		private double dist;
 		
 		@Override
 		public int getCookingTime()
@@ -251,6 +257,18 @@ public interface IPlayerData
 		public int getScopeColor() 
 		{
 			return scopecolor;
+		}
+		
+		@Override
+		public void setDistance(double dist)
+		{
+			this.dist = dist;
+		}
+		
+		@Override
+		public double getDistance() 
+		{
+			return dist;
 		}
 	}
 	

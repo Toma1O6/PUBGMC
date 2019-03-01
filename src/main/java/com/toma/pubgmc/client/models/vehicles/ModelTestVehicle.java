@@ -46,7 +46,7 @@ public class ModelTestVehicle extends ModelBase
 		car.render(1f);
 		wheel.render(1f);
 		
-		GlStateManager.rotate(turnModifier, 0f, 1f, 0f);
+		//GlStateManager.rotate(turnModifier, 0f, 1f, 0f);
 		wheel_front_right.render(1f);
 		wheel_front_left.render(1f);
 	}

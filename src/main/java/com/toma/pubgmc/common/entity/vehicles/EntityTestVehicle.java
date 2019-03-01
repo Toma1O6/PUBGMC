@@ -19,13 +19,8 @@ public class EntityTestVehicle extends EntityVehicle
 	}
 	
 	@Override
-	public void onAddedToWorld()
+	public void onSpawned()
 	{
-		setMaxHealth(100f);
-		setHealth(100f);
-		setFuelLevel(10f + rand.nextInt(90) + rand.nextFloat());
-		setMaxSpeed(5f);
-		setWaterVehicle(false);
-		super.onAddedToWorld();
+		setAllRequiredValues(150f, 150f, 0.7f, 0.01f, 0.6f);
 	}
 }

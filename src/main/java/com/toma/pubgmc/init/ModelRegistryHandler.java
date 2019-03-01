@@ -1,15 +1,18 @@
 package com.toma.pubgmc.init;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.items.guns.GunBase;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 
 @EventBusSubscriber(Side.CLIENT)
@@ -132,43 +135,43 @@ public class ModelRegistryHandler
 		registerModel(PMCItems.COPPER_INGOT);
 		
 		//Blocks
-		registerBlockModel(PMCBlocks.ROADASPHALT);
-		registerBlockModel(PMCBlocks.SCHOOLWALL);
-		registerBlockModel(PMCBlocks.SCHOOLROOF);
-		registerBlockModel(PMCBlocks.SCHOOLWINDOW);
-		registerBlockModel(PMCBlocks.AIRDROP);
-		registerBlockModel(PMCBlocks.DARKWOOD);
-		registerBlockModel(PMCBlocks.LOOT_SPAWNER);
-		registerBlockModel(PMCBlocks.PLAYER_CRATE);
-		registerBlockModel(PMCBlocks.CHAIR);
-		registerBlockModel(PMCBlocks.TABLE);
-		registerBlockModel(PMCBlocks.RUINSWALL);
-		registerBlockModel(PMCBlocks.BLUEGLASS);
-		registerBlockModel(PMCBlocks.TARGET);
-		registerBlockModel(PMCBlocks.LAMPBOTTOM);
-		registerBlockModel(PMCBlocks.LAMPPOST);
-		registerBlockModel(PMCBlocks.LAMPTOP);
-		registerBlockModel(PMCBlocks.LIGHT);
-		registerBlockModel(PMCBlocks.CRATE);
-		registerBlockModel(PMCBlocks.CRATES);
-		registerBlockModel(PMCBlocks.BUSH);
-		registerBlockModel(PMCBlocks.WHEAT);
-		registerBlockModel(PMCBlocks.PROP1);
-		registerBlockModel(PMCBlocks.PROP2);
-		registerBlockModel(PMCBlocks.PROP3);
-		registerBlockModel(PMCBlocks.PROP4);
-		registerBlockModel(PMCBlocks.PROP5);
-		registerBlockModel(PMCBlocks.FENCE);
-		registerBlockModel(PMCBlocks.CONCRETE);
-		registerBlockModel(PMCBlocks.ELECTRICPOLE);
-		registerBlockModel(PMCBlocks.ELECTRICPOLETOP);
-		registerBlockModel(PMCBlocks.ELECTRICCABLE);
-		registerBlockModel(PMCBlocks.RADIOTOWER);
-		registerBlockModel(PMCBlocks.RADIOTOWERTOP);
-		registerBlockModel(PMCBlocks.GUN_WORKBENCH);
-		registerBlockModel(PMCBlocks.BIG_AIRDROP);
-		registerBlockModel(PMCBlocks.COPPER_ORE);
-		registerBlockModel(PMCBlocks.LANDMINE);
+		registerModel(PMCBlocks.ROADASPHALT);
+		registerModel(PMCBlocks.SCHOOLWALL);
+		registerModel(PMCBlocks.SCHOOLROOF);
+		registerModel(PMCBlocks.SCHOOLWINDOW);
+		registerModel(PMCBlocks.AIRDROP);
+		registerModel(PMCBlocks.DARKWOOD);
+		registerModel(PMCBlocks.LOOT_SPAWNER);
+		registerModel(PMCBlocks.PLAYER_CRATE);
+		registerModel(PMCBlocks.CHAIR);
+		registerModel(PMCBlocks.TABLE);
+		registerModel(PMCBlocks.RUINSWALL);
+		registerModel(PMCBlocks.BLUEGLASS);
+		registerModel(PMCBlocks.TARGET);
+		registerModel(PMCBlocks.LAMPBOTTOM);
+		registerModel(PMCBlocks.LAMPPOST);
+		registerModel(PMCBlocks.LAMPTOP);
+		registerModel(PMCBlocks.LIGHT);
+		registerModel(PMCBlocks.CRATE);
+		registerModel(PMCBlocks.CRATES);
+		registerModel(PMCBlocks.BUSH);
+		registerModel(PMCBlocks.WHEAT);
+		registerModel(PMCBlocks.PROP1);
+		registerModel(PMCBlocks.PROP2);
+		registerModel(PMCBlocks.PROP3);
+		registerModel(PMCBlocks.PROP4);
+		registerModel(PMCBlocks.PROP5);
+		registerModel(PMCBlocks.FENCE);
+		registerModel(PMCBlocks.CONCRETE);
+		registerModel(PMCBlocks.ELECTRICPOLE);
+		registerModel(PMCBlocks.ELECTRICPOLETOP);
+		registerModel(PMCBlocks.ELECTRICCABLE);
+		registerModel(PMCBlocks.RADIOTOWER);
+		registerModel(PMCBlocks.RADIOTOWERTOP);
+		registerModel(PMCBlocks.GUN_WORKBENCH);
+		registerModel(PMCBlocks.BIG_AIRDROP);
+		registerModel(PMCBlocks.COPPER_ORE);
+		registerModel(PMCBlocks.LANDMINE);
 	}
 	
 	private static void registerModel(Item item)
@@ -181,7 +184,7 @@ public class ModelRegistryHandler
 		}
 	}
 	
-	private static void registerBlockModel(Block block)
+	private static void registerModel(Block block)
 	{
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
 	}

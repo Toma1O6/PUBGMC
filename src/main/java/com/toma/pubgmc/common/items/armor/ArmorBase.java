@@ -10,14 +10,20 @@ import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.ICraftable;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class ArmorBase extends ItemArmor implements ICraftable
 {
+	private ArmorLevel level = null;
+	int timer;
+	
 	public ArmorBase(String name, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn)
 	{
 		super(materialIn, renderIndexIn, equipmentSlotIn);
@@ -25,6 +31,31 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		setRegistryName(name);
 		setCreativeTab(Pubgmc.pmcitemstab);
 		TileEntityGunWorkbench.CLOTHING.add(this);
+	}
+	
+	@Override
+	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) 
+	{
+		if(isSelected)
+		{
+			//timer++;
+			
+			if(timer >= 40)
+			{
+				timer = 0;
+			}
+		}
+	}
+	
+	public ArmorBase setArmorLevel(ArmorLevel level)
+	{
+		this.level = level;
+		return this;
+	}
+	
+	public ArmorLevel armorLevel()
+	{
+		return level;
 	}
 	
 	@Override
@@ -81,5 +112,70 @@ public class ArmorBase extends ItemArmor implements ICraftable
 	public CraftMode getCraftMode()
 	{
 		return CraftMode.Clothing;
+	}
+	
+	public enum ArmorLevel
+	{
+		LEVEL_ONE(0),
+		LEVEL_TWO(1),
+		LEVEL_THREE(2);
+		
+		int level;
+		static final ResourceLocation[][] ICONS =
+		{
+			{
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest1_full.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest1_damaged.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest1_broken.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet1_full.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet1_damaged.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet1_broken.png")
+			},
+			
+			{
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest2_full.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest2_damaged.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest2_broken.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet2_full.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet2_damaged.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet2_broken.png")
+			},
+			
+			{
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest3_full.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest3_damaged.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vest3_broken.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet3_full.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet3_damaged.png"),
+				new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/helmet3_broken.png")
+			}
+		};
+		
+		ArmorLevel(int level)
+		{
+			this.level = level;
+		}
+		
+		public ResourceLocation[][] getIcons()
+		{
+			return ICONS;
+		}
+		
+		/**
+		 * @param helmet
+		 * @param armorLevel [0-2]
+		 * @param damagePhase [0-2] (full_hp, damaged, broken)
+		 * @return icon
+		 */
+		public ResourceLocation getIcon(boolean helmet, int armorLevel, int damagePhase)
+		{
+			int gear = helmet ? 3 : 0;
+			return ICONS[armorLevel][gear + damagePhase];
+		}
+		
+		public int getArmorLevel()
+		{
+			return level;
+		}
 	}
 }

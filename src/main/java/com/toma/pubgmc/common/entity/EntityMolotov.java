@@ -1,8 +1,14 @@
 package com.toma.pubgmc.common.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.toma.pubgmc.util.PUBGMCUtil;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,18 +18,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityMolotov extends Entity
 {
 	public EntityLivingBase thrower;
-	private int id;
 	private int damageDelay = 0;
 	protected int fuse;
-	protected float velocity = 0.5f;
-	private double bounce = 0.15d;
-	private double bounce_small = 0.8d;
+	protected short range;
+	protected List<BlockPos> positions = new ArrayList<BlockPos>();
 	
 	private Random rand = new Random();
 
@@ -68,58 +74,34 @@ public class EntityMolotov extends Entity
 		return true;
 	}
 	
+	@Override
     public void onUpdate()
     {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-        if (!this.hasNoGravity())
+        if(!this.hasNoGravity())
         {
-            this.motionY -= 0.03999999910593033D;
+            this.motionY -= 0.04D;
         }
 
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.motionX *= 0.98D;
+        this.motionY *= 0.98D;
+        this.motionZ *= 0.98D;
 
-        if (this.onGround)
+        if(this.onGround)
         {
+        	if(range == 0) calculateRange();
+        	
             this.motionX = 0;
             this.motionZ = 0;
             this.motionY = 0;
-            --this.fuse;
+            //--this.fuse;
+            setEntitiesOnFireInRange();
             
-            createParticles(world);
-            
-            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(this.posX - 4, this.posY, this.posZ - 4, this.posX + 4, this.posY + 1.5, this.posZ + 4));
-            for(Entity entity : list)
-            {
-            	if(entity instanceof EntityLiving)
-            	{
-            		EntityLiving entityliv = (EntityLiving)entity;
-            		
-            		entity.setFire(10);
-            	}
-            	
-            	if(entity instanceof EntityPlayer)
-            	{
-            		EntityPlayer player = (EntityPlayer)entity;
-            		
-            		
-            		player.setFire(10);
-            		
-            		if(damageDelay <= 0 && !player.isDead)
-            		{
-            			damageDelay = 15;
-            			//Use ON_FIRE instead of IN_FIRE otherwise it will damage the armor 
-            			player.attackEntityFrom(DamageSource.ON_FIRE, 5);
-            		}
-            		
-            		damageDelay--;
-            	}
-            }
+            if(!positions.isEmpty() && ticksExisted % 3 == 0) createParticles();
         }
         
         if(this.fuse <= 0)
@@ -136,16 +118,6 @@ public class EntityMolotov extends Entity
             this.handleWaterMovement();
             this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
         }
-    }
-    
-    private void createParticles(World world)
-    {	
-    	this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.6D, this.posZ, rand.nextDouble() - 0.55, 0.0D, rand.nextDouble() - 0.55);
-    	this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.6D, this.posZ, -(rand.nextDouble() - 0.55), 0.0D, -(rand.nextDouble() - 0.55));
-    	this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.6D, this.posZ, rand.nextDouble() - 0.55, 0.0D, rand.nextDouble() - 0.55);
-    	this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.6D, this.posZ, -(rand.nextDouble() - 0.55), 0.0D, -(rand.nextDouble() - 0.55));
-    	this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.6D, this.posZ, rand.nextDouble() - 0.55, 0.0D, rand.nextDouble() - 0.55);
-    	this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY + 0.6D, this.posZ, -(rand.nextDouble() - 0.55), 0.0D, -(rand.nextDouble() - 0.55));
     }
 	
 	@Override
@@ -194,4 +166,89 @@ public class EntityMolotov extends Entity
 		motionZ = compound.getDouble("motionZ");
 		fuse = compound.getInteger("fuse");
 	}
+	
+	public void setEntitiesOnFireInRange()
+	{
+		if(range > 0)
+		{
+            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(this.posX - range, this.posY + 1, this.posZ - range, this.posX + range, this.posY - 4, this.posZ + range));
+            for(Entity entity : list)
+            {
+            	BlockPos ep = entity.getPosition();
+            	for(BlockPos pos : positions)
+            	{
+            		if(ep.getX() == pos.getX() && ep.getZ() == pos.getZ())
+            		{
+                    	if(entity instanceof EntityLiving)
+                    	{
+                    		entity.setFire(10);
+                    	}
+                    	
+                    	if(entity instanceof EntityPlayer)
+                    	{
+                    		EntityPlayer player = (EntityPlayer)entity;
+                    		player.setFire(10);
+                    		
+                    		if(damageDelay <= 0 && !player.isDead)
+                    		{
+                    			damageDelay = 15;
+                    			//Use ON_FIRE instead of IN_FIRE otherwise it will damage the armor 
+                    			player.attackEntityFrom(DamageSource.ON_FIRE, 5);
+                    		}
+                    		
+                    		damageDelay--;
+                    	}
+            		}
+            	}
+            }
+		}
+	}
+	
+	public void calculateRange()
+	{
+		IBlockState state = world.getBlockState(getPosition().down());
+		Material material = state.getMaterial();
+		range = (short) (material == Material.WOOD || material == Material.CARPET || material == material.CLOTH ? 5 : 3);
+		fillPositions();
+	}
+	
+	public void fillPositions()
+	{
+		BlockPos m = getPosition();
+		Iterable<BlockPos> affectedPos = BlockPos.getAllInBox(m.getX() - range, m.getY(), m.getZ() - range, m.getX() + range, m.getY(), m.getZ() + range);
+		
+		for(BlockPos p : affectedPos)
+		{
+			while(world.getBlockState(p.down()).getBlock().isReplaceable(world, p.down()))
+			{
+				p = new BlockPos(p.getX(), p.getY() - 1, p.getZ());
+			}
+			
+			if(PUBGMCUtil.getDistanceToBlockPos3D(p, getPosition()) < range + 1)
+			{
+				RayTraceResult raytrace = world.rayTraceBlocks(new Vec3d(p.getX() + 0.5, p.getY(), p.getZ() + 0.5), PUBGMCUtil.getPositionVec(this), true, true, true);
+				
+				if(raytrace == null)
+				{
+					positions.add(p);
+				}
+			}
+		}
+	}
+	
+    private void createParticles()
+    {	
+    	for(BlockPos p : positions)
+    	{
+    		spawnParticle(p, 3);
+    	}
+    }
+    
+    private void spawnParticle(BlockPos pos, int count)
+    {
+    	for(int i = 0; i < count; i++)
+    	{
+    		world.spawnParticle(EnumParticleTypes.FLAME, pos.getX() + 0.5 + (rand.nextDouble() - 0.5), pos.getY(), pos.getZ() + 0.5 + (rand.nextDouble() - 0.5), 0, 0.05d, 0, 0);
+    	}
+    }
 }

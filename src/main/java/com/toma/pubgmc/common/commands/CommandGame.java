@@ -7,8 +7,9 @@ import java.util.Random;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
+import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.server.PacketTeleportPlayer;
+import com.toma.pubgmc.common.network.server.PacketChooseLocation;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
@@ -17,7 +18,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
@@ -85,8 +84,13 @@ public class CommandGame extends CommandBase
 		{
 			if(!game.isPlaying())
 			{
-				game.setPlaying(true);
-				startGame(game, world);
+				if(PUBGMCUtil.isMapSetupProperly(game))
+				{
+					game.setPlaying(true);
+					startGame(game, world);
+				}
+				
+				else sendWarningTo(sender, "Your map isn't setup properly, use /game setupMap [mapCenterX, mapCenterZ, mapSizeFromCenterToEdge, zoneCount]");
 			}
 			
 			else sendWarningTo(sender, "Game is already running!");
@@ -261,6 +265,9 @@ public class CommandGame extends CommandBase
 		
 		data.setTimer(0);
 		
+		if(PUBGMCUtil.isMapSetupProperly(data) && !data.getSpawnLocations().isEmpty())
+			spawnPlane(world, data);
+		
 		for(EntityPlayer player : world.playerEntities)
 		{
 			player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Available locations:"));
@@ -284,7 +291,7 @@ public class CommandGame extends CommandBase
 								player.sendMessage(new TextComponentString(""));
 							}
 							
-							PacketHandler.sendToServer(new PacketTeleportPlayer(pos.getX(), pos.getZ()));
+							PacketHandler.sendToServer(new PacketChooseLocation(pos));
 							return Action.RUN_COMMAND;
 						}
 					});
@@ -333,7 +340,6 @@ public class CommandGame extends CommandBase
 	{
 		Pubgmc.logger.info("Attempting game reset...");
 		startGame(data, world);
-		stopGame(data, world);
 		
 		for(EntityPlayer player : world.playerEntities)
 		{
@@ -347,7 +353,27 @@ public class CommandGame extends CommandBase
 			
 			player.sendMessage(s);
 		}
+		
+		stopGame(data, world);
 		Pubgmc.logger.info("Game has been restarted successfully.");
+	}
+	
+	private void spawnPlane(World world, IGameData data)
+	{
+		EntityPlane plane = new EntityPlane(world, data);
+		
+		for(EntityPlayer player : world.playerEntities)
+		{
+			player.setPositionAndUpdate(plane.getStartingPosition().getX(), 256, plane.getStartingPosition().getZ());
+		}
+		
+		world.spawnEntity(plane);
+		
+		for(EntityPlayer player : world.playerEntities)
+		{
+			player.startRiding(plane);
+			Pubgmc.logger.info("Added " + player.getName() + " on board of plane");
+		}
 	}
 	
 	private int getClosestLocation(IGameData data, World world)

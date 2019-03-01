@@ -16,16 +16,14 @@ public class EntityGrenade extends Entity
 {
 	public EntityLivingBase thrower;
 	private int fuse;
-	protected float velocity = 0.5f;
 	
-
 	public EntityGrenade(World worldIn) 
 	{
         super(worldIn);
         this.fuse = 80;
         this.preventEntitySpawning = true;
         this.isImmuneToFire = true;
-        this.setSize(0.15f, 0.15f);
+        this.setSize(0.35f, 0.35f);
 	}
 	
 	public EntityGrenade(World world, EntityLivingBase thrower, boolean isRightClick)
@@ -69,30 +67,37 @@ public class EntityGrenade extends Entity
 		return true;
 	}
 	
+	@Override
     public void onUpdate()
     {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-        if (!this.hasNoGravity())
+        if(!this.hasNoGravity())
         {
-            this.motionY -= 0.03999999910593033D;
+            this.motionY -= 0.04D;
         }
+        
+        this.motionX *= 0.98D;
+        this.motionY *= 0.98D;
+        this.motionZ *= 0.98D;
 
-        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
-
-        if (this.onGround)
+        if(this.onGround)
         {
-            this.motionX *= 0.699999988079071D;
-            this.motionZ *= 0.699999988079071D;
-            this.motionY *= -0.5D;
+            this.motionX *= 0.8D;
+            this.motionZ *= 0.8D;
+        }
+        
+        if(Math.abs(motionX) < 0.1 && Math.abs(motionZ) < 0.1)
+        {
+        	motionX = 0;
+        	motionZ = 0;
         }
 
         --this.fuse;
+        
+        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 
         if (this.fuse <= 0)
         {

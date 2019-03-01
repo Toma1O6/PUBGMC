@@ -67,6 +67,7 @@ public class EntityBullet extends Entity
 	 private GunType type;
 	 private int survivalTime;
 	 private ItemStack stack;
+	 private RayTraceResult entityRaytrace;
 	
 	public EntityBullet(World worldIn) 
 	{
@@ -140,10 +141,7 @@ public class EntityBullet extends Entity
     
     private void updateHeading()
     {
-    	//Basic triangle math
         float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        
-        //We set the direction based on player rotation
         this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
         this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f) * (180D / Math.PI));
         this.prevRotationYaw = this.rotationYaw;
@@ -155,6 +153,10 @@ public class EntityBullet extends Entity
     {
         super.onUpdate();
         updateHeading();
+        
+        Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
+        Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
 
         //Gravity
         if(this.ticksExisted > gravitystart && !world.isRemote)
@@ -185,16 +187,10 @@ public class EntityBullet extends Entity
         	}
         }
         
-        Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
-        Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-        RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
-        vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
-        vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-        
-        if (raytraceresult != null)
+        /*if (raytraceresult != null)
         {
             vec3d = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
-        }
+        }*/
 
         Entity entity = this.findEntityOnPath(vec3d1, vec3d);
 
@@ -240,7 +236,8 @@ public class EntityBullet extends Entity
                 if (raytraceresult != null)
                 {
                     double d1 = start.squareDistanceTo(raytraceresult.hitVec);
-
+                    entityRaytrace = raytraceresult;
+                    
                     if (d1 < d0 || d0 == 0.0D)
                     {
                         entity = entity1;
@@ -260,7 +257,7 @@ public class EntityBullet extends Entity
         {
         	if(!world.isRemote)
         	{
-            	boolean headshot = canEntityGetHeadshot(entity) && posY >= entity.getPosition().getY() + entity.getEyeHeight() && ticksExisted > 1;
+            	boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
             	double offset = 0f;
             	Vec3d vec = raytraceResultIn.hitVec;
             	
@@ -271,9 +268,10 @@ public class EntityBullet extends Entity
                 }
                 else offset = vec.y;
                 
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, offset, vec.z, Blocks.REDSTONE_BLOCK), this.dimension);
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, Blocks.REDSTONE_BLOCK), this.dimension);
                 onEntityHit(headshot, entity);
                 entity.hurtResistantTime = 0;
+                
                 this.setDead();
         	}
         }
@@ -322,6 +320,12 @@ public class EntityBullet extends Entity
     			getCalculatedDamage(player, isHeadshot);
     		}
     		
+    		/*else if(entity instanceof EntityVehicle)
+            {
+            	//bit hacky way to do it like this, but I'll keep it there since vehicles are mostly controlled from clients
+            	PacketHandler.sendToAllClients(new PacketHitVehicle(entity.getEntityId(), damage));
+            }*/
+    		
     		entity.attackEntityFrom(gunsource, damage);
     	}
     	
@@ -332,6 +336,11 @@ public class EntityBullet extends Entity
     			EntityPlayer player = (EntityPlayer)entity;
     			getCalculatedDamage(player, isHeadshot);
     		}
+    		
+    		/*else if(entity instanceof EntityVehicle)
+    		{
+            	PacketHandler.sendToAllClients(new PacketHitVehicle(entity.getEntityId(), damage));
+            }*/
     		
     		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
     	}

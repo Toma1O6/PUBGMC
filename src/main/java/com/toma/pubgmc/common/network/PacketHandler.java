@@ -3,10 +3,11 @@ package com.toma.pubgmc.common.network;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.network.server.PacketAim;
+import com.toma.pubgmc.common.network.server.PacketChooseLocation;
 import com.toma.pubgmc.common.network.server.PacketCraft;
 import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
-import com.toma.pubgmc.common.network.server.PacketHandleVehicleInputs;
+import com.toma.pubgmc.common.network.server.PacketHandleVehicleInput;
 import com.toma.pubgmc.common.network.server.PacketNightVision;
 import com.toma.pubgmc.common.network.server.PacketOpenGui;
 import com.toma.pubgmc.common.network.server.PacketReload;
@@ -20,9 +21,11 @@ import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.common.network.sp.PacketSound;
+import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
 import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
 import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
+import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -42,30 +45,30 @@ public class PacketHandler
 	 */
 	public static void initialize()
 	{
-		//server packets
-		registerServer(PacketAim.class);
-		registerServer(PacketReload.class);
-		registerServer(PacketFiremode.class);
-		registerServer(PacketNightVision.class);
-		registerServer(PacketReloading.class);
-		registerServer(PacketUpdateBoostValue.class);
-		registerServer(PacketShoot.class);
-		registerServer(PacketOpenGui.class);
-		registerServer(PacketCraft.class);
-		registerServer(PacketHandleParachuteInputs.class);
-		registerServer(PacketHandleVehicleInputs.class);
-		registerServer(PacketSetScopeVariants.class);
-		registerServer(PacketTeleportPlayer.class);
-		
-		//client packets
-		registerClient(PacketSyncConfig.class);
-		registerClient(PacketReloadingSP.class);
-		registerClient(PacketUpdatePlayerData.class);
-		registerClient(PacketSound.class);
-		registerClient(PacketCreateNBT.class);
-		registerClient(PacketUpdateAttachmentGUI.class);
-		registerClient(PacketParticle.class);
-		registerClient(PacketClientCapabilitySync.class);
+		registerServerPacket(PacketAim.class);
+		registerServerPacket(PacketReload.class);
+		registerServerPacket(PacketFiremode.class);
+		registerServerPacket(PacketNightVision.class);
+		registerServerPacket(PacketReloading.class);
+		registerServerPacket(PacketUpdateBoostValue.class);
+		registerServerPacket(PacketShoot.class);
+		registerServerPacket(PacketOpenGui.class);
+		registerServerPacket(PacketCraft.class);
+		registerServerPacket(PacketHandleParachuteInputs.class);
+		registerServerPacket(PacketHandleVehicleInput.class);
+		registerServerPacket(PacketSetScopeVariants.class);
+		registerServerPacket(PacketTeleportPlayer.class);
+		registerServerPacket(PacketChooseLocation.class);
+		registerClientPacket(PacketSyncConfig.class);
+		registerClientPacket(PacketReloadingSP.class);
+		registerClientPacket(PacketUpdatePlayerData.class);
+		registerClientPacket(PacketSound.class);
+		registerClientPacket(PacketCreateNBT.class);
+		registerClientPacket(PacketUpdateAttachmentGUI.class);
+		registerClientPacket(PacketParticle.class);
+		registerClientPacket(PacketClientCapabilitySync.class);
+		registerClientPacket(PacketUpdatePlayerRotation.class);
+		registerClientPacket(PacketSpawnVehicle.class);
 	}
 	
 	public static void sendToClient(IMessage packet, EntityPlayerMP player)
@@ -118,12 +121,20 @@ public class PacketHandler
 		sendToClient(new PacketClientCapabilitySync(data), player);
 	}
 	
-	private static void registerClient(Class packetClass)
+	/**
+	 * Registers packet for Server -> Client
+	 * @param packetClass
+	 */
+	private static void registerClientPacket(Class packetClass)
 	{
 		INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.CLIENT);
 	}
 	
-	private static void registerServer(Class packetClass)
+	/**
+	 * Registers packet for Client -> Server
+	 * @param packetClass
+	 */
+	private static void registerServerPacket(Class packetClass)
 	{
 		INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.SERVER);
 	}

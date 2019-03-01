@@ -1,384 +1,221 @@
 package com.toma.pubgmc.common.entity;
 
-import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
+import java.text.DecimalFormat;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
 import com.toma.pubgmc.init.PMCDamageSources;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityVehicle extends Entity
+public abstract class EntityVehicle extends Entity
 {
+	private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
 	private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
-	private static final float MAX_TURNING_MODIFIER = 2.0F;
-	
-	public int vehicleID;
+	private static final float MAX_TURNING_MODIFIER = 3F;
 	
 	private boolean isWaterVehicle;
 	
 	/** The max damage vehicle can take before it explodes **/
-	private float maxHealth;
+	public float maxHealth = 100f;
 	
-	private float health;
+	/** Current health state **/
+	public float health = 100f;
 	
 	/** Acceleration speed **/
-	private float acceleration;
+	public float acceleration = 0.08f;
+	
+	/** Speed at which will vehicle turn **/
+	public float turnSpeed = 0.45f;
 	
 	/** The max speed vehicle will be able to do **/
-	private float maxSpeed;
+	public float maxSpeed = 1.2f;
 	
-	private float currentSpeed;
+	public float currentSpeed = 0;
 	
 	/** How well will the vehicle drive on different surfaces **/
-	private float turnModifier;
+	public float turnModifier;
 	
-	/** The amount of fuel vehicle can take **/
-	private float maxFuel;
-	
-	private float fuel;
-	
-	private boolean randomFuelLevel = true;
+	//TODO implement
+	public float fuel = 100f;
 	
 	/** If the vehicle is broken or not **/
 	private boolean isBroken = false;
 	
-	private int timeInInvalidState;
+	/** Ticks underWater **/
+	private short timeInInvalidState;
 	
 	/** Handles inputs from player who is driving the vehicle **/
 	private boolean inputForward, inputBack, inputRight, inputLeft, inputBoost;
-	
-	private SoundEvent driving_sound, braking_sound;
 	
 	public EntityVehicle(World world)
 	{
 		super(world);
 		setSize(1f, 1f);
+		stepHeight = 1f;
 		preventEntitySpawning = true;
+		maxSpeed = 1.0f;
 	}
 	
 	public EntityVehicle(World world, int x, int y, int z, boolean waterVehicle)
 	{
 		this(world);
 		setPosition(x, y, z);
-		setHealth(maxHealth);
-		if(randomFuelLevel) setFuelLevel(rand.nextFloat() * maxFuel);
-		else setFuelLevel(maxFuel);
+		onSpawned();
+		fuel = 60f + rand.nextInt(40) + rand.nextFloat();
+		PacketHandler.sendToAllClients(new PacketSpawnVehicle().syncAll(this));
 	}
 	
-	protected void handleVehicle()
-	{
-		Vec3d vec = this.getLookVec();
-		
-		handleAcceleration();
-		handleBraking();
-		handleTurning();
-		
-		if(isVehicleMoving() && !inputForward && !inputBack)
-		{
-			if(isVehicleMovingForward())
-			{
-				if(currentSpeed > 0.02f)
-				{
-					currentSpeed -= 0.01f;
-				}
-				
-				else currentSpeed = 0f;
-			}
-			
-			else if(isVehicleMovingBackward())
-			{
-				if(currentSpeed < -0.02f)
-				{
-					currentSpeed += 0.01f;
-				}
-				
-				else currentSpeed = 0;
-			}
-		}
-		
-		if(!inputRight && !inputLeft)
-		{
-			if(turnModifier != 0f)
-			{
-				if(turnModifier > 0f)
-				{
-					if(turnModifier > 0.2f)
-					{
-						turnModifier -= 0.2f;
-					}
-					
-					else turnModifier = 0f;
-				}
-				
-				else if(turnModifier < 0f)
-				{
-					if(turnModifier < -0.2f)
-					{
-						turnModifier += 0.2f;
-					}
-					
-					else turnModifier = 0f;
-				}
-			}
-		}
-		
-		motionX = (vec.x * currentSpeed) / 10;
-		motionZ = (vec.z * currentSpeed) / 10;
-		
-		move(MoverType.SELF, motionX, motionY, motionZ);
-	}
+	/**
+	 * Values to set:
+	 * <li> Max health, base 100f
+	 * <li> Health, base 100f
+	 * <li> Max speed, base 1.2f
+	 * <li> Acceleration, base 0.08f
+	 * <li> Turn speed, base 0.45f
+	 */
+	public abstract void onSpawned();
 	
 	@Override
-	public void onUpdate() 
+	public void onUpdate()
 	{
-		if(!this.isBeingRidden())
-		{
-			if(inputForward || inputBack || inputRight || inputLeft || inputBoost)
-			{
-				inputForward = false;
-				inputBack = false;
-				inputRight = false;
-				inputLeft = false;
-				inputBoost = false;
-			}
-		}
-		
-		handleVehicleBreaking();
-
-		if(!isBroken)
-		{
-			checkSteps();
-			handleVehicle();
-		}
-		
-		if(!onGround)
-		{
-			motionY = -0.3d;
-		}
-		
-		//Handling vehicle collisions with blocks to apply collision damage to passengers
-		if(currentSpeed > 0 && (motionX == 0 || motionZ == 0))
-		{
-			if(currentSpeed > 1f)
-			{
-				for(Entity e : this.getPassengers())
-				{
-					e.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed);
-				}
-				
-				this.health -= currentSpeed * 2.5f;
-			}
-
-			currentSpeed = 0f;
-		}
-		
-		move(MoverType.SELF, motionX, motionY, motionZ);
 		super.onUpdate();
-	}
-	
-	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) 
-	{
-		health -= amount;
+		if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput()))
+		{
+			inputForward = false;
+			inputBack = false;
+			inputRight = false;
+			inputLeft = false;
+		}
+		
+		updateMotion();
+		handleEntityCollisions();
+		if(!world.isRemote) checkState();
 
-		return true;
+		move(MoverType.SELF, motionX, motionY, motionZ);
 	}
 	
-	private void checkSteps()
+	public void handleEntityCollisions()
 	{
 		Vec3d vec1 = new Vec3d(posX, posY, posZ);
+		Vec3d vec2 = new Vec3d(vec1.x + motionX, vec1.y + motionY, vec1.z + motionZ);
+		Entity e = findEntityInPath(vec1, vec2);
+		
+		if(e != null)
+		{
+			e.motionX += motionX * currentSpeed;
+			e.motionY += currentSpeed / 2;
+			e.motionZ += motionZ * currentSpeed;
+			e.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed * 10f);
+		}
+	}
+	
+	public void updateMotion()
+	{
 		Vec3d lookVec = getLookVec();
-		Vec3d vec2 = new Vec3d(posX + lookVec.x * 2, posY + lookVec.y * 2, posZ + lookVec.z * 2);
-		RayTraceResult trace = world.rayTraceBlocks(vec1, vec2, false, true, false);
-
-		if(trace != null)
+		
+		if(!isBroken && hasFuel())
 		{
-			if(trace.typeOfHit == Type.BLOCK)
+			if(inputForward && !inputBack)
 			{
-				BlockPos potentialCollision = new BlockPos(trace.getBlockPos().getX(), trace.getBlockPos().getY(), trace.getBlockPos().getZ());
-				Block block = world.getBlockState(potentialCollision).getBlock();
-				
-				if(!block.isReplaceable(world, potentialCollision))
-				{
-					if(world.isAirBlock(new BlockPos(potentialCollision.getX(), potentialCollision.getY()+1, potentialCollision.getZ())))
-					{
-						setPosition(posX, posY + 1, posZ);
-					}
-				}
+				burnFuel();
+				currentSpeed = currentSpeed < maxSpeed ? currentSpeed + acceleration : maxSpeed;
 			}
 			
-			else if(trace.typeOfHit == Type.ENTITY)
+			if(inputBack && !inputForward)
 			{
-				Entity e = trace.entityHit;
-				
-				if(e.isEntityAlive() && !e.getIsInvulnerable())
-				{
-					e.motionX += motionX * currentSpeed;
-					e.motionY += motionY * currentSpeed;
-					e.motionZ += motionZ * currentSpeed;
-					e.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed * 2.5f);
-				}
+				burnFuel();
+				currentSpeed = currentSpeed > 0 ? currentSpeed - acceleration : currentSpeed > (-maxSpeed * 0.3f) ? currentSpeed - 0.02f : -maxSpeed * 0.3f;
 			}
 		}
+		
+		if(inputRight && !inputLeft)
+		{
+			turnModifier = turnModifier < MAX_TURNING_MODIFIER ? turnModifier + turnSpeed : MAX_TURNING_MODIFIER;
+		}
+		
+		if(inputLeft && !inputRight)
+		{
+			turnModifier = turnModifier > -MAX_TURNING_MODIFIER ? turnModifier - turnSpeed : -MAX_TURNING_MODIFIER;
+		}
+		
+		if(noAccerationInput() || isBroken)
+		{
+			if(Math.abs(currentSpeed) < 0.009f) currentSpeed = 0f;
+			
+			if(currentSpeed != 0)
+			{
+				currentSpeed = currentSpeed > 0 ? currentSpeed - 0.008f : currentSpeed + 0.008f;
+			}
+		}
+		
+		if(noTurningInput())
+		{
+			if(Math.abs(turnModifier) < 0.1f) turnModifier = 0f;
+			
+			if(turnModifier != 0)
+			{
+				turnModifier = turnModifier > 0 ? turnModifier - 0.3f : turnModifier + 0.3f;
+			}
+		}
+		
+		motionX = lookVec.x * currentSpeed;
+		motionZ = lookVec.z * currentSpeed;
+		if(currentSpeed != 0)
+		{
+			rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
+		}
+		
+		if(!onGround) motionY -= 0.1d;
 	}
 	
-	private void handleAcceleration()
+	@Nullable
+	protected Entity findEntityInPath(Vec3d start, Vec3d end)
 	{
-		if(inputForward && !inputBack)
-		{
-			if(currentSpeed < maxSpeed)
-			{
-				currentSpeed += 0.1f;
-			}
-		}
+		Entity e = null;
+		List<Entity> entityList = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(motionX, motionY, motionZ).grow(1d), TARGET);
+		double d0 = 0;
 		
-		else
+		for(int i = 0; i < entityList.size(); i++)
 		{
-			if(currentSpeed > 0)
-			{
-				currentSpeed -= 0.01f;
-			}
-		}
-	}
-	
-	private void handleTurning()
-	{
-		if(turnModifier > MAX_TURNING_MODIFIER)
-		{
-			turnModifier = MAX_TURNING_MODIFIER;
-		}
-		
-		if(turnModifier < -MAX_TURNING_MODIFIER)
-		{
-			turnModifier = -MAX_TURNING_MODIFIER;
-		}
-		
-		
-		if(isVehicleMovingBackward())
-		{
-			if(inputRight && !inputLeft && turnModifier < MAX_TURNING_MODIFIER)
-			{
-				turnModifier -= 0.2f;
-			}
+			Entity entity = entityList.get(i);
 			
-			if(inputLeft && !inputRight && turnModifier > -MAX_TURNING_MODIFIER)
+			if(entity != this)
 			{
-				turnModifier += 0.2f;
+                AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(0.30000001192092896D);
+                RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
+                
+                if (raytraceresult != null)
+                {
+                    double d1 = start.squareDistanceTo(raytraceresult.hitVec);
+                    
+                    if (d1 < d0 || d0 == 0.0D)
+                    {
+                        e = entity;
+                        d0 = d1;
+                    }
+                }
 			}
 		}
 		
-		else if(isVehicleMoving())
-		{
-			if(inputRight && !inputLeft && turnModifier < MAX_TURNING_MODIFIER)
-			{
-				turnModifier += 0.2f;
-			}
-			
-			if(inputLeft && !inputRight && turnModifier > -MAX_TURNING_MODIFIER)
-			{
-				turnModifier -= 0.2f;
-			}
-		}
-		
-		if(!inputLeft && !inputRight && turnModifier != 0f)
-		{
-			if(turnModifier > 0 && turnModifier > -MAX_TURNING_MODIFIER)
-			{
-				turnModifier -= 0.1f;
-			}
-			
-			else turnModifier += 0.1f;
-		}
-		
-		if(this.isVehicleMoving())
-		{
-			this.rotationYaw += turnModifier;
-		}
-	}
-	
-	private void handleBraking()
-	{
-		if(inputBack && !inputForward)
-		{
-			if(isVehicleMovingForward())
-			{
-				currentSpeed -= 0.1f;
-			}
-			
-			if(currentSpeed <= 0 && currentSpeed > (-maxSpeed / 4))
-			{
-				//reverse mode
-				currentSpeed -= 0.05f;
-			}
-		}
-	}
-	
-	private void handleVehicleBreaking()
-	{
-		if(timeInInvalidState >= 100)
-		{
-			isBroken = true;
-		}
-		
-		if(health <= 0 && isAddedToWorld()) 
-		{
-			explode();
-		}
-		
-		if(!isWaterVehicle)
-		{
-			if(isInWater() || isInLava())
-			{
-				timeInInvalidState++;
-			}
-			
-			else if(timeInInvalidState > 0)
-			{
-				timeInInvalidState--;
-			}
-		}
-		
-		else
-		{
-			if(!isInWater() || isInLava())
-			{
-				timeInInvalidState++;
-			}
-			
-			else if(timeInInvalidState > 0)
-			{
-				timeInInvalidState--;
-			}
-		}
-		
-		if(isInLava())
-		{
-			explode();
-		}
-		
-		if(isBroken)
-		{
-			if(motionX != 0)
-			{
-				motionX *= 0.9d;
-			}
-			
-			if(motionZ != 0)
-			{
-				motionZ *= 0.9d;
-			}
-		}
+		return e;
 	}
 	
 	@Override
@@ -404,21 +241,39 @@ public class EntityVehicle extends Entity
 		}
 	}
 	
-	//TODO remove
-	@Override
-	public void applyEntityCollision(Entity entityIn) 
+	// Should be running only on server side in case some client doesn't receive packet
+	// containing new health value of this vehicle
+	protected void checkState()
 	{
-		if(currentSpeed >= 3f)
+		// if whole vehicle is under water -> can drive in shallow water
+		if(this.isInWater() && world.getBlockState(getPosition().up()).getMaterial().isLiquid())
 		{
-			entityIn.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed * 2.5f);
-			
-			entityIn.motionX = this.motionX;
-			entityIn.motionY = this.motionY * 1.5d;
-			entityIn.motionZ = this.motionZ;
+			timeInInvalidState++;
+			motionX *= 0.4d;
+			motionZ *= 0.4d;
+			motionY = -0.15d;
 		}
+		
+		if(timeInInvalidState > 30)
+		{
+			isBroken = true;
+		}
+		
+		if(isInLava() || health <= 0f) explode();
 	}
 	
-	public void handleInputs(boolean forward, boolean back, boolean right, boolean left, boolean boost, EntityPlayer player)
+	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount)
+	{
+		if(!getPassengers().contains(source.getTrueSource()))
+		{
+			this.health -= amount;
+		}
+		
+		return true;
+	}
+	
+	public void handleInputs(boolean forward, boolean back, boolean right, boolean left, EntityPlayer player)
 	{
 		if(isPlayerDriver(player))
 		{
@@ -426,26 +281,6 @@ public class EntityVehicle extends Entity
 			this.inputBack = back;
 			this.inputLeft = left;
 			this.inputRight = right;
-			this.inputBoost = boost;
-		}
-	}
-	
-	@Override
-	protected void doBlockCollisions()
-	{
-		super.doBlockCollisions();
-	}
-	
-	@Override
-	public void onCollideWithPlayer(EntityPlayer entityIn)
-	{
-		if(this.isVehicleMoving() && entityIn.getRidingEntity() != this)
-		{
-			entityIn.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed * 2.5f);
-
-			entityIn.motionY = currentSpeed / 5;
-			entityIn.motionX = this.motionX * currentSpeed * 20;
-			entityIn.motionZ = this.motionZ * currentSpeed * 20;
 		}
 	}
 	
@@ -492,6 +327,8 @@ public class EntityVehicle extends Entity
 		health = compound.getFloat("health");
 		fuel = compound.getFloat("fuel");
 		currentSpeed = compound.getFloat("speed");
+		acceleration = compound.getFloat("acceleration");
+		turnSpeed = compound.getFloat("turnSpeed");
 		isBroken = compound.getBoolean("isBroken");
 	}
 	
@@ -507,6 +344,8 @@ public class EntityVehicle extends Entity
 		compound.setFloat("health", this.health);
 		compound.setFloat("fuel", this.fuel);
 		compound.setFloat("speed", this.currentSpeed);
+		compound.setFloat("acceleration", this.acceleration);
+		compound.setFloat("turnSpeed", this.turnSpeed);
 		compound.setBoolean("isBroken", this.isBroken);
 	}
 	
@@ -516,87 +355,39 @@ public class EntityVehicle extends Entity
 		return true;
 	}
 	
-	public boolean isBroken()
+	public boolean noAccerationInput()
 	{
-		return isBroken;
+		return !inputForward && !inputBack;
+	}
+	
+	public boolean noTurningInput()
+	{
+		return !inputRight && !inputLeft;
+	}
+	
+	public void setAllRequiredValues(float maxHealth, float health, float maxSpeed, float acceleration, float turnSpeed)
+	{
+		this.maxHealth = maxHealth;
+		this.health = health;
+		this.maxSpeed = maxSpeed;
+		this.acceleration = acceleration;
+		this.turnSpeed = turnSpeed;
 	}
 	
 	public boolean hasFuel()
 	{
-		return fuel > 0f;
+		return fuel > 0; 
 	}
 	
-	public void setHealth(float health)
+	/** Call with Fuel can **/
+	public void refill()
 	{
-		this.health = health;
+		fuel = fuel + 30f < 100f ? fuel + 30f : 100f;
 	}
 	
-	public void setFuelLevel(float fuel)
+	/** Decrement each tick **/
+	public void burnFuel()
 	{
-		this.fuel = fuel;
-	}
-	
-	public void setMaxHealth(float maxHealth)
-	{
-		this.maxHealth = maxHealth;
-	}
-	
-	public void setMaxFuel(float fuel)
-	{
-		this.maxFuel = fuel;
-	}
-	
-	public void setHasRandomFuelLevel(boolean fuelLevel)
-	{
-		this.randomFuelLevel = fuelLevel;
-	}
-	
-	public boolean getHasRandomFuelLevel()
-	{
-		return randomFuelLevel;
-	}
-	
-	public void setMaxSpeed(float maxSpeed)
-	{
-		this.maxSpeed = maxSpeed;
-	}
-	
-	public void setWaterVehicle(boolean waterVehicle)
-	{
-		this.isWaterVehicle = waterVehicle;
-	}
-	
-	public void setVehicleID(int id)
-	{
-		this.vehicleID = id;
-	}
-	
-	public int getVehicleID()
-	{
-		return vehicleID;
-	}
-	
-	public boolean isWaterVehicle()
-	{
-		return isWaterVehicle;
-	}
-	
-	public float getTurnModifier()
-	{
-		return turnModifier;
-	}
-	
-	public float getMaxHelth()
-	{
-		return maxHealth;
-	}
-	
-	public static EntityVehicle getVehicleByID(int id, World world, BlockPos pos)
-	{
-		switch(id)
-		{
-			case 0: return new EntityTestVehicle(world, pos.getX(), pos.getY() + 1.5, pos.getZ());
-			default: return null;
-		}
+		fuel = hasFuel() ? fuel - 0.05f : 0f;
 	}
 }

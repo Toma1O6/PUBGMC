@@ -29,6 +29,7 @@ import com.toma.pubgmc.common.items.ItemVehicleSpawner;
 import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.items.ItemVehicleSpawner.Vehicles;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
+import com.toma.pubgmc.common.items.armor.ArmorBase.ArmorLevel;
 import com.toma.pubgmc.common.items.armor.ItemClothing;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.armor.ItemNVGoggles;
@@ -221,12 +222,12 @@ public class RegistryHandler
 				new ItemClothing("ghilliebody", PMCMaterials.GHILLIE, 1, EntityEquipmentSlot.CHEST),
 				new ItemClothing("ghillielegs", PMCMaterials.GHILLIE, 2, EntityEquipmentSlot.LEGS),
 				new ItemClothing("ghillieboots", PMCMaterials.GHILLIE, 1, EntityEquipmentSlot.FEET),
-				new ArmorBase("armor1helmet", PMCMaterials.LVL1, 1, EntityEquipmentSlot.HEAD),
-				new ArmorBase("armor1body", PMCMaterials.LVL1, 1, EntityEquipmentSlot.CHEST),
-				new ArmorBase("armor2helmet", PMCMaterials.LVL2, 1, EntityEquipmentSlot.HEAD),
-				new ArmorBase("armor2body", PMCMaterials.LVL2, 1, EntityEquipmentSlot.CHEST),
-				new ArmorBase("armor3helmet", PMCMaterials.LVL3, 1, EntityEquipmentSlot.HEAD),
-				new ArmorBase("armor3body", PMCMaterials.LVL3, 1, EntityEquipmentSlot.CHEST),
+				new ArmorBase("armor1helmet", PMCMaterials.LVL1, 1, EntityEquipmentSlot.HEAD).setArmorLevel(ArmorLevel.LEVEL_ONE),
+				new ArmorBase("armor1body", PMCMaterials.LVL1, 1, EntityEquipmentSlot.CHEST).setArmorLevel(ArmorLevel.LEVEL_ONE),
+				new ArmorBase("armor2helmet", PMCMaterials.LVL2, 1, EntityEquipmentSlot.HEAD).setArmorLevel(ArmorLevel.LEVEL_TWO),
+				new ArmorBase("armor2body", PMCMaterials.LVL2, 1, EntityEquipmentSlot.CHEST).setArmorLevel(ArmorLevel.LEVEL_TWO),
+				new ArmorBase("armor3helmet", PMCMaterials.LVL3, 1, EntityEquipmentSlot.HEAD).setArmorLevel(ArmorLevel.LEVEL_THREE),
+				new ArmorBase("armor3body", PMCMaterials.LVL3, 1, EntityEquipmentSlot.CHEST).setArmorLevel(ArmorLevel.LEVEL_THREE),
 				new ItemClothing("black_glasses", PMCMaterials.CLOTH1, 1, EntityEquipmentSlot.HEAD),
 				new ItemClothing("yellow_tshirt", PMCMaterials.CLOTH1, 1, EntityEquipmentSlot.CHEST),
 				new ItemClothing("gray_top", PMCMaterials.CLOTH2, 1, EntityEquipmentSlot.CHEST),
