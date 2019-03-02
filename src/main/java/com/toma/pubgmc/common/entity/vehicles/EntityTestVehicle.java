@@ -1,6 +1,8 @@
 package com.toma.pubgmc.common.entity.vehicles;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
 
 import net.minecraft.world.World;
 
@@ -16,11 +18,12 @@ public class EntityTestVehicle extends EntityVehicle
 	{
 		this(world);
 		setPosition(x, y, z);
-	}
-	
-	@Override
-	public void onSpawned()
-	{
-		setAllRequiredValues(150f, 150f, 0.7f, 0.01f, 0.6f);
+		this.maxHealth = 150f;
+		this.health = maxHealth;
+		this.maxSpeed = 1f;
+		this.acceleration = 0.02f;
+		this.turnSpeed = 0.25f;
+		this.fuel = 60f + rand.nextInt(40) + rand.nextFloat();
+		PacketHandler.sendToAllClients(new PacketSpawnVehicle().syncAll(this));
 	}
 }

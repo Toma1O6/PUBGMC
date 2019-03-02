@@ -18,6 +18,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -261,7 +262,7 @@ public class CommandGame extends CommandBase
 		
 		border.setTransition(zoneSize + bonus*2);
 		border.setDamageBuffer(1);
-		border.setDamageAmount(data.getCurrentZone() / data.getZonePhaseCount());
+		border.setDamageAmount((double)data.getCurrentZone() + 1 / (double)data.getZonePhaseCount());
 		
 		data.setTimer(0);
 		
@@ -339,7 +340,7 @@ public class CommandGame extends CommandBase
 	private void resetGame(IGameData data, World world)
 	{
 		Pubgmc.logger.info("Attempting game reset...");
-		startGame(data, world);
+		data.setPlaying(true);
 		
 		for(EntityPlayer player : world.playerEntities)
 		{
@@ -355,6 +356,7 @@ public class CommandGame extends CommandBase
 		}
 		
 		stopGame(data, world);
+		data.setPlaying(false);
 		Pubgmc.logger.info("Game has been restarted successfully.");
 	}
 	

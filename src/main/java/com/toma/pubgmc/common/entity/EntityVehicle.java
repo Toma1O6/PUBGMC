@@ -74,29 +74,17 @@ public abstract class EntityVehicle extends Entity
 		maxSpeed = 1.0f;
 	}
 	
-	public EntityVehicle(World world, int x, int y, int z, boolean waterVehicle)
+	public EntityVehicle(World world, int x, int y, int z)
 	{
 		this(world);
 		setPosition(x, y, z);
-		onSpawned();
-		fuel = 60f + rand.nextInt(40) + rand.nextFloat();
-		PacketHandler.sendToAllClients(new PacketSpawnVehicle().syncAll(this));
 	}
-	
-	/**
-	 * Values to set:
-	 * <li> Max health, base 100f
-	 * <li> Health, base 100f
-	 * <li> Max speed, base 1.2f
-	 * <li> Acceleration, base 0.08f
-	 * <li> Turn speed, base 0.45f
-	 */
-	public abstract void onSpawned();
 	
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
+
 		if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput()))
 		{
 			inputForward = false;

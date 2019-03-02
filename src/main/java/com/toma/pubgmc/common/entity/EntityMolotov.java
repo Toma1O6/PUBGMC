@@ -98,7 +98,7 @@ public class EntityMolotov extends Entity
             this.motionX = 0;
             this.motionZ = 0;
             this.motionY = 0;
-            //--this.fuse;
+            --this.fuse;
             setEntitiesOnFireInRange();
             
             if(!positions.isEmpty() && ticksExisted % 3 == 0) createParticles();
@@ -248,7 +248,7 @@ public class EntityMolotov extends Entity
     {
     	for(int i = 0; i < count; i++)
     	{
-    		world.spawnParticle(EnumParticleTypes.FLAME, pos.getX() + 0.5 + (rand.nextDouble() - 0.5), pos.getY(), pos.getZ() + 0.5 + (rand.nextDouble() - 0.5), 0, 0.05d, 0, 0);
+    		world.spawnParticle(EnumParticleTypes.FLAME, pos.getX() + 0.5 + (rand.nextDouble() - 0.5), pos.getY() + 0.1, pos.getZ() + 0.5 + (rand.nextDouble() - 0.5), 0, 0.05d, 0, 0);
     	}
     }
 }
