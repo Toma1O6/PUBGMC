@@ -36,7 +36,7 @@ public class PMCEntities
 			registerEntity("flare", EntityFlare.class, 64, 20, true),
 			registerEntity("parachute", EntityParachute.class, 256, 1, true),
 			registerEntity("plane", EntityPlane.class, 128, 25, true),
-			registerVehicle("testVehicle", EntityTestVehicle.class, 35)
+			registerVehicle("testVehicle", EntityTestVehicle.class)
 		};
 		
 		e.getRegistry().registerAll(entries);
@@ -54,7 +54,7 @@ public class PMCEntities
 	
 	private static EntityEntry registerVehicle(String name, Class<? extends EntityVehicle> vehicleClass)
 	{
-		return registerEntity(name, vehicleClass, 256, 22, true);
+		return registerEntity(name, vehicleClass, 256, 24, true);
 	}
 	
 	private static EntityEntry registerVehicle(String name, Class<? extends EntityVehicle> vehicle, int updateFrequency)
