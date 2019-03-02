@@ -14,6 +14,7 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
+import com.toma.pubgmc.common.network.sp.PacketSound;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCItems;
@@ -32,9 +33,11 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 /**
  * @author Toma1O6
@@ -115,17 +118,22 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         if(this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading())
         {
-        	//NOW IT IS HANDLED THRU CLIENT PACKET INSIDE SHOOT PACKET
-        	//world.playSound(null, player.posX, player.posY, player.posZ, playWeaponSound(stack), SoundCategory.PLAYERS, playWeaponSoundVolume(stack), 1.0f);
-        	
-        	if(!world.isRemote)
+        	CooldownTracker tracker = player.getCooldownTracker();
+        	if(!tracker.hasCooldown(stack.getItem()))
         	{
-                EntityBullet bullet = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet);
-                if(!player.capabilities.isCreativeMode)
-                {
-                    stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
-                }
+            	if(!world.isRemote)
+            	{
+                    EntityBullet bullet = new EntityBullet(world, player, this);
+                    world.spawnEntity(bullet);
+                    if(!player.capabilities.isCreativeMode)
+                    {
+                        stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
+                    }
+                    
+                    PacketHandler.INSTANCE.sendToAllAround(new PacketSound(playWeaponSound(stack), playWeaponSoundVolume(stack), 1f, player.posX, player.posY, player.posZ), new TargetPoint(0, player.posX, player.posY, player.posZ, 150));
+            	}
+            	
+            	tracker.setCooldown(stack.getItem(), getFireRate());
         	}
         }
 	}
