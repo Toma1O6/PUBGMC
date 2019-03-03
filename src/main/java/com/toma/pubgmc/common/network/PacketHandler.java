@@ -26,6 +26,7 @@ import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
 import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
+import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -69,6 +70,7 @@ public class PacketHandler
 		registerClientPacket(PacketClientCapabilitySync.class);
 		registerClientPacket(PacketUpdatePlayerRotation.class);
 		registerClientPacket(PacketSpawnVehicle.class);
+		registerClientPacket(PacketVehicleData.class);
 	}
 	
 	public static void sendToClient(IMessage packet, EntityPlayerMP player)
@@ -91,7 +93,7 @@ public class PacketHandler
 		INSTANCE.sendToAllAround(packet, new TargetPoint(dimension, pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
-	public static void sendToClientAround(IMessage packet, int dimension, double x, double y, double z, double range)
+	public static void sendToClientsAround(IMessage packet, int dimension, double x, double y, double z, double range)
 	{
 		INSTANCE.sendToAllAround(packet, new TargetPoint(dimension, x, y, z, range));
 	}

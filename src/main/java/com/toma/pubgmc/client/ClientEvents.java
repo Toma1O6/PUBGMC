@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,7 @@ import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
@@ -49,6 +51,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -77,8 +80,10 @@ public class ClientEvents
     private static final ResourceLocation BOOST_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_overlay.png");
     private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
     private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
+    private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
 	private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
 	private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
+	private static final DecimalFormat DECIMAL = new DecimalFormat("###.##");
 	
 	/** Time it takes to render red dot / holographic overlay after aiming **/
 	private static final int AIM_TIME = 10;
@@ -247,11 +252,7 @@ public class ClientEvents
     		}
     	}
     	
-    	/*if(e.getType() == ElementType.TEXT && sp.getRidingEntity() instanceof EntityVehicle)
-    	{
-    		EntityVehicle car = (EntityVehicle)sp.getRidingEntity();
-    		mc.fontRenderer.drawStringWithShadow("Health: " + car.getHeath() + " ; Fuel: " + car.getFuel() + " ; Speed: " + car.speed(), 10, 10, 16777215);
-    	}*/
+    	renderVehicleOverlay(sp, mc, res, e);
 	}
 	
     //All pre overlay rendering
@@ -1376,7 +1377,7 @@ public class ClientEvents
     	{
     		EntityVehicle vehicle = (EntityVehicle)player.getRidingEntity();
     		
-    		vehicle.handleInputs(forward, back, right, left, player);
+    		//vehicle.handleInputs(forward, back, right, left, player);
     		PacketHandler.sendToServer(new PacketHandleVehicleInput(forward, back, right, left, vehicle.getEntityId()));
     	}
     }
@@ -1442,5 +1443,25 @@ public class ClientEvents
     {
     	final double val = (double)stack.getItemDamage() / (double)stack.getMaxDamage();
     	return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
+    }
+    
+    private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e)
+    {
+    	if(e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle)
+    	{
+    		EntityVehicle car = (EntityVehicle)player.getRidingEntity();
+    		
+    		mc.fontRenderer.drawStringWithShadow("Speed: " + DECIMAL.format(Math.abs(car.currentSpeed) * 48.5) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
+    	}
+    	
+    	else if(e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle)
+    	{
+    		EntityVehicle car = (EntityVehicle)player.getRidingEntity();
+    		double health = car.health / car.maxHealth * 100;
+    		ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
+    		ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
+    		ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
+    		ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
+    	}
     }
 }

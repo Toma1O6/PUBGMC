@@ -9,8 +9,10 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
+import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,10 +24,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class EntityVehicle extends Entity
+public abstract class EntityVehicle extends Entity implements IEntityAdditionalSpawnData
 {
 	private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
 	private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
@@ -53,7 +56,7 @@ public abstract class EntityVehicle extends Entity
 	/** How well will the vehicle drive on different surfaces **/
 	public float turnModifier;
 	
-	//TODO implement
+	/** Decides if vehicle can drive **/
 	public float fuel = 100f;
 	
 	/** If the vehicle is broken or not **/
@@ -85,18 +88,28 @@ public abstract class EntityVehicle extends Entity
 	{
 		super.onUpdate();
 
-		if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput()))
+		if(!world.isRemote)
 		{
-			inputForward = false;
-			inputBack = false;
-			inputRight = false;
-			inputLeft = false;
+			if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput() || !hasFuel()))
+			{
+				inputForward = false;
+				inputBack = false;
+				inputRight = false;
+				inputLeft = false;
+			}
+			
+			updateMotion();
+			handleEntityCollisions();
+			checkState();
+			
+			if(collidedHorizontally)
+			{
+				currentSpeed *= 0.6;
+			}
+			
+			PacketHandler.sendToClientsAround(new PacketVehicleData(this).health(health).fuel(fuel), dimension, posX, posY, posZ, 256);
 		}
 		
-		updateMotion();
-		handleEntityCollisions();
-		if(!world.isRemote) checkState();
-
 		move(MoverType.SELF, motionX, motionY, motionZ);
 	}
 	
@@ -108,10 +121,10 @@ public abstract class EntityVehicle extends Entity
 		
 		if(e != null)
 		{
-			e.motionX += motionX * currentSpeed;
-			e.motionY += currentSpeed / 2;
-			e.motionZ += motionZ * currentSpeed;
-			e.attackEntityFrom(PMCDamageSources.VEHICLE, currentSpeed * 10f);
+			e.motionX += motionX * currentSpeed * 3;
+			e.motionY += currentSpeed;
+			e.motionZ += motionZ * currentSpeed * 3;
+			e.attackEntityFrom(PMCDamageSources.VEHICLE, Math.abs(currentSpeed) * 25f);
 		}
 	}
 	
@@ -178,7 +191,7 @@ public abstract class EntityVehicle extends Entity
 	protected Entity findEntityInPath(Vec3d start, Vec3d end)
 	{
 		Entity e = null;
-		List<Entity> entityList = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(motionX, motionY, motionZ).grow(1d), TARGET);
+		List<Entity> entityList = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(motionX, motionY + 1, motionZ).grow(1d), TARGET);
 		double d0 = 0;
 		
 		for(int i = 0; i < entityList.size(); i++)
@@ -265,8 +278,12 @@ public abstract class EntityVehicle extends Entity
 	{
 		if(isPlayerDriver(player))
 		{
-			this.inputForward = forward;
-			this.inputBack = back;
+			if(hasFuel())
+			{
+				this.inputForward = forward;
+				this.inputBack = back;
+			}
+			
 			this.inputLeft = left;
 			this.inputRight = right;
 		}
@@ -376,6 +393,28 @@ public abstract class EntityVehicle extends Entity
 	/** Decrement each tick **/
 	public void burnFuel()
 	{
-		fuel = hasFuel() ? fuel - 0.05f : 0f;
+		fuel = hasFuel() ? fuel - 0.01f : 0f;
+	}
+	
+	@Override
+	public void writeSpawnData(ByteBuf buf)
+	{
+		buf.writeFloat(maxHealth);
+		buf.writeFloat(health);
+		buf.writeFloat(maxSpeed);
+		buf.writeFloat(acceleration);
+		buf.writeFloat(turnSpeed);
+		buf.writeFloat(fuel);
+	}
+	
+	@Override
+	public void readSpawnData(ByteBuf buf)
+	{
+		maxHealth = buf.readFloat();
+		health = buf.readFloat();
+		maxSpeed = buf.readFloat();
+		acceleration = buf.readFloat();
+		turnSpeed = buf.readFloat();
+		fuel = buf.readFloat();
 	}
 }

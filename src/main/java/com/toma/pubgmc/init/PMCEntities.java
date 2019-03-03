@@ -54,7 +54,7 @@ public class PMCEntities
 	
 	private static EntityEntry registerVehicle(String name, Class<? extends EntityVehicle> vehicleClass)
 	{
-		return registerEntity(name, vehicleClass, 256, 24, true);
+		return registerEntity(name, vehicleClass, 256, 1, true);
 	}
 	
 	private static EntityEntry registerVehicle(String name, Class<? extends EntityVehicle> vehicle, int updateFrequency)
