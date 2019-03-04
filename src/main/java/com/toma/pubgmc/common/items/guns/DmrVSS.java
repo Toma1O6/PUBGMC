@@ -63,7 +63,7 @@ public class DmrVSS extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addMagazines();
-		attachments.add(PMCItems.CHEEKPAD);
+		addAttachment(PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	

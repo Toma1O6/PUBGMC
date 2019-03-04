@@ -65,7 +65,7 @@ public class ArGroza extends GunBase
 	{
 		addMagazines();
 		addCloseRangeScopes();
-		attachments.add(PMCItems.SILENCER_AR);
+		addAttachment(PMCItems.SILENCER_AR);
 		return super.acceptedAttachments();
 	}
 	

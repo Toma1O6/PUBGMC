@@ -62,8 +62,8 @@ public class SmgMicroUzi extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addMagazines();
-		attachments.add(PMCItems.SILENCER_SMG);
-		attachments.add(PMCItems.COMPENSATOR_SMG);
+		addAttachment(PMCItems.SILENCER_SMG);
+		addAttachment(PMCItems.COMPENSATOR_SMG);
 		return super.acceptedAttachments();
 	}
 	

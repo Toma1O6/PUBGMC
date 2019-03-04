@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.util.ImageUtil;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -77,6 +78,7 @@ public class GuiAttachments extends GuiContainer
 			}
 		}
 		
+		drawAvailableAttachments();
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
@@ -96,15 +98,84 @@ public class GuiAttachments extends GuiContainer
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 	
+	private void drawAvailableAttachments()
+	{
+		if(ITEMS.get(0) instanceof GunBase)
+		{
+			GunBase gun = (GunBase)ITEMS.get(0);
+			List<Item> att = gun.acceptedAttachments();
+			int barOff = 17;
+			int gripOff = 17;
+			int magOff = 10;
+			int stockOff = 17;
+			int scopeOff = 17;
+			
+			for(int i = 0; i < att.size(); i++)
+			{
+				Item item = att.get(i);
+				if(item instanceof ItemAttachment)
+				{
+					ItemAttachment at = (ItemAttachment)item;
+					IAttachment.Type type = at.getType();
+					String loc = at.getRegistryName().toString();
+					if(loc.contains("pubgmc")) loc = loc.replace("pubgmc:", "");
+					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
+					
+					switch(type)
+					{
+						case BARREL:
+						{
+							ImageUtil.drawCustomSizedImage(mc, res, 16 - barOff, 30, 16, 16, true);
+							barOff += 17;
+							break;
+						}
+						
+						case SCOPE:
+						{
+							ImageUtil.drawCustomSizedImage(mc, res, 77 - scopeOff, 12, 16, 16, true);
+							scopeOff += 17;
+							break;
+						}
+						
+						case GRIP:
+						{
+							ImageUtil.drawCustomSizedImage(mc, res, 40 - gripOff, 50, 16, 16, true);
+							gripOff += 17;
+							break;
+						}
+						
+						case MAGAZINE:
+						{
+							//TODO make texture names match registry names
+							ImageUtil.drawCustomSizedImage(mc, res, 70 + magOff, 69, 16, 16, true);
+							magOff += 17;
+							break;
+						}
+						
+						case STOCK:
+						{
+							ImageUtil.drawCustomSizedImage(mc, res, 126 + stockOff, 30, 16, 16, true);
+							stockOff += 17;
+							break;
+						}
+						
+						default: break;
+					}
+				}
+			}
+		}
+	}
+	
 	private enum FieldType
 	{
-		BARREL(12, 20, 20, 31),
-		GRIP(41, 69, 42, 50),
-		MAGAZINE(70, 69, 80, 50),
-		STOCK(118, 20, 124, 31),
-		SCOPE(73, 2, 80, 12),
-		DETACH(138, 73, 152, 55);
+		BARREL(12, 20, 20, 31, "Barrel"),
+		GRIP(41, 69, 42, 50, "Grip"),
+		MAGAZINE(70, 69, 80, 50, "Magazine"),
+		STOCK(118, 20, 124, 31, "Stock"),
+		SCOPE(73, 2, 80, 12, "Scope"),
+		DETACH(138, 73, 152, 55, "Detach");
 		
+		private String name;
 		private int x,y,x1,y1;
 		private static final ResourceLocation[] ICONS = 
 		{
@@ -116,7 +187,7 @@ public class GuiAttachments extends GuiContainer
 			new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/detach.png")
 		};
 		
-		FieldType(int x, int y, int slotX, int slotY)
+		FieldType(int x, int y, int slotX, int slotY, String name)
 		{
 			this.x = x;
 			this.y = y;
@@ -126,16 +197,7 @@ public class GuiAttachments extends GuiContainer
 		
 		public String getName()
 		{
-			switch(ordinal())
-			{
-				case 0: return "Barrel";
-				case 1: return "Grip";
-				case 2: return "Magazine";
-				case 3: return "Stock";
-				case 4: return "Scope";
-				case 5: return "Detach";
-				default: return "";
-			}
+			return name;
 		}
 		
 		public int getTextX()

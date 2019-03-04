@@ -1,6 +1,6 @@
 {
    "parent": "item/generated",
    "textures": {
-       "layer0": "pubgmc:items/angled_grip"
+       "layer0": "pubgmc:items/grip_angled"
    }
 }

@@ -66,8 +66,8 @@ public class SmgBizon extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		attachments.add(PMCItems.COMPENSATOR_SMG);
-		attachments.add(PMCItems.SILENCER_SMG);
+		addAttachment(PMCItems.COMPENSATOR_SMG);
+		addAttachment(PMCItems.SILENCER_SMG);
 		addCloseRangeScopes();
 		return super.acceptedAttachments();
 	}

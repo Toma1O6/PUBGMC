@@ -63,8 +63,8 @@ public class SmgTommygun extends GunBase
 	public List<Item> acceptedAttachments() 
 	{
 		addMagazines();
-		attachments.add(PMCItems.GRIP_VERTICAL);
-		attachments.add(PMCItems.SILENCER_SMG);
+		addAttachment(PMCItems.GRIP_VERTICAL);
+		addAttachment(PMCItems.SILENCER_SMG);
 		return super.acceptedAttachments();
 	}
 	

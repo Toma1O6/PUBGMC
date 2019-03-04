@@ -65,7 +65,7 @@ public class DmrMK14 extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addSniperAttachments();
-		attachments.add(PMCItems.CHEEKPAD);
+		addAttachment(PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	

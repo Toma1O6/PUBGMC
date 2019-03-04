@@ -58,10 +58,10 @@ public class PistolScorpion extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		attachments.add(PMCItems.SILENCER_PISTOL);
-		attachments.add(PMCItems.GRIP_VERTICAL);
-		attachments.add(PMCItems.EXTENDED_MAG_PISTOL);
-		attachments.add(PMCItems.RED_DOT);
+		addAttachment(PMCItems.SILENCER_PISTOL);
+		addAttachment(PMCItems.GRIP_VERTICAL);
+		addAttachment(PMCItems.EXTENDED_MAG_PISTOL);
+		addAttachment(PMCItems.RED_DOT);
 		return super.acceptedAttachments();
 	}
 	

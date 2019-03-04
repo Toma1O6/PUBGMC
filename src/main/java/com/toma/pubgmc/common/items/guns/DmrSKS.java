@@ -64,7 +64,7 @@ public class DmrSKS extends GunBase
 	{
 		addSniperAttachments();
 		addGrips();
-		attachments.add(PMCItems.CHEEKPAD);
+		addAttachment(PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	

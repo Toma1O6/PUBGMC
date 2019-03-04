@@ -50,10 +50,10 @@ public class SrKar98K extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addScopes();
-		attachments.add(PMCItems.SILENCER_SNIPER);
-		attachments.add(PMCItems.COMPENSATOR_SNIPER);
-		attachments.add(PMCItems.BULLET_LOOPS_SNIPER);
-		attachments.add(PMCItems.CHEEKPAD);
+		addAttachment(PMCItems.SILENCER_SNIPER);
+		addAttachment(PMCItems.COMPENSATOR_SNIPER);
+		addAttachment(PMCItems.BULLET_LOOPS_SNIPER);
+		addAttachment(PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	

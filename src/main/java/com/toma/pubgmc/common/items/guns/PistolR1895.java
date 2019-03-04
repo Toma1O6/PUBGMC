@@ -49,7 +49,7 @@ public class PistolR1895 extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		attachments.add(PMCItems.SILENCER_PISTOL);
+		addAttachment(PMCItems.SILENCER_PISTOL);
 		return super.acceptedAttachments();
 	}
 	

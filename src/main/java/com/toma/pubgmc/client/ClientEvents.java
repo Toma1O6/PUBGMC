@@ -1121,7 +1121,7 @@ public class ClientEvents
 	        	}
 	        	
 	        	// to prevent reloading happening when player doesn't have ammo for the weapon
-	        	if(player.getHeldItemMainhand().getItem() instanceof GunBase && !player.inventory.hasItemStack(((GunBase)player.getHeldItemMainhand().getItem()).getAmmoItemStack()))
+	        	if(player.getHeldItemMainhand().getItem() instanceof GunBase && !player.inventory.hasItemStack(((GunBase)player.getHeldItemMainhand().getItem()).getAmmoType().ammoStack()))
 	        	{
 	        		setReloading(data, false);
 	        	}

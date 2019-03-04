@@ -583,7 +583,7 @@ public class CommonEvents
 				GunBase gun = (GunBase)stack.getItem();
 				int ammo = stack.getTagCompound().getInteger("ammo");
 				
-				player.addItemStackToInventory(new ItemStack(gun.getAmmoFromGun(), ammo));
+				player.addItemStackToInventory(new ItemStack(gun.getAmmoType().ammo(), ammo));
 				stack.getTagCompound().setInteger("ammo", 0);
 			}
 		}

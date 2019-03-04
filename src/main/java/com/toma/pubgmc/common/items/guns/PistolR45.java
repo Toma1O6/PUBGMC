@@ -47,7 +47,7 @@ public class PistolR45 extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		attachments.add(PMCItems.RED_DOT);
+		addAttachment(PMCItems.RED_DOT);
 		return super.acceptedAttachments();
 	}
 	

@@ -377,26 +377,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		}
 	}
 	
-	public Item getAmmoFromGun()
-	{
-		switch(getAmmoType())
-		{
-			case AMMO9MM: return PMCItems.AMMO_9MM;
-			case AMMO45ACP: return PMCItems.AMMO_45ACP;
-			case AMMO12G: return PMCItems.AMMO_SHOTGUN;
-			case AMMO556: return PMCItems.AMMO_556;
-			case AMMO762: return PMCItems.AMMO_762;
-			case AMMO300M: return PMCItems.AMMO_300M;
-			case FLARE: return PMCItems.AMMO_FLARE;
-			default: return Items.AIR;
-		}
-	}
-	
-	public ItemStack getAmmoItemStack()
-	{
-		return new ItemStack(getAmmoFromGun());
-	}
-	
 	public boolean hasAmmo(ItemStack itemStack)
 	{
 		return itemStack.getTagCompound().getInteger("ammo") > 0;
@@ -425,34 +405,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		}
 		
 		return false;
-	}
-	
-	//Description stuff
-	public String descAmmoType()
-	{
-		switch(this.getAmmoType())
-		{
-			case AMMO9MM: return I18n.format("ammo.9mm");
-			case AMMO12G: return I18n.format("ammo.12g");
-			case AMMO45ACP: return I18n.format("ammo.45acp");
-			case AMMO556: return I18n.format("ammo.556mm");
-			case AMMO762: return I18n.format("ammo.762mm");
-			case AMMO300M: return I18n.format("ammo.300m");
-			case FLARE: return I18n.format("ammo.flare");
-			default: return "Unknown ammo";
-		}
-	}
-	
-	//Description stuff
-	public String getFiremodeTranslation()
-	{
-		switch(this.getFiremode())
-		{
-			case SINGLE: return I18n.format("gun.firemode.single");
-			case BURST: return I18n.format("gun.firemode.burst");
-			case AUTO: return I18n.format("gun.firemode.auto");
-			default: return "";
-		}
 	}
 	
 	@Override
@@ -493,7 +445,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		}
 		
 		tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getAmmo(stack));
-		tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firemode") + ": " + TextFormatting.RESET + "" + TextFormatting.GRAY + getFiremodeTranslation());
+		tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firemode") + ": " + TextFormatting.RESET + "" + TextFormatting.GRAY + getFiremode().translatedName());
 		
 		if(GuiScreen.isShiftKeyDown() && stack.hasTagCompound())
 		{
@@ -505,7 +457,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(velocity * 5.5) + " " + I18n.format("gun.velocity.info"));
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(gravity * 20) + " " + I18n.format("gun.gravity.info"));
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firerate") + ": " + TextFormatting.RESET + "" + TextFormatting.AQUA + g.format(20.00 / this.getFireRate()) + " " + I18n.format("gun.firerate.info"));
-			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + descAmmoType());
+			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + ammotype.translatedName());
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.maxammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getWeaponAmmoLimit(stack));
 		}
 		
@@ -527,18 +479,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 			tooltip.add(TextFormatting.YELLOW + I18n.format("gun.desc.moreinfo"));
 			tooltip.add(TextFormatting.YELLOW + I18n.format("gun.desc.moreinfo2"));
 		}
-	}
-	
-	/**
-	 * Method for correct rendering in loot spawner TESR
-	 * This will get removed because all guns will have 3D models
-	 * 
-	 * @param item
-	 */
-	@Deprecated
-	public boolean is3DModel(Item item)
-	{
-		return item == PMCItems.P92 || item == PMCItems.P1911 || item == PMCItems.P18C || item == PMCItems.R1895 || item == PMCItems.R45 || item == PMCItems.SAWED_OFF;
 	}
 	
 //-------------------------------------------------
@@ -771,7 +711,21 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	
 	public enum Firemode
 	{
-		SINGLE, BURST, AUTO;
+		SINGLE(I18n.format("gun.firemode.single")),
+		BURST(I18n.format("gun.firemode.burst")),
+		AUTO(I18n.format("gun.firemode.auto"));
+		
+		private String name;
+		
+		private Firemode(String name)
+		{
+			this.name = name;
+		}
+		
+		public String translatedName()
+		{
+			return name;
+		}
 	}
 	
 	public enum ReloadType
@@ -798,52 +752,48 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	{
 		if(gunType == GunType.PISTOL)
 		{
-			attachments.add(PMCItems.QUICKDRAW_MAG_PISTOL);
-			attachments.add(PMCItems.EXTENDED_MAG_PISTOL);
-			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL);
+			Item[] pistol = {PMCItems.QUICKDRAW_MAG_PISTOL, PMCItems.EXTENDED_MAG_PISTOL, PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL};
+			addAttachment(pistol);
 		}
 		
 		else if(gunType == GunType.SMG)
 		{
-			attachments.add(PMCItems.QUICKDRAW_MAG_SMG);
-			attachments.add(PMCItems.EXTENDED_MAG_SMG);
-			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG);
+			Item[] smg = {PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG};
+			addAttachment(smg);
 		}
 		
 		else if(gunType == gunType.AR)
 		{
-			attachments.add(PMCItems.QUICKDRAW_MAG_AR);
-			attachments.add(PMCItems.EXTENDED_MAG_AR);
-			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_AR);
+			Item[] ar = {PMCItems.QUICKDRAW_MAG_AR, PMCItems.EXTENDED_MAG_AR, PMCItems.EXTENDED_QUICKDRAW_MAG_AR};
+			addAttachment(ar);
 		}
 		
 		else if(gunType == GunType.DMR || gunType == GunType.SR)
 		{
-			attachments.add(PMCItems.QUICKDRAW_MAG_SNIPER);
-			attachments.add(PMCItems.EXTENDED_MAG_SNIPER);
-			attachments.add(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER);
+			Item[] sr = {PMCItems.QUICKDRAW_MAG_SNIPER, PMCItems.EXTENDED_MAG_SNIPER, PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER};
+			addAttachment(sr);
 		}
 	}
 	
 	protected void addGrips()
 	{
-		attachments.add(PMCItems.GRIP_ANGLED);
-		attachments.add(PMCItems.GRIP_VERTICAL);
+		addAttachment(PMCItems.GRIP_ANGLED);
+		addAttachment(PMCItems.GRIP_VERTICAL);
 	}
 	
 	protected void addCloseRangeScopes()
 	{
-		attachments.add(PMCItems.RED_DOT);
-		attachments.add(PMCItems.HOLOGRAPHIC);
-		attachments.add(PMCItems.SCOPE2X);
-		attachments.add(PMCItems.SCOPE4X);
+		addAttachment(PMCItems.RED_DOT);
+		addAttachment(PMCItems.HOLOGRAPHIC);
+		addAttachment(PMCItems.SCOPE2X);
+		addAttachment(PMCItems.SCOPE4X);
 	}
 	
 	protected void addScopes()
 	{
 		addCloseRangeScopes();
-		attachments.add(PMCItems.SCOPE8X);
-		attachments.add(PMCItems.SCOPE15X);
+		addAttachment(PMCItems.SCOPE8X);
+		addAttachment(PMCItems.SCOPE15X);
 	}
 	
 	/**
@@ -853,8 +803,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 */
 	protected void addPistolAttachments()
 	{
-		attachments.add(PMCItems.SILENCER_PISTOL);
-		attachments.add(PMCItems.RED_DOT);
+		addAttachment(PMCItems.SILENCER_PISTOL);
+		addAttachment(PMCItems.RED_DOT);
 		addMagazines();
 	}
 	
@@ -863,7 +813,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 */
 	protected void addShotgunAttachments()
 	{
-		attachments.add(PMCItems.BULLET_LOOPS_SHOTGUN);
+		addAttachment(PMCItems.BULLET_LOOPS_SHOTGUN);
 	}
 	
 	/**
@@ -874,8 +824,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 */
 	protected void addSMGAttachments()
 	{
-		attachments.add(PMCItems.SILENCER_SMG);
-		attachments.add(PMCItems.COMPENSATOR_SMG);
+		addAttachment(PMCItems.SILENCER_SMG);
+		addAttachment(PMCItems.COMPENSATOR_SMG);
 		addGrips();
 		addMagazines();
 		addCloseRangeScopes();
@@ -892,8 +842,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		addCloseRangeScopes();
 		addMagazines();
 		if(grips) addGrips();
-		attachments.add(PMCItems.COMPENSATOR_AR);
-		attachments.add(PMCItems.SILENCER_AR);
+		addAttachment(PMCItems.COMPENSATOR_AR);
+		addAttachment(PMCItems.SILENCER_AR);
 	}
 	
 	/**
@@ -905,7 +855,20 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	{
 		addScopes();
 		addMagazines();
-		attachments.add(PMCItems.SILENCER_SNIPER);
-		attachments.add(PMCItems.COMPENSATOR_SNIPER);
+		addAttachment(PMCItems.SILENCER_SNIPER);
+		addAttachment(PMCItems.COMPENSATOR_SNIPER);
+	}
+	
+	public void addAttachment(Item item)
+	{
+		if(!attachments.contains(item)) attachments.add(item);
+	}
+	
+	public void addAttachment(Item[] items)
+	{
+		for(Item item : items)
+		{
+			addAttachment(item);
+		}
 	}
 }
