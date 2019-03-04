@@ -23,101 +23,42 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class ItemBandage extends PMCItem implements ICraftable
+public class ItemBandage extends ItemHealing
 {
 	public ItemBandage(String name)
 	{
 		super(name);
 		this.setMaxStackSize(5);
-		this.setCreativeTab(Pubgmc.pmcitemstab);
-		TileEntityGunWorkbench.HEALING.add(this);
 	}
 	
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
+	public Action getAction()
 	{
-		if(entityLiving instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer) entityLiving;
-			if(player.getHealth() == 14)
-			{
-				if(!player.capabilities.isCreativeMode)
-				{
-					stack.shrink(1);
-				}
-				
-				if(!worldIn.isRemote)
-				{
-					player.setHealth(15);
-				}
-			}
-			
-			if(player.getHealth() < 14)
-			{
-				if(!player.capabilities.isCreativeMode)
-				{
-					stack.shrink(1);
-				}
-				
-				if(!worldIn.isRemote)
-				{
-					player.heal(2);
-				}
-			}
-		}
-		
-		return stack;
+		return Action.HEAL;
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+	public EnumAction getUseAction()
 	{
-		ItemStack stack = playerIn.getHeldItem(handIn);
-		if(!worldIn.isRemote)
-		{
-			if(playerIn.getHealth() == 14)
-			{
-				playerIn.setActiveHand(handIn);
-				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
-			}
-			
-			if(playerIn.getHealth() < 14)
-			{
-				playerIn.setActiveHand(handIn);
-				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
-			}
-			
-			if(playerIn.getHealth() > 14)
-			{
-				warnPlayer(playerIn);
-				return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-			}
-		}
-		
-		return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+		return EnumAction.NONE;
 	}
 	
 	@Override
-	public int getMaxItemUseDuration(ItemStack stack)
+	public int getUseTime()
 	{
 		return 80;
 	}
 	
 	@Override
-	public EnumAction getItemUseAction(ItemStack stack)
+	public float getHealAmount(EntityPlayer player) 
 	{
-		return EnumAction.NONE;
-	}
-	
-	private void warnPlayer(EntityPlayer player)
-	{
-		player.sendMessage(new TextComponentString(TextFormatting.RED + "You can't heal above 75% of your health!"));
+		return canPlayerHeal(player) ? player.getHealth() == 14 ? 1f : 2f : 0f;
 	}
 	
 	@Override
-	public CraftMode getCraftMode()
+	public boolean canPlayerHeal(EntityPlayer player)
 	{
-		return CraftMode.Healing;
+		return player.getHealth() < 15f;
 	}
 	
 	@Override

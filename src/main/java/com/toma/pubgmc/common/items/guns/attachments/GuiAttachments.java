@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiAttachments extends GuiContainer
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/attachmentInv.png");
+	private static final ResourceLocation BACKGROUND = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/base.png"); 
 	public static final List<Item> ITEMS = new ArrayList<Item>();
 	
 	public GuiAttachments(InventoryPlayer inventory, EntityPlayer player)
@@ -104,11 +105,11 @@ public class GuiAttachments extends GuiContainer
 		{
 			GunBase gun = (GunBase)ITEMS.get(0);
 			List<Item> att = gun.acceptedAttachments();
-			int barOff = 17;
-			int gripOff = 17;
-			int magOff = 10;
-			int stockOff = 17;
-			int scopeOff = 17;
+			short barOff = 17;
+			short gripOff = 17;
+			short magOff = 10;
+			short stockOff = 17;
+			short scopeOff = 17;
 			
 			for(int i = 0; i < att.size(); i++)
 			{
@@ -125,37 +126,41 @@ public class GuiAttachments extends GuiContainer
 					{
 						case BARREL:
 						{
+							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 16 - barOff, 30, 16, 16, true);
 							ImageUtil.drawCustomSizedImage(mc, res, 16 - barOff, 30, 16, 16, true);
-							barOff += 17;
+							barOff += 16;
 							break;
 						}
 						
 						case SCOPE:
 						{
+							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 77 - scopeOff, 12, 16, 16, true);
 							ImageUtil.drawCustomSizedImage(mc, res, 77 - scopeOff, 12, 16, 16, true);
-							scopeOff += 17;
+							scopeOff += 16;
 							break;
 						}
 						
 						case GRIP:
 						{
+							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 40 - gripOff, 50, 16, 16, true);
 							ImageUtil.drawCustomSizedImage(mc, res, 40 - gripOff, 50, 16, 16, true);
-							gripOff += 17;
+							gripOff += 16;
 							break;
 						}
 						
 						case MAGAZINE:
 						{
-							//TODO make texture names match registry names
+							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 70 + magOff, 69, 16, 16, true);
 							ImageUtil.drawCustomSizedImage(mc, res, 70 + magOff, 69, 16, 16, true);
-							magOff += 17;
+							magOff += 16;
 							break;
 						}
 						
 						case STOCK:
 						{
+							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 126 + stockOff, 30, 16, 16, true);
 							ImageUtil.drawCustomSizedImage(mc, res, 126 + stockOff, 30, 16, 16, true);
-							stockOff += 17;
+							stockOff += 16;
 							break;
 						}
 						

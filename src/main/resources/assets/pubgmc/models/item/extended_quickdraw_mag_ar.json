@@ -1,6 +1,6 @@
 {
    "parent": "item/generated",
    "textures": {
-       "layer0": "pubgmc:items/ar_extended_quickdraw"
+       "layer0": "pubgmc:items/extended_quickdraw_mag_ar"
    }
 }

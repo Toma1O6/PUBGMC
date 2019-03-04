@@ -11,7 +11,8 @@ PUBGMC TODO LIST
 | - Better ghillie suit -> Model is done, TODO animations when player is moving
 | - Hostile entity which can shoot you
 | - Add Flashbang grenade
-| - Render available attachments into attachment GUI
+| - More melee items
+| - Adding melee into loot generation
 |
 |-----------------------------------------------------------------------------------------|
 |    LOW PRIORITY:                                                                        |
@@ -37,6 +38,7 @@ PUBGMC TODO LIST
 | - Planes (for jumping off at start of the game)
 | - Improve headshot mechanic (better raytracing math for entities)
 | - Improve molotov fire spread
+| - Render available attachments into attachment GUI
 |
 |-----------------------------------------------------------------------------------------|
 |    MAYBE?                                                                               |

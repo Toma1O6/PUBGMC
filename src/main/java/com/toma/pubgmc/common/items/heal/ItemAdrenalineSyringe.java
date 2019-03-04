@@ -23,53 +23,35 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ItemAdrenalineSyringe extends PMCItem implements ICraftable
+public class ItemAdrenalineSyringe extends ItemHealing
 {
-
 	public ItemAdrenalineSyringe(String name)
 	{
 		super(name);
-		this.setCreativeTab(Pubgmc.pmcitemstab);
-		this.setMaxStackSize(1);
-		TileEntityGunWorkbench.HEALING.add(this);
 	}
 	
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
+	public Action getAction()
 	{
-		
-		if(entityLiving instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer)entityLiving;
-			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			data.setBoost(100f);
-			
-			if(!player.capabilities.isCreativeMode)
-			{
-				stack.shrink(1);
-			}
-		}
-		
-		return stack;
+		return Action.BOOST;
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+	public EnumAction getUseAction()
 	{
-		playerIn.setActiveHand(handIn);
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		return EnumAction.NONE;
 	}
 	
 	@Override
-	public int getMaxItemUseDuration(ItemStack stack)
+	public int getUseTime() 
 	{
 		return 120;
 	}
 	
 	@Override
-	public EnumAction getItemUseAction(ItemStack stack) 
+	public float getBoostAmount()
 	{
-		return EnumAction.NONE;
+		return 100f;
 	}
 	
 	@Override
@@ -80,11 +62,5 @@ public class ItemAdrenalineSyringe extends PMCItem implements ICraftable
 		recipe.add(new ItemStack(PMCItems.ENERGYDRINK));
 		recipe.add(new ItemStack(PMCItems.PAINKILLERS));
 		return recipe;
-	} 
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.Healing;
 	}
 }

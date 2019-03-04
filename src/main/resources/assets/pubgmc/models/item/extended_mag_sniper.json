@@ -1,6 +1,6 @@
 {
    "parent": "item/generated",
    "textures": {
-       "layer0": "pubgmc:items/sniper_extended"
+       "layer0": "pubgmc:items/extended_mag_sniper"
    }
 }

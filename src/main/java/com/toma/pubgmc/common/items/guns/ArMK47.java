@@ -26,7 +26,7 @@ public class ArMK47 extends GunBase
 		this.setAmmoType(AmmoType.AMMO762);
 		this.setReloadTime(66);
 		this.setReloadDelay(15);
-		this.setFireRate(3);
+		this.setFireRate(2);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.AR);
