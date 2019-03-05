@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public abstract class ItemHealing extends PMCItem implements ICraftable
@@ -81,7 +83,8 @@ public abstract class ItemHealing extends PMCItem implements ICraftable
 	@Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
-        playerIn.setActiveHand(handIn);
+        if(canPlayerHeal(playerIn)) playerIn.setActiveHand(handIn);
+        else if(!worldIn.isRemote) playerIn.sendMessage(new TextComponentString(TextFormatting.RED + "Conditions to use item not met!"));
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 	
