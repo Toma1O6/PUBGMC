@@ -7,12 +7,14 @@ import com.toma.pubgmc.client.renderer.RenderMolotov;
 import com.toma.pubgmc.client.renderer.RenderParachute;
 import com.toma.pubgmc.client.renderer.RenderSmokeGrenade;
 import com.toma.pubgmc.client.renderer.RenderTestVehicle;
+import com.toma.pubgmc.client.renderer.RenderUAZ;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityMolotov;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
+import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
 
@@ -36,6 +38,7 @@ public class ClientProxy implements IProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, RenderMolotov::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityTestVehicle.class, RenderTestVehicle::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
 	}
 	
 	@SideOnly(Side.CLIENT)

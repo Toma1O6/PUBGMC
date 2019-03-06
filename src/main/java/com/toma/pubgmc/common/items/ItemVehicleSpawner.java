@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.items;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
+import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,9 +53,10 @@ public class ItemVehicleSpawner extends PMCItem
 		public void spawnEntity(World world, BlockPos pos)
 		{
 			EntityVehicle vehicle = null;
-			switch(ordinal())
+			switch(this)
 			{
-				case 0: vehicle = new EntityTestVehicle(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
+				case TEST: vehicle = new EntityTestVehicle(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
+				case UAZ: vehicle = new EntityVehicleUAZ(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
 				default: break;
 			}
 			

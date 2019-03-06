@@ -268,7 +268,8 @@ public class RegistryHandler
 				new PMCItem("steel_dust"),
 				new PMCItem("steel_ingot"),
 				new PMCItem("copper_ingot"),
-				new ItemVehicleSpawner("vehicle_test", Vehicles.TEST)
+				new ItemVehicleSpawner("vehicle_test", Vehicles.TEST),
+				new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ)
 		};
 		
 		final Item[] ITEM_BLOCKS = {
