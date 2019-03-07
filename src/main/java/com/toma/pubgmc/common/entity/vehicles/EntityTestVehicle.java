@@ -25,4 +25,10 @@ public class EntityTestVehicle extends EntityVehicle
 		this.turnSpeed = 0.25f;
 		this.fuel = 60f + rand.nextInt(40) + rand.nextFloat();
 	}
+	
+	@Override
+	public int getMaximumCapacity()
+	{
+		return 1;
+	}
 }

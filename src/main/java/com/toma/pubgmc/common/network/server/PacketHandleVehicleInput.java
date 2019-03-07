@@ -61,7 +61,7 @@ public class PacketHandleVehicleInput implements IMessage, IMessageHandler<Packe
 				car.handleInputs(message.forward, message.back, message.right, message.left, player);
 			}
 			
-			else Pubgmc.logger.error("Received packet for EntityVehicle, id {}, but couldn't locate the entity.", message.id);
+			else Pubgmc.logger.warn("Received packet for EntityVehicle, id {}, but couldn't locate the entity.", message.id);
 		});
 		return null;
 	}

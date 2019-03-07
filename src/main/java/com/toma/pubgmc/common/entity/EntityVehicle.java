@@ -15,12 +15,14 @@ import com.toma.pubgmc.init.PMCDamageSources;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -82,6 +84,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		this(world);
 		setPosition(x, y, z);
 	}
+	
+	public abstract int getMaximumCapacity();
 	
 	@Override
 	public void onUpdate()
@@ -224,7 +228,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	{
 		if(!world.isRemote)
 		{
-			if(this.canBeRidden(player))
+			if(this.canBeRidden(player) && canFitPassenger(player))
 			{
 				player.startRiding(this);
 			}
@@ -272,6 +276,40 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		}
 		
 		return true;
+	}
+	
+	@Override
+    public void updatePassenger(Entity passenger)
+    {
+        if(this.isPassenger(passenger))
+        {
+            float x = 0F;
+            float z = -0.55F;
+            float f1 = (float)((this.isDead ? 0.009999999776482582D : this.getMountedYOffset()) + passenger.getYOffset());
+
+            if(this.getPassengers().size() > 0)
+            {
+                int i = this.getPassengers().indexOf(passenger);
+                x = getPassengerXOffset(i);
+                z = getPassengerZOffset(i);
+            }
+
+            Vec3d vec3d = (new Vec3d((double)x, 0.0D, (double)z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
+            passenger.setPosition(this.posX + vec3d.x, this.posY + (double)f1, this.posZ + vec3d.z);
+
+            if (passenger instanceof EntityAnimal && this.getPassengers().size() > 1)
+            {
+                int j = passenger.getEntityId() % 2 == 0 ? 90 : 270;
+                passenger.setRenderYawOffset(((EntityAnimal)passenger).renderYawOffset + (float)j);
+                passenger.setRotationYawHead(passenger.getRotationYawHead() + (float)j);
+            }
+        }
+    }
+	
+	@Override
+	protected boolean canFitPassenger(Entity passenger)
+	{
+		return this.getPassengers().size() < getMaximumCapacity();
 	}
 	
 	public void handleInputs(boolean forward, boolean back, boolean right, boolean left, EntityPlayer player)
@@ -329,6 +367,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		motionX = compound.getDouble("motionX");
 		motionY = compound.getDouble("motionY");
 		motionZ = compound.getDouble("motionZ");
+		maxHealth = compound.getFloat("maxHealth");
 		health = compound.getFloat("health");
 		fuel = compound.getFloat("fuel");
 		currentSpeed = compound.getFloat("speed");
@@ -346,6 +385,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		compound.setDouble("motionX", this.motionX);
 		compound.setDouble("motionY", this.motionY);
 		compound.setDouble("motionZ", this.motionZ);
+		compound.setFloat("maxHealth", this.maxHealth);
 		compound.setFloat("health", this.health);
 		compound.setFloat("fuel", this.fuel);
 		compound.setFloat("speed", this.currentSpeed);
@@ -359,6 +399,26 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	{
 		return true;
 	}
+	
+	protected float getPassengerXOffset(int passengerIndex)
+	{
+		return passengerIndex % 2 == 0 ? 0.5f : -0.5f;
+	}
+	
+	protected float getPassengerZOffset(int passengerIndex)
+	{
+		return passengerIndex < 2 ? -0.55f : 0.55f;
+	}
+	
+    protected void applyYawToEntity(Entity entityToUpdate)
+    {
+        entityToUpdate.setRenderYawOffset(this.rotationYaw);
+        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
+        float f1 = MathHelper.clamp(f, -105.0F, 105.0F);
+        entityToUpdate.prevRotationYaw += f1 - f;
+        entityToUpdate.rotationYaw += f1 - f;
+        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
+    }
 	
 	public boolean noAccerationInput()
 	{

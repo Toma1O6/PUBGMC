@@ -101,7 +101,7 @@ public class GuiAttachments extends GuiContainer
 	
 	private void drawAvailableAttachments()
 	{
-		if(ITEMS.get(0) instanceof GunBase)
+		if(!ITEMS.isEmpty() && ITEMS.get(0) instanceof GunBase)
 		{
 			GunBase gun = (GunBase)ITEMS.get(0);
 			List<Item> att = gun.acceptedAttachments();
@@ -119,7 +119,7 @@ public class GuiAttachments extends GuiContainer
 					ItemAttachment at = (ItemAttachment)item;
 					IAttachment.Type type = at.getType();
 					String loc = at.getRegistryName().toString();
-					if(loc.contains("pubgmc")) loc = loc.replace("pubgmc:", "");
+					if(loc.contains("pubgmc:")) loc = loc.replace("pubgmc:", "");
 					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
 					
 					switch(type)

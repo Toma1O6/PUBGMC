@@ -37,7 +37,7 @@ public class RenderUAZ extends Render<EntityVehicleUAZ>
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(0, -29, 0);
 			GlStateManager.rotate(entity.rotationYaw, 0f, 1f, 0f);
-			uaz.renderUAZ();
+			uaz.render(entity.turnModifier);
 		}
 		GlStateManager.popMatrix();
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);

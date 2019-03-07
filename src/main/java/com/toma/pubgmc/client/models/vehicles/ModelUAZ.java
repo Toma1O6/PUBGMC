@@ -1,16 +1,14 @@
 package com.toma.pubgmc.client.models.vehicles;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 
 /**
  *	Parts of wheels are missing, exhaust is partially white, and some decorations parts too
  *	TODO: FIX
  */
-public class ModelUAZ extends ModelBase
+public class ModelUAZ extends ModelVehicle
 {
 	private final ModelRenderer bone;
 	private final ModelRenderer a1;
@@ -23,14 +21,15 @@ public class ModelUAZ extends ModelBase
 	private final ModelRenderer a3;
 	private final ModelRenderer a4;
 	private final ModelRenderer wheelFL;
+	private final ModelRenderer a10;
 	private final ModelRenderer a5;
 	private final ModelRenderer wheelBR;
 	private final ModelRenderer a6;
-	private final ModelRenderer wheelBL;
-	private final ModelRenderer a7;
+	private final ModelRenderer a9;
 	private final ModelRenderer decorations;
-	private final ModelRenderer wheelBL2;
-	private final ModelRenderer a8;
+	private final ModelRenderer wheelBL;
+	private final ModelRenderer a11;
+	private final ModelRenderer a7;
 	private final ModelRenderer mirror;
 	private final ModelRenderer mirror2;
 	private final ModelRenderer interior;
@@ -38,14 +37,18 @@ public class ModelUAZ extends ModelBase
 	private final ModelRenderer steering_wheel;
 	private final ModelRenderer sh0;
 	private final ModelRenderer sh1;
-
-	public void renderUAZ()
+	private final ModelRenderer wheelBL2;
+	private final ModelRenderer a12;
+	private final ModelRenderer a8;
+	
+	@Override
+	public void render(float turnModifier)
 	{
 		bone.render(1f);
 		wheelFR.render(1f);
 		wheelFL.render(1f);
 		wheelBR.render(1f);
-		wheelBL.render(1f);
+		wheelBL2.render(1f);
 		decorations.render(1f);
 		mirror.render(1f);
 		mirror2.render(1f);
@@ -60,7 +63,7 @@ public class ModelUAZ extends ModelBase
 		modelRenderer.rotateAngleZ = z;
 	}
 	
-	public ModelUAZ() 
+	public ModelUAZ()
 	{
 		textureWidth = 512;
 		textureHeight = 512;
@@ -86,8 +89,8 @@ public class ModelUAZ extends ModelBase
 		bone.cubeList.add(new ModelBox(bone, 0, 0, -27.0F, -13.0F, -25.0F, 54, 10, 30, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 440, 222, -17.0F, -5.0F, -37.0F, 34, 2, 2, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 440, 222, -17.0F, -5.0F, 15.0F, 34, 2, 2, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 440, 222, -1.0F, -4.0F, -37.0F, 2, 2, 54, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 440, 222, 11.0F, -6.0F, -8.0F, 4, 4, 44, 0.0F, false));
+		bone.cubeList.add(new ModelBox(bone, 400, 227, -1.0F, -4.0F, -37.0F, 2, 2, 54, 0.0F, false));
+		bone.cubeList.add(new ModelBox(bone, 414, 222, 11.0F, -5.0F, -8.0F, 4, 4, 45, 0.0F, false));
 
 		a1 = new ModelRenderer(this);
 		a1.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -131,7 +134,7 @@ public class ModelUAZ extends ModelBase
 
 		wheelFR = new ModelRenderer(this);
 		wheelFR.setRotationPoint(0.0F, 24.0F, 0.0F);
-		wheelFR.cubeList.add(new ModelBox(wheelFR, 479, 355, -25.0F, -10.0F, -42.0F, 8, 12, 12, 0.0F, false));
+		wheelFR.cubeList.add(new ModelBox(wheelFR, 467, 358, -25.0F, -10.0F, -42.0F, 8, 12, 12, 0.0F, false));
 		wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -26.0F, -9.0F, -31.0F, 10, 10, 3, 0.0F, false));
 		wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -26.0F, -12.0F, -41.0F, 10, 3, 10, 0.0F, false));
 		wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -26.0F, 1.0F, -41.0F, 10, 3, 10, 0.0F, false));
@@ -153,11 +156,18 @@ public class ModelUAZ extends ModelBase
 
 		wheelFL = new ModelRenderer(this);
 		wheelFL.setRotationPoint(0.0F, 24.0F, 0.0F);
-		wheelFL.cubeList.add(new ModelBox(wheelFL, 479, 355, 17.0F, -10.0F, -42.0F, 8, 12, 12, 0.0F, false));
+		wheelFL.cubeList.add(new ModelBox(wheelFL, 468, 360, 17.0F, -10.0F, -42.0F, 8, 12, 12, 0.0F, false));
 		wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, 16.0F, -9.0F, -31.0F, 10, 10, 3, 0.0F, false));
 		wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, 16.0F, -12.0F, -41.0F, 10, 3, 10, 0.0F, false));
 		wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, 16.0F, 1.0F, -41.0F, 10, 3, 10, 0.0F, false));
 		wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, 16.0F, -9.0F, -44.0F, 10, 10, 3, 0.0F, false));
+
+		a10 = new ModelRenderer(this);
+		a10.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(a10, -0.7854F, 0.0F, 0.0F);
+		wheelFL.addChild(a10);
+		a10.cubeList.add(new ModelBox(a10, 249, 222, 16.0F, 20.5985F, -22.0843F, 10, 4, 3, 0.0F, false));
+		a10.cubeList.add(new ModelBox(a10, 249, 222, 16.0F, 20.5985F, -37.4843F, 10, 4, 3, 0.0F, false));
 
 		a5 = new ModelRenderer(this);
 		a5.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -168,7 +178,7 @@ public class ModelUAZ extends ModelBase
 
 		wheelBR = new ModelRenderer(this);
 		wheelBR.setRotationPoint(0.0F, 24.0F, 0.0F);
-		wheelBR.cubeList.add(new ModelBox(wheelBR, 479, 355, -25.0F, -10.0F, 10.0F, 8, 12, 12, 0.0F, false));
+		wheelBR.cubeList.add(new ModelBox(wheelBR, 470, 356, -25.0F, -10.0F, 10.0F, 8, 12, 12, 0.0F, false));
 		wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -26.0F, -9.0F, 21.0F, 10, 10, 3, 0.0F, false));
 		wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -26.0F, -12.0F, 11.0F, 10, 3, 10, 0.0F, false));
 		wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -26.0F, 1.0F, 11.0F, 10, 3, 10, 0.0F, false));
@@ -176,32 +186,23 @@ public class ModelUAZ extends ModelBase
 
 		a6 = new ModelRenderer(this);
 		a6.setRotationPoint(0.0F, 0.0F, 0.0F);
-		setRotationAngle(a6, 0.7854F, 0.0F, 0.0F);
+		setRotationAngle(a6, -0.7854F, 0.0F, 0.0F);
 		wheelBR.addChild(a6);
-		a6.cubeList.add(new ModelBox(a6, 249, 222, -26.0F, 6.4853F, 20.2711F, 10, 4, 3, 0.0F, false));
-		a6.cubeList.add(new ModelBox(a6, 249, 222, -26.0F, 6.4853F, 4.9711F, 10, 4, 3, 0.0F, false));
+		a6.cubeList.add(new ModelBox(a6, 249, 222, -26.0F, -16.1711F, 14.6853F, 10, 4, 3, 0.0F, false));
+		a6.cubeList.add(new ModelBox(a6, 249, 222, -26.0F, -16.1711F, -0.7147F, 10, 4, 3, 0.0F, false));
 
-		wheelBL = new ModelRenderer(this);
-		wheelBL.setRotationPoint(0.0F, 24.0F, 0.0F);
-		setRotationAngle(wheelBL, 0.0F, -1.5708F, 0.0F);
-		wheelBL.cubeList.add(new ModelBox(wheelBL, 479, 355, 34.0F, -23.0F, -5.0F, 8, 12, 12, 0.0F, false));
-		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -22.0F, 6.0F, 10, 10, 3, 0.0F, false));
-		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -25.0F, -4.0F, 10, 3, 10, 0.0F, false));
-		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -12.0F, -4.0F, 10, 3, 10, 0.0F, false));
-		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -22.0F, -7.0F, 10, 10, 3, 0.0F, false));
-
-		a7 = new ModelRenderer(this);
-		a7.setRotationPoint(0.0F, 0.0F, 0.0F);
-		setRotationAngle(a7, 0.7854F, 0.0F, 0.0F);
-		wheelBL.addChild(a7);
-		a7.cubeList.add(new ModelBox(a7, 249, 222, 33.0F, -13.3137F, 18.8569F, 10, 4, 3, 0.0F, false));
-		a7.cubeList.add(new ModelBox(a7, 249, 222, 33.0F, -13.3137F, 3.5569F, 10, 4, 3, 0.0F, false));
+		a9 = new ModelRenderer(this);
+		a9.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(a9, 0.7854F, 0.0F, 0.0F);
+		wheelBR.addChild(a9);
+		a9.cubeList.add(new ModelBox(a9, 249, 222, -26.0F, 6.4853F, 20.2711F, 10, 4, 3, 0.0F, false));
+		a9.cubeList.add(new ModelBox(a9, 249, 222, -26.0F, 6.4853F, 4.9711F, 10, 4, 3, 0.0F, false));
 
 		decorations = new ModelRenderer(this);
 		decorations.setRotationPoint(0.0F, 24.0F, 0.0F);
 		decorations.cubeList.add(new ModelBox(decorations, 490, 356, 17.0F, -16.0F, -57.0F, 8, 8, 1, 0.0F, false));
 		decorations.cubeList.add(new ModelBox(decorations, 490, 356, -25.0F, -16.0F, -57.0F, 8, 8, 1, 0.0F, false));
-		decorations.cubeList.add(new ModelBox(decorations, 395, 222, -29.0F, -8.0F, -60.0F, 58, 6, 2, 0.0F, false));
+		decorations.cubeList.add(new ModelBox(decorations, 391, 222, -29.0F, -8.0F, -60.0F, 58, 6, 2, 0.0F, false));
 		decorations.cubeList.add(new ModelBox(decorations, 395, 222, -28.0F, -13.0F, -60.0F, 56, 2, 2, 0.0F, false));
 		decorations.cubeList.add(new ModelBox(decorations, 395, 222, -28.0F, -18.0F, -60.0F, 56, 2, 2, 0.0F, false));
 		decorations.cubeList.add(new ModelBox(decorations, 395, 222, 26.0F, -18.0F, -60.0F, 2, 10, 2, 0.0F, false));
@@ -221,21 +222,29 @@ public class ModelUAZ extends ModelBase
 		decorations.cubeList.add(new ModelBox(decorations, 395, 222, -31.0F, -23.0F, -28.0F, 4, 2, 2, 0.0F, false));
 		decorations.cubeList.add(new ModelBox(decorations, 395, 222, -28.0F, -8.0F, 34.0F, 56, 6, 2, 0.0F, false));
 
-		wheelBL2 = new ModelRenderer(this);
-		wheelBL2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		decorations.addChild(wheelBL2);
-		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 479, 355, 17.0F, -10.0F, 10.0F, 8, 12, 12, 0.0F, false));
-		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, -9.0F, 21.0F, 10, 10, 3, 0.0F, false));
-		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, -12.0F, 11.0F, 10, 3, 10, 0.0F, false));
-		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, 1.0F, 11.0F, 10, 3, 10, 0.0F, false));
-		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, -9.0F, 8.0F, 10, 10, 3, 0.0F, false));
+		wheelBL = new ModelRenderer(this);
+		wheelBL.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(wheelBL, 0.0F, -1.5708F, 0.0F);
+		decorations.addChild(wheelBL);
+		wheelBL.cubeList.add(new ModelBox(wheelBL, 465, 355, 34.0F, -23.0F, -5.0F, 8, 12, 12, 0.0F, false));
+		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -22.0F, 6.0F, 10, 10, 3, 0.0F, false));
+		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -25.0F, -4.0F, 10, 3, 10, 0.0F, false));
+		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -12.0F, -4.0F, 10, 3, 10, 0.0F, false));
+		wheelBL.cubeList.add(new ModelBox(wheelBL, 249, 222, 33.0F, -22.0F, -7.0F, 10, 10, 3, 0.0F, false));
 
-		a8 = new ModelRenderer(this);
-		a8.setRotationPoint(0.0F, 0.0F, 0.0F);
-		setRotationAngle(a8, 0.7854F, 0.0F, 0.0F);
-		wheelBL2.addChild(a8);
-		a8.cubeList.add(new ModelBox(a8, 249, 222, 16.0F, 6.4853F, 20.2711F, 10, 4, 3, 0.0F, false));
-		a8.cubeList.add(new ModelBox(a8, 249, 222, 16.0F, 6.4853F, 4.9711F, 10, 4, 3, 0.0F, false));
+		a11 = new ModelRenderer(this);
+		a11.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(a11, -0.7854F, 0.0F, 0.0F);
+		wheelBL.addChild(a11);
+		a11.cubeList.add(new ModelBox(a11, 249, 222, 33.0F, -14.7569F, -5.1137F, 10, 4, 3, 0.0F, false));
+		a11.cubeList.add(new ModelBox(a11, 249, 222, 33.0F, -14.7569F, -20.5137F, 10, 4, 3, 0.0F, false));
+
+		a7 = new ModelRenderer(this);
+		a7.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(a7, 0.7854F, 0.0F, 0.0F);
+		wheelBL.addChild(a7);
+		a7.cubeList.add(new ModelBox(a7, 249, 222, 33.0F, -13.3137F, 18.8569F, 10, 4, 3, 0.0F, false));
+		a7.cubeList.add(new ModelBox(a7, 249, 222, 33.0F, -13.3137F, 3.5568F, 10, 4, 3, 0.0F, false));
 
 		mirror = new ModelRenderer(this);
 		mirror.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -249,46 +258,68 @@ public class ModelUAZ extends ModelBase
 
 		interior = new ModelRenderer(this);
 		interior.setRotationPoint(0.0F, 24.0F, 0.0F);
-		interior.cubeList.add(new ModelBox(interior, 249, 222, 2.0F, -16.0F, -17.0F, 19, 1, 19, 0.0F, false));
-		interior.cubeList.add(new ModelBox(interior, 249, 222, -21.0F, -16.0F, -17.0F, 19, 1, 19, 0.0F, false));
-		interior.cubeList.add(new ModelBox(interior, 249, 222, -25.0F, -17.0F, 6.0F, 50, 1, 18, 0.0F, false));
+		interior.cubeList.add(new ModelBox(interior, 434, 220, 2.0F, -16.0F, -17.0F, 19, 1, 19, 0.0F, false));
+		interior.cubeList.add(new ModelBox(interior, 434, 220, -21.0F, -16.0F, -17.0F, 19, 1, 19, 0.0F, false));
+		interior.cubeList.add(new ModelBox(interior, 374, 220, -25.0F, -17.0F, 6.0F, 50, 1, 18, 0.0F, false));
 
 		seat = new ModelRenderer(this);
 		seat.setRotationPoint(0.0F, 0.0F, 0.0F);
 		setRotationAngle(seat, 1.3963F, 0.0F, 0.0F);
 		interior.addChild(seat);
-		seat.cubeList.add(new ModelBox(seat, 249, 222, 2.0F, -2.0F, 15.0F, 19, 1, 19, 0.0F, false));
-		seat.cubeList.add(new ModelBox(seat, 249, 222, -21.0F, -2.0F, 15.0F, 19, 1, 19, 0.0F, false));
-		seat.cubeList.add(new ModelBox(seat, 249, 222, -20.0F, 20.0F, 21.0F, 41, 1, 19, 0.0F, false));
+		seat.cubeList.add(new ModelBox(seat, 434, 220, 2.0F, -2.0F, 15.0F, 19, 1, 19, 0.0F, false));
+		seat.cubeList.add(new ModelBox(seat, 434, 220, -21.0F, -2.0F, 15.0F, 19, 1, 19, 0.0F, false));
+		seat.cubeList.add(new ModelBox(seat, 251, 222, -20.0F, 20.0F, 21.0F, 41, 1, 19, 0.0F, false));
 
 		steering_wheel = new ModelRenderer(this);
 		steering_wheel.setRotationPoint(11.0F, 2.5F, -23.0F);
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -6.0F, -8.5F, 0.0F, 12, 1, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -6.0F, 7.5F, 0.0F, 12, 1, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -9.0F, -5.5F, 0.0F, 1, 11, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, 8.0F, -5.5F, 0.0F, 1, 11, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -4.5F, -4.5F, 0.0F, 9, 9, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -4.0F, -5.0F, 0.0F, 8, 1, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -4.0F, 4.0F, 0.0F, 8, 1, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -5.0F, -4.0F, 0.0F, 1, 8, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, 4.0F, -4.0F, 0.0F, 1, 8, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -1.0F, 5.0F, 0.0F, 2, 3, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -8.0F, -1.0F, 0.0F, 3, 2, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, 5.0F, -1.0F, 0.0F, 3, 2, 1, 0.0F, false));
-		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 480, 222, -3.5F, -3.5F, -3.0F, 7, 7, 3, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 486, 223, -6.0F, -8.5F, 0.0F, 12, 1, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 486, 222, -6.0F, 7.5F, 0.0F, 12, 1, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, -9.0F, -5.5F, 0.0F, 1, 11, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, 8.0F, -5.5F, 0.0F, 1, 11, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 490, 222, -4.5F, -4.5F, 0.0F, 9, 9, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, -4.0F, -5.0F, 0.0F, 8, 1, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 482, 225, -4.0F, 4.0F, 0.0F, 8, 1, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, -5.0F, -4.0F, 0.0F, 1, 8, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, 4.0F, -4.0F, 0.0F, 1, 8, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, -1.0F, 5.0F, 0.0F, 2, 3, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, -8.0F, -1.0F, 0.0F, 3, 2, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 494, 222, 5.0F, -1.0F, 0.0F, 3, 2, 1, 0.0F, false));
+		steering_wheel.cubeList.add(new ModelBox(steering_wheel, 492, 222, -3.5F, -3.5F, -3.0F, 7, 7, 3, 0.0F, false));
 
 		sh0 = new ModelRenderer(this);
 		sh0.setRotationPoint(-11.0F, 21.5F, 23.0F);
 		setRotationAngle(sh0, 0.0F, 0.0F, -0.7854F);
 		steering_wheel.addChild(sh0);
-		sh0.cubeList.add(new ModelBox(sh0, 480, 222, 20.5873F, -17.597F, -23.0F, 4, 1, 1, 0.0F, false));
-		sh0.cubeList.add(new ModelBox(sh0, 480, 222, 21.3373F, 1.803F, -23.0F, 4, 1, 1, 0.0F, false));
+		sh0.cubeList.add(new ModelBox(sh0, 494, 222, 20.5873F, -17.597F, -23.0F, 4, 1, 1, 0.0F, false));
+		sh0.cubeList.add(new ModelBox(sh0, 494, 222, 21.3373F, 1.803F, -23.0F, 4, 1, 1, 0.0F, false));
 
 		sh1 = new ModelRenderer(this);
 		sh1.setRotationPoint(-11.0F, 21.5F, 23.0F);
 		setRotationAngle(sh1, 0.0F, 0.0F, 0.7854F);
 		steering_wheel.addChild(sh1);
-		sh1.cubeList.add(new ModelBox(sh1, 480, 222, -9.747F, -13.5873F, -23.0F, 4, 1, 1, 0.0F, false));
-		sh1.cubeList.add(new ModelBox(sh1, 480, 222, -9.097F, -33.1873F, -23.0F, 4, 1, 1, 0.0F, false));
+		sh1.cubeList.add(new ModelBox(sh1, 494, 222, -9.747F, -13.5873F, -23.0F, 4, 1, 1, 0.0F, false));
+		sh1.cubeList.add(new ModelBox(sh1, 494, 222, -9.097F, -33.1873F, -23.0F, 4, 1, 1, 0.0F, false));
+
+		wheelBL2 = new ModelRenderer(this);
+		wheelBL2.setRotationPoint(0.0F, 24.0F, 0.0F);
+		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 471, 356, 17.0F, -10.0F, 10.0F, 8, 12, 12, 0.0F, false));
+		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, -9.0F, 21.0F, 10, 10, 3, 0.0F, false));
+		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, -12.0F, 11.0F, 10, 3, 10, 0.0F, false));
+		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, 1.0F, 11.0F, 10, 3, 10, 0.0F, false));
+		wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, 16.0F, -9.0F, 8.0F, 10, 10, 3, 0.0F, false));
+
+		a12 = new ModelRenderer(this);
+		a12.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(a12, -0.7854F, 0.0F, 0.0F);
+		wheelBL2.addChild(a12);
+		a12.cubeList.add(new ModelBox(a12, 249, 222, 16.0F, -16.1711F, 14.6853F, 10, 4, 3, 0.0F, false));
+		a12.cubeList.add(new ModelBox(a12, 249, 222, 16.0F, -16.1711F, -0.7147F, 10, 4, 3, 0.0F, false));
+
+		a8 = new ModelRenderer(this);
+		a8.setRotationPoint(0.0F, 0.0F, 0.0F);
+		setRotationAngle(a8, 0.7854F, 0.0F, 0.0F);
+		wheelBL2.addChild(a8);
+		a8.cubeList.add(new ModelBox(a8, 249, 222, 16.0F, 6.4853F, 20.2711F, 10, 4, 3, 0.0F, false));
+		a8.cubeList.add(new ModelBox(a8, 249, 222, 16.0F, 6.4853F, 4.9711F, 10, 4, 3, 0.0F, false));
 	}
 }
