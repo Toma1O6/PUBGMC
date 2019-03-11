@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
@@ -13,6 +14,7 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
+import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCItems;
@@ -260,6 +262,7 @@ public class EntityBullet extends Entity
             	boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
             	double offset = 0f;
             	Vec3d vec = raytraceResultIn.hitVec;
+            	Block particleBlock = entity instanceof EntityVehicle ? Blocks.IRON_BLOCK : Blocks.REDSTONE_BLOCK;
             	
                 if(headshot)
                 {
@@ -268,7 +271,7 @@ public class EntityBullet extends Entity
                 }
                 else offset = vec.y;
                 
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, Blocks.REDSTONE_BLOCK), this.dimension);
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
                 onEntityHit(headshot, entity);
                 entity.hurtResistantTime = 0;
                 
@@ -303,6 +306,10 @@ public class EntityBullet extends Entity
         		Vec3d hitvec = raytraceResultIn.hitVec;
         		PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, hitvec, block), this.dimension);
         		world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5f, block.getSoundType().getPitch() * 0.8f);
+        		if(block instanceof BlockLandMine)
+        		{
+        			((TileEntityLandMine)world.getTileEntity(pos)).explode(world, pos);
+        		}
         		this.setDead();
         	}
         }
@@ -320,12 +327,6 @@ public class EntityBullet extends Entity
     			getCalculatedDamage(player, isHeadshot);
     		}
     		
-    		/*else if(entity instanceof EntityVehicle)
-            {
-            	//bit hacky way to do it like this, but I'll keep it there since vehicles are mostly controlled from clients
-            	PacketHandler.sendToAllClients(new PacketHitVehicle(entity.getEntityId(), damage));
-            }*/
-    		
     		entity.attackEntityFrom(gunsource, damage);
     	}
     	
@@ -336,11 +337,6 @@ public class EntityBullet extends Entity
     			EntityPlayer player = (EntityPlayer)entity;
     			getCalculatedDamage(player, isHeadshot);
     		}
-    		
-    		/*else if(entity instanceof EntityVehicle)
-    		{
-            	PacketHandler.sendToAllClients(new PacketHitVehicle(entity.getEntityId(), damage));
-            }*/
     		
     		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
     	}

@@ -9,7 +9,6 @@ import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.EntityVehicle;
-import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 
 import net.minecraft.entity.Entity;
@@ -37,7 +36,6 @@ public class PMCEntities
 			registerEntity("flare", EntityFlare.class, 64, 20, true),
 			registerEntity("parachute", EntityParachute.class, 256, 1, true),
 			registerEntity("plane", EntityPlane.class, 128, 25, true),
-			registerVehicle("testVehicle", EntityTestVehicle.class),
 			registerVehicle("uaz", EntityVehicleUAZ.class)
 		};
 		

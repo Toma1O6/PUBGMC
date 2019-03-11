@@ -1,7 +1,6 @@
 package com.toma.pubgmc.common.items;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
-import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +46,6 @@ public class ItemVehicleSpawner extends PMCItem
 	
 	public enum Vehicles
 	{
-		TEST,
 		UAZ;
 		
 		public void spawnEntity(World world, BlockPos pos)
@@ -55,7 +53,6 @@ public class ItemVehicleSpawner extends PMCItem
 			EntityVehicle vehicle = null;
 			switch(this)
 			{
-				case TEST: vehicle = new EntityTestVehicle(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
 				case UAZ: vehicle = new EntityVehicleUAZ(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
 				default: break;
 			}

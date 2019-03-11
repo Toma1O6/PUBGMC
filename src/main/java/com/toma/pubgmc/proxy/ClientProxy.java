@@ -6,14 +6,12 @@ import com.toma.pubgmc.client.renderer.RenderGrenade;
 import com.toma.pubgmc.client.renderer.RenderMolotov;
 import com.toma.pubgmc.client.renderer.RenderParachute;
 import com.toma.pubgmc.client.renderer.RenderSmokeGrenade;
-import com.toma.pubgmc.client.renderer.RenderTestVehicle;
 import com.toma.pubgmc.client.renderer.RenderUAZ;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityMolotov;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
-import com.toma.pubgmc.common.entity.vehicles.EntityTestVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
@@ -33,12 +31,7 @@ public class ClientProxy implements IProxy
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, RenderSmokeGrenade::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, RenderMolotov::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityTestVehicle.class, RenderTestVehicle::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
+		registerEntityRenderers();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -55,5 +48,14 @@ public class ClientProxy implements IProxy
 	@SideOnly(Side.CLIENT)
 	public void postInit(FMLPostInitializationEvent e)
 	{
+	}
+	
+	private static void registerEntityRenderers()
+	{
+		RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, RenderSmokeGrenade::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, RenderMolotov::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
 	}
 }

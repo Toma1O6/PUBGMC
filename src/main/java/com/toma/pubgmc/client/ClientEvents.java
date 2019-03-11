@@ -832,6 +832,7 @@ public class ClientEvents
             	if(aimSlot != player.inventory.currentItem)
             	{
             		setAiming(data, false);
+            		gs.mouseSensitivity = this.mouseSens;
             	}
             }
             

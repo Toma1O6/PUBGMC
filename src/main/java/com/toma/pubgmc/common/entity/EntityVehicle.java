@@ -1,14 +1,13 @@
 package com.toma.pubgmc.common.entity;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
 
@@ -21,14 +20,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class EntityVehicle extends Entity implements IEntityAdditionalSpawnData
 {
@@ -85,7 +83,14 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		setPosition(x, y, z);
 	}
 	
+	@Nonnull
 	public abstract int getMaximumCapacity();
+	
+	@Nonnull
+	public abstract Vec3d getEnginePosition();
+	
+	@Nonnull
+	public abstract Vec3d getExhaustPosition();
 	
 	@Override
 	public void onUpdate()
@@ -114,6 +119,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 			PacketHandler.sendToClientsAround(new PacketVehicleData(this).health(health).fuel(fuel), dimension, posX, posY, posZ, 256);
 		}
 		
+		spawnParticles();
 		move(MoverType.SELF, motionX, motionY, motionZ);
 	}
 	
@@ -265,6 +271,28 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		}
 		
 		if(isInLava() || health <= 0f) explode();
+	}
+	
+	protected void spawnParticles()
+	{
+		if(health / maxHealth <= 0.35f && world.isRemote)
+		{
+			Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
+			world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
+			
+			if(health / maxHealth <= 0.15f)
+			{
+				double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+				double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+				world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
+			}
+		}
+		
+		if(!isBroken && hasFuel() && world.isRemote)
+		{
+			Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
+		}
 	}
 	
 	@Override

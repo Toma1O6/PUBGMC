@@ -26,8 +26,8 @@ import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemParachute;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.ItemVehicleSpawner;
-import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.items.ItemVehicleSpawner.Vehicles;
+import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.armor.ArmorBase.ArmorLevel;
 import com.toma.pubgmc.common.items.armor.ItemClothing;
@@ -268,7 +268,6 @@ public class RegistryHandler
 				new PMCItem("steel_dust"),
 				new PMCItem("steel_ingot"),
 				new PMCItem("copper_ingot"),
-				new ItemVehicleSpawner("vehicle_test", Vehicles.TEST),
 				new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ)
 		};
 		
