@@ -70,6 +70,9 @@ public class PMCSounds
 	public static SoundEvent airdrop_plane_fly_by;
 	public static SoundEvent chute_open, chute_land;
 	
+	//vehicle
+	public static SoundEvent uaz, uaz_idle;
+	
 /**========================================[UTIL]==========================================================**/	
 	
 	public static void registerSounds()
@@ -192,6 +195,8 @@ public class PMCSounds
 		airdrop_plane_fly_by = registerSound("plane.fly_by");
 		chute_open = registerSound("chute.open");
 		chute_land = registerSound("chute.land");
+		
+		uaz = registerSound("vehicle.uaz");
 	}
 	
 	private static SoundEvent registerSound(String name)

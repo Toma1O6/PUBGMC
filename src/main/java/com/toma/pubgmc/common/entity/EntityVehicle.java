@@ -21,6 +21,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -92,6 +93,9 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	@Nonnull
 	public abstract Vec3d getExhaustPosition();
 	
+	@Nonnull
+	public abstract SoundEvent vehicleSound();
+	
 	@Override
 	public void onUpdate()
 	{
@@ -119,6 +123,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 			PacketHandler.sendToClientsAround(new PacketVehicleData(this).health(health).fuel(fuel), dimension, posX, posY, posZ, 256);
 		}
 		
+		if(ticksExisted % 5 == 0) playSoundAtVehicle();
 		spawnParticles();
 		move(MoverType.SELF, motionX, motionY, motionZ);
 	}
@@ -134,7 +139,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 			e.motionX += motionX * currentSpeed * 3;
 			e.motionY += currentSpeed;
 			e.motionZ += motionZ * currentSpeed * 3;
-			e.attackEntityFrom(PMCDamageSources.VEHICLE, Math.abs(currentSpeed) * 25f);
+			e.attackEntityFrom(PMCDamageSources.VEHICLE, Math.abs(currentSpeed) * 15f);
 		}
 	}
 	
@@ -153,7 +158,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 			if(inputBack && !inputForward)
 			{
 				burnFuel();
-				currentSpeed = currentSpeed > 0 ? currentSpeed - acceleration : currentSpeed > (-maxSpeed * 0.3f) ? currentSpeed - 0.02f : -maxSpeed * 0.3f;
+				currentSpeed = currentSpeed > 0 ? currentSpeed - acceleration*2f : currentSpeed > (-maxSpeed * 0.3f) ? currentSpeed - 0.02f : -maxSpeed * 0.3f;
 			}
 		}
 		
@@ -381,6 +386,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		return currentSpeed < 0;
 	}
 	
+	private void playSoundAtVehicle()
+	{
+		this.playSound(this.vehicleSound(), 1 + currentSpeed * 2, 1f);
+	}
+	
 	@Override
 	protected void entityInit() 
 	{
@@ -399,6 +409,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		health = compound.getFloat("health");
 		fuel = compound.getFloat("fuel");
 		currentSpeed = compound.getFloat("speed");
+		maxSpeed = compound.getFloat("maxSpeed");
 		acceleration = compound.getFloat("acceleration");
 		turnSpeed = compound.getFloat("turnSpeed");
 		isBroken = compound.getBoolean("isBroken");
@@ -417,6 +428,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		compound.setFloat("health", this.health);
 		compound.setFloat("fuel", this.fuel);
 		compound.setFloat("speed", this.currentSpeed);
+		compound.setFloat("maxSpeed", this.maxSpeed);
 		compound.setFloat("acceleration", this.acceleration);
 		compound.setFloat("turnSpeed", this.turnSpeed);
 		compound.setBoolean("isBroken", this.isBroken);

@@ -3,9 +3,11 @@ package com.toma.pubgmc.common.entity.vehicles;
 import javax.annotation.Nonnull;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -54,5 +56,11 @@ public class EntityVehicleUAZ extends EntityVehicle
 	public Vec3d getExhaustPosition() 
 	{
 		return new Vec3d(-1.9d, 0.3, -0.6d);
+	}
+	
+	@Override
+	public SoundEvent vehicleSound() 
+	{
+		return PMCSounds.uaz;
 	}
 }
