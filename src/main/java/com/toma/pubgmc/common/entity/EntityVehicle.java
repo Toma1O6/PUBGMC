@@ -10,6 +10,7 @@ import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
+import com.toma.pubgmc.init.PMCSounds;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -123,7 +124,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 			PacketHandler.sendToClientsAround(new PacketVehicleData(this).health(health).fuel(fuel), dimension, posX, posY, posZ, 256);
 		}
 		
-		if(ticksExisted % 5 == 0) playSoundAtVehicle();
+		playSoundAtVehicle();
 		spawnParticles();
 		move(MoverType.SELF, motionX, motionY, motionZ);
 	}
@@ -388,7 +389,15 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	
 	private void playSoundAtVehicle()
 	{
-		this.playSound(this.vehicleSound(), 1 + currentSpeed * 2, 1f);
+		if(!isVehicleMoving())
+		{
+			if(ticksExisted % 5 == 0) playSound(PMCSounds.vehicleIdle, 2f, 1f);
+		}
+		
+		else
+		{
+			if(ticksExisted % 18 == 0) playSound(vehicleSound(), currentSpeed * 5f, 1f);
+		}
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -57,8 +58,9 @@ public class ShotgunS12K extends GunBase
 	{
 		BlockPos pos = player.getPosition();
 		IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-        if(this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading())
+		CooldownTracker tracker = player.getCooldownTracker();
+		
+        if(this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading() && !tracker.hasCooldown(this))
         {
         	world.playSound(null, player.posX, player.posY, player.posZ, getGunSound(), SoundCategory.PLAYERS, getGunVolume(), 1.0f);
         	
@@ -93,6 +95,7 @@ public class ShotgunS12K extends GunBase
                 	stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                 }
         	}
+        	tracker.setCooldown(this, getFireRate());
         }
         
         if(stack.getTagCompound().getInteger("ammo") == 0 && !data.isReloading() && !player.capabilities.isCreativeMode)

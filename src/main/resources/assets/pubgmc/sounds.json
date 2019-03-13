@@ -112,5 +112,6 @@
     "chute.open": { "category": "master", "sounds": [{ "name": "pubgmc:chute_open", "stream": "true" }]},
     "chute.land": { "category": "master", "sounds": [{ "name": "pubgmc:chute_land", "stream": "true" }]},
     
-    "vehicle.uaz": { "category": "master", "sounds": [{ "name": "pubgmc:uaz", "stream": "true" }]}
+    "vehicle.uaz": { "category": "master", "sounds": [{ "name": "pubgmc:uaz", "stream": "true" }]},
+    "vehicle.idle": { "category": "master", "sounds": [{ "name": "pubgmc:vehicle_idle", "stream": "true" }]}
 }

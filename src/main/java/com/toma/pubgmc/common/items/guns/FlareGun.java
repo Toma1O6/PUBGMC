@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -49,7 +50,8 @@ public class FlareGun extends GunBase
 	public void shoot(World world, EntityPlayer player, ItemStack stack)
 	{
 		IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        if(this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading())
+		CooldownTracker tr = player.getCooldownTracker();
+        if(this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading() && !tr.hasCooldown(this))
         {
         	world.playSound(null, player.posX, player.posY, player.posZ, this.getGunSound(), SoundCategory.PLAYERS, this.getGunVolume(), 1.0f);
         	
@@ -62,6 +64,8 @@ public class FlareGun extends GunBase
                 	stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                 }
         	}
+        	
+        	tr.setCooldown(this, getFireRate());
         }
 	}
 	

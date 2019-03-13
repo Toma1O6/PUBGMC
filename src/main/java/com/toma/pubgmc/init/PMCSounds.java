@@ -71,7 +71,8 @@ public class PMCSounds
 	public static SoundEvent chute_open, chute_land;
 	
 	//vehicle
-	public static SoundEvent uaz, uaz_idle;
+	public static SoundEvent vehicleIdle;
+	public static SoundEvent uaz;
 	
 /**========================================[UTIL]==========================================================**/	
 	
@@ -196,6 +197,7 @@ public class PMCSounds
 		chute_open = registerSound("chute.open");
 		chute_land = registerSound("chute.land");
 		
+		vehicleIdle = registerSound("vehicle.idle");
 		uaz = registerSound("vehicle.uaz");
 	}
 	
