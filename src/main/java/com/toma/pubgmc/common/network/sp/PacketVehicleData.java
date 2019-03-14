@@ -13,7 +13,7 @@ public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicl
 {
 	private int ID;
 	private float fuel, health, turnMod, currentSpeed;
-	private boolean healthData, fuelData;
+	private boolean isBroken;
 	
 	public PacketVehicleData() {}
 	
@@ -22,6 +22,9 @@ public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicl
 		ID = car.getEntityId();
 		turnMod = car.turnModifier;
 		currentSpeed = car.currentSpeed;
+		fuel = car.fuel;
+		health = car.health;
+		isBroken = car.isBroken;
 	}
 	
 	@Override
@@ -30,11 +33,9 @@ public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicl
 		buf.writeInt(ID);
 		buf.writeFloat(currentSpeed);
 		buf.writeFloat(turnMod);
-		buf.writeBoolean(healthData);
-		buf.writeBoolean(fuelData);
-		
-		if(healthData) buf.writeFloat(health);
-		if(fuelData) buf.writeFloat(fuel);
+		buf.writeFloat(health);
+		buf.writeFloat(fuel);
+		buf.writeBoolean(isBroken);
 	}
 	
 	@Override
@@ -43,11 +44,9 @@ public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicl
 		ID = buf.readInt();
 		currentSpeed = buf.readFloat();
 		turnMod = buf.readFloat();
-		healthData = buf.readBoolean();
-		fuelData = buf.readBoolean();
-		
-		if(healthData) health = buf.readFloat();
-		if(fuelData) fuel = buf.readFloat();
+		health = buf.readFloat();
+		fuel = buf.readFloat();
+		isBroken = buf.readBoolean();
 	}
 	
 	@Override
@@ -63,27 +62,12 @@ public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicl
 					EntityVehicle car = (EntityVehicle)world.getEntityByID(m.ID);
 					car.currentSpeed = m.currentSpeed;
 					car.turnModifier = m.turnMod;
-					
-					if(m.healthData) car.health = m.health;
-					
-					if(m.fuelData) car.fuel = m.fuel;
+					car.health = m.health;
+					car.fuel = m.fuel;
+					car.isBroken = m.isBroken;
 				}
 			});
 		}
 		return null;
-	}
-	
-	public PacketVehicleData health(float health)
-	{
-		healthData = true;
-		this.health = health;
-		return this;
-	}
-	
-	public PacketVehicleData fuel(float fuel)
-	{
-		fuelData = true;
-		this.fuel = fuel;
-		return this;
 	}
 }

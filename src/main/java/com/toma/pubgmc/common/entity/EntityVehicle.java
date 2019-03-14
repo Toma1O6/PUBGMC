@@ -62,13 +62,16 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	public float fuel = 100f;
 	
 	/** If the vehicle is broken or not **/
-	private boolean isBroken = false;
+	public boolean isBroken = false;
 	
 	/** Ticks underWater **/
 	private short timeInInvalidState;
 	
 	/** Handles inputs from player who is driving the vehicle **/
 	private boolean inputForward, inputBack, inputRight, inputLeft, inputBoost;
+	
+	/** For different colors **/
+	private byte variantType = 0;
 	
 	public EntityVehicle(World world)
 	{
@@ -77,6 +80,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		stepHeight = 1f;
 		preventEntitySpawning = true;
 		maxSpeed = 1.0f;
+		createColorVariant();
 	}
 	
 	public EntityVehicle(World world, int x, int y, int z)
@@ -97,11 +101,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	@Nonnull
 	public abstract SoundEvent vehicleSound();
 	
+	@Nullable
+	public abstract String[] getTextureVariants();
+	
 	@Override
 	public void onUpdate()
 	{
-		super.onUpdate();
-
 		if(!world.isRemote)
 		{
 			if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput() || !hasFuel()))
@@ -121,9 +126,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 				currentSpeed *= 0.6;
 			}
 			
-			PacketHandler.sendToClientsAround(new PacketVehicleData(this).health(health).fuel(fuel), dimension, posX, posY, posZ, 256);
+			applyTerrainMotionMultiplier();
+			
+			PacketHandler.sendToClientsAround(new PacketVehicleData(this), dimension, posX, posY, posZ, 256);
 		}
 		
+		super.onUpdate();
 		playSoundAtVehicle();
 		spawnParticles();
 		move(MoverType.SELF, motionX, motionY, motionZ);
@@ -142,6 +150,14 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 			e.motionZ += motionZ * currentSpeed * 3;
 			e.attackEntityFrom(PMCDamageSources.VEHICLE, Math.abs(currentSpeed) * 15f);
 		}
+	}
+	
+	/**
+	 *  Call before {@code prev parameters} are updated by calling {@code onUpdate()}
+	 */
+	public void applyTerrainMotionMultiplier()
+	{
+		currentSpeed = (float) (prevPosY < posY ? currentSpeed * 0.95 : prevPosY > posY ? currentSpeed * 1.05 : currentSpeed);
 	}
 	
 	public void updateMotion()
@@ -281,23 +297,33 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	
 	protected void spawnParticles()
 	{
-		if(health / maxHealth <= 0.35f && world.isRemote)
+		if(world.isRemote)
 		{
-			Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
-			world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
-			
-			if(health / maxHealth <= 0.15f)
+			if(health / maxHealth <= 0.35f)
 			{
-				double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-				double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-				world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
+				Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
+				world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
+				
+				if(health / maxHealth <= 0.15f)
+				{
+					double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+					double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+					world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
+				}
 			}
-		}
-		
-		if(!isBroken && hasFuel() && world.isRemote)
-		{
-			Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
-			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
+			
+			if(!isBroken && hasFuel())
+			{
+				Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
+			}
+			
+			//TODO sync
+			if(isBroken)
+			{
+				Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2f));
+				world.spawnParticle(EnumParticleTypes.CLOUD, true, posX + engine.x, posY + engine.y, posZ + engine.z, 0d, 0.05d, 0d);
+			}
 		}
 	}
 	
@@ -505,6 +531,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		fuel = hasFuel() ? fuel - 0.01f : 0f;
 	}
 	
+	/** Call when car is spawned **/
+	private void createColorVariant()
+	{
+		variantType = (byte) (getTextureVariants() != null ? rand.nextInt(getTextureVariants().length) : 0);
+	}
+	
 	@Override
 	public void writeSpawnData(ByteBuf buf)
 	{
@@ -514,6 +546,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		buf.writeFloat(acceleration);
 		buf.writeFloat(turnSpeed);
 		buf.writeFloat(fuel);
+		buf.writeByte(variantType);
 	}
 	
 	@Override
@@ -525,5 +558,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		acceleration = buf.readFloat();
 		turnSpeed = buf.readFloat();
 		fuel = buf.readFloat();
+		variantType = buf.readByte();
 	}
 }

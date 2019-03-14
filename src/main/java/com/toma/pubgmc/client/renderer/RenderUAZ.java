@@ -29,7 +29,7 @@ public class RenderUAZ extends RenderVehicle<EntityVehicleUAZ>
 	}
 	
 	@Override
-	protected ResourceLocation getEntityTexture(EntityVehicleUAZ entity)
+	protected ResourceLocation defaultTexture() 
 	{
 		return TEXTURE;
 	}

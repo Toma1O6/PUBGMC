@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.entity;
 
 import com.toma.pubgmc.init.PMCSounds;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,12 +13,13 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityParachute extends Entity
+public class EntityParachute extends Entity implements IEntityAdditionalSpawnData
 {
 	public static final float MAX_TURN_MODIFIER = 2.5f;
 	private Entity user;
-	private int color = -1;
+	private int color = 0;
 	private float turnModifier = 0f;
 	private boolean inputDown,inputUp,inputRight,inputLeft = false;
 	
@@ -39,6 +41,8 @@ public class EntityParachute extends Entity
 		prevPosX = user.posX;
 		prevPosY = user.posY;
 		prevPosZ = user.posZ;
+		
+		handleColorState();
 	}
 	
 	@Override
@@ -72,7 +76,6 @@ public class EntityParachute extends Entity
 		}
 		
 		else setDead();
-		
 		move(MoverType.SELF, motionX, motionY, motionZ);
 		super.onUpdate();
 	}
@@ -134,13 +137,6 @@ public class EntityParachute extends Entity
 
 		motionX = lookVec.x * speedModifier * 0.7d;
 		motionZ = lookVec.z * speedModifier * 0.7d;
-	}
-	
-	@Override
-	public void onAddedToWorld()
-	{
-		handleColorState();
-		super.onAddedToWorld();
 	}
 	
 	@Override
@@ -255,5 +251,17 @@ public class EntityParachute extends Entity
 	public Entity getUser()
 	{
 		return user;
+	}
+	
+	@Override
+	public void readSpawnData(ByteBuf buf)
+	{
+		color = buf.readInt();
+	}
+	
+	@Override
+	public void writeSpawnData(ByteBuf buf)
+	{
+		buf.writeInt(color);
 	}
 }
