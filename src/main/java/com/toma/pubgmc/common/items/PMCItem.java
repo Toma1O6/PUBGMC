@@ -6,8 +6,11 @@ import java.util.List;
 import com.toma.pubgmc.Pubgmc;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class PMCItem extends Item
@@ -40,6 +43,14 @@ public class PMCItem extends Item
 			{
 				tooltip.add(desc.get(i));
 			}
+		}
+	}
+	
+	public void warnPlayer(EntityPlayer player, String warning)
+	{
+		if(player != null && !player.world.isRemote)
+		{
+			player.sendMessage(new TextComponentString(TextFormatting.RED + warning));
 		}
 	}
 }

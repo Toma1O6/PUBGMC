@@ -7,6 +7,7 @@ import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
+import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.items.ItemGrenade;
 import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
@@ -14,8 +15,10 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
+import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.entity.Entity;
@@ -49,6 +52,21 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 public class CommonEvents
 {
 	private double prevDiameter = 0;
+	
+	@SubscribeEvent
+	public void landmineExploded(LandmineExplodeEvent e)
+	{
+		for(Entity entity : e.getAffectedEntities())
+		{
+			if(entity instanceof EntityVehicle)
+			{
+				EntityVehicle car = (EntityVehicle)entity;
+				double d0 = PUBGMCUtil.getDistanceToBlockPos3D(car.getPosition(), e.getExplosionPosition());
+				float damage = 200f * (float)(1 - d0/10);
+				car.health -= damage;
+			}
+		}
+	}
 	
 	//Attach capability to entity
 	@SubscribeEvent

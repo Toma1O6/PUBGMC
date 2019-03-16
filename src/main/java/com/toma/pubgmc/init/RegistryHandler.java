@@ -21,6 +21,7 @@ import com.toma.pubgmc.common.blocks.BlockSolidRotatable;
 import com.toma.pubgmc.common.blocks.PMCBlock;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.ItemBackpack;
+import com.toma.pubgmc.common.items.ItemFuelCan;
 import com.toma.pubgmc.common.items.ItemGrenade;
 import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemParachute;
@@ -268,6 +269,7 @@ public class RegistryHandler
 				new PMCItem("steel_dust"),
 				new PMCItem("steel_ingot"),
 				new PMCItem("copper_ingot"),
+				new ItemFuelCan().addDescription("Hold right click while driving vehicle","Vehicle must be stationary!"),
 				new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ)
 		};
 		

@@ -1,11 +1,18 @@
 package com.toma.pubgmc.common.tileentity;
 
+import java.util.List;
+
+import com.toma.pubgmc.event.LandmineExplodeEvent;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class TileEntityLandMine extends TileEntity implements ITickable
 {
@@ -13,9 +20,12 @@ public class TileEntityLandMine extends TileEntity implements ITickable
 	public void update()
 	{
 		World world = this.getWorld();
-		if(!world.isRemote && !world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - 2, pos.getY() - 1, pos.getZ() - 2, pos.getX() + 2, pos.getY() + 3, pos.getZ() + 2)).isEmpty())
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() - 2, pos.getY() - 1, pos.getZ() - 2, pos.getX() + 2, pos.getY() + 3, pos.getZ() + 2));
+		if(!entities.isEmpty())
 		{
-			explode(world, pos);
+			Event event = world.isRemote ? new LandmineExplodeEvent(Side.CLIENT, this.getPos(), this.getWorld(), entities) : new LandmineExplodeEvent(Side.SERVER, this.getPos(), this.getWorld(), entities);
+			MinecraftForge.EVENT_BUS.post(event);
+			if(!world.isRemote) explode(world, pos);
 		}
 	}
 	

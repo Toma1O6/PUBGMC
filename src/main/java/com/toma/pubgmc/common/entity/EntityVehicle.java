@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
@@ -520,9 +521,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	}
 	
 	/** Call with Fuel can **/
-	public void refill()
+	public void refill(EntityPlayer source)
 	{
-		fuel = fuel + 30f < 100f ? fuel + 30f : 100f;
+		if(this.getPassengers().contains(source))
+			fuel = fuel + 30f < 100f ? fuel + 30f : 100f;
+		else Pubgmc.logger.warn("{} has attempted to refuel vehicle with ID {}, but he wasn't inside the vehicle!", source, this.getEntityId());
 	}
 	
 	/** Decrement each tick **/

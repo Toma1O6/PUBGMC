@@ -133,6 +133,8 @@ public class ModelRegistryHandler
 		registerModel(PMCItems.STEEL_DUST);
 		registerModel(PMCItems.STEEL_INGOT);
 		registerModel(PMCItems.COPPER_INGOT);
+		registerModel(PMCItems.FUELCAN);
+		registerModel(PMCItems.VEHICLE_UAZ);
 		
 		//Blocks
 		registerModel(PMCBlocks.ROADASPHALT);
