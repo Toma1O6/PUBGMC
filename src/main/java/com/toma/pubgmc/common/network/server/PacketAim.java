@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.network.server;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 

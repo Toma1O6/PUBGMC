@@ -14,11 +14,13 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.items.ItemAmmo;
+import com.toma.pubgmc.common.items.ItemFuelCan;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
+import com.toma.pubgmc.common.items.heal.ItemHealing;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketAim;
 import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
@@ -33,25 +35,24 @@ import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
-import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.handlers.ConfigHandler;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -134,7 +135,8 @@ public class ClientEvents
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post e)
 	{
-		EntityPlayer player = e.getEntityPlayer();
+		e.getRenderer().addLayer(new LayerGhillie(e.getRenderer()));
+		/*EntityPlayer player = e.getEntityPlayer();
 		if(player != null)
 		{
 			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
@@ -151,7 +153,7 @@ public class ClientEvents
 				}
 				GlStateManager.popMatrix();
 			}
-		}
+		}*/
 	}
 	
 	@SubscribeEvent
@@ -359,6 +361,14 @@ public class ClientEvents
     		
     		if(ConfigHandler.armorOverlayIcons)
     			renderArmorIcons(e, sp, res, mc, data);
+    		
+    		if(stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan)
+    		{
+    			if(sp.isHandActive())
+    			{
+    				drawItemUseOverlay(sp, mc, res, e, stack);
+    			}
+    		}
     	}
     }
     
@@ -1464,5 +1474,17 @@ public class ClientEvents
     		ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
     		ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
     	}
+    }
+    
+    private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack)
+    {
+    	final DecimalFormat f = new DecimalFormat("#,#0.0");
+    	final float useTime = (float)player.getItemInUseCount();
+    	FontRenderer font = mc.fontRenderer;
+    	int width = res.getScaledWidth();
+    	int height = res.getScaledHeight();
+    	int left = width/2;
+    	int top = height/2;
+    	font.drawStringWithShadow(f.format(useTime/20), left - 6, top + 3, 0xFFFFFF);
     }
 }

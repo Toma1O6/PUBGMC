@@ -70,8 +70,26 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
 			{
 				entityItem.setItem(te.getStackInSlot(slot));
 			}
+			
+			if(te.getStackInSlot(slot).getItem() == PMCItems.FUELCAN)
+			{
+	            GlStateManager.pushMatrix();
+	            GL11.glPushMatrix();
+	            GL11.glDisable(GL11.GL_LIGHTING);
+
+	            this.entityItem.hoverStart = 0.0F;
+	            GlStateManager.translate((float) x + 0.5F, (float) y + 0.05F, (float) z + 0.5F);
+	            GlStateManager.translate(0, 0.1, 0);
+	            GlStateManager.scale(0.9F, 0.9F, 0.9F);
+	            
+	            Minecraft.getMinecraft().getRenderManager().renderEntity(entityItem, 0.0D, 0.0D, 0.1D, 0.0F, 0.0F, false);
+	            
+	            GL11.glDisable(GL11.GL_LIGHTING);
+	            GL11.glPopMatrix();
+	            GlStateManager.popMatrix();
+			}
 	        
-	        if(is3D)
+			else if(is3D)
 	        {
 	        	weaponRenderer(slot, te, x, y, z);
 	        }

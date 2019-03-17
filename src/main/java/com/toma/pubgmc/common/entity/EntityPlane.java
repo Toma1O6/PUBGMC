@@ -38,7 +38,7 @@ public class EntityPlane extends Entity
 	public EntityPlane(World world)
 	{
 		super(world);
-		setSize(5f, 1f);
+		setSize(4f, 10f);
 	}
 	
 	public EntityPlane(World world, IGameData data)
@@ -47,6 +47,47 @@ public class EntityPlane extends Entity
 		gameData = data;
 		
 		this.onCreated();
+	}
+	
+	@Override
+	public double getMountedYOffset() 
+	{
+		return 2.3;
+	}
+	
+	@Override
+	protected boolean canFitPassenger(Entity passenger)
+	{
+		return this.getPassengers().size() < 32;
+	}
+	
+	@Override
+	public void updatePassenger(Entity passenger)
+	{
+		if(this.isPassenger(passenger))
+		{
+			if(!this.getPassengers().isEmpty())
+			{
+				float f1 = (float)((this.isDead ? 0.009999999776482582D : this.getMountedYOffset()) + passenger.getYOffset());
+				int id = this.getPassengers().indexOf(passenger);
+				float x = id >= 16 ? -6 + (id-16) *3 : -6 + id*3;
+				float z = id < 16 ? 3 : -3;
+	            Vec3d vec3d = (new Vec3d((double)x, 0.0D, (double)z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
+	            passenger.setPosition(this.posX + vec3d.x, this.posY + (double)f1, this.posZ + vec3d.z);
+			}
+		}
+	}
+	
+	@Override
+	public boolean isInRangeToRenderDist(double distance)
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean isInRangeToRender3d(double x, double y, double z)
+	{
+		return true;
 	}
 	
 	//Responsible for setting right position and facing direction

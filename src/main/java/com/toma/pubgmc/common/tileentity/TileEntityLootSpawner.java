@@ -362,6 +362,11 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 			addAttachments(airdroploot);
 			setInventorySlotContents(getEmptySlot(), ATTACHMENTS.get(rand.nextInt(ATTACHMENTS.size())));
 		}
+		
+		if(Math.random() <= 0.05)
+		{
+			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.FUELCAN));
+		}
 	}
 	
 	private int getEmptySlot()

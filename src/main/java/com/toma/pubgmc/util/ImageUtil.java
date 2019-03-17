@@ -35,7 +35,7 @@ public class ImageUtil
 		else tessellator.draw();
 	}
 	
-	public static void drawCustomSizedImage(Minecraft minecraft, ResourceLocation imageLocation, int startX, int startY, double width, double height, boolean transparent)
+	public static void drawCustomSizedImage(Minecraft minecraft, ResourceLocation imageLocation, double startX, double startY, double width, double height, boolean transparent)
 	{
 		minecraft.getTextureManager().bindTexture(imageLocation);
 		GlStateManager.color(1f, 1f, 1f);

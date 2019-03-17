@@ -13,6 +13,9 @@ item.parachute.name=Parachute
 item.steel_dust.name=Steel Dust
 item.steel_ingot.name=Steel Ingot
 item.copper_ingot.name=Copper Ingot
+item.fuelcan.name=Fuel Can
+
+item.vehicle_uaz.name=Spawn UAZ
 
 item.ammo_9mm.name=9mm Bullet
 item.ammo_shotgun.name=Shotgun Ammo
