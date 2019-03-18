@@ -38,7 +38,8 @@ public class EntityPlane extends Entity
 	public EntityPlane(World world)
 	{
 		super(world);
-		setSize(4f, 10f);
+		setSize(15f, 5f);
+		this.ignoreFrustumCheck = true;
 	}
 	
 	public EntityPlane(World world, IGameData data)

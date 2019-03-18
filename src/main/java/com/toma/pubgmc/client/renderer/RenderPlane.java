@@ -1,7 +1,5 @@
 package com.toma.pubgmc.client.renderer;
 
-import org.lwjgl.opengl.GL11;
-
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.vehicles.ModelPlane;
 import com.toma.pubgmc.common.entity.EntityPlane;

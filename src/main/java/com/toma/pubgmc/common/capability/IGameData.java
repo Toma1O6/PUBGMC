@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.capability;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toma.pubgmc.util.PUBGMCUtil;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -43,6 +45,10 @@ public interface IGameData
 	public void resetTimer();
 	public int getTimer();
 	
+	public void setGameID(String id);
+	public String getGameID();
+	public void createGameID();
+	
 	
 	public class GameDataStorage implements IStorage<IGameData>
 	{
@@ -65,6 +71,8 @@ public interface IGameData
 			{
 				instance.addSpawnLocation(NBTUtil.getPosFromTag((NBTTagCompound)list.get(i)), ((NBTTagCompound)nbt).getString("name" + i));
 			}
+			
+			instance.setGameID(((NBTTagCompound)nbt).getString("gameID"));
 		}
 		
 		@Override
@@ -94,6 +102,7 @@ public interface IGameData
 			}
 			
 			c.setTag("list", list);
+			c.setString("gameID", instance.getGameID());
 			return c;
 		}
 	}
@@ -109,6 +118,7 @@ public interface IGameData
 		int zoneCount;
 		int timer;
 		int currentZone;
+		String gameID;
 		
 		@Override
 		public void setPlaying(boolean play) 
@@ -230,6 +240,24 @@ public interface IGameData
 		public void setCurrentZone(int zone)
 		{
 			this.currentZone = zone;
+		}
+		
+		@Override
+		public void setGameID(String id)
+		{
+			this.gameID = id;
+		}
+		
+		@Override
+		public String getGameID() 
+		{
+			return gameID;
+		}
+		
+		@Override
+		public void createGameID() 
+		{
+			gameID = PUBGMCUtil.generateID(16);
 		}
 	}
 	

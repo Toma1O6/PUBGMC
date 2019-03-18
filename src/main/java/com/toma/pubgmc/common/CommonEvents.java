@@ -1,10 +1,13 @@
 package com.toma.pubgmc.common;
 
+import java.util.Map;
+
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityVehicle;
@@ -14,6 +17,7 @@ import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
+import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCBlocks;
@@ -37,11 +41,13 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -64,6 +70,30 @@ public class CommonEvents
 				double d0 = PUBGMCUtil.getDistanceToBlockPos3D(car.getPosition(), e.getExplosionPosition());
 				float damage = 200f * (float)(1 - d0/10);
 				car.health -= damage;
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onChunkLoad(ChunkEvent.Load e)
+	{
+		World world = e.getWorld();
+		Chunk chunk = e.getChunk();
+		Map<BlockPos, TileEntity> map = chunk.getTileEntityMap();
+		IGameData data = world.getCapability(GameDataProvider.GAMEDATA, null);
+		IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
+		
+		for(TileEntity tileEntity : map.values())
+		{
+			if(tileEntity instanceof TileEntityLootSpawner)
+			{
+				TileEntityLootSpawner te = (TileEntityLootSpawner)tileEntity;
+				
+				if(!te.getGameID().equalsIgnoreCase(data.getGameID()))
+				{
+					te.setGameID(data.getGameID());
+					te.generateLoot(loot.hasAirdropWeapons(), loot.isAmmoLootEnabled(), loot.isRandomAmmoCountEnabled(), loot.getLootChanceMultiplier(), loot.getWeaponList());
+				}
 			}
 		}
 	}

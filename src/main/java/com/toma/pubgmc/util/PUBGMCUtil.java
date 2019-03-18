@@ -1,5 +1,7 @@
 package com.toma.pubgmc.util;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.EntityVehicle;
@@ -203,5 +205,10 @@ public class PUBGMCUtil
 	{
 		Vec3d base = getPositionVec(entity);
 		return new Vec3d(base.x + entity.motionX, base.y + entity.motionY, base.z + entity.motionZ);
+	}
+	
+	public static String generateID(int length)
+	{
+		return RandomStringUtils.random(length, true, true);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -33,6 +34,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	private int slot;
 	private boolean randomAmmo = false;
 	private List<GunType> weapons = new ArrayList<GunType>();
+	private String gameID = "EMPTY";
 	
 	//Loot related - guns
 	private static final List<ItemStack> PISTOLS = new ArrayList<ItemStack>();
@@ -149,6 +151,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		ItemStackHelper.loadAllItems(compound, this.inventory);
 		
 		if(compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
+		gameID = compound.hasKey("gameID") ? compound.getString("gameID") : "";
 	}
 	
 	@Override
@@ -158,6 +161,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		ItemStackHelper.saveAllItems(compound, this.inventory);
 		
 		if(this.hasCustomName()) compound.setString("CustomName", this.customName);
+		compound.setString("gameID", gameID);
 		return compound;
 	}
 	
@@ -199,6 +203,16 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	public void setField(int id, int value)
 	{
 		
+	}
+	
+	public void setGameID(String gameID)
+	{
+		this.gameID = gameID;
+	}
+	
+	public String getGameID()
+	{
+		return gameID;
 	}
 	
 	@Override

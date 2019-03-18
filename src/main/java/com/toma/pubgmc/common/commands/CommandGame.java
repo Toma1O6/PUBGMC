@@ -316,6 +316,8 @@ public class CommandGame extends CommandBase
 		{
 			data.setCurrentZone(0);
 		}
+		
+		data.createGameID();
 	}
 	
 	/**

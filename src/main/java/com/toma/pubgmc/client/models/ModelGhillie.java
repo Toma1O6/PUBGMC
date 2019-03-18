@@ -79,24 +79,14 @@ public class ModelGhillie extends ModelBiped
 	    	GlStateManager.popMatrix();
 	    }
 	    
-	    public void render(EntityPlayer player)
+	    public void render()
 	    {
-	    	GlStateManager.pushMatrix();
-	    	{
-	    		GlStateManager.rotate(player.getRotationYawHead(), 0, 1, 0);
-	    		GlStateManager.rotate(player.rotationPitch, 1, 0, 0);
-		    	head.render(1f);
-	    	}
-	    	GlStateManager.popMatrix();
-	    	GlStateManager.pushMatrix();
-	    	{
-	    		GlStateManager.rotate(player.rotationYaw, 0, 1, 0);
-		    	body.render(1f);
-		    	l_leg.render(1f);
-		    	r_leg.render(1f);
-		    	l_arm.render(1f);
-		    	r_arm.render(1f);
-	    	}	
-	    	GlStateManager.popMatrix();
+	    	head.render(1f);
+		    body.render(1f);
+		    l_leg.render(1f);
+		    r_leg.render(1f);
+		    l_arm.render(1f);
+		    r_arm.render(1f);
+
 	    }
 }

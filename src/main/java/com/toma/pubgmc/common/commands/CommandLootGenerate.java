@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -110,6 +112,8 @@ public class CommandLootGenerate extends CommandBase
 		
 		else if(args[0].equalsIgnoreCase("generate"))
 		{
+			IGameData game = world.getCapability(GameDataProvider.GAMEDATA, null);
+			System.out.println(game.getGameID());
 			int count = 0;
 			if(args.length == 5 && isValidNumber(args[1]) && isValidNumber(args[2]) && isValidNumber(args[3]) && isValidNumber(args[4]))
 			{
@@ -128,6 +132,7 @@ public class CommandLootGenerate extends CommandBase
 							if(totalRange <= range)
 							{
 								count++;
+								((TileEntityLootSpawner) te).setGameID(game.getGameID());
 								((TileEntityLootSpawner) te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
 								TileEntityUtil.syncToClient(te);
 							}
