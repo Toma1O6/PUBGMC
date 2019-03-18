@@ -158,7 +158,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	 */
 	public void applyTerrainMotionMultiplier()
 	{
-		currentSpeed = (float) (prevPosY < posY ? currentSpeed * 0.95 : prevPosY > posY ? currentSpeed * 1.05 : currentSpeed);
+		currentSpeed = (float) (prevPosY < posY ? currentSpeed * 0.95 : currentSpeed);
 	}
 	
 	public void updateMotion()

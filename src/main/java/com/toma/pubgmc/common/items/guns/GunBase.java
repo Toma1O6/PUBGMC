@@ -38,6 +38,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author Toma1O6
@@ -711,9 +713,9 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	
 	public enum Firemode
 	{
-		SINGLE(I18n.format("gun.firemode.single")),
-		BURST(I18n.format("gun.firemode.burst")),
-		AUTO(I18n.format("gun.firemode.auto"));
+		SINGLE("gun.firemode.single"),
+		BURST("gun.firemode.burst"),
+		AUTO("gun.firemode.auto");
 		
 		private String name;
 		
@@ -722,9 +724,10 @@ public abstract class GunBase extends PMCItem implements ICraftable
 			this.name = name;
 		}
 		
+		@SideOnly(Side.CLIENT)
 		public String translatedName()
 		{
-			return name;
+			return I18n.format(name);
 		}
 	}
 	

@@ -13,14 +13,4 @@ public interface IProxy
 	public void preInit(FMLPreInitializationEvent e);
 	public void init(FMLInitializationEvent e);
 	public void postInit(FMLPostInitializationEvent e);
-	
-	public default EntityPlayer getPlayer(MessageContext ctx)
-	{
-		return ctx.side.isClient() ? Minecraft.getMinecraft().player : ctx.getServerHandler().player;
-	}
-	
-	public default World getWorld(MessageContext ctx)
-	{
-		return ctx.side.isClient() ? Minecraft.getMinecraft().world : ctx.getServerHandler().player.getServerWorld();
-	}
 }

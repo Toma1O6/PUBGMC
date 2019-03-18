@@ -6,16 +6,18 @@ import com.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public enum AmmoType
 {
-	AMMO9MM(I18n.format("ammo.9mm")),
-	AMMO45ACP(I18n.format("ammo.45acp")),
-	AMMO12G(I18n.format("ammo.12g")),
-	AMMO556(I18n.format("ammo.556mm")),
-	AMMO762(I18n.format("ammo.762mm")),
-	AMMO300M(I18n.format("ammo.300m")),
-	FLARE(I18n.format("ammo.flare"));
+	AMMO9MM("ammo.9mm"),
+	AMMO45ACP("ammo.45acp"),
+	AMMO12G("ammo.12g"),
+	AMMO556("ammo.556mm"),
+	AMMO762("ammo.762mm"),
+	AMMO300M("ammo.300m"),
+	FLARE("ammo.flare");
 	
 	private String name;
 	
@@ -24,9 +26,10 @@ public enum AmmoType
 		this.name = name;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public String translatedName()
 	{
-		return name;
+		return I18n.format(name);
 	}
 	
 	public Item ammo()
