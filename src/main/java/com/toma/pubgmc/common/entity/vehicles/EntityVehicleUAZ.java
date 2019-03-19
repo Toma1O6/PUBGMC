@@ -30,6 +30,12 @@ public class EntityVehicleUAZ extends EntityVehicle
 	}
 	
 	@Override
+	public void initWheels()
+	{
+		
+	}
+	
+	@Override
 	public int getMaximumCapacity()
 	{
 		return 4;

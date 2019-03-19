@@ -12,6 +12,7 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.util.vehicle.Wheel;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -74,6 +75,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	/** For different colors **/
 	private byte variantType = 0;
 	
+	private Wheel[] wheels;
+	
 	public EntityVehicle(World world)
 	{
 		super(world);
@@ -82,6 +85,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		preventEntitySpawning = true;
 		maxSpeed = 1.0f;
 		createColorVariant();
+		this.initWheels();
 	}
 	
 	public EntityVehicle(World world, int x, int y, int z)
@@ -104,6 +108,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	
 	@Nullable
 	public abstract String[] getTextureVariants();
+	
+	public abstract void initWheels();
 	
 	@Override
 	public void onUpdate()
