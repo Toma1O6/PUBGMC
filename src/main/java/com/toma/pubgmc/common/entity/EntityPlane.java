@@ -185,7 +185,7 @@ public class EntityPlane extends Entity
 				
 				if(hasReachedDestination)
 				{
-					timeSinceDestination++;
+					++timeSinceDestination;
 					
 					if(this.isBeingRidden())
 					{
@@ -240,13 +240,20 @@ public class EntityPlane extends Entity
 				}
 			}
 			
-			//TODO: Speed based on map size
 			Vec3d look = getLookVec();
-			motionX = look.x * 0.4d;
-			motionZ = look.z * 0.4d;
+			float f = this.getMovementMultiplier();
+			motionX = look.x * 0.4d * f;
+			motionZ = look.z * 0.4d * f;
 			
 			move(MoverType.SELF, motionX, motionY, motionZ);
 		}
+	}
+	
+	private float getMovementMultiplier()
+	{
+		float f = gameData.getMapSize() / 500f;
+		f = f < 1 ? 1f : f;
+		return f;
 	}
 	
 	@Override
