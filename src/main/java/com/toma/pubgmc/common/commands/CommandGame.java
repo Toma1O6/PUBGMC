@@ -240,6 +240,7 @@ public class CommandGame extends CommandBase
 		WorldBorder border = world.getWorldBorder();
 		BlockPos center = data.getMapCenter();
 		int size = data.getMapSize();
+		EntityPlane plane = null;
 		
 		BlockPos zoneCenter = new BlockPos(generateZoneCenter(center, size, true), 256, generateZoneCenter(center, size, false));
 		
@@ -267,7 +268,7 @@ public class CommandGame extends CommandBase
 		data.setTimer(0);
 		
 		if(PUBGMCUtil.isMapSetupProperly(data) && !data.getSpawnLocations().isEmpty())
-			spawnPlane(world, data);
+			plane = spawnPlane(world, data);
 		
 		for(EntityPlayer player : world.playerEntities)
 		{
@@ -292,7 +293,7 @@ public class CommandGame extends CommandBase
 								player.sendMessage(new TextComponentString(""));
 							}
 							
-							PacketHandler.sendToServer(new PacketChooseLocation(pos));
+							PacketHandler.sendToServer(new PacketChooseLocation(pos, player.getRidingEntity().getEntityId()));
 							return Action.RUN_COMMAND;
 						}
 					});
@@ -362,7 +363,7 @@ public class CommandGame extends CommandBase
 		Pubgmc.logger.info("Game has been restarted successfully.");
 	}
 	
-	private void spawnPlane(World world, IGameData data)
+	private EntityPlane spawnPlane(World world, IGameData data)
 	{
 		EntityPlane plane = new EntityPlane(world, data);
 		
@@ -378,6 +379,8 @@ public class CommandGame extends CommandBase
 			player.startRiding(plane);
 			Pubgmc.logger.info("Added " + player.getName() + " on board of plane");
 		}
+		
+		return plane;
 	}
 	
 	private int getClosestLocation(IGameData data, World world)

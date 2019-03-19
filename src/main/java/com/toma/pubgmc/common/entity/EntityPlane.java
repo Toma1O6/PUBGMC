@@ -27,8 +27,8 @@ import net.minecraft.world.World;
 
 public class EntityPlane extends Entity
 {
-	public static HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap<EntityPlayer, BlockPos>();
-	protected static IGameData gameData;
+	public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap<EntityPlayer, BlockPos>();
+	protected IGameData gameData;
 	protected BlockPos endPos;
 	private BlockPos startPos;
 	private boolean hasReachedDestination;
@@ -240,6 +240,7 @@ public class EntityPlane extends Entity
 				}
 			}
 			
+			//TODO: Speed based on map size
 			Vec3d look = getLookVec();
 			motionX = look.x * 0.4d;
 			motionZ = look.z * 0.4d;
