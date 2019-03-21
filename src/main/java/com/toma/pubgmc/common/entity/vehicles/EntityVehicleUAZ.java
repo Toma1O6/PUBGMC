@@ -29,11 +29,20 @@ public class EntityVehicleUAZ extends EntityVehicle
 		fuel = 60f + rand.nextInt(40) + rand.nextFloat();
 	}
 	
-	@Override
+	/*@Override
 	public void initWheels()
 	{
+		WheelPart fr = new WheelPart(this, this, "fr", Vec3d.ZERO);
+		WheelPart fl = new WheelPart(this, this, "fl", Vec3d.ZERO);
+		WheelPart br = new WheelPart(this, this, "br", Vec3d.ZERO);
+		WheelPart bl = new WheelPart(this, this, "bl", Vec3d.ZERO);
+		parts = new WheelPart[] {fr, fl, br, bl};
 		
-	}
+		for(int i = 0; i < parts.length; i++)
+			world.spawnEntity(parts[i]);
+		
+		System.out.println(parts);
+	}*/
 	
 	@Override
 	public int getMaximumCapacity()

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.entity.vehicles.WheelPart;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
@@ -16,7 +17,9 @@ import com.toma.pubgmc.util.vehicle.Wheel;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,7 +35,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public abstract class EntityVehicle extends Entity implements IEntityAdditionalSpawnData
+public abstract class EntityVehicle extends Entity implements IEntityAdditionalSpawnData//, IEntityMultiPart
 {
 	private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
 	private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
@@ -75,7 +78,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	/** For different colors **/
 	private byte variantType = 0;
 	
-	private Wheel[] wheels;
+	protected WheelPart[] parts;
 	
 	public EntityVehicle(World world)
 	{
@@ -85,13 +88,13 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		preventEntitySpawning = true;
 		maxSpeed = 1.0f;
 		createColorVariant();
-		this.initWheels();
 	}
 	
 	public EntityVehicle(World world, int x, int y, int z)
 	{
 		this(world);
 		setPosition(x, y, z);
+		//this.initWheels();
 	}
 	
 	@Nonnull
@@ -109,7 +112,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	@Nullable
 	public abstract String[] getTextureVariants();
 	
-	public abstract void initWheels();
+	//public abstract void initWheels();
 	
 	@Override
 	public void onUpdate()
@@ -545,6 +548,19 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	{
 		variantType = (byte) (getTextureVariants() != null ? rand.nextInt(getTextureVariants().length) : 0);
 	}
+	
+	//TODO: implement sometime
+	/*@Override
+	public World getWorld()
+	{
+		return this.world;
+	}
+	
+	@Override
+	public boolean attackEntityFromPart(MultiPartEntityPart part, DamageSource source, float damage)
+	{
+		return false;
+	}*/
 	
 	@Override
 	public void writeSpawnData(ByteBuf buf)
