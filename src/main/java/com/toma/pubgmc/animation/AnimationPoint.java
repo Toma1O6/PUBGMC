@@ -6,6 +6,7 @@ import net.minecraft.util.math.Vec3d;
 public class AnimationPoint 
 {
 	private Vec3d position, rotation;
+	private boolean hasFinished;
 	
 	public AnimationPoint(final Vec3d position, final Vec3d rotation)
 	{
@@ -56,5 +57,15 @@ public class AnimationPoint
 	public Vec3d getRotation()
 	{
 		return this.rotation;
+	}
+	
+	public void setFinished(boolean finished)
+	{
+		this.hasFinished = finished;
+	}
+	
+	public boolean isFinished()
+	{
+		return hasFinished;
 	}
 }

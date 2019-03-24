@@ -28,7 +28,82 @@ public class ModelG36C extends ModelGun
 	private final ModelRenderer base_ironsight;
 	private final ModelRenderer sh2;
 	private final ModelRenderer ironsight;
-
+	
+	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
+	{
+		modelRenderer.rotateAngleX = x;
+		modelRenderer.rotateAngleY = y;
+		modelRenderer.rotateAngleZ = z;
+	}
+	
+	@Override
+	public void render(ItemStack stack)
+	{
+		EntityPlayerSP player = Minecraft.getMinecraft().player;
+		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
+		{
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			
+			GlStateManager.pushMatrix();
+			{
+				handleAnimations(data, player.isSprinting(), stack);
+				renderG36C(data.isAiming(), stack);
+			}
+			GlStateManager.popMatrix();
+		}
+	}
+	
+	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
+	{
+		if(enableADS(stack))
+		{
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.188d)
+				animation_aim.setYModifier(0.188d);
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.106d)
+				animation_aim.setYModifier(0.106d);
+			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.057d)
+				animation_aim.setYModifier(0.057d);
+			animation_aim.run(data.isAiming());
+		}
+		
+		animation_held.run(sprint);
+		animation_reload.run(data.isReloading());
+	}
+	
+	private void renderG36C(boolean aim, ItemStack stack)
+	{
+		GlStateManager.pushMatrix();
+		{
+			transform.defaultARTransform();
+			GlStateManager.translate(-1.0, 3.0, 17.0);
+			if(aim && enableADS(stack)) rotateModelForADSRendering();
+			
+			renderParts(hasScopeAtachment(stack));
+		}
+		GlStateManager.popMatrix();
+		
+		renderRedDot(-1.51, -11.4, 0, 1.3f, stack);
+		renderHolo(-2.4, -11.2, -3, 1.3f, stack);
+		renderScope2X(6.8, 5.8, -8, 1f, stack);
+		renderScope4X(6.8, 5.8, -8, 1f, stack);
+		renderVerticalGrip(-2, 3, -5, 1f, stack);
+		renderAngledGrip(1.4, 2.4, 2, 1f, stack);
+		renderARSilencer(0.6, 0.1, 3.0, 1f, stack);
+	}
+	
+	private void renderParts(boolean hasScope)
+	{
+		base.render(1f);
+		base2.render(1f);
+		mag.render(1f);
+		sh.render(1f);
+		handle.render(1f);
+		stock.render(1f);
+		trigger.render(1f);
+		base_ironsight.render(1f);
+		if(!hasScope) ironsight.render(1f);
+	}
+	
 	public ModelG36C()
 	{
 		animation_aim = new AimAnimation(-0.581d, 0.188d, 0.3d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 0.75f, 1.2f);;
@@ -185,80 +260,5 @@ public class ModelG36C extends ModelGun
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -1.35F, -31.0F, -16.0F, 1, 2, 1, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, 0.35F, -31.0F, -16.0F, 1, 2, 1, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -0.5F, -30.0F, -16.0F, 1, 1, 1, 0.0F, false));
-	}
-	
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
-	{
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
-	}
-	
-	@Override
-	public void render(ItemStack stack)
-	{
-		EntityPlayerSP player = Minecraft.getMinecraft().player;
-		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
-		{
-			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
-			GlStateManager.pushMatrix();
-			{
-				handleAnimations(data, player.isSprinting(), stack);
-				renderG36C(data.isAiming(), stack);
-			}
-			GlStateManager.popMatrix();
-		}
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.188d)
-				animation_aim.setYModifier(0.188d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.106d)
-				animation_aim.setYModifier(0.106d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.057d)
-				animation_aim.setYModifier(0.057d);
-			animation_aim.run(data.isAiming());
-		}
-		
-		animation_held.run(sprint);
-		animation_reload.run(data.isReloading());
-	}
-	
-	private void renderG36C(boolean aim, ItemStack stack)
-	{
-		GlStateManager.pushMatrix();
-		{
-			transform.defaultARTransform();
-			GlStateManager.translate(-1.0, 3.0, 17.0);
-			if(aim && enableADS(stack)) rotateModelForADSRendering();
-			
-			renderParts(hasScopeAtachment(stack));
-		}
-		GlStateManager.popMatrix();
-		
-		renderRedDot(-1.51, -11.4, 0, 1.3f, stack);
-		renderHolo(-2.4, -11.2, -3, 1.3f, stack);
-		renderScope2X(6.8, 5.8, -8, 1f, stack);
-		renderScope4X(6.8, 5.8, -8, 1f, stack);
-		renderVerticalGrip(-2, 3, -5, 1f, stack);
-		renderAngledGrip(1.4, 2.4, 2, 1f, stack);
-		renderARSilencer(0.6, 0.1, 3.0, 1f, stack);
-	}
-	
-	private void renderParts(boolean hasScope)
-	{
-		base.render(1f);
-		base2.render(1f);
-		mag.render(1f);
-		sh.render(1f);
-		handle.render(1f);
-		stock.render(1f);
-		trigger.render(1f);
-		base_ironsight.render(1f);
-		if(!hasScope) ironsight.render(1f);
 	}
 }

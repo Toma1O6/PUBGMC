@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.models;
 
 import com.toma.pubgmc.animation.AimAnimation;
+import com.toma.pubgmc.animation.ComplexAnimation;
 import com.toma.pubgmc.animation.HeldAnimations;
 import com.toma.pubgmc.animation.SimpleReloadAnimation;
 import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
