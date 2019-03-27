@@ -178,7 +178,6 @@ public class ClientEvents
 		{
 			GunBase gun = GunBase.GUNS.get(i);
 			location = new ModelResourceLocation(gun.getRegistryName(), "inventory");
-			main = e.getModelRegistry().getObject(location);
 			e.getModelRegistry().putObject(location, new BakedModelGun());
 		}
 	}

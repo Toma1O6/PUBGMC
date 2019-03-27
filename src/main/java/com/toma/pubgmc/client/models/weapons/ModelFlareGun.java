@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 
 public class ModelFlareGun extends ModelGun
 {
+	private final ModelRenderer core;
 	private final ModelRenderer barrel;
 	private final ModelRenderer base;
 	private final ModelRenderer basesh;
@@ -28,6 +29,9 @@ public class ModelFlareGun extends ModelGun
 		
 		textureWidth = 128;
 		textureHeight = 128;
+		
+		core = new ModelRenderer(this);
+		core.setRotationPoint(0, 0f, 0);
 
 		barrel = new ModelRenderer(this);
 		barrel.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -37,6 +41,7 @@ public class ModelFlareGun extends ModelGun
 		barrel.cubeList.add(new ModelBox(barrel, 0, 0, 2.0F, -19.0F, -29.0F, 1, 4, 23, 0.0F, false));
 		barrel.cubeList.add(new ModelBox(barrel, 0, 0, -3.0F, -19.0F, -29.0F, 1, 4, 23, 0.0F, false));
 		barrel.cubeList.add(new ModelBox(barrel, 0, 0, -0.5F, -20.7F, -27.0F, 1, 1, 2, 0.0F, false));
+		core.addChild(barrel);
 
 		base = new ModelRenderer(this);
 		base.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -51,12 +56,14 @@ public class ModelFlareGun extends ModelGun
 		base.cubeList.add(new ModelBox(base, 0, 32, 1.2F, -13.5F, -16.5F, 1, 1, 1, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 32, 1.2F, -13.5F, -6.5F, 1, 1, 1, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 32, 1.2F, -17.5F, -3.5F, 1, 1, 1, 0.0F, false));
+		core.addChild(base);
 
 		basesh = new ModelRenderer(this);
 		basesh.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(basesh, 0.7854F, 0.0F, 0.0F);
 		basesh.cubeList.add(new ModelBox(basesh, 0, 0, -2.0F, -15.6F, 7.3F, 4, 7, 4, 0.0F, false));
 		basesh.cubeList.add(new ModelBox(basesh, 0, 32, -0.5F, -14.6F, 10.8F, 1, 2, 2, 0.0F, false));
+		core.addChild(basesh);
 
 		handle = new ModelRenderer(this);
 		handle.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -64,6 +71,7 @@ public class ModelFlareGun extends ModelGun
 		handle.cubeList.add(new ModelBox(handle, 0, 0, -2.0F, -13.77F, -3.0F, 4, 5, 6, 0.0F, false));
 		handle.cubeList.add(new ModelBox(handle, 0, 32, 1.2F, -13.1F, -4.0F, 1, 4, 7, 0.0F, false));
 		handle.cubeList.add(new ModelBox(handle, 0, 32, -2.2F, -13.1F, -4.0F, 1, 4, 7, 0.0F, false));
+		core.addChild(handle);
 
 		handle2 = new ModelRenderer(this);
 		handle2.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -71,11 +79,13 @@ public class ModelFlareGun extends ModelGun
 		handle2.cubeList.add(new ModelBox(handle2, 0, 0, -2.0F, -11.8F, -7.7F, 4, 5, 11, 0.0F, false));
 		handle2.cubeList.add(new ModelBox(handle2, 0, 32, 1.2F, -11.3F, -7.2F, 1, 4, 10, 0.0F, false));
 		handle2.cubeList.add(new ModelBox(handle2, 0, 32, -2.2F, -11.3F, -7.2F, 1, 4, 10, 0.0F, false));
+		core.addChild(handle2);
 
 		trigger = new ModelRenderer(this);
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 32, -1.0F, -9.0F, -4.0F, 2, 2, 1, 0.0F, false));
+		core.addChild(trigger);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 
@@ -122,11 +132,12 @@ public class ModelFlareGun extends ModelGun
 	
 	private void renderParts()
 	{
-		barrel.render(1f);
+		/*barrel.render(1f);
 		base.render(1f);
 		basesh.render(1f);
 		handle.render(1f);
 		handle2.render(1f);
-		trigger.render(1f);
+		trigger.render(1f);*/
+		core.render(1f);
 	}
 }

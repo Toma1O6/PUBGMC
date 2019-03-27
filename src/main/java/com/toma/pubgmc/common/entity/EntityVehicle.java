@@ -117,31 +117,32 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	@Override
 	public void onUpdate()
 	{
+		if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput() || !hasFuel()))
+		{
+			inputForward = false;
+			inputBack = false;
+			inputRight = false;
+			inputLeft = false;
+		}
+		
+		updateMotion();
+		handleEntityCollisions();
+		checkState();
+		
+		if(collidedHorizontally)
+		{
+			currentSpeed *= 0.6;
+		}
+		
+		applyTerrainMotionMultiplier();
+		
+		super.onUpdate();
+		
 		if(!world.isRemote)
 		{
-			if(!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput() || !hasFuel()))
-			{
-				inputForward = false;
-				inputBack = false;
-				inputRight = false;
-				inputLeft = false;
-			}
-			
-			updateMotion();
-			handleEntityCollisions();
-			checkState();
-			
-			if(collidedHorizontally)
-			{
-				currentSpeed *= 0.6;
-			}
-			
-			applyTerrainMotionMultiplier();
-			
 			PacketHandler.sendToClientsAround(new PacketVehicleData(this), dimension, posX, posY, posZ, 256);
 		}
 		
-		super.onUpdate();
 		playSoundAtVehicle();
 		spawnParticles();
 		move(MoverType.SELF, motionX, motionY, motionZ);

@@ -16,6 +16,7 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.init.DamageSourceGun;
+import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
@@ -54,6 +55,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -310,6 +313,12 @@ public class EntityBullet extends Entity
         		{
         			((TileEntityLandMine)world.getTileEntity(pos)).explode(world, pos);
         		}
+        		
+        		else if(block == PMCBlocks.TARGET)
+        		{
+        			this.onTargetHit(pos, hitvec, shooter);
+        		}
+        		
         		this.setDead();
         	}
         }
@@ -456,5 +465,19 @@ public class EntityBullet extends Entity
     public EntityLivingBase getShooter()
     {
         return shooter;
+    }
+    
+    public static void onTargetHit(BlockPos pos, Vec3d hit, EntityLivingBase shooter)
+    {
+    	if(shooter.world.getGameRules().getBoolean("notifyTargetHits"))
+    	{
+    		Vec3d vec = new Vec3d(Math.abs(hit.x - (int)hit.x), Math.abs(hit.y - (int)hit.y), Math.abs(hit.z - (int)hit.z));
+    		
+    		// Hitting the center
+    		if(((vec.x > 0.4 && vec.x < 0.6) || (vec.z > 0.4 && vec.z < 0.6)) && (vec.y > 0.4 && vec.y < 0.6))
+    		{
+    			shooter.sendMessage(new TextComponentString(TextFormatting.YELLOW + "HIT!"));
+    		}
+    	}
     }
 }
