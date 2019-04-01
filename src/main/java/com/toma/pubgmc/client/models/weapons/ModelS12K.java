@@ -25,7 +25,7 @@ public class ModelS12K extends ModelGun
 
 	public ModelS12K()
 	{
-		animation_aim = new AimAnimation(-0.535d, 0.27d, 0.235d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.535d, 0.27d, 0.235d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

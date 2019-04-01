@@ -23,7 +23,7 @@ public class ModelR45 extends ModelGun
 
 	public ModelR45()
 	{
-		animation_aim = new AimAnimation(-0.555d, 0.175d, 0.255d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1.2f, 1f, 1.3f);
+		animation_aim = new AimAnimation(-0.555d, 0.175d, 0.255d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;
@@ -111,14 +111,14 @@ public class ModelR45 extends ModelGun
 	{
 		if(enableADS(stack))
 		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.175d) {
+			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.175d) 
+			{
 				animation_aim.setYModifier(0.175d);
-				animation_aim.setMovementMultiplier(1.2f, 1f, 1.3f);
 			}
 			
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.095d) {
+			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.095d)
+			{
 				animation_aim.setYModifier(0.095d);
-				animation_aim.setMovementMultiplier(1.2f, 0.5f, 1.3f);
 			}
 			
 			animation_aim.run(data.isAiming());

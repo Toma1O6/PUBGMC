@@ -21,7 +21,7 @@ public class ModelP1911 extends ModelGun
 
 	public ModelP1911()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.275d, 0.2d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.275d, 0.2d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

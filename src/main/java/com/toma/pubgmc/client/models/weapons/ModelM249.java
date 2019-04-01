@@ -27,7 +27,7 @@ public class ModelM249 extends ModelGun
 
 	public ModelM249()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.125d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.125d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

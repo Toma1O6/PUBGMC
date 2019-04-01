@@ -20,7 +20,7 @@ public class ModelAWM extends ModelGun
 
 	public ModelAWM()
 	{
-		animation_aim = new AimAnimation(-0.557d, 0.255d, 0.2d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.557d, 0.255d, 0.2d).setInvertedCoords(true, false, false);
 		
 		
 		textureWidth = 128;

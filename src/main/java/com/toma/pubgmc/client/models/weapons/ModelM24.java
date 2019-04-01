@@ -25,7 +25,7 @@ public class ModelM24 extends ModelGun
 
 	public ModelM24()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.335d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1f, 1.5f);
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.335d).setInvertedCoords(true, false, false);
 		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;

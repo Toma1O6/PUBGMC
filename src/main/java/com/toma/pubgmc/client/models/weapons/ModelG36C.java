@@ -106,7 +106,7 @@ public class ModelG36C extends ModelGun
 	
 	public ModelG36C()
 	{
-		animation_aim = new AimAnimation(-0.581d, 0.188d, 0.3d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 0.75f, 1.2f);;
+		animation_aim = new AimAnimation(-0.581d, 0.188d, 0.3d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

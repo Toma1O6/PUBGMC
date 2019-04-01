@@ -26,7 +26,7 @@ public class ModelSawedOff extends ModelGun
 
 	public ModelSawedOff()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.295d, 0.265d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.295d, 0.265d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		

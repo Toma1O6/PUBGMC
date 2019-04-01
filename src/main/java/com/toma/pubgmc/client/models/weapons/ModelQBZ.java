@@ -25,7 +25,7 @@ public class ModelQBZ extends ModelGun
 
 	public ModelQBZ()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.25d, 0.35d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 0.7f, 1.6f);
+		animation_aim = new AimAnimation(-0.56d, 0.25d, 0.35d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

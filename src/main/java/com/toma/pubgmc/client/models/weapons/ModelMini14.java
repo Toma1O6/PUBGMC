@@ -24,7 +24,7 @@ public class ModelMini14 extends ModelGun
 
 	public ModelMini14()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.275d, 0.23d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.275d, 0.23d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

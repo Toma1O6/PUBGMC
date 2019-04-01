@@ -21,7 +21,7 @@ public class ModelP92 extends ModelGun
 
 	public ModelP92()
 	{
-		animation_aim = new AimAnimation(-0.65d, 0.31d, 0.24d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.65d, 0.31d, 0.24d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

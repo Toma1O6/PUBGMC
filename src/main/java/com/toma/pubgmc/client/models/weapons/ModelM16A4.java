@@ -27,7 +27,7 @@ public class ModelM16A4 extends ModelGun
 
 	public ModelM16A4()
 	{
-		animation_aim = new AimAnimation(-0.56, 0.195d, 0.215d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56, 0.195d, 0.215d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

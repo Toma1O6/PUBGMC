@@ -24,7 +24,7 @@ public class ModelQBU extends ModelGun
 
 	public ModelQBU()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.305d, 0.22d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.305d, 0.22d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

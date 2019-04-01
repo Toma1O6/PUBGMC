@@ -24,9 +24,8 @@ public class ModelDP28 extends ModelGun
 
 	public ModelDP28()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.325d, 0.33d, 1f)
-				.setInvertedCoords(true, false, false)
-				.setMovementMultiplier(1f, 1f, 1.3f);
+		animation_aim = new AimAnimation(-0.56d, 0.325d, 0.33d)
+				.setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

@@ -18,7 +18,7 @@ public class ModelMicroUzi extends ModelGun
 
 	public ModelMicroUzi()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.21d, 0.23d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.21d, 0.23d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

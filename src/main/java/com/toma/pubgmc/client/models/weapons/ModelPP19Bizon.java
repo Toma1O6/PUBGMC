@@ -28,7 +28,7 @@ public class ModelPP19Bizon extends ModelGun
 
 	public ModelPP19Bizon()
 	{
-		animation_aim = new AimAnimation(-0.68d, 0.25d, 0.15d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 0.75f, 1f);
+		animation_aim = new AimAnimation(-0.68d, 0.25d, 0.15d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

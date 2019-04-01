@@ -21,7 +21,7 @@ public class ModelUmp9 extends ModelGun
 
 	public ModelUmp9()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.14d, 0.14d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1.4f, 1f, 1f);
+		animation_aim = new AimAnimation(-0.56d, 0.14d, 0.14d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

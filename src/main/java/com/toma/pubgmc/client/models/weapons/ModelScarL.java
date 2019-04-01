@@ -25,8 +25,7 @@ public class ModelScarL extends ModelGun
 
 	public ModelScarL() 
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.245d, 0.225d, 1f).setInvertedCoords(true, false, false);
-		animation_aim.setMovementMultiplier(1.3f, 1f, 1.25f);
+		animation_aim = new AimAnimation(-0.56d, 0.245d, 0.225d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

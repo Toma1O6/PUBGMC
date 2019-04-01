@@ -24,7 +24,7 @@ public class ModelMK47Mutant extends ModelGun
 
 	public ModelMK47Mutant()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

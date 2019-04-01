@@ -24,7 +24,7 @@ public class ModelS686 extends ModelGun
 
 	public ModelS686()
 	{
-		animation_aim = new AimAnimation(-0.525d, 0.23d, 0.43d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1f, 2.1f);
+		animation_aim = new AimAnimation(-0.525d, 0.23d, 0.43d).setInvertedCoords(true, false, false);
 		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		

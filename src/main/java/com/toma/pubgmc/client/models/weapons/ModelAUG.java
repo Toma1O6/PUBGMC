@@ -24,7 +24,7 @@ public class ModelAUG extends ModelGun
 
 	public ModelAUG()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.2825d, 0.215d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.2825d, 0.215d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

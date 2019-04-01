@@ -20,7 +20,7 @@ public class ModelWin94 extends ModelGun
 
 	public ModelWin94()
 	{
-		animation_aim = new AimAnimation(-0.5625d, 0.365d, 0.29d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1.3f, 1f);
+		animation_aim = new AimAnimation(-0.5625d, 0.365d, 0.29d).setInvertedCoords(true, false, false);
 		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;

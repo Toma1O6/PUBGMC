@@ -24,7 +24,7 @@ public class ModelM416 extends ModelGun
 
 	public ModelM416()
 	{
-		animation_aim = new AimAnimation(-0.5575d, 0.235d, 0.25d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1f, 1f);
+		animation_aim = new AimAnimation(-0.5575d, 0.235d, 0.25d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;

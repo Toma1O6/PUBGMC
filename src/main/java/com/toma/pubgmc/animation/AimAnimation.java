@@ -4,13 +4,9 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class AimAnimation extends Animation
 {
-	private static final double X_MOVEMENT = 0.0144d;
-	private static final double Y_MOVEMENT = 0.0064d;
-	private static final double Z_MOVEMENT = 0.0056d;
 	private final double x,z;
 	private double y;
-	private final float animationSpeed;
-	private float xModifier = 1f, yModifier = 1f, zModifier = 1f;
+	private float animationSpeed = 1f;
 	private double mX, mY, mZ;
 	private boolean invertX,invertY,invertZ = false;
 	
@@ -21,12 +17,11 @@ public class AimAnimation extends Animation
 	 * @param z - the Z translation of final animation movement
 	 * @param speedMultiplier - The speed at which the animation will be performed (normal = 1f)
 	 */
-	public AimAnimation(double x, double y, double z, float speedMultiplier) 
+	public AimAnimation(double x, double y, double z) 
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.animationSpeed = speedMultiplier;
 	}
 	
 	/**
@@ -36,18 +31,22 @@ public class AimAnimation extends Animation
 	@Override
 	public void run(boolean scopeIn)
 	{
+		if((movementX == 0 || movementZ == 0) && scopeIn) calculateMovementVariables(x, y, z);
+		
+		if(mX == 0 && mY == 0 && mZ == 0 && scopeIn) this.onAnimationFinished();
+
 		if(scopeIn)
 		{
 			if(mX != x)
 			{
 				if(!invertX)
 				{
-					if(mX < x) mX += calculateMovement(X_MOVEMENT) * animationSpeed * xModifier;
+					if(mX < x) mX += calculateMovement(movementX);
 					if(mX > x) mX = x;
 				}
 				else
 				{
-					if(mX > x) mX -= calculateMovement(X_MOVEMENT) * animationSpeed * xModifier;
+					if(mX > x) mX -= calculateMovement(movementX);
 					if(mX < x) mX = x;
 				}
 			}
@@ -56,12 +55,12 @@ public class AimAnimation extends Animation
 			{
 				if(!invertY)
 				{
-					if(mY < y) mY += calculateMovement(Y_MOVEMENT) * animationSpeed * yModifier;
+					if(mY < y) mY += calculateMovement(movementY);
 					if(mY > y) mY = y;
 				}
 				else
 				{
-					if(mY > y) mY -= calculateMovement(Y_MOVEMENT) * animationSpeed * yModifier;
+					if(mY > y) mY -= calculateMovement(movementY);
 					if(mY < y) mY = y;
 				}
 			}
@@ -70,12 +69,12 @@ public class AimAnimation extends Animation
 			{
 				if(!invertZ)
 				{
-					if(mZ < z) mZ += calculateMovement(Z_MOVEMENT) * animationSpeed * zModifier;
+					if(mZ < z) mZ += calculateMovement(movementZ);
 					if(mZ > z) mZ = z;
 				}
 				else
 				{
-					if(mZ > z) mZ -= calculateMovement(Z_MOVEMENT) * animationSpeed * zModifier;
+					if(mZ > z) mZ -= calculateMovement(movementZ);
 					if(mZ < z) mZ = z;
 				}
 			}
@@ -87,13 +86,13 @@ public class AimAnimation extends Animation
 			{
 				if(!invertX)
 				{
-					if(mX > 0) mX -= calculateMovement(X_MOVEMENT) * animationSpeed * xModifier;
+					if(mX > 0) mX -= calculateMovement(movementX);
 					if(mX < 0) mX = 0;
 				}
 				
 				else
 				{
-					if(mX < 0) mX += calculateMovement(X_MOVEMENT) * animationSpeed * xModifier;
+					if(mX < 0) mX += calculateMovement(movementX);
 					if(mX > 0) mX = 0;
 				}
 			}
@@ -102,13 +101,13 @@ public class AimAnimation extends Animation
 			{
 				if(!invertY)
 				{
-					if(mY > 0) mY -= calculateMovement(Y_MOVEMENT) * animationSpeed * yModifier;
+					if(mY > 0) mY -= calculateMovement(movementY);
 					if(mY < 0) mY = 0;
 				}
 				
 				else
 				{
-					if(mY < 0) mY += calculateMovement(Y_MOVEMENT) * animationSpeed * yModifier;
+					if(mY < 0) mY += calculateMovement(movementY);
 					if(mY > 0) mY = 0;
 				}
 			}
@@ -117,27 +116,19 @@ public class AimAnimation extends Animation
 			{
 				if(!invertZ)
 				{
-					if(mZ > 0) mZ -= calculateMovement(Z_MOVEMENT) * animationSpeed * zModifier;
+					if(mZ > 0) mZ -= calculateMovement(movementZ);
 					if(mZ < 0) mZ = 0;
 				}
 				
 				else
 				{
-					if(mZ < 0) mZ += calculateMovement(Z_MOVEMENT) * animationSpeed * zModifier;
+					if(mZ < 0) mZ += calculateMovement(movementZ);
 					if(mZ > 0) mZ = 0;
 				}
 			}
 		}
 		
 		GlStateManager.translate(mX, mY, mZ);
-	}
-	
-	public AimAnimation setMovementMultiplier(float multiplierX, float multiplierY, float multiplierZ)
-	{
-		this.xModifier = multiplierX;
-		this.yModifier = multiplierY;
-		this.zModifier = multiplierZ;
-		return this;
 	}
 	
 	/**
@@ -172,6 +163,18 @@ public class AimAnimation extends Animation
 		this.invertY = y;
 		this.invertZ = z;
 		return this;
+	}
+	
+	public AimAnimation speed(float speed)
+	{
+		animationSpeed = speed > 0 ? speed : 0.1f;
+		return this;
+	}
+	
+	public void onAnimationFinished()
+	{
+		movementX = 0;
+		movementZ = 0;
 	}
 	
 	/**

@@ -251,7 +251,7 @@ public class EntityPlane extends Entity
 	
 	private float getMovementMultiplier()
 	{
-		float f = gameData.getMapSize() / 500f;
+		float f = gameData.getMapSize() / 300f;
 		f = f < 1 ? 1f : f;
 		return f;
 	}

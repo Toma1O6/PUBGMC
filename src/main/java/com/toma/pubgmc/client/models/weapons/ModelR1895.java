@@ -21,7 +21,7 @@ public class ModelR1895 extends ModelGun
 
 	public ModelR1895()
 	{
-		animation_aim = new AimAnimation(-0.598d, 0.25d, 0.4d, 1f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1f, 1.6f);
+		animation_aim = new AimAnimation(-0.598d, 0.25d, 0.4d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

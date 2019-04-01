@@ -21,7 +21,7 @@ public class ModelVector extends ModelGun
 
 	public ModelVector() 
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.315d, 0.225d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.315d, 0.225d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

@@ -23,7 +23,7 @@ public class ModelS1897 extends ModelGun
 
 	public ModelS1897()
 	{
-		animation_aim = new AimAnimation(-0.525d, 0.31d, 0.315d, 1.2f).setInvertedCoords(true, false, false).setMovementMultiplier(1f, 1.2f, 1.3f);
+		animation_aim = new AimAnimation(-0.525d, 0.31d, 0.315d).setInvertedCoords(true, false, false);
 		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
 		
 		textureWidth = 128;

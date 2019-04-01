@@ -27,7 +27,7 @@ public class ModelScorpion extends ModelGun
 
 	public ModelScorpion()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.2d, 0.2d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.2d, 0.2d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;
@@ -156,7 +156,6 @@ public class ModelScorpion extends ModelGun
 			
 			animation_aim.run(data.isAiming());
 		}
-		animation_aim.setMovementMultiplier(1.3f, 1f, 1.2f);
 		animation_held.run(sprint);
 		animation_reload.run(data.isReloading());
 	}

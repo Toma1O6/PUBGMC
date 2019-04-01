@@ -24,7 +24,7 @@ public class ModelFlareGun extends ModelGun
 
 	public ModelFlareGun() 
 	{
-		animation_aim = new AimAnimation(-0.57d, 0.215d, 0.225d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.57d, 0.215d, 0.225d).setInvertedCoords(true, false, false);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

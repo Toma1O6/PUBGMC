@@ -24,7 +24,7 @@ public class ModelBerylM762 extends ModelGun
 
 	public ModelBerylM762()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.26d, 0.18d, 1f).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56d, 0.26d, 0.18d).setInvertedCoords(true, false, false);
 		
 		textureWidth = 128;
 		textureHeight = 128;
