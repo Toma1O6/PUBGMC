@@ -118,7 +118,7 @@ public interface IGameData
 		int zoneCount;
 		int timer;
 		int currentZone;
-		String gameID;
+		String gameID = "null";
 		
 		@Override
 		public void setPlaying(boolean play) 
