@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class ArScarL extends GunBase
 	public ArScarL(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.scarl);
+		this.setDamage(cfg.scarl);
 		this.setVelocity(11);
 		this.setGravityModifier(0.0075);
 		this.setGravityStartTime(7);

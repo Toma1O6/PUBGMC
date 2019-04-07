@@ -1,5 +1,6 @@
 package com.toma.pubgmc.proxy;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.renderer.LootSpawnerRenderer;
 import com.toma.pubgmc.client.renderer.RenderGrenade;
@@ -16,7 +17,6 @@ import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -41,7 +41,7 @@ public class ClientProxy implements IProxy
 	{
 		KeyBinds.registerKeybinding();
 		
-		if(ConfigHandler.lootRenderType > 0)
+		if(ConfigPMC.playerSettings.lootRenderType > 0)
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
 		}

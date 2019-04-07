@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class ArGroza extends GunBase
 	public ArGroza(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.groza);
+		this.setDamage(cfg.groza);
 		this.setVelocity(9);
 		this.setGravityModifier(0.025);
 		this.setGravityStartTime(6);

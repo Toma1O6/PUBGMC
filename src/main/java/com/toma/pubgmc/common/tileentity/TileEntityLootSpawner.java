@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.TileEntitySync;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -264,7 +263,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		if(Math.random() * 100 <= 45 * chanceMultiplier)
 		{	
 			//Actual gun gen
-			if(ConfigHandler.enableGunLoot)
+			if(ConfigPMC.worldSettings.enableGunLoot)
 			{
 				//Flare gun 0.5% spawn
 				if(Math.random() * 100 <= 0.5 * chanceMultiplier)

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.init.PMCItems;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -225,7 +225,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		slot = -1;
 		
 		// Create armor loot which is same in every drop; 1 medical loot, 2 gun and med loot 
-		if(ConfigHandler.airdropLootGen == 1)
+		if(ConfigPMC.worldSettings.airdropLootGen == 1)
 		{
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3HELMET));
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3BODY));
@@ -250,7 +250,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 			generateGhillie();
 		}
 		
-		if(ConfigHandler.airdropLootGen == 2)
+		if(ConfigPMC.worldSettings.airdropLootGen == 2)
 		{
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3HELMET));
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3BODY));
@@ -343,7 +343,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		
 		if(!world.isRemote)
 		{
-			if(world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigHandler.aidropRange, false) instanceof EntityPlayer)
+			if(world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.worldSettings.aidropRange, false) instanceof EntityPlayer)
 			{
 				
 			}

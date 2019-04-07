@@ -29,7 +29,6 @@ import com.toma.pubgmc.init.RegistryHandler;
 import com.toma.pubgmc.proxy.IProxy;
 import com.toma.pubgmc.tabs.PMCBlocksTab;
 import com.toma.pubgmc.tabs.PMCItemsTab;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import com.toma.pubgmc.world.OreGen;
 
@@ -88,8 +87,6 @@ public class Pubgmc
 		CapabilityManager.INSTANCE.register(IWorldData.class, new WorldDataStorage(), WorldData::new);
 		CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
 		CapabilityManager.INSTANCE.register(IGameData.class, new GameDataStorage(), GameData::new);
-		
-		ConfigHandler.registerConfig(event);
 		
 		proxy.preInit(event);
 		

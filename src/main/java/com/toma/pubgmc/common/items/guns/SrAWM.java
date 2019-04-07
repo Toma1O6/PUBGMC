@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class SrAWM extends GunBase
 	public SrAWM(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.awm);
+		this.setDamage(cfg.awm);
 		this.setVelocity(13);
 		this.setGravityModifier(0.005);
 		this.setGravityStartTime(10);

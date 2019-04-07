@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class ArBerylM762 extends GunBase
 	public ArBerylM762(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.m762);
+		this.setDamage(cfg.m762);
 		this.setVelocity(9);
 		this.setGravityModifier(0.025);
 		this.setGravityStartTime(6);

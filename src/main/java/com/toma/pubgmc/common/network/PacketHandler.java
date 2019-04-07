@@ -22,7 +22,6 @@ import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.common.network.sp.PacketSound;
 import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
-import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
 import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
@@ -60,7 +59,6 @@ public class PacketHandler
 		registerServerPacket(PacketSetScopeVariants.class);
 		registerServerPacket(PacketTeleportPlayer.class);
 		registerServerPacket(PacketChooseLocation.class);
-		registerClientPacket(PacketSyncConfig.class);
 		registerClientPacket(PacketReloadingSP.class);
 		registerClientPacket(PacketUpdatePlayerData.class);
 		registerClientPacket(PacketSound.class);

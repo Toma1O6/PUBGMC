@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -20,7 +19,7 @@ public class PistolP92 extends GunBase
 		super(name);
 		this.setMaxStackSize(1);
 		
-		this.setDamage(ConfigHandler.p92);
+		this.setDamage(cfg.p92);
 		this.setVelocity(7);
 		this.setGravityModifier(0.015);
 		this.setGravityStartTime(3);

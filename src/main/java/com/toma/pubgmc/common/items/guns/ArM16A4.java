@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -18,7 +17,7 @@ public class ArM16A4 extends GunBase
 	public ArM16A4(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.m16a4);
+		this.setDamage(cfg.m16a4);
 		this.setVelocity(12);
 		this.setGravityModifier(0.005f);
 		this.setGravityStartTime(8);

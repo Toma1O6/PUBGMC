@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class DmrMini14 extends GunBase
 	public DmrMini14(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.mini14);
+		this.setDamage(cfg.mini14);
 		this.setVelocity(12);
 		this.setGravityModifier(0.015);
 		this.setGravityStartTime(6);

@@ -9,7 +9,6 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -28,7 +27,7 @@ public class ShotgunSawedOff extends GunBase
 	public ShotgunSawedOff(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.sawedoff);
+		this.setDamage(cfg.sawedoff);
 		this.setVelocity(5.0);
 		this.setGravityModifier(0.175);
 		this.setGravityStartTime(-1);

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.init.PMCItems;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -185,7 +185,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 		
 		if(!world.isRemote)
 		{
-			if(world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigHandler.aidropRange, false) instanceof EntityPlayer)
+			if(world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigPMC.worldSettings.aidropRange, false) instanceof EntityPlayer)
 			{
 				//DO NOTHING
 			}

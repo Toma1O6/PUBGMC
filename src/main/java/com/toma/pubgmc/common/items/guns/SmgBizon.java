@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -19,7 +18,7 @@ public class SmgBizon extends GunBase
 		super(name);
 		setMaxStackSize(1);
 		
-		setDamage(ConfigHandler.bizon);
+		setDamage(cfg.bizon);
 		setVelocity(8f);
 		setGravityModifier(0.025f);
 		setGravityStartTime(4);

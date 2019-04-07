@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class SrKar98K extends GunBase
 	public SrKar98K(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.kar98k);
+		this.setDamage(cfg.kar98k);
 		this.setVelocity(11);
 		this.setGravityModifier(0.04);
 		this.setGravityStartTime(8);

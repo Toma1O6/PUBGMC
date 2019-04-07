@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class ArQBZ extends GunBase
 	public ArQBZ(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.qbz);
+		this.setDamage(cfg.qbz);
 		this.setVelocity(12);
 		this.setGravityModifier(0.0085);
 		this.setGravityStartTime(7);

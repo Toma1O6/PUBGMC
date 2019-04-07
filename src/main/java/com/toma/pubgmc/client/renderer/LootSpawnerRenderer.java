@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.renderer;
 
 import org.lwjgl.opengl.GL11;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.heal.ItemBandage;
 import com.toma.pubgmc.common.items.heal.ItemEnergyDrink;
@@ -9,7 +10,6 @@ import com.toma.pubgmc.common.items.heal.ItemFirstAidKit;
 import com.toma.pubgmc.common.items.heal.ItemPainkiller;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.init.PMCItems;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -54,7 +54,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
         boolean medkit = te.getStackInSlot(slot).getItem() == PMCItems.MEDKIT;
 		
-		if(ConfigHandler.lootRenderType == 2)
+		if(ConfigPMC.playerSettings.lootRenderType == 2)
 		{
 			if(te.isInvalid() || te == null)
 			{
@@ -128,7 +128,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
 	        }
 		}
 		
-		else if(ConfigHandler.lootRenderType == 1)
+		else if(ConfigPMC.playerSettings.lootRenderType == 1)
 		{
 			if(te.isInvalid() || te == null || te.getStackInSlot(slot).isEmpty())
 			{

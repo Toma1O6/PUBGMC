@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class LmgM249 extends GunBase
 	public LmgM249(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.m249);
+		this.setDamage(cfg.m249);
 		this.setVelocity(11);
 		this.setGravityModifier(0.015);
 		this.setGravityStartTime(7);

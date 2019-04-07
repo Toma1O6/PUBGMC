@@ -3,23 +3,21 @@ package com.toma.pubgmc.common.entity;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
-import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -146,9 +144,9 @@ public class EntityPlane extends Entity
 			}
 		}
 		
-		endPos = new BlockPos(endX, ConfigHandler.planeHeight, endZ);
-		setPosition(startX, ConfigHandler.planeHeight, startZ);
-		startPos = new BlockPos(startX, ConfigHandler.planeHeight, startZ);
+		endPos = new BlockPos(endX, ConfigPMC.worldSettings.planeHeight, endZ);
+		setPosition(startX, ConfigPMC.worldSettings.planeHeight, startZ);
+		startPos = new BlockPos(startX, ConfigPMC.worldSettings.planeHeight, startZ);
 		rotationYaw = 180f;
 		updateHeading(startX, startZ, endPos);
 		
@@ -169,7 +167,7 @@ public class EntityPlane extends Entity
 	{
 		super.onUpdate();
 		
-		canFly = this.ticksExisted >= (ConfigHandler.planeWaitTime * 20);
+		canFly = this.ticksExisted >= (ConfigPMC.worldSettings.planeWaitTime * 20);
 		
 		if(gameData == null)
 		{
@@ -200,7 +198,7 @@ public class EntityPlane extends Entity
 				
 				if(!gameData.isPlaying()) setDead();
 				
-				if(motionX == 0 && motionZ == 0 && ticksExisted >= ConfigHandler.planeWaitTime * 20 + 15)
+				if(motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.worldSettings.planeWaitTime * 20 + 15)
 				{
 					setDead();
 					Pubgmc.logger.error("Plane is in invalid position, despawning...");
@@ -286,7 +284,7 @@ public class EntityPlane extends Entity
 		motionY = compound.getDouble("motY");
 		motionZ = compound.getDouble("motZ");
 		rotationYaw = compound.getFloat("rotYaw");
-		endPos = new BlockPos(compound.getDouble("endX"), ConfigHandler.planeHeight, compound.getDouble("endZ"));
+		endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.worldSettings.planeHeight, compound.getDouble("endZ"));
 		hasReachedDestination = compound.getBoolean("reachedDest");
 		timeSinceDestination = compound.getShort("timeSinceDest");
 		setUniqueId(compound.getUniqueId("UUID"));

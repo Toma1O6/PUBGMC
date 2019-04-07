@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.models.ModelGhillie;
@@ -35,20 +36,16 @@ import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -161,7 +158,7 @@ public class ClientEvents
 	{
 		if(e.getEntity() instanceof EntityPlayer && e.isCancelable())
 		{
-			if(!ConfigHandler.renderPlayerNameTags)
+			if(!ConfigPMC.playerSettings.renderPlayerNameTags)
 			{
 				e.setCanceled(true);
 			}
@@ -193,7 +190,7 @@ public class ClientEvents
 		IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 		
     	//e.getType() == ElementType.TEXT - this is very important otherwise it will mess all fonts used in mc
-    	if(!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && !ConfigHandler.imageBoostOverlay && data.getBoost() > 0)
+    	if(!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && !ConfigPMC.overlaySettings.imageBoostOverlay && data.getBoost() > 0)
     	{
     		mc.entityRenderer.setupOverlayRendering();
     		int width = res.getScaledWidth();
@@ -221,7 +218,7 @@ public class ClientEvents
         	//There is the rendering
         	//Users can edit the position using their configs
         	//Position by default: Above hunger bar
-        	mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigHandler.overlayX, top + ConfigHandler.overlayY, color);
+        	mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.overlaySettings.overlayX, top + ConfigPMC.overlaySettings.overlayY, color);
     	}
     	
     	//Ammo and Firemode info rendering
@@ -280,12 +277,12 @@ public class ClientEvents
     		}
     	}
     	
-		if(ConfigHandler.imageBoostOverlay)
+		if(ConfigPMC.overlaySettings.imageBoostOverlay)
 		{
 			//We cancel the xp bar, but just only if the boost bar position is different than by default
 	    	if(e.getType() == ElementType.EXPERIENCE)
 	    	{
-	    		if(ConfigHandler.imgOverlayX == 0 && ConfigHandler.imgOverlayY == 0 && data.getBoost() > 0)
+	    		if(ConfigPMC.overlaySettings.imgOverlayX == 0 && ConfigPMC.overlaySettings.imgOverlayY == 0 && data.getBoost() > 0)
 	    		{
 		    		e.setCanceled(true);
 	    		}
@@ -358,7 +355,7 @@ public class ClientEvents
         		}
     		}
     		
-    		if(ConfigHandler.armorOverlayIcons)
+    		if(ConfigPMC.overlaySettings.armorOverlayIcons)
     			renderArmorIcons(e, sp, res, mc, data);
     		
     		if(stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan)
@@ -390,7 +387,7 @@ public class ClientEvents
     			//Check if the LMB has been pressed
     			if(gs.keyBindAttack.isPressed())
     			{
-    				if(ConfigHandler.enableGuns)
+    				if(ConfigPMC.worldSettings.enableGuns)
     				{
             			//Shoot only once if the firemode is single
         				if(gun.getFiremode() == Firemode.SINGLE)
@@ -423,7 +420,7 @@ public class ClientEvents
     				//This is being handled in ClientTickEvent so we just prepare some stuff here
     				if(gun.getFiremode() == Firemode.BURST)
     				{
-    					if(ConfigHandler.enableGuns)
+    					if(ConfigPMC.worldSettings.enableGuns)
     					{
         					if(!tracker.hasCooldown(gun) && !shooting && !data.isReloading())
         					{
@@ -604,7 +601,7 @@ public class ClientEvents
     		switchScopeColor(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
     	}
     	
-    	if(ConfigHandler.enableGuns)
+    	if(ConfigPMC.worldSettings.enableGuns)
     	{
         	if(sp instanceof EntityPlayer)
         	{
@@ -747,7 +744,7 @@ public class ClientEvents
         	{	
         		if(player.getHeldItemMainhand().getItem() instanceof GunBase)
         		{
-        			if(ConfigHandler.enableGuns)
+        			if(ConfigPMC.worldSettings.enableGuns)
         			{
             			GunBase gun = (GunBase)player.getHeldItemMainhand().getItem();
             			CooldownTracker tracker = player.getCooldownTracker();
@@ -794,7 +791,7 @@ public class ClientEvents
         		
         		if(stack.hasTagCompound() && gun.hasAmmo(stack))
         		{
-        			if(shooting && gun.getFiremode() == Firemode.BURST && ConfigHandler.enableGuns)
+        			if(shooting && gun.getFiremode() == Firemode.BURST && ConfigPMC.worldSettings.enableGuns)
         			{
         				shootingTimer++;
         				
@@ -887,7 +884,7 @@ public class ClientEvents
 			}
 			
 			//Check if the player is having selected the slot where he started reloading
-	        if(ConfigHandler.enableGuns)
+	        if(ConfigPMC.worldSettings.enableGuns)
 	        {
 	            if(data.isReloading())
 	            {
@@ -915,7 +912,7 @@ public class ClientEvents
 				}
 			}
 			
-			if(ConfigHandler.enableTP)
+			if(ConfigPMC.playerSettings.enableTP)
 			{
 				if(Minecraft.getMinecraft().gameSettings.thirdPersonView != 0 && !player.capabilities.isCreativeMode && !(player.getRidingEntity() instanceof EntityParachute))
 				{
@@ -991,13 +988,13 @@ public class ClientEvents
         	}
 	        
 	        //For better experience with NV googles
-	        if(ConfigHandler.forceBrightness)
+	        if(ConfigPMC.playerSettings.forceBrightness)
 	        {
 		        float bright = Minecraft.getMinecraft().gameSettings.gammaSetting;
 		        
-		        if(bright != ConfigHandler.brightness)
+		        if(bright != ConfigPMC.playerSettings.brightness)
 		        {
-		        	Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigHandler.brightness;
+		        	Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.playerSettings.brightness;
 		        }
 	        }
 	        
@@ -1254,24 +1251,24 @@ public class ClientEvents
 		int width = res.getScaledWidth();
 		int height = res.getScaledHeight();
 		
-		if(ConfigHandler.imageBoostOverlay)
+		if(ConfigPMC.overlaySettings.imageBoostOverlay)
 		{	
     		int left = width / 2 - 91;
     		int top = height - 32 + 3;
     		short barWidth = 182;
     		
     		//Actual drawing code
-    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigHandler.imgOverlayX, top + ConfigHandler.imgOverlayY, barWidth, 5, false);
+    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.overlaySettings.imgOverlayX, top + ConfigPMC.overlaySettings.imgOverlayY, barWidth, 5, false);
 
     		if(data.getBoost() > 0)
     		{
     			int boost = (int)data.getBoost();
     			double sizeX = ((182D / 100D) * boost);
-    			ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigHandler.imgOverlayX, top + ConfigHandler.imgOverlayY, sizeX, 5, false);
+    			ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.overlaySettings.imgOverlayX, top + ConfigPMC.overlaySettings.imgOverlayY, sizeX, 5, false);
     		}
     		
     		//This will render after these 2 above to make sure this will always be on the top
-    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigHandler.imgOverlayX, top + ConfigHandler.imgOverlayY, barWidth, 5, true);
+    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.overlaySettings.imgOverlayX, top + ConfigPMC.overlaySettings.imgOverlayY, barWidth, 5, true);
 		}
     }
     

@@ -118,7 +118,7 @@ public interface IGameData
 		int zoneCount;
 		int timer;
 		int currentZone;
-		String gameID = "null";
+		String gameID;
 		
 		@Override
 		public void setPlaying(boolean play) 
@@ -251,7 +251,7 @@ public interface IGameData
 		@Override
 		public String getGameID() 
 		{
-			return gameID;
+			return gameID == null || gameID.isEmpty() ? "undefined" : gameID;
 		}
 		
 		@Override

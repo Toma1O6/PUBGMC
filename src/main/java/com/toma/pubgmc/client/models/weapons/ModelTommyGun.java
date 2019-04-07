@@ -24,7 +24,7 @@ public class ModelTommyGun extends ModelGun
 
 	public ModelTommyGun() 
 	{
-		animation_aim = new AimAnimation(-0.56, 0.39d, 0.35d).setInvertedCoords(true, false, false);
+		animation_aim = new AimAnimation(-0.56, 0.39d, 0.35d).setInvertedCoords(true, false, false).speed(1.75f);
 		animation_held.setWeaponType(true);
 		
 		textureWidth = 128;

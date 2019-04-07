@@ -2,6 +2,7 @@ package com.toma.pubgmc.common;
 
 import java.util.Map;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
@@ -16,15 +17,12 @@ import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketSyncConfig;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -171,7 +169,7 @@ public class CommonEvents
 		if(ev.phase == Phase.START && !player.world.isRemote)
 		{
 			//Inventory limit
-			if(ConfigHandler.enableInventoryLimit)
+			if(ConfigPMC.playerSettings.enableInventoryLimit)
 			{
 				for(int i = 9; i < 36; i++)
 				{
@@ -350,7 +348,7 @@ public class CommonEvents
 	@SubscribeEvent
 	public void onPlayerLoggedIn(PlayerLoggedInEvent e)
 	{
-		if(ConfigHandler.enableMessagesSentOnJoin)
+		if(ConfigPMC.playerSettings.enableMessagesSentOnJoin)
 		{
 			if(!e.player.world.isRemote && e.player instanceof EntityPlayer && e.player != null)
 			{
@@ -364,9 +362,6 @@ public class CommonEvents
 		
 		if(e.player instanceof EntityPlayerMP)
 		{
-			//Sync config with server
-			PacketHandler.sendToClient(new PacketSyncConfig(), (EntityPlayerMP)e.player);
-			
 			EntityPlayerMP player = (EntityPlayerMP) e.player;
 			if(player != null && !player.world.isRemote)
 			{

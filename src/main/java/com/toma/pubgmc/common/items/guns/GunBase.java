@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -20,7 +21,6 @@ import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -28,7 +28,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,6 +47,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class GunBase extends PMCItem implements ICraftable
 {
 	public static final List<GunBase> GUNS = new ArrayList<GunBase>();
+	public static ConfigPMC.WeaponSettings cfg = ConfigPMC.weaponSettings;
 	
 	private float damage = 1.0f;
 	private double velocity = 1.0;
@@ -203,7 +203,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	public void reload(EntityPlayer player)
 	{
 		IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-		if(ConfigHandler.enableGuns)
+		if(ConfigPMC.worldSettings.enableGuns)
 		{
 			ItemStack heldItem = player.getHeldItemMainhand();
 			

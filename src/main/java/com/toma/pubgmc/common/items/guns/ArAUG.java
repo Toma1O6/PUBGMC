@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,7 +18,7 @@ public class ArAUG extends GunBase
 	public ArAUG(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.aug);
+		this.setDamage(cfg.aug);
 		this.setVelocity(11.5);
 		this.setGravityModifier(0.007);
 		this.setGravityStartTime(8);

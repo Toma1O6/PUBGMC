@@ -8,7 +8,6 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -26,7 +25,7 @@ public class ShotgunS12K extends GunBase
 	public ShotgunS12K(String name) 
 	{
 		super(name);
-		this.setDamage(ConfigHandler.s12k);
+		this.setDamage(cfg.s12k);
 		this.setVelocity(5.5);
 		this.setGravityModifier(0.175);
 		this.setGravityStartTime(0);

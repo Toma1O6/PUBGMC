@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.ICraftable;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -20,7 +18,7 @@ public class PistolScorpion extends GunBase
 		super(name);
 		setMaxStackSize(1);
 		
-		setDamage(ConfigHandler.scorpion);
+		setDamage(cfg.scorpion);
 		setVelocity(7);
 		setGravityModifier(0.015f);
 		setGravityStartTime(3);

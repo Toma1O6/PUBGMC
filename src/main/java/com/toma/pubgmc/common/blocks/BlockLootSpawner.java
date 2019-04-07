@@ -2,9 +2,9 @@ package com.toma.pubgmc.common.blocks;
 
 import java.util.Random;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
 import net.minecraft.block.SoundType;
@@ -69,7 +69,7 @@ public class BlockLootSpawner extends PMCBlock
 	@Override
 	public BlockRenderLayer getBlockLayer()
 	{
-		return ConfigHandler.lootRenderType > 0 ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
+		return ConfigPMC.playerSettings.lootRenderType > 0 ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
 	}
 	
 	@Override

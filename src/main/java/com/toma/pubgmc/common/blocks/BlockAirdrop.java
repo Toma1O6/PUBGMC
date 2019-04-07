@@ -2,9 +2,9 @@ package com.toma.pubgmc.common.blocks;
 
 import java.util.Random;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
-import com.toma.pubgmc.util.handlers.ConfigHandler;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
 import net.minecraft.block.SoundType;
@@ -42,7 +42,7 @@ public class BlockAirdrop extends PMCBlock
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
 	{
-		if(!worldIn.isRemote && ConfigHandler.airdropLootGen > 0)
+		if(!worldIn.isRemote && ConfigPMC.worldSettings.airdropLootGen > 0)
 		{
 			TileEntity tilee = worldIn.getTileEntity(pos);
 			if(tilee instanceof TileEntityAirdrop)

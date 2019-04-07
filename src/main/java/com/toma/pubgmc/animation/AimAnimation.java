@@ -41,12 +41,12 @@ public class AimAnimation extends Animation
 			{
 				if(!invertX)
 				{
-					if(mX < x) mX += calculateMovement(movementX);
+					if(mX < x) mX += calculateMovement(movementX) * animationSpeed;
 					if(mX > x) mX = x;
 				}
 				else
 				{
-					if(mX > x) mX -= calculateMovement(movementX);
+					if(mX > x) mX -= calculateMovement(movementX) * animationSpeed;
 					if(mX < x) mX = x;
 				}
 			}
@@ -55,12 +55,12 @@ public class AimAnimation extends Animation
 			{
 				if(!invertY)
 				{
-					if(mY < y) mY += calculateMovement(movementY);
+					if(mY < y) mY += calculateMovement(movementY) * animationSpeed;
 					if(mY > y) mY = y;
 				}
 				else
 				{
-					if(mY > y) mY -= calculateMovement(movementY);
+					if(mY > y) mY -= calculateMovement(movementY) * animationSpeed;
 					if(mY < y) mY = y;
 				}
 			}
@@ -69,12 +69,12 @@ public class AimAnimation extends Animation
 			{
 				if(!invertZ)
 				{
-					if(mZ < z) mZ += calculateMovement(movementZ);
+					if(mZ < z) mZ += calculateMovement(movementZ) * animationSpeed;
 					if(mZ > z) mZ = z;
 				}
 				else
 				{
-					if(mZ > z) mZ -= calculateMovement(movementZ);
+					if(mZ > z) mZ -= calculateMovement(movementZ) * animationSpeed;
 					if(mZ < z) mZ = z;
 				}
 			}
@@ -86,13 +86,13 @@ public class AimAnimation extends Animation
 			{
 				if(!invertX)
 				{
-					if(mX > 0) mX -= calculateMovement(movementX);
+					if(mX > 0) mX -= calculateMovement(movementX) * animationSpeed;
 					if(mX < 0) mX = 0;
 				}
 				
 				else
 				{
-					if(mX < 0) mX += calculateMovement(movementX);
+					if(mX < 0) mX += calculateMovement(movementX) * animationSpeed;
 					if(mX > 0) mX = 0;
 				}
 			}
@@ -101,13 +101,13 @@ public class AimAnimation extends Animation
 			{
 				if(!invertY)
 				{
-					if(mY > 0) mY -= calculateMovement(movementY);
+					if(mY > 0) mY -= calculateMovement(movementY) * animationSpeed;
 					if(mY < 0) mY = 0;
 				}
 				
 				else
 				{
-					if(mY < 0) mY += calculateMovement(movementY);
+					if(mY < 0) mY += calculateMovement(movementY) * animationSpeed;
 					if(mY > 0) mY = 0;
 				}
 			}
@@ -116,13 +116,13 @@ public class AimAnimation extends Animation
 			{
 				if(!invertZ)
 				{
-					if(mZ > 0) mZ -= calculateMovement(movementZ);
+					if(mZ > 0) mZ -= calculateMovement(movementZ) * animationSpeed;
 					if(mZ < 0) mZ = 0;
 				}
 				
 				else
 				{
-					if(mZ < 0) mZ += calculateMovement(movementZ);
+					if(mZ < 0) mZ += calculateMovement(movementZ) * animationSpeed;
 					if(mZ > 0) mZ = 0;
 				}
 			}
