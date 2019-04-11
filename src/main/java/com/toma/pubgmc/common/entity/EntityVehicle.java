@@ -8,18 +8,14 @@ import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.entity.vehicles.WheelPart;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.vehicle.Wheel;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -77,8 +73,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	
 	/** For different colors **/
 	private byte variantType = 0;
-	
-	protected WheelPart[] parts;
 	
 	public EntityVehicle(World world)
 	{

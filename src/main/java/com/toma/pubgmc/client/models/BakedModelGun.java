@@ -60,6 +60,7 @@ public class BakedModelGun implements IBakedModel
 		return false;
 	}
 	
+	// TODO: make weapon animations here to prevent gui movement
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
