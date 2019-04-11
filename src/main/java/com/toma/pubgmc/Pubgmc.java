@@ -49,7 +49,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION)
+@Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION, updateJSON = Pubgmc.UPDATEURL)
 public class Pubgmc
 {
 	/** Some basic stuff **/
@@ -59,6 +59,7 @@ public class Pubgmc
 	public static final String ACCEPTED_VERSIONS = "[1.12.2]";
 	public static final String CLIENT_PROXY_CLASS = "com.toma.pubgmc.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";
+	public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
 	
 	/** Creative Tabs **/
 	public static final CreativeTabs pmcitemstab = new PMCItemsTab("pmcitemstab");

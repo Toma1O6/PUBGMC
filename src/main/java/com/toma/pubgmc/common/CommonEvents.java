@@ -23,6 +23,8 @@ import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCItems;
 import com.toma.pubgmc.util.PUBGMCUtil;
+
+import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator.Status;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,6 +35,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -40,12 +43,14 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -350,13 +355,10 @@ public class CommonEvents
 	{
 		if(ConfigPMC.playerSettings.enableMessagesSentOnJoin)
 		{
-			if(!e.player.world.isRemote && e.player instanceof EntityPlayer && e.player != null)
+			if(e.player instanceof EntityPlayer && e.player != null)
 			{
-				EntityPlayer player = e.player;
-				TextComponentString urlMessage = new TextComponentString(TextFormatting.GREEN + "Make sure you're playing the newest version. New versions can be found " + TextFormatting.BOLD + "HERE");
-				urlMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft.curseforge.com/projects/pubgmc-mod/files"));
-				player.sendMessage(urlMessage);
-				player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Current version:" + TextFormatting.BOLD + " " + Pubgmc.VERSION + TextFormatting.RESET + ", " + TextFormatting.AQUA + "author:" + TextFormatting.BOLD + " Toma1O6"));
+				ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
+				handleUpdateResults(version, e.player);
 			}
 		}
 		
@@ -635,5 +637,42 @@ public class CommonEvents
 	private boolean isZoneShrinking(WorldBorder border)
 	{
 		return border.getDiameter() != prevDiameter;
+	}
+	
+	private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player)
+	{
+		switch(result.status)
+		{
+			case AHEAD: {
+				sendMessage(player, "How did you got this version? Hello friend!", TextFormatting.GREEN);
+				break;
+			}
+			
+			case FAILED: {
+				sendMessage(player, "Update check failed! Check your internet connection", TextFormatting.RED);
+				break;
+			}
+			
+			case OUTDATED: {
+				sendMessage(player, "You are using old version! Get a new one.", TextFormatting.YELLOW);
+				TextComponentString comp = new TextComponentString(TextFormatting.YELLOW + "New version is available! You can get it " + TextFormatting.ITALIC +"HERE");
+				comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft.curseforge.com/projects/pubgmc-mod/files")));
+				player.sendMessage(comp);
+				break;
+			}
+			
+			case PENDING: {
+				sendMessage(player, "Unable to check new version, check took too long!", TextFormatting.BLUE);
+				break;
+			}
+			
+			default: break;
+		}
+	}
+	
+	private static void sendMessage(EntityPlayer player, String message, TextFormatting color)
+	{
+		if(player.world.isRemote)
+			player.sendMessage(new TextComponentString(color + message));
 	}
 }
