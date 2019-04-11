@@ -1,0 +1,14 @@
+{
+  "homepage": "https://minecraft.curseforge.com/projects/pubgmc-mod",
+
+  "promos":
+   {
+    "1.12.2-latest": "1.5.0-a",
+    "1.12.2-recommended": "1.5.0-a"
+   },
+
+  "1.12.2":
+   {
+    "1.5.0-a": "Current"
+   }
+}
