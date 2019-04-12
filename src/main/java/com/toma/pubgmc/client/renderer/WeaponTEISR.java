@@ -35,11 +35,11 @@ import com.toma.pubgmc.client.models.weapons.ModelSawedOff;
 import com.toma.pubgmc.client.models.weapons.ModelScarL;
 import com.toma.pubgmc.client.models.weapons.ModelScorpion;
 import com.toma.pubgmc.client.models.weapons.ModelTommyGun;
-import com.toma.pubgmc.client.models.weapons.ModelUmp9;
+import com.toma.pubgmc.client.models.weapons.ModelUmp45;
 import com.toma.pubgmc.client.models.weapons.ModelVSS;
 import com.toma.pubgmc.client.models.weapons.ModelVector;
 import com.toma.pubgmc.client.models.weapons.ModelWin94;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
@@ -62,7 +62,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	private final ModelS686 s686 = new ModelS686();
 	private final ModelS12K s12k = new ModelS12K();
 	private final ModelMicroUzi microuzi = new ModelMicroUzi();
-	private final ModelUmp9 ump = new ModelUmp9();
+	private final ModelUmp45 ump = new ModelUmp45();
 	private final ModelTommyGun tommygun = new ModelTommyGun();
 	private final ModelPP19Bizon bizon = new ModelPP19Bizon();
 	private final ModelVector vector = new ModelVector();
@@ -91,230 +91,230 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	@Override
 	public void renderByItem(ItemStack stack)
 	{
-		if(stack.getItem() == PMCItems.FLARE_GUN)
+		if(stack.getItem() == PMCRegistry.Items.FLARE_GUN)
 		{
 			bindTexture("flare_gun");
 			flareGun.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.P92)
+		else if(stack.getItem() == PMCRegistry.Items.P92)
 		{
 			bindTexture("p92");
 			p92.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.P1911)
+		else if(stack.getItem() == PMCRegistry.Items.P1911)
 		{
 			bindTexture("p1911");
 			p1911.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.P18C)
+		else if(stack.getItem() == PMCRegistry.Items.P18C)
 		{
 			bindTexture("p18c");
 			p18c.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.R45)
+		else if(stack.getItem() == PMCRegistry.Items.R45)
 		{
 			bindTexture("r45");
 			r45.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.R1895)
+		else if(stack.getItem() == PMCRegistry.Items.R1895)
 		{
 			bindTexture("r1895");
 			r1895.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.SCORPION)
+		else if(stack.getItem() == PMCRegistry.Items.SCORPION)
 		{
 			bindTexture("m762");
 			scorpion.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.WIN94)
+		else if(stack.getItem() == PMCRegistry.Items.WIN94)
 		{
 			bindTexture("win94");
 			win94.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.SAWED_OFF)
+		else if(stack.getItem() == PMCRegistry.Items.SAWED_OFF)
 		{
 			bindTexture("sawed_off");
 			sawedOff.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.S1897)
+		else if(stack.getItem() == PMCRegistry.Items.S1897)
 		{
 			//same texture as for sawed off
 			bindTexture("sawed_off");
 			s1897.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.S686)
+		else if(stack.getItem() == PMCRegistry.Items.S686)
 		{
 			bindTexture("sawed_off");
 			s686.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.S12K)
+		else if(stack.getItem() == PMCRegistry.Items.S12K)
 		{
 			bindTexture("s12k");
 			s12k.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.MICROUZI)
+		else if(stack.getItem() == PMCRegistry.Items.MICROUZI)
 		{
 			bindTexture("microuzi");
 			microuzi.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.UMP9)
+		else if(stack.getItem() == PMCRegistry.Items.UMP45)
 		{
 			bindTexture("microuzi");
 			ump.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.VECTOR)
+		else if(stack.getItem() == PMCRegistry.Items.VECTOR)
 		{
 			bindTexture("vector");
 			vector.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.TOMMY_GUN)
+		else if(stack.getItem() == PMCRegistry.Items.TOMMY_GUN)
 		{
 			bindTexture("tommygun");
 			tommygun.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.BIZON)
+		else if(stack.getItem() == PMCRegistry.Items.BIZON)
 		{
 			bindTexture("m762");
 			bizon.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.M16A4)
+		else if(stack.getItem() == PMCRegistry.Items.M16A4)
 		{
 			bindTexture("microuzi");
 			m16a4.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.M416)
+		else if(stack.getItem() == PMCRegistry.Items.M416)
 		{
 			bindTexture("microuzi");
 			m416.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.SCAR_L)
+		else if(stack.getItem() == PMCRegistry.Items.SCAR_L)
 		{
 			bindTexture("scarl");
 			scar.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.G36C)
+		else if(stack.getItem() == PMCRegistry.Items.G36C)
 		{
 			bindTexture("m762");
 			g36c.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.QBZ)
+		else if(stack.getItem() == PMCRegistry.Items.QBZ)
 		{
 			bindTexture("microuzi");
 			qbz.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.AUG)
+		else if(stack.getItem() == PMCRegistry.Items.AUG)
 		{
 			bindTexture("aug");
 			aug.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.AKM)
+		else if(stack.getItem() == PMCRegistry.Items.AKM)
 		{
 			bindTexture("akm");
 			akm.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.BERYL_M762)
+		else if(stack.getItem() == PMCRegistry.Items.BERYL_M762)
 		{
 			bindTexture("m762");
 			m762.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.MK47_MUTANT)
+		else if(stack.getItem() == PMCRegistry.Items.MK47_MUTANT)
 		{
 			bindTexture("m762");
 			mk47.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.GROZA)
+		else if(stack.getItem() == PMCRegistry.Items.GROZA)
 		{
 			bindTexture("akm");
 			groza.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.DP28)
+		else if(stack.getItem() == PMCRegistry.Items.DP28)
 		{
 			bindTexture("akm");
 			dp28.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.M249)
+		else if(stack.getItem() == PMCRegistry.Items.M249)
 		{
 			bindTexture("m249");
 			m249.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.VSS)
+		else if(stack.getItem() == PMCRegistry.Items.VSS)
 		{
 			bindTexture("akm");
 			vss.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.MINI14)
+		else if(stack.getItem() == PMCRegistry.Items.MINI14)
 		{
 			bindTexture("mini14");
 			mini14.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.QBU)
+		else if(stack.getItem() == PMCRegistry.Items.QBU)
 		{
 			bindTexture("m762");
 			qbu.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.SKS)
+		else if(stack.getItem() == PMCRegistry.Items.SKS)
 		{
 			bindTexture("sks");
 			sks.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.SLR)
+		else if(stack.getItem() == PMCRegistry.Items.SLR)
 		{
 			bindTexture("m762");
 			slr.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.MK14)
+		else if(stack.getItem() == PMCRegistry.Items.MK14)
 		{
 			bindTexture("m762");
 			mk14.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.KAR98K)
+		else if(stack.getItem() == PMCRegistry.Items.KAR98K)
 		{
 			bindTexture("kar98k");
 			kar98k.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.M24)
+		else if(stack.getItem() == PMCRegistry.Items.M24)
 		{
 			bindTexture("m24");
 			m24.render(stack);
 		}
 		
-		else if(stack.getItem() == PMCItems.AWM)
+		else if(stack.getItem() == PMCRegistry.Items.AWM)
 		{
 			bindTexture("awm");
 			awm.render(stack);

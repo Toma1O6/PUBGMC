@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -21,7 +21,7 @@ public class PistolP1911 extends GunBase
 		this.setDamage(cfg.p1911);
 		this.setVelocity(7.25);
 		this.setGravityModifier(0.01);
-		this.setGravityStartTime(5);
+		this.setGravityStartTime(4);
 		this.setReloadTime(25);
 		this.setAmmoType(AmmoType.AMMO45ACP);
 		this.setFiremode(Firemode.SINGLE);
@@ -41,20 +41,7 @@ public class PistolP1911 extends GunBase
 	@Override
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-		{
-			if(stack.getTagCompound().getInteger("magazine") > 1)
-			{
-				return 12;
-			}
-			
-			else
-			{
-				return 7;
-			}
-		}
-		
-		else return 7;
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? 12 : 7;
 	}
 	
 	@Override
@@ -74,7 +61,7 @@ public class PistolP1911 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 12));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 12));
 		rec.add(new ItemStack(Items.IRON_INGOT, 20));
 		rec.add(new ItemStack(Blocks.STONE, 1));
 		return rec;

@@ -40,27 +40,10 @@ public class ModelAKM extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderAKM(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.28d)
-				animation_aim.setYModifier(0.28d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.205d)
-				animation_aim.setYModifier(0.205d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.155d)
-				animation_aim.setYModifier(0.155d);
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderAKM(boolean aim, ItemStack stack)
@@ -111,8 +94,6 @@ public class ModelAKM extends ModelGun
 	
 	public ModelAKM()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.28d, 0.31d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 

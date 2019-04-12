@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -28,9 +27,6 @@ public class ModelPP19Bizon extends ModelGun
 
 	public ModelPP19Bizon()
 	{
-		animation_aim = new AimAnimation(-0.68d, 0.25d, 0.15d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -161,28 +157,10 @@ public class ModelPP19Bizon extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player.isSprinting(), stack);
 				renderBizon(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.235d)
-				animation_aim.setYModifier(0.235d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.165d)
-				animation_aim.setYModifier(0.165d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.105d)
-				animation_aim.setYModifier(0.105d);
-			
-			animation_aim.run(data.isAiming());
-		}
-		animation_held.run(sprint);
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderBizon(boolean aim, ItemStack stack)

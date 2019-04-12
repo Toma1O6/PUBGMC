@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -25,8 +24,6 @@ public class ModelS12K extends ModelGun
 
 	public ModelS12K()
 	{
-		animation_aim = new AimAnimation(-0.535d, 0.27d, 0.235d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -105,7 +102,6 @@ public class ModelS12K extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player.isSprinting(), stack);
 				renderWeapon(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
@@ -117,23 +113,6 @@ public class ModelS12K extends ModelGun
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.27d)
-				animation_aim.setYModifier(0.27d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.195d)
-				animation_aim.setYModifier(0.195d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.15d)
-				animation_aim.setYModifier(0.15d);
-			
-			animation_aim.run(data.isAiming());
-		}
-		animation_held.run(sprint);
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderParts()

@@ -24,9 +24,6 @@ public class ModelKar98K extends ModelGun
 
 	public ModelKar98K()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.245d).setInvertedCoords(true, false, false);
-		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -117,27 +114,10 @@ public class ModelKar98K extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderKar98K(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.265d)
-				animation_aim.setYModifier(0.265d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.19d)
-				animation_aim.setYModifier(0.19d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.145d)
-				animation_aim.setYModifier(0.145d);
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderKar98K(boolean aim, ItemStack stack)

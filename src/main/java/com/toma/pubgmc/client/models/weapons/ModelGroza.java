@@ -23,8 +23,6 @@ public class ModelGroza extends ModelGun
 
 	public ModelGroza()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.135d, 0.28d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -101,28 +99,10 @@ public class ModelGroza extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderGroza(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.135d)
-				animation_aim.setYModifier(0.135d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.0575d)
-				animation_aim.setYModifier(0.0575d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.01d)
-				animation_aim.setYModifier(0.01d);
-			
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderGroza(boolean aim, ItemStack stack)

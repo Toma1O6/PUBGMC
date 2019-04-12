@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.heal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
@@ -46,8 +46,8 @@ public class ItemAdrenalineSyringe extends ItemHealing
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.GLASS_BOTTLE));
-		recipe.add(new ItemStack(PMCItems.ENERGYDRINK));
-		recipe.add(new ItemStack(PMCItems.PAINKILLERS));
+		recipe.add(new ItemStack(PMCRegistry.Items.ENERGYDRINK));
+		recipe.add(new ItemStack(PMCRegistry.Items.PAINKILLERS));
 		return recipe;
 	}
 }

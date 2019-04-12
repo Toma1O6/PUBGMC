@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -21,9 +20,6 @@ public class ModelVector extends ModelGun
 
 	public ModelVector() 
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.315d, 0.225d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -97,27 +93,9 @@ public class ModelVector extends ModelGun
 			boolean aiming = data.isAiming();
 			
 			GlStateManager.pushMatrix();
-			handleAnimations(aiming, player.isSprinting(), data.isReloading(), stack);
 			renderVector(aiming, stack);
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.315d)
-				animation_aim.setYModifier(0.315d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.225d)
-				animation_aim.setYModifier(0.225d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.205d)
-				animation_aim.setYModifier(0.205d);
-			
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderVector(boolean aim, ItemStack stack)

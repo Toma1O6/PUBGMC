@@ -24,8 +24,6 @@ public class ModelAUG extends ModelGun
 
 	public ModelAUG()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.2825d, 0.215d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -114,27 +112,10 @@ public class ModelAUG extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderAUG(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.2825d)
-				animation_aim.setYModifier(0.2825d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.205d)
-				animation_aim.setYModifier(0.205d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.16d)
-				animation_aim.setYModifier(0.16d);
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderAUG(boolean aim, ItemStack stack)

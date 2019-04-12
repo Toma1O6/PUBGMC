@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -23,9 +22,6 @@ public class ModelR45 extends ModelGun
 
 	public ModelR45()
 	{
-		animation_aim = new AimAnimation(-0.555d, 0.175d, 0.255d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -100,32 +96,10 @@ public class ModelR45 extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player.isSprinting(), stack);
 				renderR45(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.175d) 
-			{
-				animation_aim.setYModifier(0.175d);
-			}
-			
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.095d)
-			{
-				animation_aim.setYModifier(0.095d);
-			}
-			
-			animation_aim.run(data.isAiming());
-		}
-		
-		animation_held.run(sprint);
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderR45(boolean aim, ItemStack stack)

@@ -24,8 +24,6 @@ public class ModelMini14 extends ModelGun
 
 	public ModelMini14()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.275d, 0.23d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -123,28 +121,10 @@ public class ModelMini14 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderMini14(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.275d)
-				animation_aim.setYModifier(0.275d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.2d)
-				animation_aim.setYModifier(0.2d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.155d)
-				animation_aim.setYModifier(0.155d);
-			
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderMini14(boolean aim, ItemStack stack)

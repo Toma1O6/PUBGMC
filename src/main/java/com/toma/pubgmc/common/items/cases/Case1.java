@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.PMCItem;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,35 +41,35 @@ public class Case1 extends PMCItem
 		{
 			if(Math.random() * 100 <= 0.25)
 			{		
-				entity.addItemStackToInventory(new ItemStack(PMCItems.OFFICIAL_LEGS, 64));
+				entity.addItemStackToInventory(new ItemStack(PMCRegistry.Items.OFFICIAL_LEGS, 64));
 			}
 			
 			//VERY RARE
 			else if (Math.random() * 100 <= 1.75)
 			{
-				entity.addItemStackToInventory(new ItemStack(PMCItems.BLACK_GLASSES, 64));
+				entity.addItemStackToInventory(new ItemStack(PMCRegistry.Items.BLACK_GLASSES, 64));
 			}
 			
 			//RARE
 			else if(Math.random() * 100 <= 10)
 			{
-				entity.addItemStackToInventory(new ItemStack(PMCItems.WHITE_BOOTS, 64));
+				entity.addItemStackToInventory(new ItemStack(PMCRegistry.Items.WHITE_BOOTS, 64));
 			}
 			
 			//COMMON
 			else if(Math.random() * 100 <= 40)
 			{
-				entity.addItemStackToInventory(new ItemStack(PMCItems.GRAY_TOP, 64));
+				entity.addItemStackToInventory(new ItemStack(PMCRegistry.Items.GRAY_TOP, 64));
 			}
 			
 			else if(Math.random() * 100 <= 40)
 			{
-				entity.addItemStackToInventory(new ItemStack(PMCItems.YELLOW_TSHIRT, 64));
+				entity.addItemStackToInventory(new ItemStack(PMCRegistry.Items.YELLOW_TSHIRT, 64));
 			}
 			
 			else
 			{
-				entity.addItemStackToInventory(new ItemStack(PMCItems.BROWN_CAP, 64));
+				entity.addItemStackToInventory(new ItemStack(PMCRegistry.Items.BROWN_CAP, 64));
 			}
 		}
 		

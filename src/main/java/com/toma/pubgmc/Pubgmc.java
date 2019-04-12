@@ -1,6 +1,7 @@
 package com.toma.pubgmc;
 
 import java.io.File;
+import java.rmi.registry.RegistryHandler;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -22,10 +23,8 @@ import com.toma.pubgmc.common.commands.CommandLeave;
 import com.toma.pubgmc.common.commands.CommandLootGenerate;
 import com.toma.pubgmc.common.commands.CommandPlayerData;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.init.PMCBlocks;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.init.RegistryHandler;
 import com.toma.pubgmc.proxy.IProxy;
 import com.toma.pubgmc.tabs.PMCBlocksTab;
 import com.toma.pubgmc.tabs.PMCItemsTab;
@@ -98,7 +97,7 @@ public class Pubgmc
 	public void init(FMLInitializationEvent event)
 	{
 		NetworkRegistry.INSTANCE.registerGuiHandler(Pubgmc.instance, new GuiHandler());
-		RegistryHandler.registerTileEntities();
+		PMCRegistry.Registry.initTileEntities();
 		
 		registerSmeltingRecipes();
 		
@@ -163,7 +162,7 @@ public class Pubgmc
 	private static void registerSmeltingRecipes()
 	{
 		FurnaceRecipes rec = FurnaceRecipes.instance();
-		rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
-		rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
+		rec.addSmeltingRecipeForBlock(PMCRegistry.Blocks.COPPER_ORE, new ItemStack(PMCRegistry.Items.COPPER_INGOT, 1), 2f);
+		rec.addSmelting(PMCRegistry.Items.STEEL_DUST, new ItemStack(PMCRegistry.Items.STEEL_INGOT, 1), 2f);
 	}
 }

@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -43,20 +43,7 @@ public class PistolP92 extends GunBase
 	@Override
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-		{
-			if(stack.getTagCompound().getInteger("magazine") > 1)
-			{
-				return 20;
-			}
-			
-			else
-			{
-				return 15;
-			}
-		}
-		
-		else return 15;
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? 20 : 15;
 	}
 	
 	@Override
@@ -70,7 +57,7 @@ public class PistolP92 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 10));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 10));
 		rec.add(new ItemStack(Items.IRON_INGOT, 15));
 		rec.add(new ItemStack(Blocks.PLANKS, 1));
 		return rec;

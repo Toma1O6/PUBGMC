@@ -16,9 +16,8 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.init.DamageSourceGun;
-import com.toma.pubgmc.init.PMCBlocks;
 import com.toma.pubgmc.init.PMCDamageSources;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.block.Block;
@@ -128,7 +127,7 @@ public class EntityBullet extends Entity
     	
     	else
     	{
-    		if(type == GunType.SMG || type == GunType.PISTOL || shooter.getHeldItemMainhand().getItem() == PMCItems.SAWED_OFF)
+    		if(type == GunType.SMG || type == GunType.PISTOL || shooter.getHeldItemMainhand().getItem() == PMCRegistry.Items.SAWED_OFF)
     		{
     			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
                 this.motionY = rotVec.y * velocity + 5.7d + (rand.nextDouble() - 0.5);
@@ -314,7 +313,7 @@ public class EntityBullet extends Entity
         			((TileEntityLandMine)world.getTileEntity(pos)).explode(world, pos);
         		}
         		
-        		else if(block == PMCBlocks.TARGET)
+        		else if(block == PMCRegistry.Blocks.TARGET)
         		{
         			this.onTargetHit(pos, hitvec, shooter);
         		}
@@ -371,17 +370,17 @@ public class EntityBullet extends Entity
     	{
         	ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         	
-    		if(head.getItem() == PMCItems.ARMOR1HELMET)
+    		if(head.getItem() == PMCRegistry.Items.ARMOR1HELMET)
     		{
     			damage *= 0.7f;
     		}
     		
-    		else if(head.getItem() == PMCItems.ARMOR2HELMET)
+    		else if(head.getItem() == PMCRegistry.Items.ARMOR2HELMET)
     		{
     			damage *= 0.6f;
     		}
     		
-    		else if(head.getItem() == PMCItems.ARMOR3HELMET)
+    		else if(head.getItem() == PMCRegistry.Items.ARMOR3HELMET)
     		{
     			damage *= 0.4f;
     		}
@@ -396,17 +395,17 @@ public class EntityBullet extends Entity
     	{
         	ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         	
-    		if(body.getItem() == PMCItems.ARMOR1BODY)
+    		if(body.getItem() == PMCRegistry.Items.ARMOR1BODY)
     		{
     			damage *= 0.7f;
     		}
     		
-    		else if(body.getItem() == PMCItems.ARMOR2BODY)
+    		else if(body.getItem() == PMCRegistry.Items.ARMOR2BODY)
     		{
     			damage *= 0.6f;
     		}
     		
-    		else if(body.getItem() == PMCItems.ARMOR3BODY)
+    		else if(body.getItem() == PMCRegistry.Items.ARMOR3BODY)
     		{
     			damage *= 0.5f;
     		}

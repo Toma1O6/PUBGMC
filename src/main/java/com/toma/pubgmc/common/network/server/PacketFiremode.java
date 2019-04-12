@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketFiremode implements IMessage, IMessageHandler<PacketFiremode, IMessage>
 {
 	private Firemode mode;
-	private int value;
 	
 	public PacketFiremode()
 	{
@@ -22,19 +21,18 @@ public class PacketFiremode implements IMessage, IMessageHandler<PacketFiremode,
 	public PacketFiremode(Firemode mode)
 	{
 		this.mode = mode;
-		value = mode.valueOf(mode.toString()).ordinal();
 	}
 	
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeByte(value);
+		buf.writeInt(mode.ordinal());
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		value = buf.readableBytes();
+		mode = Firemode.values()[buf.readInt()];
 	}
 	
 	@Override
@@ -44,7 +42,7 @@ public class PacketFiremode implements IMessage, IMessageHandler<PacketFiremode,
 		player.getServer().addScheduledTask(() ->
 		{
 			GunBase gun = (GunBase)player.getHeldItemMainhand().getItem();
-			gun.getNextFiremode(player);
+			gun.setFiremode(message.mode);
 		});
 		return null;
 	}

@@ -148,8 +148,6 @@ public class ModelVSS extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				animation_reload.run(data.isReloading());
-				animation_held.run(player.isSprinting());
 				renderVSS();
 			}
 			GlStateManager.popMatrix();

@@ -200,11 +200,11 @@ public class ConfigPMC
 		@Config.RequiresWorldRestart
 		public float microuzi = 4f;
 		
-		@Name("UMP-9")
+		@Name("UMP-45")
 		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
+		@RangeDouble(min = 1, max = 25)
 		@Config.RequiresWorldRestart
-		public float ump9 = 4f;
+		public float ump9 = 5f;
 		
 		@Name("PP-19 Bizon")
 		@Comment(S)
@@ -214,9 +214,9 @@ public class ConfigPMC
 		
 		@Name("Vector")
 		@Comment(S)
-		@RangeDouble(min = 1, max = 25)
+		@RangeDouble(min = 1, max = 20)
 		@Config.RequiresWorldRestart
-		public float vector = 5f;
+		public float vector = 4f;
 		
 		@Name("Tommy-gun")
 		@Comment(S)

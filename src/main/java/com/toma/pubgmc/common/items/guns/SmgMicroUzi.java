@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Items;
@@ -23,11 +23,11 @@ public class SmgMicroUzi extends GunBase
 		this.setGravityStartTime(5);
 		this.setReloadTime(56);
 		this.setAmmoType(AmmoType.AMMO9MM);
-		this.setFiremode(Firemode.SINGLE);
+		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setFireRate(1);
 		this.canSwitchMode(true);
-		this.setAutoFiremode(true);
+		setValidFiremodes(Firemode.SINGLE, Firemode.AUTO);
 		this.setGunType(GunType.SMG);
 		this.setVerticalRecoil(2f);
 		this.setHorizontalRecoil(1f);
@@ -41,28 +41,15 @@ public class SmgMicroUzi extends GunBase
 	@Override
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-		{
-			if(stack.getTagCompound().getInteger("magazine") > 1)
-			{
-				return 35;
-			}
-			
-			else
-			{
-				return 25;
-			}
-		}
-		
-		else return 25;
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? 35 : 25;
 	}
 	
 	@Override
 	public List<Item> acceptedAttachments()
 	{
 		addMagazines();
-		addAttachment(PMCItems.SILENCER_SMG);
-		addAttachment(PMCItems.COMPENSATOR_SMG);
+		addAttachment(PMCRegistry.Items.SILENCER_SMG);
+		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
 		return super.acceptedAttachments();
 	}
 	
@@ -76,7 +63,7 @@ public class SmgMicroUzi extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 15));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 15));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		return rec;
 	}

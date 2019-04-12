@@ -21,9 +21,6 @@ public class ModelP92 extends ModelGun
 
 	public ModelP92()
 	{
-		animation_aim = new AimAnimation(-0.65d, 0.31d, 0.24d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -74,24 +71,8 @@ public class ModelP92 extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 			renderP92(data.isAiming(), stack);
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.31d)
-				animation_aim.setYModifier(0.31d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.23d)
-				animation_aim.setYModifier(0.23d);
-			
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderP92(boolean aim, ItemStack stack)

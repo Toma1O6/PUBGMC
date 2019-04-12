@@ -27,8 +27,6 @@ public class ModelM249 extends ModelGun
 
 	public ModelM249()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.125d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -158,28 +156,10 @@ public class ModelM249 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderM249(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.265d)
-				animation_aim.setYModifier(0.265d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.195d)
-				animation_aim.setYModifier(0.195d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.15d)
-				animation_aim.setYModifier(0.15d);
-			
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderM249(boolean aim, ItemStack stack)

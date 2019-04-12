@@ -2,7 +2,7 @@ package com.toma.pubgmc.world;
 
 import java.util.Random;
 
-import com.toma.pubgmc.init.PMCBlocks;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
@@ -20,7 +20,7 @@ public class OreGen implements IWorldGenerator
 	
 	public OreGen() 
 	{
-		copper = new WorldGenMinable(PMCBlocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
+		copper = new WorldGenMinable(PMCRegistry.Blocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
 	}
 	
 	@Override

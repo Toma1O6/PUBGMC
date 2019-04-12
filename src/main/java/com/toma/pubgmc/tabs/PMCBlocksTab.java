@@ -1,6 +1,6 @@
 package com.toma.pubgmc.tabs;
 
-import com.toma.pubgmc.init.PMCBlocks;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -14,6 +14,6 @@ public class PMCBlocksTab extends CreativeTabs
 
 	public ItemStack getTabIconItem()
 	{
-		return new ItemStack(PMCBlocks.CRATE);
+		return new ItemStack(PMCRegistry.Blocks.CRATE);
 	}
 }

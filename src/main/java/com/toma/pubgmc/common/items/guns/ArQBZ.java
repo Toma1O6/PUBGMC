@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -26,13 +26,13 @@ public class ArQBZ extends GunBase
 		this.setReloadTime(70);
 		this.setReloadDelay(15);
 		this.setFireRate(2);
-		this.setFiremode(Firemode.SINGLE);
+		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.AR);
 		this.setHorizontalRecoil(0.75f);
 		this.setVerticalRecoil(2.5f);
 		this.canSwitchMode(true);
-		this.setAutoFiremode(true);
+		setValidFiremodes(Firemode.SINGLE, Firemode.AUTO);
 		
 		this.setGunSound(PMCSounds.gun_qbz);
 		this.setGunSilencedSound(PMCSounds.gun_qbz_silenced);
@@ -43,20 +43,7 @@ public class ArQBZ extends GunBase
 	@Override
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-		{
-			if(stack.getTagCompound().getInteger("magazine") > 1)
-			{
-				return 40;
-			}
-			
-			else
-			{
-				return 30;
-			}
-		}
-		
-		else return 30;
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? 40 : 30;
 	}
 	
 	@Override
@@ -76,7 +63,7 @@ public class ArQBZ extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 25));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
 		rec.add(new ItemStack(Items.IRON_INGOT, 50));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 3));
 		return rec;

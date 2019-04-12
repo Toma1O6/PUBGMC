@@ -27,8 +27,6 @@ public class ModelM16A4 extends ModelGun
 
 	public ModelM16A4()
 	{
-		animation_aim = new AimAnimation(-0.56, 0.195d, 0.215d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -138,28 +136,10 @@ public class ModelM16A4 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), data.isReloading(), stack);
 				renderM16A4(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.195d)
-				animation_aim.setYModifier(0.195d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.18d)
-				animation_aim.setYModifier(0.18d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.145d)
-				animation_aim.setYModifier(0.145d);
-			
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderM16A4(boolean aim, ItemStack stack)

@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -32,8 +32,7 @@ public class LmgM249 extends GunBase
 		this.setHorizontalRecoil(1f);
 		this.setVerticalRecoil(3.5f);
 		this.canSwitchMode(false);
-		this.setBurstFire(false);
-		this.setAutoFiremode(true);
+		setValidFiremodes(Firemode.AUTO);
 		
 		this.setGunSound(PMCSounds.gun_m249);
 		this.setGunSoundVolume(10f);
@@ -62,7 +61,7 @@ public class LmgM249 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 60));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 60));
 		rec.add(new ItemStack(Items.IRON_INGOT, 60));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 3));
 		rec.add(new ItemStack(Blocks.STONE, 5));

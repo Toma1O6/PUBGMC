@@ -9,7 +9,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.TileEntitySync;
 
 import net.minecraft.block.state.IBlockState;
@@ -268,10 +268,10 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				//Flare gun 0.5% spawn
 				if(Math.random() * 100 <= 0.5 * chanceMultiplier)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.FLARE_GUN));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.FLARE_GUN));
 					if(addAmmo)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_FLARE, 1));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_FLARE, 1));
 					}
 				}
 				
@@ -378,7 +378,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		
 		if(Math.random() <= 0.05)
 		{
-			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.FUELCAN));
+			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.FUELCAN));
 		}
 	}
 	
@@ -405,17 +405,17 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 			awm = rand.nextInt(11);
 		}
 		
-		if(gun == PMCItems.KAR98K || gun == PMCItems.M24)
+		if(gun == PMCRegistry.Items.KAR98K || gun == PMCRegistry.Items.M24)
 		{
-			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
+			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, pistolAmmoCount));
 			
 			if(Math.random() * 100 <= 75)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, pistolAmmoCount));
 				
 				if(Math.random() * 100 <= 25)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, pistolAmmoCount));
 				}
 			}
 			
@@ -426,84 +426,84 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		{
 			if(gun.getAmmoType() == AmmoType.AMMO9MM)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, defAR));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_9MM, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, defAR));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_9MM, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, defAR));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_9MM, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO45ACP)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, defAR));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_45ACP, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, defAR));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_45ACP, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, defAR));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_45ACP, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO12G)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, shotguns));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_SHOTGUN, shotguns));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, shotguns));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_SHOTGUN, shotguns));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_SHOTGUN, shotguns));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_SHOTGUN, shotguns));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO556)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, defAR));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_556, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, defAR));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_556, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_556, defAR));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_556, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO762)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, defAR));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, defAR));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, defAR));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, defAR));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, defAR));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, defAR));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO300M)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, awm));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_300M, awm));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, awm));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_300M, awm));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_300M, awm));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_300M, awm));
 					}
 				}
 			}
@@ -512,42 +512,42 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		{
 			if(gun.getAmmoType() == AmmoType.AMMO9MM)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, pistolAmmoCount));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_9MM, pistolAmmoCount));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, pistolAmmoCount));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_9MM, pistolAmmoCount));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_9MM, pistolAmmoCount));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_9MM, pistolAmmoCount));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO45ACP)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, pistolAmmoCount));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_45ACP, pistolAmmoCount));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, pistolAmmoCount));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_45ACP, pistolAmmoCount));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_45ACP, pistolAmmoCount));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_45ACP, pistolAmmoCount));
 					}
 				}
 			}
 			
 			if(gun.getAmmoType() == AmmoType.AMMO762)
 			{
-				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
+				setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, pistolAmmoCount));
 				if(Math.random() * 100 <= 75)
 				{
-					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
+					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, pistolAmmoCount));
 					
 					if(Math.random() * 100 <= 25)
 					{
-						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCItems.AMMO_762, pistolAmmoCount));
+						setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.Items.AMMO_762, pistolAmmoCount));
 					}
 				}
 			}
@@ -561,9 +561,9 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		THROWABLES.clear();
 		
-		THROWABLES.add(new ItemStack(PMCItems.GRENADE));
-		THROWABLES.add(new ItemStack(PMCItems.MOLOTOV));
-		THROWABLES.add(new ItemStack(PMCItems.SMOKE));
+		THROWABLES.add(new ItemStack(PMCRegistry.Items.GRENADE));
+		THROWABLES.add(new ItemStack(PMCRegistry.Items.MOLOTOV));
+		THROWABLES.add(new ItemStack(PMCRegistry.Items.SMOKE));
 	}
 	
 	/**
@@ -572,19 +572,19 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	private void addWearableLoot(int chance)
 	{
 		WEARABLE.clear();
-		WEARABLE.add(new ItemStack(PMCItems.ARMOR1BODY));
-		WEARABLE.add(new ItemStack(PMCItems.ARMOR1HELMET));
+		WEARABLE.add(new ItemStack(PMCRegistry.Items.ARMOR1BODY));
+		WEARABLE.add(new ItemStack(PMCRegistry.Items.ARMOR1HELMET));
 		
 		if(chance >= 10)
 		{
-			WEARABLE.add(new ItemStack(PMCItems.ARMOR2BODY));
-			WEARABLE.add(new ItemStack(PMCItems.ARMOR2HELMET));
-			WEARABLE.add(new ItemStack(PMCItems.NV_GOGGLES));
+			WEARABLE.add(new ItemStack(PMCRegistry.Items.ARMOR2BODY));
+			WEARABLE.add(new ItemStack(PMCRegistry.Items.ARMOR2HELMET));
+			WEARABLE.add(new ItemStack(PMCRegistry.Items.NV_GOGGLES));
 			
 			if(chance >= 25)
 			{
-				WEARABLE.add(new ItemStack(PMCItems.ARMOR3BODY));
-				WEARABLE.add(new ItemStack(PMCItems.ARMOR3HELMET));
+				WEARABLE.add(new ItemStack(PMCRegistry.Items.ARMOR3BODY));
+				WEARABLE.add(new ItemStack(PMCRegistry.Items.ARMOR3HELMET));
 			}
 		}
 	}
@@ -596,15 +596,15 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		BACKPACKS.clear();
 		
-		BACKPACKS.add(new ItemStack(PMCItems.BACKPACK1));
+		BACKPACKS.add(new ItemStack(PMCRegistry.Items.BACKPACK1));
 		
 		if(chance >= 10)
 		{
-			BACKPACKS.add(new ItemStack(PMCItems.BACKPACK2));
+			BACKPACKS.add(new ItemStack(PMCRegistry.Items.BACKPACK2));
 			
 			if(chance >= 25)
 			{
-				BACKPACKS.add(new ItemStack(PMCItems.BACKPACK3));
+				BACKPACKS.add(new ItemStack(PMCRegistry.Items.BACKPACK3));
 			}
 		}
 	}
@@ -619,39 +619,39 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		
 		if(randomCount)
 		{
-			AMMO.add(new ItemStack(PMCItems.AMMO_9MM, rand.nextInt(30)));
-			AMMO.add(new ItemStack(PMCItems.AMMO_45ACP, rand.nextInt(30)));
-			AMMO.add(new ItemStack(PMCItems.AMMO_SHOTGUN, rand.nextInt(10)));
-			AMMO.add(new ItemStack(PMCItems.AMMO_556, rand.nextInt(30)));
-			AMMO.add(new ItemStack(PMCItems.AMMO_762, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_9MM, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_45ACP, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_SHOTGUN, rand.nextInt(10)));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_556, rand.nextInt(30)));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_762, rand.nextInt(30)));
 			
 			if(Math.random() * 100 <= 3)
 			{
-				AMMO.add(new ItemStack(PMCItems.AMMO_FLARE, 1));
+				AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_FLARE, 1));
 			}
 			
 			if(airdrop)
 			{
-				AMMO.add(new ItemStack(PMCItems.AMMO_300M, rand.nextInt(6)));
+				AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_300M, rand.nextInt(6)));
 			}
 		}
 		
 		else
 		{
-			AMMO.add(new ItemStack(PMCItems.AMMO_9MM, 30));
-			AMMO.add(new ItemStack(PMCItems.AMMO_45ACP, 30));
-			AMMO.add(new ItemStack(PMCItems.AMMO_SHOTGUN, 10));
-			AMMO.add(new ItemStack(PMCItems.AMMO_556, 30));
-			AMMO.add(new ItemStack(PMCItems.AMMO_762, 30));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_9MM, 30));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_45ACP, 30));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_SHOTGUN, 10));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_556, 30));
+			AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_762, 30));
 			
 			if(Math.random() * 100 <= 3)
 			{
-				AMMO.add(new ItemStack(PMCItems.AMMO_FLARE, 1));
+				AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_FLARE, 1));
 			}
 			
 			if(airdrop)
 			{
-				AMMO.add(new ItemStack(PMCItems.AMMO_300M, 5));
+				AMMO.add(new ItemStack(PMCRegistry.Items.AMMO_300M, 5));
 			}
 		}
 	}
@@ -664,12 +664,12 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		RARE_HEAL.clear();
 		
-		RARE_HEAL.add(new ItemStack(PMCItems.FIRSTAIDKIT));
+		RARE_HEAL.add(new ItemStack(PMCRegistry.Items.FIRSTAIDKIT));
 		
 		if(chance >= 10)
 		{
-			RARE_HEAL.add(new ItemStack(PMCItems.MEDKIT));
-			RARE_HEAL.add(new ItemStack(PMCItems.ADRENALINESYRINGE));
+			RARE_HEAL.add(new ItemStack(PMCRegistry.Items.MEDKIT));
+			RARE_HEAL.add(new ItemStack(PMCRegistry.Items.ADRENALINESYRINGE));
 		}
 	}
 	
@@ -677,64 +677,64 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		COMMON_HEAL.clear();
 		
-		COMMON_HEAL.add(new ItemStack(PMCItems.BANDAGE, 5));
-		COMMON_HEAL.add(new ItemStack(PMCItems.ENERGYDRINK));
-		COMMON_HEAL.add(new ItemStack(PMCItems.PAINKILLERS));
+		COMMON_HEAL.add(new ItemStack(PMCRegistry.Items.BANDAGE, 5));
+		COMMON_HEAL.add(new ItemStack(PMCRegistry.Items.ENERGYDRINK));
+		COMMON_HEAL.add(new ItemStack(PMCRegistry.Items.PAINKILLERS));
 	}
 	
 	private void addPistols()
 	{
 		PISTOLS.clear();
 		
-		PISTOLS.add(new ItemStack(PMCItems.P92));
-		PISTOLS.add(new ItemStack(PMCItems.P1911));
-		PISTOLS.add(new ItemStack(PMCItems.R1895));
-		PISTOLS.add(new ItemStack(PMCItems.R45));
-		PISTOLS.add(new ItemStack(PMCItems.P18C));
-		PISTOLS.add(new ItemStack(PMCItems.WIN94));
-		PISTOLS.add(new ItemStack(PMCItems.SCORPION));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.P92));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.P1911));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.R1895));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.R45));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.P18C));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.WIN94));
+		PISTOLS.add(new ItemStack(PMCRegistry.Items.SCORPION));
 	}
 	
 	private void addShotguns()
 	{
 		SHOTGUNS.clear();
 		
-		SHOTGUNS.add(new ItemStack(PMCItems.SAWED_OFF));
-		SHOTGUNS.add(new ItemStack(PMCItems.S1897));
-		SHOTGUNS.add(new ItemStack(PMCItems.S686));
-		SHOTGUNS.add(new ItemStack(PMCItems.S12K));
+		SHOTGUNS.add(new ItemStack(PMCRegistry.Items.SAWED_OFF));
+		SHOTGUNS.add(new ItemStack(PMCRegistry.Items.S1897));
+		SHOTGUNS.add(new ItemStack(PMCRegistry.Items.S686));
+		SHOTGUNS.add(new ItemStack(PMCRegistry.Items.S12K));
 	}
 	
 	private void addSMGs()
 	{
 		SMGS.clear();
 		
-		SMGS.add(new ItemStack(PMCItems.MICROUZI));
-		SMGS.add(new ItemStack(PMCItems.UMP9));
-		SMGS.add(new ItemStack(PMCItems.VECTOR));
-		SMGS.add(new ItemStack(PMCItems.TOMMY_GUN));
-		SMGS.add(new ItemStack(PMCItems.BIZON));
+		SMGS.add(new ItemStack(PMCRegistry.Items.MICROUZI));
+		SMGS.add(new ItemStack(PMCRegistry.Items.UMP45));
+		SMGS.add(new ItemStack(PMCRegistry.Items.VECTOR));
+		SMGS.add(new ItemStack(PMCRegistry.Items.TOMMY_GUN));
+		SMGS.add(new ItemStack(PMCRegistry.Items.BIZON));
 	}
 	
 	private void addARs(boolean airdrop)
 	{
 		ARS.clear();
 		
-		ARS.add(new ItemStack(PMCItems.M16A4));
-		ARS.add(new ItemStack(PMCItems.M416));
-		ARS.add(new ItemStack(PMCItems.SCAR_L));
-		ARS.add(new ItemStack(PMCItems.G36C));
-		ARS.add(new ItemStack(PMCItems.QBZ));
-		ARS.add(new ItemStack(PMCItems.AKM));
-		ARS.add(new ItemStack(PMCItems.BERYL_M762));
-		ARS.add(new ItemStack(PMCItems.MK47_MUTANT));
-		ARS.add(new ItemStack(PMCItems.DP28));
+		ARS.add(new ItemStack(PMCRegistry.Items.M16A4));
+		ARS.add(new ItemStack(PMCRegistry.Items.M416));
+		ARS.add(new ItemStack(PMCRegistry.Items.SCAR_L));
+		ARS.add(new ItemStack(PMCRegistry.Items.G36C));
+		ARS.add(new ItemStack(PMCRegistry.Items.QBZ));
+		ARS.add(new ItemStack(PMCRegistry.Items.AKM));
+		ARS.add(new ItemStack(PMCRegistry.Items.BERYL_M762));
+		ARS.add(new ItemStack(PMCRegistry.Items.MK47_MUTANT));
+		ARS.add(new ItemStack(PMCRegistry.Items.DP28));
 		
 		if(airdrop)
 		{
-			ARS.add(new ItemStack(PMCItems.AUG));
-			ARS.add(new ItemStack(PMCItems.GROZA));
-			ARS.add(new ItemStack(PMCItems.M249));
+			ARS.add(new ItemStack(PMCRegistry.Items.AUG));
+			ARS.add(new ItemStack(PMCRegistry.Items.GROZA));
+			ARS.add(new ItemStack(PMCRegistry.Items.M249));
 		}
 	}
 	
@@ -742,15 +742,15 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		DMRS.clear();
 		
-		DMRS.add(new ItemStack(PMCItems.VSS));
-		DMRS.add(new ItemStack(PMCItems.MINI14));
-		DMRS.add(new ItemStack(PMCItems.QBU));
-		DMRS.add(new ItemStack(PMCItems.SKS));
-		DMRS.add(new ItemStack(PMCItems.SLR));
+		DMRS.add(new ItemStack(PMCRegistry.Items.VSS));
+		DMRS.add(new ItemStack(PMCRegistry.Items.MINI14));
+		DMRS.add(new ItemStack(PMCRegistry.Items.QBU));
+		DMRS.add(new ItemStack(PMCRegistry.Items.SKS));
+		DMRS.add(new ItemStack(PMCRegistry.Items.SLR));
 		
 		if(airdrop)
 		{
-			DMRS.add(new ItemStack(PMCItems.MK14));
+			DMRS.add(new ItemStack(PMCRegistry.Items.MK14));
 		}
 	}
 	
@@ -758,12 +758,12 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		SRS.clear();
 		
-		SRS.add(new ItemStack(PMCItems.KAR98K));
-		SRS.add(new ItemStack(PMCItems.M24));
+		SRS.add(new ItemStack(PMCRegistry.Items.KAR98K));
+		SRS.add(new ItemStack(PMCRegistry.Items.M24));
 		
 		if(airdrop)
 		{
-			SRS.add(new ItemStack(PMCItems.AWM));
+			SRS.add(new ItemStack(PMCRegistry.Items.AWM));
 		}
 	}
 	
@@ -773,19 +773,19 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		
 		BARREL_ATT.clear();
 		
-		BARREL_ATT.add(new ItemStack(PMCItems.SILENCER_PISTOL));
-		BARREL_ATT.add(new ItemStack(PMCItems.SILENCER_SMG));
-		BARREL_ATT.add(new ItemStack(PMCItems.COMPENSATOR_SMG));
+		BARREL_ATT.add(new ItemStack(PMCRegistry.Items.SILENCER_PISTOL));
+		BARREL_ATT.add(new ItemStack(PMCRegistry.Items.SILENCER_SMG));
+		BARREL_ATT.add(new ItemStack(PMCRegistry.Items.COMPENSATOR_SMG));
 		
 		if(chance >= 10)
 		{
-			BARREL_ATT.add(new ItemStack(PMCItems.SILENCER_AR));
-			BARREL_ATT.add(new ItemStack(PMCItems.COMPENSATOR_AR));
+			BARREL_ATT.add(new ItemStack(PMCRegistry.Items.SILENCER_AR));
+			BARREL_ATT.add(new ItemStack(PMCRegistry.Items.COMPENSATOR_AR));
 			
 			if(chance >= 20)
 			{
-				BARREL_ATT.add(new ItemStack(PMCItems.SILENCER_SNIPER));
-				BARREL_ATT.add(new ItemStack(PMCItems.COMPENSATOR_SNIPER));
+				BARREL_ATT.add(new ItemStack(PMCRegistry.Items.SILENCER_SNIPER));
+				BARREL_ATT.add(new ItemStack(PMCRegistry.Items.COMPENSATOR_SNIPER));
 			}
 		}
 	}
@@ -794,8 +794,8 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	{
 		GRIP_ATT.clear();
 		
-		GRIP_ATT.add(new ItemStack(PMCItems.GRIP_ANGLED));
-		GRIP_ATT.add(new ItemStack(PMCItems.GRIP_VERTICAL));
+		GRIP_ATT.add(new ItemStack(PMCRegistry.Items.GRIP_ANGLED));
+		GRIP_ATT.add(new ItemStack(PMCRegistry.Items.GRIP_VERTICAL));
 	}
 	
 	private void addScopes(boolean airdrop)
@@ -803,24 +803,24 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		int chance = rand.nextInt(26);
 		SCOPE_ATT.clear();
 		
-		SCOPE_ATT.add(new ItemStack(PMCItems.RED_DOT));
-		SCOPE_ATT.add(new ItemStack(PMCItems.HOLOGRAPHIC));
+		SCOPE_ATT.add(new ItemStack(PMCRegistry.Items.RED_DOT));
+		SCOPE_ATT.add(new ItemStack(PMCRegistry.Items.HOLOGRAPHIC));
 		
 		if(chance >= 5)
 		{
-			SCOPE_ATT.add(new ItemStack(PMCItems.SCOPE2X));
+			SCOPE_ATT.add(new ItemStack(PMCRegistry.Items.SCOPE2X));
 			
 			if(chance >= 10)
 			{
-				SCOPE_ATT.add(new ItemStack(PMCItems.SCOPE4X));
+				SCOPE_ATT.add(new ItemStack(PMCRegistry.Items.SCOPE4X));
 				
 				if(chance >= 18)
 				{
-					SCOPE_ATT.add(new ItemStack(PMCItems.SCOPE8X));
+					SCOPE_ATT.add(new ItemStack(PMCRegistry.Items.SCOPE8X));
 					
 					if(chance >= 25 && airdrop)
 					{
-						SCOPE_ATT.add(new ItemStack(PMCItems.SCOPE15X));
+						SCOPE_ATT.add(new ItemStack(PMCRegistry.Items.SCOPE15X));
 					}
 				}
 			}
@@ -833,27 +833,27 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		
 		int chance = rand.nextInt(25);
 		
-		MAG_ATT.add(new ItemStack(PMCItems.QUICKDRAW_MAG_PISTOL));
-		MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_MAG_PISTOL));
-		MAG_ATT.add(new ItemStack(PMCItems.QUICKDRAW_MAG_SMG));
+		MAG_ATT.add(new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_PISTOL));
+		MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_MAG_PISTOL));
+		MAG_ATT.add(new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_SMG));
 		
 		if(chance >= 10)
 		{
-			MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL));
-			MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_MAG_SMG));
-			MAG_ATT.add(new ItemStack(PMCItems.QUICKDRAW_MAG_AR));
-			MAG_ATT.add(new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER));
+			MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_PISTOL));
+			MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_MAG_SMG));
+			MAG_ATT.add(new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_AR));
+			MAG_ATT.add(new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_SNIPER));
 			
 			if(chance >= 20)
 			{
-				MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG));
-				MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_MAG_AR));
-				MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR));
-				MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER));
+				MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SMG));
+				MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_MAG_AR));
+				MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR));
+				MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_MAG_SNIPER));
 				
 				if(chance >= 25)
 				{
-					MAG_ATT.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER));
+					MAG_ATT.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER));
 				}
 			}
 		}
@@ -864,11 +864,11 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		STOCK_ATT.clear();
 		int chance = rand.nextInt(11);
 		
-		STOCK_ATT.add(new ItemStack(PMCItems.BULLET_LOOPS_SHOTGUN));
+		STOCK_ATT.add(new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SHOTGUN));
 		if(chance >= 5)
 		{
-			STOCK_ATT.add(new ItemStack(PMCItems.BULLET_LOOPS_SNIPER));
-			STOCK_ATT.add(new ItemStack(PMCItems.CHEEKPAD));
+			STOCK_ATT.add(new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SNIPER));
+			STOCK_ATT.add(new ItemStack(PMCRegistry.Items.CHEEKPAD));
 		}
 	}
 	

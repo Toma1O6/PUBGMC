@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Items;
@@ -31,8 +31,7 @@ public class ArM16A4 extends GunBase
 		this.setHorizontalRecoil(1f);
 		this.setVerticalRecoil(3.5f);
 		this.canSwitchMode(true);
-		this.setBurstFire(true);
-		this.setAutoFiremode(false);
+		setValidFiremodes(Firemode.SINGLE, Firemode.BURST);
 		
 		this.setGunSound(PMCSounds.gun_m16a4);
 		this.setGunSilencedSound(PMCSounds.gun_m16a4_silenced);
@@ -43,20 +42,7 @@ public class ArM16A4 extends GunBase
 	@Override
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-		{
-			if(stack.getTagCompound().getInteger("magazine") > 1)
-			{
-				return 40;
-			}
-			
-			else
-			{
-				return 30;
-			}
-		}
-		
-		else return 30;
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? 40 : 30;
 	}
 	
 	@Override
@@ -76,7 +62,7 @@ public class ArM16A4 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 50));
 		rec.add(new ItemStack(Items.IRON_INGOT, 35));
 		return rec;
 	}

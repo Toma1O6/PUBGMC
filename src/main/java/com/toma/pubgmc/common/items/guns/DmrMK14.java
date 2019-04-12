@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -26,14 +26,13 @@ public class DmrMK14 extends GunBase
 		this.setReloadTime(39);
 		this.setReloadDelay(15);
 		this.setFireRate(2);
-		this.setFiremode(Firemode.SINGLE);
+		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setGunType(GunType.DMR);
 		this.setHorizontalRecoil(3.25f);
 		this.setVerticalRecoil(7.5f);
 		this.canSwitchMode(true);
-		this.setBurstFire(false);
-		this.setAutoFiremode(true);
+		setValidFiremodes(Firemode.SINGLE, Firemode.AUTO);
 		
 		this.setGunSound(PMCSounds.gun_mk14);
 		this.setGunSilencedSound(PMCSounds.gun_mk14_silenced);
@@ -44,27 +43,14 @@ public class DmrMK14 extends GunBase
 	@Override
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
-		if(stack.hasTagCompound())
-		{
-			if(stack.getTagCompound().getInteger("magazine") > 1)
-			{
-				return 20;
-			}
-			
-			else
-			{
-				return 10;
-			}
-		}
-		
-		else return 10;
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? 20 : 10;
 	}
 	
 	@Override
 	public List<Item> acceptedAttachments()
 	{
 		addSniperAttachments();
-		addAttachment(PMCItems.CHEEKPAD);
+		addAttachment(PMCRegistry.Items.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	
@@ -78,7 +64,7 @@ public class DmrMK14 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 45));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 45));
 		rec.add(new ItemStack(Items.IRON_INGOT, 25));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 5));
 		return rec;

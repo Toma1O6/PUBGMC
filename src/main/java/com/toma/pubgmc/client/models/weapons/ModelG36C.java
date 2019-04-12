@@ -46,28 +46,10 @@ public class ModelG36C extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player.isSprinting(), stack);
 				renderG36C(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.188d)
-				animation_aim.setYModifier(0.188d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.106d)
-				animation_aim.setYModifier(0.106d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.057d)
-				animation_aim.setYModifier(0.057d);
-			animation_aim.run(data.isAiming());
-		}
-		
-		animation_held.run(sprint);
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderG36C(boolean aim, ItemStack stack)
@@ -106,8 +88,6 @@ public class ModelG36C extends ModelGun
 	
 	public ModelG36C()
 	{
-		animation_aim = new AimAnimation(-0.581d, 0.188d, 0.3d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 

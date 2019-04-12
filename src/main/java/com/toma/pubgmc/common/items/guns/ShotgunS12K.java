@@ -6,7 +6,7 @@ import java.util.List;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,8 +39,7 @@ public class ShotgunS12K extends GunBase
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.canSwitchMode(false);
-		this.setBurstFire(false);
-		this.setAutoFiremode(true);
+		setValidFiremodes(Firemode.SINGLE);
 		
 		this.setGunSound(PMCSounds.gun_s12k);
 		this.setGunSoundVolume(10f);
@@ -120,7 +119,7 @@ public class ShotgunS12K extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 35));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 35));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		return rec;
 	}

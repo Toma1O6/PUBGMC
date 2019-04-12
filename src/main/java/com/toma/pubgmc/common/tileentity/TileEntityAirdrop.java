@@ -6,7 +6,7 @@ import java.util.Random;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -190,16 +190,16 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		ATTACHMENTS.clear();
 		int chance = rand.nextInt(15);
 		
-		ATTACHMENTS.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR));
-		ATTACHMENTS.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER));
-		ATTACHMENTS.add(new ItemStack(PMCItems.SCOPE8X));
-		ATTACHMENTS.add(new ItemStack(PMCItems.SILENCER_AR));
-		ATTACHMENTS.add(new ItemStack(PMCItems.SILENCER_SNIPER));
-		ATTACHMENTS.add(new ItemStack(PMCItems.SCOPE4X));
+		ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR));
+		ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER));
+		ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.SCOPE8X));
+		ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.SILENCER_AR));
+		ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.SILENCER_SNIPER));
+		ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.SCOPE4X));
 		
 		if(chance >= 10)
 		{
-			ATTACHMENTS.add(new ItemStack(PMCItems.SCOPE15X));
+			ATTACHMENTS.add(new ItemStack(PMCRegistry.Items.SCOPE15X));
 		}
 	}
 	
@@ -207,9 +207,9 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 	{
 		HEALS.clear();
 		
-		HEALS.add(new ItemStack(PMCItems.ADRENALINESYRINGE));
-		HEALS.add(new ItemStack(PMCItems.FIRSTAIDKIT));
-		HEALS.add(new ItemStack(PMCItems.MEDKIT));
+		HEALS.add(new ItemStack(PMCRegistry.Items.ADRENALINESYRINGE));
+		HEALS.add(new ItemStack(PMCRegistry.Items.FIRSTAIDKIT));
+		HEALS.add(new ItemStack(PMCRegistry.Items.MEDKIT));
 	}
 	
 	private int nextSlot()
@@ -227,24 +227,24 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		// Create armor loot which is same in every drop; 1 medical loot, 2 gun and med loot 
 		if(ConfigPMC.worldSettings.airdropLootGen == 1)
 		{
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3HELMET));
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3BODY));
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.BACKPACK3));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.ARMOR3HELMET));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.ARMOR3BODY));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.BACKPACK3));
 			
 			int chance = rand.nextInt(10);
 			if(chance < 3)
 			{
-				setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.MEDKIT));
+				setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.MEDKIT));
 			}
 			
 			if(chance >= 3 && chance < 7)
 			{
-				setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.FIRSTAIDKIT));
+				setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.FIRSTAIDKIT));
 			}
 			
 			if(chance >= 7)
 			{
-				setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ADRENALINESYRINGE));
+				setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.ADRENALINESYRINGE));
 			}
 			
 			generateGhillie();
@@ -252,9 +252,9 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		
 		if(ConfigPMC.worldSettings.airdropLootGen == 2)
 		{
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3HELMET));
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.ARMOR3BODY));
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.BACKPACK3));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.ARMOR3HELMET));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.ARMOR3BODY));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.BACKPACK3));
 			addAtachments();
 			addHeals();
 			
@@ -263,41 +263,41 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 			{
 				case 0:
 				{
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AUG));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_556, 30));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_556, 30));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AUG));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_556, 30));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_556, 30));
 					break;
 				}
 				
 				case 1:
 				{
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.M249));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_556, 50));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_556, 50));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.M249));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_556, 50));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_556, 50));
 					break;
 				}
 				
 				case 2:
 				{
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.GROZA));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_762, 30));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_762, 30));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.GROZA));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_762, 30));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_762, 30));
 					break;
 				}
 				
 				case 3:
 				{
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.MK14));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_762, 30));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_762, 30));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.MK14));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_762, 30));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_762, 30));
 					break;
 				}
 				
 				case 4:
 				{
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AWM));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_300M, 10));
-					setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.AMMO_300M, 10));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AWM));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_300M, 10));
+					setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.AMMO_300M, 10));
 					break;
 				}
 			}
@@ -319,7 +319,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 	{
 		if(Math.random() * 100 <= 25)
 		{
-			setInventorySlotContents(nextSlot(), new ItemStack(PMCItems.GHILLIE_SUIT));
+			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.Items.GHILLIE_SUIT));
 		}
 	}
 

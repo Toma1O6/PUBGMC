@@ -18,9 +18,6 @@ public class ModelMicroUzi extends ModelGun
 
 	public ModelMicroUzi()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.21d, 0.23d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -59,21 +56,10 @@ public class ModelMicroUzi extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), data.isReloading(), stack);
 				renderUzi(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderUzi(boolean aim, ItemStack stack)

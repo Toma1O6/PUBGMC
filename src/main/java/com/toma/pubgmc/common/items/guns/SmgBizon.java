@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Items;
@@ -28,10 +28,9 @@ public class SmgBizon extends GunBase
 		setHorizontalRecoil(0.75f);
 		
 		canSwitchMode(true);
-		setAutoFiremode(true);
-		setBurstFire(false);
+		setValidFiremodes(Firemode.SINGLE, Firemode.AUTO);
 		setReloadType(ReloadType.MAGAZINE);
-		setFiremode(Firemode.SINGLE);
+		setFiremode(Firemode.AUTO);
 		setAmmoType(AmmoType.AMMO9MM);
 		setGunType(GunType.SMG);
 		
@@ -58,15 +57,15 @@ public class SmgBizon extends GunBase
 	{
 		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 40));
-		r.add(new ItemStack(PMCItems.STEEL_INGOT, 25));
+		r.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
 		return r;
 	}
 	
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCItems.COMPENSATOR_SMG);
-		addAttachment(PMCItems.SILENCER_SMG);
+		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
+		addAttachment(PMCRegistry.Items.SILENCER_SMG);
 		addCloseRangeScopes();
 		return super.acceptedAttachments();
 	}

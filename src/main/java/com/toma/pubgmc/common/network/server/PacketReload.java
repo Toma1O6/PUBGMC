@@ -28,7 +28,7 @@ public class PacketReload implements IMessage, IMessageHandler<PacketReload, IMe
 		player.getServer().addScheduledTask(() ->
 		{
 			GunBase gun = (GunBase)player.getHeldItemMainhand().getItem();
-			gun.reload(player);
+			gun.getReloadType().handleReload(player);
 		});
 		return null;
 	}

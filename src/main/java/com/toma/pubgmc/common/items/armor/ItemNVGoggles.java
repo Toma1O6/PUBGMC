@@ -9,7 +9,7 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,7 +60,7 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Blocks.GLASS_PANE, 4));
 		recipe.add(new ItemStack(Blocks.GLOWSTONE));
-		recipe.add(new ItemStack(PMCItems.STEEL_INGOT, 8));
+		recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 8));
 		recipe.add(new ItemStack(Blocks.WOOL, 2));
 		return recipe;
 	}

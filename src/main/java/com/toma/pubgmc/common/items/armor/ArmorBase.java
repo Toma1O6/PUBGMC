@@ -7,7 +7,7 @@ import java.util.List;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.Entity;
@@ -63,45 +63,45 @@ public class ArmorBase extends ItemArmor implements ICraftable
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		
-		if(item == PMCItems.ARMOR1BODY)
+		if(item == PMCRegistry.Items.ARMOR1BODY)
 		{
 			recipe.add(new ItemStack(Items.LEATHER_CHESTPLATE));
 			recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.ARMOR1HELMET)
+		else if(item == PMCRegistry.Items.ARMOR1HELMET)
 		{
 			recipe.add(new ItemStack(Items.LEATHER_HELMET));
 			recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.ARMOR2BODY)
+		else if(item == PMCRegistry.Items.ARMOR2BODY)
 		{
-			recipe.add(new ItemStack(PMCItems.ARMOR1BODY));
-			recipe.add(new ItemStack(PMCItems.STEEL_INGOT, 3));
+			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR1BODY));
+			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.ARMOR2HELMET)
+		else if(item == PMCRegistry.Items.ARMOR2HELMET)
 		{
-			recipe.add(new ItemStack(PMCItems.ARMOR1HELMET));
-			recipe.add(new ItemStack(PMCItems.STEEL_INGOT, 3));
+			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR1HELMET));
+			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.ARMOR3BODY)
+		else if(item == PMCRegistry.Items.ARMOR3BODY)
 		{
-			recipe.add(new ItemStack(PMCItems.ARMOR2BODY));
-			recipe.add(new ItemStack(PMCItems.STEEL_INGOT, 6));
+			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR2BODY));
+			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 6));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.ARMOR3HELMET)
+		else if(item == PMCRegistry.Items.ARMOR3HELMET)
 		{
-			recipe.add(new ItemStack(PMCItems.ARMOR2HELMET));
-			recipe.add(new ItemStack(PMCItems.STEEL_INGOT, 6));
+			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR2HELMET));
+			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 6));
 			return recipe;
 		}
 		

@@ -20,11 +20,9 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
-import com.toma.pubgmc.init.PMCBlocks;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
-import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator.Status;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -182,9 +180,9 @@ public class CommonEvents
 					
 					if(data.getBackpackLevel() == 0 && !player.capabilities.isCreativeMode)
 					{
-						if(stack.getItem() != PMCItems.IBLOCK)
+						if(stack.getItem() != PMCRegistry.Items.IBLOCK)
 						{
-							player.inventory.setInventorySlotContents(i, new ItemStack(PMCItems.IBLOCK));
+							player.inventory.setInventorySlotContents(i, new ItemStack(PMCRegistry.Items.IBLOCK));
 						}
 					}
 				}
@@ -195,7 +193,7 @@ public class CommonEvents
 					
 					if(data.getBackpackLevel() == 1 && !player.capabilities.isCreativeMode)
 					{
-						if(stack.getItem() != PMCItems.IBLOCK)
+						if(stack.getItem() != PMCRegistry.Items.IBLOCK)
 						{
 							if(!player.world.isRemote && !stack.isEmpty())
 							{
@@ -204,7 +202,7 @@ public class CommonEvents
 								player.world.spawnEntity(ent);
 							}
 							
-							player.inventory.setInventorySlotContents(i, new ItemStack(PMCItems.IBLOCK));
+							player.inventory.setInventorySlotContents(i, new ItemStack(PMCRegistry.Items.IBLOCK));
 						}
 					}
 				}
@@ -215,7 +213,7 @@ public class CommonEvents
 					
 					if(data.getBackpackLevel() == 2 && !player.capabilities.isCreativeMode)
 					{
-						if(stack.getItem() != PMCItems.IBLOCK)
+						if(stack.getItem() != PMCRegistry.Items.IBLOCK)
 						{
 							if(!player.world.isRemote && !stack.isEmpty())
 							{
@@ -224,7 +222,7 @@ public class CommonEvents
 								player.world.spawnEntity(ent);
 							}
 							
-							player.inventory.setInventorySlotContents(i, new ItemStack(PMCItems.IBLOCK));
+							player.inventory.setInventorySlotContents(i, new ItemStack(PMCRegistry.Items.IBLOCK));
 						}
 					}
 				}
@@ -232,9 +230,9 @@ public class CommonEvents
 				for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 				{
 					ItemStack stack = player.inventory.getStackInSlot(i);
-					if(stack.getItem() == PMCItems.IBLOCK && data.getBackpackLevel() == 3)
+					if(stack.getItem() == PMCRegistry.Items.IBLOCK && data.getBackpackLevel() == 3)
 					{
-						player.inventory.clearMatchingItems(PMCItems.IBLOCK, 0, player.inventory.getSizeInventory() * 64, null);
+						player.inventory.clearMatchingItems(PMCRegistry.Items.IBLOCK, 0, player.inventory.getSizeInventory() * 64, null);
 					}
 				}
 			}
@@ -315,7 +313,7 @@ public class CommonEvents
 						ItemStack stack = player.inventory.getStackInSlot(i);
 						
 						//check all itemstacks if they are the grenade items
-						if(stack.getItem() == PMCItems.GRENADE)
+						if(stack.getItem() == PMCRegistry.Items.GRENADE)
 						{
 							//clear 1 grenade item
 							stack.shrink(1);
@@ -335,7 +333,7 @@ public class CommonEvents
 									EntityItem item = (EntityItem)entity;
 									
 									//we get the itemstack from the entity and then the item from the itemstack
-									if(item.getItem().getItem() == PMCItems.GRENADE)
+									if(item.getItem().getItem() == PMCRegistry.Items.GRENADE)
 									{
 										//remove the entity
 										item.setDead();
@@ -503,7 +501,7 @@ public class CommonEvents
 			{
 				//get the player capability and place the block
 				IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-				world.setBlockState(p, PMCBlocks.PLAYER_CRATE.getDefaultState(), 3);
+				world.setBlockState(p, PMCRegistry.Blocks.PLAYER_CRATE.getDefaultState(), 3);
 				
 				//get the tileentity of the block
 				TileEntity tileentity = world.getTileEntity(p);
@@ -521,7 +519,7 @@ public class CommonEvents
 						ItemStack stack = player.inventory.getStackInSlot(i);
 						
 						//Clear the unwanted items used for filling the inventory
-						player.inventory.clearMatchingItems(PMCItems.IBLOCK, 0, 250, null);
+						player.inventory.clearMatchingItems(PMCRegistry.Items.IBLOCK, 0, 250, null);
 						
 						//fill the inventory with all items from slots
 						te.setInventorySlotContents(i, stack);
@@ -531,9 +529,9 @@ public class CommonEvents
 						{
 							switch(data.getBackpackLevel())
 							{
-								case 1: te.setInventorySlotContents(41, new ItemStack(PMCItems.BACKPACK1));
-								case 2: te.setInventorySlotContents(41, new ItemStack(PMCItems.BACKPACK2));
-								case 3: te.setInventorySlotContents(41, new ItemStack(PMCItems.BACKPACK3));
+								case 1: te.setInventorySlotContents(41, new ItemStack(PMCRegistry.Items.BACKPACK1));
+								case 2: te.setInventorySlotContents(41, new ItemStack(PMCRegistry.Items.BACKPACK2));
+								case 3: te.setInventorySlotContents(41, new ItemStack(PMCRegistry.Items.BACKPACK3));
 							}
 							
 							data.setBackpackLevel(0);
@@ -542,7 +540,7 @@ public class CommonEvents
 						//Same as above but just for the night vision googles
 						if(data.getEquippedNV())
 						{
-							te.setInventorySlotContents(42, new ItemStack(PMCItems.NV_GOGGLES));
+							te.setInventorySlotContents(42, new ItemStack(PMCRegistry.Items.NV_GOGGLES));
 							
 							data.hasEquippedNV(false);
 						}
@@ -610,7 +608,7 @@ public class CommonEvents
 		EntityPlayer player = e.getPlayer();
 		EntityItem itemEntity = e.getEntityItem();
 		
-		if(itemEntity.getItem().getItem() == PMCItems.IBLOCK)
+		if(itemEntity.getItem().getItem() == PMCRegistry.Items.IBLOCK)
 		{
 			if(!player.capabilities.isCreativeMode)
 			{

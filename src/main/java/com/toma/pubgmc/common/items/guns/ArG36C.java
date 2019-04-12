@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Items;
@@ -28,10 +28,9 @@ public class ArG36C extends GunBase
 		setHorizontalRecoil(1.0f);
 		
 		canSwitchMode(true);
-		setAutoFiremode(true);
-		setBurstFire(false);
+		setValidFiremodes(Firemode.SINGLE, Firemode.AUTO);
 		setReloadType(ReloadType.MAGAZINE);
-		setFiremode(Firemode.SINGLE);
+		setFiremode(Firemode.AUTO);
 		setAmmoType(AmmoType.AMMO556);
 		setGunType(GunType.AR);
 		
@@ -58,7 +57,7 @@ public class ArG36C extends GunBase
 	{
 		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 50));
-		r.add(new ItemStack(PMCItems.STEEL_INGOT, 40));
+		r.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 40));
 		return r;
 	}
 	

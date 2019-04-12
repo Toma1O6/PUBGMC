@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -24,9 +23,6 @@ public class ModelTommyGun extends ModelGun
 
 	public ModelTommyGun() 
 	{
-		animation_aim = new AimAnimation(-0.56, 0.39d, 0.35d).setInvertedCoords(true, false, false).speed(1.75f);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -102,23 +98,9 @@ public class ModelTommyGun extends ModelGun
 			boolean aiming = data.isAiming();
 			
 			GlStateManager.pushMatrix();
-			handleAnimations(aiming, player.isSprinting(), data.isReloading(), stack);
 			renderTommyGun(aiming, stack);
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.39d)
-				animation_aim.setYModifier(0.39d);
-			
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderTommyGun(boolean aim, ItemStack stack)

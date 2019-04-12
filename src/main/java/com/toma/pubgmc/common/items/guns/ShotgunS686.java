@@ -6,7 +6,7 @@ import java.util.List;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -120,7 +120,7 @@ public class ShotgunS686 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 20));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 20));
 		rec.add(new ItemStack(Items.IRON_INGOT, 20));
 		rec.add(new ItemStack(Blocks.PLANKS, 10));
 		return rec;

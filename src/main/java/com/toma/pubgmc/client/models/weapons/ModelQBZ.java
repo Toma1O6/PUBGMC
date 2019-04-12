@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -25,8 +24,6 @@ public class ModelQBZ extends ModelGun
 
 	public ModelQBZ()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.25d, 0.35d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -117,28 +114,10 @@ public class ModelQBZ extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderQBZ(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.25d)
-				animation_aim.setYModifier(0.25d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.18d)
-				animation_aim.setYModifier(0.18d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.14d)
-				animation_aim.setYModifier(0.14d);
-			
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderQBZ(boolean aim, ItemStack stack)

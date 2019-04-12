@@ -25,9 +25,6 @@ public class ModelM24 extends ModelGun
 
 	public ModelM24()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.265d, 0.335d).setInvertedCoords(true, false, false);
-		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -110,28 +107,10 @@ public class ModelM24 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderM24(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.265d)
-				animation_aim.setYModifier(0.265d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.205d)
-				animation_aim.setYModifier(0.205d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.16d)
-				animation_aim.setYModifier(0.16d);
-			
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderM24(boolean aim, ItemStack stack)

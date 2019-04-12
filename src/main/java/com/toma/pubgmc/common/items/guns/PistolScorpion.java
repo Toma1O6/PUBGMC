@@ -3,7 +3,8 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Items;
@@ -28,10 +29,9 @@ public class PistolScorpion extends GunBase
 		setHorizontalRecoil(0.25f);
 		
 		canSwitchMode(true);
-		setAutoFiremode(true);
-		setBurstFire(false);
+		setValidFiremodes(Firemode.SINGLE, Firemode.AUTO);
 		setReloadType(ReloadType.MAGAZINE);
-		setFiremode(Firemode.SINGLE);
+		setFiremode(Firemode.AUTO);
 		setAmmoType(AmmoType.AMMO9MM);
 		setGunType(GunType.PISTOL);
 		
@@ -56,10 +56,10 @@ public class PistolScorpion extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCItems.SILENCER_PISTOL);
-		addAttachment(PMCItems.GRIP_VERTICAL);
-		addAttachment(PMCItems.EXTENDED_MAG_PISTOL);
-		addAttachment(PMCItems.RED_DOT);
+		addAttachment(PMCRegistry.Items.SILENCER_PISTOL);
+		addAttachment(PMCRegistry.Items.GRIP_VERTICAL);
+		addAttachment(PMCRegistry.Items.EXTENDED_MAG_PISTOL);
+		addAttachment(PMCRegistry.Items.RED_DOT);
 		return super.acceptedAttachments();
 	}
 	
@@ -68,7 +68,7 @@ public class PistolScorpion extends GunBase
 	{
 		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 30));
-		r.add(new ItemStack(PMCItems.STEEL_INGOT, 25));
+		r.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
 		return r;
 	}
 }

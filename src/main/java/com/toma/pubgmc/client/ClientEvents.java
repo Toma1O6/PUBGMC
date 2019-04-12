@@ -33,7 +33,7 @@ import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
 import com.toma.pubgmc.util.handlers.GuiHandler;
@@ -273,7 +273,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			e.setCanceled(true);
+    			//e.setCanceled(true);
     		}
     	}
     	
@@ -309,7 +309,7 @@ public class ClientEvents
         		GunBase gun = (GunBase) stack.getItem();
         		if(data.isAiming() && mc.gameSettings.thirdPersonView == 0)
         		{
-        			if(stack.getItem() == PMCItems.VSS)
+        			if(stack.getItem() == PMCRegistry.Items.VSS)
         			{
         				ImageUtil.drawFullScreenImage(mc, res, ScopeVSS, true);
         			}
@@ -945,7 +945,7 @@ public class ClientEvents
 			        		}
 		        		}
 		        		
-		        		if(itemstack.getTagCompound().getInteger("scope") == 4 || itemstack.getItem() == PMCItems.VSS)
+		        		if(itemstack.getTagCompound().getInteger("scope") == 4 || itemstack.getItem() == PMCRegistry.Items.VSS)
 		        		{
 			        		if(Minecraft.getMinecraft().gameSettings.fovSetting != 25)
 			        		{

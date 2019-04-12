@@ -24,9 +24,6 @@ public class ModelDP28 extends ModelGun
 
 	public ModelDP28()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.325d, 0.33d)
-				.setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -126,27 +123,10 @@ public class ModelDP28 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderDP28(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.325d)
-				animation_aim.setYModifier(0.325d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.25d)
-				animation_aim.setYModifier(0.25d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.1975d)
-				animation_aim.setYModifier(0.1975d);
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderDP28(boolean aim, ItemStack stack)

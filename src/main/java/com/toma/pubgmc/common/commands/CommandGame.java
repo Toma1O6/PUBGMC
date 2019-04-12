@@ -10,7 +10,7 @@ import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketChooseLocation;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.command.CommandBase;
@@ -18,7 +18,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -306,7 +305,7 @@ public class CommandGame extends CommandBase
 			
 			if(!data.getSpawnLocations().isEmpty())
 			{
-				player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
+				player.addItemStackToInventory(new ItemStack(PMCRegistry.Items.PARACHUTE));
 				int id = getClosestLocation(data, world);
 				BlockPos zonePos = data.getSpawnLocations().get(id);
 				player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is closest to the " + data.getLocationNames().get(id) + " [" + zonePos.getX() + ", " + zonePos.getZ() + "]"));

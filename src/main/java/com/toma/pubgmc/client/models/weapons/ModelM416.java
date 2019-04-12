@@ -24,8 +24,6 @@ public class ModelM416 extends ModelGun
 
 	public ModelM416()
 	{
-		animation_aim = new AimAnimation(-0.5575d, 0.235d, 0.25d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -122,28 +120,10 @@ public class ModelM416 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(aim, player.isSprinting(), data.isReloading(), stack);
 				renderM416(aim, stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.235d)
-				animation_aim.setYModifier(0.235d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.16d)
-				animation_aim.setYModifier(0.16d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.115d)
-				animation_aim.setYModifier(0.115d);
-			
-			animation_aim.run(aim);
-		}
-		animation_reload.run(reload);
-		animation_held.run(sprint);
 	}
 	
 	private void renderM416(boolean aim, ItemStack stack)

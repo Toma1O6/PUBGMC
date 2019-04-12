@@ -1,5 +1,7 @@
 package com.toma.pubgmc.animation;
 
+import javax.vecmath.Vector3f;
+
 import net.minecraft.client.renderer.GlStateManager;
 
 public class AimAnimation extends Animation
@@ -163,6 +165,11 @@ public class AimAnimation extends Animation
 		this.invertY = y;
 		this.invertZ = z;
 		return this;
+	}
+	
+	public Vector3f getVec3f()
+	{
+		return new Vector3f((float)mX, (float)mY, (float)mZ);
 	}
 	
 	public AimAnimation speed(float speed)

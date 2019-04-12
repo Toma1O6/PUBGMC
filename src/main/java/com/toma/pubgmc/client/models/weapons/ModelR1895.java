@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -21,9 +20,6 @@ public class ModelR1895 extends ModelGun
 
 	public ModelR1895()
 	{
-		animation_aim = new AimAnimation(-0.598d, 0.25d, 0.4d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -82,18 +78,10 @@ public class ModelR1895 extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player.isSprinting(), stack);
 				renderR1895(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprinting, ItemStack stack)
-	{
-		animation_aim.run(data.isAiming());
-		animation_held.run(sprinting);
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderR1895(boolean aim, ItemStack stack)

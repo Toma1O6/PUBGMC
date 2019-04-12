@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -27,9 +26,6 @@ public class ModelScorpion extends ModelGun
 
 	public ModelScorpion()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.2d, 0.2d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -137,27 +133,10 @@ public class ModelScorpion extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player.isSprinting(), stack);
 				renderScorpion(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(IPlayerData data, boolean sprint, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.2d)
-				animation_aim.setYModifier(0.2d);
-			
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.117d)
-				animation_aim.setYModifier(0.117d);
-			
-			animation_aim.run(data.isAiming());
-		}
-		animation_held.run(sprint);
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderScorpion(boolean aim, ItemStack stack)

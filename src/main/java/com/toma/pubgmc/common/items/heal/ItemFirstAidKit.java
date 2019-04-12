@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.heal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -55,7 +55,7 @@ public class ItemFirstAidKit extends ItemHealing
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
-		recipe.add(new ItemStack(PMCItems.BANDAGE, 3));
+		recipe.add(new ItemStack(PMCRegistry.Items.BANDAGE, 3));
 		recipe.add(new ItemStack(Blocks.WOOL));
 		recipe.add(new ItemStack(Items.IRON_NUGGET));
 		return recipe;

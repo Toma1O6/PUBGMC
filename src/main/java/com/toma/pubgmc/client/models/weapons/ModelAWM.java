@@ -20,9 +20,6 @@ public class ModelAWM extends ModelGun
 
 	public ModelAWM()
 	{
-		animation_aim = new AimAnimation(-0.557d, 0.255d, 0.2d).setInvertedCoords(true, false, false);
-		
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -98,7 +95,6 @@ public class ModelAWM extends ModelGun
 			{
 				animation_held.run(player.isSprinting());
 				animation_reload.run(data.isReloading());
-				handleAnimationPosition(data.isAiming(), stack);
 				renderAWM(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
@@ -126,29 +122,6 @@ public class ModelAWM extends ModelGun
 		else if(has4X(stack)) render4x(stack);
 		else if(has8X(stack)) render8x(stack);
 		else if(has15X(stack)) render15x(stack);
-	}
-	
-	private void handleAnimationPosition(boolean aim, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.255d)
-			{
-				animation_aim.setYModifier(0.255d);
-			}
-			
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.205d)
-			{
-				animation_aim.setYModifier(0.205d);
-			}
-			
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.169d)
-			{
-				animation_aim.setYModifier(0.169d);
-			}
-			
-			animation_aim.run(aim);
-		}
 	}
 	
 	private void renderRedDot(ItemStack stack)

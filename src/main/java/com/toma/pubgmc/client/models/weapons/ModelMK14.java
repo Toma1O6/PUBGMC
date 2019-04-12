@@ -24,8 +24,6 @@ public class ModelMK14 extends ModelGun
 
 	public ModelMK14()
 	{
-		animation_aim = new AimAnimation(-0.58d, 0.26d, 0.33d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -133,28 +131,10 @@ public class ModelMK14 extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderMK14(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.26d)
-				animation_aim.setYModifier(0.26d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.1875d)
-				animation_aim.setYModifier(0.1875d);
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.14d)
-				animation_aim.setYModifier(0.14d);
-
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderMK14(boolean aim, ItemStack stack)

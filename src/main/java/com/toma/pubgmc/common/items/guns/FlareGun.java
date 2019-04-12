@@ -7,7 +7,7 @@ import java.util.List;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityFlare;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -86,7 +86,7 @@ public class FlareGun extends GunBase
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.IRON_INGOT, 15));
-		recipe.add(new ItemStack(PMCItems.STEEL_INGOT, 20));
+		recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 20));
 		recipe.add(new ItemStack(Items.DYE, 10, 1));
 		return recipe;
 	}

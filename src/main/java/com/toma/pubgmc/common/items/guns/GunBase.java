@@ -18,7 +18,8 @@ import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.common.network.sp.PacketSound;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.init.PMCRegistry.Items;
 import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
@@ -61,10 +62,9 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	private int rate = 10;
 	private AmmoType ammotype;
 	private Firemode firemode;
+	private Firemode[] validFiremodes = new Firemode[] {Firemode.SINGLE};
 	private boolean canSwitchFiremode;
 	private boolean canShoot;
-	private boolean burst = false;
-	private boolean auto = false;
 	private boolean silenced;
 	private float gun_volume, gun_volume_s;
 	private ReloadType reloadType;
@@ -83,6 +83,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		setMaxStackSize(1);
 		GUNS.add(this);
 		TileEntityGunWorkbench.WEAPONS.add(this);
+		
+		setValidFiremodes(Firemode.SINGLE);
 	}
 	
 	/**
@@ -196,121 +198,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		return event;
 	}
 	
-	/**
-	 * Function called for refilling the weapons with bullets
-	 * @param player - the player who is reloading
-	 */
-	public void reload(EntityPlayer player)
-	{
-		IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-		if(ConfigPMC.worldSettings.enableGuns)
-		{
-			ItemStack heldItem = player.getHeldItemMainhand();
-			
-			if(heldItem.getItem() instanceof GunBase)
-			{
-				data.setAiming(false);
-				GunBase gun = (GunBase)heldItem.getItem();
-				
-				if((heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem) || !hasPlayerAmmoForGun(player, gun)) && data.isReloading())
-				{
-					data.setReloading(false);
-					PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
-				}
-				
-				if(heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
-				{
-					if(gun.getReloadType() == ReloadType.MAGAZINE)
-					{
-						while((hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
-						{
-							int ammoInGun = heldItem.getTagCompound().getInteger("ammo");
-							int ammoToFill = gun.getWeaponAmmoLimit(heldItem) - ammoInGun;
-							int ammoInInventory = ammoCount;
-							
-							if(ammoToFill > ammoInInventory) ammoToFill = ammoInInventory;
-							
-							if(!player.capabilities.isCreativeMode)
-							{
-								ItemAmmo ammo = (ItemAmmo)ammoItem.getAmmoItem();
-								player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, ammoToFill, null);
-							}
-							
-							heldItem.getTagCompound().setInteger("ammo", ammoInGun + ammoToFill);
-						}
-						
-						data.setReloading(false);
-						PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
-					}
-					
-					else if(gun.getReloadType() == ReloadType.SINGLE)
-					{
-						if(hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode)
-						{
-							//If the gun is already full and player still atempts to reload, cancel it
-							if(heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem))
-							{
-								data.setReloading(false);
-								PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
-							}
-							
-							if(heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
-							{
-								ItemAmmo ammo = (ItemAmmo)ammoItem.getAmmoItem();
-								
-								if(!player.capabilities.isCreativeMode)
-								{
-									player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-								}
-								
-								//Increase ammo count by 1
-								heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-							}
-						}
-					}
-					
-					else if(gun.getReloadType() == ReloadType.KAR98K)
-					{
-						if(!gun.hasAmmo(heldItem))
-						{
-							while((hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
-							{
-								ItemAmmo ammo = (ItemAmmo)ammoItem.getAmmoItem();
-								
-								if(!player.capabilities.isCreativeMode)
-								{
-									player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-								}
-								
-								heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-							}
-							
-							data.setReloading(false);
-							PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
-						}
-						
-						else if(heldItem.getTagCompound().getInteger("ammo") > 0 && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
-						{
-							ItemAmmo ammo = (ItemAmmo)ammoItem.getAmmoItem();
-							
-							if(!player.capabilities.isCreativeMode)
-							{
-								player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-							}
-							
-							heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-						}
-					}
-					
-					else
-					{
-						throw new IllegalArgumentException("Unknown reload type. Report this to mod author!");
-					}
-				}
-			}
-		}
-	}
-	
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) 
 	{
@@ -324,14 +211,16 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		{
 			case SINGLE: 
 			{
+				System.out.println("here");
 				if(canGunBurstFire())
 				{
-					return setFiremode(Firemode.BURST);
+					setFiremode(Firemode.BURST);
+					break;
 				}
-				
 				else
 				{
-					return setFiremode(Firemode.AUTO);
+					setFiremode(Firemode.AUTO);
+					break;
 				}
 			}
 			
@@ -339,16 +228,20 @@ public abstract class GunBase extends PMCItem implements ICraftable
 			{
 				if(canGunAutofire())
 				{
-					return setFiremode(Firemode.AUTO);
+					setFiremode(Firemode.AUTO);
+					break;
 				}
-				
 				else
 				{
-					return setFiremode(Firemode.SINGLE);
+					setFiremode(Firemode.SINGLE);
+					break;
 				}
 			}
 			
-			case AUTO: return setFiremode(Firemode.SINGLE);
+			case AUTO: {
+				setFiremode(Firemode.SINGLE);
+				break;
+			}
 		}
 		PacketHandler.INSTANCE.sendToServer(new PacketFiremode(firemode));
 		return firemode;
@@ -488,116 +381,125 @@ public abstract class GunBase extends PMCItem implements ICraftable
 //-------------------------------------------------
 	
 	
-	public boolean setBurstFire(boolean canBurstFire)
+	public void setValidFiremodes(Firemode... firemodes)
 	{
-		return burst = canBurstFire;
+		this.validFiremodes = firemodes;
+	}
+	
+	public Firemode[] getValidFiremodes()
+	{
+		return validFiremodes;
 	}
 	
 	public boolean canGunBurstFire()
 	{
-		return burst;
-	}
-	
-	public boolean setAutoFiremode(boolean canAutoFire)
-	{
-		return auto = canAutoFire;
+		for(Firemode f : validFiremodes)
+		{
+			if(f.equals(Firemode.BURST))
+				return true;
+		}
+		return false;
 	}
 	
 	public boolean canGunAutofire()
 	{
-		return auto;
+		for(Firemode f : validFiremodes)
+			if(f.equals(Firemode.AUTO))
+				return true;
+		
+		return false;
 	}
 	
-	public float setDamage(float damageModifier)
+	public void setDamage(float damageModifier)
 	{
-		return damage = damageModifier;
+		this.damage = damageModifier;
 	}
 	
-	public double setVelocity(double modifier)
+	public void setVelocity(double modifier)
 	{
-		return velocity = modifier;
+		this.velocity = modifier;
 	}
 	
-	public double setGravityModifier(double modifier)
+	public void setGravityModifier(double modifier)
 	{
-		return gravity = modifier;
+		this.gravity = modifier;
 	}
 	
-	public double setGravityStartTime(int ticks)
+	public void setGravityStartTime(int ticks)
 	{
-		return gravityStart = ticks;
+		this.gravityStart = ticks;
 	}
 	
-	public double setReloadTime(double time)
+	public void setReloadTime(double time)
 	{
-		return reloadTime = time;
+		this.reloadTime = time;
 	}
 	
-	public float setHorizontalRecoil(float recoil)
+	public void setHorizontalRecoil(float recoil)
 	{
-		return horizontal_recoil = recoil;
+		this.horizontal_recoil = recoil;
 	}
 	
-	public float setVerticalRecoil(float recoil)
+	public void setVerticalRecoil(float recoil)
 	{
-		return vertical_recoil = recoil;
+		this.vertical_recoil = recoil;
 	}
 	
-	public AmmoType setAmmoType(AmmoType type)
+	public void setAmmoType(AmmoType type)
 	{
-		return ammotype = type;
+		this.ammotype = type;
 	}
 	
-	public Firemode setFiremode(Firemode type) 
+	public void setFiremode(Firemode type) 
 	{
-		return firemode = type;
+		this.firemode = type;
 	}
 	
-	public ReloadType setReloadType(ReloadType type)
+	public void setReloadType(ReloadType type)
 	{
-		return reloadType = type;
+		this.reloadType = type;
 	}
 	
-	public int setReloadDelay(int delay)
+	public void setReloadDelay(int delay)
 	{
-		return reloadDelay = delay;
+		this.reloadDelay = delay;
 	}
 	
-	public int setFireRate(int firerate)
+	public void setFireRate(int firerate)
 	{
-		return rate = firerate;
+		this.rate = firerate;
 	}
 	
 	//For testing attachment types for different guns
-	public GunType setGunType(GunType type)
+	public void setGunType(GunType type)
 	{
-		return gunType = type;
+		this.gunType = type;
 	}
 	
-	public boolean canSwitchMode(boolean firemode)
+	public void canSwitchMode(boolean firemode)
 	{
-		return canSwitchFiremode = firemode;
+		this.canSwitchFiremode = firemode;
 	}
 	
-	public SoundEvent setGunSound(SoundEvent shootSound)
+	public void setGunSound(SoundEvent shootSound)
 	{
-		return this.gun_shoot = shootSound;
+		this.gun_shoot = shootSound;
 	}
 	
-	public SoundEvent setGunSilencedSound(SoundEvent silenced)
+	public void setGunSilencedSound(SoundEvent silenced)
 	{
-		return this.gun_silenced = silenced;
+		this.gun_silenced = silenced;
 	}
 	
-	public float setGunSoundVolume(float volume)
+	public void setGunSoundVolume(float volume)
 	{
-		return this.gun_volume = volume;
+		this.gun_volume = volume;
 	}
 	
 	//set this after the first sound volume
-	public float setGunSilencedSoundVolume(float volume)
+	public void setGunSilencedSoundVolume(float volume)
 	{
-		return this.gun_volume_s = volume;
+		this.gun_volume_s = volume;
 	}
 	
 	public GunBase getGun()
@@ -733,7 +635,120 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	
 	public enum ReloadType
 	{
-		MAGAZINE, SINGLE, KAR98K;
+		MAGAZINE,
+		SINGLE,
+		KAR98K;
+		
+		public void handleReload(EntityPlayer player)
+		{
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			if(ConfigPMC.worldSettings.enableGuns)
+			{
+				ItemStack heldItem = player.getHeldItemMainhand();
+				
+				if(heldItem.getItem() instanceof GunBase)
+				{
+					data.setAiming(false);
+					GunBase gun = (GunBase)heldItem.getItem();
+					
+					if((heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem) || !gun.hasPlayerAmmoForGun(player, gun)) && data.isReloading())
+					{
+						data.setReloading(false);
+						PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
+					}
+					
+					if(heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
+					{
+						if(gun.getReloadType() == ReloadType.MAGAZINE)
+						{
+							while((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
+							{
+								int ammoInGun = heldItem.getTagCompound().getInteger("ammo");
+								int ammoToFill = gun.getWeaponAmmoLimit(heldItem) - ammoInGun;
+								int ammoInInventory = gun.ammoCount;
+								
+								if(ammoToFill > ammoInInventory) ammoToFill = ammoInInventory;
+								
+								if(!player.capabilities.isCreativeMode)
+								{
+									ItemAmmo ammo = (ItemAmmo)gun.ammoItem.getAmmoItem();
+									player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, ammoToFill, null);
+								}
+								
+								heldItem.getTagCompound().setInteger("ammo", ammoInGun + ammoToFill);
+							}
+							
+							data.setReloading(false);
+							PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
+						}
+						
+						else if(gun.getReloadType() == ReloadType.SINGLE)
+						{
+							if(gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode)
+							{
+								//If the gun is already full and player still atempts to reload, cancel it
+								if(heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem))
+								{
+									data.setReloading(false);
+									PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
+								}
+								
+								if(heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
+								{
+									ItemAmmo ammo = (ItemAmmo)gun.ammoItem.getAmmoItem();
+									
+									if(!player.capabilities.isCreativeMode)
+									{
+										player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
+									}
+									
+									//Increase ammo count by 1
+									heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
+								}
+							}
+						}
+						
+						else if(gun.getReloadType() == ReloadType.KAR98K)
+						{
+							if(!gun.hasAmmo(heldItem))
+							{
+								while((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
+								{
+									ItemAmmo ammo = (ItemAmmo)gun.ammoItem.getAmmoItem();
+									
+									if(!player.capabilities.isCreativeMode)
+									{
+										player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
+									}
+									
+									heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
+								}
+								
+								data.setReloading(false);
+								PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP)player);
+							}
+							
+							else if(heldItem.getTagCompound().getInteger("ammo") > 0 && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem))
+							{
+								ItemAmmo ammo = (ItemAmmo)gun.ammoItem.getAmmoItem();
+								
+								if(!player.capabilities.isCreativeMode)
+								{
+									player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
+								}
+								
+								heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
+							}
+						}
+						
+						else
+						{
+							throw new IllegalArgumentException("Unknown reload type. Report this to mod author!");
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public enum GunType
@@ -755,48 +770,48 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	{
 		if(gunType == GunType.PISTOL)
 		{
-			Item[] pistol = {PMCItems.QUICKDRAW_MAG_PISTOL, PMCItems.EXTENDED_MAG_PISTOL, PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL};
+			Item[] pistol = {PMCRegistry.Items.QUICKDRAW_MAG_PISTOL, PMCRegistry.Items.EXTENDED_MAG_PISTOL, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_PISTOL};
 			addAttachment(pistol);
 		}
 		
 		else if(gunType == GunType.SMG)
 		{
-			Item[] smg = {PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG};
+			Item[] smg = {PMCRegistry.Items.QUICKDRAW_MAG_SMG, PMCRegistry.Items.EXTENDED_MAG_SMG, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SMG};
 			addAttachment(smg);
 		}
 		
 		else if(gunType == gunType.AR)
 		{
-			Item[] ar = {PMCItems.QUICKDRAW_MAG_AR, PMCItems.EXTENDED_MAG_AR, PMCItems.EXTENDED_QUICKDRAW_MAG_AR};
+			Item[] ar = {PMCRegistry.Items.QUICKDRAW_MAG_AR, PMCRegistry.Items.EXTENDED_MAG_AR, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR};
 			addAttachment(ar);
 		}
 		
 		else if(gunType == GunType.DMR || gunType == GunType.SR)
 		{
-			Item[] sr = {PMCItems.QUICKDRAW_MAG_SNIPER, PMCItems.EXTENDED_MAG_SNIPER, PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER};
+			Item[] sr = {PMCRegistry.Items.QUICKDRAW_MAG_SNIPER, PMCRegistry.Items.EXTENDED_MAG_SNIPER, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER};
 			addAttachment(sr);
 		}
 	}
 	
 	protected void addGrips()
 	{
-		addAttachment(PMCItems.GRIP_ANGLED);
-		addAttachment(PMCItems.GRIP_VERTICAL);
+		addAttachment(PMCRegistry.Items.GRIP_ANGLED);
+		addAttachment(PMCRegistry.Items.GRIP_VERTICAL);
 	}
 	
 	protected void addCloseRangeScopes()
 	{
-		addAttachment(PMCItems.RED_DOT);
-		addAttachment(PMCItems.HOLOGRAPHIC);
-		addAttachment(PMCItems.SCOPE2X);
-		addAttachment(PMCItems.SCOPE4X);
+		addAttachment(PMCRegistry.Items.RED_DOT);
+		addAttachment(PMCRegistry.Items.HOLOGRAPHIC);
+		addAttachment(PMCRegistry.Items.SCOPE2X);
+		addAttachment(PMCRegistry.Items.SCOPE4X);
 	}
 	
 	protected void addScopes()
 	{
 		addCloseRangeScopes();
-		addAttachment(PMCItems.SCOPE8X);
-		addAttachment(PMCItems.SCOPE15X);
+		addAttachment(PMCRegistry.Items.SCOPE8X);
+		addAttachment(PMCRegistry.Items.SCOPE15X);
 	}
 	
 	/**
@@ -806,8 +821,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 */
 	protected void addPistolAttachments()
 	{
-		addAttachment(PMCItems.SILENCER_PISTOL);
-		addAttachment(PMCItems.RED_DOT);
+		addAttachment(PMCRegistry.Items.SILENCER_PISTOL);
+		addAttachment(PMCRegistry.Items.RED_DOT);
 		addMagazines();
 	}
 	
@@ -816,7 +831,7 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 */
 	protected void addShotgunAttachments()
 	{
-		addAttachment(PMCItems.BULLET_LOOPS_SHOTGUN);
+		addAttachment(PMCRegistry.Items.BULLET_LOOPS_SHOTGUN);
 	}
 	
 	/**
@@ -827,8 +842,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 */
 	protected void addSMGAttachments()
 	{
-		addAttachment(PMCItems.SILENCER_SMG);
-		addAttachment(PMCItems.COMPENSATOR_SMG);
+		addAttachment(PMCRegistry.Items.SILENCER_SMG);
+		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
 		addGrips();
 		addMagazines();
 		addCloseRangeScopes();
@@ -845,8 +860,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		addCloseRangeScopes();
 		addMagazines();
 		if(grips) addGrips();
-		addAttachment(PMCItems.COMPENSATOR_AR);
-		addAttachment(PMCItems.SILENCER_AR);
+		addAttachment(PMCRegistry.Items.COMPENSATOR_AR);
+		addAttachment(PMCRegistry.Items.SILENCER_AR);
 	}
 	
 	/**
@@ -858,8 +873,8 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	{
 		addScopes();
 		addMagazines();
-		addAttachment(PMCItems.SILENCER_SNIPER);
-		addAttachment(PMCItems.COMPENSATOR_SNIPER);
+		addAttachment(PMCRegistry.Items.SILENCER_SNIPER);
+		addAttachment(PMCRegistry.Items.COMPENSATOR_SNIPER);
 	}
 	
 	public void addAttachment(Item item)

@@ -9,7 +9,7 @@ import com.toma.pubgmc.common.items.heal.ItemEnergyDrink;
 import com.toma.pubgmc.common.items.heal.ItemFirstAidKit;
 import com.toma.pubgmc.common.items.heal.ItemPainkiller;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -52,7 +52,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         boolean is3D = te.getStackInSlot(slot).getItem() instanceof GunBase;
         boolean drinkable = te.getStackInSlot(slot).getItem() instanceof ItemEnergyDrink || te.getStackInSlot(slot).getItem() instanceof ItemPainkiller;
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
-        boolean medkit = te.getStackInSlot(slot).getItem() == PMCItems.MEDKIT;
+        boolean medkit = te.getStackInSlot(slot).getItem() == PMCRegistry.Items.MEDKIT;
 		
 		if(ConfigPMC.playerSettings.lootRenderType == 2)
 		{
@@ -71,7 +71,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
 				entityItem.setItem(te.getStackInSlot(slot));
 			}
 			
-			if(te.getStackInSlot(slot).getItem() == PMCItems.FUELCAN)
+			if(te.getStackInSlot(slot).getItem() == PMCRegistry.Items.FUELCAN)
 			{
 	            GlStateManager.pushMatrix();
 	            GL11.glPushMatrix();
@@ -211,7 +211,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         GlStateManager.rotate(90, 0, 1, 0);
         GlStateManager.scale(0.9F, 0.9F, 0.9F);
         
-        if(te.getStackInSlot(slot).getItem() == PMCItems.PAINKILLERS)
+        if(te.getStackInSlot(slot).getItem() == PMCRegistry.Items.PAINKILLERS)
         {
         	GlStateManager.translate(0f, 0.11f, 0f);
         	GlStateManager.scale(1f, 1.25f, 1f);

@@ -9,7 +9,7 @@ import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,7 +39,7 @@ public class ItemBackpack extends PMCItem implements ICraftable
 		ItemStack stack = playerIn.getHeldItem(handIn);
 		IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
-		if(stack.getItem() == PMCItems.BACKPACK1 && data.getBackpackLevel() == 0)
+		if(stack.getItem() == PMCRegistry.Items.BACKPACK1 && data.getBackpackLevel() == 0)
 		{
 			if(!playerIn.capabilities.isCreativeMode)
 			{
@@ -49,7 +49,7 @@ public class ItemBackpack extends PMCItem implements ICraftable
 			data.setBackpackLevel(1);
 		}
 			
-		if(stack.getItem() == PMCItems.BACKPACK2 && (data.getBackpackLevel() == 0 || data.getBackpackLevel() == 1))
+		if(stack.getItem() == PMCRegistry.Items.BACKPACK2 && (data.getBackpackLevel() == 0 || data.getBackpackLevel() == 1))
 		{	
 			if(!playerIn.capabilities.isCreativeMode)
 			{
@@ -58,13 +58,13 @@ public class ItemBackpack extends PMCItem implements ICraftable
 				
 			if(data.getBackpackLevel() == 1)
 			{
-				playerIn.addItemStackToInventory(new ItemStack(PMCItems.BACKPACK1));
+				playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.Items.BACKPACK1));
 			}
 				
 			data.setBackpackLevel(2);
 		}
 			
-		if(stack.getItem() == PMCItems.BACKPACK3 && data.getBackpackLevel() < 3)
+		if(stack.getItem() == PMCRegistry.Items.BACKPACK3 && data.getBackpackLevel() < 3)
 		{	
 			if(!playerIn.capabilities.isCreativeMode)
 			{
@@ -73,12 +73,12 @@ public class ItemBackpack extends PMCItem implements ICraftable
 				
 			if(data.getBackpackLevel() == 1)
 			{
-				playerIn.addItemStackToInventory(new ItemStack(PMCItems.BACKPACK1));
+				playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.Items.BACKPACK1));
 			}
 				
 			if(data.getBackpackLevel() == 2)
 			{
-				playerIn.addItemStackToInventory(new ItemStack(PMCItems.BACKPACK2));
+				playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.Items.BACKPACK2));
 			}
 				
 			data.setBackpackLevel(3);	
@@ -91,7 +91,7 @@ public class ItemBackpack extends PMCItem implements ICraftable
 	
 	private static void clearIcons(InventoryPlayer inv)
 	{
-		inv.clearMatchingItems(PMCItems.IBLOCK, 0, inv.getSizeInventory() * 64, null);
+		inv.clearMatchingItems(PMCRegistry.Items.IBLOCK, 0, inv.getSizeInventory() * 64, null);
 	}
 	
 	@Override
@@ -99,23 +99,23 @@ public class ItemBackpack extends PMCItem implements ICraftable
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		
-		if(item == PMCItems.BACKPACK1)
+		if(item == PMCRegistry.Items.BACKPACK1)
 		{
 			recipe.add(new ItemStack(Blocks.CHEST));
 			recipe.add(new ItemStack(Items.LEATHER, 10));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.BACKPACK2)
+		else if(item == PMCRegistry.Items.BACKPACK2)
 		{
-			recipe.add(new ItemStack(PMCItems.BACKPACK1));
+			recipe.add(new ItemStack(PMCRegistry.Items.BACKPACK1));
 			recipe.add(new ItemStack(Items.LEATHER, 20));
 			return recipe;
 		}
 		
-		else if(item == PMCItems.BACKPACK3)
+		else if(item == PMCRegistry.Items.BACKPACK3)
 		{
-			recipe.add(new ItemStack(PMCItems.BACKPACK2));
+			recipe.add(new ItemStack(PMCRegistry.Items.BACKPACK2));
 			recipe.add(new ItemStack(Items.LEATHER, 30));
 			return recipe;
 		}

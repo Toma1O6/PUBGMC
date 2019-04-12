@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -49,10 +49,10 @@ public class SrKar98K extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addScopes();
-		addAttachment(PMCItems.SILENCER_SNIPER);
-		addAttachment(PMCItems.COMPENSATOR_SNIPER);
-		addAttachment(PMCItems.BULLET_LOOPS_SNIPER);
-		addAttachment(PMCItems.CHEEKPAD);
+		addAttachment(PMCRegistry.Items.SILENCER_SNIPER);
+		addAttachment(PMCRegistry.Items.COMPENSATOR_SNIPER);
+		addAttachment(PMCRegistry.Items.BULLET_LOOPS_SNIPER);
+		addAttachment(PMCRegistry.Items.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	
@@ -66,7 +66,7 @@ public class SrKar98K extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 50));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 1));
 		rec.add(new ItemStack(Blocks.PLANKS, 15));

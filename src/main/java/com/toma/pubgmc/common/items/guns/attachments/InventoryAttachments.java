@@ -2,17 +2,14 @@ package com.toma.pubgmc.common.items.guns.attachments;
 
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.event.terraingen.BiomeEvent.GetWaterColor;
 
 public class InventoryAttachments extends InventoryBasic
 {
@@ -163,10 +160,10 @@ public class InventoryAttachments extends InventoryBasic
 				weaponType = 3;
 			Item[][] attachments =
 			{
-				{PMCItems.SILENCER_PISTOL},
-				{PMCItems.SILENCER_SMG, PMCItems.COMPENSATOR_SMG},
-				{PMCItems.SILENCER_AR, PMCItems.COMPENSATOR_AR},
-				{PMCItems.SILENCER_SNIPER, PMCItems.COMPENSATOR_SNIPER}
+				{PMCRegistry.Items.SILENCER_PISTOL},
+				{PMCRegistry.Items.SILENCER_SMG, PMCRegistry.Items.COMPENSATOR_SMG},
+				{PMCRegistry.Items.SILENCER_AR, PMCRegistry.Items.COMPENSATOR_AR},
+				{PMCRegistry.Items.SILENCER_SNIPER, PMCRegistry.Items.COMPENSATOR_SNIPER}
 			};
 			
 			return new ItemStack(attachments[weaponType][attachment]);
@@ -182,10 +179,10 @@ public class InventoryAttachments extends InventoryBasic
 			int magazine = stack.getTagCompound().getInteger("magazine")-1;
 			Item[][] mags = 
 			{
-				{PMCItems.QUICKDRAW_MAG_PISTOL,PMCItems.EXTENDED_MAG_PISTOL,PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL},
-				{PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG},
-				{PMCItems.QUICKDRAW_MAG_AR, PMCItems.EXTENDED_MAG_AR, PMCItems.EXTENDED_QUICKDRAW_MAG_AR},
-				{PMCItems.QUICKDRAW_MAG_SNIPER, PMCItems.EXTENDED_MAG_SNIPER, PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER}
+				{PMCRegistry.Items.QUICKDRAW_MAG_PISTOL,PMCRegistry.Items.EXTENDED_MAG_PISTOL,PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_PISTOL},
+				{PMCRegistry.Items.QUICKDRAW_MAG_SMG, PMCRegistry.Items.EXTENDED_MAG_SMG, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SMG},
+				{PMCRegistry.Items.QUICKDRAW_MAG_AR, PMCRegistry.Items.EXTENDED_MAG_AR, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR},
+				{PMCRegistry.Items.QUICKDRAW_MAG_SNIPER, PMCRegistry.Items.EXTENDED_MAG_SNIPER, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER}
 			};
 			int weaponType = 0;
 			if(gun.getGunType() == GunType.SMG)
@@ -208,7 +205,7 @@ public class InventoryAttachments extends InventoryBasic
 			int grip = stack.getTagCompound().getInteger("grip");
 			
 			//cannot be 0 because of the check while attaching; anything bigger will simply return the angled grip
-			return grip == 1 ? new ItemStack(PMCItems.GRIP_VERTICAL) : new ItemStack(PMCItems.GRIP_ANGLED);
+			return grip == 1 ? new ItemStack(PMCRegistry.Items.GRIP_VERTICAL) : new ItemStack(PMCRegistry.Items.GRIP_ANGLED);
 		}
 		return ItemStack.EMPTY;
 	}
@@ -222,12 +219,12 @@ public class InventoryAttachments extends InventoryBasic
 			
 			switch(scope)
 			{
-				case 1: return new ItemStack(PMCItems.RED_DOT);
-				case 2: return new ItemStack(PMCItems.HOLOGRAPHIC);
-				case 3: return new ItemStack(PMCItems.SCOPE2X);
-				case 4: return new ItemStack(PMCItems.SCOPE4X);
-				case 5: return new ItemStack(PMCItems.SCOPE8X);
-				case 6: return new ItemStack(PMCItems.SCOPE15X);
+				case 1: return new ItemStack(PMCRegistry.Items.RED_DOT);
+				case 2: return new ItemStack(PMCRegistry.Items.HOLOGRAPHIC);
+				case 3: return new ItemStack(PMCRegistry.Items.SCOPE2X);
+				case 4: return new ItemStack(PMCRegistry.Items.SCOPE4X);
+				case 5: return new ItemStack(PMCRegistry.Items.SCOPE8X);
+				case 6: return new ItemStack(PMCRegistry.Items.SCOPE15X);
 			}
 		}
 		
@@ -243,17 +240,17 @@ public class InventoryAttachments extends InventoryBasic
 			
 			if(id == 1 && (gun.getGunType() == GunType.PISTOL || gun.getGunType() == GunType.SR))
 			{
-				return new ItemStack(PMCItems.BULLET_LOOPS_SNIPER);
+				return new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SNIPER);
 			}
 			
 			else if(id == 1 && gun.getGunType() == GunType.SHOTGUN)
 			{
-				return new ItemStack(PMCItems.BULLET_LOOPS_SHOTGUN);
+				return new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SHOTGUN);
 			}
 			
 			else if(id == 2)
 			{
-				return new ItemStack(PMCItems.CHEEKPAD);
+				return new ItemStack(PMCRegistry.Items.CHEEKPAD);
 			}
 		}
 		
@@ -276,19 +273,19 @@ public class InventoryAttachments extends InventoryBasic
 					{
 						switch(gun.getGunType())
 						{
-							case PISTOL: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_PISTOL));
+							case PISTOL: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.SILENCER_PISTOL));
 							break;
 							
-							case SMG: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_SMG));
+							case SMG: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.SILENCER_SMG));
 							break;
 							
-							case AR: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_AR));
+							case AR: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.SILENCER_AR));
 							break;
 							
-							case DMR: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_SNIPER));
+							case DMR: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.SILENCER_SNIPER));
 							break;
 							
-							case SR: setInventorySlotContents(2, new ItemStack(PMCItems.SILENCER_SNIPER));
+							case SR: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.SILENCER_SNIPER));
 							break;
 							
 							default: break;
@@ -301,16 +298,16 @@ public class InventoryAttachments extends InventoryBasic
 					{
 						switch(gun.getGunType())
 						{
-							case SMG: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_SMG));
+							case SMG: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.COMPENSATOR_SMG));
 							break;
 							
-							case AR: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_AR));
+							case AR: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.COMPENSATOR_AR));
 							break;
 							
-							case DMR: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_SNIPER));
+							case DMR: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.COMPENSATOR_SNIPER));
 							break;
 							
-							case SR: setInventorySlotContents(2, new ItemStack(PMCItems.COMPENSATOR_SNIPER));
+							case SR: setInventorySlotContents(2, new ItemStack(PMCRegistry.Items.COMPENSATOR_SNIPER));
 							break;
 							
 							default: break;
@@ -324,32 +321,32 @@ public class InventoryAttachments extends InventoryBasic
 				{
 					if(att.getInteger("scope") == 1)
 					{
-						setInventorySlotContents(1, new ItemStack(PMCItems.RED_DOT));
+						setInventorySlotContents(1, new ItemStack(PMCRegistry.Items.RED_DOT));
 					}
 					
 					else if(att.getInteger("scope") == 2)
 					{
-						setInventorySlotContents(1, new ItemStack(PMCItems.HOLOGRAPHIC));
+						setInventorySlotContents(1, new ItemStack(PMCRegistry.Items.HOLOGRAPHIC));
 					}
 					
 					else if(att.getInteger("scope") == 3)
 					{
-						setInventorySlotContents(1, new ItemStack(PMCItems.SCOPE2X));
+						setInventorySlotContents(1, new ItemStack(PMCRegistry.Items.SCOPE2X));
 					}
 					
 					else if(att.getInteger("scope") == 4)
 					{
-						setInventorySlotContents(1, new ItemStack(PMCItems.SCOPE4X));
+						setInventorySlotContents(1, new ItemStack(PMCRegistry.Items.SCOPE4X));
 					}
 					
 					else if(att.getInteger("scope") == 5)
 					{
-						setInventorySlotContents(1, new ItemStack(PMCItems.SCOPE8X));
+						setInventorySlotContents(1, new ItemStack(PMCRegistry.Items.SCOPE8X));
 					}
 					
 					else if(att.getInteger("scope") == 6)
 					{
-						setInventorySlotContents(1, new ItemStack(PMCItems.SCOPE15X));
+						setInventorySlotContents(1, new ItemStack(PMCRegistry.Items.SCOPE15X));
 					}
 					
 					att.setInteger("scope", 0);
@@ -359,12 +356,12 @@ public class InventoryAttachments extends InventoryBasic
 				{
 					if(att.getInteger("grip") == 1)
 					{
-						setInventorySlotContents(3, new ItemStack(PMCItems.GRIP_VERTICAL));
+						setInventorySlotContents(3, new ItemStack(PMCRegistry.Items.GRIP_VERTICAL));
 					}
 					
 					else if(att.getInteger("grip") == 2)
 					{
-						setInventorySlotContents(3, new ItemStack(PMCItems.GRIP_ANGLED));
+						setInventorySlotContents(3, new ItemStack(PMCRegistry.Items.GRIP_ANGLED));
 					}
 					
 					att.setInteger("grip", 0);
@@ -376,16 +373,16 @@ public class InventoryAttachments extends InventoryBasic
 					{
 						switch(gun.getGunType())
 						{
-							case PISTOL: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SNIPER)); break;
-							case SHOTGUN: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SHOTGUN)); break;
-							case SR: setInventorySlotContents(5, new ItemStack(PMCItems.BULLET_LOOPS_SNIPER)); break;
+							case PISTOL: setInventorySlotContents(5, new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SNIPER)); break;
+							case SHOTGUN: setInventorySlotContents(5, new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SHOTGUN)); break;
+							case SR: setInventorySlotContents(5, new ItemStack(PMCRegistry.Items.BULLET_LOOPS_SNIPER)); break;
 							default: break;
 						}
 					}
 					
 					else if(att.getInteger("stock") == 2)
 					{
-						setInventorySlotContents(5, new ItemStack(PMCItems.CHEEKPAD));
+						setInventorySlotContents(5, new ItemStack(PMCRegistry.Items.CHEEKPAD));
 					}
 					
 					att.setInteger("stock", 0);
@@ -397,11 +394,11 @@ public class InventoryAttachments extends InventoryBasic
 					{
 						switch(gun.getGunType())
 						{
-							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_PISTOL)); break;
-							case SMG: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SMG)); break;
-							case AR: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_AR)); break;
-							case DMR: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)); break;
-							case SR: setInventorySlotContents(4, new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)); break;
+							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_PISTOL)); break;
+							case SMG: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_SMG)); break;
+							case AR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_AR)); break;
+							case DMR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_SNIPER)); break;
+							case SR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.QUICKDRAW_MAG_SNIPER)); break;
 							default: break;
 						}
 					}
@@ -410,11 +407,11 @@ public class InventoryAttachments extends InventoryBasic
 					{
 						switch(gun.getGunType())
 						{
-							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_PISTOL)); break;
-							case SMG: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SMG)); break;
-							case AR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_AR)); break;
-							case DMR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)); break;
-							case SR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)); break;
+							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_MAG_PISTOL)); break;
+							case SMG: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_MAG_SMG)); break;
+							case AR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_MAG_AR)); break;
+							case DMR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_MAG_SNIPER)); break;
+							case SR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_MAG_SNIPER)); break;
 							default: break;
 						}
 					}
@@ -423,11 +420,11 @@ public class InventoryAttachments extends InventoryBasic
 					{
 						switch(gun.getGunType())
 						{
-							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL)); break;
-							case SMG: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG)); break;
-							case AR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR)); break;
-							case DMR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
-							case SR: setInventorySlotContents(4, new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
+							case PISTOL: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_PISTOL)); break;
+							case SMG: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SMG)); break;
+							case AR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR)); break;
+							case DMR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
+							case SR: setInventorySlotContents(4, new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER)); break;
 							default: break;
 						}
 					}

@@ -9,8 +9,13 @@ import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.common.items.guns.GunBase;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -22,7 +27,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 public class BakedModelGun implements IBakedModel
-{	
+{
+	IPlayerData data = null;
+	EntityPlayerSP player = null;
+	
 	@Override
 	public boolean isBuiltInRenderer()
 	{
@@ -67,10 +75,40 @@ public class BakedModelGun implements IBakedModel
 		Matrix4f matrix = new Matrix4f();
 		matrix.setIdentity();
 		TRSRTransformation trsrt = new TRSRTransformation(matrix);
+		Vector3f transl = new Vector3f(0f, 0f, 0f);
+		Vector3f scale = new Vector3f(1f, 1f, 1f);
+		Quat4f leftRot = new Quat4f(0f, 1f, 0f, 0f);
+		Quat4f rightRot = new Quat4f(0f, 1f, 0f, 0f);
 		
-		if(cameraTransformType == TransformType.GUI)
+		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			trsrt = new TRSRTransformation(new Vector3f(0f, -0.1f, 0f), new Quat4f(0f, 1f, 0f, 0f), new Vector3f(0.5f, 0.5f, 0.5f), new Quat4f(0.8f, -1f, 0f, 1f));
+			data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
+		}
+		else
+		{
+			player = Minecraft.getMinecraft().player;
+			return Pair.of(this, trsrt.getMatrix());
+		}
+		
+		switch(cameraTransformType)
+		{
+			case GUI: {
+				trsrt = new TRSRTransformation(new Vector3f(0f, -0.1f, 0f), new Quat4f(0f, 1f, 0f, 0f), new Vector3f(0.5f, 0.5f, 0.5f), new Quat4f(0.8f, -1f, 0f, 1f));
+				break;
+			}
+			
+			// Implement animations here
+			case FIRST_PERSON_RIGHT_HAND: {
+				transl = data != null && data.isAiming() ? new Vector3f(-0.651f, 0.3f, 0f) : new Vector3f(0f, 0f, 0f);
+				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
+			}
+			
+			// Third person animations, sometime later propably
+			case THIRD_PERSON_RIGHT_HAND: {
+				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
+			}
+			
+			default: break;
 		}
 		
 		return Pair.of(this, trsrt.getMatrix());

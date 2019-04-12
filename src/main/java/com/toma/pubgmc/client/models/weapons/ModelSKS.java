@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -26,8 +25,6 @@ public class ModelSKS extends ModelGun
 
 	public ModelSKS()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.2625d, 0.245d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -137,33 +134,9 @@ public class ModelSKS extends ModelGun
 			{
 				animation_held.run(player.isSprinting());
 				animation_reload.run(data.isReloading());
-				handleAnimation(data.isAiming(), stack);
 				renderSKS(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
-		}
-	}
-	
-	private void handleAnimation(boolean aim, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.2625d)
-			{
-				animation_aim.setYModifier(0.2625d);
-			}
-			
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.195d)
-			{
-				animation_aim.setYModifier(0.195d);
-			}
-			
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.145d)
-			{
-				animation_aim.setYModifier(0.145d);
-			}
-			
-			animation_aim.run(aim);
 		}
 	}
 	

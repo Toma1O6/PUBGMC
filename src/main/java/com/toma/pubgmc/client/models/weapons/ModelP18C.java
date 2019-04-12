@@ -21,9 +21,6 @@ public class ModelP18C extends ModelGun
 
 	public ModelP18C()
 	{
-		animation_aim = new AimAnimation(-0.585d, 0.22d, 0.235d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -66,25 +63,10 @@ public class ModelP18C extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderP18C(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.22d)
-				animation_aim.setYModifier(0.22d);
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.14d)
-				animation_aim.setYModifier(0.14d);
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderP18C(boolean aim, ItemStack stack)

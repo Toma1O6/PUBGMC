@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -46,7 +46,7 @@ public class PistolR45 extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCItems.RED_DOT);
+		addAttachment(PMCRegistry.Items.RED_DOT);
 		return super.acceptedAttachments();
 	}
 	
@@ -60,7 +60,7 @@ public class PistolR45 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<>();
-		rec.add(new ItemStack(PMCItems.STEEL_INGOT, 18));
+		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 18));
 		rec.add(new ItemStack(Items.IRON_INGOT, 5));
 		rec.add(new ItemStack(Blocks.PLANKS, 2));
 		return rec;

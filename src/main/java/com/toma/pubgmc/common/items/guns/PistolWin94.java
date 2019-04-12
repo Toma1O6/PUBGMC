@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.init.Blocks;
@@ -46,7 +46,7 @@ public class PistolWin94 extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCItems.BULLET_LOOPS_SNIPER);
+		addAttachment(PMCRegistry.Items.BULLET_LOOPS_SNIPER);
 		return super.acceptedAttachments();
 	}
 	

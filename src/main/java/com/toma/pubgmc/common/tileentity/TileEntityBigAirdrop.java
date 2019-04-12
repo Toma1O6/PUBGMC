@@ -6,7 +6,7 @@ import java.util.Random;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.init.PMCItems;
+import com.toma.pubgmc.init.PMCRegistry;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -81,7 +81,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 			{
 				for(int i = 0; i < 1 + RANDOM.nextInt(3); i++)
 				{
-					setInventorySlotContents(nextID(), new ItemStack(PMCItems.AMMO_556, 30));
+					setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.AMMO_556, 30));
 				}
 				
 				break;
@@ -91,7 +91,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 			{
 				for(int i = 0; i < 1 + RANDOM.nextInt(3); i++)
 				{
-					setInventorySlotContents(nextID(), new ItemStack(PMCItems.AMMO_762, 30));
+					setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.AMMO_762, 30));
 				}
 				
 				break;
@@ -99,8 +99,8 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 			
 			case AMMO300M:
 			{
-				setInventorySlotContents(nextID(), new ItemStack(PMCItems.AMMO_300M, 10));
-				setInventorySlotContents(nextID(), new ItemStack(PMCItems.AMMO_300M, 10));
+				setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.AMMO_300M, 10));
+				setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.AMMO_300M, 10));
 				break;
 			}
 			
@@ -112,52 +112,52 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 	{
 		WEAPONS.clear();
 		
-		WEAPONS.add(new ItemStack(PMCItems.AUG));
-		WEAPONS.add(new ItemStack(PMCItems.M249));
-		WEAPONS.add(new ItemStack(PMCItems.GROZA));
-		WEAPONS.add(new ItemStack(PMCItems.MK14));
-		WEAPONS.add(new ItemStack(PMCItems.AWM));
+		WEAPONS.add(new ItemStack(PMCRegistry.Items.AUG));
+		WEAPONS.add(new ItemStack(PMCRegistry.Items.M249));
+		WEAPONS.add(new ItemStack(PMCRegistry.Items.GROZA));
+		WEAPONS.add(new ItemStack(PMCRegistry.Items.MK14));
+		WEAPONS.add(new ItemStack(PMCRegistry.Items.AWM));
 	}
 	
 	private void generateAtachments()
 	{
 		ATACHMENTS.clear();
 		
-		ATACHMENTS.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR));
-		ATACHMENTS.add(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER));
-		ATACHMENTS.add(new ItemStack(PMCItems.SILENCER_AR));
-		ATACHMENTS.add(new ItemStack(PMCItems.SILENCER_SNIPER));
-		ATACHMENTS.add(new ItemStack(PMCItems.COMPENSATOR_SNIPER));
-		ATACHMENTS.add(new ItemStack(PMCItems.SCOPE4X));
-		ATACHMENTS.add(new ItemStack(PMCItems.SCOPE8X));
-		ATACHMENTS.add(new ItemStack(PMCItems.SCOPE15X));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.SILENCER_AR));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.SILENCER_SNIPER));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.COMPENSATOR_SNIPER));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.SCOPE4X));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.SCOPE8X));
+		ATACHMENTS.add(new ItemStack(PMCRegistry.Items.SCOPE15X));
 	}
 	
 	private void generateHeals()
 	{
 		HEALS.clear();
 		
-		HEALS.add(new ItemStack(PMCItems.PAINKILLERS));
-		HEALS.add(new ItemStack(PMCItems.FIRSTAIDKIT));
-		HEALS.add(new ItemStack(PMCItems.MEDKIT));
-		HEALS.add(new ItemStack(PMCItems.ADRENALINESYRINGE));
+		HEALS.add(new ItemStack(PMCRegistry.Items.PAINKILLERS));
+		HEALS.add(new ItemStack(PMCRegistry.Items.FIRSTAIDKIT));
+		HEALS.add(new ItemStack(PMCRegistry.Items.MEDKIT));
+		HEALS.add(new ItemStack(PMCRegistry.Items.ADRENALINESYRINGE));
 	}
 	
 	private void createArmorLoot()
 	{
-		setInventorySlotContents(nextID(), new ItemStack(PMCItems.ARMOR3HELMET));
-		setInventorySlotContents(nextID(), new ItemStack(PMCItems.ARMOR3HELMET));
-		setInventorySlotContents(nextID(), new ItemStack(PMCItems.ARMOR3BODY));
-		setInventorySlotContents(nextID(), new ItemStack(PMCItems.ARMOR3BODY));
-		setInventorySlotContents(nextID(), new ItemStack(PMCItems.BACKPACK3));
-		setInventorySlotContents(nextID(), new ItemStack(PMCItems.BACKPACK3));
+		setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.ARMOR3HELMET));
+		setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.ARMOR3HELMET));
+		setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.ARMOR3BODY));
+		setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.ARMOR3BODY));
+		setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.BACKPACK3));
+		setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.BACKPACK3));
 	}
 	
 	private void generateGhillie()
 	{
 		if(Math.random() * 100 <= 25)
 		{
-			setInventorySlotContents(nextID(), new ItemStack(PMCItems.GHILLIE_SUIT));
+			setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.Items.GHILLIE_SUIT));
 		}
 	}
 	

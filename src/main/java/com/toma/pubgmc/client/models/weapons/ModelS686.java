@@ -1,8 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
-import com.toma.pubgmc.animation.SimpleReloadAnimation;
-import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -24,10 +21,6 @@ public class ModelS686 extends ModelGun
 
 	public ModelS686()
 	{
-		animation_aim = new AimAnimation(-0.525d, 0.23d, 0.43d).setInvertedCoords(true, false, false);
-		animation_reload = new SimpleReloadAnimation(ReloadStyle.SHOTGUN);
-		
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -74,21 +67,10 @@ public class ModelS686 extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data.isAiming(), player.isSprinting(), data.isReloading(), stack);
 				renderS686(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(boolean aim, boolean sprint, boolean reload, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			animation_aim.run(aim);
-		}
-		animation_held.run(sprint);
-		animation_reload.run(reload);
 	}
 	
 	private void renderS686(boolean aim, ItemStack stack)

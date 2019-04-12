@@ -24,9 +24,6 @@ public class ModelFlareGun extends ModelGun
 
 	public ModelFlareGun() 
 	{
-		animation_aim = new AimAnimation(-0.57d, 0.215d, 0.225d).setInvertedCoords(true, false, false);
-		animation_held.setWeaponType(true);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 		
@@ -106,18 +103,10 @@ public class ModelFlareGun extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				handleAnimations(data, player);
 				renderFlareGun(data.isAiming());
 			}
 			GlStateManager.popMatrix();
 		}
-	}
-	
-	private void handleAnimations(IPlayerData data, EntityPlayerSP player)
-	{
-		animation_aim.run(data.isAiming());
-		animation_held.run(player.isSprinting());
-		animation_reload.run(data.isReloading());
 	}
 	
 	private void renderFlareGun(boolean aim)
@@ -132,12 +121,6 @@ public class ModelFlareGun extends ModelGun
 	
 	private void renderParts()
 	{
-		/*barrel.render(1f);
-		base.render(1f);
-		basesh.render(1f);
-		handle.render(1f);
-		handle2.render(1f);
-		trigger.render(1f);*/
 		core.render(1f);
 	}
 }

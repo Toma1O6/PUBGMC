@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -26,8 +25,6 @@ public class ModelSLR extends ModelGun
 
 	public ModelSLR()
 	{
-		animation_aim = new AimAnimation(-0.56d, 0.28d, 0.3d).setInvertedCoords(true, false, false);
-		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -126,7 +123,6 @@ public class ModelSLR extends ModelGun
 			{
 				animation_held.run(player.isSprinting());
 				animation_reload.run(data.isReloading());
-				handleAnimations(data.isAiming(), stack);
 				renderSLR(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
@@ -158,29 +154,6 @@ public class ModelSLR extends ModelGun
 			render8x(stack);
 		else if(has15X(stack))
 			render15x(stack);
-	}
-	
-	private void handleAnimations(boolean aim, ItemStack stack)
-	{
-		if(enableADS(stack))
-		{
-			if(!hasScopeAtachment(stack) && animation_aim.getFinalY() != 0.28d)
-			{
-				animation_aim.setYModifier(0.28d);
-			}
-			
-			else if(hasRedDot(stack) && animation_aim.getFinalY() != 0.2d)
-			{
-				animation_aim.setYModifier(0.2d);
-			}
-			
-			else if(hasHoloSight(stack) && animation_aim.getFinalY() != 0.155d)
-			{
-				animation_aim.setYModifier(0.155d);
-			}
-			
-			animation_aim.run(aim);
-		}
 	}
 	
 	private void renderRedDot(ItemStack stack)
