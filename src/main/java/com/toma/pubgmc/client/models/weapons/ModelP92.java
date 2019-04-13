@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.AimAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -21,6 +20,9 @@ public class ModelP92 extends ModelGun
 
 	public ModelP92()
 	{
+		initAimAnimation(-0.651f, 0.31f, 0.24f);
+		initAnimationStates(0.31f, 0.23f, 0f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -72,11 +74,14 @@ public class ModelP92 extends ModelGun
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			renderP92(data.isAiming(), stack);
+			aimAnimation.setAnimationSpeed(3.5f);
 		}
 	}
 	
 	private void renderP92(boolean aim, ItemStack stack)
 	{
+		super.preRender(stack);
+		
 		GlStateManager.pushMatrix();
 		transform.defaultPistolTransform();
 		GlStateManager.translate(-3.0, 6.0, 0.0);

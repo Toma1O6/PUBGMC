@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
@@ -64,29 +66,11 @@ public class ShotgunS686 extends GunBase
         	{
         		world.playSound(null, player.posX, player.posY, player.posZ, getGunSound(), SoundCategory.PLAYERS, getGunVolume(), 1.0f);
         		
-                EntityBullet bullet = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet);
-                
-                EntityBullet bullet1 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet1);
-                
-                EntityBullet bullet2 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet2);
-                
-                EntityBullet bullet3 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet3);
-                
-                EntityBullet bullet4 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet4);
-                
-                EntityBullet bullet5 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet5);
-                
-                EntityBullet bullet6 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet6);
-                
-                EntityBullet bullet7 = new EntityBullet(world, player, this);
-                world.spawnEntity(bullet7);
+        		for(int i = 0; i < 8; i++)
+        		{
+        			EntityBullet bullet = new EntityBullet(world, player, this);
+        			world.spawnEntity(bullet);
+        		}
                 
                 if(!player.capabilities.isCreativeMode)
                 {
@@ -114,6 +98,12 @@ public class ShotgunS686 extends GunBase
 	public SoundEvent getWeaponReloadSound()
 	{
 		return PMCSounds.reload_s686;
+	}
+	
+	@Override
+	public ModelGun getWeaponModel()
+	{
+		return ((WeaponTEISR)this.getTileEntityItemStackRenderer()).s686;
 	}
 	
 	@Override

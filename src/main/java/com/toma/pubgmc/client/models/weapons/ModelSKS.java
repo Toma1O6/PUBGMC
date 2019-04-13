@@ -132,8 +132,6 @@ public class ModelSKS extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
-				animation_reload.run(data.isReloading());
 				renderSKS(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();

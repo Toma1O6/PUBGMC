@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityFlare;
@@ -79,6 +81,12 @@ public class FlareGun extends GunBase
 	public SoundEvent getWeaponReloadSound()
 	{
 		return PMCSounds.reload_flaregun;
+	}
+	
+	@Override
+	public ModelGun getWeaponModel()
+	{
+		return ((WeaponTEISR)this.getTileEntityItemStackRenderer()).flareGun;
 	}
 	
 	@Override

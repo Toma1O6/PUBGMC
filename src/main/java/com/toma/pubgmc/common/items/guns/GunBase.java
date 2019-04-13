@@ -4,8 +4,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
@@ -109,6 +113,13 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 * @return the weapon ammo limit
 	 */
 	public abstract int getWeaponAmmoLimit(ItemStack stack);
+	
+	/**
+	 * 
+	 */
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	public abstract ModelGun getWeaponModel();
 	
 	/**
 	 * Used to spawn bullet entity, called from packet

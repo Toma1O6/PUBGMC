@@ -121,8 +121,6 @@ public class ModelSLR extends ModelGun
 			
 			GlStateManager.pushMatrix();
 			{
-				animation_held.run(player.isSprinting());
-				animation_reload.run(data.isReloading());
 				renderSLR(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();

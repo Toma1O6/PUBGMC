@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
@@ -51,6 +53,12 @@ public class SmgMicroUzi extends GunBase
 		addAttachment(PMCRegistry.Items.SILENCER_SMG);
 		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
 		return super.acceptedAttachments();
+	}
+	
+	@Override
+	public ModelGun getWeaponModel()
+	{
+		return ((WeaponTEISR)this.getTileEntityItemStackRenderer()).microuzi;
 	}
 	
 	@Override

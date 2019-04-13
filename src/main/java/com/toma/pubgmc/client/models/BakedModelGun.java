@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 
@@ -30,6 +32,7 @@ public class BakedModelGun implements IBakedModel
 {
 	IPlayerData data = null;
 	EntityPlayerSP player = null;
+	GunBase held = null;
 	
 	@Override
 	public boolean isBuiltInRenderer()
@@ -83,6 +86,8 @@ public class BakedModelGun implements IBakedModel
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
+			if(player.getHeldItemMainhand().getItem() instanceof GunBase)
+				held = (GunBase)player.getHeldItemMainhand().getItem();
 		}
 		else
 		{
@@ -99,7 +104,9 @@ public class BakedModelGun implements IBakedModel
 			
 			// Implement animations here
 			case FIRST_PERSON_RIGHT_HAND: {
-				transl = data != null && data.isAiming() ? new Vector3f(-0.651f, 0.3f, 0f) : new Vector3f(0f, 0f, 0f);
+				held.getWeaponModel().getAimAnimation().processAnimation(data.isAiming());
+				
+				transl = data != null ? held.getWeaponModel().getAimAnimation().getAimingState() : new Vector3f(0f, 0f, 0f);
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
 			

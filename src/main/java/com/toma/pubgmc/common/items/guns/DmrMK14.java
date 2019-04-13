@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items.guns;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
@@ -58,6 +60,12 @@ public class DmrMK14 extends GunBase
 	public SoundEvent getWeaponReloadSound()
 	{
 		return PMCSounds.reload_mk14;
+	}
+	
+	@Override
+	public ModelGun getWeaponModel()
+	{
+		return ((WeaponTEISR)this.getTileEntityItemStackRenderer()).mk14;
 	}
 	
 	@Override

@@ -1,10 +1,6 @@
 package com.toma.pubgmc.client.models;
 
-import com.toma.pubgmc.animation.AimAnimation;
-import com.toma.pubgmc.animation.ComplexAnimation;
-import com.toma.pubgmc.animation.HeldAnimations;
-import com.toma.pubgmc.animation.SimpleReloadAnimation;
-import com.toma.pubgmc.animation.SimpleReloadAnimation.ReloadStyle;
+import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -26,9 +22,6 @@ public abstract class ModelGun extends ModelBase
 {	
 	public ModelTransformationHelper transform = ModelTransformationHelper.instance;
 	public ModelDebugger debug = ModelDebugger.instance;
-	public HeldAnimations animation_held;
-	public AimAnimation animation_aim;
-	public SimpleReloadAnimation animation_reload;
 	
 	private final ModelSilencerPistol silencer_pistol = new ModelSilencerPistol();
 	private final ModelSilencer silencer = new ModelSilencer();
@@ -41,15 +34,39 @@ public abstract class ModelGun extends ModelBase
 	private final ModelScope8X scope8x = new ModelScope8X();
 	private final ModelScope15X scope15x = new ModelScope15X();
 	
+	public AimingAnimation aimAnimation;
+	public float normalY = 0f, redDotY = 0f, holoY = 0f;
+	
 	public ModelGun()
 	{
-		HeldAnimations anim = new HeldAnimations();
-		anim.setWeaponType(false);
-		animation_held = anim;
-		animation_reload = new SimpleReloadAnimation(ReloadStyle.NORMAL);
+		aimAnimation = new AimingAnimation(0f, 0f, 0f);
+		initAnimationStates(0f, 0f, 0f);
 	}
 	
 	public abstract void render(ItemStack stack);
+	
+	public void preRender(ItemStack stack)
+	{
+		if(!hasScopeAtachment(stack) && aimAnimation.getFinalState().y != normalY) {
+			initAimAnimation(aimAnimation.getFinalState().x, normalY, aimAnimation.getFinalState().z);
+		}
+		
+		else if(hasRedDot(stack) && aimAnimation.getFinalState().y != redDotY) {
+			initAimAnimation(aimAnimation.getFinalState().x, redDotY, aimAnimation.getFinalState().z);
+		}
+		
+		else if(hasHoloSight(stack) && aimAnimation.getFinalState().y != holoY)
+			initAimAnimation(aimAnimation.getFinalState().x, holoY, aimAnimation.getFinalState().z);
+	}
+	
+	public void initAnimationStates(float... f) throws IllegalArgumentException
+	{
+		if(f.length < 3) throw new IllegalArgumentException("You must specify all 3 values!");
+		
+		normalY = f[0];
+		redDotY = f[1];
+		holoY = f[2];
+	}
 	
 	public static void rotateModelForADSRendering()
 	{
@@ -271,5 +288,15 @@ public abstract class ModelGun extends ModelBase
 			grip_angled.render();
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	public AimingAnimation getAimAnimation()
+	{
+		return aimAnimation;
+	}
+	
+	public void initAimAnimation(float x, float y, float z)
+	{
+		aimAnimation = new AimingAnimation(x, y, z);
 	}
 }
