@@ -104,9 +104,9 @@ public class BakedModelGun implements IBakedModel
 			
 			// Implement animations here
 			case FIRST_PERSON_RIGHT_HAND: {
-				held.getWeaponModel().getAimAnimation().processAnimation(data.isAiming());
+				held.getWeaponModel().processAimAnimation(data.isAiming());
 				
-				transl = data != null ? held.getWeaponModel().getAimAnimation().getAimingState() : new Vector3f(0f, 0f, 0f);
+				transl = data != null ? held.getWeaponModel().getMovementVecFromAnimations() : new Vector3f(0f, 0f, 0f);
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
 			

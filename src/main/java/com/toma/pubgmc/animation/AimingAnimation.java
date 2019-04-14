@@ -18,9 +18,28 @@ public class AimingAnimation extends Animation
 		invz = values.z < 0;
 	}
 	
-	public Vector3f getAimingState()
+	@Override
+	public Vector3f getMovementVec()
 	{
 		return new Vector3f(mx, my, mz);
+	}
+	
+	@Override
+	public Vector3f getLeft()
+	{
+		return EMPTYVEC;
+	}
+	
+	@Override
+	public Vector3f getRight() 
+	{
+		return EMPTYVEC;
+	}
+	
+	@Override
+	public Vector3f[] getRotationVectors()
+	{
+		return ROTATION_VEC_EMPTY;
 	}
 	
 	public Vector3f getFinalState()

@@ -22,6 +22,7 @@ public class ModelP92 extends ModelGun
 	{
 		initAimAnimation(-0.651f, 0.31f, 0.24f);
 		initAnimationStates(0.31f, 0.23f, 0f);
+		initAnimations(aimAnimation);
 		
 		textureWidth = 128;
 		textureHeight = 128;

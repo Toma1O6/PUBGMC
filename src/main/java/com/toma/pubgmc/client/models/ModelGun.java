@@ -1,6 +1,9 @@
 package com.toma.pubgmc.client.models;
 
+import javax.vecmath.Vector3f;
+
 import com.toma.pubgmc.animation.AimingAnimation;
+import com.toma.pubgmc.animation.Animation;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -34,6 +37,7 @@ public abstract class ModelGun extends ModelBase
 	private final ModelScope8X scope8x = new ModelScope8X();
 	private final ModelScope15X scope15x = new ModelScope15X();
 	
+	public Animation[] animations;
 	public AimingAnimation aimAnimation;
 	public float normalY = 0f, redDotY = 0f, holoY = 0f;
 	
@@ -41,6 +45,7 @@ public abstract class ModelGun extends ModelBase
 	{
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAnimationStates(0f, 0f, 0f);
+		initAnimations(aimAnimation);
 	}
 	
 	public abstract void render(ItemStack stack);
@@ -288,6 +293,34 @@ public abstract class ModelGun extends ModelBase
 			grip_angled.render();
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	public Vector3f getMovementVecFromAnimations()
+	{
+		Vector3f v3f = new Vector3f(0f, 0f, 0f);
+		
+		for(Animation a : animations)
+		{
+			v3f = new Vector3f(v3f.x + a.getMovementVec().x, v3f.y + a.getMovementVec().y, v3f.z + a.getMovementVec().z);
+		}
+		
+		return v3f;
+	}
+	
+	public void processAimAnimation(boolean aim)
+	{
+		aimAnimation.processAnimation(aim);
+	}
+	
+	public Animation[] getAnimations()
+	{
+		System.out.println(animations[0]);
+		return animations;
+	}
+	
+	public void initAnimations(AimingAnimation animation0)
+	{
+		animations = new Animation[] {animation0};
 	}
 	
 	public AimingAnimation getAimAnimation()
