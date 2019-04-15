@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.container.ContainerGunWorkbench;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketCraft;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
@@ -83,7 +84,7 @@ public class GuiGunWorkbench extends GuiContainer
 		
 		if(tileentity.getCurrentCraftingMode() == CraftMode.Gun)
 		{
-			maxID = tileentity.WEAPONS.size() - 1;
+			maxID = GunBase.GUNS.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();

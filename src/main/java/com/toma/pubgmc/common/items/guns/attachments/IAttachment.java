@@ -14,19 +14,5 @@ public interface IAttachment
 		{
 			return name().toLowerCase();
 		}
-		
-		@Nullable
-		public Type getAttachmentType(String name)
-		{
-			for(Type type : values())
-			{
-				if(type.getName().equals(name))
-				{
-					return type;
-				}
-			}
-			
-			return null;
-		}
 	}
 }

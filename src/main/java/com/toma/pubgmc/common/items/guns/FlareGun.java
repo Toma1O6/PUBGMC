@@ -75,20 +75,4 @@ public class FlareGun extends GunBase
 	{
 		return PMCSounds.reload_flaregun;
 	}
-	
-	@Override
-	public ModelGun getWeaponModel()
-	{
-		return ((WeaponTEISR)this.getTileEntityItemStackRenderer()).flareGun;
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
-	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
-		recipe.add(new ItemStack(Items.IRON_INGOT, 15));
-		recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
-		recipe.add(new ItemStack(Items.DYE, 10, 1));
-		return recipe;
-	}
 }

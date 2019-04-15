@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.common.items.ItemAmmo;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.init.Items;
@@ -18,7 +19,6 @@ import net.minecraft.util.text.TextComponentString;
 
 public class TileEntityGunWorkbench extends TileEntity implements IInventoryTileEntity
 {
-	public static final List<Item> WEAPONS = new ArrayList<Item>();
 	public static final List<Item> AMMO = new ArrayList<Item>();
 	public static final List<Item> ATTACHMENT = new ArrayList<Item>();
 	public static final List<Item> CLOTHING = new ArrayList<Item>();
@@ -255,9 +255,9 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	{
 		if(getCurrentCraftingMode() == CraftMode.Gun)
 		{
-			if(id < WEAPONS.size())
+			if(id < GunBase.GUNS.size())
 			{
-				return WEAPONS.get(id);
+				return GunBase.GUNS.get(id);
 			}
 		}
 		

@@ -109,7 +109,7 @@ public class GuiAttachments extends GuiContainer
 			ItemAttachment[] mag = gun.getMagazineAttachments();
 			ItemAttachment[] stock = gun.getStockAttachments();
 			ItemAttachment[] scope = gun.getScopeAttachments();
-			final int length = barrel.length + grip.length + mag.length + stock.length + scope.length;
+
 			short barOff = 17;
 			short gripOff = 17;
 			short magOff = 10;

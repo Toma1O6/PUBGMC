@@ -158,6 +158,13 @@ public class GunBuilder
 		volumeSilenced = validateFloat(volumeSilenced, 1f, 20f);
 		reloadSound = checkNotNull(reloadSound);
 		
+		if(twoRoundBurst) {
+			if(!isObjectInsideGroup(Firemode.BURST, validFiremodes))
+			{
+				throw new NullPointerException("Two round is registered, but BURST firemode isn't valid for the weapon " + name);
+			}
+		}
+		
 		GunBase gun = new GunBase(this.name);
 		gun.setDamage(damage);
 		gun.setVelocity(velocity);
@@ -180,6 +187,17 @@ public class GunBuilder
 		gun.setGunSilencedSoundVolume(volumeSilenced);
 		gun.setReloadSound(reloadSound);
 		return gun;
+	}
+	
+	private static <T> boolean isObjectInsideGroup(T obj, T[] arr)
+	{
+		for(int i = 0; i < arr.length; i++) {
+			Object o = arr[i];
+			if(obj.equals(o)) {
+				return true;
+			} else continue;
+		}
+		return false;
 	}
 	
 	private static <T> T checkNotNull(T obj) throws NullPointerException

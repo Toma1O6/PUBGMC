@@ -53,7 +53,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GunBase extends PMCItem implements ICraftable
 {
 	public static final List<GunBase> GUNS = new ArrayList<GunBase>();
-	public static ConfigPMC.WeaponSettings cfg = ConfigPMC.weaponSettings;
 	
 	private float damage = 1.0f;
 	private double velocity = 1.0;
@@ -75,7 +74,12 @@ public class GunBase extends PMCItem implements ICraftable
 	private ModelGun gunModel;
 	
 	//Attachments
-	private ItemAttachment[] barrel, grip, magazine, stock, scope;
+	private ItemAttachment[]
+			barrel = new ItemAttachment[0],
+			grip = new ItemAttachment[0],
+			magazine = new ItemAttachment[0],
+			stock = new ItemAttachment[0],
+			scope = new ItemAttachment[0];
 	
 	//SOUNDS
 	private SoundEvent gun_shoot, gun_silenced, gun_reload;
@@ -86,15 +90,12 @@ public class GunBase extends PMCItem implements ICraftable
 	private ItemAmmo ammoItem;
 	private int ammoCount = 0;
 	
-	public GunBase(String name)
+	protected GunBase(String name)
 	{
 		super(name);
 		setCreativeTab(Pubgmc.pmcitemstab);
 		setMaxStackSize(1);
 		GUNS.add(this);
-		TileEntityGunWorkbench.WEAPONS.add(this);
-		
-		setValidFiremodes(Firemode.SINGLE);
 	}
 	
 	public SoundEvent getWeaponReloadSound()
@@ -729,6 +730,21 @@ public class GunBase extends PMCItem implements ICraftable
 		public String translatedName()
 		{
 			return I18n.format(name);
+		}
+		
+		public static Firemode[] all()
+		{
+			return new Firemode[] {Firemode.SINGLE, Firemode.BURST, Firemode.AUTO};
+		}
+		
+		public static Firemode[] noBurst()
+		{
+			return new Firemode[] {Firemode.SINGLE, Firemode.AUTO};
+		}
+		
+		public static Firemode[] noAuto()
+		{
+			return new Firemode[] {Firemode.SINGLE, Firemode.BURST};
 		}
 	}
 	

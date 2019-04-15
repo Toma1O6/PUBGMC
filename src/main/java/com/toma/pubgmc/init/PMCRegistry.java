@@ -1,8 +1,5 @@
 package com.toma.pubgmc.init;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
@@ -51,49 +48,12 @@ import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.armor.ItemNVGoggles;
 import com.toma.pubgmc.common.items.cases.Case1;
 import com.toma.pubgmc.common.items.guns.AmmoType;
-import com.toma.pubgmc.common.items.guns.ArAKM;
-import com.toma.pubgmc.common.items.guns.ArAUG;
-import com.toma.pubgmc.common.items.guns.ArBerylM762;
-import com.toma.pubgmc.common.items.guns.ArG36C;
-import com.toma.pubgmc.common.items.guns.ArGroza;
-import com.toma.pubgmc.common.items.guns.ArM16A4;
-import com.toma.pubgmc.common.items.guns.ArM416;
-import com.toma.pubgmc.common.items.guns.ArMK47;
-import com.toma.pubgmc.common.items.guns.ArQBZ;
-import com.toma.pubgmc.common.items.guns.ArScarL;
-import com.toma.pubgmc.common.items.guns.DmrMK14;
-import com.toma.pubgmc.common.items.guns.DmrMini14;
-import com.toma.pubgmc.common.items.guns.DmrQBU;
-import com.toma.pubgmc.common.items.guns.DmrSKS;
-import com.toma.pubgmc.common.items.guns.DmrSLR;
-import com.toma.pubgmc.common.items.guns.DmrVSS;
 import com.toma.pubgmc.common.items.guns.FlareGun;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import com.toma.pubgmc.common.items.guns.GunBuilder;
-import com.toma.pubgmc.common.items.guns.LmgDP28;
-import com.toma.pubgmc.common.items.guns.LmgM249;
-import com.toma.pubgmc.common.items.guns.PistolP18C;
-import com.toma.pubgmc.common.items.guns.PistolP1911;
-import com.toma.pubgmc.common.items.guns.PistolP92;
-import com.toma.pubgmc.common.items.guns.PistolR1895;
-import com.toma.pubgmc.common.items.guns.PistolR45;
-import com.toma.pubgmc.common.items.guns.PistolScorpion;
-import com.toma.pubgmc.common.items.guns.PistolWin94;
-import com.toma.pubgmc.common.items.guns.ShotgunS12K;
-import com.toma.pubgmc.common.items.guns.ShotgunS1897;
-import com.toma.pubgmc.common.items.guns.ShotgunS686;
-import com.toma.pubgmc.common.items.guns.ShotgunSawedOff;
-import com.toma.pubgmc.common.items.guns.SmgBizon;
-import com.toma.pubgmc.common.items.guns.SmgMicroUzi;
-import com.toma.pubgmc.common.items.guns.SmgTommygun;
-import com.toma.pubgmc.common.items.guns.SmgUmp45;
-import com.toma.pubgmc.common.items.guns.SmgVector;
-import com.toma.pubgmc.common.items.guns.SrAWM;
-import com.toma.pubgmc.common.items.guns.SrKar98K;
-import com.toma.pubgmc.common.items.guns.SrM24;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.common.items.heal.ItemAdrenalineSyringe;
@@ -110,8 +70,8 @@ import com.toma.pubgmc.common.tileentity.TileEntityLamp;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
-import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.event.GunModelAttachEvent;
+import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.util.AttachmentHelper;
 import com.toma.pubgmc.util.PMCItemBlock;
 
@@ -130,8 +90,8 @@ import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -395,32 +355,6 @@ public class PMCRegistry
 					new ItemGhillie("ghillie_suit"),
 					new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
 					new FlareGun("flare_gun"),
-					new SmgMicroUzi("microuzi"),
-					new SmgUmp45("ump45"),
-					new SmgVector("vector"),
-					new SmgTommygun("tommy_gun"),
-					new SmgBizon("bizon"),
-					new ArM16A4("m16a4"),
-					new ArM416("m416"),
-					new ArScarL("scar_l"),
-					new ArG36C("g36c"),
-					new ArQBZ("qbz"),
-					new ArAUG("aug"),
-					new ArAKM("akm"),
-					new ArBerylM762("beryl_m762"),
-					new ArMK47("mk47_mutant"),
-					new ArGroza("groza"),
-					new LmgDP28("dp28"),
-					new LmgM249("m249"),
-					new DmrVSS("vss"),
-					new DmrMini14("mini14"),
-					new DmrQBU("qbu"),
-					new DmrSKS("sks"),
-					new DmrSLR("slr"),
-					new DmrMK14("mk14"),
-					new SrKar98K("kar98k"),
-					new SrM24("m24"),
-					new SrAWM("awm"),
 					new ItemGrenade("grenade"),
 					new ItemSmokeGrenade("smoke"),
 					new ItemMolotov("molotov"),
@@ -594,7 +528,7 @@ public class PMCRegistry
 			
 			GunBase p18c = GunBuilder.create("p18c").damage(ConfigPMC.weaponSettings.p18c).velocity(7).gravity(0.015, 4).firerate(1)
 					.recoil(1.5f, 0.75f).reload(ReloadType.MAGAZINE, 34, PMCSounds.reload_p18c).ammo(AmmoType.AMMO9MM, 17, 25)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.PISTOL)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_p18c, 6f, PMCSounds.gun_p18c_silenced, 4f)
 					.build();
 			
@@ -612,7 +546,7 @@ public class PMCRegistry
 			
 			GunBase scorpion = GunBuilder.create("scorpion").damage(ConfigPMC.weaponSettings.scorpion).velocity(7).gravity(0.015, 4).firerate(1)
 					.recoil(1.3f, 0.3f).reload(ReloadType.MAGAZINE, 57, PMCSounds.reload_scorpion).ammo(AmmoType.AMMO9MM, 20, 40)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.PISTOL)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_scorpion, 6f, PMCSounds.gun_scorpion_silenced, 4f)
 					.build();
 			
@@ -648,38 +582,158 @@ public class PMCRegistry
 			
 			GunBase uzi = GunBuilder.create("microuzi").damage(ConfigPMC.weaponSettings.microuzi).velocity(8).gravity(0.02, 4).firerate(1)
 					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 56, PMCSounds.reload_microuzi).ammo(AmmoType.AMMO9MM, 25, 35)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.SMG)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
 					.sound(PMCSounds.gun_micro_uzi, 8f, PMCSounds.gun_micro_uzi_silenced, 4f)
 					.build();
 			
 			GunBase vector = GunBuilder.create("vector").damage(ConfigPMC.weaponSettings.vector).velocity(8).gravity(0.035, 4).firerate(1)
 					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 30, PMCSounds.reload_vector).ammo(AmmoType.AMMO9MM, 19, 33)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.BURST, Firemode.AUTO).weaponType(GunType.SMG).setTwoRoundBurst()
+					.firemode(Firemode.AUTO, Firemode.all()).weaponType(GunType.SMG).setTwoRoundBurst()
 					.sound(PMCSounds.gun_vector, 8f, PMCSounds.gun_vector_silenced, 4f)
 					.build();
 			
 			GunBase bizon = GunBuilder.create("bizon").damage(ConfigPMC.weaponSettings.bizon).velocity(8).gravity(0.035, 4).firerate(2)
 					.recoil(2.5f, 1.25f).reload(ReloadType.MAGAZINE, 62, PMCSounds.reload_bizon).ammo(AmmoType.AMMO9MM, 53)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.SMG)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
 					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
 					.build();
 			
 			GunBase tommy = GunBuilder.create("tommy_gun").damage(ConfigPMC.weaponSettings.tommygun).velocity(8.5).gravity(0.02, 5).firerate(2)
 					.recoil(2f, 0.75f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_tommygun).ammo(AmmoType.AMMO45ACP, 30, 50)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.SMG)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
 					.sound(PMCSounds.gun_tommy_gun, 8f, PMCSounds.gun_tommy_gun_silenced, 4f)
 					.build();
 			
 			GunBase ump = GunBuilder.create("ump45").damage(ConfigPMC.weaponSettings.ump9).velocity(8.5).gravity(0.02, 5).firerate(2)
 					.recoil(1.9f, 1.2f).reload(ReloadType.MAGAZINE, 52, PMCSounds.reload_ump9).ammo(AmmoType.AMMO45ACP, 25, 35)
-					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.BURST, Firemode.AUTO).weaponType(GunType.SMG).setTwoRoundBurst()
+					.firemode(Firemode.AUTO, Firemode.all()).weaponType(GunType.SMG).setTwoRoundBurst()
 					.sound(PMCSounds.gun_ump9, 8f, PMCSounds.gun_ump9_silenced, 4f)
 					.build();
 			
 			GunBase m16a4 = GunBuilder.create("m16a4").damage(ConfigPMC.weaponSettings.m16a4).velocity(12).gravity(0.005, 8).firerate(2)
 					.recoil(3.5f, 1f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_m16a4).ammo(AmmoType.AMMO556, 30, 40)
-					.firemode(Firemode.SINGLE, Firemode.SINGLE, Firemode.BURST).weaponType(GunType.AR)
+					.firemode(Firemode.SINGLE, Firemode.noAuto()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_m16a4, 10f, PMCSounds.gun_m16a4_silenced, 7f)
+					.build();
+			
+			GunBase m416 = GunBuilder.create("m416").damage(ConfigPMC.weaponSettings.m416).velocity(12).gravity(0.0065, 7).firerate(2)
+					.recoil(3.5f, 1.5f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_m416).ammo(AmmoType.AMMO556, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_m416, 10f, PMCSounds.gun_m416_silenced, 7f)
+					.build();
+			
+			GunBase scarl = GunBuilder.create("scar_l").damage(ConfigPMC.weaponSettings.scarl).velocity(11).gravity(0.007, 7).firerate(2)
+					.recoil(3.25f, 1.25f).reload(ReloadType.MAGAZINE, 65, PMCSounds.reload_scarl).ammo(AmmoType.AMMO556, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_scarl, 10f, PMCSounds.gun_scarl_silenced, 7f)
+					.build();
+			
+			GunBase qbz = GunBuilder.create("qbz").damage(ConfigPMC.weaponSettings.qbz).velocity(11).gravity(0.007, 7).firerate(2)
+					.recoil(3.25f, 1.25f).reload(ReloadType.MAGAZINE, 70, PMCSounds.reload_qbz).ammo(AmmoType.AMMO556, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_qbz, 10f, PMCSounds.gun_qbz_silenced, 7f)
+					.build();
+			
+			GunBase g36c = GunBuilder.create("g36c").damage(ConfigPMC.weaponSettings.g36c).velocity(11).gravity(0.0065, 7).firerate(2)
+					.recoil(3.5f, 1.5f).reload(ReloadType.MAGAZINE, 82, PMCSounds.reload_g36c).ammo(AmmoType.AMMO556, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_g36c, 10f, PMCSounds.gun_g36c_silenced, 7f)
+					.build();
+			
+			GunBase aug = GunBuilder.create("aug").damage(ConfigPMC.weaponSettings.aug).velocity(12).gravity(0.0065, 7).firerate(2)
+					.recoil(3.75f, 1.25f).reload(ReloadType.MAGAZINE, 69, PMCSounds.reload_aug).ammo(AmmoType.AMMO556, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_aug, 10f, PMCSounds.gun_aug_silenced, 7f)
+					.build();
+			
+			GunBase akm = GunBuilder.create("akm").damage(ConfigPMC.weaponSettings.akm).velocity(9).gravity(0.025, 7).firerate(2)
+					.recoil(4f, 2f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_akm).ammo(AmmoType.AMMO762, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_akm, 10f, PMCSounds.gun_akm_silenced, 7f)
+					.build();
+			
+			GunBase m762 = GunBuilder.create("beryl_m762").damage(ConfigPMC.weaponSettings.m762).velocity(9.5).gravity(0.025, 7).firerate(2)
+					.recoil(4.25f, 2.15f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_m762).ammo(AmmoType.AMMO762, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.all()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_m762, 10f, PMCSounds.gun_m762_silenced, 7f)
+					.build();
+			
+			GunBase mk47 = GunBuilder.create("mk47_mutant").damage(ConfigPMC.weaponSettings.mk47).velocity(9).gravity(0.025, 7).firerate(2)
+					.recoil(4f, 1.75f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_mk47).ammo(AmmoType.AMMO762, 20, 30)
+					.firemode(Firemode.SINGLE, Firemode.noAuto()).weaponType(GunType.AR).setTwoRoundBurst()
+					.sound(PMCSounds.gun_mk47, 10f, PMCSounds.gun_mk47_silenced, 7f)
+					.build();
+			
+			GunBase groza = GunBuilder.create("groza").damage(ConfigPMC.weaponSettings.groza).velocity(9).gravity(0.02, 7).firerate(2)
+					.recoil(3.75f, 1.75f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_groza).ammo(AmmoType.AMMO762, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_groza, 10f, PMCSounds.gun_groza_silenced, 7f)
+					.build();
+			
+			GunBase dp28 = GunBuilder.create("dp28").damage(ConfigPMC.weaponSettings.dp28).velocity(9).gravity(0.03, 6).firerate(2)
+					.recoil(4.5f, 2.5f).reload(ReloadType.MAGAZINE, 95, PMCSounds.reload_dp28).ammo(AmmoType.AMMO762, 47)
+					.firemode(Firemode.AUTO, Firemode.AUTO).weaponType(GunType.LMG)
+					.sound(PMCSounds.gun_dp28, 10f)
+					.build();
+			
+			GunBase m249 = GunBuilder.create("m249").damage(ConfigPMC.weaponSettings.m249).velocity(11).gravity(0.007, 6).firerate(2)
+					.recoil(3.25f, 1f).reload(ReloadType.MAGAZINE, 148, PMCSounds.reload_m249).ammo(AmmoType.AMMO556, 100)
+					.firemode(Firemode.AUTO, Firemode.AUTO).weaponType(GunType.LMG)
+					.sound(PMCSounds.gun_m249, 10f)
+					.build();
+			
+			GunBase vss = GunBuilder.create("vss").damage(ConfigPMC.weaponSettings.vss).velocity(7).gravity(0.035, 2).firerate(2)
+					.recoil(1.5f, 0.5f).reload(ReloadType.MAGAZINE, 40, PMCSounds.reload_vss).ammo(AmmoType.AMMO9MM, 10, 20)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.DMR)
+					.sound(PMCSounds.gun_vss, 2.5f)
+					.build();
+			
+			GunBase mini14 = GunBuilder.create("mini14").damage(ConfigPMC.weaponSettings.mini14).velocity(14).gravity(0.015, 8).firerate(2)
+					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 62, PMCSounds.reload_mini14).ammo(AmmoType.AMMO556, 20, 30)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
+					.sound(PMCSounds.gun_mini14, 12f, PMCSounds.gun_mini14_silenced, 8f)
+					.build();
+			
+			GunBase qbu = GunBuilder.create("qbu").damage(ConfigPMC.weaponSettings.qbu).velocity(14).gravity(0.015, 8).firerate(2)
+					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 44, PMCSounds.reload_qbu).ammo(AmmoType.AMMO556, 10, 20)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
+					.sound(PMCSounds.gun_qbu, 12f, PMCSounds.gun_qbu_silenced, 6f)
+					.build();
+			
+			GunBase sks = GunBuilder.create("sks").damage(ConfigPMC.weaponSettings.sks).velocity(10).gravity(0.035, 7).firerate(2)
+					.recoil(5.5f, 2.25f).reload(ReloadType.MAGAZINE, 32, PMCSounds.reload_sks).ammo(AmmoType.AMMO762, 10, 20)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
+					.sound(PMCSounds.gun_sks, 12f, PMCSounds.gun_sks_silenced, 8f)
+					.build();
+			
+			GunBase slr = GunBuilder.create("slr").damage(ConfigPMC.weaponSettings.slr).velocity(10).gravity(0.035, 7).firerate(2)
+					.recoil(5.75f, 2.25f).reload(ReloadType.MAGAZINE, 53, PMCSounds.reload_slr).ammo(AmmoType.AMMO762, 10, 20)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
+					.sound(PMCSounds.gun_slr, 12f, PMCSounds.gun_slr_silenced, 8f)
+					.build();
+			
+			GunBase mk14 = GunBuilder.create("mk14").damage(ConfigPMC.weaponSettings.mk14).velocity(11).gravity(0.025, 7).firerate(2)
+					.recoil(7.5f, 3.25f).reload(ReloadType.MAGAZINE, 39, PMCSounds.reload_mk14).ammo(AmmoType.AMMO762, 10, 20)
+					.firemode(Firemode.SINGLE, Firemode.noBurst()).weaponType(GunType.DMR)
+					.sound(PMCSounds.gun_mk14, 12f, PMCSounds.gun_mk14_silenced, 8f)
+					.build();
+			
+			GunBase kar98k = GunBuilder.create("kar98k").damage(ConfigPMC.weaponSettings.kar98k).velocity(11).gravity(0.04, 8).firerate(30)
+					.recoil(4.5f, 1.25f).reload(ReloadType.KAR98K, 63, PMCSounds.reload_kar98k).ammo(AmmoType.AMMO762, 5)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
+					.sound(PMCSounds.gun_kar98k, 15f, PMCSounds.gun_kar98k_silenced, 10f)
+					.build();
+			
+			GunBase m24 = GunBuilder.create("m24").damage(ConfigPMC.weaponSettings.m24).velocity(11.5).gravity(0.03, 7).firerate(35)
+					.recoil(4.5f, 1.25f).reload(ReloadType.MAGAZINE, 71, PMCSounds.reload_m24).ammo(AmmoType.AMMO762, 5, 7)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
+					.sound(PMCSounds.gun_m24, 15f, PMCSounds.gun_m24_silenced, 10f)
+					.build();
+			
+			GunBase awm = GunBuilder.create("awm").damage(ConfigPMC.weaponSettings.awm).velocity(17).gravity(0.005, 10).firerate(35)
+					.recoil(4.5f, 1.25f).reload(ReloadType.MAGAZINE, 78, PMCSounds.reload_awm).ammo(AmmoType.AMMO300M, 5, 7)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
+					.sound(PMCSounds.gun_awm, 15f, PMCSounds.gun_awm_silenced, 10f)
 					.build();
 			
 			final GunBase[] entry = 
@@ -687,7 +741,10 @@ public class PMCRegistry
 				p92, p1911, p18c, r1895, r45, scorpion, win94,
 				sawedoff, s1897, s686, s12k,
 				uzi, vector, bizon, tommy, ump,
-				m16a4
+				m16a4, m416, scarl, qbz, g36c, aug, akm, m762, mk47, groza,
+				dp28, m249,
+				vss, mini14, qbu, sks, slr, mk14,
+				kar98k, m24, awm
 			};
 			
 			return entry;
@@ -695,19 +752,85 @@ public class PMCRegistry
 		
 		public static void initTileEntities()
 		{
-			GameRegistry.registerTileEntity(TileEntityAirdrop.class, new ResourceLocation(Pubgmc.MOD_ID + ":airdrop"));
-			GameRegistry.registerTileEntity(TileEntityLamp.class, new ResourceLocation(Pubgmc.MOD_ID + ":lamp"));
-			GameRegistry.registerTileEntity(TileEntityLootSpawner.class, new ResourceLocation(Pubgmc.MOD_ID + ":lootspawner"));
-			GameRegistry.registerTileEntity(TileEntityPlayerCrate.class, new ResourceLocation(Pubgmc.MOD_ID + ":player_crate"));
-			GameRegistry.registerTileEntity(TileEntityGunWorkbench.class, new ResourceLocation(Pubgmc.MOD_ID + ":gun_workbench"));
-			GameRegistry.registerTileEntity(TileEntityBigAirdrop.class, new ResourceLocation(Pubgmc.MOD_ID + ":big_airdrop"));
-			GameRegistry.registerTileEntity(TileEntityLandMine.class, new ResourceLocation(Pubgmc.MOD_ID + ":landmine"));
+			registerTileEntity(TileEntityAirdrop.class, "airdrop");
+			registerTileEntity(TileEntityLamp.class, "lamp");
+			registerTileEntity(TileEntityLootSpawner.class, "lootspawner");
+			registerTileEntity(TileEntityPlayerCrate.class, "player_crate");
+			registerTileEntity(TileEntityGunWorkbench.class, "gun_workbench");
+			registerTileEntity(TileEntityBigAirdrop.class, "big_airdrop");
+			registerTileEntity(TileEntityLandMine.class, "landmine");
+		}
+		
+		private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name)
+		{
+			GameRegistry.registerTileEntity(tileEntityClass, new ResourceLocation(Pubgmc.MOD_ID + ":" + name));
 		}
 	}
 	
 	@Mod.EventBusSubscriber(Side.CLIENT)
 	public static class ModelRegistry
 	{
+		@SubscribeEvent
+		public static void bakeModels(ModelBakeEvent e)
+		{
+			ModelResourceLocation location;
+
+			for(int i = 0; i < GunBase.GUNS.size(); i++)
+			{
+				GunBase gun = GunBase.GUNS.get(i);
+				location = new ModelResourceLocation(gun.getRegistryName(), "inventory");
+				e.getModelRegistry().putObject(location, new BakedModelGun());
+			}
+		}
+		
+		@SubscribeEvent
+		public static void onModelAttach(GunModelAttachEvent e)
+		{
+			GunBase g = e.getGun();
+			
+			switch(e.getName())
+			{
+				case "flare_gun": e.attachModel(e.getTEISR().flareGun); break;
+				case "p92": e.attachModel(e.getTEISR().p92); break;
+				case "p1911": e.attachModel(e.getTEISR().p1911); break;
+				case "p18c": e.attachModel(e.getTEISR().p18c); break;
+				case "r1895": e.attachModel(e.getTEISR().r1895); break;
+				case "r45": e.attachModel(e.getTEISR().r45); break;
+				case "scorpion": e.attachModel(e.getTEISR().scorpion); break;
+				case "win94": e.attachModel(e.getTEISR().win94); break;
+				case "sawed_off": e.attachModel(e.getTEISR().sawedOff); break;
+				case "s1897": e.attachModel(e.getTEISR().s1897); break;
+				case "s686": e.attachModel(e.getTEISR().s686); break;
+				case "s12k": e.attachModel(e.getTEISR().s12k); break;
+				case "microuzi": e.attachModel(e.getTEISR().microuzi); break;
+				case "vector": e.attachModel(e.getTEISR().vector); break;
+				case "bizon": e.attachModel(e.getTEISR().bizon); break;
+				case "tommy_gun": e.attachModel(e.getTEISR().tommygun); break;
+				case "ump45": e.attachModel(e.getTEISR().ump); break;
+				case "m16a4": e.attachModel(e.getTEISR().m16a4); break;
+				case "m416": e.attachModel(e.getTEISR().m416); break;
+				case "scar_l": e.attachModel(e.getTEISR().scar); break;
+				case "qbz": e.attachModel(e.getTEISR().qbz); break;
+				case "g36c": e.attachModel(e.getTEISR().g36c); break;
+				case "aug": e.attachModel(e.getTEISR().aug); break;
+				case "akm": e.attachModel(e.getTEISR().akm); break;
+				case "beryl_m762": e.attachModel(e.getTEISR().m762); break;
+				case "mk47_mutant": e.attachModel(e.getTEISR().mk47); break;
+				case "groza": e.attachModel(e.getTEISR().groza); break;
+				case "dp28": e.attachModel(e.getTEISR().dp28); break;
+				case "m249": e.attachModel(e.getTEISR().m249); break;
+				case "vss": e.attachModel(e.getTEISR().vss); break;
+				case "mini14": e.attachModel(e.getTEISR().mini14); break;
+				case "qbu": e.attachModel(e.getTEISR().qbu); break;
+				case "sks": e.attachModel(e.getTEISR().sks); break;
+				case "slr": e.attachModel(e.getTEISR().slr); break;
+				case "mk14": e.attachModel(e.getTEISR().mk14); break;
+				case "kar98k": e.attachModel(e.getTEISR().kar98k); break;
+				case "m24": e.attachModel(e.getTEISR().m24); break;
+				case "awm": e.attachModel(e.getTEISR().awm); break;
+			}
+		}
+		
 		@SubscribeEvent
 		public static void registerModels(ModelRegistryEvent e)
 		{
@@ -749,7 +872,14 @@ public class PMCRegistry
 		{
 			GunBase gun = e.getGun();
 			
-			if(gun == PMCItems.P92)
+			if(gun == PMCItems.FLARE_GUN)
+			{
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
+				e.addCraftingIngredient(new ItemStack(PMCItems.STEEL_INGOT, 20));
+				e.addCraftingIngredient(new ItemStack(Items.DYE, 10, 1));
+			}
+			
+			else if(gun == PMCItems.P92)
 			{
 				e.addCraftingIngredient(new ItemStack(PMCItems.STEEL_INGOT, 10));
 				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
@@ -768,34 +898,334 @@ public class PMCRegistry
 				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
 				e.initScopeAttachments(PMCItems.RED_DOT);
 			}
-		}
-	}
-	
-	@Mod.EventBusSubscriber(Side.CLIENT)
-	public static class GunModelRegistry
-	{
-		@SubscribeEvent
-		public static void bakeModels(ModelBakeEvent e)
-		{
-			ModelResourceLocation location;
-
-			for(int i = 0; i < GunBase.GUNS.size(); i++)
-			{
-				GunBase gun = GunBase.GUNS.get(i);
-				location = new ModelResourceLocation(gun.getRegistryName(), "inventory");
-				e.getModelRegistry().putObject(location, new BakedModelGun());
-			}
-		}
-		
-		@SubscribeEvent
-		public static void onModelAttach(GunModelAttachEvent e)
-		{
-			GunBase g = e.getGun();
 			
-			switch(e.getName())
+			else if(gun == PMCItems.P18C)
 			{
-				case "p92": e.attachModel(e.getTEISR().p92); break;
-				case "p1911": e.attachModel(e.getTEISR().p1911); break;
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 20));
+				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
+				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
+				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
+			
+			else if(gun == PMCItems.R1895)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 5));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 2));
+				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
+			}
+			
+			else if(gun == PMCItems.R45)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 18));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 5));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 2));
+				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
+			
+			else if(gun == PMCItems.SCORPION)
+			{
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 30));
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
+				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
+				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
+				e.initMagazineAttachments(PMCItems.EXTENDED_MAG_PISTOL);
+				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
+			
+			else if(gun == PMCItems.WIN94)
+			{
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 5));
+				e.initStockAttachments(PMCItems.BULLET_LOOPS_SNIPER);
+			}
+			
+			else if(gun == PMCItems.SAWED_OFF)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 10));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 7));
+			}
+			
+			else if(gun == PMCItems.S1897)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 10));
+				e.initStockAttachments(PMCItems.BULLET_LOOPS_SHOTGUN);
+			}
+			
+			else if(gun == PMCItems.S686)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 20));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 10));
+				e.initStockAttachments(PMCItems.BULLET_LOOPS_SHOTGUN);
+			}
+			
+			else if(gun == PMCItems.S12K)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.MICROUZI)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
+			}
+			
+			else if(gun == PMCItems.VECTOR)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
+				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
+				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
+				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.BIZON)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.TOMMY_GUN)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 3));
+				e.initBarrelAttachments(PMCItems.SILENCER_SMG);
+				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
+				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
+			}
+			
+			else if(gun == PMCItems.UMP45)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.M16A4)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.M416)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.SCAR_L)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.QBZ)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.G36C)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.AUG)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.AKM)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.BERYL_M762)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.MK47_MUTANT)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.GROZA)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.initBarrelAttachments(PMCItems.SILENCER_AR);
+				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.DP28)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 3));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 10));
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.M249)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 60));
+				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 3));
+				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 5));
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.VSS)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 30));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 20));
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initStockAttachments(PMCItems.CHEEKPAD);
+			}
+			
+			else if(gun == PMCItems.MINI14)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 5));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+			}
+			
+			else if(gun == PMCItems.QBU)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 5));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+			}
+			
+			else if(gun == PMCItems.SKS)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
+				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 5));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+				e.initStockAttachments(PMCItems.CHEEKPAD);
+			}
+			
+			else if(gun == PMCItems.SLR)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+				e.initStockAttachments(PMCItems.CHEEKPAD);
+			}
+			
+			else if(gun == PMCItems.MK14)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 5));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+				e.initStockAttachments(PMCItems.CHEEKPAD);
+			}
+			
+			else if(gun == PMCItems.KAR98K)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
+				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 1));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 15));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+				e.initStockAttachments(AttachmentHelper.getStock(true));
+			}
+			
+			else if(gun == PMCItems.M24)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 1));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+				e.initStockAttachments(PMCItems.CHEEKPAD);
+			}
+			
+			else if(gun == PMCItems.AWM)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
+				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 2));
+				e.addCraftingIngredient(new ItemStack(Items.DIAMOND, 3));
+				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
+				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
+				e.initScopeAttachments(AttachmentHelper.getScopes());
+				e.initStockAttachments(PMCItems.CHEEKPAD);
 			}
 		}
 	}
