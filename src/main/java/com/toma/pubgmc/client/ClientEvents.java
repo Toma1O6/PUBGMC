@@ -33,7 +33,7 @@ import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
-import com.toma.pubgmc.event.GunRegisterEvent;
+import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
@@ -164,20 +164,6 @@ public class ClientEvents
 			{
 				e.setCanceled(true);
 			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void bakeModels(ModelBakeEvent e)
-	{
-		ModelResourceLocation location;
-		IBakedModel main;
-		
-		for(int i = 0; i < GunBase.GUNS.size(); i++)
-		{
-			GunBase gun = GunBase.GUNS.get(i);
-			location = new ModelResourceLocation(gun.getRegistryName(), "inventory");
-			e.getModelRegistry().putObject(location, new BakedModelGun());
 		}
 	}
 	
@@ -1143,18 +1129,6 @@ public class ClientEvents
 	        		hasAmmo = false;
 	        	}
 	        }
-		}
-	}
-	
-	@SubscribeEvent
-	public void onGunRegistry(GunRegisterEvent e)
-	{
-		GunBase g = e.getGun();
-		
-		switch(e.getName())
-		{
-			case "p92": e.setModel(e.getTEISR().p92); break;
-			case "p1911": e.setModel(e.getTEISR().p1911); break;
 		}
 	}
 	

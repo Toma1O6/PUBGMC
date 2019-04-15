@@ -1,22 +1,11 @@
 package com.toma.pubgmc.common.items.guns;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
-import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
-import com.toma.pubgmc.event.GunRegisterEvent;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,39 +22,18 @@ public class GunBuilder
 	Firemode defFiremode;
 	Firemode[] validFiremodes;
 	SoundEvent reloadSound, shootNormal, shootSilenced;
-	ItemAttachment[] barrelAttachments, gripAttachments, magazineAttachments, stockAttachments, scopeAttachments;
-	final List<ItemStack> craftingRecipe = new ArrayList<ItemStack>();
 	
 	@SideOnly(Side.CLIENT)
 	ModelGun model;
 	
 	private GunBuilder() {}
 	
-	public static GunBuilder create()
+	public static GunBuilder create(String regName)
 	{
 		GunBuilder builder = new GunBuilder();
-		builder.init();
+		builder.name = regName;
+		builder.twoRoundBurst = false;
 		return builder;
-	}
-	
-	private void init()
-	{
-		barrelAttachments = new ItemAttachment[0];
-		gripAttachments = new ItemAttachment[0];
-		magazineAttachments = new ItemAttachment[0];
-		stockAttachments = new ItemAttachment[0];
-		scopeAttachments = new ItemAttachment[0];
-		
-		defFiremode = Firemode.SINGLE;
-		validFiremodes = new Firemode[] {Firemode.SINGLE};
-		weaponType = GunType.PISTOL;
-		reloadType = ReloadType.MAGAZINE;
-	}
-	
-	public GunBuilder name(String name)
-	{
-		this.name = name;
-		return this;
 	}
 	
 	public GunBuilder damage(float damage)
@@ -161,45 +129,6 @@ public class GunBuilder
 		return this;
 	}
 	
-	public GunBuilder craftRecipe(ItemStack... stacks)
-	{
-		craftingRecipe.clear();
-		
-		for(ItemStack s : stacks)
-			craftingRecipe.add(s);
-		return this;
-	}
-	
-	public GunBuilder barrel(ItemAttachment... attachments)
-	{
-		this.barrelAttachments = attachments;
-		return this;
-	}
-	
-	public GunBuilder grip(ItemAttachment... attachments)
-	{
-		this.gripAttachments = attachments;
-		return this;
-	}
-	
-	public GunBuilder magazine(ItemAttachment... attachments)
-	{
-		this.magazineAttachments = attachments;
-		return this;
-	}
-	
-	public GunBuilder stock(ItemAttachment... attachments)
-	{
-		this.stockAttachments = attachments;
-		return this;
-	}
-	
-	public GunBuilder scope(ItemAttachment... attachments)
-	{
-		this.scopeAttachments = attachments;
-		return this;
-	}
-	
 	public GunBuilder model(ModelGun model)
 	{
 		this.model = model;
@@ -208,7 +137,26 @@ public class GunBuilder
 	
 	public GunBase build()
 	{
-		//TODO: validate
+		damage = validateFloat(damage, 1, Float.MAX_VALUE);
+		velocity = validateDouble(velocity, 1D, 25D);
+		gravity = validateDouble(gravity, 0.0001, 2D);
+		gravityStart = validateInt(gravityStart, 0, 30);
+		vertical = validateFloat(vertical, 0.1f, 10f);
+		horizontal = validateFloat(horizontal, 0.1f, 10f);
+		reloadType = checkNotNull(reloadType);
+		reloadTime = validateInt(reloadTime, 1, 150);
+		firerate = validateInt(firerate, 1, 150);
+		ammoType = checkNotNull(ammoType);
+		maxAmmo = validateInt(maxAmmo, 1, 100);
+		exMaxAmmo = validateInt(exMaxAmmo, 1, 100);
+		defFiremode = checkNotNull(defFiremode);
+		validFiremodes = checkNotNull(validFiremodes);
+		weaponType = checkNotNull(weaponType);
+		shootNormal = checkNotNull(shootNormal);
+		shootSilenced = checkNotNull(shootSilenced);
+		volumeNormal = validateFloat(volumeNormal, 1f, 20f);
+		volumeSilenced = validateFloat(volumeSilenced, 1f, 20f);
+		reloadSound = checkNotNull(reloadSound);
 		
 		GunBase gun = new GunBase(this.name);
 		gun.setDamage(damage);
@@ -231,12 +179,39 @@ public class GunBuilder
 		gun.setGunSilencedSound(shootSilenced);
 		gun.setGunSilencedSoundVolume(volumeSilenced);
 		gun.setReloadSound(reloadSound);
-		gun.setBarrelAttachments(barrelAttachments);
-		gun.setGripAttachments(gripAttachments);
-		gun.setMagazineAttachments(magazineAttachments);
-		gun.setStockAttachments(stockAttachments);
-		gun.setScopeAttachments(scopeAttachments);
-		gun.setCraftingRecipe(craftingRecipe);
 		return gun;
+	}
+	
+	private static <T> T checkNotNull(T obj) throws NullPointerException
+	{
+		if(obj == null) {
+			throw new NullPointerException(obj + " cannot be null!");
+		}
+		return obj;
+	}
+	
+	private static float validateFloat(float floatToValidate, float min, float max) throws IllegalArgumentException
+	{
+		if(floatToValidate < min || floatToValidate > max) {
+			throw new IllegalArgumentException("Float value must be in <" + min + ";" + max + "> range! Got: " + floatToValidate);
+		}
+		
+		return floatToValidate;
+	}
+	
+	private static double validateDouble(double doubleToValidate, double min, double max) throws IllegalArgumentException
+	{
+		if(doubleToValidate < min || doubleToValidate > max) {
+			throw new IllegalArgumentException("Double value must be in <" + min + ";" + max + "> range! Got: " + doubleToValidate);
+		}
+		return doubleToValidate;
+	}
+	
+	private static int validateInt(int intToValidate, int min, int max) throws IllegalArgumentException
+	{
+		if(intToValidate < min || intToValidate > max) {
+			throw new IllegalArgumentException("Int value must be in <" + min + ";" + max + "> range! Got: " + intToValidate);
+		}
+		return intToValidate;
 	}
 }

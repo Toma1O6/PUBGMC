@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.blocks.BlockAirdrop;
 import com.toma.pubgmc.common.blocks.BlockBigAirdrop;
@@ -110,7 +111,7 @@ import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
-import com.toma.pubgmc.event.GunRegisterEvent;
+import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.util.AttachmentHelper;
 import com.toma.pubgmc.util.PMCItemBlock;
 
@@ -131,6 +132,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -393,15 +395,6 @@ public class PMCRegistry
 					new ItemGhillie("ghillie_suit"),
 					new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
 					new FlareGun("flare_gun"),
-					new PistolR1895("r1895"),
-					new PistolR45("r45"),
-					new PistolP18C("p18c"),
-					new PistolScorpion("scorpion"),
-					new PistolWin94("win94"),
-					new ShotgunSawedOff("sawed_off"),
-					new ShotgunS1897("s1897"),
-					new ShotgunS686("s686"),
-					new ShotgunS12K("s12k"),
 					new SmgMicroUzi("microuzi"),
 					new SmgUmp45("ump45"),
 					new SmgVector("vector"),
@@ -587,20 +580,114 @@ public class PMCRegistry
 		
 		public static GunBase[] registeredGuns()
 		{
-			GunBase p92 = GunBuilder.create().name("p92").damage(ConfigPMC.weaponSettings.p92).velocity(7).gravity(0.015, 4).firerate(2)
+			GunBase p92 = GunBuilder.create("p92").damage(ConfigPMC.weaponSettings.p92).velocity(7).gravity(0.015, 4).firerate(2)
 					.recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p92).ammo(AmmoType.AMMO9MM, 15, 20)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_p92, 6f, PMCSounds.gun_p92_silenced, 4f)
 					.build();
 			
-			GunBase p1911 = GunBuilder.create().name("p1911").damage(ConfigPMC.weaponSettings.p1911).velocity(7.25).gravity(0.01, 5).firerate(2)
+			GunBase p1911 = GunBuilder.create("p1911").damage(ConfigPMC.weaponSettings.p1911).velocity(7.25).gravity(0.01, 5).firerate(2)
 					.recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p1911).ammo(AmmoType.AMMO45ACP, 7, 12)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_p1911, 6f, PMCSounds.gun_p1911_silenced, 4f)
+					.build();
+			
+			GunBase p18c = GunBuilder.create("p18c").damage(ConfigPMC.weaponSettings.p18c).velocity(7).gravity(0.015, 4).firerate(1)
+					.recoil(1.5f, 0.75f).reload(ReloadType.MAGAZINE, 34, PMCSounds.reload_p18c).ammo(AmmoType.AMMO9MM, 17, 25)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_p18c, 6f, PMCSounds.gun_p18c_silenced, 4f)
+					.build();
+			
+			GunBase r1895 = GunBuilder.create("r1895").damage(ConfigPMC.weaponSettings.r1895).velocity(7.5).gravity(0.01, 5).firerate(13)
+					.recoil(2.5f, 1.5f).reload(ReloadType.SINGLE, 14, PMCSounds.reload_r1895).ammo(AmmoType.AMMO762, 7)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_r1895, 6f, PMCSounds.gun_r1895_silenced, 4f)
+					.build();
+			
+			GunBase r45 = GunBuilder.create("r45").damage(ConfigPMC.weaponSettings.r45).velocity(7.25).gravity(0.01, 5).firerate(12)
+					.recoil(2f, 1.5f).reload(ReloadType.MAGAZINE, 40, PMCSounds.reload_r45).ammo(AmmoType.AMMO45ACP, 6)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_r45, 6f)
+					.build();
+			
+			GunBase scorpion = GunBuilder.create("scorpion").damage(ConfigPMC.weaponSettings.scorpion).velocity(7).gravity(0.015, 4).firerate(1)
+					.recoil(1.3f, 0.3f).reload(ReloadType.MAGAZINE, 57, PMCSounds.reload_scorpion).ammo(AmmoType.AMMO9MM, 20, 40)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_scorpion, 6f, PMCSounds.gun_scorpion_silenced, 4f)
+					.build();
+			
+			GunBase win94 = GunBuilder.create("win94").damage(ConfigPMC.weaponSettings.win94).velocity(12).gravity(0.008, 7).firerate(25)
+					.recoil(5.5f, 3.5f).reload(ReloadType.SINGLE, 15, PMCSounds.reload_win94).ammo(AmmoType.AMMO45ACP, 8)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_win94, 10f)
+					.build();
+			
+			GunBase sawedoff = GunBuilder.create("sawed_off").damage(ConfigPMC.weaponSettings.sawedoff).velocity(5).gravity(0.175, 0).firerate(10)
+					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 70, PMCSounds.reload_sawedoff).ammo(AmmoType.AMMO12G, 2)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
+					.sound(PMCSounds.gun_sawed_off, 8f)
+					.build();
+			
+			GunBase s1897 = GunBuilder.create("s1897").damage(ConfigPMC.weaponSettings.s1897).velocity(5.5).gravity(0.175, 0).firerate(15)
+					.recoil(3.5f, 2f).reload(ReloadType.SINGLE, 10, PMCSounds.reload_s1897).ammo(AmmoType.AMMO12G, 5)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
+					.sound(PMCSounds.gun_s1897, 8f)
+					.build();
+			
+			GunBase s686 = GunBuilder.create("s686").damage(ConfigPMC.weaponSettings.s686).velocity(5.5).gravity(0.175, 0).firerate(5)
+					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 48, PMCSounds.reload_s686).ammo(AmmoType.AMMO12G, 2)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
+					.sound(PMCSounds.gun_s686, 6f)
+					.build();
+			
+			GunBase s12k = GunBuilder.create("s12k").damage(ConfigPMC.weaponSettings.s12k).velocity(5.5).gravity(0.175, 0).firerate(7)
+					.recoil(6f, 2f).reload(ReloadType.MAGAZINE, 65, PMCSounds.reload_s12k).ammo(AmmoType.AMMO12G, 5)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
+					.sound(PMCSounds.gun_s12k, 8f)
+					.build();
+			
+			GunBase uzi = GunBuilder.create("microuzi").damage(ConfigPMC.weaponSettings.microuzi).velocity(8).gravity(0.02, 4).firerate(1)
+					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 56, PMCSounds.reload_microuzi).ammo(AmmoType.AMMO9MM, 25, 35)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.SMG)
+					.sound(PMCSounds.gun_micro_uzi, 8f, PMCSounds.gun_micro_uzi_silenced, 4f)
+					.build();
+			
+			GunBase vector = GunBuilder.create("vector").damage(ConfigPMC.weaponSettings.vector).velocity(8).gravity(0.035, 4).firerate(1)
+					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 30, PMCSounds.reload_vector).ammo(AmmoType.AMMO9MM, 19, 33)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.BURST, Firemode.AUTO).weaponType(GunType.SMG).setTwoRoundBurst()
+					.sound(PMCSounds.gun_vector, 8f, PMCSounds.gun_vector_silenced, 4f)
+					.build();
+			
+			GunBase bizon = GunBuilder.create("bizon").damage(ConfigPMC.weaponSettings.bizon).velocity(8).gravity(0.035, 4).firerate(2)
+					.recoil(2.5f, 1.25f).reload(ReloadType.MAGAZINE, 62, PMCSounds.reload_bizon).ammo(AmmoType.AMMO9MM, 53)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.SMG)
+					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
+					.build();
+			
+			GunBase tommy = GunBuilder.create("tommy_gun").damage(ConfigPMC.weaponSettings.tommygun).velocity(8.5).gravity(0.02, 5).firerate(2)
+					.recoil(2f, 0.75f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_tommygun).ammo(AmmoType.AMMO45ACP, 30, 50)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.AUTO).weaponType(GunType.SMG)
+					.sound(PMCSounds.gun_tommy_gun, 8f, PMCSounds.gun_tommy_gun_silenced, 4f)
+					.build();
+			
+			GunBase ump = GunBuilder.create("ump45").damage(ConfigPMC.weaponSettings.ump9).velocity(8.5).gravity(0.02, 5).firerate(2)
+					.recoil(1.9f, 1.2f).reload(ReloadType.MAGAZINE, 52, PMCSounds.reload_ump9).ammo(AmmoType.AMMO45ACP, 25, 35)
+					.firemode(Firemode.AUTO, Firemode.SINGLE, Firemode.BURST, Firemode.AUTO).weaponType(GunType.SMG).setTwoRoundBurst()
+					.sound(PMCSounds.gun_ump9, 8f, PMCSounds.gun_ump9_silenced, 4f)
+					.build();
+			
+			GunBase m16a4 = GunBuilder.create("m16a4").damage(ConfigPMC.weaponSettings.m16a4).velocity(12).gravity(0.005, 8).firerate(2)
+					.recoil(3.5f, 1f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_m16a4).ammo(AmmoType.AMMO556, 30, 40)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE, Firemode.BURST).weaponType(GunType.AR)
+					.sound(PMCSounds.gun_m16a4, 10f, PMCSounds.gun_m16a4_silenced, 7f)
 					.build();
 			
 			final GunBase[] entry = 
 			{
-				p92, p1911	
+				p92, p1911, p18c, r1895, r45, scorpion, win94,
+				sawedoff, s1897, s686, s12k,
+				uzi, vector, bizon, tommy, ump,
+				m16a4
 			};
 			
 			return entry;
@@ -644,7 +731,7 @@ public class PMCRegistry
 			if(item instanceof GunBase)
 			{
 				item.setTileEntityItemStackRenderer(new WeaponTEISR());
-				MinecraftForge.EVENT_BUS.post(new GunRegisterEvent((GunBase)item, item.getRegistryName()));
+				MinecraftForge.EVENT_BUS.post(new GunModelAttachEvent((GunBase)item, item.getRegistryName()));
 			}
 		}
 		
@@ -680,6 +767,35 @@ public class PMCRegistry
 				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
 				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
 				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
+		}
+	}
+	
+	@Mod.EventBusSubscriber(Side.CLIENT)
+	public static class GunModelRegistry
+	{
+		@SubscribeEvent
+		public static void bakeModels(ModelBakeEvent e)
+		{
+			ModelResourceLocation location;
+
+			for(int i = 0; i < GunBase.GUNS.size(); i++)
+			{
+				GunBase gun = GunBase.GUNS.get(i);
+				location = new ModelResourceLocation(gun.getRegistryName(), "inventory");
+				e.getModelRegistry().putObject(location, new BakedModelGun());
+			}
+		}
+		
+		@SubscribeEvent
+		public static void onModelAttach(GunModelAttachEvent e)
+		{
+			GunBase g = e.getGun();
+			
+			switch(e.getName())
+			{
+				case "p92": e.attachModel(e.getTEISR().p92); break;
+				case "p1911": e.attachModel(e.getTEISR().p1911); break;
 			}
 		}
 	}

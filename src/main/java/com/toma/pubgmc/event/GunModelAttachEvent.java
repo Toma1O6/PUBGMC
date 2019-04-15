@@ -7,12 +7,12 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class GunRegisterEvent extends Event
+public class GunModelAttachEvent extends Event
 {
 	private final GunBase gun;
 	private final ResourceLocation name;
 	
-	public GunRegisterEvent(GunBase gunToRegister, ResourceLocation resourceLocation)
+	public GunModelAttachEvent(GunBase gunToRegister, ResourceLocation resourceLocation)
 	{
 		this.gun = gunToRegister;
 		this.name = resourceLocation;
@@ -23,7 +23,7 @@ public class GunRegisterEvent extends Event
 		return (WeaponTEISR)gun.getTileEntityItemStackRenderer();
 	}
 	
-	public void setModel(ModelGun model)
+	public void attachModel(ModelGun model)
 	{
 		this.gun.setGunModel(model);
 	}
