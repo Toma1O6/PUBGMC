@@ -305,7 +305,7 @@ public class CommandGame extends CommandBase
 			
 			if(!data.getSpawnLocations().isEmpty())
 			{
-				player.addItemStackToInventory(new ItemStack(PMCRegistry.Items.PARACHUTE));
+				player.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.PARACHUTE));
 				int id = getClosestLocation(data, world);
 				BlockPos zonePos = data.getSpawnLocations().get(id);
 				player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is closest to the " + data.getLocationNames().get(id) + " [" + zonePos.getX() + ", " + zonePos.getZ() + "]"));

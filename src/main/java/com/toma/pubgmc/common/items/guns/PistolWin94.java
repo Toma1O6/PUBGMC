@@ -48,7 +48,7 @@ public class PistolWin94 extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCRegistry.Items.BULLET_LOOPS_SNIPER);
+		addAttachment(PMCRegistry.PMCItems.BULLET_LOOPS_SNIPER);
 		return super.acceptedAttachments();
 	}
 	

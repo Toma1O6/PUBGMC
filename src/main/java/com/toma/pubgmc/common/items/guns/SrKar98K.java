@@ -26,7 +26,6 @@ public class SrKar98K extends GunBase
 		this.setGravityStartTime(8);
 		this.setAmmoType(AmmoType.AMMO762);
 		this.setReloadTime(63);
-		this.setReloadDelay(15);
 		this.setFireRate(30);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.KAR98K);
@@ -51,10 +50,10 @@ public class SrKar98K extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addScopes();
-		addAttachment(PMCRegistry.Items.SILENCER_SNIPER);
-		addAttachment(PMCRegistry.Items.COMPENSATOR_SNIPER);
-		addAttachment(PMCRegistry.Items.BULLET_LOOPS_SNIPER);
-		addAttachment(PMCRegistry.Items.CHEEKPAD);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_SNIPER);
+		addAttachment(PMCRegistry.PMCItems.COMPENSATOR_SNIPER);
+		addAttachment(PMCRegistry.PMCItems.BULLET_LOOPS_SNIPER);
+		addAttachment(PMCRegistry.PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	
@@ -74,7 +73,7 @@ public class SrKar98K extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 50));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 1));
 		rec.add(new ItemStack(Blocks.PLANKS, 15));

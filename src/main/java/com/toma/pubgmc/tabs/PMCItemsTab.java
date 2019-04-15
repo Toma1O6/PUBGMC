@@ -14,6 +14,6 @@ public class PMCItemsTab extends CreativeTabs
 	
 	public ItemStack getTabIconItem()
 	{
-		return new ItemStack(PMCRegistry.Items.MINI14);
+		return new ItemStack(PMCRegistry.PMCItems.MINI14);
 	}
 }

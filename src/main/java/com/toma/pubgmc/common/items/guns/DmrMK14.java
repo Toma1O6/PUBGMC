@@ -26,7 +26,6 @@ public class DmrMK14 extends GunBase
 		this.setGravityStartTime(8);
 		this.setAmmoType(AmmoType.AMMO762);
 		this.setReloadTime(39);
-		this.setReloadDelay(15);
 		this.setFireRate(2);
 		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -52,7 +51,7 @@ public class DmrMK14 extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addSniperAttachments();
-		addAttachment(PMCRegistry.Items.CHEEKPAD);
+		addAttachment(PMCRegistry.PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	
@@ -72,7 +71,7 @@ public class DmrMK14 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 45));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 45));
 		rec.add(new ItemStack(Items.IRON_INGOT, 25));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 5));
 		return rec;

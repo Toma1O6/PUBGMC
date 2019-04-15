@@ -12,7 +12,7 @@ public class HeldAnimation extends Animation
 	private float rrx, rry, rrz;
 	private float lrx, lry, lrz;
 	private HeldStyle style;
-	EntityPlayer player;
+	private EntityPlayer player;
 	
 	public HeldAnimation() 
 	{

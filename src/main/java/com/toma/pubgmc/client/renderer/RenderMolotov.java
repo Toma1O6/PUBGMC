@@ -57,7 +57,7 @@ public class RenderMolotov extends Render<EntityMolotov>
 
             GlStateManager.disableLighting();
 
-            IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(PMCRegistry.Items.MOLOTOV));
+            IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(PMCRegistry.PMCItems.MOLOTOV));
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);

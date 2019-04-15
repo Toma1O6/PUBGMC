@@ -20,7 +20,7 @@ public class OreGen implements IWorldGenerator
 	
 	public OreGen() 
 	{
-		copper = new WorldGenMinable(PMCRegistry.Blocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
+		copper = new WorldGenMinable(PMCRegistry.PMCBlocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
 	}
 	
 	@Override

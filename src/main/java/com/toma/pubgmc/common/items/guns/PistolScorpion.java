@@ -64,10 +64,10 @@ public class PistolScorpion extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCRegistry.Items.SILENCER_PISTOL);
-		addAttachment(PMCRegistry.Items.GRIP_VERTICAL);
-		addAttachment(PMCRegistry.Items.EXTENDED_MAG_PISTOL);
-		addAttachment(PMCRegistry.Items.RED_DOT);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_PISTOL);
+		addAttachment(PMCRegistry.PMCItems.GRIP_VERTICAL);
+		addAttachment(PMCRegistry.PMCItems.EXTENDED_MAG_PISTOL);
+		addAttachment(PMCRegistry.PMCItems.RED_DOT);
 		return super.acceptedAttachments();
 	}
 	
@@ -76,7 +76,7 @@ public class PistolScorpion extends GunBase
 	{
 		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 30));
-		r.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
+		r.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
 		return r;
 	}
 }

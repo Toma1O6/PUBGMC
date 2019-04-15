@@ -33,8 +33,10 @@ import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
+import com.toma.pubgmc.event.GunRegisterEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.util.ImageUtil;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
@@ -309,7 +311,7 @@ public class ClientEvents
         		GunBase gun = (GunBase) stack.getItem();
         		if(data.isAiming() && mc.gameSettings.thirdPersonView == 0)
         		{
-        			if(stack.getItem() == PMCRegistry.Items.VSS)
+        			if(stack.getItem() == PMCRegistry.PMCItems.VSS)
         			{
         				ImageUtil.drawFullScreenImage(mc, res, ScopeVSS, true);
         			}
@@ -945,7 +947,7 @@ public class ClientEvents
 			        		}
 		        		}
 		        		
-		        		if(itemstack.getTagCompound().getInteger("scope") == 4 || itemstack.getItem() == PMCRegistry.Items.VSS)
+		        		if(itemstack.getTagCompound().getInteger("scope") == 4 || itemstack.getItem() == PMCRegistry.PMCItems.VSS)
 		        		{
 			        		if(Minecraft.getMinecraft().gameSettings.fovSetting != 25)
 			        		{
@@ -1141,6 +1143,18 @@ public class ClientEvents
 	        		hasAmmo = false;
 	        	}
 	        }
+		}
+	}
+	
+	@SubscribeEvent
+	public void onGunRegistry(GunRegisterEvent e)
+	{
+		GunBase g = e.getGun();
+		
+		switch(e.getName())
+		{
+			case "p92": e.setModel(e.getTEISR().p92); break;
+			case "p1911": e.setModel(e.getTEISR().p1911); break;
 		}
 	}
 	

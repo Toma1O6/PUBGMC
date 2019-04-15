@@ -36,13 +36,13 @@ public class ItemAmmo extends PMCItem implements ICraftable
 	{
 		switch(type)
 		{
-			case AMMO9MM: return PMCRegistry.Items.AMMO_9MM;
-			case AMMO45ACP: return PMCRegistry.Items.AMMO_45ACP;
-			case AMMO12G: return PMCRegistry.Items.AMMO_SHOTGUN;
-			case AMMO556: return PMCRegistry.Items.AMMO_556;
-			case AMMO762: return PMCRegistry.Items.AMMO_762;
-			case AMMO300M: return PMCRegistry.Items.AMMO_300M;
-			case FLARE: return PMCRegistry.Items.AMMO_FLARE;
+			case AMMO9MM: return PMCRegistry.PMCItems.AMMO_9MM;
+			case AMMO45ACP: return PMCRegistry.PMCItems.AMMO_45ACP;
+			case AMMO12G: return PMCRegistry.PMCItems.AMMO_SHOTGUN;
+			case AMMO556: return PMCRegistry.PMCItems.AMMO_556;
+			case AMMO762: return PMCRegistry.PMCItems.AMMO_762;
+			case AMMO300M: return PMCRegistry.PMCItems.AMMO_300M;
+			case FLARE: return PMCRegistry.PMCItems.AMMO_FLARE;
 		}
 		
 		return Items.AIR;
@@ -68,61 +68,61 @@ public class ItemAmmo extends PMCItem implements ICraftable
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
 		rec.clear();
-		if(item == PMCRegistry.Items.AMMO_9MM)
+		if(item == PMCRegistry.PMCItems.AMMO_9MM)
 		{
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
-			rec.add(new ItemStack(PMCRegistry.Items.COPPER_INGOT, 1));
-			rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 1));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 1));
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.Items.AMMO_SHOTGUN)
+		else if(item == PMCRegistry.PMCItems.AMMO_SHOTGUN)
 		{
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 10));
 			rec.add(new ItemStack(Items.IRON_NUGGET, 8));
-			rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 1));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 3));
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.Items.AMMO_45ACP)
+		else if(item == PMCRegistry.PMCItems.AMMO_45ACP)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
-			rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 1));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 1));
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.Items.AMMO_556)
+		else if(item == PMCRegistry.PMCItems.AMMO_556)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 5));
-			rec.add(new ItemStack(PMCRegistry.Items.COPPER_INGOT, 1));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 2));
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.Items.AMMO_762)
+		else if(item == PMCRegistry.PMCItems.AMMO_762)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 7));
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 7));
-			rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT));
 			rec.add(new ItemStack(Items.GUNPOWDER, 2));
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.Items.AMMO_300M)
+		else if(item == PMCRegistry.PMCItems.AMMO_300M)
 		{
 			rec.add(new ItemStack(Items.IRON_INGOT));
 			rec.add(new ItemStack(Items.GOLD_INGOT));
-			rec.add(new ItemStack(PMCRegistry.Items.COPPER_INGOT));
-			rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 3));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT));
+			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
 			rec.add(new ItemStack(Items.GUNPOWDER, 5));
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.Items.AMMO_FLARE)
+		else if(item == PMCRegistry.PMCItems.AMMO_FLARE)
 		{
 			rec.add(new ItemStack(Items.IRON_INGOT));
 			rec.add(new ItemStack(Items.GUNPOWDER, 10));

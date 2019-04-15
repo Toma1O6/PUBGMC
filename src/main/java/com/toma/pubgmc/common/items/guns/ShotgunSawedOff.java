@@ -38,7 +38,6 @@ public class ShotgunSawedOff extends GunBase
 		this.setGunType(GunType.SHOTGUN);
 		this.setFireRate(10);
 		this.setReloadTime(70);
-		this.setReloadDelay(15);
 		this.setAmmoType(AmmoType.AMMO12G);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -110,7 +109,7 @@ public class ShotgunSawedOff extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
 		rec.add(new ItemStack(Items.IRON_INGOT, 10));
 		rec.add(new ItemStack(Blocks.PLANKS, 7));
 		return rec;

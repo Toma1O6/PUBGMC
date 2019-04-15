@@ -26,7 +26,6 @@ public class ArGroza extends GunBase
 		this.setGravityStartTime(6);
 		this.setAmmoType(AmmoType.AMMO762);
 		this.setReloadTime(50);
-		this.setReloadDelay(15);
 		this.setFireRate(2);
 		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -53,7 +52,7 @@ public class ArGroza extends GunBase
 	{
 		addMagazines();
 		addCloseRangeScopes();
-		addAttachment(PMCRegistry.Items.SILENCER_AR);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_AR);
 		return super.acceptedAttachments();
 	}
 	
@@ -73,7 +72,7 @@ public class ArGroza extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 55));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 55));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		rec.add(new ItemStack(Blocks.PLANKS, 1));
 		return rec;

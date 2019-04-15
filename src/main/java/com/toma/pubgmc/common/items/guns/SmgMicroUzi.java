@@ -50,8 +50,8 @@ public class SmgMicroUzi extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addMagazines();
-		addAttachment(PMCRegistry.Items.SILENCER_SMG);
-		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_SMG);
+		addAttachment(PMCRegistry.PMCItems.COMPENSATOR_SMG);
 		return super.acceptedAttachments();
 	}
 	
@@ -71,7 +71,7 @@ public class SmgMicroUzi extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 15));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		return rec;
 	}

@@ -104,68 +104,90 @@ public class GuiAttachments extends GuiContainer
 		if(!ITEMS.isEmpty() && ITEMS.get(0) instanceof GunBase)
 		{
 			GunBase gun = (GunBase)ITEMS.get(0);
-			List<Item> att = gun.acceptedAttachments();
+			ItemAttachment[] barrel = gun.getBarrelAttachments();
+			ItemAttachment[] grip = gun.getGripAttachments();
+			ItemAttachment[] mag = gun.getMagazineAttachments();
+			ItemAttachment[] stock = gun.getStockAttachments();
+			ItemAttachment[] scope = gun.getScopeAttachments();
+			final int length = barrel.length + grip.length + mag.length + stock.length + scope.length;
 			short barOff = 17;
 			short gripOff = 17;
 			short magOff = 10;
 			short stockOff = 17;
 			short scopeOff = 17;
 			
-			for(int i = 0; i < att.size(); i++)
+			// barrel
+			if(barrel.length > 0)
 			{
-				Item item = att.get(i);
-				if(item instanceof ItemAttachment)
+				for(int i = 0; i < barrel.length; i++)
 				{
-					ItemAttachment at = (ItemAttachment)item;
-					IAttachment.Type type = at.getType();
+					ItemAttachment at = barrel[i];
 					String loc = at.getRegistryName().toString();
 					if(loc.contains("pubgmc:")) loc = loc.replace("pubgmc:", "");
 					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
-					
-					switch(type)
-					{
-						case BARREL:
-						{
-							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 16 - barOff, 30, 16, 16, true);
-							ImageUtil.drawCustomSizedImage(mc, res, 16 - barOff, 30, 16, 16, true);
-							barOff += 16;
-							break;
-						}
-						
-						case SCOPE:
-						{
-							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 77 - scopeOff, 12, 16, 16, true);
-							ImageUtil.drawCustomSizedImage(mc, res, 77 - scopeOff, 12, 16, 16, true);
-							scopeOff += 16;
-							break;
-						}
-						
-						case GRIP:
-						{
-							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 40 - gripOff, 50, 16, 16, true);
-							ImageUtil.drawCustomSizedImage(mc, res, 40 - gripOff, 50, 16, 16, true);
-							gripOff += 16;
-							break;
-						}
-						
-						case MAGAZINE:
-						{
-							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 70 + magOff, 69, 16, 16, true);
-							ImageUtil.drawCustomSizedImage(mc, res, 70 + magOff, 69, 16, 16, true);
-							magOff += 16;
-							break;
-						}
-						
-						case STOCK:
-						{
-							ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 126 + stockOff, 30, 16, 16, true);
-							ImageUtil.drawCustomSizedImage(mc, res, 126 + stockOff, 30, 16, 16, true);
-							stockOff += 16;
-							break;
-						}
-						
-						default: break;
-					}
+					ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 16 - barOff, 30, 16, 16, true);
+					ImageUtil.drawCustomSizedImage(mc, res, 16 - barOff, 30, 16, 16, true);
+					barOff += 16;
+				}
+			}
+			
+			//grip
+			if(grip.length > 0)
+			{
+				for(int i = 0; i < grip.length; i++)
+				{
+					ItemAttachment at = grip[i];
+					String loc = at.getRegistryName().toString();
+					if(loc.contains("pubgmc:")) loc = loc.replace("pubgmc:", "");
+					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
+					ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 40 - gripOff, 50, 16, 16, true);
+					ImageUtil.drawCustomSizedImage(mc, res, 40 - gripOff, 50, 16, 16, true);
+					gripOff += 16;
+				}
+			}
+			
+			// magazine
+			if(mag.length > 0)
+			{
+				for(int i = 0; i < mag.length; i++)
+				{
+					ItemAttachment at = mag[i];
+					String loc = at.getRegistryName().toString();
+					if(loc.contains("pubgmc:")) loc = loc.replace("pubgmc:", "");
+					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
+					ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 70 + magOff, 69, 16, 16, true);
+					ImageUtil.drawCustomSizedImage(mc, res, 70 + magOff, 69, 16, 16, true);
+					magOff += 16;
+				}
+			}
+			
+			// stock
+			if(stock.length > 0)
+			{
+				for(int i = 0; i < stock.length; i++)
+				{
+					ItemAttachment at = stock[i];
+					String loc = at.getRegistryName().toString();
+					if(loc.contains("pubgmc:")) loc = loc.replace("pubgmc:", "");
+					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
+					ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 126 + stockOff, 30, 16, 16, true);
+					ImageUtil.drawCustomSizedImage(mc, res, 126 + stockOff, 30, 16, 16, true);
+					stockOff += 16;
+				}
+			}
+			
+			// scope
+			if(scope.length > 0)
+			{
+				for(int i = 0; i < scope.length; i++)
+				{
+					ItemAttachment at = scope[i];
+					String loc = at.getRegistryName().toString();
+					if(loc.contains("pubgmc:")) loc = loc.replace("pubgmc:", "");
+					ResourceLocation res = new ResourceLocation(Pubgmc.MOD_ID + ":textures/items/" + loc + ".png");
+					ImageUtil.drawCustomSizedImage(mc, BACKGROUND, 77 - scopeOff, 12, 16, 16, true);
+					ImageUtil.drawCustomSizedImage(mc, res, 77 - scopeOff, 12, 16, 16, true);
+					scopeOff += 16;
 				}
 			}
 		}

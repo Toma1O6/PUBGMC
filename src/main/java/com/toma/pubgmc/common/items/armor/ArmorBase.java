@@ -63,45 +63,45 @@ public class ArmorBase extends ItemArmor implements ICraftable
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		
-		if(item == PMCRegistry.Items.ARMOR1BODY)
+		if(item == PMCRegistry.PMCItems.ARMOR1BODY)
 		{
 			recipe.add(new ItemStack(Items.LEATHER_CHESTPLATE));
 			recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.Items.ARMOR1HELMET)
+		else if(item == PMCRegistry.PMCItems.ARMOR1HELMET)
 		{
 			recipe.add(new ItemStack(Items.LEATHER_HELMET));
 			recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.Items.ARMOR2BODY)
+		else if(item == PMCRegistry.PMCItems.ARMOR2BODY)
 		{
-			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR1BODY));
-			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 3));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR1BODY));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.Items.ARMOR2HELMET)
+		else if(item == PMCRegistry.PMCItems.ARMOR2HELMET)
 		{
-			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR1HELMET));
-			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 3));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR1HELMET));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.Items.ARMOR3BODY)
+		else if(item == PMCRegistry.PMCItems.ARMOR3BODY)
 		{
-			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR2BODY));
-			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 6));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR2BODY));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.Items.ARMOR3HELMET)
+		else if(item == PMCRegistry.PMCItems.ARMOR3HELMET)
 		{
-			recipe.add(new ItemStack(PMCRegistry.Items.ARMOR2HELMET));
-			recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 6));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR2HELMET));
+			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
 			return recipe;
 		}
 		

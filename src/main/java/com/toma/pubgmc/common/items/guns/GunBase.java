@@ -15,6 +15,7 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.PMCItem;
+import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
@@ -23,7 +24,7 @@ import com.toma.pubgmc.common.network.sp.PacketSound;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.init.PMCRegistry.Items;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
@@ -49,7 +50,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Toma1O6
  * This is the core class for all guns
  */
-public abstract class GunBase extends PMCItem implements ICraftable
+public class GunBase extends PMCItem implements ICraftable
 {
 	public static final List<GunBase> GUNS = new ArrayList<GunBase>();
 	public static ConfigPMC.WeaponSettings cfg = ConfigPMC.weaponSettings;
@@ -60,22 +61,27 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	private int gravityStart;
 	private float horizontal_recoil = 0f;
 	private float vertical_recoil = 0f;
-	private int ammo;
 	private double reloadTime = 100;
-	private int reloadDelay = 10;
 	private int rate = 10;
+	private int maxAmmo, exMaxAmmo;
 	private AmmoType ammotype;
 	private Firemode firemode;
 	private Firemode[] validFiremodes = new Firemode[] {Firemode.SINGLE};
-	private boolean canSwitchFiremode;
-	private boolean canShoot;
-	private boolean silenced;
-	private float gun_volume, gun_volume_s;
 	private ReloadType reloadType;
 	private GunType gunType;
 	private boolean hasTwoRoundBurst = false;
-	private SoundEvent gun_shoot, gun_silenced;
-	protected List<Item> attachments = new ArrayList<Item>();
+	
+	@SideOnly(Side.CLIENT)
+	private ModelGun gunModel;
+	
+	//Attachments
+	private ItemAttachment[] barrel, grip, magazine, stock, scope;
+	
+	//SOUNDS
+	private SoundEvent gun_shoot, gun_silenced, gun_reload;
+	private float gun_volume, gun_volume_s;
+	
+	public List<ItemStack> craftingRecipe = new ArrayList<ItemStack>();
 	
 	private ItemAmmo ammoItem;
 	private int ammoCount = 0;
@@ -91,20 +97,9 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		setValidFiremodes(Firemode.SINGLE);
 	}
 	
-	/**
-	 * The weapon reload sound
-	 * @return - the reload sound
-	 */
-	public abstract SoundEvent getWeaponReloadSound();
-	
-	/**
-	 * Check if gun can accept attachment, used in attachment inventory
-	 * @param attachment - the attachment item
-	 * @return if the attachment is supported by the weapon
-	 */
-	public List<Item> acceptedAttachments()
+	public SoundEvent getWeaponReloadSound()
 	{
-		return attachments;
+		return this.gun_reload;
 	}
 	
 	/**
@@ -112,14 +107,16 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	 * @param stack - the gun itemstack
 	 * @return the weapon ammo limit
 	 */
-	public abstract int getWeaponAmmoLimit(ItemStack stack);
+	public int getWeaponAmmoLimit(ItemStack stack)
+	{
+		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? exMaxAmmo : maxAmmo;
+	}
 	
-	/**
-	 * 
-	 */
-	@Nonnull
-	@SideOnly(Side.CLIENT)
-	public abstract ModelGun getWeaponModel();
+	@Override
+	public List<ItemStack> getCraftingRecipe(Item item)
+	{
+		return craftingRecipe;
+	}
 	
 	/**
 	 * Used to spawn bullet entity, called from packet
@@ -138,8 +135,20 @@ public abstract class GunBase extends PMCItem implements ICraftable
         	{
             	if(!world.isRemote)
             	{
-                    EntityBullet bullet = new EntityBullet(world, player, this);
-                    world.spawnEntity(bullet);
+                    if(!gunType.equals(GunType.SHOTGUN))
+                    {
+                    	EntityBullet bullet = new EntityBullet(world, player, this);
+                    	world.spawnEntity(bullet);
+                    }
+                    else
+                    {
+                    	for(int i = 0; i < 8; i++)
+                    	{
+                    		EntityBullet bullet = new EntityBullet(world, player, this);
+                    		world.spawnEntity(bullet);
+                    	}
+                    }
+                    
                     if(!player.capabilities.isCreativeMode)
                     {
                         stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
@@ -222,7 +231,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		{
 			case SINGLE: 
 			{
-				System.out.println("here");
 				if(canGunBurstFire())
 				{
 					setFiremode(Firemode.BURST);
@@ -391,6 +399,83 @@ public abstract class GunBase extends PMCItem implements ICraftable
 // Setters and getters
 //-------------------------------------------------
 	
+	@SideOnly(Side.CLIENT)
+	public void setGunModel(ModelGun model)
+	{
+		this.gunModel = model;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public ModelGun getWeaponModel()
+	{
+		return gunModel;
+	}
+	
+	public void setCraftingRecipe(List<ItemStack> recipe)
+	{
+		this.craftingRecipe = recipe;
+	}
+	
+	public void setMaxAmmo(int maxAmmo, int exMaxAmmo)
+	{
+		this.maxAmmo = maxAmmo;
+		this.exMaxAmmo = exMaxAmmo;
+	}
+	
+	public void setReloadSound(SoundEvent reload)
+	{
+		this.gun_reload = reload;
+	}
+	
+	public void setBarrelAttachments(ItemAttachment... attachments)
+	{
+		this.barrel = attachments;
+	}
+	
+	public void setGripAttachments(ItemAttachment... attachments)
+	{
+		this.grip = attachments;
+	}
+	
+	public void setMagazineAttachments(ItemAttachment... attachments)
+	{
+		this.magazine = attachments;
+	}
+	
+	public void setStockAttachments(ItemAttachment... attachments)
+	{
+		this.stock = attachments;
+	}
+	
+	public void setScopeAttachments(ItemAttachment... attachments)
+	{
+		this.scope = attachments;
+	}
+	
+	public ItemAttachment[] getBarrelAttachments()
+	{
+		return barrel;
+	}
+	
+	public ItemAttachment[] getGripAttachments()
+	{
+		return grip;
+	}
+	
+	public ItemAttachment[] getMagazineAttachments()
+	{
+		return magazine;
+	}
+	
+	public ItemAttachment[] getStockAttachments()
+	{
+		return stock;
+	}
+	
+	public ItemAttachment[] getScopeAttachments()
+	{
+		return scope;
+	}
 	
 	public void setValidFiremodes(Firemode... firemodes)
 	{
@@ -471,11 +556,6 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		this.reloadType = type;
 	}
 	
-	public void setReloadDelay(int delay)
-	{
-		this.reloadDelay = delay;
-	}
-	
 	public void setFireRate(int firerate)
 	{
 		this.rate = firerate;
@@ -487,9 +567,9 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		this.gunType = type;
 	}
 	
+	//TODO: remove
 	public void canSwitchMode(boolean firemode)
 	{
-		this.canSwitchFiremode = firemode;
 	}
 	
 	public void setGunSound(SoundEvent shootSound)
@@ -580,17 +660,12 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	
 	public boolean getCanSwitchFiremode()
 	{
-		return canSwitchFiremode;
+		return validFiremodes.length > 1;
 	}
 	
 	public ReloadType getReloadType()
 	{
 		return reloadType;
-	}
-	
-	public int getReloadDelay()
-	{
-		return reloadDelay;
 	}
 	
 	public int getFireRate()
@@ -622,6 +697,19 @@ public abstract class GunBase extends PMCItem implements ICraftable
 		}
 		
 		return a;
+	}
+	
+	public boolean containsAttachment(ItemAttachment[] group, ItemAttachment toCheck)
+	{
+		for(ItemAttachment a : group)
+		{
+			if(a == toCheck)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public enum Firemode
@@ -775,129 +863,5 @@ public abstract class GunBase extends PMCItem implements ICraftable
 	public boolean isHasTwoRoundBurst()
 	{
 		return hasTwoRoundBurst;
-	}
-	
-	protected void addMagazines()
-	{
-		if(gunType == GunType.PISTOL)
-		{
-			Item[] pistol = {PMCRegistry.Items.QUICKDRAW_MAG_PISTOL, PMCRegistry.Items.EXTENDED_MAG_PISTOL, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_PISTOL};
-			addAttachment(pistol);
-		}
-		
-		else if(gunType == GunType.SMG)
-		{
-			Item[] smg = {PMCRegistry.Items.QUICKDRAW_MAG_SMG, PMCRegistry.Items.EXTENDED_MAG_SMG, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SMG};
-			addAttachment(smg);
-		}
-		
-		else if(gunType == gunType.AR)
-		{
-			Item[] ar = {PMCRegistry.Items.QUICKDRAW_MAG_AR, PMCRegistry.Items.EXTENDED_MAG_AR, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_AR};
-			addAttachment(ar);
-		}
-		
-		else if(gunType == GunType.DMR || gunType == GunType.SR)
-		{
-			Item[] sr = {PMCRegistry.Items.QUICKDRAW_MAG_SNIPER, PMCRegistry.Items.EXTENDED_MAG_SNIPER, PMCRegistry.Items.EXTENDED_QUICKDRAW_MAG_SNIPER};
-			addAttachment(sr);
-		}
-	}
-	
-	protected void addGrips()
-	{
-		addAttachment(PMCRegistry.Items.GRIP_ANGLED);
-		addAttachment(PMCRegistry.Items.GRIP_VERTICAL);
-	}
-	
-	protected void addCloseRangeScopes()
-	{
-		addAttachment(PMCRegistry.Items.RED_DOT);
-		addAttachment(PMCRegistry.Items.HOLOGRAPHIC);
-		addAttachment(PMCRegistry.Items.SCOPE2X);
-		addAttachment(PMCRegistry.Items.SCOPE4X);
-	}
-	
-	protected void addScopes()
-	{
-		addCloseRangeScopes();
-		addAttachment(PMCRegistry.Items.SCOPE8X);
-		addAttachment(PMCRegistry.Items.SCOPE15X);
-	}
-	
-	/**
-	 * <li> silencer
-	 * <li> redDot
-	 * <li> magazines
-	 */
-	protected void addPistolAttachments()
-	{
-		addAttachment(PMCRegistry.Items.SILENCER_PISTOL);
-		addAttachment(PMCRegistry.Items.RED_DOT);
-		addMagazines();
-	}
-	
-	/**
-	 * <li> Bullet Loops
-	 */
-	protected void addShotgunAttachments()
-	{
-		addAttachment(PMCRegistry.Items.BULLET_LOOPS_SHOTGUN);
-	}
-	
-	/**
-	 * <li> silencer, compensator
-	 * <li> grips
-	 * <li> magazines
-	 * <li> Red Dot, Holo, 2X, 4X
-	 */
-	protected void addSMGAttachments()
-	{
-		addAttachment(PMCRegistry.Items.SILENCER_SMG);
-		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
-		addGrips();
-		addMagazines();
-		addCloseRangeScopes();
-	}
-	
-	/**
-	 * <li> silencer, compensator
-	 * <li> grips
-	 * <li> magazines
-	 * <li> Red Dot, Holo, 2X, 4X
-	 */
-	protected void addARAttachments(boolean grips)
-	{
-		addCloseRangeScopes();
-		addMagazines();
-		if(grips) addGrips();
-		addAttachment(PMCRegistry.Items.COMPENSATOR_AR);
-		addAttachment(PMCRegistry.Items.SILENCER_AR);
-	}
-	
-	/**
-	 * <li> silencer, compensator
-	 * <li> magazines
-	 * <li> Red Dot, Holo, 2X, 4X, 8X, 15X
-	 */
-	protected void addSniperAttachments()
-	{
-		addScopes();
-		addMagazines();
-		addAttachment(PMCRegistry.Items.SILENCER_SNIPER);
-		addAttachment(PMCRegistry.Items.COMPENSATOR_SNIPER);
-	}
-	
-	public void addAttachment(Item item)
-	{
-		if(!attachments.contains(item)) attachments.add(item);
-	}
-	
-	public void addAttachment(Item[] items)
-	{
-		for(Item item : items)
-		{
-			addAttachment(item);
-		}
 	}
 }

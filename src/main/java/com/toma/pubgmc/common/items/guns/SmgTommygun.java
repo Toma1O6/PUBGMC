@@ -51,8 +51,8 @@ public class SmgTommygun extends GunBase
 	public List<Item> acceptedAttachments() 
 	{
 		addMagazines();
-		addAttachment(PMCRegistry.Items.GRIP_VERTICAL);
-		addAttachment(PMCRegistry.Items.SILENCER_SMG);
+		addAttachment(PMCRegistry.PMCItems.GRIP_VERTICAL);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_SMG);
 		return super.acceptedAttachments();
 	}
 	
@@ -72,7 +72,7 @@ public class SmgTommygun extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 15));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
 		rec.add(new ItemStack(Items.IRON_INGOT, 25));
 		rec.add(new ItemStack(Blocks.PLANKS, 3));
 		return rec;

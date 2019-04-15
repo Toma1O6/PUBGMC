@@ -69,7 +69,7 @@ public class PistolP18C extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 8));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
 		rec.add(new ItemStack(Items.IRON_INGOT, 20));
 		return rec;
 	}

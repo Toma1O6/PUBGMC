@@ -99,7 +99,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
         	if(timer >= 400 && !world.isRemote)
         	{
         		world.playSound(null, posX, posY, posZ, PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);
-        		EntityFallingBlock block = new EntityFallingBlock(world, (int)posX + 0.5, posY, (int)posZ + 0.5, PMCRegistry.Blocks.BIG_AIRDROP.getDefaultState());
+        		EntityFallingBlock block = new EntityFallingBlock(world, (int)posX + 0.5, posY, (int)posZ + 0.5, PMCRegistry.PMCBlocks.BIG_AIRDROP.getDefaultState());
         		world.createExplosion(this, posX, posY, posZ, 3.0f, false);
         		world.spawnEntity(block);
         		block.fallTime = 1;

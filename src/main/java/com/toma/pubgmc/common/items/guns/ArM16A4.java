@@ -25,7 +25,6 @@ public class ArM16A4 extends GunBase
 		this.setGravityStartTime(8);
 		this.setAmmoType(AmmoType.AMMO556);
 		this.setReloadTime(66);
-		this.setReloadDelay(15);
 		this.setFireRate(2);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -70,7 +69,7 @@ public class ArM16A4 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 50));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
 		rec.add(new ItemStack(Items.IRON_INGOT, 35));
 		return rec;
 	}

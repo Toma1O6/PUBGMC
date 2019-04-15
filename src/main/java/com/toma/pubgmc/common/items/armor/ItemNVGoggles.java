@@ -60,7 +60,7 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Blocks.GLASS_PANE, 4));
 		recipe.add(new ItemStack(Blocks.GLOWSTONE));
-		recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 8));
+		recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
 		recipe.add(new ItemStack(Blocks.WOOL, 2));
 		return recipe;
 	}

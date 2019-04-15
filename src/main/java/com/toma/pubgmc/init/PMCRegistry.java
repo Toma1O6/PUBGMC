@@ -3,6 +3,7 @@ package com.toma.pubgmc.init;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.blocks.BlockAirdrop;
@@ -67,6 +68,10 @@ import com.toma.pubgmc.common.items.guns.DmrSLR;
 import com.toma.pubgmc.common.items.guns.DmrVSS;
 import com.toma.pubgmc.common.items.guns.FlareGun;
 import com.toma.pubgmc.common.items.guns.GunBase;
+import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
+import com.toma.pubgmc.common.items.guns.GunBase.GunType;
+import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
+import com.toma.pubgmc.common.items.guns.GunBuilder;
 import com.toma.pubgmc.common.items.guns.LmgDP28;
 import com.toma.pubgmc.common.items.guns.LmgM249;
 import com.toma.pubgmc.common.items.guns.PistolP18C;
@@ -104,6 +109,9 @@ import com.toma.pubgmc.common.tileentity.TileEntityLamp;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
+import com.toma.pubgmc.event.GunPostInitializeEvent;
+import com.toma.pubgmc.event.GunRegisterEvent;
+import com.toma.pubgmc.util.AttachmentHelper;
 import com.toma.pubgmc.util.PMCItemBlock;
 
 import net.minecraft.block.Block;
@@ -112,16 +120,20 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
@@ -136,8 +148,10 @@ import net.minecraftforge.fml.relauncher.Side;
 public class PMCRegistry 
 {
 	@ObjectHolder(Pubgmc.MOD_ID)
-	public static final class Items
+	public static final class PMCItems
 	{
+		public static PMCRegistry.PMCItems instance;
+		
 		public static final Item BACKPACK1 = null;
 		public static final Item BACKPACK2 = null;
 		public static final Item BACKPACK3 = null;
@@ -150,7 +164,7 @@ public class PMCRegistry
 		public static final Item IBLOCK = null;
 		public static final Item GHILLIE_SUIT = null;
 		public static final Item NV_GOGGLES = null;
-		public static final Item FLARE_GUN = null;
+		public static final FlareGun FLARE_GUN = null;
 		public static final Item P92 = null;
 		public static final Item P1911 = null;
 		public static final Item R1895 = null;
@@ -217,36 +231,36 @@ public class PMCRegistry
 		public static final Item BROWN_CAP = null;
 		public static final Item WHITE_BOOTS = null;
 		public static final Item OFFICIAL_LEGS = null;
-		public static final Item SILENCER_PISTOL = null;
-		public static final Item SILENCER_SMG = null;
-		public static final Item SILENCER_AR = null;
-		public static final Item SILENCER_SNIPER = null;
-		public static final Item COMPENSATOR_SMG = null;
-		public static final Item COMPENSATOR_AR = null;
-		public static final Item COMPENSATOR_SNIPER = null;
-		public static final Item RED_DOT = null;
-		public static final Item HOLOGRAPHIC = null;
-		public static final Item SCOPE2X = null;
-		public static final Item SCOPE4X = null;
-		public static final Item SCOPE8X = null;
-		public static final Item SCOPE15X = null;
-		public static final Item GRIP_VERTICAL = null;
-		public static final Item GRIP_ANGLED = null;
-		public static final Item QUICKDRAW_MAG_PISTOL = null;
-		public static final Item EXTENDED_MAG_PISTOL = null;
-		public static final Item EXTENDED_QUICKDRAW_MAG_PISTOL = null;
-		public static final Item QUICKDRAW_MAG_SMG = null;
-		public static final Item EXTENDED_MAG_SMG = null;
-		public static final Item EXTENDED_QUICKDRAW_MAG_SMG = null;
-		public static final Item QUICKDRAW_MAG_AR = null;
-		public static final Item EXTENDED_MAG_AR = null;
-		public static final Item EXTENDED_QUICKDRAW_MAG_AR = null;
-		public static final Item QUICKDRAW_MAG_SNIPER = null;
-		public static final Item EXTENDED_MAG_SNIPER = null;
-		public static final Item EXTENDED_QUICKDRAW_MAG_SNIPER = null;
-		public static final Item BULLET_LOOPS_SHOTGUN = null;
-		public static final Item BULLET_LOOPS_SNIPER = null;
-		public static final Item CHEEKPAD = null;
+		public static final ItemAttachment SILENCER_PISTOL = null;
+		public static final ItemAttachment SILENCER_SMG = null;
+		public static final ItemAttachment SILENCER_AR = null;
+		public static final ItemAttachment SILENCER_SNIPER = null;
+		public static final ItemAttachment COMPENSATOR_SMG = null;
+		public static final ItemAttachment COMPENSATOR_AR = null;
+		public static final ItemAttachment COMPENSATOR_SNIPER = null;
+		public static final ItemAttachment RED_DOT = null;
+		public static final ItemAttachment HOLOGRAPHIC = null;
+		public static final ItemAttachment SCOPE2X = null;
+		public static final ItemAttachment SCOPE4X = null;
+		public static final ItemAttachment SCOPE8X = null;
+		public static final ItemAttachment SCOPE15X = null;
+		public static final ItemAttachment GRIP_VERTICAL = null;
+		public static final ItemAttachment GRIP_ANGLED = null;
+		public static final ItemAttachment QUICKDRAW_MAG_PISTOL = null;
+		public static final ItemAttachment EXTENDED_MAG_PISTOL = null;
+		public static final ItemAttachment EXTENDED_QUICKDRAW_MAG_PISTOL = null;
+		public static final ItemAttachment QUICKDRAW_MAG_SMG = null;
+		public static final ItemAttachment EXTENDED_MAG_SMG = null;
+		public static final ItemAttachment EXTENDED_QUICKDRAW_MAG_SMG = null;
+		public static final ItemAttachment QUICKDRAW_MAG_AR = null;
+		public static final ItemAttachment EXTENDED_MAG_AR = null;
+		public static final ItemAttachment EXTENDED_QUICKDRAW_MAG_AR = null;
+		public static final ItemAttachment QUICKDRAW_MAG_SNIPER = null;
+		public static final ItemAttachment EXTENDED_MAG_SNIPER = null;
+		public static final ItemAttachment EXTENDED_QUICKDRAW_MAG_SNIPER = null;
+		public static final ItemAttachment BULLET_LOOPS_SHOTGUN = null;
+		public static final ItemAttachment BULLET_LOOPS_SNIPER = null;
+		public static final ItemAttachment CHEEKPAD = null;
 		public static final Item PARACHUTE = null;
 		public static final Item STEEL_DUST = null;
 		public static final Item STEEL_INGOT = null;
@@ -256,7 +270,7 @@ public class PMCRegistry
 	}
 	
 	@ObjectHolder(Pubgmc.MOD_ID)
-	public static final class Blocks
+	public static final class PMCBlocks
 	{
 		public static final Block ROADASPHALT = null;
 		public static final Block SCHOOLWALL = null;
@@ -379,8 +393,6 @@ public class PMCRegistry
 					new ItemGhillie("ghillie_suit"),
 					new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
 					new FlareGun("flare_gun"),
-					new PistolP92("p92"),
-					new PistolP1911("p1911"),
 					new PistolR1895("r1895"),
 					new PistolR45("r45"),
 					new PistolP18C("p18c"),
@@ -483,47 +495,48 @@ public class PMCRegistry
 			};
 			
 			final Item[] ITEM_BLOCKS = {
-					new PMCItemBlock(PMCRegistry.Blocks.ROADASPHALT),
-					new PMCItemBlock(PMCRegistry.Blocks.SCHOOLWALL),
-					new PMCItemBlock(PMCRegistry.Blocks.SCHOOLROOF),
-					new PMCItemBlock(PMCRegistry.Blocks.SCHOOLWINDOW),
-					new PMCItemBlock(PMCRegistry.Blocks.AIRDROP),
-					new PMCItemBlock(PMCRegistry.Blocks.DARKWOOD),
-					new PMCItemBlock(PMCRegistry.Blocks.LOOT_SPAWNER),
-					new PMCItemBlock(PMCRegistry.Blocks.PLAYER_CRATE),
-					new PMCItemBlock(PMCRegistry.Blocks.CHAIR),
-					new PMCItemBlock(PMCRegistry.Blocks.TABLE),
-					new PMCItemBlock(PMCRegistry.Blocks.RUINSWALL),
-					new PMCItemBlock(PMCRegistry.Blocks.BLUEGLASS),
-					new PMCItemBlock(PMCRegistry.Blocks.TARGET),
-					new PMCItemBlock(PMCRegistry.Blocks.LAMPBOTTOM),
-					new PMCItemBlock(PMCRegistry.Blocks.LAMPPOST),
-					new PMCItemBlock(PMCRegistry.Blocks.LAMPTOP),
-					new PMCItemBlock(PMCRegistry.Blocks.LIGHT),
-					new PMCItemBlock(PMCRegistry.Blocks.CRATE),
-					new PMCItemBlock(PMCRegistry.Blocks.CRATES),
-					new PMCItemBlock(PMCRegistry.Blocks.BUSH),
-					new PMCItemBlock(PMCRegistry.Blocks.WHEAT),
-					new PMCItemBlock(PMCRegistry.Blocks.PROP1),
-					new PMCItemBlock(PMCRegistry.Blocks.PROP2),
-					new PMCItemBlock(PMCRegistry.Blocks.PROP3),
-					new PMCItemBlock(PMCRegistry.Blocks.PROP4),
-					new PMCItemBlock(PMCRegistry.Blocks.PROP5),
-					new PMCItemBlock(PMCRegistry.Blocks.FENCE),
-					new PMCItemBlock(PMCRegistry.Blocks.CONCRETE),
-					new PMCItemBlock(PMCRegistry.Blocks.ELECTRICPOLE),
-					new PMCItemBlock(PMCRegistry.Blocks.ELECTRICPOLETOP),
-					new PMCItemBlock(PMCRegistry.Blocks.ELECTRICCABLE),
-					new PMCItemBlock(PMCRegistry.Blocks.RADIOTOWER),
-					new PMCItemBlock(PMCRegistry.Blocks.RADIOTOWERTOP),
-					new PMCItemBlock(PMCRegistry.Blocks.GUN_WORKBENCH),
-					new PMCItemBlock(PMCRegistry.Blocks.BIG_AIRDROP),
-					new PMCItemBlock(PMCRegistry.Blocks.COPPER_ORE),
-					new PMCItemBlock(PMCRegistry.Blocks.LANDMINE)
+					new PMCItemBlock(PMCRegistry.PMCBlocks.ROADASPHALT),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.SCHOOLWALL),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.SCHOOLROOF),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.SCHOOLWINDOW),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.AIRDROP),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.DARKWOOD),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LOOT_SPAWNER),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PLAYER_CRATE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.CHAIR),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.TABLE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.RUINSWALL),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.BLUEGLASS),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.TARGET),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LAMPBOTTOM),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LAMPPOST),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LAMPTOP),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LIGHT),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.CRATE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.CRATES),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.BUSH),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.WHEAT),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP1),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP2),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP3),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP4),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP5),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.FENCE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.CONCRETE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICPOLE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICPOLETOP),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICCABLE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.RADIOTOWER),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.RADIOTOWERTOP),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.GUN_WORKBENCH),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.BIG_AIRDROP),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.COPPER_ORE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LANDMINE)
 			};
 			
 			event.getRegistry().registerAll(ITEMS);
 			event.getRegistry().registerAll(ITEM_BLOCKS);
+			event.getRegistry().registerAll(registeredGuns());
 		}
 		
 		@SubscribeEvent
@@ -572,6 +585,27 @@ public class PMCRegistry
 			return entityID;
 		}
 		
+		public static GunBase[] registeredGuns()
+		{
+			GunBase p92 = GunBuilder.create().name("p92").damage(ConfigPMC.weaponSettings.p92).velocity(7).gravity(0.015, 4).firerate(2)
+					.recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p92).ammo(AmmoType.AMMO9MM, 15, 20)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_p92, 6f, PMCSounds.gun_p92_silenced, 4f)
+					.build();
+			
+			GunBase p1911 = GunBuilder.create().name("p1911").damage(ConfigPMC.weaponSettings.p1911).velocity(7.25).gravity(0.01, 5).firerate(2)
+					.recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p1911).ammo(AmmoType.AMMO45ACP, 7, 12)
+					.sound(PMCSounds.gun_p1911, 6f, PMCSounds.gun_p1911_silenced, 4f)
+					.build();
+			
+			final GunBase[] entry = 
+			{
+				p92, p1911	
+			};
+			
+			return entry;
+		}
+		
 		public static void initTileEntities()
 		{
 			GameRegistry.registerTileEntity(TileEntityAirdrop.class, new ResourceLocation(Pubgmc.MOD_ID + ":airdrop"));
@@ -610,12 +644,43 @@ public class PMCRegistry
 			if(item instanceof GunBase)
 			{
 				item.setTileEntityItemStackRenderer(new WeaponTEISR());
+				MinecraftForge.EVENT_BUS.post(new GunRegisterEvent((GunBase)item, item.getRegistryName()));
 			}
 		}
 		
 		private static void registerModel(Block block)
 		{
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
+		}
+	}
+	
+	@Mod.EventBusSubscriber
+	public static class GunInit
+	{
+		@SubscribeEvent
+		public static void onGunInitialized(GunPostInitializeEvent e)
+		{
+			GunBase gun = e.getGun();
+			
+			if(gun == PMCItems.P92)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCItems.STEEL_INGOT, 10));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
+				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS));
+				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
+				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
+				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
+			
+			else if(gun == PMCItems.P1911)
+			{
+				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 12));
+				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 20));
+				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 1));
+				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
+				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
+				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
 		}
 	}
 }

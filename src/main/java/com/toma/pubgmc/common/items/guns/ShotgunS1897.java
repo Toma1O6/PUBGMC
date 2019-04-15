@@ -37,7 +37,6 @@ public class ShotgunS1897 extends GunBase
 		this.setGunType(GunType.SHOTGUN);
 		this.setFireRate(15);
 		this.setReloadTime(10);
-		this.setReloadDelay(15);
 		this.setAmmoType(AmmoType.AMMO12G);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.SINGLE);
@@ -110,7 +109,7 @@ public class ShotgunS1897 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
 		rec.add(new ItemStack(Items.IRON_INGOT, 15));
 		rec.add(new ItemStack(Blocks.PLANKS, 10));
 		return rec;

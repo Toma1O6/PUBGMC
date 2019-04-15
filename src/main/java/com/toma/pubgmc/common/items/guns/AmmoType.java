@@ -35,14 +35,14 @@ public enum AmmoType
 	{
 		switch(this)
 		{
-			case AMMO9MM: return PMCRegistry.Items.AMMO_9MM;
-			case AMMO45ACP: return PMCRegistry.Items.AMMO_45ACP;
-			case AMMO556: return PMCRegistry.Items.AMMO_556;
-			case AMMO762: return PMCRegistry.Items.AMMO_762;
-			case AMMO300M: return PMCRegistry.Items.AMMO_300M;
-			case AMMO12G: return PMCRegistry.Items.AMMO_SHOTGUN;
-			case FLARE: return PMCRegistry.Items.AMMO_FLARE;
-			default: return PMCRegistry.Items.AMMO_9MM;
+			case AMMO9MM: return PMCRegistry.PMCItems.AMMO_9MM;
+			case AMMO45ACP: return PMCRegistry.PMCItems.AMMO_45ACP;
+			case AMMO556: return PMCRegistry.PMCItems.AMMO_556;
+			case AMMO762: return PMCRegistry.PMCItems.AMMO_762;
+			case AMMO300M: return PMCRegistry.PMCItems.AMMO_300M;
+			case AMMO12G: return PMCRegistry.PMCItems.AMMO_SHOTGUN;
+			case FLARE: return PMCRegistry.PMCItems.AMMO_FLARE;
+			default: return PMCRegistry.PMCItems.AMMO_9MM;
 		}
 	}
 	

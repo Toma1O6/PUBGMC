@@ -50,7 +50,7 @@ public class PistolR1895 extends GunBase
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCRegistry.Items.SILENCER_PISTOL);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_PISTOL);
 		return super.acceptedAttachments();
 	}
 	
@@ -70,7 +70,7 @@ public class PistolR1895 extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 20));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
 		rec.add(new ItemStack(Items.IRON_INGOT, 5));
 		rec.add(new ItemStack(Blocks.PLANKS, 2));
 		return rec;

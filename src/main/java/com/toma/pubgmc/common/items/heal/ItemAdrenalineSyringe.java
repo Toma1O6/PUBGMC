@@ -46,8 +46,8 @@ public class ItemAdrenalineSyringe extends ItemHealing
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.GLASS_BOTTLE));
-		recipe.add(new ItemStack(PMCRegistry.Items.ENERGYDRINK));
-		recipe.add(new ItemStack(PMCRegistry.Items.PAINKILLERS));
+		recipe.add(new ItemStack(PMCRegistry.PMCItems.ENERGYDRINK));
+		recipe.add(new ItemStack(PMCRegistry.PMCItems.PAINKILLERS));
 		return recipe;
 	}
 }

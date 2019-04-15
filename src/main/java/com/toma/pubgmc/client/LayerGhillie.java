@@ -32,7 +32,7 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase>
 	public void doRenderLayer(EntityLivingBase e, float limbSwing, float limbSwingAmount,
 			float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
 	{
-		if(e.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() == PMCRegistry.Items.GHILLIE_SUIT)
+		if(e.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() == PMCRegistry.PMCItems.GHILLIE_SUIT)
 		{
 			this.playerRenderer.bindTexture(GHILLIE);
 			GlStateManager.pushMatrix();

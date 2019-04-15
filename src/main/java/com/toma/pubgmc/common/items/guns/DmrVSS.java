@@ -26,7 +26,6 @@ public class DmrVSS extends GunBase
 		this.setGravityStartTime(2);
 		this.setAmmoType(AmmoType.AMMO9MM);
 		this.setReloadTime(40);
-		this.setReloadDelay(10);
 		this.setFireRate(2);
 		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -50,7 +49,7 @@ public class DmrVSS extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addMagazines();
-		addAttachment(PMCRegistry.Items.CHEEKPAD);
+		addAttachment(PMCRegistry.PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	
@@ -70,7 +69,7 @@ public class DmrVSS extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 30));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 30));
 		rec.add(new ItemStack(Items.IRON_INGOT, 35));
 		rec.add(new ItemStack(Blocks.PLANKS, 20));
 		return rec;

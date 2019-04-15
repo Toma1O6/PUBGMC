@@ -26,7 +26,6 @@ public class ArAUG extends GunBase
 		this.setGravityStartTime(8);
 		this.setAmmoType(AmmoType.AMMO556);
 		this.setReloadTime(69);
-		this.setReloadDelay(10);
 		this.setFireRate(2);
 		this.setFiremode(Firemode.AUTO);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -71,7 +70,7 @@ public class ArAUG extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 35));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
 		rec.add(new ItemStack(Items.IRON_INGOT, 40));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 1));
 		return rec;

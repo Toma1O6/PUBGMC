@@ -52,7 +52,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         boolean is3D = te.getStackInSlot(slot).getItem() instanceof GunBase;
         boolean drinkable = te.getStackInSlot(slot).getItem() instanceof ItemEnergyDrink || te.getStackInSlot(slot).getItem() instanceof ItemPainkiller;
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
-        boolean medkit = te.getStackInSlot(slot).getItem() == PMCRegistry.Items.MEDKIT;
+        boolean medkit = te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.MEDKIT;
 		
 		if(ConfigPMC.playerSettings.lootRenderType == 2)
 		{
@@ -71,7 +71,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
 				entityItem.setItem(te.getStackInSlot(slot));
 			}
 			
-			if(te.getStackInSlot(slot).getItem() == PMCRegistry.Items.FUELCAN)
+			if(te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.FUELCAN)
 			{
 	            GlStateManager.pushMatrix();
 	            GL11.glPushMatrix();
@@ -211,7 +211,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         GlStateManager.rotate(90, 0, 1, 0);
         GlStateManager.scale(0.9F, 0.9F, 0.9F);
         
-        if(te.getStackInSlot(slot).getItem() == PMCRegistry.Items.PAINKILLERS)
+        if(te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.PAINKILLERS)
         {
         	GlStateManager.translate(0f, 0.11f, 0f);
         	GlStateManager.scale(1f, 1.25f, 1f);

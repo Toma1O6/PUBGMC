@@ -22,7 +22,9 @@ import com.toma.pubgmc.common.commands.CommandGame;
 import com.toma.pubgmc.common.commands.CommandLeave;
 import com.toma.pubgmc.common.commands.CommandLootGenerate;
 import com.toma.pubgmc.common.commands.CommandPlayerData;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.proxy.IProxy;
@@ -34,6 +36,7 @@ import com.toma.pubgmc.world.OreGen;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -46,6 +49,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION, updateJSON = Pubgmc.UPDATEURL)
@@ -109,6 +113,16 @@ public class Pubgmc
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		for(ResourceLocation rl : ForgeRegistries.ITEMS.getKeys())
+		{
+			if(rl.getResourceDomain().equals(MOD_ID))
+			{
+				if(ForgeRegistries.ITEMS.getValue(rl) instanceof GunBase)
+				{
+					MinecraftForge.EVENT_BUS.post(new GunPostInitializeEvent((GunBase)ForgeRegistries.ITEMS.getValue(rl)));
+				}
+			}
+		}
 		proxy.postInit(event);
 	}
 	
@@ -162,7 +176,7 @@ public class Pubgmc
 	private static void registerSmeltingRecipes()
 	{
 		FurnaceRecipes rec = FurnaceRecipes.instance();
-		rec.addSmeltingRecipeForBlock(PMCRegistry.Blocks.COPPER_ORE, new ItemStack(PMCRegistry.Items.COPPER_INGOT, 1), 2f);
-		rec.addSmelting(PMCRegistry.Items.STEEL_DUST, new ItemStack(PMCRegistry.Items.STEEL_INGOT, 1), 2f);
+		rec.addSmeltingRecipeForBlock(PMCRegistry.PMCBlocks.COPPER_ORE, new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1), 2f);
+		rec.addSmelting(PMCRegistry.PMCItems.STEEL_DUST, new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1), 2f);
 	}
 }

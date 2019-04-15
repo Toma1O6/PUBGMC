@@ -26,7 +26,6 @@ public class SrAWM extends GunBase
 		this.setGravityStartTime(10);
 		this.setAmmoType(AmmoType.AMMO300M);
 		this.setReloadTime(78);
-		this.setReloadDelay(15);
 		this.setFireRate(35);
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
@@ -51,7 +50,7 @@ public class SrAWM extends GunBase
 	public List<Item> acceptedAttachments()
 	{
 		addSniperAttachments();
-		addAttachment(PMCRegistry.Items.CHEEKPAD);
+		addAttachment(PMCRegistry.PMCItems.CHEEKPAD);
 		return super.acceptedAttachments();
 	}
 	
@@ -71,7 +70,7 @@ public class SrAWM extends GunBase
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 50));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
 		rec.add(new ItemStack(Items.IRON_INGOT, 50));
 		rec.add(new ItemStack(Blocks.IRON_BLOCK, 2));
 		rec.add(new ItemStack(Items.DIAMOND, 3));

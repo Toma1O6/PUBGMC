@@ -65,7 +65,7 @@ public class ArG36C extends GunBase
 	{
 		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 50));
-		r.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 40));
+		r.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
 		return r;
 	}
 	

@@ -65,15 +65,15 @@ public class SmgBizon extends GunBase
 	{
 		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 40));
-		r.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 25));
+		r.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
 		return r;
 	}
 	
 	@Override
 	public List<Item> acceptedAttachments()
 	{
-		addAttachment(PMCRegistry.Items.COMPENSATOR_SMG);
-		addAttachment(PMCRegistry.Items.SILENCER_SMG);
+		addAttachment(PMCRegistry.PMCItems.COMPENSATOR_SMG);
+		addAttachment(PMCRegistry.PMCItems.SILENCER_SMG);
 		addCloseRangeScopes();
 		return super.acceptedAttachments();
 	}

@@ -56,16 +56,10 @@ public class PistolP92 extends GunBase
 	}
 	
 	@Override
-	public ModelGun getWeaponModel()
-	{
-		return ((WeaponTEISR)this.getTileEntityItemStackRenderer()).p92;
-	}
-	
-	@Override
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> rec = new ArrayList<>();
-		rec.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 10));
+		rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 10));
 		rec.add(new ItemStack(Items.IRON_INGOT, 15));
 		rec.add(new ItemStack(Blocks.PLANKS, 1));
 		return rec;

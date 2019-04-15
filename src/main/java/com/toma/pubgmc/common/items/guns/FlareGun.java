@@ -31,7 +31,6 @@ public class FlareGun extends GunBase
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setAmmoType(AmmoType.FLARE);
 		this.setGunType(GunType.PISTOL);
-		this.setReloadDelay(30);
 		this.setReloadTime(70);
 		this.setFireRate(110);
 		this.canSwitchMode(false);
@@ -72,12 +71,6 @@ public class FlareGun extends GunBase
 	}
 	
 	@Override
-	public List<Item> acceptedAttachments()
-	{
-		return Collections.EMPTY_LIST;
-	}
-	
-	@Override
 	public SoundEvent getWeaponReloadSound()
 	{
 		return PMCSounds.reload_flaregun;
@@ -94,7 +87,7 @@ public class FlareGun extends GunBase
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.IRON_INGOT, 15));
-		recipe.add(new ItemStack(PMCRegistry.Items.STEEL_INGOT, 20));
+		recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
 		recipe.add(new ItemStack(Items.DYE, 10, 1));
 		return recipe;
 	}

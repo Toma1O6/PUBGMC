@@ -187,7 +187,7 @@ public class CommandLootGenerate extends CommandBase
 					counter++;
 					for(int i = 0; i < ((TileEntityLootSpawner)te).getSizeInventory(); i++)
 					{
-						((TileEntityLootSpawner)te).setInventorySlotContents(i, new ItemStack(PMCRegistry.Items.IBLOCK));
+						((TileEntityLootSpawner)te).setInventorySlotContents(i, new ItemStack(PMCRegistry.PMCItems.IBLOCK));
 						world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
 					}
 				}
