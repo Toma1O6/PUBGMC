@@ -21,7 +21,7 @@ public class ModelP92 extends ModelGun
 	public ModelP92()
 	{
 		initAimAnimation(-0.651f, 0.31f, 0.24f);
-		initAnimationStates(0.31f, 0.23f, 0f);
+		initAimingAnimationStates(0.31f, 0.23f, 0f);
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -74,7 +74,6 @@ public class ModelP92 extends ModelGun
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			renderP92(data.isAiming(), stack);
-			aimAnimation.setAnimationSpeed(3.5f);
 		}
 	}
 	

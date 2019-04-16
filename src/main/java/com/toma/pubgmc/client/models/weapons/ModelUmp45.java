@@ -20,6 +20,9 @@ public class ModelUmp45 extends ModelGun
 
 	public ModelUmp45()
 	{
+		initAimAnimation(-0.56f, 0.14f, 0.14f);
+		initAimingAnimationStates(0.14f, 0.06f, 0.03f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -95,7 +98,7 @@ public class ModelUmp45 extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
+			super.preRender(stack);
 			GlStateManager.pushMatrix();
 			renderUmp(data.isAiming(), stack);
 			GlStateManager.popMatrix();

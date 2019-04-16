@@ -7,7 +7,6 @@ import java.util.Random;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -33,10 +32,8 @@ import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
-import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.util.ImageUtil;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
@@ -44,8 +41,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -54,7 +49,6 @@ import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -134,7 +128,7 @@ public class ClientEvents
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post e)
 	{
-		e.getRenderer().addLayer(new LayerGhillie(e.getRenderer()));
+		//e.getRenderer().addLayer(new LayerGhillie(e.getRenderer()));
 		/*EntityPlayer player = e.getEntityPlayer();
 		if(player != null)
 		{
@@ -261,7 +255,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	

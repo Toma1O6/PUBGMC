@@ -20,6 +20,9 @@ public class ModelS1897 extends ModelGun
 
 	public ModelS1897()
 	{
+		initAimAnimation(-0.525f, 0.31f, 0.315f);
+		initAimingAnimationStates(0.31f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 

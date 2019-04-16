@@ -23,6 +23,9 @@ public class ModelAUG extends ModelGun
 
 	public ModelAUG()
 	{
+		initAimAnimation(-0.56f, 0.2825f, 0.215f);
+		initAimingAnimationStates(0.2825f, 0.205f, 0.16f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -107,6 +110,7 @@ public class ModelAUG extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

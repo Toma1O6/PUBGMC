@@ -24,6 +24,9 @@ public class ModelQBZ extends ModelGun
 
 	public ModelQBZ()
 	{
+		initAimAnimation(-0.56f, 0.25f, 0.35f);
+		initAimingAnimationStates(0.25f, 0.18f, 0.14f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -110,6 +113,7 @@ public class ModelQBZ extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

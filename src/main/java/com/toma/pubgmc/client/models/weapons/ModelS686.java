@@ -21,6 +21,9 @@ public class ModelS686 extends ModelGun
 
 	public ModelS686()
 	{
+		initAimAnimation(-0.525f, 0.23f, 0.43f);
+		initAimingAnimationStates(0.23f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 

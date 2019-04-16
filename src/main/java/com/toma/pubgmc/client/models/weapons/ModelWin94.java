@@ -17,6 +17,9 @@ public class ModelWin94 extends ModelGun
 
 	public ModelWin94()
 	{
+		initAimAnimation(-0.5625f, 0.365f, 0.29f);
+		initAimingAnimationStates(0.365f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 

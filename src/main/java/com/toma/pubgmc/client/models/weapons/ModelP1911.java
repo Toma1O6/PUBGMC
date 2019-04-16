@@ -20,6 +20,9 @@ public class ModelP1911 extends ModelGun
 
 	public ModelP1911()
 	{
+		initAimAnimation(-0.56f, 0.275f, 0.2f);
+		initAimingAnimationStates(0.275f, 0.185f, 0f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -66,6 +69,7 @@ public class ModelP1911 extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

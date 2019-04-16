@@ -23,11 +23,13 @@ public class GunBuilder
 	Firemode[] validFiremodes;
 	SoundEvent reloadSound, shootNormal, shootSilenced;
 	
-	@SideOnly(Side.CLIENT)
-	ModelGun model;
-	
 	private GunBuilder() {}
 	
+	/**
+	 * Initialize new builder object
+	 * @param regName - the item registry name
+	 * @return new builder instance
+	 */
 	public static GunBuilder create(String regName)
 	{
 		GunBuilder builder = new GunBuilder();
@@ -129,12 +131,22 @@ public class GunBuilder
 		return this;
 	}
 	
-	public GunBuilder model(ModelGun model)
-	{
-		this.model = model;
-		return this;
-	}
-	
+	/**
+	 * <i><u>In order to successfully build new Gun object you need to call:</u></i>
+	 * <b>
+	 * <li> damage
+	 * <li> velocity
+	 * <li> gravity
+	 * <li> firerate
+	 * <li> recoil
+	 * <li> reload
+	 * <li> ammo
+	 * <li> firemode
+	 * <li> weaponType
+	 * <li> sound
+	 * </b>
+	 * @return new GunBase object with required parameters
+	 */
 	public GunBase build()
 	{
 		damage = validateFloat(damage, 1, Float.MAX_VALUE);

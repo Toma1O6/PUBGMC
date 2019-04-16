@@ -24,6 +24,9 @@ public class ModelScarL extends ModelGun
 
 	public ModelScarL() 
 	{
+		initAimAnimation(-0.56f, 0.245f, 0.225f);
+		initAimingAnimationStates(0.245f, 0.185f, 0.14f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -129,6 +132,7 @@ public class ModelScarL extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aim = data.isAiming();
 			

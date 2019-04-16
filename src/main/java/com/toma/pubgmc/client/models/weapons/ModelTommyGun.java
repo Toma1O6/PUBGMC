@@ -23,6 +23,9 @@ public class ModelTommyGun extends ModelGun
 
 	public ModelTommyGun() 
 	{
+		initAimAnimation(-0.56f, 0.39f, 0.35f);
+		initAimingAnimationStates(0.39f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 

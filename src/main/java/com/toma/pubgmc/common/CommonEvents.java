@@ -28,6 +28,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
@@ -641,6 +642,14 @@ public class CommonEvents
 	{
 		switch(result.status)
 		{
+			case UP_TO_DATE: {
+				sendMessage(player, "You have the newest version of PUBGMC!", TextFormatting.GREEN);
+				TextComponentString discordNotification = new TextComponentString(TextFormatting.GREEN + "Join my official " + TextFormatting.AQUA + "DISCORD" + TextFormatting.GREEN + ". Click HERE");
+				discordNotification.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/njhduKq")));
+				player.sendMessage(discordNotification);
+				break;
+			}
+		
 			case AHEAD: {
 				sendMessage(player, "How did you got this version? Hello friend!", TextFormatting.GREEN);
 				break;
@@ -670,7 +679,6 @@ public class CommonEvents
 	
 	private static void sendMessage(EntityPlayer player, String message, TextFormatting color)
 	{
-		if(player.world.isRemote)
-			player.sendMessage(new TextComponentString(color + message));
+		player.sendMessage(new TextComponentString(color + message));
 	}
 }

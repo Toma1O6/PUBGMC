@@ -23,6 +23,9 @@ public class ModelM416 extends ModelGun
 
 	public ModelM416()
 	{
+		initAimAnimation(-0.5575f, 0.235f, 0.25f);
+		initAimingAnimationStates(0.235f, 0.16f, 0.115f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -114,6 +117,7 @@ public class ModelM416 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aim = data.isAiming();
 			

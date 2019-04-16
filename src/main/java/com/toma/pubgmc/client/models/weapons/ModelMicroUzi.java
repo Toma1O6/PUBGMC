@@ -17,6 +17,9 @@ public class ModelMicroUzi extends ModelGun
 
 	public ModelMicroUzi()
 	{
+		initAimAnimation(-0.56f, 0.21f, 0.23f);
+		initAimingAnimationStates(0.21f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 

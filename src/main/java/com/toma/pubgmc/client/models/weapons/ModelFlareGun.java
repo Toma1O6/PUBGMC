@@ -23,6 +23,9 @@ public class ModelFlareGun extends ModelGun
 
 	public ModelFlareGun() 
 	{
+		initAimAnimation(-0.57f, 0.215f, 0.225f);
+		initAimingAnimationStates(0.215f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 		

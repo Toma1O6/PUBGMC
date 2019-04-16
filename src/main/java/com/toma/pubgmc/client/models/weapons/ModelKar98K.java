@@ -21,6 +21,9 @@ public class ModelKar98K extends ModelGun
 
 	public ModelKar98K()
 	{
+		initAimAnimation(-0.56f, 0.265f, 0.245f);
+		initAimingAnimationStates(0.265f, 0.19f, 0.145f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -107,6 +110,7 @@ public class ModelKar98K extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

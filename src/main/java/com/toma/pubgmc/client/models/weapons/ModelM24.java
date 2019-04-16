@@ -22,6 +22,9 @@ public class ModelM24 extends ModelGun
 
 	public ModelM24()
 	{
+		initAimAnimation(-0.56f, 0.265f, 0.335f);
+		initAimingAnimationStates(0.265f, 0.205f, 0.16f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -100,6 +103,7 @@ public class ModelM24 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

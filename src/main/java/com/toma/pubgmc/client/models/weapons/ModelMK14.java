@@ -23,6 +23,9 @@ public class ModelMK14 extends ModelGun
 
 	public ModelMK14()
 	{
+		initAimAnimation(-0.58f, 0.26f, 0.33f);
+		initAimingAnimationStates(0.26f, 0.1875f, 0.14f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -126,6 +129,7 @@ public class ModelMK14 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

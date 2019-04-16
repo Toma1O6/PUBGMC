@@ -23,6 +23,9 @@ public class ModelMini14 extends ModelGun
 
 	public ModelMini14()
 	{
+		initAimAnimation(-0.56f, 0.275f, 0.23f);
+		initAimingAnimationStates(0.275f, 0.2f, 0.155f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -116,6 +119,7 @@ public class ModelMini14 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

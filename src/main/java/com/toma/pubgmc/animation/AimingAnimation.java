@@ -7,15 +7,26 @@ import net.minecraft.client.Minecraft;
 public class AimingAnimation extends Animation
 {
 	final Vector3f values;
-	float mx, my, mz, speed;
+	float mx, my, mz;
+	float speed;
 	boolean invx, invy, invz;
 	
 	public AimingAnimation(float x, float y, float z)
+	{
+		this.speed = 3f;
+		values = new Vector3f(x, y, z);
+		invx = values.x < 0;
+		invy = values.y < 0;
+		invz = values.z < 0;
+	}
+	
+	public AimingAnimation(float x, float y, float z, float speed)
 	{
 		values = new Vector3f(x, y, z);
 		invx = values.x < 0;
 		invy = values.y < 0;
 		invz = values.z < 0;
+		this.speed = speed;
 	}
 	
 	@Override
@@ -47,13 +58,6 @@ public class AimingAnimation extends Animation
 		return values;
 	}
 	
-	public AimingAnimation setAnimationSpeed(float speed)
-	{
-		speed = speed <= 0 ? 1f : speed;
-		this.speed = speed;
-		return this;
-	}
-	
 	public void processAnimation(boolean aiming)
 	{
 		if(!Minecraft.getMinecraft().isGamePaused())
@@ -61,7 +65,7 @@ public class AimingAnimation extends Animation
 			if((movementX == 0f || movementZ == 0f) && aiming) this.calculateMovementVariables(values.x, values.y, values.z);
 			
 			if(mx == 0 && my == 0 && mz == 0 && aiming) this.onAnimationFinished();
-			
+
 			if(aiming && !isFinished())
 			{
 				handleAiming();

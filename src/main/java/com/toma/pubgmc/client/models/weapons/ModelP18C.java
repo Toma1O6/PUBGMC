@@ -20,6 +20,9 @@ public class ModelP18C extends ModelGun
 
 	public ModelP18C()
 	{
+		initAimAnimation(-0.585f, 0.22f, 0.235f);
+		initAimingAnimationStates(0.22f, 0.14f, 0f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -59,6 +62,7 @@ public class ModelP18C extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

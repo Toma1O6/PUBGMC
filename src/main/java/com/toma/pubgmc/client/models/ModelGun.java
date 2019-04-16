@@ -43,14 +43,19 @@ public abstract class ModelGun extends ModelBase
 	public ModelGun()
 	{
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
-		initAnimationStates(0f, 0f, 0f);
+		initAimingAnimationStates(0f, 0f, 0f);
 	}
 	
 	public abstract void render(ItemStack stack);
 	
+	/**
+	 *  Manipulates with Y value of aim animation to react to different scopes
+	 *  <p><b>Call inside the render(ItemStack) function!</b></p>
+	 * @param stack
+	 */
 	public void preRender(ItemStack stack)
 	{
-		if(!hasScopeAtachment(stack) && aimAnimation.getFinalState().y != normalY) {
+		if((!hasScopeAtachment(stack) || this.getScopeLevel(stack) > 2) && aimAnimation.getFinalState().y != normalY) {
 			initAimAnimation(aimAnimation.getFinalState().x, normalY, aimAnimation.getFinalState().z);
 		}
 		
@@ -62,19 +67,15 @@ public abstract class ModelGun extends ModelBase
 			initAimAnimation(aimAnimation.getFinalState().x, holoY, aimAnimation.getFinalState().z);
 	}
 	
-	public void initAnimationStates(float... f) throws IllegalArgumentException
-	{
-		if(f.length < 3) throw new IllegalArgumentException("You must specify all 3 values!");
-		
-		normalY = f[0];
-		redDotY = f[1];
-		holoY = f[2];
-	}
-	
 	public static void rotateModelForADSRendering()
 	{
 		GlStateManager.rotate(0.2f, 0, 1f, 0);
 		GlStateManager.rotate(0.5f, 1f, 0, 0);
+	}
+	
+	public int getScopeLevel(ItemStack stack)
+	{
+		return stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
 	}
 	
 	public boolean hasRedDot(ItemStack stack)
@@ -310,8 +311,50 @@ public abstract class ModelGun extends ModelBase
 		return aimAnimation;
 	}
 	
+	/**
+	 * Initialize aiming animation for model
+	 * Default animation speed if 3.0F
+	 * @param x - final x location of the model
+	 * @param y - final y location of the model (this changed inside the initAimAnimationStates method for more options) 
+	 * @param z - final z location of the model
+	 */
 	public void initAimAnimation(float x, float y, float z)
 	{
 		aimAnimation = new AimingAnimation(x, y, z);
+	}
+	
+	/**
+	 * Initialize aiming animation for model with specific speed level
+	 * @param x - final x location of the model
+	 * @param y - final y location of the model (this changed inside the initAimAnimationStates method for more options) 
+	 * @param z - final z location of the model
+	 * @param speed - speed of the animation; Default: 3.0F
+	 */
+	public void initAimAnimation(float x, float y, float z, float speed)
+	{
+		aimAnimation = new AimingAnimation(x, y, z, speed);
+	}
+	
+	/**
+	 *  Initialize the final y-height of aiming animation based on scope attachment
+	 *  f[0] - ironsight, f[1] - red dot, f[2] - holographic
+	 */
+	public void initAimingAnimationStates(float... f)
+	{
+		if(f == null) {
+			normalY = aimAnimation.getFinalState().y;
+			redDotY = normalY;
+			holoY = normalY;
+		}
+		else if(f.length == 1) {
+			normalY = f[0];
+			redDotY = normalY;
+			holoY = normalY;
+		}
+		else {
+			normalY = f[0];
+			redDotY = f[1];
+			holoY = f[2];
+		}
 	}
 }

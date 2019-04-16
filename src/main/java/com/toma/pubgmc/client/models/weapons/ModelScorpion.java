@@ -26,6 +26,9 @@ public class ModelScorpion extends ModelGun
 
 	public ModelScorpion()
 	{
+		initAimAnimation(-0.56f, 0.2f, 0.2f);
+		initAimingAnimationStates(0.2f, 0.117f, 0f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -130,7 +133,7 @@ public class ModelScorpion extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
+			super.preRender(stack);
 			GlStateManager.pushMatrix();
 			{
 				renderScorpion(data.isAiming(), stack);

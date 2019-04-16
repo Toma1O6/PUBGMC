@@ -23,6 +23,9 @@ public class ModelSawedOff extends ModelGun
 
 	public ModelSawedOff()
 	{
+		initAimAnimation(-0.56f, 0.295f, 0.265f);
+		initAimingAnimationStates(0.295f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 

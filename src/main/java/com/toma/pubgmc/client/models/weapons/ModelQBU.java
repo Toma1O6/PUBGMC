@@ -23,6 +23,9 @@ public class ModelQBU extends ModelGun
 
 	public ModelQBU()
 	{
+		initAimAnimation(-0.56f, 0.305f, 0.22f);
+		initAimingAnimationStates(0.305f, 0.2375f, 0.195f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -115,6 +118,7 @@ public class ModelQBU extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

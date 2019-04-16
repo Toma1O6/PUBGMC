@@ -4,26 +4,18 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelDebugger
 {
-	public static final double MODIFIER = 0.1d;
-	public static final double SMALL_MODIFIER = 0.001d;
+	public static final double MODIFIER = 15f;
+	public static final double SMALL_MODIFIER = 1f;
 	
 	public static ModelDebugger instance;
-	public static double X = 0;
-	public static double Y = 0;
-	public static double Z = 0;
-	public static float RotX = 0f;
-	public static float RotY = 0f;
-	public static float RotZ = 0f;
+	public static float X = 0;
+	public static float Y = 0;
+	public static float Z = 0;
 	public static float scale = 1f;
 	
 	public static void translateModel()
 	{
 		GlStateManager.translate(X, Y, Z);
-	}
-	
-	public static void rotateModel()
-	{
-		GlStateManager.rotate(90, RotX, RotY, RotZ);
 	}
 	
 	public static void scaleModel()
@@ -34,11 +26,6 @@ public class ModelDebugger
 	public static void printCode()
 	{
 		System.out.println("========[ START ]========");
-		if(RotX != 0 || RotY != 0 || RotZ != 0)
-		{
-			System.out.println("GlStateManager.rotate(90, "+RotX+", "+RotY+", "+RotZ+");");
-		}
-		
 		if(scale != 1f)
 		{
 			System.out.println("GlStateManager.scale("+scale+", "+scale+", "+scale+");");
@@ -54,12 +41,6 @@ public class ModelDebugger
 	public static void transformAllModifications()
 	{
 		scaleModel();
-		
-		if(RotX != 0f || RotY != 0f || RotZ != 0f)
-		{
-			rotateModel();
-		}
-		
 		translateModel();
 	}
 	
@@ -68,9 +49,6 @@ public class ModelDebugger
 		X = 0;
 		Y = 0;
 		Z = 0;
-		RotX = 0f;
-		RotY = 0f;
-		RotZ = 0f;
 		scale = 1f;
 	}
 }

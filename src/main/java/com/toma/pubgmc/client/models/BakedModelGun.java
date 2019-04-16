@@ -10,6 +10,7 @@ import javax.vecmath.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
+import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase;
@@ -32,7 +33,7 @@ public class BakedModelGun implements IBakedModel
 {
 	IPlayerData data = null;
 	EntityPlayerSP player = null;
-	GunBase held = null;
+	ItemStack held = null;
 	
 	@Override
 	public boolean isBuiltInRenderer()
@@ -86,8 +87,9 @@ public class BakedModelGun implements IBakedModel
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
-			if(player.getHeldItemMainhand().getItem() instanceof GunBase)
-				held = (GunBase)player.getHeldItemMainhand().getItem();
+			if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
+				held = player.getHeldItemMainhand();
+			}
 		}
 		else
 		{
@@ -98,15 +100,16 @@ public class BakedModelGun implements IBakedModel
 		switch(cameraTransformType)
 		{
 			case GUI: {
-				trsrt = new TRSRTransformation(new Vector3f(0f, -0.1f, 0f), new Quat4f(0f, 1f, 0f, 0f), new Vector3f(0.5f, 0.5f, 0.5f), new Quat4f(0.8f, -1f, 0f, 1f));
+				leftRot = new Quat4f(-90.0f, 45.0f, 90.0f, 0f);
+				rightRot = new Quat4f(15f, 0f, 0f, 0f);
+				trsrt = new TRSRTransformation(new Vector3f(0f, -0.1f, 0f), leftRot, new Vector3f(0.5f, 0.5f, 0.5f), rightRot);
 				break;
 			}
 			
 			// Implement animations here
 			case FIRST_PERSON_RIGHT_HAND: {
-				held.getWeaponModel().processAimAnimation(data.isAiming());
-
-				transl = data != null && held.getWeaponModel() != null ? held.getWeaponModel().getMovementVecFromAnimations() : new Vector3f(0f, 0f, 0f);
+				((GunBase)held.getItem()).getWeaponModel().processAimAnimation(data.isAiming());
+				transl = data != null && ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : new Vector3f(0f, 0f, 0f);
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
 			

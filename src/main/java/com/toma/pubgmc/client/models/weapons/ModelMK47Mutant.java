@@ -23,6 +23,9 @@ public class ModelMK47Mutant extends ModelGun
 
 	public ModelMK47Mutant()
 	{
+		initAimAnimation(-0.56f, 0.265f, 0.245f);
+		initAimingAnimationStates(0.265f, 0.21f, 0.155f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -137,6 +140,7 @@ public class ModelMK47Mutant extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

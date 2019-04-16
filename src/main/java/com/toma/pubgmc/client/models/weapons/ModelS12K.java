@@ -24,6 +24,9 @@ public class ModelS12K extends ModelGun
 
 	public ModelS12K()
 	{
+		initAimAnimation(-0.535f, 0.27f, 0.235f);
+		initAimingAnimationStates(0.27f, 0.195f, 0.15f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -99,6 +102,7 @@ public class ModelS12K extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

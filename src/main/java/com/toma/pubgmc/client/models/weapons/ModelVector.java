@@ -20,6 +20,9 @@ public class ModelVector extends ModelGun
 
 	public ModelVector() 
 	{
+		initAimAnimation(-0.56f, 0.315f, 0.225f);
+		initAimingAnimationStates(0.315f, 0.225f, 0.205f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -92,6 +95,7 @@ public class ModelVector extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aiming = data.isAiming();
 			
+			super.preRender(stack);
 			GlStateManager.pushMatrix();
 			renderVector(aiming, stack);
 			GlStateManager.popMatrix();

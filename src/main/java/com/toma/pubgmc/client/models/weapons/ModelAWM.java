@@ -19,6 +19,9 @@ public class ModelAWM extends ModelGun
 
 	public ModelAWM()
 	{
+		initAimAnimation(-0.557f, 0.255f, 0.2f);
+		initAimingAnimationStates(0.255f, 0.205f, 0.169f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -88,6 +91,7 @@ public class ModelAWM extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

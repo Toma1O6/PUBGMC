@@ -22,6 +22,9 @@ public class ModelGroza extends ModelGun
 
 	public ModelGroza()
 	{
+		initAimAnimation(-0.56f, 0.135f, 0.28f);
+		initAimingAnimationStates(0.135f, 0.0575f, 0.01f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -94,6 +97,7 @@ public class ModelGroza extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

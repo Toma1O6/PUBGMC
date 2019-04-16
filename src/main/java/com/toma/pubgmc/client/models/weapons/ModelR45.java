@@ -22,6 +22,9 @@ public class ModelR45 extends ModelGun
 
 	public ModelR45()
 	{
+		initAimAnimation(-0.555f, 0.175f, 0.255f);
+		initAimingAnimationStates(0.175f, 0.095f, 0f);
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -93,6 +96,7 @@ public class ModelR45 extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{
