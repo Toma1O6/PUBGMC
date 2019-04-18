@@ -20,8 +20,7 @@ public class ModelP18C extends ModelGun
 
 	public ModelP18C()
 	{
-		initAimAnimation(-0.585f, 0.22f, 0.235f);
-		initAimingAnimationStates(0.22f, 0.14f, 0f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -54,6 +53,13 @@ public class ModelP18C extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 50, -1.0F, -13.5F, -7.0F, 2, 2, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.585f, 0.22f, 0.235f);
+		initAimingAnimationStates(0.22f, 0.14f, 0f);
 	}
 	
 	@Override

@@ -24,8 +24,7 @@ public class ModelS12K extends ModelGun
 
 	public ModelS12K()
 	{
-		initAimAnimation(-0.535f, 0.27f, 0.235f);
-		initAimingAnimationStates(0.27f, 0.195f, 0.15f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -94,6 +93,13 @@ public class ModelS12K extends ModelGun
 		irns = new ModelRenderer(this);
 		irns.setRotationPoint(0.0F, 24.0F, 0.0F);
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -0.5F, -26.5F, -28.0F, 1, 2, 2, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.535f, 0.27f, 0.235f);
+		initAimingAnimationStates(0.27f, 0.195f, 0.15f);
 	}
 	
 	@Override

@@ -23,8 +23,7 @@ public class ModelM416 extends ModelGun
 
 	public ModelM416()
 	{
-		initAimAnimation(-0.5575f, 0.235f, 0.25f);
-		initAimingAnimationStates(0.235f, 0.16f, 0.115f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -108,6 +107,13 @@ public class ModelM416 extends ModelGun
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -2.0F, -29.5F, 10.0F, 1, 2, 3, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, 1.0F, -29.5F, 10.0F, 1, 2, 3, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -0.5F, -28.5F, 11.0F, 1, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.5575f, 0.235f, 0.25f);
+		initAimingAnimationStates(0.235f, 0.16f, 0.115f);
 	}
 	
 	@Override

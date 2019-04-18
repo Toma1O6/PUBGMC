@@ -23,8 +23,7 @@ public class ModelMK14 extends ModelGun
 
 	public ModelMK14()
 	{
-		initAimAnimation(-0.58f, 0.26f, 0.33f);
-		initAimingAnimationStates(0.26f, 0.1875f, 0.14f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -113,6 +112,13 @@ public class ModelMK14 extends ModelGun
 		setRotationAngle(stock, -1.1345F, 0.0F, 0.0F);
 		stock.cubeList.add(new ModelBox(stock, 0, 0, -3.0F, -36.0F, -6.0F, 6, 2, 13, 0.0F, false));
 		stock.cubeList.add(new ModelBox(stock, 0, 0, -4.0F, -39.0F, -4.0F, 8, 2, 5, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.58f, 0.26f, 0.33f);
+		initAimingAnimationStates(0.26f, 0.1875f, 0.14f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

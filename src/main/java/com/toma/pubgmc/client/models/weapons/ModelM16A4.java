@@ -26,8 +26,7 @@ public class ModelM16A4 extends ModelGun
 
 	public ModelM16A4()
 	{
-		initAimAnimation(-0.56f, 0.195f, 0.215f);
-		initAimingAnimationStates(0.195f, 0.18f, 0.145f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -117,6 +116,13 @@ public class ModelM16A4 extends ModelGun
 		iron_sight.cubeList.add(new ModelBox(iron_sight, 0, 0, -2.5F, -27.0F, -9.0F, 1, 1, 17, 0.0F, false));
 		iron_sight.cubeList.add(new ModelBox(iron_sight, 0, 0, 1.5F, -27.0F, -9.0F, 1, 1, 17, 0.0F, false));
 		iron_sight.cubeList.add(new ModelBox(iron_sight, 0, 0, -0.5F, -26.5F, 4.0F, 1, 1, 3, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.195f, 0.215f);
+		initAimingAnimationStates(0.195f, 0.18f, 0.145f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

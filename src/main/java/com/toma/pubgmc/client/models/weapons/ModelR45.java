@@ -22,8 +22,7 @@ public class ModelR45 extends ModelGun
 
 	public ModelR45()
 	{
-		initAimAnimation(-0.555f, 0.175f, 0.255f);
-		initAimingAnimationStates(0.175f, 0.095f, 0f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -81,6 +80,13 @@ public class ModelR45 extends ModelGun
 		irns.setRotationPoint(0.0F, 24.0F, 0.0F);
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -1.5F, -16.0F, -5.0F, 1, 1, 2, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, 0.5F, -16.0F, -5.0F, 1, 1, 2, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.555f, 0.175f, 0.255f);
+		initAimingAnimationStates(0.175f, 0.095f, 0f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

@@ -23,8 +23,7 @@ public class ModelBerylM762 extends ModelGun
 
 	public ModelBerylM762()
 	{
-		initAimAnimation(-0.56f, 0.26f, 0.18f);
-		initAimingAnimationStates(0.26f, 0.175f, 0.135f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -112,6 +111,13 @@ public class ModelBerylM762 extends ModelGun
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -0.5F, -28.5F, -5.0F, 1, 1, 1, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -2.0F, -29.0F, -5.0F, 1, 1, 4, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, 1.0F, -29.0F, -5.0F, 1, 1, 4, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		initAimAnimation(-0.56f, 0.26f, 0.18f);
+		initAimingAnimationStates(0.26f, 0.175f, 0.135f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

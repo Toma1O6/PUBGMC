@@ -86,6 +86,13 @@ public class BakedModelGun implements IBakedModel
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
+			// prevent animations not working after switching world
+			if(player != Minecraft.getMinecraft().player)
+			{
+				player = Minecraft.getMinecraft().player;
+				data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			}
+			
 			data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
 			if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
 				held = player.getHeldItemMainhand();
@@ -107,8 +114,10 @@ public class BakedModelGun implements IBakedModel
 			}
 			
 			// Implement animations here
-			case FIRST_PERSON_RIGHT_HAND: {
-				((GunBase)held.getItem()).getWeaponModel().processAimAnimation(data.isAiming());
+			case FIRST_PERSON_RIGHT_HAND: 
+			{
+				((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming());
+
 				transl = data != null && ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : new Vector3f(0f, 0f, 0f);
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}

@@ -21,6 +21,8 @@ public class ModelVSS extends ModelGun
 
 	public ModelVSS()
 	{
+		super();
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -129,6 +131,12 @@ public class ModelVSS extends ModelGun
 		scope.cubeList.add(new ModelBox(scope, 0, 0, -5.0F, -28.0F, 31.0F, 3, 3, 1, 0.0F, false));
 		scope.cubeList.add(new ModelBox(scope, 0, 0, -6.0F, -29.0F, 31.0F, 3, 3, 1, 0.0F, false));
 		scope.cubeList.add(new ModelBox(scope, 0, 0, -7.0F, -30.0F, 31.0F, 3, 3, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

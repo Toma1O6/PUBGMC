@@ -25,8 +25,7 @@ public class ModelSLR extends ModelGun
 
 	public ModelSLR()
 	{
-		initAimAnimation(-0.56f, 0.28f, 0.3f);
-		initAimingAnimationStates(0.28f, 0.2f, 0.155f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -104,6 +103,13 @@ public class ModelSLR extends ModelGun
 		stock2.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(stock2, -0.3491F, 0.0F, 0.0F);
 		stock2.cubeList.add(new ModelBox(stock2, 0, 0, -2.0F, -19.0F, -5.0F, 4, 4, 30, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.28f, 0.3f);
+		initAimingAnimationStates(0.28f, 0.2f, 0.155f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

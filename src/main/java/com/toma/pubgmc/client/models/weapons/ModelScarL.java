@@ -24,8 +24,7 @@ public class ModelScarL extends ModelGun
 
 	public ModelScarL() 
 	{
-		initAimAnimation(-0.56f, 0.245f, 0.225f);
-		initAimingAnimationStates(0.245f, 0.185f, 0.14f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -123,6 +122,13 @@ public class ModelScarL extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 64, -1.5F, -33.25F, 3.0F, 1, 2, 1, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 64, 0.5F, -33.25F, 3.0F, 1, 2, 1, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 64, -0.5F, -31.5F, 3.0F, 1, 2, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.245f, 0.225f);
+		initAimingAnimationStates(0.245f, 0.185f, 0.14f);
 	}
 	
 	@Override

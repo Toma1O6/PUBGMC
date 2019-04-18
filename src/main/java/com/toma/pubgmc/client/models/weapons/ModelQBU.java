@@ -23,8 +23,7 @@ public class ModelQBU extends ModelGun
 
 	public ModelQBU()
 	{
-		initAimAnimation(-0.56f, 0.305f, 0.22f);
-		initAimingAnimationStates(0.305f, 0.2375f, 0.195f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -102,6 +101,13 @@ public class ModelQBU extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -1.5F, -29.5F, 6.0F, 1, 2, 1, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, 0.5F, -29.5F, 6.0F, 1, 2, 1, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -0.5F, -30.0F, 6.0F, 1, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.305f, 0.22f);
+		initAimingAnimationStates(0.305f, 0.2375f, 0.195f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

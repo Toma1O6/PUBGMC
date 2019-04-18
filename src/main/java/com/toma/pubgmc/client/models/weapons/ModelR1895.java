@@ -20,8 +20,7 @@ public class ModelR1895 extends ModelGun
 
 	public ModelR1895()
 	{
-		initAimAnimation(-0.598f, 0.25f, 0.4f);
-		initAimingAnimationStates(0.25f, 0f, 0f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -63,6 +62,13 @@ public class ModelR1895 extends ModelGun
 		handle.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(handle, 0.1745F, 0.0F, 0.0F);
 		handle.cubeList.add(new ModelBox(handle, 0, 64, -2.0F, -5.0F, 9.0F, 4, 17, 8, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.598f, 0.25f, 0.4f);
+		initAimingAnimationStates(0.25f, 0f, 0f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

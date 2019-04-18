@@ -23,8 +23,7 @@ public class ModelSawedOff extends ModelGun
 
 	public ModelSawedOff()
 	{
-		initAimAnimation(-0.56f, 0.295f, 0.265f);
-		initAimingAnimationStates(0.295f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -76,6 +75,13 @@ public class ModelSawedOff extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 0, -1.0F, -11.5F, 0.5F, 2, 2, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		initAimAnimation(-0.56f, 0.295f, 0.265f);
+		initAimingAnimationStates(0.295f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

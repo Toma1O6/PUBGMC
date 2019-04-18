@@ -27,8 +27,7 @@ public class ModelPP19Bizon extends ModelGun
 
 	public ModelPP19Bizon()
 	{
-		initAimAnimation(-0.68f, 0.235f, 0.15f);
-		initAimingAnimationStates(0.235f, 0.165f, 0.105f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -140,6 +139,13 @@ public class ModelPP19Bizon extends ModelGun
 		setRotationAngle(l, 0.0F, 0.0F, 0.3491F);
 		ironsight.addChild(l);
 		l.cubeList.add(new ModelBox(l, 0, 0, -6.0F, -20.0F, -10.5F, 1, 2, 3, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.68f, 0.235f, 0.15f);
+		initAimingAnimationStates(0.235f, 0.165f, 0.105f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

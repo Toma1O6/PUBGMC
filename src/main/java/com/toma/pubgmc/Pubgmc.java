@@ -1,8 +1,5 @@
 package com.toma.pubgmc;
 
-import java.io.File;
-import java.rmi.registry.RegistryHandler;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -67,9 +64,6 @@ public class Pubgmc
 	/** Creative Tabs **/
 	public static final CreativeTabs pmcitemstab = new PMCItemsTab("pmcitemstab");
 	public static final CreativeTabs pmcblockstab = new PMCBlocksTab("pmcblockstab");
-	
-	/** Config **/
-	public static File config;
 	
 	public static Logger logger;
 	

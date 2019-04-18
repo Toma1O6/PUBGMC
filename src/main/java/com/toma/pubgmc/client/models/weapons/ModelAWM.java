@@ -19,8 +19,7 @@ public class ModelAWM extends ModelGun
 
 	public ModelAWM()
 	{
-		initAimAnimation(-0.557f, 0.255f, 0.2f);
-		initAimingAnimationStates(0.255f, 0.205f, 0.169f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -75,6 +74,13 @@ public class ModelAWM extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 64, -1.0F, -17.5F, -5.5F, 2, 3, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.557f, 0.255f, 0.2f);
+		initAimingAnimationStates(0.255f, 0.205f, 0.169f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

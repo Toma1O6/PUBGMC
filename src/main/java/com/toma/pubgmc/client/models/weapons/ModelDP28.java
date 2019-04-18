@@ -23,8 +23,7 @@ public class ModelDP28 extends ModelGun
 
 	public ModelDP28()
 	{
-		initAimAnimation(-0.56f, 0.325f, 0.33f);
-		initAimingAnimationStates(0.325f, 0.25f, 0.1975f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -105,6 +104,13 @@ public class ModelDP28 extends ModelGun
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -2.0F, -25.0F, 7.0F, 4, 1, 4, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -1.75F, -26.0F, 8.0F, 1, 1, 2, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, 0.75F, -26.0F, 8.0F, 1, 1, 2, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		initAimAnimation(-0.56f, 0.325f, 0.33f);
+		initAimingAnimationStates(0.325f, 0.25f, 0.1975f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

@@ -20,8 +20,7 @@ public class ModelUmp45 extends ModelGun
 
 	public ModelUmp45()
 	{
-		initAimAnimation(-0.56f, 0.14f, 0.14f);
-		initAimingAnimationStates(0.14f, 0.06f, 0.03f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -81,6 +80,13 @@ public class ModelUmp45 extends ModelGun
 		stock.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(stock, -0.4363F, 0.0F, 0.0F);
 		stock.cubeList.add(new ModelBox(stock, 0, 0, -1.5F, -19.0F, -2.0F, 3, 1, 17, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.14f, 0.14f);
+		initAimingAnimationStates(0.14f, 0.06f, 0.03f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

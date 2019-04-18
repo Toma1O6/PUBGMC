@@ -17,8 +17,7 @@ public class ModelMicroUzi extends ModelGun
 
 	public ModelMicroUzi()
 	{
-		initAimAnimation(-0.56f, 0.21f, 0.23f);
-		initAimingAnimationStates(0.21f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -44,6 +43,13 @@ public class ModelMicroUzi extends ModelGun
 		uzi.cubeList.add(new ModelBox(uzi, 0, 0, 1.0F, -20.0F, 6.5F, 1, 3, 1, 0.0F, false));
 		uzi.cubeList.add(new ModelBox(uzi, 0, 0, -2.5F, -22.0F, -6.0F, 1, 2, 5, 0.0F, false));
 		uzi.cubeList.add(new ModelBox(uzi, 0, 0, -1.5F, -13.0F, -2.5F, 3, 12, 3, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.21f, 0.23f);
+		initAimingAnimationStates(0.21f);
 	}
 	
 	@Override

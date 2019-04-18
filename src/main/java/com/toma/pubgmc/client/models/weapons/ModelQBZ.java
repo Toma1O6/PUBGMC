@@ -24,8 +24,7 @@ public class ModelQBZ extends ModelGun
 
 	public ModelQBZ()
 	{
-		initAimAnimation(-0.56f, 0.25f, 0.35f);
-		initAimingAnimationStates(0.25f, 0.18f, 0.14f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -104,6 +103,13 @@ public class ModelQBZ extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -2.0F, -34.0F, -14.0F, 1, 2, 2, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, 1.0F, -34.0F, -14.0F, 1, 2, 2, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -0.5F, -33.0F, -14.0F, 1, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.25f, 0.35f);
+		initAimingAnimationStates(0.25f, 0.18f, 0.14f);
 	}
 	
 	@Override

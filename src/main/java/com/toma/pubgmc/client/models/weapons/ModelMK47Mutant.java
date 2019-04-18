@@ -23,8 +23,7 @@ public class ModelMK47Mutant extends ModelGun
 
 	public ModelMK47Mutant()
 	{
-		initAimAnimation(-0.56f, 0.265f, 0.245f);
-		initAimingAnimationStates(0.265f, 0.21f, 0.155f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -124,6 +123,13 @@ public class ModelMK47Mutant extends ModelGun
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -1.0F, -27.5F, -4.0F, 2, 1, 1, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -2.0F, -24.0F, -59.0F, 4, 1, 3, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -0.5F, -25.5F, -58.0F, 1, 2, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.265f, 0.245f);
+		initAimingAnimationStates(0.265f, 0.21f, 0.155f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

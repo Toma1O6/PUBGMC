@@ -44,9 +44,13 @@ public abstract class ModelGun extends ModelBase
 	{
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAimingAnimationStates(0f, 0f, 0f);
+		
+		this.initAnimations();
 	}
 	
 	public abstract void render(ItemStack stack);
+	
+	public abstract void initAnimations();
 	
 	/**
 	 *  Manipulates with Y value of aim animation to react to different scopes
@@ -301,7 +305,7 @@ public abstract class ModelGun extends ModelBase
 		return v3f;
 	}
 	
-	public void processAimAnimation(boolean aim)
+	public void processAnimations(boolean aim)
 	{
 		aimAnimation.processAnimation(aim);
 	}

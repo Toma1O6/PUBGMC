@@ -28,6 +28,13 @@ public class ModelG36C extends ModelGun
 	private final ModelRenderer sh2;
 	private final ModelRenderer ironsight;
 	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.581f, 0.188f, 0.3f);
+		initAimingAnimationStates(0.188f, 0.106f, 0.057f);
+	}
+	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
 	{
 		modelRenderer.rotateAngleX = x;
@@ -88,8 +95,7 @@ public class ModelG36C extends ModelGun
 	
 	public ModelG36C()
 	{
-		initAimAnimation(-0.581f, 0.188f, 0.3f);
-		initAimingAnimationStates(0.188f, 0.106f, 0.057f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;

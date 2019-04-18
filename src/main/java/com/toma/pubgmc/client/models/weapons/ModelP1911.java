@@ -20,8 +20,7 @@ public class ModelP1911 extends ModelGun
 
 	public ModelP1911()
 	{
-		initAimAnimation(-0.56f, 0.275f, 0.2f);
-		initAimingAnimationStates(0.275f, 0.185f, 0f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -54,6 +53,13 @@ public class ModelP1911 extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.0873F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 64, -1.0F, -11.5F, -5.0F, 2, 2, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.275f, 0.2f);
+		initAimingAnimationStates(0.275f, 0.185f, 0f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

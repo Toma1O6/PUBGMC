@@ -23,8 +23,7 @@ public class ModelMini14 extends ModelGun
 
 	public ModelMini14()
 	{
-		initAimAnimation(-0.56f, 0.275f, 0.23f);
-		initAimingAnimationStates(0.275f, 0.2f, 0.155f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -103,6 +102,13 @@ public class ModelMini14 extends ModelGun
 		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -22.0F, 5.0F, 5, 1, 1, 0.0F, false));
 		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -22.0F, 7.0F, 5, 1, 1, 0.0F, false));
 		rail.cubeList.add(new ModelBox(rail, 0, 0, -2.5F, -22.0F, 9.0F, 5, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.275f, 0.23f);
+		initAimingAnimationStates(0.275f, 0.2f, 0.155f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

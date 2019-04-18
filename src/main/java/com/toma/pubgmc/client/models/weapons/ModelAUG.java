@@ -23,8 +23,7 @@ public class ModelAUG extends ModelGun
 
 	public ModelAUG()
 	{
-		initAimAnimation(-0.56f, 0.2825f, 0.215f);
-		initAimingAnimationStates(0.2825f, 0.205f, 0.16f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -95,6 +94,13 @@ public class ModelAUG extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 96, -2.0F, -29.5F, -14.0F, 1, 2, 4, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 96, 1.0F, -29.5F, -14.0F, 1, 2, 4, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 96, -0.5F, -28.5F, -11.5F, 1, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.2825f, 0.215f);
+		initAimingAnimationStates(0.2825f, 0.205f, 0.16f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

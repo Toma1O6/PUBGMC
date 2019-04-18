@@ -17,8 +17,7 @@ public class ModelWin94 extends ModelGun
 
 	public ModelWin94()
 	{
-		initAimAnimation(-0.5625f, 0.365f, 0.29f);
-		initAimingAnimationStates(0.365f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -50,6 +49,13 @@ public class ModelWin94 extends ModelGun
 		base.cubeList.add(new ModelBox(base, 0, 32, -2.5F, -18.5F, -5.0F, 5, 4, 5, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 32, -2.5F, -14.5F, -3.0F, 5, 1, 3, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 32, -2.5F, -13.5F, -2.0F, 5, 1, 2, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.5625f, 0.365f, 0.29f);
+		initAimingAnimationStates(0.365f);
 	}
 	
 	@Override

@@ -22,8 +22,7 @@ public class ModelM24 extends ModelGun
 
 	public ModelM24()
 	{
-		initAimAnimation(-0.56f, 0.265f, 0.335f);
-		initAimingAnimationStates(0.265f, 0.205f, 0.16f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -87,6 +86,13 @@ public class ModelM24 extends ModelGun
 		rail.cubeList.add(new ModelBox(rail, 0, 64, -2.0F, -25.0F, -21.0F, 4, 1, 1, 0.0F, false));
 		rail.cubeList.add(new ModelBox(rail, 0, 64, -2.0F, -25.0F, -23.0F, 4, 1, 1, 0.0F, false));
 		rail.cubeList.add(new ModelBox(rail, 0, 64, -2.0F, -25.0F, -25.0F, 4, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.265f, 0.335f);
+		initAimingAnimationStates(0.265f, 0.205f, 0.16f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

@@ -26,8 +26,7 @@ public class ModelM249 extends ModelGun
 
 	public ModelM249()
 	{
-		initAimAnimation(-0.56f, 0.265f, 0.125f);
-		initAimingAnimationStates(0.265f, 0.195f, 0.15f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -138,6 +137,13 @@ public class ModelM249 extends ModelGun
 		ir.cubeList.add(new ModelBox(ir, 0, 0, 1.0F, -27.5F, 12.0F, 1, 1, 5, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -2.0F, -27.5F, 12.0F, 1, 1, 5, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -0.5F, -27.0F, 14.0F, 1, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		initAimAnimation(-0.56f, 0.265f, 0.125f);
+		initAimingAnimationStates(0.265f, 0.195f, 0.15f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

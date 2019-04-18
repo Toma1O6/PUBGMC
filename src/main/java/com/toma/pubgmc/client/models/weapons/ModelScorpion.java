@@ -26,8 +26,7 @@ public class ModelScorpion extends ModelGun
 
 	public ModelScorpion()
 	{
-		initAimAnimation(-0.56f, 0.2f, 0.2f);
-		initAimingAnimationStates(0.2f, 0.117f, 0f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -117,6 +116,13 @@ public class ModelScorpion extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 0, -1.0F, -17.0F, -12.0F, 2, 3, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.2f, 0.2f);
+		initAimingAnimationStates(0.2f, 0.117f, 0f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

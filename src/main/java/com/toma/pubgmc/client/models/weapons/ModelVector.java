@@ -20,8 +20,7 @@ public class ModelVector extends ModelGun
 
 	public ModelVector() 
 	{
-		initAimAnimation(-0.56f, 0.315f, 0.225f);
-		initAimingAnimationStates(0.315f, 0.225f, 0.205f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -76,6 +75,13 @@ public class ModelVector extends ModelGun
 		angle2.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(angle2, -0.0873F, 0.0F, 0.0F);
 		angle2.cubeList.add(new ModelBox(angle2, 0, 0, -1.0F, -27.6F, 2.0F, 1, 3, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.315f, 0.225f);
+		initAimingAnimationStates(0.315f, 0.225f, 0.205f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

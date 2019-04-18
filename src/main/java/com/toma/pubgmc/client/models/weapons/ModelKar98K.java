@@ -21,8 +21,7 @@ public class ModelKar98K extends ModelGun
 
 	public ModelKar98K()
 	{
-		initAimAnimation(-0.56f, 0.265f, 0.245f);
-		initAimingAnimationStates(0.265f, 0.19f, 0.145f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -94,6 +93,13 @@ public class ModelKar98K extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 64, -1.0F, -16.5F, -8.5F, 2, 2, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		initAimAnimation(-0.56f, 0.265f, 0.245f);
+		initAimingAnimationStates(0.265f, 0.19f, 0.145f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

@@ -23,8 +23,7 @@ public class ModelFlareGun extends ModelGun
 
 	public ModelFlareGun() 
 	{
-		initAimAnimation(-0.57f, 0.215f, 0.225f);
-		initAimingAnimationStates(0.215f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -85,6 +84,13 @@ public class ModelFlareGun extends ModelGun
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 32, -1.0F, -9.0F, -4.0F, 2, 2, 1, 0.0F, false));
 		core.addChild(trigger);
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.57f, 0.215f, 0.225f);
+		initAimingAnimationStates(0.215f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

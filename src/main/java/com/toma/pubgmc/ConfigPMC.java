@@ -1,13 +1,12 @@
 package com.toma.pubgmc;
 
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RangeInt;
-import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.Type;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,6 +29,18 @@ public class ConfigPMC
 	@Name("Weapon Settings")
 	@Comment("All weapon related fiels are here")
 	public static WeaponSettings weaponSettings = new WeaponSettings();
+	
+	/*@Name("VR Settings")
+	@Comment("All VR related fields are here")
+	public static VRSettings vrSettings = new VRSettings();
+	
+	public static class VRSettings
+	{
+		@Name("Bullet rotation offset")
+		@Comment("Set bullet starting rotation offset from default player rotation")
+		@RangeDouble(min = -180D, max = 180D)
+		public float bulletOffset = 55F;
+	}*/
 	
 	public static class WorldSettings
 	{

@@ -20,8 +20,7 @@ public class ModelS1897 extends ModelGun
 
 	public ModelS1897()
 	{
-		initAimAnimation(-0.525f, 0.31f, 0.315f);
-		initAimingAnimationStates(0.31f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -56,6 +55,13 @@ public class ModelS1897 extends ModelGun
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(trigger, -0.1745F, 0.0F, 0.0F);
 		trigger.cubeList.add(new ModelBox(trigger, 0, 0, -1.0F, -11.3F, -5.0F, 2, 3, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.525f, 0.31f, 0.315f);
+		initAimingAnimationStates(0.31f);
 	}
 	
 	@Override

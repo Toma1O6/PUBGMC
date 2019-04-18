@@ -21,6 +21,13 @@ public class ModelAKM extends ModelGun
 	private final ModelRenderer rail;
 	private final ModelRenderer irns;
 	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.28f, 0.31f);
+		initAimingAnimationStates(0.28f, 0.205f, 0.155f);
+	}
+	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
 	{
 		modelRenderer.rotateAngleX = x;
@@ -94,8 +101,7 @@ public class ModelAKM extends ModelGun
 	
 	public ModelAKM()
 	{
-		initAimAnimation(-0.56f, 0.28f, 0.31f);
-		initAimingAnimationStates(0.28f, 0.205f, 0.155f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;

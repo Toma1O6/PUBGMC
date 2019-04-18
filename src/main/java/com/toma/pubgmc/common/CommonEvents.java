@@ -651,7 +651,7 @@ public class CommonEvents
 			}
 		
 			case AHEAD: {
-				sendMessage(player, "How did you got this version? Hello friend!", TextFormatting.GREEN);
+				sendMessage(player, "How did you get this version? Hello friend!", TextFormatting.AQUA);
 				break;
 			}
 			

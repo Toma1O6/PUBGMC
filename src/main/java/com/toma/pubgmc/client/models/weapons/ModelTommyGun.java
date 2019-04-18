@@ -23,8 +23,7 @@ public class ModelTommyGun extends ModelGun
 
 	public ModelTommyGun() 
 	{
-		initAimAnimation(-0.56f, 0.39f, 0.35f);
-		initAimingAnimationStates(0.39f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -81,6 +80,13 @@ public class ModelTommyGun extends ModelGun
 		stock1.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(stock1, -0.5236F, 0.0F, 0.0F);
 		stock1.cubeList.add(new ModelBox(stock1, 0, 64, -2.0F, -12.0F, -8.0F, 4, 4, 22, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.39f, 0.35f);
+		initAimingAnimationStates(0.39f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

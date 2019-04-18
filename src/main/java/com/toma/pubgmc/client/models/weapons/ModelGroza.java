@@ -22,8 +22,7 @@ public class ModelGroza extends ModelGun
 
 	public ModelGroza()
 	{
-		initAimAnimation(-0.56f, 0.135f, 0.28f);
-		initAimingAnimationStates(0.135f, 0.0575f, 0.01f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -81,6 +80,13 @@ public class ModelGroza extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -2.0F, -34.0F, -6.0F, 1, 1, 3, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, 1.0F, -34.0F, -6.0F, 1, 1, 3, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -0.5F, -33.5F, -5.0F, 1, 1, 1, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations() 
+	{
+		initAimAnimation(-0.56f, 0.135f, 0.28f);
+		initAimingAnimationStates(0.135f, 0.0575f, 0.01f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

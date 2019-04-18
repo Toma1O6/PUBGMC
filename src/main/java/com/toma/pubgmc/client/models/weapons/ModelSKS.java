@@ -25,8 +25,7 @@ public class ModelSKS extends ModelGun
 
 	public ModelSKS()
 	{
-		initAimAnimation(-0.56f, 0.2625f, 0.245f);
-		initAimingAnimationStates(0.2625f, 0.195f, 0.145f);
+		super();
 		
 		textureWidth = 128;
 		textureHeight = 128;
@@ -116,6 +115,13 @@ public class ModelSKS extends ModelGun
 		ironsight.cubeList.add(new ModelBox(ironsight, 64, 83, -1.5F, -25.0F, 1.0F, 1, 1, 2, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 64, 83, 0.5F, -25.0F, 1.0F, 1, 1, 2, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 64, 83, -0.5F, -26.0F, 1.0F, 1, 1, 2, 0.0F, false));
+	}
+	
+	@Override
+	public void initAnimations()
+	{
+		initAimAnimation(-0.56f, 0.2625f, 0.245f);
+		initAimingAnimationStates(0.2625f, 0.195f, 0.145f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 
