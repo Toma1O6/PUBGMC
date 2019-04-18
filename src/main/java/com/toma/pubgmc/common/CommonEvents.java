@@ -650,10 +650,10 @@ public class CommonEvents
 				break;
 			}
 		
-			/*case AHEAD: {
+			case AHEAD: {
 				sendMessage(player, "How did you get this version? Hello friend!", TextFormatting.AQUA);
 				break;
-			}*/
+			}
 			
 			case FAILED: {
 				sendMessage(player, "Update check failed! Check your internet connection", TextFormatting.RED);

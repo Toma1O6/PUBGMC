@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -96,20 +95,22 @@ public class EntityBullet extends Entity
         survivalTime = (int)velocity + 3;
         stack = new ItemStack(gun);
         
-        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead() + ConfigPMC.vrSettings.bulletOffset);
+        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead());
         
-        calculateBulletHeading(direct, shooter);
+        IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        
+        calculateBulletHeading(direct, shooter, data.isAiming());
 
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         
         updateHeading();
     }
     
-    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter)
+    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, boolean aim)
     {
     	if(!shooter.isSprinting())
     	{
-    		if(type != GunType.SHOTGUN)
+    		if(aim && type != GunType.SHOTGUN)
     		{
                 this.motionX = rotVec.x * velocity;
                 this.motionY = rotVec.y * velocity;

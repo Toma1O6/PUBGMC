@@ -2,7 +2,6 @@ package com.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
@@ -45,7 +44,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
         this.timer = 0;
         this.height = shooter.posY;
         
-        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead() + ConfigPMC.vrSettings.bulletOffset);
+        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead());
         this.motionX = direct.x * 2;
         this.motionY = direct.y * 2;
         this.motionZ = direct.z * 2;

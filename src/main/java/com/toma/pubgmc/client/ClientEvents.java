@@ -125,9 +125,6 @@ public class ClientEvents
 	private int currentColor = 0;
 	private int currentType = 0;
 	
-	/** Determine if player can continue shooting, for single & burst firemode **/
-	private boolean hasShot = false;
-	
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post e)
 	{
@@ -563,6 +560,110 @@ public class ClientEvents
         	}
     	}
     }
+    
+    @SubscribeEvent
+    public void onMouseInput(InputEvent.MouseInputEvent e)
+    {
+    	GameSettings gs = Minecraft.getMinecraft().gameSettings;
+    	EntityPlayerSP player = Minecraft.getMinecraft().player;
+    	CooldownTracker tracker = player.getCooldownTracker();
+    	//To prevent crash on startup
+    	if(player != null)
+    	{
+    		ItemStack stack = player.getHeldItemMainhand();
+    		if(stack.getItem() instanceof GunBase)
+    		{
+    			GunBase gun = (GunBase)stack.getItem();
+				IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+
+    			//Check if the LMB has been pressed
+    			if(gs.keyBindAttack.isPressed())
+    			{
+    				if(ConfigPMC.worldSettings.enableGuns)
+    				{
+            			//Shoot only once if the firemode is single
+        				if(gun.getFiremode() == Firemode.SINGLE)
+        				{
+        					//If the gun has no cooldown
+            				if(!tracker.hasCooldown(gun) && !data.isReloading())
+            				{
+            					if(gun.hasAmmo(stack))
+            					{
+                					//We send packet to server telling it to spawn new entity
+                    				PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                    				//Do the recoil
+                    				applyRecoil(player, stack);
+            					}
+            					else
+            					{
+            						player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+            					}
+            				}
+        				}
+    				}
+    				else
+    				{
+    					sendWarningToPlayer(player, "Guns are disabled!");
+    				}
+    				//This is being handled in ClientTickEvent so we just prepare some stuff here
+    				if(gun.getFiremode() == Firemode.BURST)
+    				{
+    					if(ConfigPMC.worldSettings.enableGuns)
+    					{
+        					if(!tracker.hasCooldown(gun) && !shooting && !data.isReloading())
+        					{
+        						if(gun.hasAmmo(stack))
+        						{
+            						shooting = true;
+            						shotsFired = 0;
+        						}
+        						else
+        						{
+        							player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+        						}
+        					}
+    					}
+    					else
+    					{
+    						sendWarningToPlayer(player, "Guns are disabled!");
+    					}
+    				}
+    			}
+
+    			//Aiming on RMB press
+    			if(gs.keyBindUseItem.isPressed())
+    			{
+    				if(!data.isAiming())
+    				{
+    					aimingTicks = 0;
+    					aimSlot = player.inventory.currentItem;
+    					data.setAiming(true);
+    					//We have to tell the server the player is aiming to make it work on servers
+    					PacketHandler.INSTANCE.sendToServer(new PacketAim(true));
+    					int scopeID = stack.getTagCompound().getInteger("scope");
+
+    					//sensitivity modifier
+    					switch(scopeID)
+    					{
+    						case 1: gs.mouseSensitivity *= 0.95f; break;
+    						case 2: gs.mouseSensitivity *= 0.95f; break;
+    						case 3: gs.mouseSensitivity *= 0.85f; break;
+    						case 4: gs.mouseSensitivity *= 0.65f; break;
+    						case 5: gs.mouseSensitivity *= 0.4f; break;
+    						case 6: gs.mouseSensitivity *= 0.01f; break;
+    						default: break;
+    					}
+    				}
+    				else
+    				{
+    					data.setAiming(false);
+    					PacketHandler.INSTANCE.sendToServer(new PacketAim(false));
+    					gs.mouseSensitivity = this.mouseSens;
+    				}
+    			}
+    		}
+    	}
+    }
 	
 	//We get the player fov setting which will be used later with scopes; This is for returning the fov to the base value
 	@SubscribeEvent
@@ -635,53 +736,6 @@ public class ClientEvents
             					player.playSound(PMCSounds.gun_noammo, 4f, 1f);
             				}
             			}
-            			
-            			else if(gun.getFiremode().equals(Firemode.SINGLE) && !data.isReloading())
-            			{
-            				if(!tracker.hasCooldown(gun))
-            				{
-            					if(gun.hasAmmo(player.getHeldItemMainhand())) 
-            					{
-                					if(!hasShot)
-                					{
-                						PacketHandler.sendToServer(new PacketShoot());
-                						this.applyRecoil(player, player.getHeldItemMainhand());
-                						hasShot = true;
-                					}
-            					}
-            					
-            					else
-            					{
-            						player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-            					}
-            				}
-            			}
-            			
-            			else if(gun.getFiremode().equals(Firemode.BURST) && !data.isReloading())
-            			{
-            				if(!tracker.hasCooldown(gun) && !shooting)
-            				{
-            					if(gun.hasAmmo(player.getHeldItemMainhand()))
-            					{
-            						if(!hasShot)
-            						{
-            							this.hasShot = true;
-            							this.shooting = true;
-            							this.shotsFired = 0;
-            						}
-            					}
-            					
-            					else
-            					{
-            						player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-            						
-            						if(shooting)
-            						{
-            							shooting = !shooting;
-            						}
-            					}
-            				}
-            			}
         			}
         			
             		else
@@ -689,10 +743,6 @@ public class ClientEvents
             			sendWarningToPlayer(player, "Guns are disabled!");
             		}
         		}
-        	}
-        	
-        	if(!gs.keyBindAttack.isKeyDown() && hasShot) {
-        		hasShot = false;
         	}
         	
         	//Burst fire is handled here
