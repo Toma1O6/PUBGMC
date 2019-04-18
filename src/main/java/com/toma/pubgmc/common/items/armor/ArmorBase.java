@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 public class ArmorBase extends ItemArmor implements ICraftable
 {
 	private ArmorLevel level = null;
-	int timer;
 	
 	public ArmorBase(String name, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn)
 	{
@@ -31,20 +30,6 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		setRegistryName(name);
 		setCreativeTab(Pubgmc.pmcitemstab);
 		TileEntityGunWorkbench.CLOTHING.add(this);
-	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) 
-	{
-		if(isSelected)
-		{
-			//timer++;
-			
-			if(timer >= 40)
-			{
-				timer = 0;
-			}
-		}
 	}
 	
 	public ArmorBase setArmorLevel(ArmorLevel level)
@@ -81,6 +66,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR1BODY));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
+			recipe.add(new ItemStack(Items.GOLD_INGOT, 1));
 			return recipe;
 		}
 		
@@ -88,6 +74,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR1HELMET));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
+			recipe.add(new ItemStack(Items.GOLD_INGOT, 1));
 			return recipe;
 		}
 		
@@ -95,6 +82,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR2BODY));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
+			recipe.add(new ItemStack(Items.GOLD_INGOT, 2));
 			return recipe;
 		}
 		
@@ -102,6 +90,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR2HELMET));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
+			recipe.add(new ItemStack(Items.GOLD_INGOT, 2));
 			return recipe;
 		}
 		

@@ -48,6 +48,8 @@ public class ItemEnergyDrink extends ItemHealing
     	recipe.add(new ItemStack(Items.GLASS_BOTTLE));
     	recipe.add(new ItemStack(Items.SUGAR, 10));
     	recipe.add(new ItemStack(Items.APPLE, 3));
+    	recipe.add(new ItemStack(Items.GOLD_NUGGET));
+    	recipe.add(new ItemStack(Items.MELON, 5));
     	return recipe;
     }
 }

@@ -49,6 +49,8 @@ public class ItemPainkiller extends ItemHealing
 		recipe.add(new ItemStack(Items.APPLE));
 		recipe.add(new ItemStack(Items.CARROT, 3));
 		recipe.add(new ItemStack(Items.SUGAR, 5));
+		recipe.add(new ItemStack(Items.GOLD_NUGGET, 3));
+		recipe.add(new ItemStack(Items.SPECKLED_MELON));
 		return recipe;
 	}
 }

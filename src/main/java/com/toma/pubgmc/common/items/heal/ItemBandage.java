@@ -54,6 +54,8 @@ public class ItemBandage extends ItemHealing
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.PAPER, 5));
 		recipe.add(new ItemStack(Blocks.WOOL));
+		recipe.add(new ItemStack(Items.REDSTONE, 5));
+		recipe.add(new ItemStack(Items.GOLD_NUGGET, 1));
 		return recipe;
 	}
 }

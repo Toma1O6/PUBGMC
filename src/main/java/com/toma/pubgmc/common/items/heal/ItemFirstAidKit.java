@@ -55,9 +55,12 @@ public class ItemFirstAidKit extends ItemHealing
 	public List<ItemStack> getCraftingRecipe(Item item)
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
-		recipe.add(new ItemStack(PMCRegistry.PMCItems.BANDAGE, 3));
+		recipe.add(new ItemStack(PMCRegistry.PMCItems.BANDAGE, 2));
 		recipe.add(new ItemStack(Blocks.WOOL));
 		recipe.add(new ItemStack(Items.IRON_NUGGET));
+		recipe.add(new ItemStack(Items.LEATHER, 2));
+		recipe.add(new ItemStack(Items.GOLD_NUGGET, 3));
+		recipe.add(new ItemStack(Items.SPECKLED_MELON));
 		return recipe;
 	}
 }

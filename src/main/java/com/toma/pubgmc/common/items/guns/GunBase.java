@@ -32,6 +32,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -394,6 +395,12 @@ public class GunBase extends PMCItem implements ICraftable
 			tooltip.add(TextFormatting.YELLOW + I18n.format("gun.desc.moreinfo"));
 			tooltip.add(TextFormatting.YELLOW + I18n.format("gun.desc.moreinfo2"));
 		}
+	}
+	
+	@Override
+	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
+	{
+		return true;
 	}
 	
 //-------------------------------------------------

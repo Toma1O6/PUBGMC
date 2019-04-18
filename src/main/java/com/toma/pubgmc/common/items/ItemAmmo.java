@@ -89,6 +89,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 		else if(item == PMCRegistry.PMCItems.AMMO_45ACP)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
+			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 1));
 			return rec;
@@ -118,12 +119,14 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Items.GOLD_INGOT));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
+			rec.add(new ItemStack(Items.DIAMOND));
 			rec.add(new ItemStack(Items.GUNPOWDER, 5));
 			return rec;
 		}
 		
 		else if(item == PMCRegistry.PMCItems.AMMO_FLARE)
 		{
+			rec.add(new ItemStack(Items.DIAMOND, 5));
 			rec.add(new ItemStack(Items.IRON_INGOT));
 			rec.add(new ItemStack(Items.GUNPOWDER, 10));
 			rec.add(new ItemStack(Items.BLAZE_POWDER, 3));

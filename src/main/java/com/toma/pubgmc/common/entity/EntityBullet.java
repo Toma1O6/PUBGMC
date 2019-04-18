@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -95,22 +96,20 @@ public class EntityBullet extends Entity
         survivalTime = (int)velocity + 3;
         stack = new ItemStack(gun);
         
-        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead());
+        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead() + ConfigPMC.vrSettings.bulletOffset);
         
-        IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        
-        calculateBulletHeading(direct, shooter, data.isAiming());
+        calculateBulletHeading(direct, shooter);
 
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         
         updateHeading();
     }
     
-    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, boolean aim)
+    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter)
     {
     	if(!shooter.isSprinting())
     	{
-    		if(aim && type != GunType.SHOTGUN)
+    		if(type != GunType.SHOTGUN)
     		{
                 this.motionX = rotVec.x * velocity;
                 this.motionY = rotVec.y * velocity;
@@ -190,30 +189,25 @@ public class EntityBullet extends Entity
         		}
         	}
         }
-        
-        /*if (raytraceresult != null)
-        {
-            vec3d = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
-        }*/
 
         Entity entity = this.findEntityOnPath(vec3d1, vec3d);
 
-        if (entity != null)
+        if(entity != null)
         {
             raytraceresult = new RayTraceResult(entity);
         }
 
-        if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer)
+        if(raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer)
         {
             EntityPlayer entityplayer = (EntityPlayer)raytraceresult.entityHit;
 
-            if (this.shooter instanceof EntityPlayer && !((EntityPlayer)this.shooter).canAttackPlayer(entityplayer))
+            if(this.shooter instanceof EntityPlayer && !((EntityPlayer)this.shooter).canAttackPlayer(entityplayer))
             {
                 raytraceresult = null;
             }
         }
 
-        if (raytraceresult != null && !ForgeEventFactory.onProjectileImpact(this, raytraceresult))
+        if(raytraceresult != null && !ForgeEventFactory.onProjectileImpact(this, raytraceresult))
         {
             this.onHit(raytraceresult);
         }
@@ -232,17 +226,17 @@ public class EntityBullet extends Entity
         {
             Entity entity1 = list.get(i);
 
-            if (entity1 != this.shooter)
+            if(entity1 != this.shooter)
             {
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
 
-                if (raytraceresult != null)
+                if(raytraceresult != null)
                 {
                     double d1 = start.squareDistanceTo(raytraceresult.hitVec);
                     entityRaytrace = raytraceresult;
                     
-                    if (d1 < d0 || d0 == 0.0D)
+                    if(d1 < d0 || d0 == 0.0D)
                     {
                         entity = entity1;
                         d0 = d1;
@@ -351,6 +345,7 @@ public class EntityBullet extends Entity
     }
     
     /**
+     * TODO: Make this work for all entities
      * Calculates damage based on player armor and applies damage to the right part of the armor
      * Damage reduction:
      * <ul>
