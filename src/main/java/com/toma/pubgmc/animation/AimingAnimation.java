@@ -1,5 +1,6 @@
 package com.toma.pubgmc.animation;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -36,21 +37,21 @@ public class AimingAnimation extends Animation
 	}
 	
 	@Override
-	public Vector3f getLeft()
+	public Quat4f getLeft()
 	{
-		return EMPTYVEC;
+		return EMPTYQUAT;
 	}
 	
 	@Override
-	public Vector3f getRight() 
+	public Quat4f getRight() 
 	{
-		return EMPTYVEC;
+		return EMPTYQUAT;
 	}
 	
 	@Override
-	public Vector3f[] getRotationVectors()
+	public Quat4f[] getRotationVectors()
 	{
-		return ROTATION_VEC_EMPTY;
+		return ROTATION_QUAT4F_EMPTY;
 	}
 	
 	public Vector3f getFinalState()

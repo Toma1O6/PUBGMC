@@ -574,6 +574,7 @@ public class ClientEvents
     	/** NORMAL MODE ========================================================================== **/
     	
     	/** Scope Variants */
+    	
     	if(KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null)))
     	{
     		switchScopeType(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
@@ -709,20 +710,17 @@ public class ClientEvents
         GameSettings gs = Minecraft.getMinecraft().gameSettings;
         
         //We have to check this otherwise it would crash in the menu since this event is running as soon as your minecraft client is started
-        if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
+        if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null) && ev.phase.equals(Phase.END))
         {
         	//Get the player capability
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             
         	//This takes care of vehicle controls
-        	if(ev.phase == Phase.END)
-        	{
-                handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
-                handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
-        	}
+            handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
+            handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
         	
         	//Automatic fire is handled here because Mouse input event is acting weirdly
-        	if(Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown() && ev.phase == Phase.END)
+        	if(Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown())
         	{	
         		if(player.getHeldItemMainhand().getItem() instanceof GunBase)
         		{

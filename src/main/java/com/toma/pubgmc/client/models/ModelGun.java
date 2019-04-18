@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import com.toma.pubgmc.animation.AimingAnimation;
@@ -38,7 +39,9 @@ public abstract class ModelGun extends ModelBase
 	private final ModelScope15X scope15x = new ModelScope15X();
 	
 	public AimingAnimation aimAnimation;
-	public float normalY = 0f, redDotY = 0f, holoY = 0f;
+	private float[] aimStates = new float[] {0f, 0f, 0f};
+	
+	public Animation[] animations;
 	
 	public ModelGun()
 	{
@@ -46,6 +49,8 @@ public abstract class ModelGun extends ModelBase
 		initAimingAnimationStates(0f, 0f, 0f);
 		
 		this.initAnimations();
+		
+		animations = new Animation[] {aimAnimation};
 	}
 	
 	public abstract void render(ItemStack stack);
@@ -59,16 +64,16 @@ public abstract class ModelGun extends ModelBase
 	 */
 	public void preRender(ItemStack stack)
 	{
-		if((!hasScopeAtachment(stack) || this.getScopeLevel(stack) > 2) && aimAnimation.getFinalState().y != normalY) {
-			initAimAnimation(aimAnimation.getFinalState().x, normalY, aimAnimation.getFinalState().z);
+		if((!hasScopeAtachment(stack) || this.getScopeLevel(stack) > 2) && aimAnimation.getFinalState().y != aimStates[0]) {
+			initAimAnimation(aimAnimation.getFinalState().x, aimStates[0], aimAnimation.getFinalState().z);
 		}
 		
-		else if(hasRedDot(stack) && aimAnimation.getFinalState().y != redDotY) {
-			initAimAnimation(aimAnimation.getFinalState().x, redDotY, aimAnimation.getFinalState().z);
+		else if(hasRedDot(stack) && aimAnimation.getFinalState().y != aimStates[1]) {
+			initAimAnimation(aimAnimation.getFinalState().x, aimStates[1], aimAnimation.getFinalState().z);
 		}
 		
-		else if(hasHoloSight(stack) && aimAnimation.getFinalState().y != holoY)
-			initAimAnimation(aimAnimation.getFinalState().x, holoY, aimAnimation.getFinalState().z);
+		else if(hasHoloSight(stack) && aimAnimation.getFinalState().y != aimStates[2])
+			initAimAnimation(aimAnimation.getFinalState().x, aimStates[2], aimAnimation.getFinalState().z);
 	}
 	
 	public static void rotateModelForADSRendering()
@@ -315,6 +320,16 @@ public abstract class ModelGun extends ModelBase
 		return aimAnimation;
 	}
 	
+	public Quat4f getLeftRotation()
+	{
+		return Animation.EMPTYQUAT;
+	}
+	
+	public Quat4f getRightRotation()
+	{
+		return Animation.EMPTYQUAT;
+	}
+	
 	/**
 	 * Initialize aiming animation for model
 	 * Default animation speed if 3.0F
@@ -346,19 +361,19 @@ public abstract class ModelGun extends ModelBase
 	public void initAimingAnimationStates(float... f)
 	{
 		if(f == null) {
-			normalY = aimAnimation.getFinalState().y;
-			redDotY = normalY;
-			holoY = normalY;
+			aimStates[0] = aimAnimation.getFinalState().y;
+			aimStates[1] = aimStates[0];
+			aimStates[2] = aimStates[0];
 		}
 		else if(f.length == 1) {
-			normalY = f[0];
-			redDotY = normalY;
-			holoY = normalY;
+			aimStates[0] = f[0];
+			aimStates[1] = aimStates[0];
+			aimStates[2] = aimStates[0];
 		}
 		else {
-			normalY = f[0];
-			redDotY = f[1];
-			holoY = f[2];
+			aimStates[0] = f[0];
+			aimStates[1] = f[1];
+			aimStates[2] = f[2];
 		}
 	}
 }

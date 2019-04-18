@@ -30,18 +30,6 @@ public class ConfigPMC
 	@Comment("All weapon related fiels are here")
 	public static WeaponSettings weaponSettings = new WeaponSettings();
 	
-	/*@Name("VR Settings")
-	@Comment("All VR related fields are here")
-	public static VRSettings vrSettings = new VRSettings();
-	
-	public static class VRSettings
-	{
-		@Name("Bullet rotation offset")
-		@Comment("Set bullet starting rotation offset from default player rotation")
-		@RangeDouble(min = -180D, max = 180D)
-		public float bulletOffset = 55F;
-	}*/
-	
 	public static class WorldSettings
 	{
 		@Name("Airdrop loot generation type")

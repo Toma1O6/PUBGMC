@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.toma.pubgmc.animation.Animation;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -116,9 +117,11 @@ public class BakedModelGun implements IBakedModel
 			// Implement animations here
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
-				((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming());
-
-				transl = data != null && ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : new Vector3f(0f, 0f, 0f);
+				this.process();
+				
+				leftRot = this.getLeftRotation();
+				rightRot = this.getRightRotation();
+				transl = this.getTranslation();
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
 			
@@ -131,5 +134,35 @@ public class BakedModelGun implements IBakedModel
 		}
 		
 		return Pair.of(this, trsrt.getMatrix());
+	}
+	
+	private Quat4f debugQuat0(float x, float y, float z)
+	{
+		return new Quat4f(x, y, z, 0f);
+	}
+	
+	private Quat4f debugQuat1()
+	{
+		return new Quat4f(ModelDebugger.X, ModelDebugger.Y, ModelDebugger.Z, 0f);
+	}
+	
+	private void process()
+	{
+		((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming());
+	}
+	
+	private Vector3f getTranslation()
+	{
+		return ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : Animation.EMPTYVEC;
+	}
+	
+	private Quat4f getLeftRotation()
+	{
+		return ((GunBase)held.getItem()).getWeaponModel().getLeftRotation();
+	}
+	
+	private Quat4f getRightRotation()
+	{
+		return ((GunBase)held.getItem()).getWeaponModel().getRightRotation();
 	}
 }

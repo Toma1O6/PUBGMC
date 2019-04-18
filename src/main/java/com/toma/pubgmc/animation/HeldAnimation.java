@@ -1,5 +1,6 @@
 package com.toma.pubgmc.animation;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -27,14 +28,13 @@ public class HeldAnimation extends Animation
 			return;
 		}
 		
-		boolean b = player.isSprinting();
-		this.getHeldStyle().handle(this, b);
+		this.getHeldStyle().handle(this, player.isSprinting());
 	}
 	
 	@Override
-	public Vector3f[] getRotationVectors()
+	public Quat4f[] getRotationVectors()
 	{
-		return new Vector3f[] {this.getRight(), this.getLeft()};
+		return new Quat4f[] {this.getRight(), this.getLeft()};
 	}
 	
 	@Override
@@ -44,15 +44,15 @@ public class HeldAnimation extends Animation
 	}
 	
 	@Override
-	public Vector3f getLeft()
+	public Quat4f getLeft()
 	{
-		return new Vector3f(lrx, lry, lrz);
+		return new Quat4f(lrx, lry, lrz, 0f);
 	}
 	
 	@Override
-	public Vector3f getRight() 
+	public Quat4f getRight() 
 	{
-		return new Vector3f(rrx, rry, rrz);
+		return new Quat4f(rrx, rry, rrz, 0f);
 	}
 	
 	public void setStyle(HeldStyle style)
@@ -67,8 +67,20 @@ public class HeldAnimation extends Animation
 	
 	public enum HeldStyle
 	{
-		SMALL,
-		NORMAL;
+		SMALL(EMPTYQUAT, EMPTYQUAT, 0f, 0f, 0f),
+		NORMAL(new Quat4f(1.5f, 0f, -1.2f, 0f), new Quat4f(1.5f, 0f, 0f, 0f), 0f, 0f, 0f);
+		
+		public float x, y, z;
+		public Quat4f left, right;
+		
+		private HeldStyle(Quat4f left, Quat4f right, float x, float y, float z)
+		{
+			this.left = left;
+			this.right = right;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
 		
 		public void handle(HeldAnimation animation, boolean sprint)
 		{
@@ -81,12 +93,12 @@ public class HeldAnimation extends Animation
 		
 		private void handleSmall(HeldAnimation animation, boolean sprint)
 		{
-			// TODO
+			
 		}
 		
 		private void handleNormal(HeldAnimation animation, boolean sprint)
 		{
-			// TODO
+			
 		}
 	}
 }
