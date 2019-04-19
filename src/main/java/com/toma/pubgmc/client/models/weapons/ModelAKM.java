@@ -53,6 +53,8 @@ public class ModelAKM extends ModelGun
 	 */
 	public ModelAKM()
 	{
+		super();
+		
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -299,7 +301,6 @@ public class ModelAKM extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			//initAnimations();
 			GlStateManager.pushMatrix();
 			{
 				renderAKM(data.isAiming(), stack);

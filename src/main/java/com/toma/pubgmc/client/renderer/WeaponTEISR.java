@@ -203,7 +203,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		
 		else if(stack.getItem() == PMCRegistry.PMCItems.M416)
 		{
-			bindTexture("microuzi");
+			bindTexture("m416");
 			m416.render(stack);
 		}
 		
