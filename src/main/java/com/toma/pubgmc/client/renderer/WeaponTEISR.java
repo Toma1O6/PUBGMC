@@ -88,6 +88,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	public final ModelM24 m24 = new ModelM24();
 	public final ModelAWM awm = new ModelAWM();
 	
+	
 	@Override
 	public void renderByItem(ItemStack stack)
 	{
@@ -250,13 +251,13 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		
 		else if(stack.getItem() == PMCRegistry.PMCItems.GROZA)
 		{
-			bindTexture("akm");
+			bindTexture("groza");
 			groza.render(stack);
 		}
 		
 		else if(stack.getItem() == PMCRegistry.PMCItems.DP28)
 		{
-			bindTexture("akm");
+			bindTexture("groza");
 			dp28.render(stack);
 		}
 		
@@ -268,7 +269,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		
 		else if(stack.getItem() == PMCRegistry.PMCItems.VSS)
 		{
-			bindTexture("akm");
+			bindTexture("groza");
 			vss.render(stack);
 		}
 		
