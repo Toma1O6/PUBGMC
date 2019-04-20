@@ -324,10 +324,9 @@ public class EntityBullet extends Entity
     	{
             DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();
             
-    		if(entity instanceof EntityPlayer)
+    		if(entity instanceof EntityLivingBase)
     		{
-    			EntityPlayer player = (EntityPlayer)entity;
-    			getCalculatedDamage(player, isHeadshot);
+    			getCalculatedDamage((EntityLivingBase)entity, isHeadshot);
     		}
     		
     		entity.attackEntityFrom(gunsource, damage);
@@ -335,10 +334,10 @@ public class EntityBullet extends Entity
     	
     	else
     	{
-    		if(entity instanceof EntityPlayer)
+    		if(entity instanceof EntityLivingBase)
     		{
-    			EntityPlayer player = (EntityPlayer)entity;
-    			getCalculatedDamage(player, isHeadshot);
+    			getCalculatedDamage((EntityLivingBase)entity, isHeadshot);
+        		System.out.println(damage);
     		}
     		
     		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
@@ -346,7 +345,6 @@ public class EntityBullet extends Entity
     }
     
     /**
-     * TODO: Make this work for all entities
      * Calculates damage based on player armor and applies damage to the right part of the armor
      * Damage reduction:
      * <ul>
@@ -358,13 +356,13 @@ public class EntityBullet extends Entity
      * @param baseDamage - base weapon damage
      * @param isHeadShot
      */
-    private void getCalculatedDamage(EntityPlayer player, boolean isHeadShot)
+    private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot)
     {
     	float baseDamage = damage;
     	
     	if(isHeadShot)
     	{
-        	ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        	ItemStack head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         	
     		if(head.getItem() == PMCRegistry.PMCItems.ARMOR1HELMET)
     		{
@@ -381,15 +379,15 @@ public class EntityBullet extends Entity
     			damage *= 0.4f;
     		}
     		
-        	if(player.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ArmorBase)
+        	if(entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ArmorBase)
         	{
-        		head.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.55f), player);
+        		head.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.55f), entity);
         	}
     	}
     	
     	else
     	{
-        	ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        	ItemStack body = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         	
     		if(body.getItem() == PMCRegistry.PMCItems.ARMOR1BODY)
     		{
@@ -406,9 +404,9 @@ public class EntityBullet extends Entity
     			damage *= 0.5f;
     		}
     		
-        	if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ArmorBase)
+        	if(entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ArmorBase)
         	{
-        		body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), player);
+        		body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), entity);
         	}
     	}
     }

@@ -335,19 +335,19 @@ public class ConfigPMC
 		@Comment(S)
 		@RangeDouble(min = 1, max = 100)
 		@Config.RequiresWorldRestart
-		public float kar98k = 20f;
+		public float kar98k = 18f;
 		
 		@Name("M24")
 		@Comment(S)
 		@RangeDouble(min = 1, max = 105)
 		@Config.RequiresWorldRestart
-		public float m24 = 21f;
+		public float m24 = 19f;
 		
 		@Name("AWM")
 		@Comment(S)
 		@RangeDouble(min = 1, max = 170)
 		@Config.RequiresWorldRestart
-		public float awm = 34f;
+		public float awm = 24f;
 	}
 	
 	@Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
