@@ -337,7 +337,6 @@ public class EntityBullet extends Entity
     		if(entity instanceof EntityLivingBase)
     		{
     			getCalculatedDamage((EntityLivingBase)entity, isHeadshot);
-        		System.out.println(damage);
     		}
     		
     		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
