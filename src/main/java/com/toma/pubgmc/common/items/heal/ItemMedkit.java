@@ -55,7 +55,7 @@ public class ItemMedkit extends ItemHealing
 		recipe.add(new ItemStack(PMCRegistry.PMCItems.FIRSTAIDKIT));
 		recipe.add(new ItemStack(PMCRegistry.PMCItems.BANDAGE, 2));
 		recipe.add(new ItemStack(Items.PAPER, 3));
-		recipe.add(new ItemStack(Items.GOLDEN_CARROT, 2));
+		recipe.add(new ItemStack(Items.GOLDEN_CARROT));
 		return recipe;
 	}
 }
