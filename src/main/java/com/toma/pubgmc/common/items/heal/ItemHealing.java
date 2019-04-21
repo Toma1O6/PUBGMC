@@ -51,7 +51,7 @@ public abstract class ItemHealing extends PMCItem implements ICraftable
 	@Override
 	public CraftMode getCraftMode()
 	{
-		return CraftMode.Healing;
+		return CraftMode.HEALING;
 	}
 	
 	@Override

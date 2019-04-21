@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -95,25 +94,25 @@ public class ItemBackpack extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public List<ItemStack> getCraftingRecipe()
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		
-		if(item == PMCRegistry.PMCItems.BACKPACK1)
+		if(this == PMCRegistry.PMCItems.BACKPACK1)
 		{
 			recipe.add(new ItemStack(Blocks.CHEST));
 			recipe.add(new ItemStack(Items.LEATHER, 10));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.BACKPACK2)
+		else if(this == PMCRegistry.PMCItems.BACKPACK2)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
 			recipe.add(new ItemStack(Items.LEATHER, 20));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.BACKPACK3)
+		else if(this == PMCRegistry.PMCItems.BACKPACK3)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.BACKPACK2));
 			recipe.add(new ItemStack(Items.LEATHER, 30));
@@ -126,6 +125,6 @@ public class ItemBackpack extends PMCItem implements ICraftable
 	@Override
 	public CraftMode getCraftMode() 
 	{
-		return CraftMode.Clothing;
+		return CraftMode.CLOTHING;
 	}
 }

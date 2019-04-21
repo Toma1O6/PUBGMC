@@ -28,7 +28,7 @@ public class GunPostInitializeEvent extends Event
 	
 	public void addCraftingIngredient(ItemStack stack)
 	{
-		gun.getCraftingRecipe(gun).add(stack);
+		gun.getCraftingRecipe().add(stack);
 	}
 	
 	public void initBarrelAttachments(ItemAttachment... attachments)

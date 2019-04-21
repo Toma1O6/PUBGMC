@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemEnergyDrink extends ItemHealing
@@ -42,7 +41,7 @@ public class ItemEnergyDrink extends ItemHealing
 	}
 	
     @Override
-    public List<ItemStack> getCraftingRecipe(Item item)
+    public List<ItemStack> getCraftingRecipe()
     {
     	List<ItemStack> recipe = new ArrayList<ItemStack>();
     	recipe.add(new ItemStack(Items.GLASS_BOTTLE));

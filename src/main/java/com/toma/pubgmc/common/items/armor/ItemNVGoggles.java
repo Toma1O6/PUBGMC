@@ -15,7 +15,6 @@ import com.toma.pubgmc.util.ICraftable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -55,7 +54,7 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public List<ItemStack> getCraftingRecipe()
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Blocks.GLASS_PANE, 4));
@@ -66,8 +65,8 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public CraftMode getCraftMode()
+	public CraftMode getCraftMode() 
 	{
-		return CraftMode.Clothing;
+		return CraftMode.CLOTHING;
 	}
 }

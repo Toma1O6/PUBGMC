@@ -79,10 +79,10 @@ public class GuiGunWorkbench extends GuiContainer
 		
 		if(tileentity.getCurrentCraftingMode() == null)
 		{
-			tileentity.setCraftMode(CraftMode.Ammo);
+			tileentity.setCraftMode(CraftMode.AMMO);
 		}
 		
-		if(tileentity.getCurrentCraftingMode() == CraftMode.Gun)
+		if(tileentity.getCurrentCraftingMode() == CraftMode.GUN)
 		{
 			maxID = GunBase.GUNS.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
@@ -90,25 +90,25 @@ public class GuiGunWorkbench extends GuiContainer
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.Ammo)
+		else if(tileentity.getCurrentCraftingMode() == CraftMode.AMMO)
 		{
 			maxID = tileentity.AMMO.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.Atachment)
+		else if(tileentity.getCurrentCraftingMode() == CraftMode.ATTACHMENT)
 		{
 			maxID = tileentity.ATTACHMENT.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.Clothing)
+		else if(tileentity.getCurrentCraftingMode() == CraftMode.CLOTHING)
 		{
 			maxID = tileentity.CLOTHING.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.Healing)
+		else if(tileentity.getCurrentCraftingMode() == CraftMode.HEALING)
 		{
 			maxID = tileentity.HEALING.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
@@ -116,9 +116,17 @@ public class GuiGunWorkbench extends GuiContainer
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.Throwables)
+		else if(tileentity.getCurrentCraftingMode() == CraftMode.THROWABLES)
 		{
 			maxID = tileentity.THROWABLES.size() - 1;
+			RenderHelper.enableGUIStandardItemLighting();
+			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
+			RenderHelper.disableStandardItemLighting();
+		}
+		
+		else if(tileentity.getCurrentCraftingMode().equals(CraftMode.OTHER))
+		{
+			maxID = tileentity.OTHER.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();
@@ -205,7 +213,7 @@ public class GuiGunWorkbench extends GuiContainer
 	{
 		if(tileentity.getItemByID(id) instanceof ICraftable)
 		{
-			List<ItemStack> recipe = ((ICraftable)tileentity.getItemByID(id)).getCraftingRecipe(tileentity.getItemByID(id));
+			List<ItemStack> recipe = ((ICraftable)tileentity.getItemByID(id)).getCraftingRecipe();
 			for(int i = 0; i < recipe.size(); i++)
 			{
 				ItemStack stack = recipe.get(i);

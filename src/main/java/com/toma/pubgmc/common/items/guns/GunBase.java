@@ -36,7 +36,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.CooldownTracker;
@@ -115,9 +114,15 @@ public class GunBase extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public List<ItemStack> getCraftingRecipe()
 	{
 		return craftingRecipe;
+	}
+	
+	@Override
+	public CraftMode getCraftMode()
+	{
+		return CraftMode.GUN;
 	}
 	
 	/**
@@ -321,12 +326,6 @@ public class GunBase extends PMCItem implements ICraftable
 		}
 		
 		return false;
-	}
-	
-	@Override
-	public CraftMode getCraftMode() 
-	{
-		return CraftMode.Gun;
 	}
 	
 	//Here we add all info which will be displayed on the item

@@ -13,7 +13,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -58,7 +57,7 @@ public class ItemGhillie extends ItemArmor implements ICraftable
     }*/
     
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public List<ItemStack> getCraftingRecipe()
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.LEATHER_HELMET));
@@ -71,6 +70,6 @@ public class ItemGhillie extends ItemArmor implements ICraftable
 	@Override
 	public CraftMode getCraftMode()
 	{
-		return CraftMode.Clothing;
+		return CraftMode.CLOTHING;
 	}
 }

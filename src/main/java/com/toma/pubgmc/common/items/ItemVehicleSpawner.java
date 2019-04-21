@@ -1,14 +1,19 @@
 package com.toma.pubgmc.common.items;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -25,6 +30,7 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 	{
 		super(name);
 		this.car = vehicle;
+		TileEntityGunWorkbench.OTHER.add(this);
 	}
 	
 	@Override
@@ -75,14 +81,28 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item) 
+	public List<ItemStack> getCraftingRecipe() 
 	{
-		return null;
+		List<ItemStack> rec = new ArrayList<ItemStack>();
+		rec.clear();
+		
+		if(this == PMCItems.VEHICLE_UAZ)
+		{
+			rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
+			rec.add(new ItemStack(Blocks.IRON_BLOCK, 10));
+			rec.add(new ItemStack(Items.LEATHER, 20));
+			rec.add(new ItemStack(Blocks.GLASS, 10));
+			rec.add(new ItemStack(Items.REDSTONE, 40));
+			rec.add(new ItemStack(Items.GOLD_INGOT, 45));
+			return rec;
+		}
+		
+		return Collections.EMPTY_LIST;
 	}
 	
 	@Override
 	public CraftMode getCraftMode()
 	{
-		return null;
+		return CraftMode.OTHER;
 	}
 }

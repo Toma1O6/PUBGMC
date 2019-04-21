@@ -64,11 +64,11 @@ public class ItemAmmo extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public List<ItemStack> getCraftingRecipe()
 	{
 		List<ItemStack> rec = new ArrayList<ItemStack>();
 		rec.clear();
-		if(item == PMCRegistry.PMCItems.AMMO_9MM)
+		if(this == PMCRegistry.PMCItems.AMMO_9MM)
 		{
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
@@ -77,7 +77,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.AMMO_SHOTGUN)
+		else if(this == PMCRegistry.PMCItems.AMMO_SHOTGUN)
 		{
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 10));
 			rec.add(new ItemStack(Items.IRON_NUGGET, 8));
@@ -86,7 +86,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.AMMO_45ACP)
+		else if(this == PMCRegistry.PMCItems.AMMO_45ACP)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
@@ -95,7 +95,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.AMMO_556)
+		else if(this == PMCRegistry.PMCItems.AMMO_556)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 5));
@@ -104,7 +104,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.AMMO_762)
+		else if(this == PMCRegistry.PMCItems.AMMO_762)
 		{
 			rec.add(new ItemStack(Items.IRON_NUGGET, 7));
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 7));
@@ -113,7 +113,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.AMMO_300M)
+		else if(this == PMCRegistry.PMCItems.AMMO_300M)
 		{
 			rec.add(new ItemStack(Items.IRON_INGOT));
 			rec.add(new ItemStack(Items.GOLD_INGOT));
@@ -124,7 +124,7 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			return rec;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.AMMO_FLARE)
+		else if(this == PMCRegistry.PMCItems.AMMO_FLARE)
 		{
 			rec.add(new ItemStack(Items.DIAMOND, 5));
 			rec.add(new ItemStack(Items.IRON_INGOT));
@@ -156,6 +156,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 	@Override
 	public CraftMode getCraftMode()
 	{
-		return CraftMode.Ammo;
+		return CraftMode.AMMO;
 	}
 }

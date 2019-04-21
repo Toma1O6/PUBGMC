@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public interface ICraftable
 {
-	public List<ItemStack> getCraftingRecipe(Item item);
+	public List<ItemStack> getCraftingRecipe();
 	
 	public CraftMode getCraftMode();
 }

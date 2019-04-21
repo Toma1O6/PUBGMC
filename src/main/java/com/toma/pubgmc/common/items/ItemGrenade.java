@@ -18,7 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -129,7 +128,7 @@ public class ItemGrenade extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public List<ItemStack> getCraftingRecipe()
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		
@@ -143,6 +142,6 @@ public class ItemGrenade extends PMCItem implements ICraftable
 	@Override
 	public CraftMode getCraftMode()
 	{
-		return CraftMode.Throwables;
+		return CraftMode.THROWABLES;
 	}
 }

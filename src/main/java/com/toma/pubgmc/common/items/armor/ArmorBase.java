@@ -13,7 +13,6 @@ import com.toma.pubgmc.util.ICraftable;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -44,25 +43,31 @@ public class ArmorBase extends ItemArmor implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe(Item item)
+	public CraftMode getCraftMode() 
+	{
+		return CraftMode.CLOTHING;
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		
-		if(item == PMCRegistry.PMCItems.ARMOR1BODY)
+		if(this == PMCRegistry.PMCItems.ARMOR1BODY)
 		{
 			recipe.add(new ItemStack(Items.LEATHER_CHESTPLATE));
 			recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.ARMOR1HELMET)
+		else if(this == PMCRegistry.PMCItems.ARMOR1HELMET)
 		{
 			recipe.add(new ItemStack(Items.LEATHER_HELMET));
 			recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.ARMOR2BODY)
+		else if(this == PMCRegistry.PMCItems.ARMOR2BODY)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR1BODY));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
@@ -70,7 +75,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.ARMOR2HELMET)
+		else if(this == PMCRegistry.PMCItems.ARMOR2HELMET)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR1HELMET));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
@@ -78,7 +83,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.ARMOR3BODY)
+		else if(this == PMCRegistry.PMCItems.ARMOR3BODY)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR2BODY));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
@@ -86,7 +91,7 @@ public class ArmorBase extends ItemArmor implements ICraftable
 			return recipe;
 		}
 		
-		else if(item == PMCRegistry.PMCItems.ARMOR3HELMET)
+		else if(this == PMCRegistry.PMCItems.ARMOR3HELMET)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.ARMOR2HELMET));
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
@@ -95,12 +100,6 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		}
 		
 		else return Collections.EMPTY_LIST;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.Clothing;
 	}
 	
 	public enum ArmorLevel

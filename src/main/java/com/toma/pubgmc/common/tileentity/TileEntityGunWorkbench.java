@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.toma.pubgmc.common.items.ItemAmmo;
@@ -24,6 +25,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	public static final List<Item> CLOTHING = new ArrayList<Item>();
 	public static final List<Item> HEALING = new ArrayList<Item>();
 	public static final List<Item> THROWABLES = new ArrayList<Item>();
+	public static final List<Item> OTHER = new ArrayList<Item>();
 	
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 	private CraftMode mode;
@@ -54,128 +56,12 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 		return inventory.size();
 	}
 	
-	@Deprecated
-	public void craft1(int id, CraftMode mode)
-	{
-		final List<Item> usedItem = new ArrayList<Item>();
-		setCraftMode(mode);
-		boolean craft = false;
-		boolean isLegit = true;
-		
-		int validIngredients = 0;
-		
-		if(getStackInSlot(OUTPUT).getItem() instanceof ItemAmmo && getCurrentCraftingMode() == CraftMode.Ammo)
-		{
-			ItemStack stack = getStackInSlot(OUTPUT);
-			ItemAmmo ammo = (ItemAmmo)stack.getItem();
-			
-			if(ammo == getItemByID(id))
-			{
-				if(stack.getCount() + ammo.getCraftCount(ammo) > 30)
-				{
-					return;
-				}
-			}
-		}
-		
-		else if(!getStackInSlot(OUTPUT).isEmpty())
-		{
-			return;
-		}
-		
-		for(int i = 0; i < getCraftingInventory(); i++)
-		{
-			if(i == 0)
-			{
-				usedItem.add(getStackInSlot(0).getItem());
-			}
-			else
-			{
-				for(int j = 0; j < usedItem.size(); j++)
-				{
-					Item item = usedItem.get(j);
-					
-					if(getStackInSlot(i).getItem() == item && !getStackInSlot(i).isEmpty())
-					{
-						isLegit = false;
-					}
-				}
-			}
-		}
-		
-		//To prevent exploits
-		if(isLegit)
-		{
-			for(int i = 0; i < getCraftingInventory(); i++)
-			{
-				ItemStack ing = getStackInSlot(i);
-				int ingC = ing.getCount();
-				
-				if(!ing.isEmpty())
-				{
-					if(getItemByID(id) instanceof ICraftable)
-					{
-						List<ItemStack> recipe = ((ICraftable)getItemByID(id)).getCraftingRecipe(getItemByID(id));
-						for(int j = 0; j < recipe.size(); j++)
-						{
-							ItemStack rec = recipe.get(j);
-							int recC = rec.getCount();
-							
-							if(ing.getItem() == rec.getItem() && ingC >= recC)
-							{
-								if(ing.getItem() != getStackInSlot(i - 1).getItem())
-								{
-									validIngredients++;
-									
-									if(validIngredients == recipe.size())
-									{
-										//Mark this to enable crafting
-										craft = true;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			if(craft)
-			{
-				//Stack removal
-				Item toCraft = getItemByID(id);
-				List<ItemStack> recipe = ((ICraftable)toCraft).getCraftingRecipe(toCraft);
-				for(int i = 0; i < getCraftingInventory(); i++)
-				{
-					ItemStack ing = getStackInSlot(i);
-					
-					for(int j = 0; j < recipe.size(); j++)
-					{
-						ItemStack craftStack = recipe.get(j);
-						
-						if(ing.getItem() == craftStack.getItem())
-						{
-							ing.shrink(craftStack.getCount());
-						}
-					}
-				}
-				
-				//Put the right item and amount into the output slot
-				if(((ICraftable)getItemByID(id)) instanceof ItemAmmo)
-				{
-					setInventorySlotContents(OUTPUT, new ItemStack(getItemByID(id), getStackInSlot(OUTPUT).getCount() + ((ItemAmmo)getItemByID(id)).getCraftCount(getItemByID(id))));
-				}
-				
-				else setInventorySlotContents(OUTPUT, new ItemStack(getItemByID(id)));
-			}
-		}
-	}
-	
 	public void craft(int id, CraftMode mode)
 	{
 		setCraftMode(mode);
 		boolean craft = false;
 		
-		if(getStackInSlot(OUTPUT).getItem() instanceof ItemAmmo && getCurrentCraftingMode() == CraftMode.Ammo)
+		if(getStackInSlot(OUTPUT).getItem() instanceof ItemAmmo && getCurrentCraftingMode() == CraftMode.AMMO)
 		{
 			ItemStack stack = getStackInSlot(OUTPUT);
 			ItemAmmo ammo = (ItemAmmo)stack.getItem();
@@ -196,7 +82,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 		
 		if(getItemByID(id) instanceof ICraftable)
 		{
-			final List<ItemStack> recipe = ((ICraftable)getItemByID(id)).getCraftingRecipe(getItemByID(id));
+			final List<ItemStack> recipe = ((ICraftable)getItemByID(id)).getCraftingRecipe();
 			
 			for(int i = 0; i < recipe.size(); i++)
 			{
@@ -220,7 +106,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 		{
 			//Stack removal
 			Item toCraft = getItemByID(id);
-			List<ItemStack> recipe = ((ICraftable)toCraft).getCraftingRecipe(toCraft);
+			List<ItemStack> recipe = ((ICraftable)toCraft).getCraftingRecipe();
 			for(int i = 0; i < getCraftingInventory(); i++)
 			{
 				ItemStack ing = getStackInSlot(i);
@@ -253,7 +139,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	
 	public Item getItemByID(int id)
 	{
-		if(getCurrentCraftingMode() == CraftMode.Gun)
+		if(getCurrentCraftingMode() == CraftMode.GUN)
 		{
 			if(id < GunBase.GUNS.size())
 			{
@@ -261,7 +147,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 			}
 		}
 		
-		else if(getCurrentCraftingMode() == CraftMode.Ammo)
+		else if(getCurrentCraftingMode() == CraftMode.AMMO)
 		{
 			if(id < AMMO.size())
 			{
@@ -269,7 +155,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 			}
 		}
 		
-		else if(getCurrentCraftingMode() == CraftMode.Atachment)
+		else if(getCurrentCraftingMode() == CraftMode.ATTACHMENT)
 		{
 			if(id < ATTACHMENT.size())
 			{
@@ -277,7 +163,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 			}
 		}
 		
-		else if(getCurrentCraftingMode() == CraftMode.Clothing)
+		else if(getCurrentCraftingMode() == CraftMode.CLOTHING)
 		{
 			if(id < CLOTHING.size())
 			{
@@ -285,7 +171,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 			}
 		}
 		
-		else if(getCurrentCraftingMode() == CraftMode.Healing)
+		else if(getCurrentCraftingMode() == CraftMode.HEALING)
 		{
 			if(id < HEALING.size())
 			{
@@ -293,11 +179,19 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 			}
 		}
 		
-		else if(getCurrentCraftingMode() == CraftMode.Throwables)
+		else if(getCurrentCraftingMode() == CraftMode.THROWABLES)
 		{
 			if(id < THROWABLES.size())
 			{
 				return THROWABLES.get(id);
+			}
+		}
+		
+		else if(getCurrentCraftingMode() == CraftMode.OTHER)
+		{
+			if(id < OTHER.size())
+			{
+				return OTHER.get(id);
 			}
 		}
 		
@@ -327,7 +221,32 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	
 	public enum CraftMode
 	{	
-		Gun, Ammo, Atachment, Clothing, Healing, Throwables;
+		GUN("Gun", GunBase.GUNS),
+		AMMO("Ammo", TileEntityGunWorkbench.AMMO),
+		ATTACHMENT("Attachment", TileEntityGunWorkbench.ATTACHMENT),
+		CLOTHING("Clothing", TileEntityGunWorkbench.CLOTHING),
+		HEALING("Healing", TileEntityGunWorkbench.HEALING),
+		THROWABLES("Throwables", TileEntityGunWorkbench.THROWABLES),
+		OTHER("Other", TileEntityGunWorkbench.OTHER);
+		
+		private String name;
+		private Collection group;
+		
+		private CraftMode(String name, final Collection group) 
+		{
+			this.name = name;
+			this.group = group;
+		}
+		
+		public String getName()
+		{
+			return name;
+		}
+		
+		public Collection getGroup()
+		{
+			return group;
+		}
 	}
 	
 	public CraftMode nextMode()
