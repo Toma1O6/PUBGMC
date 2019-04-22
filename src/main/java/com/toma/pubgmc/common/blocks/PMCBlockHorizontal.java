@@ -44,4 +44,9 @@ public class PMCBlockHorizontal extends PMCBlock
     {
         return new BlockStateContainer(this, FACING);
     }
+    
+	public static int getBoundingBoxFromRotation(IBlockState state)
+	{
+		return state.getValue(FACING).getHorizontalIndex();
+	}
 }

@@ -256,7 +256,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	

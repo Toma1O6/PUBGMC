@@ -89,6 +89,15 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal>
 		return this;
 	}
 	
+	/**
+	 * 0 - S; 1 - W; 2 - N; 3 - E
+	 */
+	public HorizontalBlockBuilder aabb(AxisAlignedBB... horizontalBoxes)
+	{
+		this.boxes = horizontalBoxes;
+		return this;
+	}
+	
 	public HorizontalBlockBuilder soundType(SoundType type)
 	{
 		this.soundType = type;
@@ -137,13 +146,13 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal>
 			@Override
 			public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) 
 			{
-				return boxes[0];
+				return boxes.length == 4 ? boxes[getBoundingBoxFromRotation(state)] : boxes[0];
 			}
 			
 			@Override
-			public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
+			public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 			{
-				return boxes[1];
+				return boxes.length == 4 ? boxes[getBoundingBoxFromRotation(state)] : boxes[1];
 			}
 			
 			@Override
