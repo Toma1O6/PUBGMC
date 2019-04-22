@@ -113,7 +113,6 @@ public class CommandLootGenerate extends CommandBase
 		else if(args[0].equalsIgnoreCase("generate"))
 		{
 			IGameData game = world.getCapability(GameDataProvider.GAMEDATA, null);
-			System.out.println(game.getGameID());
 			int count = 0;
 			if(args.length == 5 && isValidNumber(args[1]) && isValidNumber(args[2]) && isValidNumber(args[3]) && isValidNumber(args[4]))
 			{
@@ -157,8 +156,15 @@ public class CommandLootGenerate extends CommandBase
 			
 			if(shouldSendCommandFeedback(world.getGameRules()))
 			{
-				if(count == 0) sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't locate any loot spawners, try again."));
-				else sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Generated loot inside " + TextFormatting.YELLOW + count + TextFormatting.GREEN + " loot spawners"));
+				if(!data.getWeaponList().isEmpty() && data.getLootChanceMultiplier() > 0)
+				{
+					if(count == 0) sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't locate any loot spawners, try again."));
+					else sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Generated loot inside " + TextFormatting.YELLOW + count + TextFormatting.GREEN + " loot spawners"));
+				}
+				
+				else {
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Attempted to generate loot, but weapons are disabled. Execute '/loot reset' to fix that"));
+				}
 			}
 		}
 		

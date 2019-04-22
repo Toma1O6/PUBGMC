@@ -6,6 +6,8 @@ import java.util.Random;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.blocks.BlockLootSpawner;
+import com.toma.pubgmc.common.blocks.BlockLootSpawner.LootType;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -241,6 +243,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 	 */
 	public void generateLoot(boolean airdroploot, boolean addAmmo, boolean randomAmmo, double chanceMultiplier, List<GunType> weaponList)
 	{
+		LootType type = LootType.getTypeFromState(world.getBlockState(pos));
 		slot = -1;
 		this.inventory.clear();
 		this.weapons = weaponList;
@@ -255,18 +258,18 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		addRareHealing(rand.nextInt(12));
 		
 		//Rare meds
-		if(Math.random() * 100 <= 10 * chanceMultiplier)
+		if(Math.random() * 100 <= 10 * chanceMultiplier * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), RARE_HEAL.get(rand.nextInt(RARE_HEAL.size())));
 		}
 		
-		if(Math.random() * 100 <= 45 * chanceMultiplier)
+		if(Math.random() * 100 <= 45 * chanceMultiplier * type.getLootMultiplier())
 		{	
 			//Actual gun gen
 			if(ConfigPMC.worldSettings.enableGunLoot)
 			{
 				//Flare gun 0.5% spawn
-				if(Math.random() * 100 <= 0.5 * chanceMultiplier)
+				if(Math.random() * 100 <= 0.5 * chanceMultiplier * type.getLootMultiplier())
 				{
 					setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.PMCItems.FLARE_GUN));
 					if(addAmmo)
@@ -276,7 +279,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Sniper rifles 2% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 2 * chanceMultiplier && weapons.contains(GunType.SR))
+				else if(Math.random() * 100 <= 2 * chanceMultiplier * type.getLootMultiplier() && weapons.contains(GunType.SR))
 				{
 					addSRs(airdroploot);
 					
@@ -288,7 +291,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//DMRs 3% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 3 * chanceMultiplier && weapons.contains(GunType.DMR))
+				else if(Math.random() * 100 <= 3 * chanceMultiplier * type.getLootMultiplier() && weapons.contains(GunType.DMR))
 				{
 					addDMRs(airdroploot);
 					
@@ -300,7 +303,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Assault rifles 15% spawn, airdrop wep disabled
-				else if(Math.random() * 100 <= 15 * chanceMultiplier && weapons.contains(GunType.AR))
+				else if(Math.random() * 100 <= 15 * chanceMultiplier * type.getLootMultiplier() && weapons.contains(GunType.AR))
 				{
 					addARs(airdroploot);
 					
@@ -312,7 +315,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//SMGs 20% spawn 
-				else if(Math.random() * 100 <= 20 * chanceMultiplier && weapons.contains(GunType.SMG))
+				else if(Math.random() * 100 <= 20 * chanceMultiplier * type.getLootMultiplier() && weapons.contains(GunType.SMG))
 				{
 					addSMGs();
 					
@@ -324,7 +327,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 				}
 				
 				//Shotguns 35% spawn
-				else if(Math.random() * 100 <= 35 * chanceMultiplier && weapons.contains(GunType.SHOTGUN))
+				else if(Math.random() * 100 <= 35 * chanceMultiplier * type.getLootMultiplier() && weapons.contains(GunType.SHOTGUN))
 				{
 					addShotguns();
 					
@@ -349,34 +352,34 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 			}
 		}
 		
-		if(Math.random() * 100 <= 15 * chanceMultiplier)
+		if(Math.random() * 100 <= 15 * chanceMultiplier * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), THROWABLES.get(rand.nextInt(THROWABLES.size())));
 		}
-		else if(Math.random() * 100 <= 20 * chanceMultiplier)
+		else if(Math.random() * 100 <= 20 * chanceMultiplier * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), WEARABLE.get(rand.nextInt(WEARABLE.size())));
 		}
-		else if(Math.random() * 100 <= 15 * chanceMultiplier)
+		else if(Math.random() * 100 <= 15 * chanceMultiplier * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), BACKPACKS.get(rand.nextInt(BACKPACKS.size())));
 		}
-		else if(Math.random() * 100 <= 25 * chanceMultiplier)
+		else if(Math.random() * 100 <= 25 * chanceMultiplier * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), COMMON_HEAL.get(rand.nextInt(COMMON_HEAL.size())));
 		}
-		else if(Math.random() * 100 <= 35 * chanceMultiplier)
+		else if(Math.random() * 100 <= 35 * chanceMultiplier * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), AMMO.get(rand.nextInt(AMMO.size())));
 		}
 		
-		if(Math.random() * 100 <= 20 * chanceMultiplier)
+		if(Math.random() * 100 <= 20 * chanceMultiplier * type.getLootMultiplier())
 		{
 			addAttachments(airdroploot);
 			setInventorySlotContents(getEmptySlot(), ATTACHMENTS.get(rand.nextInt(ATTACHMENTS.size())));
 		}
 		
-		if(Math.random() <= 0.05)
+		if(Math.random() <= 0.05 * type.getLootMultiplier())
 		{
 			setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.PMCItems.FUELCAN));
 		}

@@ -313,7 +313,7 @@ public class PMCRegistry
 					new BlockGlass("schoolwindow", Material.GLASS, SoundType.GLASS),
 					new BlockAirdrop("airdrop", Material.IRON, SoundType.METAL, MapColor.BLUE),
 					new PMCBlock("darkwood", Material.WOOD),
-					new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE, MapColor.BLACK, LootType.COMMON),
+					new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE, MapColor.BLACK),
 					new BlockPlayerCrate("player_crate", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
 					new BlockFurniture("chair", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
 					new BlockFurniture("table", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
