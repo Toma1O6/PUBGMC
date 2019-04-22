@@ -10,8 +10,6 @@ import net.minecraft.client.Minecraft;
 public abstract class Animation
 {
 	public static final Vector3f EMPTYVEC = new Vector3f(0f, 0f, 0f);
-	public static final Quat4f EMPTYQUAT = new Quat4f();
-	public static final Quat4f[] ROTATION_QUAT4F_EMPTY = new Quat4f[] {EMPTYQUAT, EMPTYQUAT};
 	public float movementX,movementY,movementZ;
 	public float rotationX,rotationY,rotationZ;
 	
@@ -19,13 +17,7 @@ public abstract class Animation
 	public abstract Vector3f getMovementVec();
 	
 	@Nonnull
-	public abstract Quat4f[] getRotationVectors();
-	
-	@Nonnull
-	public abstract Quat4f getLeft();
-	
-	@Nonnull
-	public abstract Quat4f getRight();
+	public abstract Vector3f getRotationVector();
 	
 	public static float calculateMovement(float baseMovement)
 	{

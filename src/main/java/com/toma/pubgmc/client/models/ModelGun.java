@@ -5,6 +5,7 @@ import javax.vecmath.Vector3f;
 
 import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.animation.Animation;
+import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -39,6 +40,7 @@ public abstract class ModelGun extends ModelBase
 	private final ModelScope15X scope15x = new ModelScope15X();
 	
 	public AimingAnimation aimAnimation;
+	public HeldAnimation heldAnimation;
 	private float[] aimStates = new float[] {0f, 0f, 0f};
 	
 	public Animation[] animations;
@@ -47,10 +49,10 @@ public abstract class ModelGun extends ModelBase
 	{
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAimingAnimationStates(0f, 0f, 0f);
-		
+		heldAnimation = new HeldAnimation();
 		this.initAnimations();
 		
-		animations = new Animation[] {aimAnimation};
+		animations = new Animation[] {aimAnimation, heldAnimation};
 	}
 	
 	public abstract void render(ItemStack stack);
@@ -313,6 +315,7 @@ public abstract class ModelGun extends ModelBase
 	public void processAnimations(boolean aim)
 	{
 		aimAnimation.processAnimation(aim);
+		heldAnimation.processAnimation();
 	}
 	
 	public AimingAnimation getAimAnimation()
@@ -320,14 +323,9 @@ public abstract class ModelGun extends ModelBase
 		return aimAnimation;
 	}
 	
-	public Quat4f getLeftRotation()
+	public HeldAnimation getHeldAnimation()
 	{
-		return Animation.EMPTYQUAT;
-	}
-	
-	public Quat4f getRightRotation()
-	{
-		return Animation.EMPTYQUAT;
+		return heldAnimation;
 	}
 	
 	/**

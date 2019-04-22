@@ -19,6 +19,7 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -73,7 +74,6 @@ public class BakedModelGun implements IBakedModel
 		return false;
 	}
 	
-	// TODO: make weapon animations here to prevent gui movement
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
@@ -118,9 +118,7 @@ public class BakedModelGun implements IBakedModel
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
 				this.process();
-				
-				leftRot = this.getLeftRotation();
-				rightRot = this.getRightRotation();
+				//System.out.println(((GunBase)held.getItem()).getWeaponModel().getHeldAnimation().getHeldStyle().rotation);
 				transl = this.getTranslation();
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
@@ -154,15 +152,5 @@ public class BakedModelGun implements IBakedModel
 	private Vector3f getTranslation()
 	{
 		return ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : Animation.EMPTYVEC;
-	}
-	
-	private Quat4f getLeftRotation()
-	{
-		return ((GunBase)held.getItem()).getWeaponModel().getLeftRotation();
-	}
-	
-	private Quat4f getRightRotation()
-	{
-		return ((GunBase)held.getItem()).getWeaponModel().getRightRotation();
 	}
 }

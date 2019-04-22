@@ -4,55 +4,47 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class HeldAnimation extends Animation
 {
 	private Vector3f value = EMPTYVEC;
 	private float mx, my, mz;
-	private float rrx, rry, rrz;
-	private float lrx, lry, lrz;
+	private float rx, ry, rz;
 	private HeldStyle style;
 	private EntityPlayer player;
 	
 	public HeldAnimation() 
 	{
+		style = HeldStyle.NORMAL;
 		player = Minecraft.getMinecraft().player;
 	}
 	
 	public void processAnimation()
 	{
-		if(player == null)
+		if(!Minecraft.getMinecraft().isGamePaused())
 		{
-			player = Minecraft.getMinecraft().player;
-			return;
+			if(player == null)
+			{
+				player = Minecraft.getMinecraft().player;
+				return;
+			}
+
+			this.getHeldStyle().handle(this, player.isSprinting());
 		}
-		
-		this.getHeldStyle().handle(this, player.isSprinting());
 	}
 	
 	@Override
-	public Quat4f[] getRotationVectors()
+	public Vector3f getRotationVector()
 	{
-		return new Quat4f[] {this.getRight(), this.getLeft()};
+		return new Vector3f(rx, ry, rz);
 	}
 	
 	@Override
 	public Vector3f getMovementVec()
 	{
 		return new Vector3f(mx, my, mz);
-	}
-	
-	@Override
-	public Quat4f getLeft()
-	{
-		return new Quat4f(lrx, lry, lrz, 0f);
-	}
-	
-	@Override
-	public Quat4f getRight() 
-	{
-		return new Quat4f(rrx, rry, rrz, 0f);
 	}
 	
 	public void setStyle(HeldStyle style)
@@ -65,40 +57,62 @@ public class HeldAnimation extends Animation
 		return style;
 	}
 	
+	private boolean isNormalModeFinished()
+	{
+		return rx == style.rotation.x && ry == style.rotation.y && rz == style.rotation.z;
+	}
+	
+	private boolean hasReturned()
+	{
+		return rx == 0 && ry == 0 && rz == 0;
+	}
+	
 	public enum HeldStyle
 	{
-		SMALL(EMPTYQUAT, EMPTYQUAT, 0f, 0f, 0f),
-		NORMAL(new Quat4f(1.5f, 0f, -1.2f, 0f), new Quat4f(1.5f, 0f, 0f, 0f), 0f, 0f, 0f);
+		SMALL(EMPTYVEC, 0f, 0f, 0f),
+		NORMAL(new Vector3f(0f, 80f, 0f), -0.5f, 0f, 0f);
 		
-		public float x, y, z;
-		public Quat4f left, right;
+		public final float x, y, z;
+		public final Vector3f rotation;
 		
-		private HeldStyle(Quat4f left, Quat4f right, float x, float y, float z)
+		private HeldStyle(Vector3f rot, float x, float y, float z)
 		{
-			this.left = left;
-			this.right = right;
+			this.rotation = rot;
 			this.x = x;
 			this.y = y;
 			this.z = z;
 		}
 		
-		public void handle(HeldAnimation animation, boolean sprint)
+		public void handle(HeldAnimation a, boolean sprint)
 		{
 			if(this.equals(SMALL)) {
-				handleSmall(animation, sprint);
+				handleSmall(a, sprint);
 			} else if(this.equals(NORMAL)) {
-				handleNormal(animation, sprint);
+				handleNormal(a, sprint);
 			}
 		}
 		
-		private void handleSmall(HeldAnimation animation, boolean sprint)
+		private void handleSmall(HeldAnimation a, boolean sprint)
 		{
 			
 		}
 		
-		private void handleNormal(HeldAnimation animation, boolean sprint)
+		private void handleNormal(HeldAnimation a, boolean sprint)
 		{
+			if(sprint && !a.isNormalModeFinished())
+			{
+				a.ry = a.ry < rotation.y ? a.ry + calculateMovement(4f) : rotation.y;
+				a.mx = a.mx > x ? a.mx - calculateMovement(0.02f) : x;
+			}
 			
+			else if(!sprint && !a.hasReturned())
+			{
+				a.ry = a.ry > 0f ? a.ry - calculateMovement(4f) : 0f;
+				a.mx = a.mx < 0f ? a.mx + calculateMovement(0.02f) : 0f;
+			}
+			
+			GlStateManager.translate(a.mx, a.my, a.mz);
+			GlStateManager.rotate(a.ry, 0f, 1f, 0f);
 		}
 	}
 }

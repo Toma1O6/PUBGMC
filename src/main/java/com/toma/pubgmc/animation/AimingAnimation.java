@@ -37,21 +37,9 @@ public class AimingAnimation extends Animation
 	}
 	
 	@Override
-	public Quat4f getLeft()
+	public Vector3f getRotationVector()
 	{
-		return EMPTYQUAT;
-	}
-	
-	@Override
-	public Quat4f getRight() 
-	{
-		return EMPTYQUAT;
-	}
-	
-	@Override
-	public Quat4f[] getRotationVectors()
-	{
-		return ROTATION_QUAT4F_EMPTY;
+		return EMPTYVEC;
 	}
 	
 	public Vector3f getFinalState()
