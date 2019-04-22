@@ -4,6 +4,7 @@ import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
+import com.toma.pubgmc.common.HorizontalBlockBuilder;
 import com.toma.pubgmc.common.blocks.BlockAirdrop;
 import com.toma.pubgmc.common.blocks.BlockBigAirdrop;
 import com.toma.pubgmc.common.blocks.BlockBush;
@@ -22,6 +23,7 @@ import com.toma.pubgmc.common.blocks.BlockProp;
 import com.toma.pubgmc.common.blocks.BlockSolid;
 import com.toma.pubgmc.common.blocks.BlockSolidRotatable;
 import com.toma.pubgmc.common.blocks.PMCBlock;
+import com.toma.pubgmc.common.blocks.PMCBlockHorizontal;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.entity.EntityFlare;
 import com.toma.pubgmc.common.entity.EntityGrenade;
@@ -76,6 +78,7 @@ import com.toma.pubgmc.util.AttachmentHelper;
 import com.toma.pubgmc.util.PMCItemBlock;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -271,6 +274,13 @@ public class PMCRegistry
 		public static final Block CHAIR = null;
 		public static final Block TABLE = null;
 		public static final Block COPPER_ORE = null;
+		
+		/** Props by OfficialMajonaise **/
+		public static final PMCBlockHorizontal DESK = null;
+		public static final PMCBlockHorizontal CHAIR1 = null;
+		public static final PMCBlockHorizontal STORAGEBASE = null;
+		public static final PMCBlockHorizontal STORAGETOP = null;
+		
 	}
 	
 	public static final class ToolMaterials
@@ -332,7 +342,11 @@ public class PMCRegistry
 					new BlockGunWorkbench("gun_workbench"),
 					new BlockBigAirdrop("big_airdrop"),
 					new BlockOre("copper_ore"),
-					new BlockLandMine("landmine")
+					new BlockLandMine("landmine"),
+					HorizontalBlockBuilder.create("desk", Material.WOOD).soundType(SoundType.WOOD).build(),
+					HorizontalBlockBuilder.create("chair1", Material.WOOD).soundType(SoundType.WOOD).build(),
+					HorizontalBlockBuilder.create("storagebase", Material.WOOD).soundType(SoundType.WOOD).build(),
+					HorizontalBlockBuilder.create("storagetop", Material.WOOD).soundType(SoundType.WOOD).build()
 			};
 			
 			event.getRegistry().registerAll(BLOCKS);
@@ -458,7 +472,11 @@ public class PMCRegistry
 					new PMCItemBlock(PMCRegistry.PMCBlocks.GUN_WORKBENCH),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.BIG_AIRDROP),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.COPPER_ORE),
-					new PMCItemBlock(PMCRegistry.PMCBlocks.LANDMINE)
+					new PMCItemBlock(PMCRegistry.PMCBlocks.LANDMINE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.DESK),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.CHAIR1),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.STORAGEBASE),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.STORAGETOP)
 			};
 			
 			event.getRegistry().registerAll(ITEMS);

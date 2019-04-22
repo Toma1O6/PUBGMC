@@ -174,12 +174,14 @@ tile.player_crate.name=Player Crate
 tile.gun_workbench.name=Gun Workbench
 tile.copper_ore.name=Copper Ore
 tile.landmine.name=Mine
+tile.chair1.name=School Chair
+tile.desk.name=Desk
+tile.storagebase.name=Storage Base
+tile.storagetop.name=Storage Top
 
 //Creative Tabs
 itemGroup.pmcitemstab=PUBGMC: Items
 itemGroup.pmcblockstab=PUBGMC: Blocks
-itemGroup.pmcclothingtab=PUBGMC: Clothing
-itemGroup.pmcgunstab=PUBGMC: Guns
 
 //Block containers
 container.airdrop=Airdrop
