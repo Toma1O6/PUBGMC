@@ -225,7 +225,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		slot = -1;
 		
 		// Create armor loot which is same in every drop; 1 medical loot, 2 gun and med loot 
-		if(ConfigPMC.worldSettings.airdropLootGen == 1)
+		if(ConfigPMC.common.worldSettings.airdropLootGen == 1)
 		{
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3HELMET));
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3BODY));
@@ -250,7 +250,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 			generateGhillie();
 		}
 		
-		if(ConfigPMC.worldSettings.airdropLootGen == 2)
+		if(ConfigPMC.common.worldSettings.airdropLootGen == 2)
 		{
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3HELMET));
 			setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3BODY));
@@ -343,7 +343,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		
 		if(!world.isRemote)
 		{
-			if(world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.worldSettings.aidropRange, false) instanceof EntityPlayer)
+			if(world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.common.worldSettings.aidropRange, false) instanceof EntityPlayer)
 			{
 				
 			}

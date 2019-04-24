@@ -544,223 +544,223 @@ public class PMCRegistry
 		
 		public static GunBase[] registeredGuns()
 		{
-			GunBase p92 = GunBuilder.create("p92").damage(ConfigPMC.weaponSettings.p92).velocity(7).gravity(0.015, 4).firerate(2)
+			GunBase p92 = GunBuilder.create("p92").damage(ConfigPMC.common.weaponSettings.p92).velocity(7).gravity(0.015, 4).firerate(2)
 					.recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p92).ammo(AmmoType.AMMO9MM, 15, 20)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_p92, 6f, PMCSounds.gun_p92_silenced, 4f)
 					.build();
 			
-			GunBase p1911 = GunBuilder.create("p1911").damage(ConfigPMC.weaponSettings.p1911).velocity(7.25).gravity(0.01, 5).firerate(2)
+			GunBase p1911 = GunBuilder.create("p1911").damage(ConfigPMC.common.weaponSettings.p1911).velocity(7.25).gravity(0.01, 5).firerate(2)
 					.recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p1911).ammo(AmmoType.AMMO45ACP, 7, 12)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_p1911, 6f, PMCSounds.gun_p1911_silenced, 4f)
 					.build();
 			
-			GunBase p18c = GunBuilder.create("p18c").damage(ConfigPMC.weaponSettings.p18c).velocity(7).gravity(0.015, 4).firerate(1)
+			GunBase p18c = GunBuilder.create("p18c").damage(ConfigPMC.common.weaponSettings.p18c).velocity(7).gravity(0.015, 4).firerate(1)
 					.recoil(1.5f, 0.75f).reload(ReloadType.MAGAZINE, 34, PMCSounds.reload_p18c).ammo(AmmoType.AMMO9MM, 17, 25)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_p18c, 6f, PMCSounds.gun_p18c_silenced, 4f)
 					.build();
 			
-			GunBase r1895 = GunBuilder.create("r1895").damage(ConfigPMC.weaponSettings.r1895).velocity(7.5).gravity(0.01, 5).firerate(13)
+			GunBase r1895 = GunBuilder.create("r1895").damage(ConfigPMC.common.weaponSettings.r1895).velocity(7.5).gravity(0.01, 5).firerate(13)
 					.recoil(2.5f, 1.5f).reload(ReloadType.SINGLE, 14, PMCSounds.reload_r1895).ammo(AmmoType.AMMO762, 7)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_r1895, 6f, PMCSounds.gun_r1895_silenced, 4f)
 					.build();
 			
-			GunBase r45 = GunBuilder.create("r45").damage(ConfigPMC.weaponSettings.r45).velocity(7.25).gravity(0.01, 5).firerate(12)
+			GunBase r45 = GunBuilder.create("r45").damage(ConfigPMC.common.weaponSettings.r45).velocity(7.25).gravity(0.01, 5).firerate(12)
 					.recoil(2f, 1.5f).reload(ReloadType.MAGAZINE, 40, PMCSounds.reload_r45).ammo(AmmoType.AMMO45ACP, 6)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_r45, 6f)
 					.build();
 			
-			GunBase scorpion = GunBuilder.create("scorpion").damage(ConfigPMC.weaponSettings.scorpion).velocity(7).gravity(0.015, 4).firerate(1)
+			GunBase scorpion = GunBuilder.create("scorpion").damage(ConfigPMC.common.weaponSettings.scorpion).velocity(7).gravity(0.015, 4).firerate(1)
 					.recoil(1.3f, 0.3f).reload(ReloadType.MAGAZINE, 57, PMCSounds.reload_scorpion).ammo(AmmoType.AMMO9MM, 20, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_scorpion, 6f, PMCSounds.gun_scorpion_silenced, 4f)
 					.build();
 			
-			GunBase win94 = GunBuilder.create("win94").damage(ConfigPMC.weaponSettings.win94).velocity(12).gravity(0.008, 7).firerate(25)
+			GunBase win94 = GunBuilder.create("win94").damage(ConfigPMC.common.weaponSettings.win94).velocity(12).gravity(0.008, 7).firerate(25)
 					.recoil(5.5f, 3.5f).reload(ReloadType.SINGLE, 15, PMCSounds.reload_win94).ammo(AmmoType.AMMO45ACP, 8)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
 					.sound(PMCSounds.gun_win94, 10f)
 					.build();
 			
-			GunBase sawedoff = GunBuilder.create("sawed_off").damage(ConfigPMC.weaponSettings.sawedoff).velocity(5).gravity(0.175, 0).firerate(10)
+			GunBase sawedoff = GunBuilder.create("sawed_off").damage(ConfigPMC.common.weaponSettings.sawedoff).velocity(5).gravity(0.175, 0).firerate(10)
 					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 70, PMCSounds.reload_sawedoff).ammo(AmmoType.AMMO12G, 2)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
 					.sound(PMCSounds.gun_sawed_off, 8f)
 					.build();
 			
-			GunBase s1897 = GunBuilder.create("s1897").damage(ConfigPMC.weaponSettings.s1897).velocity(5.5).gravity(0.175, 0).firerate(15)
+			GunBase s1897 = GunBuilder.create("s1897").damage(ConfigPMC.common.weaponSettings.s1897).velocity(5.5).gravity(0.175, 0).firerate(15)
 					.recoil(3.5f, 2f).reload(ReloadType.SINGLE, 10, PMCSounds.reload_s1897).ammo(AmmoType.AMMO12G, 5)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
 					.sound(PMCSounds.gun_s1897, 8f)
 					.build();
 			
-			GunBase s686 = GunBuilder.create("s686").damage(ConfigPMC.weaponSettings.s686).velocity(5.5).gravity(0.175, 0).firerate(5)
+			GunBase s686 = GunBuilder.create("s686").damage(ConfigPMC.common.weaponSettings.s686).velocity(5.5).gravity(0.175, 0).firerate(5)
 					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 48, PMCSounds.reload_s686).ammo(AmmoType.AMMO12G, 2)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
 					.sound(PMCSounds.gun_s686, 6f)
 					.build();
 			
-			GunBase s12k = GunBuilder.create("s12k").damage(ConfigPMC.weaponSettings.s12k).velocity(5.5).gravity(0.175, 0).firerate(7)
+			GunBase s12k = GunBuilder.create("s12k").damage(ConfigPMC.common.weaponSettings.s12k).velocity(5.5).gravity(0.175, 0).firerate(7)
 					.recoil(6f, 2f).reload(ReloadType.MAGAZINE, 65, PMCSounds.reload_s12k).ammo(AmmoType.AMMO12G, 5)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SHOTGUN)
 					.sound(PMCSounds.gun_s12k, 8f)
 					.build();
 			
-			GunBase uzi = GunBuilder.create("microuzi").damage(ConfigPMC.weaponSettings.microuzi).velocity(8).gravity(0.02, 4).firerate(1)
+			GunBase uzi = GunBuilder.create("microuzi").damage(ConfigPMC.common.weaponSettings.microuzi).velocity(8).gravity(0.02, 4).firerate(1)
 					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 56, PMCSounds.reload_microuzi).ammo(AmmoType.AMMO9MM, 25, 35)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
 					.sound(PMCSounds.gun_micro_uzi, 8f, PMCSounds.gun_micro_uzi_silenced, 4f)
 					.build();
 			
-			GunBase vector = GunBuilder.create("vector").damage(ConfigPMC.weaponSettings.vector).velocity(8).gravity(0.035, 4).firerate(1)
+			GunBase vector = GunBuilder.create("vector").damage(ConfigPMC.common.weaponSettings.vector).velocity(8).gravity(0.035, 4).firerate(1)
 					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 30, PMCSounds.reload_vector).ammo(AmmoType.AMMO9MM, 19, 33)
 					.firemode(Firemode.AUTO, Firemode.all()).weaponType(GunType.SMG).setTwoRoundBurst()
 					.sound(PMCSounds.gun_vector, 8f, PMCSounds.gun_vector_silenced, 4f)
 					.build();
 			
-			GunBase bizon = GunBuilder.create("bizon").damage(ConfigPMC.weaponSettings.bizon).velocity(8).gravity(0.035, 4).firerate(2)
+			GunBase bizon = GunBuilder.create("bizon").damage(ConfigPMC.common.weaponSettings.bizon).velocity(8).gravity(0.035, 4).firerate(2)
 					.recoil(2.5f, 1.25f).reload(ReloadType.MAGAZINE, 62, PMCSounds.reload_bizon).ammo(AmmoType.AMMO9MM, 53)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
 					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
 					.build();
 			
-			GunBase tommy = GunBuilder.create("tommy_gun").damage(ConfigPMC.weaponSettings.tommygun).velocity(8.5).gravity(0.02, 5).firerate(2)
+			GunBase tommy = GunBuilder.create("tommy_gun").damage(ConfigPMC.common.weaponSettings.tommygun).velocity(8.5).gravity(0.02, 5).firerate(2)
 					.recoil(2f, 0.75f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_tommygun).ammo(AmmoType.AMMO45ACP, 30, 50)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
 					.sound(PMCSounds.gun_tommy_gun, 8f, PMCSounds.gun_tommy_gun_silenced, 4f)
 					.build();
 			
-			GunBase ump = GunBuilder.create("ump45").damage(ConfigPMC.weaponSettings.ump9).velocity(8.5).gravity(0.02, 5).firerate(2)
+			GunBase ump = GunBuilder.create("ump45").damage(ConfigPMC.common.weaponSettings.ump9).velocity(8.5).gravity(0.02, 5).firerate(2)
 					.recoil(1.9f, 1.2f).reload(ReloadType.MAGAZINE, 52, PMCSounds.reload_ump9).ammo(AmmoType.AMMO45ACP, 25, 35)
 					.firemode(Firemode.AUTO, Firemode.all()).weaponType(GunType.SMG).setTwoRoundBurst()
 					.sound(PMCSounds.gun_ump9, 8f, PMCSounds.gun_ump9_silenced, 4f)
 					.build();
 			
-			GunBase m16a4 = GunBuilder.create("m16a4").damage(ConfigPMC.weaponSettings.m16a4).velocity(12).gravity(0.005, 8).firerate(2)
+			GunBase m16a4 = GunBuilder.create("m16a4").damage(ConfigPMC.common.weaponSettings.m16a4).velocity(12).gravity(0.005, 8).firerate(2)
 					.recoil(3.5f, 1f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_m16a4).ammo(AmmoType.AMMO556, 30, 40)
 					.firemode(Firemode.SINGLE, Firemode.noAuto()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_m16a4, 10f, PMCSounds.gun_m16a4_silenced, 7f)
 					.build();
 			
-			GunBase m416 = GunBuilder.create("m416").damage(ConfigPMC.weaponSettings.m416).velocity(12).gravity(0.0065, 7).firerate(2)
+			GunBase m416 = GunBuilder.create("m416").damage(ConfigPMC.common.weaponSettings.m416).velocity(12).gravity(0.0065, 7).firerate(2)
 					.recoil(3.5f, 1.5f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_m416).ammo(AmmoType.AMMO556, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_m416, 10f, PMCSounds.gun_m416_silenced, 7f)
 					.build();
 			
-			GunBase scarl = GunBuilder.create("scar_l").damage(ConfigPMC.weaponSettings.scarl).velocity(11).gravity(0.007, 7).firerate(2)
+			GunBase scarl = GunBuilder.create("scar_l").damage(ConfigPMC.common.weaponSettings.scarl).velocity(11).gravity(0.007, 7).firerate(2)
 					.recoil(3.25f, 1.25f).reload(ReloadType.MAGAZINE, 65, PMCSounds.reload_scarl).ammo(AmmoType.AMMO556, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_scarl, 10f, PMCSounds.gun_scarl_silenced, 7f)
 					.build();
 			
-			GunBase qbz = GunBuilder.create("qbz").damage(ConfigPMC.weaponSettings.qbz).velocity(11).gravity(0.007, 7).firerate(2)
+			GunBase qbz = GunBuilder.create("qbz").damage(ConfigPMC.common.weaponSettings.qbz).velocity(11).gravity(0.007, 7).firerate(2)
 					.recoil(3.25f, 1.25f).reload(ReloadType.MAGAZINE, 70, PMCSounds.reload_qbz).ammo(AmmoType.AMMO556, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_qbz, 10f, PMCSounds.gun_qbz_silenced, 7f)
 					.build();
 			
-			GunBase g36c = GunBuilder.create("g36c").damage(ConfigPMC.weaponSettings.g36c).velocity(11).gravity(0.0065, 7).firerate(2)
+			GunBase g36c = GunBuilder.create("g36c").damage(ConfigPMC.common.weaponSettings.g36c).velocity(11).gravity(0.0065, 7).firerate(2)
 					.recoil(3.5f, 1.5f).reload(ReloadType.MAGAZINE, 82, PMCSounds.reload_g36c).ammo(AmmoType.AMMO556, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_g36c, 10f, PMCSounds.gun_g36c_silenced, 7f)
 					.build();
 			
-			GunBase aug = GunBuilder.create("aug").damage(ConfigPMC.weaponSettings.aug).velocity(12).gravity(0.0065, 7).firerate(2)
+			GunBase aug = GunBuilder.create("aug").damage(ConfigPMC.common.weaponSettings.aug).velocity(12).gravity(0.0065, 7).firerate(2)
 					.recoil(3.75f, 1.25f).reload(ReloadType.MAGAZINE, 69, PMCSounds.reload_aug).ammo(AmmoType.AMMO556, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_aug, 10f, PMCSounds.gun_aug_silenced, 7f)
 					.build();
 			
-			GunBase akm = GunBuilder.create("akm").damage(ConfigPMC.weaponSettings.akm).velocity(9).gravity(0.025, 7).firerate(2)
+			GunBase akm = GunBuilder.create("akm").damage(ConfigPMC.common.weaponSettings.akm).velocity(9).gravity(0.025, 7).firerate(2)
 					.recoil(4f, 2f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_akm).ammo(AmmoType.AMMO762, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_akm, 10f, PMCSounds.gun_akm_silenced, 7f)
 					.build();
 			
-			GunBase m762 = GunBuilder.create("beryl_m762").damage(ConfigPMC.weaponSettings.m762).velocity(9.5).gravity(0.025, 7).firerate(2)
+			GunBase m762 = GunBuilder.create("beryl_m762").damage(ConfigPMC.common.weaponSettings.m762).velocity(9.5).gravity(0.025, 7).firerate(2)
 					.recoil(4.25f, 2.15f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_m762).ammo(AmmoType.AMMO762, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.all()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_m762, 10f, PMCSounds.gun_m762_silenced, 7f)
 					.build();
 			
-			GunBase mk47 = GunBuilder.create("mk47_mutant").damage(ConfigPMC.weaponSettings.mk47).velocity(9).gravity(0.025, 7).firerate(2)
+			GunBase mk47 = GunBuilder.create("mk47_mutant").damage(ConfigPMC.common.weaponSettings.mk47).velocity(9).gravity(0.025, 7).firerate(2)
 					.recoil(4f, 1.75f).reload(ReloadType.MAGAZINE, 66, PMCSounds.reload_mk47).ammo(AmmoType.AMMO762, 20, 30)
 					.firemode(Firemode.SINGLE, Firemode.noAuto()).weaponType(GunType.AR).setTwoRoundBurst()
 					.sound(PMCSounds.gun_mk47, 10f, PMCSounds.gun_mk47_silenced, 7f)
 					.build();
 			
-			GunBase groza = GunBuilder.create("groza").damage(ConfigPMC.weaponSettings.groza).velocity(9).gravity(0.02, 7).firerate(2)
+			GunBase groza = GunBuilder.create("groza").damage(ConfigPMC.common.weaponSettings.groza).velocity(9).gravity(0.02, 7).firerate(2)
 					.recoil(3.75f, 1.75f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_groza).ammo(AmmoType.AMMO762, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.AR)
 					.sound(PMCSounds.gun_groza, 10f, PMCSounds.gun_groza_silenced, 7f)
 					.build();
 			
-			GunBase dp28 = GunBuilder.create("dp28").damage(ConfigPMC.weaponSettings.dp28).velocity(9).gravity(0.03, 6).firerate(2)
+			GunBase dp28 = GunBuilder.create("dp28").damage(ConfigPMC.common.weaponSettings.dp28).velocity(9).gravity(0.03, 6).firerate(2)
 					.recoil(4.5f, 2.5f).reload(ReloadType.MAGAZINE, 95, PMCSounds.reload_dp28).ammo(AmmoType.AMMO762, 47)
 					.firemode(Firemode.AUTO, Firemode.AUTO).weaponType(GunType.LMG)
 					.sound(PMCSounds.gun_dp28, 10f)
 					.build();
 			
-			GunBase m249 = GunBuilder.create("m249").damage(ConfigPMC.weaponSettings.m249).velocity(11).gravity(0.007, 6).firerate(2)
+			GunBase m249 = GunBuilder.create("m249").damage(ConfigPMC.common.weaponSettings.m249).velocity(11).gravity(0.007, 6).firerate(2)
 					.recoil(3.25f, 1f).reload(ReloadType.MAGAZINE, 148, PMCSounds.reload_m249).ammo(AmmoType.AMMO556, 100)
 					.firemode(Firemode.AUTO, Firemode.AUTO).weaponType(GunType.LMG)
 					.sound(PMCSounds.gun_m249, 10f)
 					.build();
 			
-			GunBase vss = GunBuilder.create("vss").damage(ConfigPMC.weaponSettings.vss).velocity(7).gravity(0.035, 2).firerate(2)
+			GunBase vss = GunBuilder.create("vss").damage(ConfigPMC.common.weaponSettings.vss).velocity(7).gravity(0.035, 2).firerate(2)
 					.recoil(1.5f, 0.5f).reload(ReloadType.MAGAZINE, 40, PMCSounds.reload_vss).ammo(AmmoType.AMMO9MM, 10, 20)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.DMR)
 					.sound(PMCSounds.gun_vss, 2.5f)
 					.build();
 			
-			GunBase mini14 = GunBuilder.create("mini14").damage(ConfigPMC.weaponSettings.mini14).velocity(14).gravity(0.015, 8).firerate(1)
+			GunBase mini14 = GunBuilder.create("mini14").damage(ConfigPMC.common.weaponSettings.mini14).velocity(14).gravity(0.015, 8).firerate(1)
 					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 62, PMCSounds.reload_mini14).ammo(AmmoType.AMMO556, 20, 30)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
 					.sound(PMCSounds.gun_mini14, 12f, PMCSounds.gun_mini14_silenced, 8f)
 					.build();
 			
-			GunBase qbu = GunBuilder.create("qbu").damage(ConfigPMC.weaponSettings.qbu).velocity(14).gravity(0.015, 8).firerate(1)
+			GunBase qbu = GunBuilder.create("qbu").damage(ConfigPMC.common.weaponSettings.qbu).velocity(14).gravity(0.015, 8).firerate(1)
 					.recoil(3.5f, 2f).reload(ReloadType.MAGAZINE, 44, PMCSounds.reload_qbu).ammo(AmmoType.AMMO556, 10, 20)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
 					.sound(PMCSounds.gun_qbu, 12f, PMCSounds.gun_qbu_silenced, 6f)
 					.build();
 			
-			GunBase sks = GunBuilder.create("sks").damage(ConfigPMC.weaponSettings.sks).velocity(10).gravity(0.035, 7).firerate(1)
+			GunBase sks = GunBuilder.create("sks").damage(ConfigPMC.common.weaponSettings.sks).velocity(10).gravity(0.035, 7).firerate(1)
 					.recoil(5.5f, 2.25f).reload(ReloadType.MAGAZINE, 32, PMCSounds.reload_sks).ammo(AmmoType.AMMO762, 10, 20)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
 					.sound(PMCSounds.gun_sks, 12f, PMCSounds.gun_sks_silenced, 8f)
 					.build();
 			
-			GunBase slr = GunBuilder.create("slr").damage(ConfigPMC.weaponSettings.slr).velocity(10).gravity(0.035, 7).firerate(1)
+			GunBase slr = GunBuilder.create("slr").damage(ConfigPMC.common.weaponSettings.slr).velocity(10).gravity(0.035, 7).firerate(1)
 					.recoil(5.75f, 2.25f).reload(ReloadType.MAGAZINE, 53, PMCSounds.reload_slr).ammo(AmmoType.AMMO762, 10, 20)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.DMR)
 					.sound(PMCSounds.gun_slr, 12f, PMCSounds.gun_slr_silenced, 8f)
 					.build();
 			
-			GunBase mk14 = GunBuilder.create("mk14").damage(ConfigPMC.weaponSettings.mk14).velocity(11).gravity(0.025, 7).firerate(2)
+			GunBase mk14 = GunBuilder.create("mk14").damage(ConfigPMC.common.weaponSettings.mk14).velocity(11).gravity(0.025, 7).firerate(2)
 					.recoil(7.5f, 3.25f).reload(ReloadType.MAGAZINE, 39, PMCSounds.reload_mk14).ammo(AmmoType.AMMO762, 10, 20)
 					.firemode(Firemode.SINGLE, Firemode.noBurst()).weaponType(GunType.DMR)
 					.sound(PMCSounds.gun_mk14, 12f, PMCSounds.gun_mk14_silenced, 8f)
 					.build();
 			
-			GunBase kar98k = GunBuilder.create("kar98k").damage(ConfigPMC.weaponSettings.kar98k).velocity(11).gravity(0.04, 8).firerate(30)
+			GunBase kar98k = GunBuilder.create("kar98k").damage(ConfigPMC.common.weaponSettings.kar98k).velocity(11).gravity(0.04, 8).firerate(30)
 					.recoil(4.5f, 1.25f).reload(ReloadType.KAR98K, 63, PMCSounds.reload_kar98k).ammo(AmmoType.AMMO762, 5)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
 					.sound(PMCSounds.gun_kar98k, 15f, PMCSounds.gun_kar98k_silenced, 10f)
 					.build();
 			
-			GunBase m24 = GunBuilder.create("m24").damage(ConfigPMC.weaponSettings.m24).velocity(11.5).gravity(0.03, 7).firerate(35)
+			GunBase m24 = GunBuilder.create("m24").damage(ConfigPMC.common.weaponSettings.m24).velocity(11.5).gravity(0.03, 7).firerate(35)
 					.recoil(4.5f, 1.25f).reload(ReloadType.MAGAZINE, 71, PMCSounds.reload_m24).ammo(AmmoType.AMMO762, 5, 7)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
 					.sound(PMCSounds.gun_m24, 15f, PMCSounds.gun_m24_silenced, 10f)
 					.build();
 			
-			GunBase awm = GunBuilder.create("awm").damage(ConfigPMC.weaponSettings.awm).velocity(17).gravity(0.005, 10).firerate(35)
+			GunBase awm = GunBuilder.create("awm").damage(ConfigPMC.common.weaponSettings.awm).velocity(17).gravity(0.005, 10).firerate(35)
 					.recoil(4.5f, 1.25f).reload(ReloadType.MAGAZINE, 78, PMCSounds.reload_awm).ammo(AmmoType.AMMO300M, 5, 7)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
 					.sound(PMCSounds.gun_awm, 15f, PMCSounds.gun_awm_silenced, 10f)

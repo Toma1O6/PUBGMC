@@ -266,7 +266,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		if(Math.random() * 100 <= 45 * chanceMultiplier * type.getLootMultiplier())
 		{	
 			//Actual gun gen
-			if(ConfigPMC.worldSettings.enableGunLoot)
+			if(ConfigPMC.common.worldSettings.enableGunLoot)
 			{
 				//Flare gun 0.5% spawn
 				if(Math.random() * 100 <= 0.5 * chanceMultiplier * type.getLootMultiplier())

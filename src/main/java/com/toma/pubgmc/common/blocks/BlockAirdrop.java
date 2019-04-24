@@ -42,7 +42,7 @@ public class BlockAirdrop extends PMCBlock
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
 	{
-		if(!worldIn.isRemote && ConfigPMC.worldSettings.airdropLootGen > 0)
+		if(!worldIn.isRemote && ConfigPMC.common.worldSettings.airdropLootGen > 0)
 		{
 			TileEntity tilee = worldIn.getTileEntity(pos);
 			if(tilee instanceof TileEntityAirdrop)

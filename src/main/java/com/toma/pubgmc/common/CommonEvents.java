@@ -17,6 +17,7 @@ import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketUpdateConfig;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
@@ -173,7 +174,7 @@ public class CommonEvents
 		if(ev.phase == Phase.START && !player.world.isRemote)
 		{
 			//Inventory limit
-			if(ConfigPMC.playerSettings.enableInventoryLimit)
+			if(ConfigPMC.common.playerSettings.enableInventoryLimit)
 			{
 				for(int i = 9; i < 36; i++)
 				{
@@ -352,7 +353,7 @@ public class CommonEvents
 	@SubscribeEvent
 	public void onPlayerLoggedIn(PlayerLoggedInEvent e)
 	{
-		if(ConfigPMC.playerSettings.enableMessagesSentOnJoin)
+		if(ConfigPMC.client.other.enableMessagesSentOnJoin)
 		{
 			if(e.player instanceof EntityPlayer && e.player != null)
 			{
@@ -366,6 +367,8 @@ public class CommonEvents
 			EntityPlayerMP player = (EntityPlayerMP) e.player;
 			if(player != null && !player.world.isRemote)
 			{
+				PacketHandler.sendToClient(new PacketUpdateConfig(), player);
+				
 				//We get the last player data and later sync it to client
 				player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 				IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);

@@ -185,7 +185,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 		
 		if(!world.isRemote)
 		{
-			if(world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigPMC.worldSettings.aidropRange, false) instanceof EntityPlayer)
+			if(world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigPMC.common.worldSettings.aidropRange, false) instanceof EntityPlayer)
 			{
 				//DO NOTHING
 			}

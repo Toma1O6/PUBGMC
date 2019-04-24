@@ -23,6 +23,7 @@ import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.common.network.sp.PacketSound;
 import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
 import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
+import com.toma.pubgmc.common.network.sp.PacketUpdateConfig;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
@@ -69,6 +70,7 @@ public class PacketHandler
 		registerClientPacket(PacketUpdatePlayerRotation.class);
 		registerClientPacket(PacketSpawnVehicle.class);
 		registerClientPacket(PacketVehicleData.class);
+		registerClientPacket(PacketUpdateConfig.class);
 	}
 	
 	public static void sendToClient(IMessage packet, EntityPlayerMP player)

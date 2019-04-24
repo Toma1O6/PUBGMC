@@ -144,9 +144,9 @@ public class EntityPlane extends Entity
 			}
 		}
 		
-		endPos = new BlockPos(endX, ConfigPMC.worldSettings.planeHeight, endZ);
-		setPosition(startX, ConfigPMC.worldSettings.planeHeight, startZ);
-		startPos = new BlockPos(startX, ConfigPMC.worldSettings.planeHeight, startZ);
+		endPos = new BlockPos(endX, ConfigPMC.common.worldSettings.planeHeight, endZ);
+		setPosition(startX, ConfigPMC.common.worldSettings.planeHeight, startZ);
+		startPos = new BlockPos(startX, ConfigPMC.common.worldSettings.planeHeight, startZ);
 		rotationYaw = 180f;
 		updateHeading(startX, startZ, endPos);
 		
@@ -167,7 +167,7 @@ public class EntityPlane extends Entity
 	{
 		super.onUpdate();
 		
-		canFly = this.ticksExisted >= (ConfigPMC.worldSettings.planeWaitTime * 20);
+		canFly = this.ticksExisted >= (ConfigPMC.common.worldSettings.planeWaitTime * 20);
 		
 		if(gameData == null)
 		{
@@ -198,7 +198,7 @@ public class EntityPlane extends Entity
 				
 				if(!gameData.isPlaying()) setDead();
 				
-				if(motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.worldSettings.planeWaitTime * 20 + 15)
+				if(motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.worldSettings.planeWaitTime * 20 + 15)
 				{
 					setDead();
 					Pubgmc.logger.error("Plane is in invalid position, despawning...");
@@ -284,7 +284,7 @@ public class EntityPlane extends Entity
 		motionY = compound.getDouble("motY");
 		motionZ = compound.getDouble("motZ");
 		rotationYaw = compound.getFloat("rotYaw");
-		endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.worldSettings.planeHeight, compound.getDouble("endZ"));
+		endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.common.worldSettings.planeHeight, compound.getDouble("endZ"));
 		hasReachedDestination = compound.getBoolean("reachedDest");
 		timeSinceDestination = compound.getShort("timeSinceDest");
 		setUniqueId(compound.getUniqueId("UUID"));

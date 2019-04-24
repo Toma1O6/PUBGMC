@@ -763,7 +763,7 @@ public class GunBase extends PMCItem implements ICraftable
 		public void handleReload(EntityPlayer player)
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			if(ConfigPMC.worldSettings.enableGuns)
+			if(ConfigPMC.common.worldSettings.enableGuns)
 			{
 				ItemStack heldItem = player.getHeldItemMainhand();
 				

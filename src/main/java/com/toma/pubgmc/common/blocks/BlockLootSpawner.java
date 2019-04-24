@@ -87,7 +87,7 @@ public class BlockLootSpawner extends PMCBlock
 	@Override
 	public BlockRenderLayer getBlockLayer()
 	{
-		return ConfigPMC.playerSettings.lootRenderType > 0 ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
+		return ConfigPMC.client.other.lootRenderType > 0 ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
 	}
 	
 	@Override

@@ -155,7 +155,7 @@ public class ClientEvents
 	{
 		if(e.getEntity() instanceof EntityPlayer && e.isCancelable())
 		{
-			if(!ConfigPMC.playerSettings.renderPlayerNameTags)
+			if(!ConfigPMC.common.playerSettings.renderPlayerNameTags)
 			{
 				e.setCanceled(true);
 			}
@@ -173,7 +173,7 @@ public class ClientEvents
 		IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 		
     	//e.getType() == ElementType.TEXT - this is very important otherwise it will mess all fonts used in mc
-    	if(!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && !ConfigPMC.overlaySettings.imageBoostOverlay && data.getBoost() > 0)
+    	if(!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && !ConfigPMC.client.overlays.imageBoostOverlay && data.getBoost() > 0)
     	{
     		mc.entityRenderer.setupOverlayRendering();
     		int width = res.getScaledWidth();
@@ -201,7 +201,7 @@ public class ClientEvents
         	//There is the rendering
         	//Users can edit the position using their configs
         	//Position by default: Above hunger bar
-        	mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.overlaySettings.overlayX, top + ConfigPMC.overlaySettings.overlayY, color);
+        	mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.client.overlays.overlayX, top + ConfigPMC.client.overlays.overlayY, color);
     	}
     	
     	//Ammo and Firemode info rendering
@@ -260,12 +260,12 @@ public class ClientEvents
     		}
     	}
     	
-		if(ConfigPMC.overlaySettings.imageBoostOverlay)
+		if(ConfigPMC.client.overlays.imageBoostOverlay)
 		{
 			//We cancel the xp bar, but just only if the boost bar position is different than by default
 	    	if(e.getType() == ElementType.EXPERIENCE)
 	    	{
-	    		if(ConfigPMC.overlaySettings.imgOverlayX == 0 && ConfigPMC.overlaySettings.imgOverlayY == 0 && data.getBoost() > 0)
+	    		if(ConfigPMC.client.overlays.imgOverlayX == 0 && ConfigPMC.client.overlays.imgOverlayY == 0 && data.getBoost() > 0)
 	    		{
 		    		e.setCanceled(true);
 	    		}
@@ -338,7 +338,7 @@ public class ClientEvents
         		}
     		}
     		
-    		if(ConfigPMC.overlaySettings.armorOverlayIcons)
+    		if(ConfigPMC.client.overlays.armorOverlayIcons)
     			renderArmorIcons(e, sp, res, mc, data);
     		
     		if(stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan)
@@ -472,7 +472,7 @@ public class ClientEvents
     		switchScopeColor(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
     	}
     	
-    	if(ConfigPMC.worldSettings.enableGuns)
+    	if(ConfigPMC.common.worldSettings.enableGuns)
     	{
         	if(sp instanceof EntityPlayer)
         	{
@@ -580,7 +580,7 @@ public class ClientEvents
     			//Check if the LMB has been pressed
     			if(gs.keyBindAttack.isPressed())
     			{
-    				if(ConfigPMC.worldSettings.enableGuns)
+    				if(ConfigPMC.common.worldSettings.enableGuns)
     				{
             			//Shoot only once if the firemode is single
         				if(gun.getFiremode() == Firemode.SINGLE)
@@ -609,7 +609,7 @@ public class ClientEvents
     				//This is being handled in ClientTickEvent so we just prepare some stuff here
     				if(gun.getFiremode() == Firemode.BURST)
     				{
-    					if(ConfigPMC.worldSettings.enableGuns)
+    					if(ConfigPMC.common.worldSettings.enableGuns)
     					{
         					if(!tracker.hasCooldown(gun) && !shooting && !data.isReloading())
         					{
@@ -719,7 +719,7 @@ public class ClientEvents
         	{	
         		if(player.getHeldItemMainhand().getItem() instanceof GunBase)
         		{
-        			if(ConfigPMC.worldSettings.enableGuns)
+        			if(ConfigPMC.common.worldSettings.enableGuns)
         			{
             			GunBase gun = (GunBase)player.getHeldItemMainhand().getItem();
             			CooldownTracker tracker = player.getCooldownTracker();
@@ -767,7 +767,7 @@ public class ClientEvents
         		
         		if(stack.hasTagCompound() && gun.hasAmmo(stack))
         		{
-        			if(shooting && gun.getFiremode() == Firemode.BURST && ConfigPMC.worldSettings.enableGuns)
+        			if(shooting && gun.getFiremode() == Firemode.BURST && ConfigPMC.common.worldSettings.enableGuns)
         			{
         				shootingTimer++;
         				
@@ -860,7 +860,7 @@ public class ClientEvents
 			}
 			
 			//Check if the player is having selected the slot where he started reloading
-	        if(ConfigPMC.worldSettings.enableGuns)
+	        if(ConfigPMC.common.worldSettings.enableGuns)
 	        {
 	            if(data.isReloading())
 	            {
@@ -888,7 +888,7 @@ public class ClientEvents
 				}
 			}
 			
-			if(ConfigPMC.playerSettings.enableTP)
+			if(ConfigPMC.common.playerSettings.enableTP)
 			{
 				if(Minecraft.getMinecraft().gameSettings.thirdPersonView != 0 && !player.capabilities.isCreativeMode && !(player.getRidingEntity() instanceof EntityParachute))
 				{
@@ -964,13 +964,13 @@ public class ClientEvents
         	}
 	        
 	        //For better experience with NV googles
-	        if(ConfigPMC.playerSettings.forceBrightness)
+	        if(ConfigPMC.common.playerSettings.forceBrightness)
 	        {
 		        float bright = Minecraft.getMinecraft().gameSettings.gammaSetting;
 		        
-		        if(bright != ConfigPMC.playerSettings.brightness)
+		        if(bright != ConfigPMC.common.playerSettings.brightness)
 		        {
-		        	Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.playerSettings.brightness;
+		        	Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.common.playerSettings.brightness;
 		        }
 	        }
 	        
@@ -1227,24 +1227,24 @@ public class ClientEvents
 		int width = res.getScaledWidth();
 		int height = res.getScaledHeight();
 		
-		if(ConfigPMC.overlaySettings.imageBoostOverlay)
+		if(ConfigPMC.client.overlays.imageBoostOverlay)
 		{	
     		int left = width / 2 - 91;
     		int top = height - 32 + 3;
     		short barWidth = 182;
     		
     		//Actual drawing code
-    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.overlaySettings.imgOverlayX, top + ConfigPMC.overlaySettings.imgOverlayY, barWidth, 5, false);
+    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgOverlayX, top + ConfigPMC.client.overlays.imgOverlayY, barWidth, 5, false);
 
     		if(data.getBoost() > 0)
     		{
     			int boost = (int)data.getBoost();
     			double sizeX = ((182D / 100D) * boost);
-    			ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.overlaySettings.imgOverlayX, top + ConfigPMC.overlaySettings.imgOverlayY, sizeX, 5, false);
+    			ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgOverlayX, top + ConfigPMC.client.overlays.imgOverlayY, sizeX, 5, false);
     		}
     		
     		//This will render after these 2 above to make sure this will always be on the top
-    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.overlaySettings.imgOverlayX, top + ConfigPMC.overlaySettings.imgOverlayY, barWidth, 5, true);
+    		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgOverlayX, top + ConfigPMC.client.overlays.imgOverlayY, barWidth, 5, true);
 		}
     }
     

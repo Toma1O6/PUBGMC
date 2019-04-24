@@ -5,6 +5,7 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RangeInt;
+import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 import net.minecraftforge.common.config.Config.Type;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -14,80 +15,113 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME + " Config")
 public class ConfigPMC
 {
-	@Name("World Settings")
-	@Comment("All world related fields are here")
-	public static WorldSettings worldSettings = new WorldSettings();
+	@Name("Client-side only options")
+	public static ClientConfig client = new ClientConfig();
 	
-	@Name("Player Settings")
-	@Comment("All player related fields are here")
-	public static PlayerSettings playerSettings = new PlayerSettings();
+	@Name("Common options")
+	public static CommonConfig common = new CommonConfig();
 	
-	@Name("Overlay Settings")
-	@Comment("All overlay related fields are here")
-	public static OverlaySettings overlaySettings = new OverlaySettings();
-	
-	@Name("Weapon Settings")
-	@Comment("All weapon related fiels are here")
-	public static WeaponSettings weaponSettings = new WeaponSettings();
-	
-	public static class WorldSettings
+	public static class CommonConfig
 	{
-		@Name("Airdrop loot generation type")
-		@Comment({"Loot is being generated when airdrop is created","0 - No loot","1 - Only armor and healing items","2 - Weapons"})
-		@RangeInt(min = 0, max = 2)
-		public int airdropLootGen = 2;
+		@Name("World Settings")
+		@Comment("All world related fields are here")
+		public static WorldSettings worldSettings = new WorldSettings();
 		
-		@Name("Gun loot generator")
-		@Comment({"Enable gun loot generation.","If false only healing items and grenades will be spawned"})
-		public boolean enableGunLoot = true;
+		@Name("Player Settings")
+		@Comment("All player related fields are here")
+		public static PlayerSettings playerSettings = new PlayerSettings();
 		
-		@Name("Airdrop dissapear range")
-		@Comment("Define minimum player range from airdrop for making it despawn")
-		@RangeInt(min = 10, max = 100)
-		public int aidropRange = 40;
-		
-		@Name("Enable Guns")
-		@Comment("Use this to enable/disable weapons")
-		public boolean enableGuns = true;
-		
-		@Name("Plane fly height")
-		@Comment("Set default height where planes will spawn")
-		@RangeInt(min = 25, max = 256)
-		public int planeHeight = 150;
-		
-		@Name("Plane wait time")
-		@Comment("Set time [in seconds] how long will plane wait after spawning. This is for selecting drop locations")
-		@RangeInt(min = 0, max = 30)
-		public int planeWaitTime = 5;
+		@Name("Weapon Settings")
+		@Comment("All weapon related fiels are here")
+		public static WeaponSettings weaponSettings = new WeaponSettings();
 	}
 	
-	public static class PlayerSettings
+	/**
+	 * Fields which won't be synced from server -> client on player join
+	 */
+	public static class ClientConfig
+	{
+		@Name("Overlays")
+		@Comment("Overlay rendering options")
+		public OverlaySettings overlays = new OverlaySettings();
+		
+		@Name("Other")
+		public OtherSettings other = new OtherSettings();
+	}
+	
+	public static class OtherSettings
 	{
 		@Config.Name("Messages on world join")
 		@Config.Comment("You will receive message when you join world")
 		public boolean enableMessagesSentOnJoin = true;
-		
-		@Config.Name("Allow third person perspective")
-		@Config.Comment("Enable/disable third person perspective")
-		public boolean enableTP = true;
-		
-		@Config.Name("Inventory limit")
-		@Config.Comment("Your inventory will be limited based on your backpack level")
-		public boolean enableInventoryLimit = true;
 		
 		@Config.Name("Loot render quality")
 		@Config.Comment({"0 - OFF","1 - Fast","2 - Fancy"})
 		@Config.RangeInt(min = 0, max = 2)
 		@Config.RequiresMcRestart
 		public int lootRenderType = 2;
+	}
+	
+	
+	
+	public static class WorldSettings
+	{
+		@Name("Airdrop loot generation type")
+		@Comment({"Loot is being generated when airdrop is created","0 - No loot","1 - Only armor and healing items","2 - Weapons"})
+		@RangeInt(min = 0, max = 2)
+		@RequiresWorldRestart
+		public int airdropLootGen = 2;
+		
+		@Name("Gun loot generator")
+		@Comment({"Enable gun loot generation.","If false only healing items and grenades will be spawned"})
+		@RequiresWorldRestart
+		public boolean enableGunLoot = true;
+		
+		@Name("Airdrop dissapear range")
+		@Comment("Define minimum player range from airdrop for making it despawn")
+		@RangeInt(min = 10, max = 100)
+		@RequiresWorldRestart
+		public int aidropRange = 40;
+		
+		@Name("Enable Guns")
+		@Comment("Use this to enable/disable weapons")
+		@RequiresWorldRestart
+		public boolean enableGuns = true;
+		
+		@Name("Plane fly height")
+		@Comment("Set default height where planes will spawn")
+		@RangeInt(min = 25, max = 256)
+		@RequiresWorldRestart
+		public int planeHeight = 150;
+		
+		@Name("Plane wait time")
+		@Comment("Set time [in seconds] how long will plane wait after spawning. This is for selecting drop locations")
+		@RangeInt(min = 0, max = 30)
+		@RequiresWorldRestart
+		public int planeWaitTime = 5;
+	}
+	
+	public static class PlayerSettings
+	{
+		@Config.Name("Allow third person perspective")
+		@Config.Comment("Enable/disable third person perspective")
+		@RequiresWorldRestart
+		public boolean enableTP = true;
+		
+		@Config.Name("Inventory limit")
+		@Config.Comment("Your inventory will be limited based on your backpack level")
+		@RequiresWorldRestart
+		public boolean enableInventoryLimit = true;
 		
 		@Config.Name("Force brightness level")
 		@Config.Comment("Using this you can force players to have defined level of brightness")
+		@RequiresWorldRestart
 		public boolean forceBrightness = false;
 		
 		@Config.Name("Brightness level")
 		@Config.Comment({"Level of brightness all players will have","You need to enable the Force brightness field!"})
 		@Config.RangeInt(min = 0, max = 100)
+		@RequiresWorldRestart
 		public int brightness = 25;
 		
 		@Config.Name("Render player nametags")

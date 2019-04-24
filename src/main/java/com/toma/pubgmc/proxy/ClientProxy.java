@@ -41,7 +41,7 @@ public class ClientProxy implements IProxy
 	{
 		KeyBinds.registerKeybinding();
 		
-		if(ConfigPMC.playerSettings.lootRenderType > 0)
+		if(ConfigPMC.client.other.lootRenderType > 0)
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
 		}

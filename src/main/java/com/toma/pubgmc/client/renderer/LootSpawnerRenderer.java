@@ -54,7 +54,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
         boolean medkit = te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.MEDKIT;
 		
-		if(ConfigPMC.playerSettings.lootRenderType == 2)
+		if(ConfigPMC.client.other.lootRenderType == 2)
 		{
 			if(te.isInvalid() || te == null)
 			{
@@ -128,7 +128,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
 	        }
 		}
 		
-		else if(ConfigPMC.playerSettings.lootRenderType == 1)
+		else if(ConfigPMC.client.other.lootRenderType == 1)
 		{
 			if(te.isInvalid() || te == null || te.getStackInSlot(slot).isEmpty())
 			{
