@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 public class ItemParachute extends PMCItem implements ICraftable
 {
 	private static final Random rand = new Random();
+	private ArrayList<ItemStack> recipe = new ArrayList();
 	
 	public ItemParachute(String name) 
 	{
@@ -60,11 +61,15 @@ public class ItemParachute extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Blocks.WOOL, 15));
 		recipe.add(new ItemStack(Items.STRING, 20));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return recipe;
 	}
 	

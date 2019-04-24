@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBandage extends ItemHealing
 {
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemBandage(String name)
 	{
 		super(name);
@@ -48,13 +50,17 @@ public class ItemBandage extends ItemHealing
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.PAPER, 5));
 		recipe.add(new ItemStack(Blocks.WOOL));
 		recipe.add(new ItemStack(Items.REDSTONE, 5));
 		recipe.add(new ItemStack(Items.GOLD_NUGGET, 1));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return recipe;
 	}
 }

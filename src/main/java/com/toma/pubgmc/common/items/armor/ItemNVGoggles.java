@@ -23,6 +23,8 @@ import net.minecraft.world.World;
 
 public class ItemNVGoggles extends PMCItem implements ICraftable
 {
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemNVGoggles(String name) 
 	{
 		super(name);
@@ -54,13 +56,18 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
 		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Blocks.GLASS_PANE, 4));
 		recipe.add(new ItemStack(Blocks.GLOWSTONE));
 		recipe.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
 		recipe.add(new ItemStack(Blocks.WOOL, 2));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return recipe;
 	}
 	

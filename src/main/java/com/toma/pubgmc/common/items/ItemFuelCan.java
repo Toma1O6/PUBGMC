@@ -21,6 +21,8 @@ import net.minecraft.world.World;
 
 public class ItemFuelCan extends PMCItem implements ICraftable
 {
+	private ArrayList<ItemStack> r = new ArrayList(5);
+	
 	public ItemFuelCan()
 	{
 		super("fuelcan");
@@ -80,14 +82,18 @@ public class ItemFuelCan extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> r = new ArrayList<ItemStack>();
 		r.add(new ItemStack(Items.IRON_INGOT, 2));
 		r.add(new ItemStack(Items.BLAZE_POWDER, 4));
 		r.add(new ItemStack(Items.GLOWSTONE_DUST, 4));
 		r.add(new ItemStack(Items.REDSTONE, 2));
 		r.add(new ItemStack(Items.LAVA_BUCKET));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return r;
 	}
 	

@@ -9,7 +9,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemPainkiller extends ItemHealing
 {
-
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemPainkiller(String name) 
 	{
 		super(name);
@@ -41,15 +42,19 @@ public class ItemPainkiller extends ItemHealing
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.GLASS_BOTTLE));
 		recipe.add(new ItemStack(Items.APPLE));
 		recipe.add(new ItemStack(Items.CARROT, 3));
 		recipe.add(new ItemStack(Items.SUGAR, 5));
 		recipe.add(new ItemStack(Items.GOLD_NUGGET, 3));
 		recipe.add(new ItemStack(Items.SPECKLED_MELON));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return recipe;
 	}
 }

@@ -23,7 +23,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemBackpack extends PMCItem implements ICraftable
-{	
+{
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemBackpack(String name)
 	{
 		super(name);
@@ -49,7 +51,7 @@ public class ItemBackpack extends PMCItem implements ICraftable
 		}
 			
 		if(stack.getItem() == PMCRegistry.PMCItems.BACKPACK2 && (data.getBackpackLevel() == 0 || data.getBackpackLevel() == 1))
-		{	
+		{
 			if(!playerIn.capabilities.isCreativeMode)
 			{
 				stack.shrink(1);
@@ -64,7 +66,7 @@ public class ItemBackpack extends PMCItem implements ICraftable
 		}
 			
 		if(stack.getItem() == PMCRegistry.PMCItems.BACKPACK3 && data.getBackpackLevel() < 3)
-		{	
+		{
 			if(!playerIn.capabilities.isCreativeMode)
 			{
 				stack.shrink(1);
@@ -94,32 +96,32 @@ public class ItemBackpack extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
-		
+		recipe.clear();
 		if(this == PMCRegistry.PMCItems.BACKPACK1)
 		{
 			recipe.add(new ItemStack(Blocks.CHEST));
 			recipe.add(new ItemStack(Items.LEATHER, 10));
-			return recipe;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.BACKPACK2)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
 			recipe.add(new ItemStack(Items.LEATHER, 20));
-			return recipe;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.BACKPACK3)
 		{
 			recipe.add(new ItemStack(PMCRegistry.PMCItems.BACKPACK2));
 			recipe.add(new ItemStack(Items.LEATHER, 30));
-			return recipe;
 		}
-		
-		else return Collections.EMPTY_LIST;
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
+		return recipe;
 	}
 	
 	@Override

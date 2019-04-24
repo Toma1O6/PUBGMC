@@ -31,7 +31,8 @@ import net.minecraft.world.World;
 
 public class ItemGrenade extends PMCItem implements ICraftable
 {
-
+	private ArrayList<ItemStack> recipe = new ArrayList();
+	
 	public ItemGrenade(String name) 
 	{
 		super(name);
@@ -128,14 +129,16 @@ public class ItemGrenade extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
-		
 		recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 		recipe.add(new ItemStack(Items.GUNPOWDER, 10));
 		recipe.add(new ItemStack(Blocks.TNT));
-		
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return recipe;
 	}
 	

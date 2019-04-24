@@ -27,10 +27,13 @@ import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.proxy.IProxy;
 import com.toma.pubgmc.tabs.PMCBlocksTab;
 import com.toma.pubgmc.tabs.PMCItemsTab;
+import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import com.toma.pubgmc.world.OreGen;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
@@ -111,9 +114,15 @@ public class Pubgmc
 		{
 			if(rl.getResourceDomain().equals(MOD_ID))
 			{
-				if(ForgeRegistries.ITEMS.getValue(rl) instanceof GunBase)
+				Item item = ForgeRegistries.ITEMS.getValue(rl);
+				if(item instanceof GunBase)
 				{
-					MinecraftForge.EVENT_BUS.post(new GunPostInitializeEvent((GunBase)ForgeRegistries.ITEMS.getValue(rl)));
+					MinecraftForge.EVENT_BUS.post(new GunPostInitializeEvent((GunBase)item));
+				}
+				
+				if(item instanceof ICraftable)
+				{
+					((ICraftable)item).initCraftingRecipe();
 				}
 			}
 		}

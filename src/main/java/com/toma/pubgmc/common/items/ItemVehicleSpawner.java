@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 
 public class ItemVehicleSpawner extends PMCItem implements ICraftable
 {
+	private ArrayList<ItemStack> rec = new ArrayList();
 	private Vehicles car;
 	
 	public ItemVehicleSpawner(String name, Vehicles vehicle)
@@ -81,9 +82,8 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe() 
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> rec = new ArrayList<ItemStack>();
 		rec.clear();
 		
 		if(this == PMCItems.VEHICLE_UAZ)
@@ -94,10 +94,13 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Blocks.GLASS, 10));
 			rec.add(new ItemStack(Items.REDSTONE, 40));
 			rec.add(new ItemStack(Items.GOLD_INGOT, 45));
-			return rec;
 		}
-		
-		return Collections.EMPTY_LIST;
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe() 
+	{
+		return rec;
 	}
 	
 	@Override

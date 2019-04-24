@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemAdrenalineSyringe extends ItemHealing
 {
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemAdrenalineSyringe(String name)
 	{
 		super(name);
@@ -41,14 +43,18 @@ public class ItemAdrenalineSyringe extends ItemHealing
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.GLASS_BOTTLE));
 		recipe.add(new ItemStack(PMCRegistry.PMCItems.ENERGYDRINK));
 		recipe.add(new ItemStack(PMCRegistry.PMCItems.PAINKILLERS));
 		recipe.add(new ItemStack(Items.SPECKLED_MELON));
 		recipe.add(new ItemStack(Items.GOLDEN_CARROT));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe() 
+	{
 		return recipe;
 	}
 }

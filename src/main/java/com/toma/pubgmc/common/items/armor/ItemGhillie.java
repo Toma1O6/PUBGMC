@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 
 public class ItemGhillie extends ItemArmor implements ICraftable
 {
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
 	
 	public ItemGhillie(String name)
 	{
@@ -57,13 +58,17 @@ public class ItemGhillie extends ItemArmor implements ICraftable
     }*/
     
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(Items.LEATHER_HELMET));
 		recipe.add(new ItemStack(Items.LEATHER_CHESTPLATE));
 		recipe.add(new ItemStack(Items.LEATHER_LEGGINGS));
 		recipe.add(new ItemStack(Blocks.LEAVES, 45));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
 		return recipe;
 	}
 	

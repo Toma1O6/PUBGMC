@@ -13,7 +13,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemFirstAidKit extends ItemHealing
 {
-
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemFirstAidKit(String name)
 	{
 		super(name);
@@ -51,15 +52,19 @@ public class ItemFirstAidKit extends ItemHealing
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> recipe = new ArrayList<ItemStack>();
 		recipe.add(new ItemStack(PMCRegistry.PMCItems.BANDAGE, 2));
 		recipe.add(new ItemStack(Blocks.WOOL));
 		recipe.add(new ItemStack(Items.IRON_NUGGET));
 		recipe.add(new ItemStack(Items.LEATHER, 2));
 		recipe.add(new ItemStack(Items.GOLD_NUGGET, 3));
 		recipe.add(new ItemStack(Items.SPECKLED_MELON));
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe() 
+	{
 		return recipe;
 	}
 }

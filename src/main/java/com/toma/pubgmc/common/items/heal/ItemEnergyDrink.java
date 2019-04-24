@@ -9,7 +9,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemEnergyDrink extends ItemHealing
 {
-
+	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
+	
 	public ItemEnergyDrink(String name) 
 	{
 		super(name);
@@ -41,14 +42,18 @@ public class ItemEnergyDrink extends ItemHealing
 	}
 	
     @Override
-    public List<ItemStack> getCraftingRecipe()
+    public void initCraftingRecipe()
     {
-    	List<ItemStack> recipe = new ArrayList<ItemStack>();
     	recipe.add(new ItemStack(Items.GLASS_BOTTLE));
     	recipe.add(new ItemStack(Items.SUGAR, 10));
     	recipe.add(new ItemStack(Items.APPLE, 3));
     	recipe.add(new ItemStack(Items.GOLD_NUGGET));
     	recipe.add(new ItemStack(Items.MELON, 5));
+    }
+    
+    @Override
+    public List<ItemStack> getCraftingRecipe() 
+    {
     	return recipe;
     }
 }

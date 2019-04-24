@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 {
-	
+	private ArrayList<ItemStack> rec = new ArrayList<ItemStack>();
 	private final Type type;
 	
 	public ItemAttachment(String name, Type attachment) 
@@ -105,23 +105,20 @@ public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> rec = new ArrayList<ItemStack>();
-		
+		rec.clear();
 		//Barrel
 		if(this == PMCRegistry.PMCItems.SILENCER_PISTOL)
 		{
 			rec.add(new ItemStack(Blocks.WOOL, 5, 15));
 			rec.add(new ItemStack(Items.IRON_INGOT, 3));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.SILENCER_SMG)
 		{
 			rec.add(new ItemStack(Blocks.WOOL, 7, 15));
 			rec.add(new ItemStack(Items.IRON_INGOT, 4));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.SILENCER_AR)
@@ -294,7 +291,11 @@ public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 			rec.add(new ItemStack(Items.IRON_INGOT, 10));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 10));
 		}
-		
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe() 
+	{
 		return rec;
 	}
 	

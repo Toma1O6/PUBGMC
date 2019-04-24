@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 public class ItemAmmo extends PMCItem implements ICraftable
 {
 	public final AmmoType type;
+	private ArrayList<ItemStack> rec = new ArrayList<ItemStack>();
 	
 	public ItemAmmo(String name, AmmoType type)
 	{
@@ -64,9 +65,8 @@ public class ItemAmmo extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
 	{
-		List<ItemStack> rec = new ArrayList<ItemStack>();
 		rec.clear();
 		if(this == PMCRegistry.PMCItems.AMMO_9MM)
 		{
@@ -74,7 +74,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 1));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.AMMO_SHOTGUN)
@@ -83,7 +82,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Items.IRON_NUGGET, 8));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 3));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.AMMO_45ACP)
@@ -92,7 +90,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 1));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.AMMO_556)
@@ -101,7 +98,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 5));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
 			rec.add(new ItemStack(Items.GUNPOWDER, 2));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.AMMO_762)
@@ -110,7 +106,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Items.GOLD_NUGGET, 7));
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT));
 			rec.add(new ItemStack(Items.GUNPOWDER, 2));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.AMMO_300M)
@@ -121,7 +116,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
 			rec.add(new ItemStack(Items.DIAMOND));
 			rec.add(new ItemStack(Items.GUNPOWDER, 5));
-			return rec;
 		}
 		
 		else if(this == PMCRegistry.PMCItems.AMMO_FLARE)
@@ -131,10 +125,13 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			rec.add(new ItemStack(Items.GUNPOWDER, 10));
 			rec.add(new ItemStack(Items.BLAZE_POWDER, 3));
 			rec.add(new ItemStack(Items.DYE, 5, 1));
-			return rec;
 		}
-		
-		else return Collections.EMPTY_LIST;
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe()
+	{
+		return rec;
 	}
 	
 	public int getCraftCount(Item item)

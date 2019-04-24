@@ -114,7 +114,12 @@ public class GunBase extends PMCItem implements ICraftable
 	}
 	
 	@Override
-	public List<ItemStack> getCraftingRecipe()
+	public void initCraftingRecipe()
+	{
+	}
+	
+	@Override
+	public List<ItemStack> getCraftingRecipe() 
 	{
 		return craftingRecipe;
 	}
