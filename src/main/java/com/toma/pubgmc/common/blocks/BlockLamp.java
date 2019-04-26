@@ -20,7 +20,6 @@ import net.minecraft.world.World;
 
 public class BlockLamp extends Block
 {
-	
 	public static final PropertyBool ON = PropertyBool.create("on");
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	

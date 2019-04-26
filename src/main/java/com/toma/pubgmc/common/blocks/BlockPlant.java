@@ -18,7 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPlant extends PMCBlock
 {
-	
 	protected static final AxisAlignedBB PLANT_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.3D, 1.0D);
 	
 	public BlockPlant(String name, Material material, SoundType sound, MapColor color) 
