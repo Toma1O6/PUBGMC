@@ -29,7 +29,6 @@ public class ItemGhillie extends ItemArmor implements ICraftable
 		setRegistryName(name);
 		this.setMaxStackSize(1);
 		this.setCreativeTab(Pubgmc.pmcitemstab);
-		TileEntityGunWorkbench.CLOTHING.add(this);
 	}
     
     @Override

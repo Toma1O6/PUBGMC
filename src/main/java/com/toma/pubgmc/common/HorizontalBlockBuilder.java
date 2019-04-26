@@ -110,6 +110,28 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal>
 		return this;
 	}
 	
+	public HorizontalBlockBuilder setTransparent()
+	{
+		opaque = false;
+		fullCube = false;
+		return this;
+	}
+	
+	public HorizontalBlockBuilder setProp()
+	{
+		aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB);
+		setTransparent();
+		renderLayer = BlockRenderLayer.CUTOUT;
+		
+		return this;
+	}
+	
+	public HorizontalBlockBuilder setPassable()
+	{
+		aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB);
+		return this;
+	}
+	
 	@Override
 	public PMCBlockHorizontal build()
 	{

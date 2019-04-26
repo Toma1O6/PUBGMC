@@ -4,10 +4,10 @@ import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
+import com.toma.pubgmc.common.BlockBuilder;
 import com.toma.pubgmc.common.HorizontalBlockBuilder;
 import com.toma.pubgmc.common.blocks.BlockAirdrop;
 import com.toma.pubgmc.common.blocks.BlockBigAirdrop;
-import com.toma.pubgmc.common.blocks.BlockBush;
 import com.toma.pubgmc.common.blocks.BlockFurniture;
 import com.toma.pubgmc.common.blocks.BlockGlass;
 import com.toma.pubgmc.common.blocks.BlockGunWorkbench;
@@ -15,7 +15,6 @@ import com.toma.pubgmc.common.blocks.BlockLamp;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.blocks.BlockLight;
 import com.toma.pubgmc.common.blocks.BlockLootSpawner;
-import com.toma.pubgmc.common.blocks.BlockLootSpawner.LootType;
 import com.toma.pubgmc.common.blocks.BlockOre;
 import com.toma.pubgmc.common.blocks.BlockPlant;
 import com.toma.pubgmc.common.blocks.BlockPlayerCrate;
@@ -78,7 +77,7 @@ import com.toma.pubgmc.util.AttachmentHelper;
 import com.toma.pubgmc.util.PMCItemBlock;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -94,6 +93,7 @@ import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -307,39 +307,47 @@ public class PMCRegistry
 		public static void registerBlocks(Register<Block> event)
 		{
 			final Block[] BLOCKS = {
-					new PMCBlock("roadasphalt", Material.ROCK),
-					new PMCBlock("schoolwall", Material.ROCK),
-					new PMCBlock("schoolroof", Material.ROCK),
-					new BlockGlass("schoolwindow", Material.GLASS, SoundType.GLASS),
+					BlockBuilder.create("roadasphalt", Material.ROCK).soundType(SoundType.STONE).build(),
+					BlockBuilder.create("schoolwall", Material.ROCK).soundType(SoundType.STONE).build(),
+					BlockBuilder.create("schoolroof", Material.ROCK).soundType(SoundType.STONE).build(),
+					BlockBuilder.create("schoolwindow", Material.GLASS).soundType(SoundType.GLASS).setGlass().build(),
 					new BlockAirdrop("airdrop", Material.IRON, SoundType.METAL, MapColor.BLUE),
-					new PMCBlock("darkwood", Material.WOOD),
+					BlockBuilder.create("darkwood", Material.WOOD).soundType(SoundType.WOOD).build(),
 					new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE, MapColor.BLACK),
 					new BlockPlayerCrate("player_crate", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
-					new BlockFurniture("chair", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
-					new BlockFurniture("table", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
-					new PMCBlock("ruinswall", Material.ROCK),
-					new BlockGlass("blueglass", Material.GLASS, SoundType.GLASS),
-					new PMCBlock("target", Material.ROCK),
-					new BlockSolid("lampbottom", Material.IRON, SoundType.METAL, MapColor.GRAY),
-					new BlockSolid("lamppost", Material.IRON, SoundType.METAL, MapColor.GRAY),
+					HorizontalBlockBuilder.create("chair", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
+					HorizontalBlockBuilder.create("table", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
+					BlockBuilder.create("ruinswall", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.WHITE_STAINED_HARDENED_CLAY).build(),
+					BlockBuilder.create("blueglass", Material.GLASS).setGlass().soundType(SoundType.GLASS).build(),
+					BlockBuilder.create("target", Material.ROCK).soundType(SoundType.STONE).build(),
+					BlockBuilder.create("lampbottom", Material.IRON).soundType(SoundType.METAL)
+						.aabb(new AxisAlignedBB(0.05, 0, 0.05, 0.95, 1, 0.95)).setTransparent().build(),
+					BlockBuilder.create("lamppost", Material.IRON).soundType(SoundType.METAL)
+						.aabb(new AxisAlignedBB(0.2, 0, 0.2, 0.8, 1, 0.8)).setTransparent().build(),
 					new BlockLamp("lamptop", Material.IRON),
-					new BlockLight("light", Material.IRON, SoundType.METAL, MapColor.AIR),
-					new BlockSolid("crate", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
-					new BlockSolid("crates", Material.IRON, SoundType.METAL, MapColor.GREEN),
-					new BlockBush("bush", Material.PLANTS, SoundType.PLANT, MapColor.GREEN),
+					BlockBuilder.create("light", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1f)
+						.aabb(new AxisAlignedBB(0.1, 0.75, 0.1, 0.9, 1.0, 0.9), Block.NULL_AABB).build(),
+					BlockBuilder.create("crate", Material.WOOD).soundType(SoundType.WOOD).transparency(false, true).build(),
+					BlockBuilder.create("crates", Material.IRON).soundType(SoundType.METAL).transparency(false, true).build(),
+					HorizontalBlockBuilder.create("bush", Material.PLANTS).soundType(SoundType.PLANT).aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB)
+						.renderType(BlockRenderLayer.CUTOUT).setTransparent().build(),
 					new BlockPlant("wheat", Material.PLANTS, SoundType.PLANT, MapColor.YELLOW),
-					new BlockProp("prop1", Material.PLANTS, SoundType.PLANT, MapColor.AIR),
-					new BlockProp("prop2", Material.PLANTS, SoundType.PLANT, MapColor.AIR),
-					new BlockProp("prop3", Material.IRON, SoundType.METAL, MapColor.AIR),
-					new BlockProp("prop4", Material.IRON, SoundType.METAL, MapColor.AIR),
-					new BlockProp("prop5", Material.CLOTH, SoundType.CLOTH, MapColor.AIR),
-					new BlockSolidRotatable("fence", Material.IRON, SoundType.METAL, MapColor.AIR, true),
-					new BlockSolidRotatable("concrete", Material.ROCK, SoundType.STONE, MapColor.AIR, false),
-					new BlockSolid("electricpole", Material.WOOD, SoundType.WOOD, MapColor.AIR),
-					new BlockSolidRotatable("electricpoletop", Material.WOOD, SoundType.WOOD, MapColor.BROWN, false),
-					new BlockBush("electriccable", Material.IRON, SoundType.METAL, MapColor.AIR),
-					new BlockSolid("radiotower", Material.IRON, SoundType.METAL, MapColor.AIR),
-					new BlockSolid("radiotowertop", Material.IRON, SoundType.METAL, MapColor.AIR),
+					HorizontalBlockBuilder.create("prop1", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
+					HorizontalBlockBuilder.create("prop2", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
+					HorizontalBlockBuilder.create("prop3", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
+					HorizontalBlockBuilder.create("prop4", Material.IRON).soundType(SoundType.METAL).setProp().build(),
+					HorizontalBlockBuilder.create("prop5", Material.CLOTH).soundType(SoundType.CLOTH).setProp().build(),
+					HorizontalBlockBuilder.create("fence", Material.IRON).soundType(SoundType.METAL).setTransparent()
+						.aabb(new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1),new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6),new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1),new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6))
+						.build(),
+					HorizontalBlockBuilder.create("concrete", Material.ROCK).soundType(SoundType.STONE).setTransparent().build(),
+					BlockBuilder.create("electricpole", Material.WOOD).soundType(SoundType.WOOD)
+						.aabb(new AxisAlignedBB(0.2, 0, 0.2, 0.8, 1, 0.8)).setTransparent().build(),
+					HorizontalBlockBuilder.create("electricpoletop", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
+					HorizontalBlockBuilder.create("electriccable", Material.IRON).soundType(SoundType.METAL).setTransparent()
+						.setPassable().build(),
+					BlockBuilder.create("radiotower", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+					BlockBuilder.create("radiotowertop", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
 					new BlockGunWorkbench("gun_workbench"),
 					new BlockBigAirdrop("big_airdrop"),
 					new BlockOre("copper_ore"),
@@ -347,15 +355,12 @@ public class PMCRegistry
 					HorizontalBlockBuilder.create("desk", Material.WOOD)
 						.soundType(SoundType.WOOD).transparency(false, false)
 						.build(),
-						
 					HorizontalBlockBuilder.create("chair1", Material.WOOD)
 						.soundType(SoundType.WOOD).transparency(false, false)
 						.build(),
-						
 					HorizontalBlockBuilder.create("storagebase", Material.WOOD).aabb(new AxisAlignedBB(0, 0, 0, 1, 1, 0.85), new AxisAlignedBB(0.15, 0, 0, 1, 1, 1), new AxisAlignedBB(0, 0, 0.15, 1, 1, 1), new AxisAlignedBB(0, 0, 0, 0.85, 1, 1))
 						.soundType(SoundType.WOOD).transparency(false, false)
 						.build(),
-						
 					HorizontalBlockBuilder.create("storagetop", Material.WOOD).aabb(new AxisAlignedBB(0, 0, 0, 1, 0.8, 0.85), new AxisAlignedBB(0.15, 0, 0, 1, 0.8, 1), new AxisAlignedBB(0, 0, 0.15, 1, 0.8, 1), new AxisAlignedBB(0, 0, 0, 0.85, 0.8, 1))
 						.soundType(SoundType.WOOD).transparency(false, false)
 						.build()

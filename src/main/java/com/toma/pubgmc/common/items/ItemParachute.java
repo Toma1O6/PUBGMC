@@ -30,7 +30,6 @@ public class ItemParachute extends PMCItem implements ICraftable
 		super(name);
 		setCreativeTab(Pubgmc.pmcitemstab);
 		setMaxStackSize(1);
-		TileEntityGunWorkbench.CLOTHING.add(this);
 	}
 	
 	@Override

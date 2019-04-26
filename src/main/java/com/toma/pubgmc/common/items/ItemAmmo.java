@@ -29,8 +29,6 @@ public class ItemAmmo extends PMCItem implements ICraftable
 		this.setMaxStackSize(30);
 		this.type = type;
 		setCreativeTab(Pubgmc.pmcitemstab);
-		
-		TileEntityGunWorkbench.AMMO.add(this);
 	}
 	
 	public Item getAmmoItem()

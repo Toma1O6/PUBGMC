@@ -30,7 +30,6 @@ public class ItemNVGoggles extends PMCItem implements ICraftable
 		super(name);
 		this.setMaxStackSize(1);
 		this.setCreativeTab(Pubgmc.pmcitemstab);
-		TileEntityGunWorkbench.CLOTHING.add(this);
 	}
 	
 	@Override

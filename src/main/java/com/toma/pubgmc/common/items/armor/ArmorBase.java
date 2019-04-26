@@ -29,7 +29,6 @@ public class ArmorBase extends ItemArmor implements ICraftable
 		setUnlocalizedName(name);
 		setRegistryName(name);
 		setCreativeTab(Pubgmc.pmcitemstab);
-		TileEntityGunWorkbench.CLOTHING.add(this);
 	}
 	
 	public ArmorBase setArmorLevel(ArmorLevel level)

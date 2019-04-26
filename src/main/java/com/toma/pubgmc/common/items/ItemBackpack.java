@@ -31,7 +31,6 @@ public class ItemBackpack extends PMCItem implements ICraftable
 		super(name);
 		this.setCreativeTab(Pubgmc.pmcitemstab);
 		this.setMaxStackSize(1);
-		TileEntityGunWorkbench.CLOTHING.add(this);
 	}
 	
 	@Override

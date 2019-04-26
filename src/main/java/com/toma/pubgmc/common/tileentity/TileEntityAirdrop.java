@@ -343,12 +343,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 		
 		if(!world.isRemote)
 		{
-			if(world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.common.worldSettings.aidropRange, false) instanceof EntityPlayer)
-			{
-				
-			}
-		
-			else
+			if(world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.common.worldSettings.aidropRange, false) == null)
 			{
 				world.setBlockToAir(pos);
 			}

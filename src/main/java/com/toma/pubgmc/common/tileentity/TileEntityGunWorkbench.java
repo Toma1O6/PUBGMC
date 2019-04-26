@@ -20,12 +20,13 @@ import net.minecraft.util.text.TextComponentString;
 
 public class TileEntityGunWorkbench extends TileEntity implements IInventoryTileEntity
 {
-	public static final List<Item> AMMO = new ArrayList<Item>();
-	public static final List<Item> ATTACHMENT = new ArrayList<Item>();
-	public static final List<Item> CLOTHING = new ArrayList<Item>();
-	public static final List<Item> HEALING = new ArrayList<Item>();
-	public static final List<Item> THROWABLES = new ArrayList<Item>();
-	public static final List<Item> OTHER = new ArrayList<Item>();
+	private static final List<Item> GUNS = new ArrayList<Item>();
+	private static final List<Item> AMMO = new ArrayList<Item>();
+	private static final List<Item> ATTACHMENT = new ArrayList<Item>();
+	private static final List<Item> CLOTHING = new ArrayList<Item>();
+	private static final List<Item> HEALING = new ArrayList<Item>();
+	private static final List<Item> THROWABLES = new ArrayList<Item>();
+	private static final List<Item> OTHER = new ArrayList<Item>();
 	
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 	private CraftMode mode;
@@ -141,9 +142,9 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	{
 		if(getCurrentCraftingMode() == CraftMode.GUN)
 		{
-			if(id < GunBase.GUNS.size())
+			if(id < GUNS.size())
 			{
-				return GunBase.GUNS.get(id);
+				return GUNS.get(id);
 			}
 		}
 		
@@ -221,7 +222,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	
 	public enum CraftMode
 	{	
-		GUN("Gun", GunBase.GUNS),
+		GUN("Gun", TileEntityGunWorkbench.GUNS),
 		AMMO("Ammo", TileEntityGunWorkbench.AMMO),
 		ATTACHMENT("Attachment", TileEntityGunWorkbench.ATTACHMENT),
 		CLOTHING("Clothing", TileEntityGunWorkbench.CLOTHING),

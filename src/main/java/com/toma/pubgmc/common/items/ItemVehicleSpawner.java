@@ -31,7 +31,6 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 	{
 		super(name);
 		this.car = vehicle;
-		TileEntityGunWorkbench.OTHER.add(this);
 	}
 	
 	@Override

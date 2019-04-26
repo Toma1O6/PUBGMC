@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -17,16 +18,17 @@ import net.minecraft.world.World;
 
 public class BlockBuilder implements IBuilder<PMCBlock>
 {
-	private String name;
-	private Material blockMaterial;
-	private SoundType soundType;
-	private BlockRenderLayer renderLayer;
-	private MapColor mapColor;
-	private boolean opaque, fullCube;
-	private int lightValue = 0;
-	private AxisAlignedBB[] boxes;
+	protected String name;
+	protected Material blockMaterial;
+	protected SoundType soundType;
+	protected BlockRenderLayer renderLayer;
+	protected MapColor mapColor;
+	protected boolean opaque, fullCube;
+	protected float lightValue = 0;
+	protected AxisAlignedBB[] boxes;
+	protected boolean isGlass = false;
 	
-	private BlockBuilder() {}
+	protected BlockBuilder() {}
 	
 	public static BlockBuilder create(String name, Material material)
 	{
@@ -65,7 +67,7 @@ public class BlockBuilder implements IBuilder<PMCBlock>
 		return this;
 	}
 	
-	public BlockBuilder light(int light)
+	public BlockBuilder light(float light)
 	{
 		this.lightValue = light;
 		return this;
@@ -89,10 +91,25 @@ public class BlockBuilder implements IBuilder<PMCBlock>
 		return this;
 	}
 	
+	public BlockBuilder setTransparent()
+	{
+		opaque = false;
+		fullCube = false;
+		return this;
+	}
+	
+	public BlockBuilder setGlass()
+	{
+		setTransparent();
+		renderLayer = BlockRenderLayer.TRANSLUCENT;
+		isGlass = true;
+		return this;
+	}
+	
 	@Override
 	public PMCBlock build()
 	{
-		checkInt(lightValue, 0, 15);
+		checkFloat(lightValue, 0f, 1f);
 		checkNotNull(soundType);
 		
 		PMCBlock builtBlock = new PMCBlock(name, blockMaterial)
@@ -138,8 +155,14 @@ public class BlockBuilder implements IBuilder<PMCBlock>
 			{
 				return soundType;
 			}
+			
+			@Override
+			public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
+			{
+				return isGlass ? blockAccess.getBlockState(pos.offset(side)).getBlock() == this ? false : super.shouldSideBeRendered(blockState, blockAccess, pos, side) : super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+			}
 		};
-		
+		builtBlock.setLightLevel(lightValue);
 		return builtBlock;
 	}
 }

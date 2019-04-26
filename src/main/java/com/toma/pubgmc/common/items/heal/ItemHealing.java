@@ -26,7 +26,6 @@ public abstract class ItemHealing extends PMCItem implements ICraftable
 	public ItemHealing(String name)
 	{
 		super(name);
-		TileEntityGunWorkbench.HEALING.add(this);
 		setMaxStackSize(1);
 	}
 	

@@ -27,7 +27,6 @@ public class ItemFuelCan extends PMCItem implements ICraftable
 	{
 		super("fuelcan");
 		setMaxStackSize(1);
-		TileEntityGunWorkbench.OTHER.add(this);
 	}
 	
 	@Override

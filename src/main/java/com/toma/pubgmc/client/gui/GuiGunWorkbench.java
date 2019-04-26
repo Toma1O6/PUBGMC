@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.gui;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
@@ -82,51 +83,54 @@ public class GuiGunWorkbench extends GuiContainer
 			tileentity.setCraftMode(CraftMode.AMMO);
 		}
 		
-		if(tileentity.getCurrentCraftingMode() == CraftMode.GUN)
+		CraftMode mode = tileentity.getCurrentCraftingMode();
+		Collection c = mode.getGroup();
+		
+		if(mode.equals(CraftMode.GUN))
 		{
-			maxID = GunBase.GUNS.size() - 1;
+			maxID = c.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.AMMO)
+		else if(mode.equals(CraftMode.AMMO))
 		{
-			maxID = tileentity.AMMO.size() - 1;
+			maxID = c.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.ATTACHMENT)
+		else if(mode.equals(CraftMode.ATTACHMENT))
 		{
-			maxID = tileentity.ATTACHMENT.size() - 1;
+			maxID = c.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.CLOTHING)
+		else if(mode.equals(CraftMode.CLOTHING))
 		{
-			maxID = tileentity.CLOTHING.size() - 1;
+			maxID = c.size() - 1;
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.HEALING)
+		else if(mode.equals(CraftMode.HEALING))
 		{
-			maxID = tileentity.HEALING.size() - 1;
+			maxID = c.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		else if(tileentity.getCurrentCraftingMode() == CraftMode.THROWABLES)
+		else if(mode.equals(CraftMode.THROWABLES))
 		{
-			maxID = tileentity.THROWABLES.size() - 1;
+			maxID = c.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();
 		}
 		
-		else if(tileentity.getCurrentCraftingMode().equals(CraftMode.OTHER))
+		else if(mode.equals(CraftMode.OTHER))
 		{
-			maxID = tileentity.OTHER.size() - 1;
+			maxID = c.size() - 1;
 			RenderHelper.enableGUIStandardItemLighting();
 			this.mc.getRenderItem().renderItemIntoGUI(new ItemStack(this.tileentity.getItemByID(id)), guiLeft + 117, guiTop + 50);
 			RenderHelper.disableStandardItemLighting();

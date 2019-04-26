@@ -122,7 +122,9 @@ public class Pubgmc
 				
 				if(item instanceof ICraftable)
 				{
-					((ICraftable)item).initCraftingRecipe();
+					ICraftable item1 = (ICraftable)item;
+					item1.initCraftingRecipe();
+					item1.getCraftMode().getGroup().add(item1);
 				}
 			}
 		}

@@ -30,7 +30,6 @@ public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 		setCreativeTab(Pubgmc.pmcitemstab);
 		
 		this.type = attachment;
-		TileEntityGunWorkbench.ATTACHMENT.add(this);
 	}
 	
 	@Override

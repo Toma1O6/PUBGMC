@@ -38,7 +38,6 @@ public class ItemGrenade extends PMCItem implements ICraftable
 		super(name);
 		setMaxStackSize(1);
 		setCreativeTab(Pubgmc.pmcitemstab);
-		TileEntityGunWorkbench.THROWABLES.add(this);
 	}
 	
 	@Override
