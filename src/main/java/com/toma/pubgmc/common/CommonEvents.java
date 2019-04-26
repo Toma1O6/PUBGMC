@@ -23,6 +23,7 @@ import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.util.handlers.CustomDateEvents;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -678,6 +679,9 @@ public class CommonEvents
 			
 			default: break;
 		}
+		
+		// For handling specific events like christmas etc
+		CustomDateEvents.handleDates(player);
 	}
 	
 	private static void sendMessage(EntityPlayer player, String message, TextFormatting color)
