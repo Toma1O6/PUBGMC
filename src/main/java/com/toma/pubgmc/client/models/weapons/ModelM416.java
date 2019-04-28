@@ -475,11 +475,9 @@ public class ModelM416 extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			boolean aim = data.isAiming();
-			
 			GlStateManager.pushMatrix();
 			{
-				renderM416(aim, stack);
+				renderM416(data.isAiming(), stack);
 			}
 			GlStateManager.popMatrix();
 		}
