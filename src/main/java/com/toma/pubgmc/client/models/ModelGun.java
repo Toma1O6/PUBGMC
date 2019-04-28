@@ -6,6 +6,7 @@ import javax.vecmath.Vector3f;
 import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.animation.Animation;
 import com.toma.pubgmc.animation.HeldAnimation;
+import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -49,7 +50,7 @@ public abstract class ModelGun extends ModelBase
 	{
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAimingAnimationStates(0f, 0f, 0f);
-		heldAnimation = new HeldAnimation();
+		heldAnimation = new HeldAnimation(HeldStyle.NORMAL);
 		this.initAnimations();
 		
 		animations = new Animation[] {aimAnimation, heldAnimation};

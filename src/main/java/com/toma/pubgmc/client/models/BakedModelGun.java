@@ -118,7 +118,7 @@ public class BakedModelGun implements IBakedModel
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
 				this.process();
-				//System.out.println(((GunBase)held.getItem()).getWeaponModel().getHeldAnimation().getHeldStyle().rotation);
+				
 				transl = this.getTranslation();
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}

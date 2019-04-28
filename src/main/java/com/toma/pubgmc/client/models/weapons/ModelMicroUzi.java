@@ -1,5 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.HeldAnimation;
+import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -50,6 +52,7 @@ public class ModelMicroUzi extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.21f, 0.23f);
 		initAimingAnimationStates(0.21f);
+		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
 	}
 	
 	@Override

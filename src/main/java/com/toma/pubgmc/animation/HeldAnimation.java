@@ -12,12 +12,12 @@ public class HeldAnimation extends Animation
 	private Vector3f value = EMPTYVEC;
 	private float mx, my, mz;
 	private float rx, ry, rz;
-	private HeldStyle style;
+	private final HeldStyle style;
 	private EntityPlayer player;
 	
-	public HeldAnimation() 
+	public HeldAnimation(HeldStyle style) 
 	{
-		style = HeldStyle.NORMAL;
+		this.style = style;
 		player = Minecraft.getMinecraft().player;
 	}
 	
@@ -47,11 +47,6 @@ public class HeldAnimation extends Animation
 		return new Vector3f(mx, my, mz);
 	}
 	
-	public void setStyle(HeldStyle style)
-	{
-		this.style = style;
-	}
-	
 	public HeldStyle getHeldStyle()
 	{
 		return style;
@@ -67,9 +62,14 @@ public class HeldAnimation extends Animation
 		return rx == 0 && ry == 0 && rz == 0;
 	}
 	
+	private boolean isSmallModeRotFinished()
+	{
+		return rx == style.rotation.x;
+	}
+	
 	public enum HeldStyle
 	{
-		SMALL(EMPTYVEC, 0f, 0f, 0f),
+		SMALL(new Vector3f(30f, 0f, 0f), 0f, 0f, 0f),
 		NORMAL(new Vector3f(0f, 80f, 0f), -0.5f, 0f, 0f);
 		
 		public final float x, y, z;
@@ -94,7 +94,17 @@ public class HeldAnimation extends Animation
 		
 		private void handleSmall(HeldAnimation a, boolean sprint)
 		{
+			if(sprint && !a.isSmallModeRotFinished())
+			{
+				a.rx = a.rx < rotation.x ? a.rx + calculateMovement(3.5f) : rotation.x;
+			}
 			
+			else if(!sprint && a.rx != 0)
+			{
+				a.rx = a.rx > 0f ? a.rx - calculateMovement(3.5f) : 0f;
+			}
+			
+			GlStateManager.rotate(a.rx, 1f, 0f, 0f);
 		}
 		
 		private void handleNormal(HeldAnimation a, boolean sprint)

@@ -1,5 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.HeldAnimation;
+import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -60,6 +62,7 @@ public class ModelP18C extends ModelGun
 	{
 		initAimAnimation(-0.585f, 0.22f, 0.235f);
 		initAimingAnimationStates(0.22f, 0.14f, 0f);
+		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.HeldAnimation;
+import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -146,6 +148,7 @@ public class ModelPP19Bizon extends ModelGun
 	{
 		initAimAnimation(-0.68f, 0.235f, 0.15f);
 		initAimingAnimationStates(0.235f, 0.165f, 0.105f);
+		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

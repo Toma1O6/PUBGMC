@@ -1,5 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.HeldAnimation;
+import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -62,6 +64,7 @@ public class ModelP92 extends ModelGun
 	{
 		initAimAnimation(-0.651f, 0.31f, 0.24f);
 		initAimingAnimationStates(0.31f, 0.23f, 0f);
+		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

@@ -19,27 +19,27 @@ public abstract class Animation
 	@Nonnull
 	public abstract Vector3f getRotationVector();
 	
-	public static float calculateMovement(float baseMovement)
+	public static final float calculateMovement(float baseMovement)
 	{
 		float result = baseMovement * 60 / Minecraft.getDebugFPS();
 		return result;
 	}
 	
-	public void calculateMovementVariables(float x, float y, float z)
+	public final void calculateMovementVariables(float x, float y, float z)
 	{
 		movementY = 0.0064f;
 		movementX = Math.abs((movementY * x) / y);
 		movementZ = Math.abs((movementY * z) / y);
 	}
 	
-	public void calculateRotationVariables(float x, float y, float z)
+	public final void calculateRotationVariables(float x, float y, float z)
 	{
 		rotationY = 0.064f;
 		rotationX = Math.abs((rotationY * x) / y);
 		rotationZ = Math.abs((rotationY * z) / y);
 	}
 	
-	public void calculateMotionVariables(float x, float y, float z, float rx, float ry, float rz)
+	public final void calculateMotionVariables(float x, float y, float z, float rx, float ry, float rz)
 	{
 		this.calculateMovementVariables(x, y, z);
 		this.calculateRotationVariables(rx, ry, rz);
