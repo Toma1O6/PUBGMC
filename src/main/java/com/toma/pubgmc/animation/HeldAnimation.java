@@ -54,12 +54,12 @@ public class HeldAnimation extends Animation
 	
 	private boolean isNormalModeFinished()
 	{
-		return rx == style.rotation.x && ry == style.rotation.y && rz == style.rotation.z;
+		return ry == style.rotation.y && mx == style.x;
 	}
 	
 	private boolean hasReturned()
 	{
-		return rx == 0 && ry == 0 && rz == 0;
+		return ry == 0f && mx == 0f;
 	}
 	
 	private boolean isSmallModeRotFinished()
@@ -112,13 +112,13 @@ public class HeldAnimation extends Animation
 			if(sprint && !a.isNormalModeFinished())
 			{
 				a.ry = a.ry < rotation.y ? a.ry + calculateMovement(4f) : rotation.y;
-				a.mx = a.mx > x ? a.mx - calculateMovement(0.02f) : x;
+				a.mx = a.mx > x ? a.mx - calculateMovement(0.025f) : x;
 			}
 			
 			else if(!sprint && !a.hasReturned())
 			{
 				a.ry = a.ry > 0f ? a.ry - calculateMovement(4f) : 0f;
-				a.mx = a.mx < 0f ? a.mx + calculateMovement(0.02f) : 0f;
+				a.mx = a.mx < 0f ? a.mx + calculateMovement(0.025f) : 0f;
 			}
 			
 			GlStateManager.translate(a.mx, a.my, a.mz);

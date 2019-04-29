@@ -1,5 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -100,6 +102,7 @@ public class ModelKar98K extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.265f, 0.245f);
 		initAimingAnimationStates(0.265f, 0.19f, 0.145f);
+		reloadAnimation = new ReloadAnimation(ReloadStyle.SINGLE);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

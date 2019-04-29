@@ -1,5 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -56,6 +58,7 @@ public class ModelWin94 extends ModelGun
 	{
 		initAimAnimation(-0.5625f, 0.365f, 0.29f);
 		initAimingAnimationStates(0.365f);
+		reloadAnimation = new ReloadAnimation(ReloadStyle.SINGLE);
 	}
 	
 	@Override

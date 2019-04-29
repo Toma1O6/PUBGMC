@@ -118,7 +118,6 @@ public class BakedModelGun implements IBakedModel
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
 				this.process();
-				
 				transl = this.getTranslation();
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
@@ -146,7 +145,7 @@ public class BakedModelGun implements IBakedModel
 	
 	private void process()
 	{
-		((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming());
+		((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming(), data.isReloading());
 	}
 	
 	private Vector3f getTranslation()

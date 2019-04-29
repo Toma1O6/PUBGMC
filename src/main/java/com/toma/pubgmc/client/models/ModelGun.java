@@ -7,6 +7,8 @@ import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.animation.Animation;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
 import com.toma.pubgmc.client.models.atachments.ModelHolographic;
 import com.toma.pubgmc.client.models.atachments.ModelRedDotPistol;
@@ -42,6 +44,7 @@ public abstract class ModelGun extends ModelBase
 	
 	public AimingAnimation aimAnimation;
 	public HeldAnimation heldAnimation;
+	public ReloadAnimation reloadAnimation;
 	private float[] aimStates = new float[] {0f, 0f, 0f};
 	
 	public Animation[] animations;
@@ -51,9 +54,10 @@ public abstract class ModelGun extends ModelBase
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAimingAnimationStates(0f, 0f, 0f);
 		heldAnimation = new HeldAnimation(HeldStyle.NORMAL);
+		reloadAnimation = new ReloadAnimation(ReloadStyle.MAGAZINE);
 		this.initAnimations();
 		
-		animations = new Animation[] {aimAnimation, heldAnimation};
+		animations = new Animation[] {aimAnimation, heldAnimation, reloadAnimation};
 	}
 	
 	public abstract void render(ItemStack stack);
@@ -313,10 +317,11 @@ public abstract class ModelGun extends ModelBase
 		return v3f;
 	}
 	
-	public void processAnimations(boolean aim)
+	public void processAnimations(boolean aim, boolean reload)
 	{
 		aimAnimation.processAnimation(aim);
 		heldAnimation.processAnimation();
+		reloadAnimation.processAnimation(reload);
 	}
 	
 	public AimingAnimation getAimAnimation()
@@ -329,11 +334,16 @@ public abstract class ModelGun extends ModelBase
 		return heldAnimation;
 	}
 	
+	public ReloadAnimation getReloadAnimation()
+	{
+		return reloadAnimation;
+	}
+	
 	/**
 	 * Initialize aiming animation for model
-	 * Default animation speed if 3.0F
+	 * Default animation speed is 3.0F
 	 * @param x - final x location of the model
-	 * @param y - final y location of the model (this changed inside the initAimAnimationStates method for more options) 
+	 * @param y - final y location of the model (this is changed inside the initAimAnimationStates method for more options) 
 	 * @param z - final z location of the model
 	 */
 	public void initAimAnimation(float x, float y, float z)
