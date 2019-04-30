@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -92,7 +93,7 @@ public class ModelR45 extends ModelGun
 		initAimAnimation(-0.555f, 0.175f, 0.255f);
 		initAimingAnimationStates(0.175f, 0.095f, 0f);
 		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-		reloadAnimation = new ReloadAnimation(ReloadStyle.REVOLVER);
+		reloadAnimation = new ReloadAnimation(null, MagazineMovementStyle.REVOLVER, ReloadStyle.REVOLVER);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
@@ -64,7 +65,7 @@ public class ModelS1897 extends ModelGun
 	{
 		initAimAnimation(-0.525f, 0.31f, 0.315f);
 		initAimingAnimationStates(0.31f);
-		reloadAnimation = new ReloadAnimation(ReloadStyle.SINGLE);
+		reloadAnimation = new ReloadAnimation(null, MagazineMovementStyle.DEFAULT, ReloadStyle.SINGLE);
 	}
 	
 	@Override

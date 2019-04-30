@@ -1,5 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -276,6 +279,7 @@ public class ModelAKM extends ModelGun
 		setRotationAngle(bone19, 0.3491F, 0.0F, 0.0F);
 		grip.addChild(bone19);
 		bone19.cubeList.add(new ModelBox(bone19, 65, 0, -1.5F, -13.7285F, 9.6015F, 3, 9, 4, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override
@@ -283,6 +287,7 @@ public class ModelAKM extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.28f, 0.31f);
 		initAimingAnimationStates(0.28f, 0.25f, 0.2f);
+		reloadAnimation = new ReloadAnimation(magazine, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

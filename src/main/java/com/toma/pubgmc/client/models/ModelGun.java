@@ -54,7 +54,6 @@ public abstract class ModelGun extends ModelBase
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAimingAnimationStates(0f, 0f, 0f);
 		heldAnimation = new HeldAnimation(HeldStyle.NORMAL);
-		reloadAnimation = new ReloadAnimation(ReloadStyle.MAGAZINE);
 		this.initAnimations();
 		
 		animations = new Animation[] {aimAnimation, heldAnimation, reloadAnimation};

@@ -6,25 +6,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class ReloadAnimation extends Animation// implements IPartAnimated
+public class ReloadAnimation extends Animation implements IPartAnimated
 {
-	/*final ModelRenderer magazine;
-	final MagazineMovementStyle magazineStyle;*/
+	final ModelRenderer magazine;
+	final MagazineMovementStyle magazineStyle;
 	final ReloadStyle style;
 	private float x, y, z;
 	private float rx, ry, rz;
 	
-	public ReloadAnimation(final ReloadStyle reloadStyle)
-	{
-		this.style = reloadStyle;
-	}
-	
-	/*public ReloadAnimation(final ModelRenderer partToAnimate, final MagazineMovementStyle magazineStyle, final ReloadStyle styleOfReload)
+	public ReloadAnimation(final ModelRenderer partToAnimate, final MagazineMovementStyle magazineStyle, final ReloadStyle styleOfReload)
 	{
 		this.magazine = partToAnimate;
 		this.magazineStyle = magazineStyle;
 		this.style = styleOfReload;
-	}*/
+	}
 	
 	public final void processAnimation(boolean reloading)
 	{
@@ -44,6 +39,30 @@ public class ReloadAnimation extends Animation// implements IPartAnimated
 	public Vector3f getRotationVector() 
 	{
 		return new Vector3f(rx, ry, rz);
+	}
+	
+	@Override
+	public ModelRenderer getPart()
+	{
+		return magazine;
+	}
+	
+	@Override
+	public Vector3f getPartMovement()
+	{
+		return this.magazineStyle.getMovement();
+	}
+	
+	@Override
+	public Vector3f getPartRotation()
+	{
+		return this.magazineStyle.getRotation();
+	}
+	
+	@Override
+	public MagazineMovementStyle getMagazineMovementPattern()
+	{
+		return magazineStyle;
 	}
 	
 	public ReloadStyle getReloadStyle()
@@ -71,10 +90,20 @@ public class ReloadAnimation extends Animation// implements IPartAnimated
 		return ry == 0f && rz == 0f && x == 0f && z == 0f;
 	}
 	
+	private boolean isRevolverFinished()
+	{
+		return rx == style.rotation.x && rz == style.rotation.z;
+	}
+	
+	private boolean isRevolverReturned()
+	{
+		return rx == 0f && rz == 0f;
+	}
+	
 	public enum ReloadStyle
 	{
 		MAGAZINE(new Vector3f(15f, 0f, -20f), EMPTYVEC),
-		REVOLVER(EMPTYVEC, EMPTYVEC),
+		REVOLVER(new Vector3f(-20f, 0f, -15f), EMPTYVEC),
 		SINGLE(new Vector3f(0f, 10f, 15f), new Vector3f(-0.05f, 0f, 0.05f));
 		
 		private final Vector3f rotation, translation;
@@ -93,10 +122,15 @@ public class ReloadAnimation extends Animation// implements IPartAnimated
 			else if(this.equals(SINGLE)) {
 				handleSingleStyle(reload, animation);
 			}
+			else if(this.equals(REVOLVER)) {
+				handleRevolverStyle(reload, animation);
+			}
+			else throw new IllegalStateException("Uknown reload style!");
 		}
 		
 		private void handleMagazineStyle(boolean reload, ReloadAnimation a)
 		{
+			a.magazineStyle.process(a, reload);
 			if(reload && !a.isMagFinished())
 			{
 				a.rx = a.rx < rotation.x ? a.rx + calculateMovement(2.5f) : rotation.x;
@@ -115,6 +149,7 @@ public class ReloadAnimation extends Animation// implements IPartAnimated
 		
 		private void handleSingleStyle(boolean reload, ReloadAnimation a)
 		{
+			a.magazineStyle.process(a, reload);
 			if(reload && !a.isSingleFinished())
 			{
 				a.ry = a.ry < rotation.y ? a.ry + calculateMovement(2.5f) : rotation.y;
@@ -134,6 +169,25 @@ public class ReloadAnimation extends Animation// implements IPartAnimated
 			GlStateManager.rotate(a.ry, 0f, 1f, 0f);
 			GlStateManager.rotate(a.rz, 0f, 0f, 1f);
 			GlStateManager.translate(a.x, 0f, a.z);
+		}
+		
+		private void handleRevolverStyle(boolean reload, ReloadAnimation a)
+		{
+			a.magazineStyle.process(a, reload);
+			if(reload && !a.isRevolverFinished())
+			{
+				a.rx = a.rx > rotation.x ? a.rx - calculateMovement(2.5f) : rotation.x;
+				a.rz = a.rz > rotation.z ? a.rz - calculateMovement(2.5f) : rotation.z;
+			}
+			
+			else if(!reload && !a.isRevolverReturned())
+			{
+				a.rx = a.rx < 0f ? a.rx + calculateMovement(2.5f) : 0f;
+				a.rz = a.rz < 0f ? a.rz + calculateMovement(2.5f) : 0f;
+			}
+			
+			GlStateManager.rotate(a.rx, 1f, 0f, 0f);
+			GlStateManager.rotate(a.rz, 0f, 0f, 1f);
 		}
 	}
 }
