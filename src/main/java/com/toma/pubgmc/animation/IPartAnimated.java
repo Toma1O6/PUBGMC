@@ -5,6 +5,8 @@ import javax.vecmath.Vector3f;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.toma.pubgmc.util.PUBGMCUtil;
+
 import net.minecraft.client.model.ModelRenderer;
 
 public interface IPartAnimated
@@ -20,8 +22,8 @@ public interface IPartAnimated
 	public enum MagazineMovementStyle
 	{
 		// positions are relative to 0
-		DEFAULT(new ImmutablePair(new Vector3f(0f, 0f, -15f), new Vector3f(0f, 0.5f, 0f)),
-				new ImmutablePair(new Vector3f(0f, 0f, -15f), new Vector3f(0f, 5.5f, 0f)),
+		DEFAULT(new ImmutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0.5f, 0f)),
+				new ImmutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 11.5f, 0f)),
 				new ImmutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f))),
 		
 		REVOLVER(new ImmutablePair(Animation.EMPTYVEC, Animation.EMPTYVEC),
@@ -74,7 +76,7 @@ public interface IPartAnimated
 			if(animatedPart.getPart() == null) {
 				return;
 			}
-			
+
 			switch(this)
 			{
 				case DEFAULT: {
@@ -94,14 +96,8 @@ public interface IPartAnimated
 			}
 			
 			ModelRenderer model = animatedPart.getPart();
-			Vector3f movement = animatedPart.getPartMovement();
-			Vector3f rotation = animatedPart.getPartRotation();
-			model.offsetX = movement.x;
-			model.offsetY = movement.y;
-			model.offsetZ = movement.z;
-			model.rotateAngleX = rotation.x;
-			model.rotateAngleY = rotation.y;
-			model.rotateAngleZ = rotation.z;
+			PUBGMCUtil.setModelPosition(model, x, y, z);
+			PUBGMCUtil.setModelRotation(model, rx, ry, rz);
 		}
 		
 		private void handleDefault(IPartAnimated a, boolean reload)
@@ -111,8 +107,10 @@ public interface IPartAnimated
 			{
 				if(!isPartFinished(a))
 				{
-					rz = rz > step.getLeft().z ? rz - Animation.calculateMovement(1.5f) : step.getLeft().z;
-					y = y < step.getRight().y ? y + Animation.calculateMovement(0.05f) : step.getRight().y;
+					//rz = rz < step.getLeft().z ? rz + Animation.calculateMovement(0.01f) : step.getLeft().z;
+					//y = y < step.getRight().y ? y + Animation.calculateMovement(0.3f) : step.getRight().y;
+					y = Math.abs(step.getRight().y - y) < 0.25f ? step.getRight().y : y;
+					y = y < step.getRight().y ? y + Animation.calculateMovement(0.2f) : y > step.getRight().y ? y - Animation.calculateMovement(0.2f) : y;
 				}
 				else if(shouldContinue(currentStep, steps))
 				{
@@ -125,8 +123,7 @@ public interface IPartAnimated
 				currentStep = 0;
 				if(!isPartReturned(a))
 				{
-					rz = rz < 0f ? rz + Animation.calculateMovement(1.5f) : 0f;
-					y = y > 0f ? y - Animation.calculateMovement(0.05f) : 0f;
+					doReturning(a);
 				}
 			}
 		}
@@ -139,6 +136,16 @@ public interface IPartAnimated
 		private void handleDP(IPartAnimated a, boolean reload)
 		{
 			
+		}
+		
+		private void doReturning(IPartAnimated a)
+		{
+			x = Math.abs(x) < 0.25f ? 0f : x;
+			y = Math.abs(y) < 0.25f ? 0f : y;
+			z = Math.abs(z) < 0.25f ? 0f : z;
+			x = x > 0f ? x - Animation.calculateMovement(0.2f) : x < 0f ? x + Animation.calculateMovement(0.2f) : 0f;
+			y = y > 0f ? y - Animation.calculateMovement(0.2f) : y < 0f ? y + Animation.calculateMovement(0.2f) : 0f;
+			z = z > 0f ? z - Animation.calculateMovement(0.2f) : z < 0f ? z + Animation.calculateMovement(0.2f) : 0f;
 		}
 		
 		private boolean shouldContinue(int step, Pair<Vector3f, Vector3f>[] group)

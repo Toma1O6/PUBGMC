@@ -1,5 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -94,6 +97,7 @@ public class ModelAUG extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 96, -2.0F, -29.5F, -14.0F, 1, 2, 4, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 96, 1.0F, -29.5F, -14.0F, 1, 2, 4, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 96, -0.5F, -28.5F, -11.5F, 1, 1, 1, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override
@@ -101,6 +105,7 @@ public class ModelAUG extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.2825f, 0.215f);
 		initAimingAnimationStates(0.2825f, 0.205f, 0.16f);
+		//reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

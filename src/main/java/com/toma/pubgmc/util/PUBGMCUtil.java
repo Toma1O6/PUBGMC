@@ -8,6 +8,7 @@ import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSound;
 
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -210,5 +211,19 @@ public class PUBGMCUtil
 	public static String generateID(int length)
 	{
 		return RandomStringUtils.random(length, true, true);
+	}
+	
+	public static void setModelPosition(ModelRenderer model, float x, float y, float z)
+	{
+		model.offsetX = x;
+		model.offsetY = y;
+		model.offsetZ = z;
+	}
+	
+	public static void setModelRotation(ModelRenderer model, float x, float y, float z)
+	{
+		model.rotateAngleX = x;
+		model.rotateAngleY = y;
+		model.rotateAngleZ = z;
 	}
 }

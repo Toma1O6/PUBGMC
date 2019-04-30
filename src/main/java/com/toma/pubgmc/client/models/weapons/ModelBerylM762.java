@@ -1,5 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -111,6 +114,7 @@ public class ModelBerylM762 extends ModelGun
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -0.5F, -28.5F, -5.0F, 1, 1, 1, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -2.0F, -29.0F, -5.0F, 1, 1, 4, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, 1.0F, -29.0F, -5.0F, 1, 1, 4, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override
@@ -118,6 +122,7 @@ public class ModelBerylM762 extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.26f, 0.18f);
 		initAimingAnimationStates(0.26f, 0.175f, 0.135f);
+		//reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

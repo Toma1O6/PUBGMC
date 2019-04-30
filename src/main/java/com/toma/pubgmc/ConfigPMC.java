@@ -25,15 +25,15 @@ public class ConfigPMC
 	{
 		@Name("World Settings")
 		@Comment("All world related fields are here")
-		public static WorldSettings worldSettings = new WorldSettings();
+		public WorldSettings worldSettings = new WorldSettings();
 		
 		@Name("Player Settings")
 		@Comment("All player related fields are here")
-		public static PlayerSettings playerSettings = new PlayerSettings();
+		public PlayerSettings playerSettings = new PlayerSettings();
 		
 		@Name("Weapon Settings")
 		@Comment("All weapon related fiels are here")
-		public static WeaponSettings weaponSettings = new WeaponSettings();
+		public WeaponSettings weaponSettings = new WeaponSettings();
 	}
 	
 	/**
@@ -61,8 +61,6 @@ public class ConfigPMC
 		@Config.RequiresMcRestart
 		public int lootRenderType = 2;
 	}
-	
-	
 	
 	public static class WorldSettings
 	{
@@ -103,7 +101,7 @@ public class ConfigPMC
 	
 	public static class PlayerSettings
 	{
-		@Config.Name("Allow third person perspective")
+		@Config.Name("Disable third person perspective")
 		@Config.Comment("Enable/disable third person perspective")
 		@RequiresWorldRestart
 		public boolean enableTP = true;

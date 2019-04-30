@@ -4,8 +4,8 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelDebugger
 {
-	public static final double MODIFIER = 15f;
-	public static final double SMALL_MODIFIER = 1f;
+	public static final double MODIFIER = 1f;
+	public static final double SMALL_MODIFIER = 0.1f;
 	
 	public static ModelDebugger instance;
 	public static float X = 0;
