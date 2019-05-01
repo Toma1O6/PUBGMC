@@ -13,12 +13,21 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 	final ReloadStyle style;
 	private float x, y, z;
 	private float rx, ry, rz;
+	private float speedMultiplier;
 	
 	public ReloadAnimation(final ModelRenderer partToAnimate, final MagazineMovementStyle magazineStyle, final ReloadStyle styleOfReload)
 	{
 		this.magazine = partToAnimate;
 		this.magazineStyle = magazineStyle;
 		this.style = styleOfReload;
+		this.speedMultiplier = 1.0F;
+	}
+	
+	public ReloadAnimation withSpeed(float speed)
+	{
+		speed = speed < 0f ? Math.abs(speed) : speed;
+		this.speedMultiplier = speed;
+		return this;
 	}
 	
 	public final void processAnimation(boolean reloading)
@@ -27,6 +36,12 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 		{
 			this.getReloadStyle().process(reloading, this);
 		}
+	}
+	
+	@Override
+	public float getSpeed()
+	{
+		return speedMultiplier;
 	}
 	
 	@Override
@@ -72,12 +87,12 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 	
 	private boolean isMagFinished()
 	{
-		return rx == style.rotation.x && rz == style.rotation.z;
+		return rx == style.rotation.x && rz == style.rotation.z && z == style.translation.z;
 	}
 	
 	private boolean isMagReturned()
 	{
-		return rx == 0f && rz == 0f;
+		return rx == 0f && rz == 0f && z == 0f;
 	}
 	
 	private boolean isSingleFinished()
@@ -102,7 +117,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 	
 	public enum ReloadStyle
 	{
-		MAGAZINE(new Vector3f(15f, 0f, -20f), EMPTYVEC),
+		MAGAZINE(new Vector3f(60f, 0f, -20f), new Vector3f(0f, 0f, -0.5f)),
 		REVOLVER(new Vector3f(-20f, 0f, -15f), EMPTYVEC),
 		SINGLE(new Vector3f(0f, 10f, 15f), new Vector3f(-0.05f, 0f, 0.05f));
 		
@@ -133,18 +148,21 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 			a.magazineStyle.process(a, reload);
 			if(reload && !a.isMagFinished())
 			{
-				a.rx = a.rx < rotation.x ? a.rx + calculateMovement(2.5f) : rotation.x;
+				a.z = a.z > translation.z ? a.z - calculateMovement(0.04f) : translation.z;
+				a.rx = a.rx < rotation.x ? a.rx + calculateMovement(3.5f) : rotation.x;
 				a.rz = a.rz > rotation.z ? a.rz - calculateMovement(2.7f) : rotation.z;
 			}
 			
 			else if(!reload && !a.isMagReturned())
 			{
-				a.rx = a.rx > 0f ? a.rx - calculateMovement(2.5f) : 0f;
+				a.z = a.z < 0f ? a.z + calculateMovement(0.04f) : 0f;
+				a.rx = a.rx > 0f ? a.rx - calculateMovement(3.5f) : 0f;
 				a.rz = a.rz < 0f ? a.rz + calculateMovement(2.7f) : 0f;
 			}
 			
 			GlStateManager.rotate(a.rx, 1f, 0f, 0f);
 			GlStateManager.rotate(a.rz, 0f, 0f, 1f);
+			GlStateManager.translate(0f, 0f, a.z);
 		}
 		
 		private void handleSingleStyle(boolean reload, ReloadAnimation a)

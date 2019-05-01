@@ -7,6 +7,7 @@ import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.animation.Animation;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.atachments.ModelAngledGrip;
@@ -54,6 +55,7 @@ public abstract class ModelGun extends ModelBase
 		aimAnimation = new AimingAnimation(0f, 0f, 0f);
 		initAimingAnimationStates(0f, 0f, 0f);
 		heldAnimation = new HeldAnimation(HeldStyle.NORMAL);
+		reloadAnimation = new ReloadAnimation(null, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 		this.initAnimations();
 		
 		animations = new Animation[] {aimAnimation, heldAnimation, reloadAnimation};

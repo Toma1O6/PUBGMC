@@ -17,6 +17,8 @@ public interface IPartAnimated
 	
 	Vector3f getPartRotation();
 	
+	float getSpeed();
+	
 	MagazineMovementStyle getMagazineMovementPattern();
 	
 	public enum MagazineMovementStyle
@@ -110,7 +112,7 @@ public interface IPartAnimated
 					//rz = rz < step.getLeft().z ? rz + Animation.calculateMovement(0.01f) : step.getLeft().z;
 					//y = y < step.getRight().y ? y + Animation.calculateMovement(0.3f) : step.getRight().y;
 					y = Math.abs(step.getRight().y - y) < 0.25f ? step.getRight().y : y;
-					y = y < step.getRight().y ? y + Animation.calculateMovement(0.2f) : y > step.getRight().y ? y - Animation.calculateMovement(0.2f) : y;
+					y = y < step.getRight().y ? y + Animation.calculateMovement(0.2f * a.getSpeed()) : y > step.getRight().y ? y - Animation.calculateMovement(0.2f * a.getSpeed()) : y;
 				}
 				else if(shouldContinue(currentStep, steps))
 				{
@@ -143,9 +145,9 @@ public interface IPartAnimated
 			x = Math.abs(x) < 0.25f ? 0f : x;
 			y = Math.abs(y) < 0.25f ? 0f : y;
 			z = Math.abs(z) < 0.25f ? 0f : z;
-			x = x > 0f ? x - Animation.calculateMovement(0.2f) : x < 0f ? x + Animation.calculateMovement(0.2f) : 0f;
-			y = y > 0f ? y - Animation.calculateMovement(0.2f) : y < 0f ? y + Animation.calculateMovement(0.2f) : 0f;
-			z = z > 0f ? z - Animation.calculateMovement(0.2f) : z < 0f ? z + Animation.calculateMovement(0.2f) : 0f;
+			x = x > 0f ? x - Animation.calculateMovement(0.2f * a.getSpeed()) : x < 0f ? x + Animation.calculateMovement(0.2f * a.getSpeed()) : 0f;
+			y = y > 0f ? y - Animation.calculateMovement(0.2f * a.getSpeed()) : y < 0f ? y + Animation.calculateMovement(0.2f * a.getSpeed()) : 0f;
+			z = z > 0f ? z - Animation.calculateMovement(0.2f * a.getSpeed()) : z < 0f ? z + Animation.calculateMovement(0.2f * a.getSpeed()) : 0f;
 		}
 		
 		private boolean shouldContinue(int step, Pair<Vector3f, Vector3f>[] group)

@@ -4,8 +4,10 @@ import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -21,6 +23,7 @@ public class ModelAUG extends ModelGun
 	private final ModelRenderer handle;
 	private final ModelRenderer trigger;
 	private final ModelRenderer mag;
+	private final ModelRenderer magazine;
 	private final ModelRenderer stock;
 	private final ModelRenderer irns;
 
@@ -42,7 +45,7 @@ public class ModelAUG extends ModelGun
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -26.0F, -49.0F, 6, 2, 11, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -12.0F, -33.0F, 6, 2, 12, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -21.5F, -24.0F, 6, 2, 25, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 64, -2.0F, -19.0F, -14.0F, 4, 6, 8, 0.0F, false));
+		//base.cubeList.add(new ModelBox(base, 0, 64, -2.0F, -19.0F, -14.0F, 4, 6, 8, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -19.5F, -15.0F, 6, 1, 11, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -25.0F, 1.0F, 6, 4, 24, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 96, -3.0F, -25.0F, 26.0F, 6, 15, 1, 0.0F, false));
@@ -51,6 +54,10 @@ public class ModelAUG extends ModelGun
 		base.cubeList.add(new ModelBox(base, 0, 96, -0.5F, -28.0F, -55.0F, 1, 4, 1, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 96, -1.5F, -29.0F, -55.0F, 1, 2, 1, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 96, 0.5F, -29.0F, -55.0F, 1, 2, 1, 0.0F, false));
+		
+		magazine = new ModelRenderer(this);
+		magazine.setRotationPoint(0.0F, 24.0F, 0.0F);
+		magazine.cubeList.add(new ModelBox(magazine, 0, 64, -2.0F, -19.0F, -14.0F, 4, 6, 8, 0.0F, false));
 
 		rail = new ModelRenderer(this);
 		rail.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -84,7 +91,8 @@ public class ModelAUG extends ModelGun
 		mag = new ModelRenderer(this);
 		mag.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(mag, -0.1745F, 0.0F, 0.0F);
-		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.0F, -12.0F, -16.2F, 4, 10, 8, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.0F, -35.6F, -20.4F, 4, 10, 8, 0.0F, false));
+		magazine.addChild(mag);
 
 		stock = new ModelRenderer(this);
 		stock.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -105,7 +113,8 @@ public class ModelAUG extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.2825f, 0.215f);
 		initAimingAnimationStates(0.2825f, 0.205f, 0.16f);
-		//reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
+		reloadAnimation = new ReloadAnimation(magazine, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE)
+				.withSpeed(0.9f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
@@ -123,7 +132,6 @@ public class ModelAUG extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderAUG(data.isAiming(), stack);
@@ -196,7 +204,7 @@ public class ModelAUG extends ModelGun
 		rail.render(1f);
 		handle.render(1f);
 		trigger.render(1f);
-		mag.render(1f);
+		magazine.render(1f);
 		stock.render(1f);
 		
 		if(!ir)

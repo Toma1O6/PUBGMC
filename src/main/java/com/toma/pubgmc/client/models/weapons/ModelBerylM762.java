@@ -122,7 +122,7 @@ public class ModelBerylM762 extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.26f, 0.18f);
 		initAimingAnimationStates(0.26f, 0.175f, 0.135f);
-		//reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
+		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

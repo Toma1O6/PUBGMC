@@ -18,6 +18,7 @@ import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.block.Block;
@@ -95,7 +96,7 @@ public class EntityBullet extends Entity
         survivalTime = (int)velocity + 3;
         stack = new ItemStack(gun);
         
-        Vec3d direct = getVectorForRotation(shooter.rotationPitch, shooter.getRotationYawHead());
+        Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
         
         IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         
@@ -106,41 +107,40 @@ public class EntityBullet extends Entity
         updateHeading();
     }
     
+    private float getPitchRotationInaccuracy(EntityLivingBase shooter)
+    {
+    	if(!shooter.isSprinting()) {
+    		return 0f;
+    	}
+    	float f = (type.equals(GunType.PISTOL) || type.equals(GunType.SMG) || shooter.getHeldItemMainhand().getItem() == PMCItems.SAWED_OFF)
+    			&& shooter.getHeldItemMainhand().getItem() != PMCItems.WIN94 ? -35f : 0f;
+    	return f;
+    }
+    
+    private float getYawRotationInaccuracy(EntityLivingBase shooter)
+    {
+    	if(!shooter.isSprinting()) {
+    		return 0f;
+    	}
+    	float f = getPitchRotationInaccuracy(shooter) == -35f ? 0f : -60f;
+    	return f;
+    }
+    
     private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, boolean aim)
     {
-    	if(!shooter.isSprinting())
-    	{
-    		if(aim && type != GunType.SHOTGUN)
-    		{
-                this.motionX = rotVec.x * velocity;
-                this.motionY = rotVec.y * velocity;
-                this.motionZ = rotVec.z * velocity;
-    		}
-    		
-    		else
-    		{
-    			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
-                this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
-                this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
-    		}
-    	}
-    	
-    	else
-    	{
-    		if(type == GunType.SMG || type == GunType.PISTOL || shooter.getHeldItemMainhand().getItem() == PMCRegistry.PMCItems.SAWED_OFF)
-    		{
-    			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
-                this.motionY = rotVec.y * velocity + 5.7d + (rand.nextDouble() - 0.5);
-                this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
-    		}
-    		
-    		else
-    		{
-    			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
-                this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
-                this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
-    		}
-    	}
+		if(aim && type != GunType.SHOTGUN)
+		{
+            this.motionX = rotVec.x * velocity;
+            this.motionY = rotVec.y * velocity;
+            this.motionZ = rotVec.z * velocity;
+		}
+		
+		else
+		{
+			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
+            this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
+            this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+		}
     }
     
     private void updateHeading()

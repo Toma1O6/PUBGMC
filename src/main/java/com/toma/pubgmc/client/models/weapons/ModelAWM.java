@@ -85,7 +85,8 @@ public class ModelAWM extends ModelGun
 	{
 		initAimAnimation(-0.557f, 0.255f, 0.2f);
 		initAimingAnimationStates(0.255f, 0.205f, 0.169f);
-		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
+		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE)
+				.withSpeed(0.7f);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
@@ -104,7 +105,6 @@ public class ModelAWM extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderAWM(data.isAiming(), stack);
