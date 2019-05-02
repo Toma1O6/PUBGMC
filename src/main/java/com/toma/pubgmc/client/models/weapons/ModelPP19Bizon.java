@@ -2,6 +2,9 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -141,6 +144,7 @@ public class ModelPP19Bizon extends ModelGun
 		setRotationAngle(l, 0.0F, 0.0F, 0.3491F);
 		ironsight.addChild(l);
 		l.cubeList.add(new ModelBox(l, 0, 0, -6.0F, -20.0F, -10.5F, 1, 2, 3, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override
@@ -149,6 +153,7 @@ public class ModelPP19Bizon extends ModelGun
 		initAimAnimation(-0.68f, 0.235f, 0.15f);
 		initAimingAnimationStates(0.235f, 0.165f, 0.105f);
 		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
+		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 
@@ -167,7 +172,6 @@ public class ModelPP19Bizon extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderBizon(data.isAiming(), stack);

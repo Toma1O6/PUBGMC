@@ -1,8 +1,6 @@
 package com.toma.pubgmc.animation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -11,7 +9,6 @@ public abstract class Animation
 {
 	public static final Vector3f EMPTYVEC = new Vector3f(0f, 0f, 0f);
 	public float movementX,movementY,movementZ;
-	public float rotationX,rotationY,rotationZ;
 	
 	@Nonnull
 	public abstract Vector3f getMovementVec();
@@ -25,24 +22,29 @@ public abstract class Animation
 		return result;
 	}
 	
+	public static float getPartialMovement(final float movement, final float finalPos, final float modifier)
+	{
+		float f = Math.abs(movement - finalPos) < modifier ? finalPos : movement < finalPos ? movement + calculateMovement(modifier) : movement - calculateMovement(modifier);
+		return f;
+	}
+	
+	public static float decreasePartialMovement(final float movement, final float finalPos, final float modifier)
+	{
+		float f = movement > finalPos ? movement - calculateMovement(modifier) : finalPos;
+		return f;
+	}
+	
+	public static float increasePartialMovement(final float movement, final float finalPos, final float modifier)
+	{
+		float f = movement < finalPos ? movement + calculateMovement(modifier) : finalPos;
+		return f;
+	}
+	
 	public final void calculateMovementVariables(float x, float y, float z)
 	{
 		movementY = 0.0064f;
 		movementX = Math.abs((movementY * x) / y);
 		movementZ = Math.abs((movementY * z) / y);
-	}
-	
-	public final void calculateRotationVariables(float x, float y, float z)
-	{
-		rotationY = 0.064f;
-		rotationX = Math.abs((rotationY * x) / y);
-		rotationZ = Math.abs((rotationY * z) / y);
-	}
-	
-	public final void calculateMotionVariables(float x, float y, float z, float rx, float ry, float rz)
-	{
-		this.calculateMovementVariables(x, y, z);
-		this.calculateRotationVariables(rx, ry, rz);
 	}
 	
 	public void onAnimationFinished()

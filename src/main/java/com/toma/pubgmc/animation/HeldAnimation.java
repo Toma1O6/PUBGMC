@@ -96,12 +96,12 @@ public class HeldAnimation extends Animation
 		{
 			if(sprint && !a.isSmallModeRotFinished())
 			{
-				a.rx = a.rx < rotation.x ? a.rx + calculateMovement(3.5f) : rotation.x;
+				a.rx = increasePartialMovement(a.rx, rotation.x, 3.5f);
 			}
 			
 			else if(!sprint && a.rx != 0)
 			{
-				a.rx = a.rx > 0f ? a.rx - calculateMovement(3.5f) : 0f;
+				a.rx = decreasePartialMovement(a.rx, 0f, 3.5f);
 			}
 			
 			GlStateManager.rotate(a.rx, 1f, 0f, 0f);
@@ -111,14 +111,14 @@ public class HeldAnimation extends Animation
 		{
 			if(sprint && !a.isNormalModeFinished())
 			{
-				a.ry = a.ry < rotation.y ? a.ry + calculateMovement(4f) : rotation.y;
-				a.mx = a.mx > x ? a.mx - calculateMovement(0.025f) : x;
+				a.ry = increasePartialMovement(a.ry, rotation.y, 4f);
+				a.mx = decreasePartialMovement(a.mx, x, 0.025f);
 			}
 			
 			else if(!sprint && !a.hasReturned())
 			{
-				a.ry = a.ry > 0f ? a.ry - calculateMovement(4f) : 0f;
-				a.mx = a.mx < 0f ? a.mx + calculateMovement(0.025f) : 0f;
+				a.ry = decreasePartialMovement(a.ry, 0f, 4f);
+				a.mx = increasePartialMovement(a.mx, 0f, 0.025f);
 			}
 			
 			GlStateManager.translate(a.mx, a.my, a.mz);

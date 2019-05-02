@@ -116,8 +116,9 @@ public interface IPartAnimated
 				{
 					//System.out.println(rx);
 					//rx = Math.abs(rx - rotationAngles[0]) < 0.1f ? rotationAngles[0] : rx > rotationAngles[0] ? rx - Animation.calculateMovement(0.05f) : rx < rotationAngles[0] ? rx + Animation.calculateMovement(0.05f) : rx;
-					y = Math.abs(step.getRight().y - y) < 0.25f ? step.getRight().y : y;
-					y = y < step.getRight().y ? y + Animation.calculateMovement(0.2f * a.getSpeed()) : y > step.getRight().y ? y - Animation.calculateMovement(0.2f * a.getSpeed()) : y;
+					//y = Math.abs(step.getRight().y - y) < 0.25f ? step.getRight().y : y;
+					//y = y < step.getRight().y ? y + Animation.calculateMovement(0.2f * a.getSpeed()) : y > step.getRight().y ? y - Animation.calculateMovement(0.2f * a.getSpeed()) : y;
+					y = Animation.getPartialMovement(y, step.getRight().y, 0.2f * a.getSpeed());
 				}
 				else if(shouldContinue(currentStep, steps))
 				{
@@ -147,12 +148,9 @@ public interface IPartAnimated
 		
 		private void doReturning(IPartAnimated a)
 		{
-			x = Math.abs(x) < 0.25f ? 0f : x;
-			y = Math.abs(y) < 0.25f ? 0f : y;
-			z = Math.abs(z) < 0.25f ? 0f : z;
-			x = x > 0f ? x - Animation.calculateMovement(0.2f * a.getSpeed()) : x < 0f ? x + Animation.calculateMovement(0.2f * a.getSpeed()) : 0f;
-			y = y > 0f ? y - Animation.calculateMovement(0.2f * a.getSpeed()) : y < 0f ? y + Animation.calculateMovement(0.2f * a.getSpeed()) : 0f;
-			z = z > 0f ? z - Animation.calculateMovement(0.2f * a.getSpeed()) : z < 0f ? z + Animation.calculateMovement(0.2f * a.getSpeed()) : 0f;
+			x = Animation.getPartialMovement(x, 0f, 0.2f * a.getSpeed());
+			y = Animation.getPartialMovement(y, 0f, 0.2f * a.getSpeed());
+			z = Animation.getPartialMovement(z, 0f, 0.2f * a.getSpeed());
 		}
 		
 		private boolean shouldContinue(int step, Pair<Vector3f, Vector3f>[] group)

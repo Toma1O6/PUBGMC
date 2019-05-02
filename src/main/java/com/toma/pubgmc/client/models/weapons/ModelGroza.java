@@ -1,8 +1,13 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.ReloadAnimation;
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -16,6 +21,7 @@ public class ModelGroza extends ModelGun
 	private final ModelRenderer base;
 	private final ModelRenderer handle;
 	private final ModelRenderer mag;
+	private final ModelRenderer magazine;
 	private final ModelRenderer trigger;
 	private final ModelRenderer rail;
 	private final ModelRenderer irns;
@@ -39,7 +45,7 @@ public class ModelGroza extends ModelGun
 		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -18.0F, -35.0F, 4, 11, 4, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -19.0F, -49.0F, 4, 2, 2, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -17.0F, -26.0F, 4, 3, 1, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -22.0F, 1.0F, 4, 13, 7, 0.0F, false));
+		//base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -22.0F, 1.0F, 4, 13, 7, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -14.0F, -25.0F, 4, 1, 7, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -25.0F, 23.0F, 6, 14, 3, 0.0F, false));
 
@@ -47,11 +53,16 @@ public class ModelGroza extends ModelGun
 		handle.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(handle, 0.1745F, 0.0F, 0.0F);
 		handle.cubeList.add(new ModelBox(handle, 0, 0, -2.0F, -22.0F, -16.0F, 4, 18, 6, 0.0F, false));
-
+		
+		magazine = new ModelRenderer(this);
+		magazine.setRotationPoint(0.0F, 24.0F, 0.0F);
+		magazine.cubeList.add(new ModelBox(base, 0, 0, -2.0F, -22.0F, 1.0F, 4, 13, 7, 0.0F, false));
+		
 		mag = new ModelRenderer(this);
 		mag.setRotationPoint(0.0F, 24.0F, 0.0F);
+		magazine.addChild(mag);
 		setRotationAngle(mag, -0.1745F, 0.0F, 0.0F);
-		mag.cubeList.add(new ModelBox(mag, 0, 0, -2.0F, -10.2F, -0.7F, 4, 12, 7, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 0, -2.0F, -34.4F, -4.8F, 4, 12, 7, 0.0F, false));
 
 		trigger = new ModelRenderer(this);
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -80,6 +91,7 @@ public class ModelGroza extends ModelGun
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -2.0F, -34.0F, -6.0F, 1, 1, 3, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, 1.0F, -34.0F, -6.0F, 1, 1, 3, 0.0F, false));
 		irns.cubeList.add(new ModelBox(irns, 0, 0, -0.5F, -33.5F, -5.0F, 1, 1, 1, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override
@@ -87,6 +99,7 @@ public class ModelGroza extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.135f, 0.28f);
 		initAimingAnimationStates(0.135f, 0.0575f, 0.01f);
+		reloadAnimation = new ReloadAnimation(magazine, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
@@ -105,7 +118,6 @@ public class ModelGroza extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderGroza(data.isAiming(), stack);
@@ -164,7 +176,7 @@ public class ModelGroza extends ModelGun
 	{
 		base.render(1f);
 		handle.render(1f);
-		mag.render(1f);
+		magazine.render(1f);
 		trigger.render(1f);
 		rail.render(1f);
 		if(!ir) irns.render(1f);

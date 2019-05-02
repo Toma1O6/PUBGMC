@@ -148,16 +148,16 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 			a.magazineStyle.process(a, reload);
 			if(reload && !a.isMagFinished())
 			{
-				a.z = a.z > translation.z ? a.z - calculateMovement(0.04f) : translation.z;
-				a.rx = a.rx < rotation.x ? a.rx + calculateMovement(3.5f) : rotation.x;
-				a.rz = a.rz > rotation.z ? a.rz - calculateMovement(2.7f) : rotation.z;
+				a.z = decreasePartialMovement(a.z, translation.z, 0.04f);
+				a.rx = increasePartialMovement(a.rx, rotation.x, 3.5f);
+				a.rz = decreasePartialMovement(a.rz, rotation.z, 2.7f);
 			}
 			
 			else if(!reload && !a.isMagReturned())
 			{
-				a.z = a.z < 0f ? a.z + calculateMovement(0.04f) : 0f;
-				a.rx = a.rx > 0f ? a.rx - calculateMovement(3.5f) : 0f;
-				a.rz = a.rz < 0f ? a.rz + calculateMovement(2.7f) : 0f;
+				a.z = increasePartialMovement(a.z, 0f, 0.04f);
+				a.rx = decreasePartialMovement(a.rx, 0f, 3.5f);
+				a.rz = increasePartialMovement(a.rz, 0f, 2.7f);
 			}
 			
 			GlStateManager.rotate(a.rx, 1f, 0f, 0f);
@@ -170,18 +170,18 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 			a.magazineStyle.process(a, reload);
 			if(reload && !a.isSingleFinished())
 			{
-				a.ry = a.ry < rotation.y ? a.ry + calculateMovement(2.5f) : rotation.y;
-				a.rz = a.rz < rotation.z ? a.rz + calculateMovement(2.5f) : rotation.z;
-				a.x = a.x > translation.x ? a.x - calculateMovement(0.02f) : translation.x;
-				a.z = a.z < translation.z ? a.z + calculateMovement(0.02f) : translation.z;
+				a.ry = increasePartialMovement(a.ry, rotation.y, 2.5f);
+				a.rz = increasePartialMovement(a.rz, rotation.z, 2.5f);
+				a.x = decreasePartialMovement(a.x, translation.x, 0.02f);
+				a.z = increasePartialMovement(a.z, translation.z, 0.02f);
 			}
 			
 			else if(!reload && !a.isSingleReturned())
 			{
-				a.ry = a.ry > 0f ? a.ry - calculateMovement(2.5f) : 0f;
-				a.rz = a.rz > 0f ? a.rz - calculateMovement(2.5f) : 0f;
-				a.x = a.x < 0f ? a.x + calculateMovement(0.02f) : 0f;
-				a.z = a.z > 0f ? a.z - calculateMovement(0.02f) : 0f;
+				a.ry = decreasePartialMovement(a.ry, 0f, 2.5f);
+				a.rz = decreasePartialMovement(a.rz, 0f, 2.5f);
+				a.x = increasePartialMovement(a.x, 0f, 0.02f);
+				a.z = decreasePartialMovement(a.z, 0f, 0.02f);
 			}
 			
 			GlStateManager.rotate(a.ry, 0f, 1f, 0f);
@@ -194,14 +194,14 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 			a.magazineStyle.process(a, reload);
 			if(reload && !a.isRevolverFinished())
 			{
-				a.rx = a.rx > rotation.x ? a.rx - calculateMovement(2.5f) : rotation.x;
-				a.rz = a.rz > rotation.z ? a.rz - calculateMovement(2.5f) : rotation.z;
+				a.rx = decreasePartialMovement(a.rx, rotation.x, 2.5f);
+				a.rz = decreasePartialMovement(a.rz, rotation.z, 2.5f);
 			}
 			
 			else if(!reload && !a.isRevolverReturned())
 			{
-				a.rx = a.rx < 0f ? a.rx + calculateMovement(2.5f) : 0f;
-				a.rz = a.rz < 0f ? a.rz + calculateMovement(2.5f) : 0f;
+				a.rx = increasePartialMovement(a.rx, 0f, 2.5f);
+				a.rz = increasePartialMovement(a.rz, 0f, 2.5f);
 			}
 			
 			GlStateManager.rotate(a.rx, 1f, 0f, 0f);

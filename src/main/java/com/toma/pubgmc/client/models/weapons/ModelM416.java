@@ -1,5 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -457,6 +460,7 @@ public class ModelM416 extends ModelGun
 		setRotationAngle(bone24, -0.4363F, 0.0F, 0.0F);
 		sights.addChild(bone24);
 		bone24.cubeList.add(new ModelBox(bone24, 13, 72, -1.0F, -3.0786F, -22.6204F, 2, 1, 2, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override
@@ -464,6 +468,7 @@ public class ModelM416 extends ModelGun
 	{
 		initAimAnimation(-0.5575f, 0.235f, 0.25f);
 		initAimingAnimationStates(0.235f, 0.215f, 0.175f);
+		reloadAnimation = new ReloadAnimation(magazine, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 	
 	@Override
