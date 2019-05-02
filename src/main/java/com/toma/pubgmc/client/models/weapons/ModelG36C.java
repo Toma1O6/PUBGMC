@@ -1,5 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
+import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
+import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -33,6 +36,7 @@ public class ModelG36C extends ModelGun
 	{
 		initAimAnimation(-0.581f, 0.188f, 0.3f);
 		initAimingAnimationStates(0.188f, 0.106f, 0.057f);
+		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
@@ -50,7 +54,6 @@ public class ModelG36C extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderG36C(data.isAiming(), stack);
@@ -249,5 +252,6 @@ public class ModelG36C extends ModelGun
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -1.35F, -31.0F, -16.0F, 1, 2, 1, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, 0.35F, -31.0F, -16.0F, 1, 2, 1, 0.0F, false));
 		ironsight.cubeList.add(new ModelBox(ironsight, 0, 0, -0.5F, -30.0F, -16.0F, 1, 1, 1, 0.0F, false));
+		this.initAnimations();
 	}
 }

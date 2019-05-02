@@ -68,10 +68,10 @@ public class ModelAWM extends ModelGun
 
 		mag = new ModelRenderer(this);
 		mag.setRotationPoint(0.0F, 24.0F, 0.0F);
-		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.0F, -15.0F, -21.0F, 4, 6, 14, 0.0F, false));
-		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.5F, -16.0F, -10.0F, 5, 7, 3, 0.0F, false));
-		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.5F, -16.0F, -21.0F, 5, 7, 3, 0.0F, false));
-		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.5F, -16.0F, -17.0F, 5, 7, 6, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.0F, -15.0F, -21.0F, 4, 9, 14, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.5F, -16.0F, -10.0F, 5, 10, 3, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.5F, -16.0F, -21.0F, 5, 10, 3, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 64, -2.5F, -16.0F, -17.0F, 5, 10, 6, 0.0F, false));
 
 		trigger = new ModelRenderer(this);
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);

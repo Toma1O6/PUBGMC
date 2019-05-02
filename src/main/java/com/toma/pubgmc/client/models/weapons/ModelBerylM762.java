@@ -19,6 +19,7 @@ public class ModelBerylM762 extends ModelGun
 	private final ModelRenderer base;
 	private final ModelRenderer rails;
 	private final ModelRenderer mag;
+	private final ModelRenderer magazine;
 	private final ModelRenderer trigger;
 	private final ModelRenderer handle;
 	private final ModelRenderer stock;
@@ -39,7 +40,7 @@ public class ModelBerylM762 extends ModelGun
 		base.cubeList.add(new ModelBox(base, 0, 0, -1.0F, -24.0F, -60.0F, 2, 1, 2, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -1.5F, -23.5F, -77.0F, 3, 3, 6, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -20.0F, -26.0F, 6, 2, 26, 0.0F, false));
-		base.cubeList.add(new ModelBox(base, 0, 44, -2.5F, -18.0F, -25.5F, 5, 10, 9, 0.0F, false));
+		//base.cubeList.add(new ModelBox(base, 0, 44, -2.5F, -18.0F, -25.5F, 5, 10, 9, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -18.0F, -17.0F, 6, 3, 1, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -14.0F, -15.0F, 6, 1, 8, 0.0F, false));
 		base.cubeList.add(new ModelBox(base, 0, 0, -3.0F, -15.0F, -16.0F, 6, 1, 1, 0.0F, false));
@@ -90,7 +91,12 @@ public class ModelBerylM762 extends ModelGun
 		mag = new ModelRenderer(this);
 		mag.setRotationPoint(0.0F, 24.0F, 0.0F);
 		setRotationAngle(mag, -0.1745F, 0.0F, 0.0F);
-		mag.cubeList.add(new ModelBox(mag, 0, 41, -2.5F, -6.0F, -26.8F, 5, 14, 9, 0.0F, false));
+		mag.cubeList.add(new ModelBox(mag, 0, 41, -2.5F, -29.0F, -31.0F, 5, 14, 9, 0.0F, false));
+		
+		magazine = new ModelRenderer(this);
+		magazine.setRotationPoint(0.0F, 24.0F, 0.0F);
+		magazine.cubeList.add(new ModelBox(magazine, 0, 44, -2.5F, -18.0F, -25.5F, 5, 10, 9, 0.0F, false));
+		magazine.addChild(mag);
 
 		trigger = new ModelRenderer(this);
 		trigger.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -122,7 +128,7 @@ public class ModelBerylM762 extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.26f, 0.18f);
 		initAimingAnimationStates(0.26f, 0.175f, 0.135f);
-		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
+		reloadAnimation = new ReloadAnimation(magazine, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
@@ -141,7 +147,6 @@ public class ModelBerylM762 extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderM762(data.isAiming(), stack);
@@ -212,7 +217,7 @@ public class ModelBerylM762 extends ModelGun
 	{
 		base.render(1f);
 		rails.render(1f);
-		mag.render(1f);
+		magazine.render(1f);
 		trigger.render(1f);
 		handle.render(1f);
 		stock.render(1f);
