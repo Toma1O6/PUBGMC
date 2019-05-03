@@ -57,6 +57,7 @@ import com.toma.pubgmc.common.items.heal.ItemFirstAidKit;
 import com.toma.pubgmc.common.items.heal.ItemMedkit;
 import com.toma.pubgmc.common.items.heal.ItemPainkiller;
 import com.toma.pubgmc.common.items.melee.ItemPan;
+import com.toma.pubgmc.common.items.melee.MeleeItemBuilder;
 import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.common.tileentity.TileEntityBigAirdrop;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
@@ -389,7 +390,10 @@ public class PMCRegistry
 					new ItemAmmo("ammo_300m", AmmoType.AMMO300M),
 					new ItemAmmo("ammo_flare", AmmoType.FLARE),
 					new Case1("case1"),
-					new ItemPan("pan", PMCRegistry.ToolMaterials.MATERIAL_PAN),
+					MeleeItemBuilder.create("pan").materialName("material_pan").damage(15.0F).build(),
+					MeleeItemBuilder.create("machete").materialName("material_machete").damage(11.0F).build(),
+					MeleeItemBuilder.create("crowbar").materialName("material_crowbar").damage(9.0F).build(),
+					MeleeItemBuilder.create("sickle").materialName("material_sickle").damage(10.0F).build(),
 					new ItemClothing("ghilliehelmet", PMCRegistry.ToolMaterials.GHILLIE, 1, EntityEquipmentSlot.HEAD),
 					new ItemClothing("ghilliebody", PMCRegistry.ToolMaterials.GHILLIE, 1, EntityEquipmentSlot.CHEST),
 					new ItemClothing("ghillielegs", PMCRegistry.ToolMaterials.GHILLIE, 2, EntityEquipmentSlot.LEGS),

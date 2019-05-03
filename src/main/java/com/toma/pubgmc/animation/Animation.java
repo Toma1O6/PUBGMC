@@ -3,6 +3,8 @@ package com.toma.pubgmc.animation;
 import javax.annotation.Nonnull;
 import javax.vecmath.Vector3f;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.client.Minecraft;
 
 public abstract class Animation
@@ -38,6 +40,29 @@ public abstract class Animation
 	{
 		float f = movement < finalPos ? movement + calculateMovement(modifier) : finalPos;
 		return f;
+	}
+	
+	public static boolean isPartMovementFinished(IPartAnimated part)
+	{
+		Vector3f transl = (Vector3f)part.animationSteps()[part.currentStep()].getRight();
+		Vector3f rot = (Vector3f)part.animationSteps()[part.currentStep()].getLeft();
+		Vector3f magTransl = part.getPartMovement();
+		Vector3f magRot = part.getPartRotation();
+		return magTransl.x == transl.x && magTransl.y == transl.y && magTransl.z == transl.z &&
+				magRot.x == rot.x && magRot.y == rot.y && magRot.z == rot.z;
+	}
+	
+	public static boolean isPartReturned(IPartAnimated part)
+	{
+		Vector3f translation = part.getPartMovement();
+		Vector3f rotation = part.getPartRotation();
+		return translation.x == 0f && translation.y == 0f && translation.z == 0f 
+				&& rotation.x == part.getDefaultRotationAngles()[0] && rotation.y == part.getDefaultRotationAngles()[1] && rotation.z == part.getDefaultRotationAngles()[2];
+	}
+	
+	public static boolean canExecuteNextStep(int current, Pair[] group)
+	{
+		return current+1 < group.length;
 	}
 	
 	public final void calculateMovementVariables(float x, float y, float z)

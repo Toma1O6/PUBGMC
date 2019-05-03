@@ -2,23 +2,26 @@ package com.toma.pubgmc.animation;
 
 import javax.vecmath.Vector3f;
 
+import org.apache.commons.lang3.tuple.MutablePair;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class ReloadAnimation extends Animation implements IPartAnimated
+public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAnimation>
 {
 	final ModelRenderer magazine;
-	final MagazineMovementStyle magazineStyle;
 	final ReloadStyle style;
+	private MutablePair<Vector3f, Vector3f>[] steps;
 	private float x, y, z;
 	private float rx, ry, rz;
+	private float px, py, pz, prx, pry, prz;
+	private int step;
 	private float speedMultiplier;
 	
-	public ReloadAnimation(final ModelRenderer partToAnimate, final MagazineMovementStyle magazineStyle, final ReloadStyle styleOfReload)
+	public ReloadAnimation(final ModelRenderer partToAnimate, final ReloadStyle styleOfReload)
 	{
 		this.magazine = partToAnimate;
-		this.magazineStyle = magazineStyle;
 		this.style = styleOfReload;
 		this.speedMultiplier = 1.0F;
 	}
@@ -36,6 +39,46 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 		{
 			this.getReloadStyle().process(reloading, this);
 		}
+	}
+	
+	@Override
+	public void setCurrentStep(int step)
+	{
+		this.step = step;
+	}
+	
+	@Override
+	public int currentStep()
+	{
+		return step;
+	}
+	
+	@Override
+	public void setMovement(float x, float y, float z)
+	{
+		this.px = x;
+		this.py = y;
+		this.pz = z;
+	}
+	
+	@Override
+	public ReloadAnimation initMovement(MutablePair<Vector3f, Vector3f>[] steps)
+	{
+		this.steps = steps;
+		return this;
+	}
+	
+	@Override
+	public MutablePair<Vector3f, Vector3f>[] animationSteps()
+	{
+		return steps;
+	}
+	
+	@Override
+	public float[] getDefaultRotationAngles()
+	{
+		ModelRenderer part = this.getPart();
+		return new float[] {part.rotateAngleX, part.rotateAngleY, part.rotateAngleZ};
 	}
 	
 	@Override
@@ -65,19 +108,24 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 	@Override
 	public Vector3f getPartMovement()
 	{
-		return this.magazineStyle.getMovement();
+		return new Vector3f(px, py, pz);
 	}
 	
 	@Override
 	public Vector3f getPartRotation()
 	{
-		return this.magazineStyle.getRotation();
+		return new Vector3f(prx, pry, prz);
 	}
 	
-	@Override
-	public MagazineMovementStyle getMagazineMovementPattern()
+	//Crashes the game during model initialization
+	@Deprecated
+	public MutablePair<Vector3f, Vector3f>[] getDefaultAnimation()
 	{
-		return magazineStyle;
+		return new MutablePair[] {
+				new MutablePair(new Vector3f(getPart().rotateAngleX, getPart().rotateAngleY, getPart().rotateAngleZ), new Vector3f(0f, 0.5f, 0f)),
+				new MutablePair(new Vector3f(getPart().rotateAngleX, getPart().rotateAngleY, getPart().rotateAngleZ), new Vector3f(0f, 11.5f, 0f)),
+				new MutablePair(new Vector3f(getPart().rotateAngleX, getPart().rotateAngleY, getPart().rotateAngleZ), new Vector3f(0f, 0f, 0f))
+		};
 	}
 	
 	public ReloadStyle getReloadStyle()
@@ -145,7 +193,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 		
 		private void handleMagazineStyle(boolean reload, ReloadAnimation a)
 		{
-			a.magazineStyle.process(a, reload);
+			a.process(reload);
 			if(reload && !a.isMagFinished())
 			{
 				a.z = decreasePartialMovement(a.z, translation.z, 0.04f);
@@ -167,7 +215,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 		
 		private void handleSingleStyle(boolean reload, ReloadAnimation a)
 		{
-			a.magazineStyle.process(a, reload);
+			a.process(reload);
 			if(reload && !a.isSingleFinished())
 			{
 				a.ry = increasePartialMovement(a.ry, rotation.y, 2.5f);
@@ -191,7 +239,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated
 		
 		private void handleRevolverStyle(boolean reload, ReloadAnimation a)
 		{
-			a.magazineStyle.process(a, reload);
+			a.process(reload);
 			if(reload && !a.isRevolverFinished())
 			{
 				a.rx = decreasePartialMovement(a.rx, rotation.x, 2.5f);

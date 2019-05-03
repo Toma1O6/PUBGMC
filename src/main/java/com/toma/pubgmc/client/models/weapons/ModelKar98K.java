@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
@@ -103,7 +102,7 @@ public class ModelKar98K extends ModelGun
 	{
 		initAimAnimation(-0.56f, 0.265f, 0.245f);
 		initAimingAnimationStates(0.265f, 0.19f, 0.145f);
-		reloadAnimation = new ReloadAnimation(null, MagazineMovementStyle.DEFAULT, ReloadStyle.SINGLE);
+		reloadAnimation = new ReloadAnimation(null, ReloadStyle.SINGLE);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) 

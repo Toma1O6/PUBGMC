@@ -1,6 +1,5 @@
 package com.toma.pubgmc.client.models.weapons;
 
-import com.toma.pubgmc.animation.IPartAnimated.MagazineMovementStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
@@ -36,7 +35,7 @@ public class ModelG36C extends ModelGun
 	{
 		initAimAnimation(-0.581f, 0.188f, 0.3f);
 		initAimingAnimationStates(0.188f, 0.106f, 0.057f);
-		reloadAnimation = new ReloadAnimation(mag, MagazineMovementStyle.DEFAULT, ReloadStyle.MAGAZINE);
+		reloadAnimation = new ReloadAnimation(mag, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
 	}
 	
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
