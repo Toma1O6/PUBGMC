@@ -62,6 +62,14 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
 	}
 	
 	@Override
+	public void setRotation(float x, float y, float z) 
+	{
+		this.prx = x;
+		this.pry = y;
+		this.prz = z;
+	}
+	
+	@Override
 	public ReloadAnimation initMovement(MutablePair<Vector3f, Vector3f>[] steps)
 	{
 		this.steps = steps;

@@ -97,6 +97,7 @@ public class BakedModelGun implements IBakedModel
 			data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
 			if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
 				held = player.getHeldItemMainhand();
+				((GunBase)held.getItem()).getWeaponModel().initAnimations();
 			}
 		}
 		else

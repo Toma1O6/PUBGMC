@@ -23,6 +23,10 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		uzi, vector, bizon, tommy, ump, m16, m4, scar, qbz, g36c, aug, ak, m762, mk47,
 		groza, dp28, m249, vss, mini, qbu, sks, slr, mk14, kar, m24, awm;
 	
+	// vehicles
+		// uaz
+	float uazMaxHealth, uazMaxSpeed, uazMaxAngle, uazAccerelation, uazTurning;
+	
 	// from server config
 	@Override
 	public void toBytes(ByteBuf buf)
@@ -80,6 +84,13 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		buf.writeFloat(ConfigPMC.common.weaponSettings.kar98k);
 		buf.writeFloat(ConfigPMC.common.weaponSettings.m24);
 		buf.writeFloat(ConfigPMC.common.weaponSettings.awm);
+		
+		// uaz
+		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxHealth);
+		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxSpeed);
+		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.acceleration);
+		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.turningSpeed);
+		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle);
 	}
 	
 	// received on client
@@ -136,6 +147,12 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		kar = buf.readFloat();
 		m24 = buf.readFloat();
 		awm = buf.readFloat();
+		
+		uazMaxHealth = buf.readFloat();
+		uazMaxSpeed = buf.readFloat();
+		uazAccerelation = buf.readFloat();
+		uazTurning = buf.readFloat();
+		uazMaxAngle = buf.readFloat();
 	}
 	
 	@Override
@@ -201,5 +218,11 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		ConfigPMC.common.weaponSettings.kar98k = p.kar;
 		ConfigPMC.common.weaponSettings.m24 = p.m24;
 		ConfigPMC.common.weaponSettings.awm = p.awm;
+		
+		ConfigPMC.common.vehicleSettings.uaz.maxHealth = p.uazMaxHealth;
+		ConfigPMC.common.vehicleSettings.uaz.maxSpeed = p.uazMaxSpeed;
+		ConfigPMC.common.vehicleSettings.uaz.acceleration = p.uazAccerelation;
+		ConfigPMC.common.vehicleSettings.uaz.turningSpeed = p.uazTurning;
+		ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle = p.uazMaxAngle;
 	}
 }

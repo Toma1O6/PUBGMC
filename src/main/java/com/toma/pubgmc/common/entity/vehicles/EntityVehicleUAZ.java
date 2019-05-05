@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.entity.vehicles;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.init.PMCSounds;
 
@@ -21,12 +22,13 @@ public class EntityVehicleUAZ extends EntityVehicle
 	{
 		this(world);
 		setPosition(x, y, z);
-		maxHealth = 250f;
-		health = 250f;
-		maxSpeed = 1.6f;
-		acceleration = 0.015f;
-		turnSpeed = 0.3f;
-		fuel = 60f + rand.nextInt(40) + rand.nextFloat();
+		maxHealth = ConfigPMC.common.vehicleSettings.uaz.maxHealth;
+		health = ConfigPMC.common.vehicleSettings.uaz.maxHealth;
+		maxSpeed = ConfigPMC.common.vehicleSettings.uaz.maxSpeed;
+		acceleration = ConfigPMC.common.vehicleSettings.uaz.acceleration;
+		maximalTurningModifier = ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle;
+		turnSpeed = ConfigPMC.common.vehicleSettings.uaz.turningSpeed;
+		fuel = this.generateFuel();
 	}
 	
 	@Override

@@ -31,6 +31,8 @@ public interface IPartAnimated<T extends Animation>
 	
 	void setMovement(float x, float y, float z);
 	
+	void setRotation(float x, float y, float z);
+	
 	default void process(boolean reload)
 	{
 		if(this.getPart() == null || animationSteps() == null) {

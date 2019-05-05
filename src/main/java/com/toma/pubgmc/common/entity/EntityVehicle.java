@@ -35,7 +35,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 {
 	private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
 	private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
-	private static final float MAX_TURNING_MODIFIER = 3F;
 	
 	private boolean isWaterVehicle;
 	
@@ -58,6 +57,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 	
 	/** How well will the vehicle drive on different surfaces **/
 	public float turnModifier;
+	
+	public float maximalTurningModifier = 3F;
 	
 	/** Decides if vehicle can drive **/
 	public float fuel = 100f;
@@ -186,12 +187,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		
 		if(inputRight && !inputLeft)
 		{
-			turnModifier = turnModifier < MAX_TURNING_MODIFIER ? turnModifier + turnSpeed : MAX_TURNING_MODIFIER;
+			turnModifier = turnModifier < maximalTurningModifier ? turnModifier + turnSpeed : maximalTurningModifier;
 		}
 		
 		if(inputLeft && !inputRight)
 		{
-			turnModifier = turnModifier > -MAX_TURNING_MODIFIER ? turnModifier - turnSpeed : -MAX_TURNING_MODIFIER;
+			turnModifier = turnModifier > -maximalTurningModifier ? turnModifier - turnSpeed : -maximalTurningModifier;
 		}
 		
 		if(noAccerationInput() || isBroken)
@@ -544,18 +545,10 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		variantType = (byte) (getTextureVariants() != null ? rand.nextInt(getTextureVariants().length) : 0);
 	}
 	
-	//TODO: implement sometime
-	/*@Override
-	public World getWorld()
+	protected float generateFuel()
 	{
-		return this.world;
+		return 60F + rand.nextInt(40) + rand.nextFloat();
 	}
-	
-	@Override
-	public boolean attackEntityFromPart(MultiPartEntityPart part, DamageSource source, float damage)
-	{
-		return false;
-	}*/
 	
 	@Override
 	public void writeSpawnData(ByteBuf buf)

@@ -121,7 +121,6 @@ public class ModelKar98K extends ModelGun
 		{
 			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			
 			GlStateManager.pushMatrix();
 			{
 				renderKar98K(data.isAiming(), stack);

@@ -78,7 +78,7 @@ public class ClientEvents
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
 	private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
 	private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
-	private static final DecimalFormat DECIMAL = new DecimalFormat("###.##");
+	private static final DecimalFormat DECIMAL = new DecimalFormat("###");
 	
 	/** Time it takes to render red dot / holographic overlay after aiming **/
 	private static final int AIM_TIME = 10;

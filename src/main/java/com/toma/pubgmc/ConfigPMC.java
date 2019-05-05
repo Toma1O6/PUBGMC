@@ -34,6 +34,10 @@ public class ConfigPMC
 		@Name("Weapon Settings")
 		@Comment("All weapon related fiels are here")
 		public WeaponSettings weaponSettings = new WeaponSettings();
+		
+		@Name("Vehicle Settings")
+		@Comment("All vehicle related fiels are here")
+		public VehicleSettings vehicleSettings = new VehicleSettings();
 	}
 	
 	/**
@@ -126,6 +130,12 @@ public class ConfigPMC
 		@Config.Comment("Use this to disable/enable nametag visibility")
 		@Config.RequiresMcRestart
 		public boolean renderPlayerNameTags = true;
+	}
+	
+	public static class VehicleSettings
+	{
+		@Name("UAZ")
+		public UAZSettings uaz = new UAZSettings();
 	}
 	
 	public static class OverlaySettings
@@ -393,5 +403,37 @@ public class ConfigPMC
 				ConfigManager.sync(Pubgmc.MOD_ID, Type.INSTANCE);
 			}
 		}
+	}
+	
+	public static class UAZSettings
+	{
+		@Name("Max Health")
+		@Comment("Vehicle maximum health")
+		@RangeDouble(min = 1.0D, max = 1500.0D)
+		@RequiresWorldRestart
+		public float maxHealth = 250.0F;
+		
+		@Name("Max Speed")
+		@Comment("Vehicle max speed")
+		@RangeDouble(min = 0.5D, max = 3.0D)
+		@RequiresWorldRestart
+		public float maxSpeed = 1.6F;
+		
+		@Name("Acceleration")
+		@Comment({"Vehicle speed acceleration","This also applies for braking, which is Acceleration*2"})
+		@RangeDouble(min = 0.001D, max = 1.0D)
+		@RequiresWorldRestart
+		public float acceleration = 0.015F;
+		
+		@Name("Turning Speed")
+		@Comment("Turning angle increase per tick")
+		@RangeDouble(min = 0.1D, max = 1.0D)
+		@RequiresWorldRestart
+		public float turningSpeed = 0.3F;
+		
+		@Name("Max Turning Angle")
+		@Comment("Maximal angle at which can vehicle turn")
+		@RangeDouble(min = 1.0D, max = 10.0D)
+		public float maxTurningAngle = 3.0F;
 	}
 }
