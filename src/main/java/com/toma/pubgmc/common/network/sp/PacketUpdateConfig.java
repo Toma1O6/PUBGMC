@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.network.sp;
 
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.util.VehicleConfiguration;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -86,11 +87,12 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		buf.writeFloat(ConfigPMC.common.weaponSettings.awm);
 		
 		// uaz
-		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxHealth);
+		/*buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxHealth);
 		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxSpeed);
 		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.acceleration);
 		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.turningSpeed);
-		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle);
+		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle);*/
+		VehicleConfiguration.writeBuffer(buf, ConfigPMC.common.vehicleSettings.uaz);
 	}
 	
 	// received on client
