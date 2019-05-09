@@ -24,6 +24,7 @@ import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.ItemBackpack;
@@ -226,6 +227,7 @@ public class PMCRegistry
 		public static final Item COPPER_INGOT = null;
 		public static final Item FUELCAN = null;
 		public static final Item VEHICLE_UAZ = null;
+		public static final Item VEHICLE_DACIA = null;
 	}
 	
 	@ObjectHolder(Pubgmc.MOD_ID)
@@ -445,7 +447,8 @@ public class PMCRegistry
 					new PMCItem("steel_ingot"),
 					new PMCItem("copper_ingot"),
 					new ItemFuelCan().addDescription("Hold right click while driving vehicle","Vehicle must be stationary!"),
-					new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ)
+					new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ),
+					new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA)
 			};
 			
 			final Item[] ITEM_BLOCKS = {
@@ -509,7 +512,8 @@ public class PMCRegistry
 				registerEntity("flare", EntityFlare.class, 64, 20, true),
 				registerEntity("parachute", EntityParachute.class, 256, 1, true),
 				registerEntity("plane", EntityPlane.class, 128, 25, true),
-				registerVehicle("uaz", EntityVehicleUAZ.class)
+				registerVehicle("uaz", EntityVehicleUAZ.class),
+				registerVehicle("dacia", EntityVehicleDacia.class)
 			};
 			
 			e.getRegistry().registerAll(entries);

@@ -138,6 +138,9 @@ public class ConfigPMC
 	{
 		@Name("UAZ")
 		public VehicleConfiguration uaz = new VehicleConfiguration(250F, 1.6F, 3.0F, 0.015F, 0.3F);
+		
+		@Name("Dacia")
+		public VehicleConfiguration dacia = new VehicleConfiguration(200F, 2.35F, 3.3F, 0.01F, 0.3f);
 	}
 	
 	public static class OverlaySettings

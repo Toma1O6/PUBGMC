@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
@@ -57,7 +58,8 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 	
 	public enum Vehicles
 	{
-		UAZ;
+		UAZ,
+		DACIA;
 		
 		public void spawnEntity(World world, BlockPos pos)
 		{
@@ -65,6 +67,7 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 			switch(this)
 			{
 				case UAZ: vehicle = new EntityVehicleUAZ(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
+				case DACIA: vehicle = new EntityVehicleDacia(world, pos.getX(), pos.getY() + 1, pos.getZ()); break;
 				default: break;
 			}
 			
@@ -86,6 +89,15 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 		rec.clear();
 		
 		if(this == PMCItems.VEHICLE_UAZ)
+		{
+			rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
+			rec.add(new ItemStack(Blocks.IRON_BLOCK, 10));
+			rec.add(new ItemStack(Items.LEATHER, 20));
+			rec.add(new ItemStack(Blocks.GLASS, 10));
+			rec.add(new ItemStack(Items.REDSTONE, 40));
+			rec.add(new ItemStack(Items.GOLD_INGOT, 45));
+		}
+		else if(this == PMCItems.VEHICLE_DACIA)
 		{
 			rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
 			rec.add(new ItemStack(Blocks.IRON_BLOCK, 10));

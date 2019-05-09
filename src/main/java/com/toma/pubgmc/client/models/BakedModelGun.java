@@ -9,12 +9,14 @@ import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.animation.Animation;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -27,16 +29,13 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 public class BakedModelGun implements IBakedModel
 {
-	IPlayerData data = null;
-	EntityPlayerSP player = null;
-	ItemStack held = null;
-	
 	@Override
 	public boolean isBuiltInRenderer()
 	{
@@ -85,19 +84,20 @@ public class BakedModelGun implements IBakedModel
 		Quat4f leftRot = new Quat4f(0f, 1f, 0f, 0f);
 		Quat4f rightRot = new Quat4f(0f, 1f, 0f, 0f);
 		
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		IPlayerData data = null;
+		ItemStack held = ItemStack.EMPTY;
+		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			// prevent animations not working after switching world
-			if(player != Minecraft.getMinecraft().player)
-			{
-				player = Minecraft.getMinecraft().player;
-				data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			}
-			
+			held = player.getHeldItemMainhand();
 			data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
 			if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
 				held = player.getHeldItemMainhand();
-				((GunBase)held.getItem()).getWeaponModel().initAnimations();
+				if(((GunBase)held.getItem()).getWeaponModel().aimAnimation.getFinalState().equals(Animation.EMPTYVEC) && held.getItem() != PMCItems.VSS)
+				{
+					((GunBase)held.getItem()).getWeaponModel().initAnimations();
+				}
 			}
 		}
 		else
@@ -118,8 +118,8 @@ public class BakedModelGun implements IBakedModel
 			// Implement animations here
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
-				this.process();
-				transl = this.getTranslation();
+				this.process(held, data);
+				transl = this.getTranslation(held, data);
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 			}
 			
@@ -144,13 +144,17 @@ public class BakedModelGun implements IBakedModel
 		return new Quat4f(ModelDebugger.X, ModelDebugger.Y, ModelDebugger.Z, 0f);
 	}
 	
-	private void process()
+	private void process(ItemStack held, IPlayerData data)
 	{
-		((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming(), data.isReloading());
+		if(held.getItem() instanceof GunBase)
+			((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming(), data.isReloading());
 	}
 	
-	private Vector3f getTranslation()
+	private Vector3f getTranslation(ItemStack held, IPlayerData data)
 	{
-		return ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : Animation.EMPTYVEC;
+		if(held.getItem() instanceof GunBase)
+			return ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : Animation.EMPTYVEC;
+		
+		return Animation.EMPTYVEC;
 	}
 }

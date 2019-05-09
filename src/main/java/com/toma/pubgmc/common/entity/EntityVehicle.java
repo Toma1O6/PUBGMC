@@ -539,6 +539,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		fuel = hasFuel() ? fuel - 0.01f : 0f;
 	}
 	
+	public byte getColorVariantIndex()
+	{
+		return variantType;
+	}
+	
 	/** Call when car is spawned **/
 	private void createColorVariant()
 	{

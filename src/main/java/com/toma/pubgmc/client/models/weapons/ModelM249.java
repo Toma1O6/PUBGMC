@@ -137,6 +137,7 @@ public class ModelM249 extends ModelGun
 		ir.cubeList.add(new ModelBox(ir, 0, 0, 1.0F, -27.5F, 12.0F, 1, 1, 5, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -2.0F, -27.5F, 12.0F, 1, 1, 5, 0.0F, false));
 		ir.cubeList.add(new ModelBox(ir, 0, 0, -0.5F, -27.0F, 14.0F, 1, 1, 1, 0.0F, false));
+		this.initAnimations();
 	}
 	
 	@Override

@@ -55,7 +55,7 @@ public abstract class RenderVehicle<V extends EntityVehicle> extends Render<V>
 	@Override
 	protected ResourceLocation getEntityTexture(V entity) 
 	{
-		if(currentTexture == null) initTexture();
+		if(currentTexture == null) initTexture(entity);
 		return currentTexture;
 	}
 	
@@ -94,14 +94,16 @@ public abstract class RenderVehicle<V extends EntityVehicle> extends Render<V>
 		vehicleModel = modelToRender;
 	}
 	
-	private void initTexture() throws IllegalArgumentException
+	private void initTexture(V entity)
 	{
-		if(textures.isEmpty()) throw new IllegalArgumentException("Texture set is empty!");
+		if(textures.isEmpty()) {
+			initTextures(entity);
+		}
 		
-		currentTexture = textures.get(RNG.nextInt(textures.size()));
+		currentTexture = textures.get(entity.getColorVariantIndex());
 	}
 	
-	private void initTextures(V entity)
+	protected void initTextures(V entity)
 	{
 		textures.clear();
 		final String prefix = Pubgmc.MOD_ID + ":textures/vehicle/";
