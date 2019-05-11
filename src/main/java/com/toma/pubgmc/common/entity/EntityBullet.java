@@ -259,7 +259,7 @@ public class EntityBullet extends Entity
             	boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
             	double offset = 0f;
             	Vec3d vec = raytraceResultIn.hitVec;
-            	Block particleBlock = entity instanceof EntityVehicle ? Blocks.IRON_BLOCK : Blocks.REDSTONE_BLOCK;
+            	Block particleBlock = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
             	
                 if(headshot)
                 {
@@ -268,7 +268,9 @@ public class EntityBullet extends Entity
                 }
                 else offset = vec.y;
                 
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
+                if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
+                	PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
+                
                 onEntityHit(headshot, entity);
                 entity.hurtResistantTime = 0;
                 

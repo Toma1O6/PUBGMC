@@ -454,6 +454,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		acceleration = compound.getFloat("acceleration");
 		turnSpeed = compound.getFloat("turnSpeed");
 		isBroken = compound.getBoolean("isBroken");
+		variantType = compound.getByte("colorVariant");
 	}
 	
 	@Override
@@ -473,6 +474,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 		compound.setFloat("acceleration", this.acceleration);
 		compound.setFloat("turnSpeed", this.turnSpeed);
 		compound.setBoolean("isBroken", this.isBroken);
+		compound.setByte("colorVariant", this.variantType);
 	}
 	
 	@Override

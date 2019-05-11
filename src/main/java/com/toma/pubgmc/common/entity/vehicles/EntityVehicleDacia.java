@@ -72,7 +72,6 @@ public class EntityVehicleDacia extends EntityVehicle
 	@Override
 	protected float getPassengerXOffset(int passengerIndex)
 	{
-		System.out.println(getColorVariantIndex());
 		return passengerIndex % 2 == 0 ? -0.3f : -1.5f;
 	}
 	

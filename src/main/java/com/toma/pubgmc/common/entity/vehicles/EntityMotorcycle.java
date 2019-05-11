@@ -23,7 +23,7 @@ public class EntityMotorcycle extends EntityVehicle
 		maxSpeed = 2.3f;
 		acceleration = 0.025f;
 		turnSpeed = 0.25f;
-		fuel = 60f + rand.nextInt(40) + rand.nextFloat();
+		fuel = generateFuel();
 	}
 	
 	@Override
