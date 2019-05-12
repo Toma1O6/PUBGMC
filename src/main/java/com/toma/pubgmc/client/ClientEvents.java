@@ -338,7 +338,7 @@ public class ClientEvents
         		}
     		}
     		
-    		if(ConfigPMC.client.overlays.armorOverlayIcons)
+    		if(ConfigPMC.client.overlays.armorOverlayIcons && !sp.isSpectator())
     			renderArmorIcons(e, sp, res, mc, data);
     		
     		if(stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan)

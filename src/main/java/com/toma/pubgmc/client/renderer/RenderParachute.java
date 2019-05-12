@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelParachute;
 import com.toma.pubgmc.common.entity.EntityParachute;
+import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
@@ -59,8 +60,10 @@ public class RenderParachute extends Render<EntityParachute>
 				GlStateManager.rotate(180, 1, 0, 0);
 				GlStateManager.scale(0.06f, 0.06f, 0.06f);
 				GlStateManager.translate(0, -60, 0);
-				GlStateManager.rotate(entity.rotationYaw, 0, 1, 0);
-				GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
+				float f0 = PUBGMCUtil.interpolate(entity.prevRotationYaw, entityYaw, partialTicks);
+				float f1 = PUBGMCUtil.interpolate(entity.prevRotationPitch, entity.rotationPitch, partialTicks);
+				GlStateManager.rotate(f0, 0, 1, 0);
+				GlStateManager.rotate(f1, 1, 0, 0);
 				GlStateManager.translate(0, 0, entity.rotationPitch * -0.4f);
 				
 				bindTexture(color);

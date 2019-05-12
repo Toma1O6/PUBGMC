@@ -23,7 +23,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-public class TileEntityAirdrop extends TileEntity implements IInventory, ITickable
+public class TileEntityAirdrop extends TileEntity implements IInventory, ITickable, IAirdropTileEntity
 {
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 	private String customName;
@@ -219,6 +219,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 	}
 	
 	/** Used for airdrop loot gen **/
+	@Override
 	public void generateLoot()
 	{
 		clear();

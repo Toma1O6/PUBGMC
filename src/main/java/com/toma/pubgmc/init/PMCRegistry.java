@@ -16,6 +16,7 @@ import com.toma.pubgmc.common.blocks.BlockOre;
 import com.toma.pubgmc.common.blocks.BlockPlant;
 import com.toma.pubgmc.common.blocks.BlockPlayerCrate;
 import com.toma.pubgmc.common.blocks.PMCBlockHorizontal;
+import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.entity.EntityFlare;
 import com.toma.pubgmc.common.entity.EntityGrenade;
@@ -512,6 +513,7 @@ public class PMCRegistry
 				registerEntity("flare", EntityFlare.class, 64, 20, true),
 				registerEntity("parachute", EntityParachute.class, 256, 1, true),
 				registerEntity("plane", EntityPlane.class, 128, 25, true),
+				registerEntity("dropEntity", EntityAirdrop.class, 256, 4, true),
 				registerVehicle("uaz", EntityVehicleUAZ.class),
 				registerVehicle("dacia", EntityVehicleDacia.class)
 			};

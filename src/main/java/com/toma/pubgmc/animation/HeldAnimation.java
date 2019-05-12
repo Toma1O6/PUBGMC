@@ -13,18 +13,17 @@ public class HeldAnimation extends Animation
 	private float mx, my, mz;
 	private float rx, ry, rz;
 	private final HeldStyle style;
-	private EntityPlayer player;
 	
 	public HeldAnimation(HeldStyle style) 
 	{
 		this.style = style;
-		player = Minecraft.getMinecraft().player;
 	}
 	
 	public void processAnimation()
 	{
 		if(!Minecraft.getMinecraft().isGamePaused())
 		{
+			EntityPlayer player = Minecraft.getMinecraft().player;
 			if(player == null)
 			{
 				player = Minecraft.getMinecraft().player;

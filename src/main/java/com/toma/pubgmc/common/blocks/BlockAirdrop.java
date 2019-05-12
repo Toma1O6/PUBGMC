@@ -40,20 +40,6 @@ public class BlockAirdrop extends PMCBlock
 	}
 	
 	@Override
-	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-	{
-		if(!worldIn.isRemote && ConfigPMC.common.worldSettings.airdropLootGen > 0)
-		{
-			TileEntity tilee = worldIn.getTileEntity(pos);
-			if(tilee instanceof TileEntityAirdrop)
-			{
-				TileEntityAirdrop te = (TileEntityAirdrop)tilee;
-				te.generateLoot();
-			}
-		}
-	}
-	
-	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) 
 	{
 		if(!worldIn.isRemote && !playerIn.isSneaking())
@@ -61,24 +47,6 @@ public class BlockAirdrop extends PMCBlock
 			playerIn.openGui(Pubgmc.instance, GuiHandler.GUI_AIRDROP, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
-	}
-	
-	@Override
-	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) 
-	{
-		return new ItemStack(Items.IRON_INGOT);
-	}
-	
-	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) 
-	{
-		return Items.IRON_INGOT;
-	}
-	
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 1 + random.nextInt(5);
 	}
 	
 	@Override
@@ -92,5 +60,4 @@ public class BlockAirdrop extends PMCBlock
 	{
 		return new TileEntityAirdrop();
 	}
-
 }

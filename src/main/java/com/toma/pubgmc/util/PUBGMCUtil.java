@@ -4,6 +4,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSound;
@@ -38,6 +39,26 @@ public class PUBGMCUtil
 		}
 		
 		return stack.getTagCompound();
+	}
+	
+	public static void writeBasicEntityNBT(NBTTagCompound compound, Entity entity)
+	{
+		compound.setDouble("posX", entity.posX);
+		compound.setDouble("posY", entity.posY);
+		compound.setDouble("posZ", entity.posZ);
+		compound.setDouble("motionX", entity.motionX);
+		compound.setDouble("motionY", entity.motionY);
+		compound.setDouble("motionZ", entity.motionZ);
+	}
+	
+	public static void readBasicEntityNBT(NBTTagCompound compound, Entity entity)
+	{
+		entity.posX = compound.getDouble("posX");
+		entity.posY = compound.getDouble("posY");
+		entity.posZ = compound.getDouble("posZ");
+		entity.motionX = compound.getDouble("motionX");
+		entity.motionY = compound.getDouble("motionY");
+		entity.motionZ = compound.getDouble("motionZ");
 	}
 	
 	/**
@@ -225,5 +246,19 @@ public class PUBGMCUtil
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;
 		model.rotateAngleZ = z;
+	}
+	
+	public static void spawnAirdrop(World world, BlockPos pos, byte type)
+	{
+		if(!world.isRemote && world.isBlockLoaded(pos)) {
+			type = type < 0 ? 0 : type > 1 ? 1 : type;
+			EntityAirdrop drop = new EntityAirdrop(world, pos, type);
+			world.spawnEntity(drop);
+		}
+	}
+	
+	public static float interpolate(float prev, float current, float partial) 
+	{
+		return prev + partial * (current - prev);
 	}
 }

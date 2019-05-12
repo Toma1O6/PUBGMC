@@ -7,6 +7,7 @@ import java.util.Random;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.vehicles.ModelVehicle;
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
@@ -72,7 +73,8 @@ public abstract class RenderVehicle<V extends EntityVehicle> extends Render<V>
 			GlStateManager.rotate(180, 1, 0, 0);
 			GlStateManager.scale(scaling[0], scaling[1], scaling[2]);
 			GlStateManager.translate(translation[0], translation[1], translation[2]);
-			GlStateManager.rotate(entity.rotationYaw, 0f, 1f, 0f);
+			float f0 = PUBGMCUtil.interpolate(entity.prevRotationYaw, entity.rotationYaw, partialTicks);
+			GlStateManager.rotate(f0, 0f, 1f, 0f);
 			this.getVehicleModel().render(entity.turnModifier);
 		}
 		GlStateManager.popMatrix();

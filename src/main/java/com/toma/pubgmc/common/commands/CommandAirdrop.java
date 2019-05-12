@@ -81,9 +81,7 @@ public class CommandAirdrop extends CommandBase
 				if(!world.isRemote)
 				{
 					//+0.5 so the block won't get stuck between 2 blocks
-					EntityFallingBlock efb = new EntityFallingBlock(world, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, PMCRegistry.PMCBlocks.AIRDROP.getDefaultState());
-					efb.fallTime = 1;
-					world.spawnEntity(efb);
+					PUBGMCUtil.spawnAirdrop(world, pos, (byte)0);
 				}
 				
 				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);

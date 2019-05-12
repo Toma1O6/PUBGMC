@@ -72,33 +72,6 @@ public class BlockBigAirdrop extends PMCBlock
 	}
 	
 	@Override
-	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-	{
-		super.onBlockAdded(worldIn, pos, state);
-		
-		TileEntityBigAirdrop te = (TileEntityBigAirdrop)worldIn.getTileEntity(pos);
-		te.generateLoot();
-	}
-	
-	@Override
-	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
-	{
-		return new ItemStack(Items.IRON_INGOT);
-	}
-	
-	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune)
-	{
-		return Items.IRON_INGOT;
-	}
-	
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 3 + random.nextInt(8);
-	}
-	
-	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if(!worldIn.isRemote)

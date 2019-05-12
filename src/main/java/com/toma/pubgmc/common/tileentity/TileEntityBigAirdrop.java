@@ -17,7 +17,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
-public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEntity,ITickable
+public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEntity,ITickable,IAirdropTileEntity
 {
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(18, ItemStack.EMPTY);
 	private int slot;
@@ -47,6 +47,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 		return this.getDisplayName().getFormattedText();
 	}
 	
+	@Override
 	public void generateLoot()
 	{
 		slot = -1;
