@@ -1,16 +1,11 @@
 package com.toma.pubgmc.client.models;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
-public class ModelAirdrop extends ModelBase
+public class ModelBigAirdrop extends ModelAirdrop
 {
 	private final ModelRenderer drop;
-	private final ModelRenderer box;
-	private final ModelRenderer detail;
-	private final ModelRenderer cloth;
-	private final ModelRenderer detail2;
 	private final ModelRenderer chute;
 	private final ModelRenderer strings;
 	private final ModelRenderer a0;
@@ -30,68 +25,15 @@ public class ModelAirdrop extends ModelBase
 	private final ModelRenderer b5;
 	private final ModelRenderer b6;
 	private final ModelRenderer b7;
+	private final ModelRenderer base2;
 
-	public ModelAirdrop()
+	public ModelBigAirdrop() 
 	{
 		textureWidth = 128;
 		textureHeight = 128;
 
 		drop = new ModelRenderer(this);
 		drop.setRotationPoint(0.0F, 24.0F, 0.0F);
-
-		box = new ModelRenderer(this);
-		box.setRotationPoint(0.0F, 0.0F, 0.0F);
-		drop.addChild(box);
-		box.cubeList.add(new ModelBox(box, 0, 0, -7.5F, -0.9F, -7.5F, 15, 1, 15, 0.0F, false));
-		box.cubeList.add(new ModelBox(box, 82, 0, -7.0F, -12.0F, 6.0F, 14, 12, 1, 0.0F, false));
-		box.cubeList.add(new ModelBox(box, 85, 0, -7.0F, -12.0F, -7.0F, 14, 12, 1, 0.0F, false));
-		box.cubeList.add(new ModelBox(box, 82, 0, -7.0F, -12.0F, -6.0F, 1, 12, 12, 0.0F, false));
-		box.cubeList.add(new ModelBox(box, 82, 0, 6.0F, -12.0F, -6.0F, 1, 12, 12, 0.0F, false));
-
-		detail = new ModelRenderer(this);
-		detail.setRotationPoint(0.0F, 0.0F, 0.0F);
-		box.addChild(detail);
-		detail.cubeList.add(new ModelBox(detail, 0, 0, -7.5F, -12.0F, -7.5F, 2, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, 5.5F, -12.0F, -7.5F, 2, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, 5.5F, -12.0F, 5.5F, 2, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, -7.5F, -12.0F, 5.5F, 2, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, -3.25F, -12.0F, -7.5F, 2, 12, 1, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, 1.25F, -12.0F, -7.5F, 2, 12, 1, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, -3.25F, -12.0F, 6.5F, 2, 12, 1, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, 1.25F, -12.0F, 6.5F, 2, 12, 1, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, -7.5F, -12.0F, 1.25F, 1, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, -7.5F, -12.0F, -3.25F, 1, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, 6.5F, -12.0F, 1.25F, 1, 12, 2, 0.0F, false));
-		detail.cubeList.add(new ModelBox(detail, 0, 0, 6.5F, -12.0F, -3.25F, 1, 12, 2, 0.0F, false));
-
-		cloth = new ModelRenderer(this);
-		cloth.setRotationPoint(0.0F, 0.0F, 0.0F);
-		drop.addChild(cloth);
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, -8.0F, -13.0F, -8.0F, 16, 1, 7, 0.0F, false));
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, -8.0F, -13.0F, 1.0F, 16, 1, 7, 0.0F, false));
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, -8.0F, -13.0F, -1.0F, 16, 1, 2, 0.0F, false));
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, -8.0F, -12.0F, 7.0F, 16, 2, 1, 0.0F, false));
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, -8.0F, -12.0F, -8.0F, 16, 2, 1, 0.0F, false));
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, -8.0F, -12.0F, -7.0F, 1, 2, 14, 0.0F, false));
-		cloth.cubeList.add(new ModelBox(cloth, 82, 71, 7.0F, -12.0F, -7.0F, 1, 2, 14, 0.0F, false));
-
-		detail2 = new ModelRenderer(this);
-		detail2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		cloth.addChild(detail2);
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, 7.1F, -13.1F, 3.0F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, 7.1F, -13.1F, -4.0F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -8.1F, -13.1F, 3.0F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -8.1F, -13.1F, -4.0F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, 3.0F, -13.1F, -8.1F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -4.0F, -13.1F, -8.1F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -4.0F, -13.1F, 7.1F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, 3.0F, -13.1F, 7.1F, 1, 3, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -7.4F, -13.1F, -4.0F, 15, 1, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -7.4F, -13.1F, 3.0F, 15, 1, 1, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -4.0F, -13.1F, -5.7F, 1, 1, 13, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, 3.0F, -13.1F, -5.7F, 1, 1, 13, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, 3.0F, -13.1F, -7.7F, 1, 1, 2, 0.0F, false));
-		detail2.cubeList.add(new ModelBox(detail2, 82, 114, -4.0F, -13.1F, -7.7F, 1, 1, 2, 0.0F, false));
 
 		chute = new ModelRenderer(this);
 		chute.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -205,17 +147,22 @@ public class ModelAirdrop extends ModelBase
 		setRotationAngle(b7, -0.5236F, 0.1745F, 0.5236F);
 		base.addChild(b7);
 		b7.cubeList.add(new ModelBox(b7, 0, 70, -19.7F, -48.5F, -19.9F, 19, 1, 19, 0.0F, false));
+
+		base2 = new ModelRenderer(this);
+		base2.setRotationPoint(0.0F, 0.0F, 0.0F);
+		drop.addChild(base2);
+		base2.cubeList.add(new ModelBox(base2, 82, 70, 5.0F, 3.0F, -9.0F, 5, 1, 18, 0.0F, false));
+		base2.cubeList.add(new ModelBox(base2, 82, 70, -15.0F, 3.0F, -9.0F, 5, 1, 18, 0.0F, false));
+		base2.cubeList.add(new ModelBox(base2, 82, 70, -10.0F, 3.0F, -9.0F, 5, 1, 18, 0.0F, false));
+		base2.cubeList.add(new ModelBox(base2, 82, 70, 0.0F, 3.0F, -9.0F, 5, 1, 18, 0.0F, false));
+		base2.cubeList.add(new ModelBox(base2, 82, 70, -5.0F, 3.0F, -9.0F, 5, 1, 18, 0.0F, false));
+		base2.cubeList.add(new ModelBox(base2, 82, 70, 10.0F, 3.0F, -9.0F, 5, 1, 18, 0.0F, false));
+		base2.cubeList.add(new ModelBox(base2, 0, 0, -14.5F, -13.0F, -8.5F, 29, 16, 17, 0.0F, false));
 	}
 	
+	@Override
 	public void render()
 	{
-		drop.render(1f);
-	}
-	
-	public static void setRotationAngle(ModelRenderer model, float x, float y, float z)
-	{
-		model.rotateAngleX = x;
-		model.rotateAngleY = y;
-		model.rotateAngleZ = z;
+		drop.render(1f);;
 	}
 }

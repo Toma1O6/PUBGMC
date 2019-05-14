@@ -324,7 +324,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
 			}
 			
-			//TODO sync
 			if(isBroken)
 			{
 				Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2f));

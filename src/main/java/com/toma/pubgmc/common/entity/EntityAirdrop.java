@@ -5,14 +5,16 @@ import com.toma.pubgmc.common.tileentity.IAirdropTileEntity;
 import com.toma.pubgmc.init.PMCRegistry.PMCBlocks;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityAirdrop extends Entity
+public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData
 {
 	private byte type;
 	
@@ -34,13 +36,13 @@ public class EntityAirdrop extends Entity
 	public void onUpdate()
 	{
 		super.onUpdate();
-		this.handleMotion(0.35);
+		this.handleMotion(0.15);
 		this.move(MoverType.SELF, motionX, motionY, motionZ);
 	}
 	
 	public void onEntityLanded()
 	{
-		IBlockState state = type != 0 ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
+		IBlockState state = type == 1 ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
 		world.setBlockState(this.getPosition(), state, 3);
 		
 		if(world.getTileEntity(this.getPosition()) instanceof IAirdropTileEntity && ConfigPMC.common.worldSettings.airdropLootGen > 0)
@@ -66,6 +68,18 @@ public class EntityAirdrop extends Entity
 	{
 		PUBGMCUtil.writeBasicEntityNBT(compound, this);
 		type = compound.getByte("dropType");
+	}
+	
+	@Override
+	public void readSpawnData(ByteBuf buf)
+	{
+		type = buf.readByte();
+	}
+	
+	@Override
+	public void writeSpawnData(ByteBuf buffer)
+	{
+		buffer.writeByte(type);
 	}
 	
 	@Override
