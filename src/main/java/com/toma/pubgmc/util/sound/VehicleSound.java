@@ -1,4 +1,4 @@
-package com.toma.pubgmc.util.handlers;
+package com.toma.pubgmc.util.sound;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
 
