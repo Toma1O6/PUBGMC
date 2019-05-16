@@ -33,6 +33,7 @@ import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
 import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
+import com.toma.pubgmc.event.SoundTickEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
@@ -54,6 +55,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -1117,6 +1119,8 @@ public class ClientEvents
 	        		hasAmmo = false;
 	        	}
 	        }
+	        if(ConfigPMC.client.other.betterSound)
+	        	MinecraftForge.EVENT_BUS.post(new SoundTickEvent());
 		}
 	}
 	

@@ -29,7 +29,7 @@ public class VehicleSound extends PositionedSound implements ITickableSound
 	}
 	
 	@Override
-	public void update() 
+	public void update()
 	{
 		if(!isDonePlaying())
 		{

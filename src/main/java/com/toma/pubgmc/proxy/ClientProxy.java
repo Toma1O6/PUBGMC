@@ -51,7 +51,8 @@ public class ClientProxy implements IProxy
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
 		}
 		
-		SoundHandler.initSoundHandler();
+		if(ConfigPMC.client.other.betterSound)
+			SoundHandler.initSoundHandler();
 	}
 	
 	@SideOnly(Side.CLIENT)

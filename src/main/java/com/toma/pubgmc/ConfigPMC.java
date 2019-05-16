@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RangeInt;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 import net.minecraftforge.common.config.Config.Type;
 import net.minecraftforge.common.config.ConfigManager;
@@ -66,6 +67,11 @@ public class ConfigPMC
 		@Config.RangeInt(min = 0, max = 2)
 		@Config.RequiresMcRestart
 		public int lootRenderType = 2;
+		
+		@Name("Enhanced sound")
+		@Comment("Enable improved sound physics for gun shots")
+		@RequiresMcRestart
+		public boolean betterSound = true;
 	}
 	
 	public static class WorldSettings

@@ -30,16 +30,18 @@ public class PacketShoot implements IMessage, IMessageHandler<PacketShoot, IMess
 		World world = ctx.getServerHandler().player.world;
 		EntityPlayer player = ctx.getServerHandler().player;
 		
-		player.getServer().addScheduledTask(() ->
-		{
-			ItemStack stack = player.getHeldItemMainhand();
-			
-			if(stack.getItem() instanceof GunBase)
-			{
-				((GunBase)stack.getItem()).shoot(world, player, stack);
-			}
-		});
+		player.getServer().addScheduledTask(() -> handle(player, world));
 		
 		return null;
+	}
+	
+	private static void handle(EntityPlayer player, World world)
+	{
+		ItemStack stack = player.getHeldItemMainhand();
+		
+		if(stack.getItem() instanceof GunBase)
+		{
+			((GunBase)stack.getItem()).shoot(world, player, stack);
+		}
 	}
 }
