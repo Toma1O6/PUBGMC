@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.ConfigPMC.ActionType;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
@@ -817,6 +818,12 @@ public class ClientEvents
             	{
             		setAiming(data, false);
             		gs.mouseSensitivity = this.mouseSens;
+            	}
+            	
+            	if(ConfigPMC.client.keys.aimStyle == ActionType.HOLD) {
+            		if(!gs.keyBindUseItem.isKeyDown()) {
+            			setAiming(data, false);
+            		}
             	}
             }
             

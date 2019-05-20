@@ -54,6 +54,9 @@ public class ConfigPMC
 		
 		@Name("Other")
 		public OtherSettings other = new OtherSettings();
+		
+		@Name("Keybind settings")
+		public KeySettings keys = new KeySettings();
 	}
 	
 	public static class OtherSettings
@@ -72,6 +75,12 @@ public class ConfigPMC
 		@Comment("Enable improved sound physics for gun shots")
 		@RequiresMcRestart
 		public boolean betterSound = true;
+	}
+	
+	public static class KeySettings
+	{
+		@Name("Aiming mode")
+		public ActionType aimStyle = ActionType.TOGGLE;
 	}
 	
 	public static class WorldSettings
@@ -414,5 +423,11 @@ public class ConfigPMC
 				ConfigManager.sync(Pubgmc.MOD_ID, Type.INSTANCE);
 			}
 		}
+	}
+	
+	public enum ActionType
+	{
+		TOGGLE,
+		HOLD;
 	}
 }
