@@ -16,20 +16,21 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData
 {
-	private byte type;
+	private boolean isBigDrop;
 	
 	public EntityAirdrop(World world)
 	{
 		super(world);
 		this.setSize(1f, 1f);
-		type = 0;
+		isBigDrop = false;
 	}
 	
-	public EntityAirdrop(World world, BlockPos pos, byte type)
+	public EntityAirdrop(World world, BlockPos pos, boolean type)
 	{
-		this(world);
+		super(world);
+		this.setSize(1f, 1f);
 		this.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-		this.type = type;
+		this.isBigDrop = type;
 	}
 	
 	@Override
@@ -42,7 +43,7 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData
 	
 	public void onEntityLanded()
 	{
-		IBlockState state = type == 1 ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
+		IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
 		world.setBlockState(this.getPosition(), state, 3);
 		
 		if(world.getTileEntity(this.getPosition()) instanceof IAirdropTileEntity && ConfigPMC.common.worldSettings.airdropLootGen > 0)
@@ -51,35 +52,35 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData
 		}
 	}
 	
-	public byte getType()
+	public boolean getType()
 	{
-		return type;
+		return isBigDrop;
 	}
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound)
 	{
 		PUBGMCUtil.readBasicEntityNBT(compound, this);
-		compound.setByte("dropType", type);
+		compound.setBoolean("dropType", isBigDrop);
 	}
 	
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound)
 	{
 		PUBGMCUtil.writeBasicEntityNBT(compound, this);
-		type = compound.getByte("dropType");
+		isBigDrop = compound.getBoolean("dropType");
 	}
 	
 	@Override
 	public void readSpawnData(ByteBuf buf)
 	{
-		type = buf.readByte();
+		isBigDrop = buf.readBoolean();
 	}
 	
 	@Override
 	public void writeSpawnData(ByteBuf buffer)
 	{
-		buffer.writeByte(type);
+		buffer.writeBoolean(isBigDrop);
 	}
 	
 	@Override

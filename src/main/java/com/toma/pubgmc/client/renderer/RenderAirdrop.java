@@ -42,8 +42,8 @@ public class RenderAirdrop extends Render<EntityAirdrop>
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
 
-	private static final byte getTypeID(EntityAirdrop drop)
+	private static final int getTypeID(EntityAirdrop drop)
 	{
-		return drop.getType();
+		return drop.getType() ? 1 : 0;
 	}
 }

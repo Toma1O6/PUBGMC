@@ -81,7 +81,7 @@ public class CommandAirdrop extends CommandBase
 				if(!world.isRemote)
 				{
 					//+0.5 so the block won't get stuck between 2 blocks
-					PUBGMCUtil.spawnAirdrop(world, pos, (byte)0);
+					PUBGMCUtil.spawnAirdrop(world, pos, false);
 				}
 				
 				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);

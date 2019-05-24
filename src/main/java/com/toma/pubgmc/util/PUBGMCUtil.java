@@ -248,11 +248,10 @@ public class PUBGMCUtil
 		model.rotateAngleZ = z;
 	}
 	
-	public static void spawnAirdrop(World world, BlockPos pos, byte type)
+	public static void spawnAirdrop(World world, BlockPos pos, boolean bigDrop)
 	{
 		if(!world.isRemote && world.isBlockLoaded(pos)) {
-			type = type < 0 ? 0 : type > 1 ? 1 : type;
-			EntityAirdrop drop = new EntityAirdrop(world, pos, type);
+			EntityAirdrop drop = new EntityAirdrop(world, pos, bigDrop);
 			world.spawnEntity(drop);
 		}
 	}

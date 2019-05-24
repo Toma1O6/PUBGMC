@@ -101,7 +101,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
         	{
         		world.playSound(null, posX, posY, posZ, PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);
         		world.createExplosion(this, posX, posY, posZ, 3.0f, false);
-        		PUBGMCUtil.spawnAirdrop(world, getPosition(), (byte)1);
+        		PUBGMCUtil.spawnAirdrop(world, getPosition(), true);
         		this.setDead();
         	}
         }
