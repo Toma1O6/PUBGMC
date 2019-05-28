@@ -19,6 +19,7 @@ item.copper_ingot.name=Copper Ingot
 item.fuelcan.name=Fuel Can
 
 item.vehicle_uaz.name=Spawn UAZ
+item.vehicle_dacia.name=Spawn Dacia
 
 item.ammo_9mm.name=9mm Bullet
 item.ammo_shotgun.name=Shotgun Ammo

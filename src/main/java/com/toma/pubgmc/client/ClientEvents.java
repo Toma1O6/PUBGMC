@@ -18,6 +18,7 @@ import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.ItemFuelCan;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
+import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -29,6 +30,7 @@ import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
 import com.toma.pubgmc.common.network.server.PacketHandleVehicleInput;
 import com.toma.pubgmc.common.network.server.PacketNightVision;
 import com.toma.pubgmc.common.network.server.PacketOpenGui;
+import com.toma.pubgmc.common.network.server.PacketProne;
 import com.toma.pubgmc.common.network.server.PacketReload;
 import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
@@ -44,12 +46,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -82,6 +88,8 @@ public class ClientEvents
 	private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
 	private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
 	private static final DecimalFormat DECIMAL = new DecimalFormat("###");
+	
+	private final ModelGhillie ghillieSuit = new ModelGhillie();
 	
 	/** Time it takes to render red dot / holographic overlay after aiming **/
 	private static final int AIM_TIME = 10;
@@ -122,35 +130,34 @@ public class ClientEvents
 	/** Used to stop aiming when player switches slot **/
 	private int aimSlot;
 	
-	/** Used to render ghillie suit on player **/
-	private final ModelGhillie ghillie = new ModelGhillie();
-	
 	/** IDs for different red dot sight styles and colors **/
 	private int currentColor = 0;
 	private int currentType = 0;
 	
-	@SubscribeEvent
-	public void renderPlayer(RenderPlayerEvent.Post e)
-	{
-		//e.getRenderer().addLayer(new LayerGhillie(e.getRenderer()));
-		/*EntityPlayer player = e.getEntityPlayer();
-		if(player != null)
-		{
-			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
-			
-			if(stack.getItem() == PMCItems.GHILLIE_SUIT)
-			{
+	//@SubscribeEvent
+	public void renderPlayerPost(RenderPlayerEvent.Post e) {
+		EntityPlayer player = e.getEntityPlayer();
+		if(player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() instanceof ItemGhillie) {
+			ghillieSuit.render(player, e.getRenderer().getMainModel(), e.getPartialRenderTick());
+		}
+	}
+	
+	//@SubscribeEvent
+	public void renderPlayerPre(RenderPlayerEvent.Pre e) {
+		EntityPlayer player = e.getEntityPlayer();
+		if(player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			if(data.isProning()) {
+				/*e.setCanceled(true);
+				ModelPlayer model = e.getRenderer().getMainModel();
+				Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
 				GlStateManager.pushMatrix();
-				{
-					GlStateManager.scale(0.07, 0.07, 0.07);
-					GlStateManager.rotate(180, 1, 0, 0);
-					GlStateManager.translate(0.0, -20.5, 0.0);
-					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/armor/ghillie_suit_layer_2.png"));
-					ghillie.render(player);
-				}
-				GlStateManager.popMatrix();
+				GlStateManager.rotate(180, 1f, 0, 0);
+				GlStateManager.translate(0, -2, 0);
+				model.render(player, player.limbSwing, player.limbSwingAmount, 0, player.rotationYaw, player.rotationPitch, 0.625f);
+				GlStateManager.popMatrix();*/
 			}
-		}*/
+		}
 	}
 	
 	@SubscribeEvent
@@ -259,7 +266,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	
@@ -361,7 +368,7 @@ public class ClientEvents
     {
     	EntityPlayerSP sp = Minecraft.getMinecraft().player;
     	/** DEBUGGER **/
-    	if(KeyBinds.TRANSLATEXPLUS.isPressed())
+    	/*if(KeyBinds.TRANSLATEXPLUS.isPressed())
     	{
     		if(sp.isSneaking())
     		{
@@ -473,6 +480,14 @@ public class ClientEvents
     	if(KeyBinds.CHANGE_SCOPECOLOR.isPressed() && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
     	{
     		switchScopeColor(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
+    	}
+    	
+    	if(KeyBinds.PRONE.isPressed()) {
+    		IPlayerData data = IPlayerData.PlayerData.get(sp);
+    		if(data != null) {
+    			data.setProning(!data.isProning());
+    			PacketHandler.sendToServer(new PacketProne(data.isProning()));
+    		}
     	}
     	
     	if(ConfigPMC.common.worldSettings.enableGuns)

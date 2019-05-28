@@ -22,7 +22,7 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData
 	{
 		super(world);
 		this.setSize(1f, 1f);
-		isBigDrop = false;
+		this.isBigDrop = false;
 	}
 	
 	public EntityAirdrop(World world, BlockPos pos, boolean type)
@@ -61,14 +61,14 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData
 	protected void readEntityFromNBT(NBTTagCompound compound)
 	{
 		PUBGMCUtil.readBasicEntityNBT(compound, this);
-		compound.setBoolean("dropType", isBigDrop);
+		isBigDrop = compound.getBoolean("dropType");
 	}
 	
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound)
 	{
 		PUBGMCUtil.writeBasicEntityNBT(compound, this);
-		isBigDrop = compound.getBoolean("dropType");
+		compound.setBoolean("dropType", isBigDrop);
 	}
 	
 	@Override

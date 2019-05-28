@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.capability;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -28,6 +29,10 @@ public interface IPlayerData
 	public int getBackpackLevel();
 	public boolean hasEquippedNV(boolean nv);
 	public boolean getEquippedNV();
+	
+	// proning
+	void setProning(boolean proning);
+	boolean isProning();
 	
 	//grenades
 	public boolean setGrenadeCooking(boolean cooking);
@@ -92,6 +97,8 @@ public interface IPlayerData
 		private int reloading_time;
 		private int timer;
 		private float boost;
+		
+		private boolean isProne;
 		
 		private int level;
 		private boolean eqNV;
@@ -269,6 +276,24 @@ public interface IPlayerData
 		public double getDistance() 
 		{
 			return dist;
+		}
+		
+		@Override
+		public void setProning(boolean proning) {
+			this.isProne = proning;
+		}
+		
+		@Override
+		public boolean isProning() {
+			return isProne;
+		}
+		
+		public static IPlayerData get(EntityPlayer player) {
+			if(player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+				return player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+			}
+			
+			return null;
 		}
 	}
 	

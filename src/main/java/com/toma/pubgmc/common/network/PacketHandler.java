@@ -10,6 +10,7 @@ import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
 import com.toma.pubgmc.common.network.server.PacketHandleVehicleInput;
 import com.toma.pubgmc.common.network.server.PacketNightVision;
 import com.toma.pubgmc.common.network.server.PacketOpenGui;
+import com.toma.pubgmc.common.network.server.PacketProne;
 import com.toma.pubgmc.common.network.server.PacketReload;
 import com.toma.pubgmc.common.network.server.PacketReloading;
 import com.toma.pubgmc.common.network.server.PacketSetScopeVariants;
@@ -61,6 +62,7 @@ public class PacketHandler
 		registerServerPacket(PacketSetScopeVariants.class);
 		registerServerPacket(PacketTeleportPlayer.class);
 		registerServerPacket(PacketChooseLocation.class);
+		INSTANCE.registerMessage(PacketProne.Handler.class, PacketProne.class, nextID(), Side.SERVER);
 		registerClientPacket(PacketReloadingSP.class);
 		registerClientPacket(PacketUpdatePlayerData.class);
 		registerClientPacket(PacketSound.class);
