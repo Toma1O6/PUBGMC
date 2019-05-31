@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -26,7 +27,7 @@ public class FlareGun extends GunBase
 	public FlareGun(String name) 
 	{
 		super(name);
-		this.setDamage(0);
+		this.setStats(new WeaponCFG(0f, 0f, 0f, 0));
 		this.setFiremode(Firemode.SINGLE);
 		this.setReloadType(ReloadType.MAGAZINE);
 		this.setAmmoType(AmmoType.FLARE);

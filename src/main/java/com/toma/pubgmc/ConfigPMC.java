@@ -2,6 +2,7 @@ package com.toma.pubgmc;
 
 import com.toma.pubgmc.util.VehicleConfiguration;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
@@ -187,229 +188,153 @@ public class ConfigPMC
 	
 	public static class WeaponSettings
 	{
-		static final String S = "Damage value of this weapon";
-		
 		@Name("P92")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float p92 = 4f;
+		@RequiresMcRestart
+		public WeaponCFG p92 = new WeaponCFG(4f, 7, 0.015f, 4);
 		
 		@Name("P1911")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 25)
-		@Config.RequiresWorldRestart
-		public float p1911 = 5f;
+		@RequiresMcRestart
+		public WeaponCFG p1911 = new WeaponCFG(5f, 7.25f, 0.01f, 5);
 		
 		@Name("P18C")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float p18c = 4f;
+		@RequiresMcRestart
+		public WeaponCFG p18c = new WeaponCFG(4f, 7, 0.015f, 4);
 		
-		@Name("r1895")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float r1895 = 8f;
+		@Name("R1895")
+		@RequiresMcRestart
+		public WeaponCFG r1895 = new WeaponCFG(8f, 7.5f, 0.01f, 5);
 		
 		@Name("R45")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 30)
-		@Config.RequiresWorldRestart
-		public float r45 = 6f;
+		@RequiresMcRestart
+		public WeaponCFG r45 = new WeaponCFG(6f, 7.25f, 0.01f, 5);
 		
 		@Name("Scorpion")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float scorpion = 4f;
+		@RequiresMcRestart
+		public WeaponCFG scorpion = new WeaponCFG(4f, 7f, 0.015f, 4);
 		
 		@Name("Winchester-94")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 50)
-		@Config.RequiresWorldRestart
-		public float win94 = 10f;
+		@RequiresMcRestart
+		public WeaponCFG win94 = new WeaponCFG(10f, 12f, 0.008f, 7);
 		
 		@Name("Sawed-off")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 15)
-		@Config.RequiresWorldRestart
-		public float sawedoff = 3f;
+		@RequiresMcRestart
+		public WeaponCFG sawedoff = new WeaponCFG(3f, 5f, 0.175f, 0);
 		
 		@Name("S1897")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float s1897 = 4f;
+		@RequiresMcRestart
+		public WeaponCFG s1897 = new WeaponCFG(4f, 5.5f, 0.175f, 0);
 		
 		@Name("S686")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float s686 = 4f;
+		@RequiresMcRestart
+		public WeaponCFG s686 = new WeaponCFG(4f, 5.5f, 0.175f, 0);
 		
 		@Name("S12K")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 17.5D)
-		@Config.RequiresWorldRestart
-		public float s12k = 3.5f;
+		@RequiresMcRestart
+		public WeaponCFG s12k = new WeaponCFG(3.5f, 5.5f, 0.175f, 0);
 		
 		@Name("Micro uzi")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float microuzi = 4f;
+		@RequiresMcRestart
+		public WeaponCFG microuzi = new WeaponCFG(4f, 8f, 0.02f, 4);
 		
 		@Name("UMP-45")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 25)
-		@Config.RequiresWorldRestart
-		public float ump9 = 5f;
+		@RequiresMcRestart
+		public WeaponCFG ump45 = new WeaponCFG(5f, 8.5f, 0.02f, 5);
 		
 		@Name("PP-19 Bizon")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float bizon = 4f;
+		@RequiresMcRestart
+		public WeaponCFG bizon = new WeaponCFG(4f, 8f, 0.035f, 4);
 		
 		@Name("Vector")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 20)
-		@Config.RequiresWorldRestart
-		public float vector = 4f;
+		@RequiresMcRestart
+		public WeaponCFG vector = new WeaponCFG(4f, 8f, 0.035f, 4);
 		
 		@Name("Tommy-gun")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 25)
-		@Config.RequiresWorldRestart
-		public float tommygun = 5f;
+		@RequiresMcRestart
+		public WeaponCFG tommygun = new WeaponCFG(5f, 8.5f, 0.02f, 5);
 		
 		@Name("M16A4")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float m16a4 = 8f;
+		@RequiresMcRestart
+		public WeaponCFG m16a4 = new WeaponCFG(8f, 12f, 0.005f, 8);
 		
 		@Name("M416")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float m416 = 8f;
+		@RequiresMcRestart
+		public WeaponCFG m416 = new WeaponCFG(8f, 12f, 0.0065f, 7);
 		
 		@Name("SCAR-L")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float scarl = 8f;
+		@RequiresMcRestart
+		public WeaponCFG scarl = new WeaponCFG(8f, 11f, 0.007f, 7);
 		
 		@Name("QBZ-95")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float qbz = 8f;
+		@RequiresMcRestart
+		public WeaponCFG qbz = new WeaponCFG(8f, 11f, 0.007f, 7);
 		
 		@Name("G36C")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float g36c = 8f;
+		@RequiresMcRestart
+		public WeaponCFG g36c = new WeaponCFG(8f, 11f, 0.0065f, 7);
 		
 		@Name("AUG")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float aug = 8f;
+		@RequiresMcRestart
+		public WeaponCFG aug = new WeaponCFG(8f, 12f, 0.0065f, 7);
 		
 		@Name("AKM")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 47.5)
-		@Config.RequiresWorldRestart
-		public float akm = 9.5f;
+		@RequiresMcRestart
+		public WeaponCFG akm = new WeaponCFG(9.5f, 9f, 0.025f, 7);
 		
 		@Name("Beryl M-762")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 45)
-		@Config.RequiresWorldRestart
-		public float m762 = 9f;
+		@RequiresMcRestart
+		public WeaponCFG m762 = new WeaponCFG(9f, 9.5f, 0.025f, 7);
 		
 		@Name("MK-47 Mutant")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 47.5)
-		@Config.RequiresWorldRestart
-		public float mk47 = 9.5f;
+		@RequiresMcRestart
+		public WeaponCFG mk47 = new WeaponCFG(9.5f, 9f, 0.025f, 7);
 		
 		@Name("Groza")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 47.5)
-		@Config.RequiresWorldRestart
-		public float groza = 9.5f;
+		@RequiresMcRestart
+		public WeaponCFG groza = new WeaponCFG(9.5f, 9f, 0.025f, 7);
 		
 		@Name("M249")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 40)
-		@Config.RequiresWorldRestart
-		public float m249 = 8f;
+		@RequiresMcRestart
+		public WeaponCFG m249 = new WeaponCFG(8f, 11f, 0.0065f, 6);
 		
 		@Name("DP-28")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 47.5)
-		@Config.RequiresWorldRestart
-		public float dp28 = 9.5f;
+		@RequiresMcRestart
+		public WeaponCFG dp28 = new WeaponCFG(9.5f, 9f, 0.03f, 6);
 		
 		@Name("VSS")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 30)
-		@Config.RequiresWorldRestart
-		public float vss = 6f;
+		@RequiresMcRestart
+		public WeaponCFG vss = new WeaponCFG(6f, 7f, 0.035f, 2);
 		
 		@Name("Mini-14")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 45)
-		@Config.RequiresWorldRestart
-		public float mini14 = 9f;
+		@RequiresMcRestart
+		public WeaponCFG mini14 = new WeaponCFG(9f, 14f, 0.015f, 8);
 		
 		@Name("QBU")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 45)
-		@Config.RequiresWorldRestart
-		public float qbu = 9f;
+		@RequiresMcRestart
+		public WeaponCFG qbu = new WeaponCFG(9f, 14f, 0.015f, 8);
 		
 		@Name("SKS")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 50)
-		@Config.RequiresWorldRestart
-		public float sks = 10f;
+		@RequiresMcRestart
+		public WeaponCFG sks = new WeaponCFG(10f, 10f, 0.035f, 7);
 		
 		@Name("SLR")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 55)
-		@Config.RequiresWorldRestart
-		public float slr = 11f;
+		@RequiresMcRestart
+		public WeaponCFG slr = new WeaponCFG(11f, 10f, 0.035f, 7);
 		
 		@Name("MK-14 EBR")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 62.5)
-		@Config.RequiresWorldRestart
-		public float mk14 = 12.5f;
+		@RequiresMcRestart
+		public WeaponCFG mk14 = new WeaponCFG(12.5f, 11f, 0.025f, 7);
 		
-		@Name("Kar 98K")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 100)
-		@Config.RequiresWorldRestart
-		public float kar98k = 18f;
+		@Name("Kar98k")
+		@RequiresMcRestart
+		public WeaponCFG kar98k = new WeaponCFG(18f, 11f, 0.04f, 8);
 		
 		@Name("M24")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 105)
-		@Config.RequiresWorldRestart
-		public float m24 = 19f;
+		@RequiresMcRestart
+		public WeaponCFG m24 = new WeaponCFG(19f, 11.5f, 0.03f, 7);
 		
 		@Name("AWM")
-		@Comment(S)
-		@RangeDouble(min = 1, max = 170)
-		@Config.RequiresWorldRestart
-		public float awm = 24f;
+		@RequiresMcRestart
+		public WeaponCFG awm = new WeaponCFG(24f, 17f, 0.005f, 10);
 	}
 	
 	@Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
@@ -429,5 +354,68 @@ public class ConfigPMC
 	{
 		TOGGLE,
 		HOLD;
+	}
+	
+	public static class WeaponCFG {
+		
+		@Name("Damage")
+		@Comment("Weapon damage")
+		@RangeDouble(min = 1, max = 100)
+		public float damage;
+		
+		@Name("Bullet velocity")
+		@Comment("Bullet movement per tick")
+		@RangeDouble(min = 0.1)
+		public float velocity;
+		
+		@Name("Gravity modifier")
+		@Comment("Amount of -Y movement per tick")
+		public float gravityModifier;
+		
+		@Name("Gravity apply time")
+		@Comment("Amount of ticks to start applying gravity effect")
+		public int gravityEffectStart;
+		
+		@Name("Horizontal recoil scale")
+		@Comment("Multiplier which is applied to current weapon's recoil")
+		public float recoilHorizontalMultiplier;
+		
+		@Name("Vertical recoil scale")
+		@Comment("Multiplier which is applied to current weapon's recoil")
+		public float recoilVerticalMultiplier;
+		
+		public WeaponCFG(float damage, float velocity, float gravity, int time) {
+			this.damage = damage;
+			this.velocity = velocity;
+			this.gravityModifier = gravity;
+			this.gravityEffectStart = time;
+			this.recoilHorizontalMultiplier = 1f;
+			this.recoilVerticalMultiplier = 1f;
+		}
+		
+		public static void writeToBuf(ByteBuf toBuf, WeaponCFG config) {
+			toBuf.writeFloat(config.damage);
+			toBuf.writeFloat(config.velocity);
+			toBuf.writeFloat(config.gravityModifier);
+			toBuf.writeInt(config.gravityEffectStart);
+			toBuf.writeFloat(config.recoilHorizontalMultiplier);
+			toBuf.writeFloat(config.recoilVerticalMultiplier);
+		}
+		
+		public static WeaponCFG readFromBuf(ByteBuf fromBuf) {
+			WeaponCFG cfg = new WeaponCFG(0, 0, 0, 0);
+			cfg.damage = fromBuf.readFloat();
+			cfg.velocity = fromBuf.readFloat();
+			cfg.gravityModifier = fromBuf.readFloat();
+			cfg.gravityEffectStart = fromBuf.readInt();
+			cfg.recoilHorizontalMultiplier = fromBuf.readFloat();
+			cfg.recoilVerticalMultiplier = fromBuf.readFloat();
+			return cfg;
+		}
+		
+		@Override
+		public String toString() {
+			return "[Damage:"+damage+", Velocity:"+velocity+", Gravity Modifier:"+gravityModifier+", Gravity Effect Time:"+gravityEffectStart+", Recoil(V;H): ["+recoilVerticalMultiplier+";"+recoilHorizontalMultiplier+"]]";
+		}
 	}
 }

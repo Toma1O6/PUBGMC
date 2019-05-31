@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
@@ -54,10 +55,7 @@ public class GunBase extends PMCItem implements ICraftable
 {
 	public static final List<GunBase> GUNS = new ArrayList<GunBase>();
 	
-	private float damage = 1.0f;
-	private double velocity = 1.0;
-	private double gravity = 0.075;
-	private int gravityStart;
+	private WeaponCFG wepStats;
 	private float horizontal_recoil = 0f;
 	private float vertical_recoil = 0f;
 	private double reloadTime = 100;
@@ -372,10 +370,10 @@ public class GunBase extends PMCItem implements ICraftable
 			DecimalFormat f = new DecimalFormat("###.##");
 			DecimalFormat g = new DecimalFormat("###.###");
 			
-			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.damage") + ": " + TextFormatting.RESET + "" + TextFormatting.DARK_RED + this.damage);
+			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.damage") + ": " + TextFormatting.RESET + "" + TextFormatting.DARK_RED + this.wepStats.damage);
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.reloadtime") + ": " + TextFormatting.RESET + "" + TextFormatting.GREEN + g.format(getReloadTime(stack) / 20) + " " + I18n.format("gun.reloadtime.info"));
-			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(velocity * 5.5) + " " + I18n.format("gun.velocity.info"));
-			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(gravity * 20) + " " + I18n.format("gun.gravity.info"));
+			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.velocity * 5.5) + " " + I18n.format("gun.velocity.info"));
+			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.gravityModifier * 20) + " " + I18n.format("gun.gravity.info"));
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firerate") + ": " + TextFormatting.RESET + "" + TextFormatting.AQUA + g.format(20.00 / this.getFireRate()) + " " + I18n.format("gun.firerate.info"));
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + ammotype.translatedName());
 			tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.maxammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getWeaponAmmoLimit(stack));
@@ -518,24 +516,8 @@ public class GunBase extends PMCItem implements ICraftable
 		return false;
 	}
 	
-	public void setDamage(float damageModifier)
-	{
-		this.damage = damageModifier;
-	}
-	
-	public void setVelocity(double modifier)
-	{
-		this.velocity = modifier;
-	}
-	
-	public void setGravityModifier(double modifier)
-	{
-		this.gravity = modifier;
-	}
-	
-	public void setGravityStartTime(int ticks)
-	{
-		this.gravityStart = ticks;
+	public void setStats(WeaponCFG cfgStats) {
+		this.wepStats = cfgStats;
 	}
 	
 	public void setReloadTime(double time)
@@ -610,24 +592,8 @@ public class GunBase extends PMCItem implements ICraftable
 		return this;
 	}
 	
-	public float getDamage()
-	{
-		return damage;
-	}
-	
-	public double getVelocity()
-	{
-		return velocity;
-	}
-	
-	public double getGravityModifier()
-	{
-		return gravity;
-	}
-	
-	public int getGravityStartTime()
-	{
-		return gravityStart;
+	public WeaponCFG getConfigurableStats() {
+		return wepStats;
 	}
 	
 	public double getReloadTime(ItemStack stack)

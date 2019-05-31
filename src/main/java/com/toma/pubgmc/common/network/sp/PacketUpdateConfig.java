@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.network.sp;
 
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.util.VehicleConfiguration;
 
 import io.netty.buffer.ByteBuf;
@@ -20,13 +21,12 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 	boolean tpp, invLimit, forceBrightness, nametags;
 	
 	// weapons
-	float p92, p1911, p18c, r45, r1895, scorpion, win94, sawedoff, s1897, s686, s12k,
+	WeaponCFG p92, p1911, p18c, r45, r1895, scorpion, win94, sawedoff, s1897, s686, s12k,
 		uzi, vector, bizon, tommy, ump, m16, m4, scar, qbz, g36c, aug, ak, m762, mk47,
 		groza, dp28, m249, vss, mini, qbu, sks, slr, mk14, kar, m24, awm;
 	
 	// vehicles
-		// uaz
-	float uazMaxHealth, uazMaxSpeed, uazMaxAngle, uazAccerelation, uazTurning;
+	VehicleConfiguration uaz, dacia;
 	
 	// from server config
 	@Override
@@ -48,51 +48,46 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		buf.writeBoolean(ConfigPMC.common.playerSettings.renderPlayerNameTags);
 		
 		// weapons
-		buf.writeFloat(ConfigPMC.common.weaponSettings.p92);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.p1911);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.p18c);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.r1895);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.r45);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.scorpion);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.win94);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.sawedoff);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.s1897);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.s686);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.s12k);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.microuzi);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.vector);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.bizon);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.tommygun);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.ump9);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.m16a4);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.m416);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.scarl);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.qbz);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.g36c);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.aug);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.akm);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.m762);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.mk47);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.groza);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.dp28);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.m249);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.vss);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.mini14);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.qbu);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.sks);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.slr);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.mk14);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.kar98k);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.m24);
-		buf.writeFloat(ConfigPMC.common.weaponSettings.awm);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.p92);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.p1911);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.p18c);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.r1895);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.r45);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.scorpion);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.win94);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.sawedoff);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.s1897);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.s686);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.s12k);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.microuzi);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.vector);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.bizon);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.tommygun);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.ump45);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.m16a4);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.m416);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.scarl);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.qbz);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.g36c);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.aug);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.akm);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.m762);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.mk47);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.groza);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.dp28);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.m249);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.vss);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.mini14);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.qbu);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.sks);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.slr);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.mk14);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.kar98k);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.m24);
+		WeaponCFG.writeToBuf(buf, ConfigPMC.common.weaponSettings.awm);
 		
-		// uaz
-		/*buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxHealth);
-		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxSpeed);
-		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.acceleration);
-		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.turningSpeed);
-		buf.writeFloat(ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle);*/
 		VehicleConfiguration.writeBuffer(buf, ConfigPMC.common.vehicleSettings.uaz);
+		VehicleConfiguration.writeBuffer(buf, ConfigPMC.common.vehicleSettings.dacia);
 	}
 	
 	// received on client
@@ -112,49 +107,46 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		forceBrightness = buf.readBoolean();
 		nametags = buf.readBoolean();
 		
-		p92 = buf.readFloat();
-		p1911 = buf.readFloat();
-		p18c = buf.readFloat();
-		r1895 = buf.readFloat();
-		r45 = buf.readFloat();
-		scorpion = buf.readFloat();
-		win94 = buf.readFloat();
-		sawedoff = buf.readFloat();
-		s1897 = buf.readFloat();
-		s686 = buf.readFloat();
-		s12k = buf.readFloat();
-		uzi = buf.readFloat();
-		vector = buf.readFloat();
-		bizon = buf.readFloat();
-		tommy = buf.readFloat();
-		ump = buf.readFloat();
-		m16 = buf.readFloat();
-		m4 = buf.readFloat();
-		scar = buf.readFloat();
-		qbz = buf.readFloat();
-		g36c = buf.readFloat();
-		aug = buf.readFloat();
-		ak = buf.readFloat();
-		m762 = buf.readFloat();
-		mk47 = buf.readFloat();
-		groza = buf.readFloat();
-		dp28 = buf.readFloat();
-		m249 = buf.readFloat();
-		vss = buf.readFloat();
-		mini = buf.readFloat();
-		qbu = buf.readFloat();
-		sks = buf.readFloat();
-		slr = buf.readFloat();
-		mk14 = buf.readFloat();
-		kar = buf.readFloat();
-		m24 = buf.readFloat();
-		awm = buf.readFloat();
+		p92 =		WeaponCFG.readFromBuf(buf);
+		p1911 =		WeaponCFG.readFromBuf(buf);
+		p18c = 		WeaponCFG.readFromBuf(buf);
+		r1895 = 	WeaponCFG.readFromBuf(buf);
+		r45 = 		WeaponCFG.readFromBuf(buf);
+		scorpion = 	WeaponCFG.readFromBuf(buf);
+		win94 = 	WeaponCFG.readFromBuf(buf);
+		sawedoff = 	WeaponCFG.readFromBuf(buf);
+		s1897 = 	WeaponCFG.readFromBuf(buf);
+		s686 = 		WeaponCFG.readFromBuf(buf);
+		s12k = 		WeaponCFG.readFromBuf(buf);
+		uzi = 		WeaponCFG.readFromBuf(buf);
+		vector = 	WeaponCFG.readFromBuf(buf);
+		bizon = 	WeaponCFG.readFromBuf(buf);
+		tommy = 	WeaponCFG.readFromBuf(buf);
+		ump = 		WeaponCFG.readFromBuf(buf);
+		m16 = 		WeaponCFG.readFromBuf(buf);
+		m4 = 		WeaponCFG.readFromBuf(buf);
+		scar = 		WeaponCFG.readFromBuf(buf);
+		qbz = 		WeaponCFG.readFromBuf(buf);
+		g36c = 		WeaponCFG.readFromBuf(buf);
+		aug = 		WeaponCFG.readFromBuf(buf);
+		ak = 		WeaponCFG.readFromBuf(buf);
+		m762 = 		WeaponCFG.readFromBuf(buf);
+		mk47 = 		WeaponCFG.readFromBuf(buf);
+		groza = 	WeaponCFG.readFromBuf(buf);
+		dp28 = 		WeaponCFG.readFromBuf(buf);
+		m249 = 		WeaponCFG.readFromBuf(buf);
+		vss = 		WeaponCFG.readFromBuf(buf);
+		mini = 		WeaponCFG.readFromBuf(buf);
+		qbu = 		WeaponCFG.readFromBuf(buf);
+		sks = 		WeaponCFG.readFromBuf(buf);
+		slr = 		WeaponCFG.readFromBuf(buf);
+		mk14 = 		WeaponCFG.readFromBuf(buf);
+		kar = 		WeaponCFG.readFromBuf(buf);
+		m24 = 		WeaponCFG.readFromBuf(buf);
+		awm = 		WeaponCFG.readFromBuf(buf);
 		
-		uazMaxHealth = buf.readFloat();
-		uazMaxSpeed = buf.readFloat();
-		uazAccerelation = buf.readFloat();
-		uazTurning = buf.readFloat();
-		uazMaxAngle = buf.readFloat();
+		uaz = VehicleConfiguration.readBuffer(buf);
+		dacia = VehicleConfiguration.readBuffer(buf);
 	}
 	
 	@Override
@@ -198,7 +190,7 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		ConfigPMC.common.weaponSettings.vector = p.vector;
 		ConfigPMC.common.weaponSettings.bizon = p.bizon;
 		ConfigPMC.common.weaponSettings.tommygun = p.tommy;
-		ConfigPMC.common.weaponSettings.ump9 = p.ump;
+		ConfigPMC.common.weaponSettings.ump45 = p.ump;
 		ConfigPMC.common.weaponSettings.m16a4 = p.m16;
 		ConfigPMC.common.weaponSettings.m416 = p.m4;
 		ConfigPMC.common.weaponSettings.scarl = p.scar;
@@ -221,10 +213,7 @@ public class PacketUpdateConfig implements IMessage, IMessageHandler<PacketUpdat
 		ConfigPMC.common.weaponSettings.m24 = p.m24;
 		ConfigPMC.common.weaponSettings.awm = p.awm;
 		
-		ConfigPMC.common.vehicleSettings.uaz.maxHealth = p.uazMaxHealth;
-		ConfigPMC.common.vehicleSettings.uaz.maxSpeed = p.uazMaxSpeed;
-		ConfigPMC.common.vehicleSettings.uaz.acceleration = p.uazAccerelation;
-		ConfigPMC.common.vehicleSettings.uaz.turningSpeed = p.uazTurning;
-		ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle = p.uazMaxAngle;
+		ConfigPMC.common.vehicleSettings.uaz = p.uaz;
+		ConfigPMC.common.vehicleSettings.dacia = p.dacia;
 	}
 }

@@ -1,5 +1,8 @@
 package com.toma.pubgmc.common.items.guns;
 
+import java.lang.reflect.Field;
+
+import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -12,9 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GunBuilder 
 {
 	String name;
-	int gravityStart, reloadTime, firerate, maxAmmo, exMaxAmmo;
-	float damage, vertical, horizontal, volumeNormal, volumeSilenced;
-	double velocity, gravity;
+	int reloadTime, firerate, maxAmmo, exMaxAmmo;
+	float vertical, horizontal, volumeNormal, volumeSilenced;
 	boolean twoRoundBurst;
 	GunType weaponType;
 	ReloadType reloadType;
@@ -22,6 +24,7 @@ public class GunBuilder
 	Firemode defFiremode;
 	Firemode[] validFiremodes;
 	SoundEvent reloadSound, shootNormal, shootSilenced;
+	WeaponCFG cfgStats;
 	
 	private GunBuilder() {}
 	
@@ -38,22 +41,8 @@ public class GunBuilder
 		return builder;
 	}
 	
-	public GunBuilder damage(float damage)
-	{
-		this.damage = damage;
-		return this;
-	}
-	
-	public GunBuilder velocity(double velocity)
-	{
-		this.velocity = velocity;
-		return this;
-	}
-	
-	public GunBuilder gravity(double gravityEffect, int startTime)
-	{
-		this.gravity = gravityEffect;
-		this.gravityStart = startTime;
+	public GunBuilder stats(WeaponCFG cfg) {
+		this.cfgStats = cfg;
 		return this;
 	}
 	
@@ -134,9 +123,6 @@ public class GunBuilder
 	/**
 	 * <i><u>In order to successfully build new Gun object you need to call:</u></i>
 	 * <b>
-	 * <li> damage
-	 * <li> velocity
-	 * <li> gravity
 	 * <li> firerate
 	 * <li> recoil
 	 * <li> reload
@@ -149,10 +135,7 @@ public class GunBuilder
 	 */
 	public GunBase build()
 	{
-		damage = validateFloat(damage, 1, Float.MAX_VALUE);
-		velocity = validateDouble(velocity, 1D, 25D);
-		gravity = validateDouble(gravity, 0.0001, 2D);
-		gravityStart = validateInt(gravityStart, 0, 30);
+		cfgStats = checkNotNull(cfgStats);
 		vertical = validateFloat(vertical, 0.1f, 10f);
 		horizontal = validateFloat(horizontal, 0.1f, 10f);
 		reloadType = checkNotNull(reloadType);
@@ -178,10 +161,7 @@ public class GunBuilder
 		}
 		
 		GunBase gun = new GunBase(this.name);
-		gun.setDamage(damage);
-		gun.setVelocity(velocity);
-		gun.setGravityModifier(gravity);
-		gun.setGravityStartTime(gravityStart);
+		gun.setStats(cfgStats);
 		gun.setVerticalRecoil(vertical);
 		gun.setHorizontalRecoil(horizontal);
 		gun.setReloadType(reloadType);

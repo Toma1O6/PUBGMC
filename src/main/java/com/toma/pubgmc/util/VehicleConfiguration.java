@@ -56,4 +56,14 @@ public final class VehicleConfiguration
 		buf.writeFloat(configuration.turningSpeed);
 		buf.writeFloat(configuration.maxTurningAngle);
 	}
+	
+	public static VehicleConfiguration readBuffer(ByteBuf buf) {
+		VehicleConfiguration cfg = new VehicleConfiguration(0f, 0f, 0f, 0f, 0f);
+		cfg.maxHealth = buf.readFloat();
+		cfg.maxSpeed = buf.readFloat();
+		cfg.acceleration = buf.readFloat();
+		cfg.turningSpeed = buf.readFloat();
+		cfg.maxTurningAngle = buf.readFloat();
+		return cfg;
+	}
 }

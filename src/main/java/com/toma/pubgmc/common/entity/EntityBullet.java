@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -19,6 +20,9 @@ import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
+
+import io.netty.buffer.ByteBuf;
+
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.block.Block;
@@ -59,20 +63,19 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityBullet extends Entity
+public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
 {
 	 private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
 	 private int shooterId;
 	 private EntityLivingBase shooter;
-	 private int gravitystart;
-	 private double velocity;
-	 private double gravity;
-	 private float damage;
+	 private WeaponCFG stats;
 	 private GunType type;
 	 private int survivalTime;
 	 private ItemStack stack;
 	 private RayTraceResult entityRaytrace;
+	 private float finalDamage;
 	
 	public EntityBullet(World worldIn) 
 	{
@@ -88,13 +91,12 @@ public class EntityBullet extends Entity
 		this.noClip = true;
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
-        gravitystart = gun.getGravityStartTime();
-        gravity = gun.getGravityModifier();
-        velocity = gun.getVelocity();
-        damage = gun.getDamage();
+        
+        stats = gun.getConfigurableStats();
         type = gun.getGunType();
-        survivalTime = (int)velocity + 3;
+        survivalTime = (int)stats.velocity + 3;
         stack = new ItemStack(gun);
+        finalDamage = stats.damage;
         
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
         
@@ -105,6 +107,25 @@ public class EntityBullet extends Entity
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         
         updateHeading();
+    }
+    
+    @Override
+    public void writeSpawnData(ByteBuf buf) {
+    	buf.writeInt(shooterId);
+    	WeaponCFG.writeToBuf(buf, stats);
+    	buf.writeInt(type.ordinal());
+    	buf.writeInt(survivalTime);
+    	buf.writeFloat(finalDamage);
+    }
+    
+    @Override
+    public void readSpawnData(ByteBuf buf) {
+    	shooterId = buf.readInt();
+    	shooter = (EntityLivingBase)world.getEntityByID(shooterId);
+    	stats = WeaponCFG.readFromBuf(buf);
+    	type = GunType.values()[buf.readInt()];
+    	survivalTime = buf.readInt();
+    	finalDamage = buf.readFloat();
     }
     
     private float getPitchRotationInaccuracy(EntityLivingBase shooter)
@@ -130,16 +151,16 @@ public class EntityBullet extends Entity
     {
 		if(aim && type != GunType.SHOTGUN)
 		{
-            this.motionX = rotVec.x * velocity;
-            this.motionY = rotVec.y * velocity;
-            this.motionZ = rotVec.z * velocity;
+            this.motionX = rotVec.x * stats.velocity;
+            this.motionY = rotVec.y * stats.velocity;
+            this.motionZ = rotVec.z * stats.velocity;
 		}
 		
 		else
 		{
-			this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
-            this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
-            this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+			this.motionX = rotVec.x * stats.velocity + (rand.nextDouble() - 0.5);
+            this.motionY = rotVec.y * stats.velocity + (rand.nextDouble() - 0.5);
+            this.motionZ = rotVec.z * stats.velocity + (rand.nextDouble() - 0.5);
 		}
     }
     
@@ -163,12 +184,12 @@ public class EntityBullet extends Entity
         RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
 
         //Gravity
-        if(this.ticksExisted > gravitystart && !world.isRemote)
+        if(this.ticksExisted > stats.gravityEffectStart && !world.isRemote)
         {
-        	this.motionY -= gravity;
+        	this.motionY -= stats.gravityModifier;
         }
         
-        if(this.ticksExisted >= this.velocity * 3)
+        if(this.ticksExisted >= this.stats.velocity * 3)
         {
         	this.setDead();
         }
@@ -180,13 +201,13 @@ public class EntityBullet extends Entity
         
         if(type == GunType.SHOTGUN && !world.isRemote)
         {
-        	if(this.ticksExisted % 2 == 0 && damage > 1)
+        	if(this.ticksExisted % 2 == 0 && finalDamage > 1)
         	{
-        		damage -= 1;
+        		finalDamage -= 1;
         		
-        		if(damage <= 0)
+        		if(finalDamage <= 0)
         		{
-        			damage = 1;
+        			finalDamage = 1;
         		}
         	}
         }
@@ -263,13 +284,13 @@ public class EntityBullet extends Entity
             	
                 if(headshot)
                 {
-                	damage *= 2.5f;
+                	finalDamage *= 2.5f;
                 	offset = entity.posY + entity.getEyeHeight();
                 }
                 else offset = vec.y;
                 
                 if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
-                	PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
+                	PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(finalDamage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
                 
                 onEntityHit(headshot, entity);
                 entity.hurtResistantTime = 0;
@@ -331,7 +352,7 @@ public class EntityBullet extends Entity
     			getCalculatedDamage((EntityLivingBase)entity, isHeadshot);
     		}
     		
-    		entity.attackEntityFrom(gunsource, damage);
+    		entity.attackEntityFrom(gunsource, finalDamage);
     	}
     	
     	else
@@ -341,7 +362,7 @@ public class EntityBullet extends Entity
     			getCalculatedDamage((EntityLivingBase)entity, isHeadshot);
     		}
     		
-    		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
+    		entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, finalDamage);
     	}
     }
     
@@ -359,7 +380,7 @@ public class EntityBullet extends Entity
      */
     private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot)
     {
-    	float baseDamage = damage;
+    	float baseDamage = finalDamage;
     	
     	if(isHeadShot)
     	{
@@ -367,22 +388,22 @@ public class EntityBullet extends Entity
         	
     		if(head.getItem() == PMCRegistry.PMCItems.ARMOR1HELMET)
     		{
-    			damage *= 0.7f;
+    			finalDamage *= 0.7f;
     		}
     		
     		else if(head.getItem() == PMCRegistry.PMCItems.ARMOR2HELMET)
     		{
-    			damage *= 0.6f;
+    			finalDamage *= 0.6f;
     		}
     		
     		else if(head.getItem() == PMCRegistry.PMCItems.ARMOR3HELMET)
     		{
-    			damage *= 0.4f;
+    			finalDamage *= 0.4f;
     		}
     		
         	if(entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ArmorBase)
         	{
-        		head.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.55f), entity);
+        		head.damageItem(Math.round((baseDamage - (baseDamage - finalDamage)) * 0.55f), entity);
         	}
     	}
     	
@@ -392,22 +413,22 @@ public class EntityBullet extends Entity
         	
     		if(body.getItem() == PMCRegistry.PMCItems.ARMOR1BODY)
     		{
-    			damage *= 0.7f;
+    			finalDamage *= 0.7f;
     		}
     		
     		else if(body.getItem() == PMCRegistry.PMCItems.ARMOR2BODY)
     		{
-    			damage *= 0.6f;
+    			finalDamage *= 0.6f;
     		}
     		
     		else if(body.getItem() == PMCRegistry.PMCItems.ARMOR3BODY)
     		{
-    			damage *= 0.5f;
+    			finalDamage *= 0.5f;
     		}
     		
         	if(entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ArmorBase)
         	{
-        		body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), entity);
+        		body.damageItem(Math.round((baseDamage - (baseDamage - finalDamage)) * 0.8f), entity);
         	}
     	}
     }
@@ -433,8 +454,7 @@ public class EntityBullet extends Entity
     	compound.setDouble("movy", this.motionY);
     	compound.setDouble("movz", this.motionZ);
     	compound.setInteger("lifespan", this.ticksExisted);
-    	compound.setFloat("bullet_damage", this.damage);
-    	compound.setDouble("bullet_velocity", this.velocity);
+    	compound.setFloat("bullet_damage", this.finalDamage);
     }
     
     @Override
@@ -447,8 +467,7 @@ public class EntityBullet extends Entity
     	motionY = compound.getDouble("movy");
     	motionZ = compound.getDouble("movz");
     	ticksExisted = compound.getInteger("lifespan");
-    	damage = compound.getFloat("bullet_damage");
-    	velocity = compound.getDouble("bullet_velocity");
+    	finalDamage = compound.getFloat("bullet_damage");
     }
     
     private boolean canEntityGetHeadshot(Entity e)
