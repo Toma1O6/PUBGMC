@@ -2,7 +2,6 @@ package com.toma.pubgmc.client.models.vehicles;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 
 
 /**

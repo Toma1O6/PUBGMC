@@ -5,8 +5,6 @@ import com.toma.pubgmc.client.models.vehicles.ModelUAZ;
 import com.toma.pubgmc.client.models.vehicles.ModelVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 

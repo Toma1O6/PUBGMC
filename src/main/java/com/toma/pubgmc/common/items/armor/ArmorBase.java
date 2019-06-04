@@ -1,22 +1,18 @@
 package com.toma.pubgmc.common.items.armor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.ICraftable;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class ArmorBase extends ItemArmor implements ICraftable
 {

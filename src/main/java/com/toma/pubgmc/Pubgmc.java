@@ -31,7 +31,6 @@ import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import com.toma.pubgmc.world.OreGen;
 
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

@@ -7,7 +7,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.util.ICraftable;
 

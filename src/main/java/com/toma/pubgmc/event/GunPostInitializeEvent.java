@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.common.items.guns.attachments.IAttachment;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
-import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Event;
 

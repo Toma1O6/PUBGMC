@@ -9,9 +9,7 @@ import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.toma.pubgmc.animation.AimingAnimation;
 import com.toma.pubgmc.animation.Animation;
-import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -20,11 +18,8 @@ import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

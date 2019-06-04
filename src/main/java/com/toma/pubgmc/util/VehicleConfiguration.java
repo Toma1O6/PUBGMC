@@ -1,7 +1,5 @@
 package com.toma.pubgmc.util;
 
-import com.toma.pubgmc.ConfigPMC;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;

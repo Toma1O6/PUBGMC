@@ -8,7 +8,6 @@ import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.init.PMCRegistry;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;

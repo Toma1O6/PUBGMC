@@ -3,7 +3,6 @@ package com.toma.pubgmc.common.items.heal;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.PMCItem;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.util.ICraftable;
 

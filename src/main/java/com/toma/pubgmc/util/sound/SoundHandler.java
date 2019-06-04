@@ -1,13 +1,11 @@
 package com.toma.pubgmc.util.sound;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.event.SoundTickEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

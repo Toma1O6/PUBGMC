@@ -1,11 +1,9 @@
 package com.toma.pubgmc.common.items;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.util.ICraftable;
 

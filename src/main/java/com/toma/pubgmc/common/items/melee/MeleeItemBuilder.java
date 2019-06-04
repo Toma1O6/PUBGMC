@@ -4,8 +4,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.util.IBuilder;
 
 import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.common.util.EnumHelper;
 

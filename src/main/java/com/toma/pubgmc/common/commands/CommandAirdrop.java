@@ -2,14 +2,12 @@ package com.toma.pubgmc.common.commands;
 
 import java.util.Random;
 
-import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;

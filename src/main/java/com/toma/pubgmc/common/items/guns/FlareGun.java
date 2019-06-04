@@ -1,21 +1,12 @@
 package com.toma.pubgmc.common.items.guns;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.toma.pubgmc.ConfigPMC.WeaponCFG;
-import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityFlare;
-import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;

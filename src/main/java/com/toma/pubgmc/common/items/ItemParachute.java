@@ -6,7 +6,6 @@ import java.util.Random;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.EntityParachute;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ICraftable;

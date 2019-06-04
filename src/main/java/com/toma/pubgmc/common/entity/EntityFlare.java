@@ -2,14 +2,12 @@ package com.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;

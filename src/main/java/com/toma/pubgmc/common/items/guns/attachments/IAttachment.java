@@ -1,7 +1,5 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
-import javax.annotation.Nullable;
-
 public interface IAttachment
 {
 	Type getType();

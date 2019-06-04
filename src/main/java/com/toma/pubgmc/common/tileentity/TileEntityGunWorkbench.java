@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.toma.pubgmc.common.items.ItemAmmo;
-import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.init.Items;

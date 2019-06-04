@@ -9,8 +9,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import scala.tools.nsc.backend.icode.Members.IMember;
 
 public class PacketAddSoundHandlerEntry implements IMessage, IMessageHandler<PacketAddSoundHandlerEntry, IMessage>
 {

@@ -1,8 +1,5 @@
 package com.toma.pubgmc.common.blocks;
 
-import java.util.Random;
-
-import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.util.handlers.GuiHandler;
@@ -12,9 +9,6 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;

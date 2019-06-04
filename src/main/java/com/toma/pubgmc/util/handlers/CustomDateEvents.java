@@ -1,8 +1,6 @@
 package com.toma.pubgmc.util.handlers;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Locale;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.Style;

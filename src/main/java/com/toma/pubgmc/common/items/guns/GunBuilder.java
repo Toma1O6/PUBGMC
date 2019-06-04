@@ -1,16 +1,11 @@
 package com.toma.pubgmc.common.items.guns;
 
-import java.lang.reflect.Field;
-
 import com.toma.pubgmc.ConfigPMC.WeaponCFG;
-import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GunBuilder 
 {

@@ -6,7 +6,6 @@ import java.util.Random;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.blocks.BlockLootSpawner;
 import com.toma.pubgmc.common.blocks.BlockLootSpawner.LootType;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;

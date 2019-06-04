@@ -3,7 +3,6 @@ package com.toma.pubgmc.animation;
 import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.toma.pubgmc.util.PUBGMCUtil;
 

@@ -2,7 +2,6 @@ package com.toma.pubgmc.client.models.vehicles;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 
 public abstract class ModelVehicle extends ModelBase
 {

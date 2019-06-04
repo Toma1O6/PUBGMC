@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.container.ContainerGunWorkbench;
-import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketCraft;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;

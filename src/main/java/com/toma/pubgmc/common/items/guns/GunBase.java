@@ -4,13 +4,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityBullet;
@@ -22,10 +19,7 @@ import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.common.network.sp.PacketSound;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.PUBGMCUtil;
 

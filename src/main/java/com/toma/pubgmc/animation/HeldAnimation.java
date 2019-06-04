@@ -1,6 +1,5 @@
 package com.toma.pubgmc.animation;
 
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
