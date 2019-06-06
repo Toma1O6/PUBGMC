@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -20,6 +21,7 @@ import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.init.PMCSounds;
 
 import io.netty.buffer.ByteBuf;
@@ -56,6 +58,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -86,7 +89,6 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
     {
         this(worldIn);
 		this.setSize(0.1f, 0.1f);
-		this.noClip = true;
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
         
@@ -174,22 +176,20 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void onUpdate() 
     {
-        super.onUpdate();
         updateHeading();
         
         Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
         Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
         RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
-
+        if(stats == null) {
+        	this.setDead();
+        	Pubgmc.logger.error("Error occured while getting weapon stats for bullet entity with ID {}, removing the entity.", this.getEntityId());
+        	return;
+        }
         //Gravity
         if(this.ticksExisted > stats.gravityEffectStart && !world.isRemote)
         {
         	this.motionY -= stats.gravityModifier;
-        }
-        
-        if(this.ticksExisted >= this.stats.velocity * 3)
-        {
-        	this.setDead();
         }
         
         if(this.ticksExisted > 2 && this.ticksExisted % 2 == 0)
@@ -209,14 +209,13 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
         		}
         	}
         }
-
-        Entity entity = this.findEntityOnPath(vec3d1, vec3d);
-
+        Entity entity = this.findEntityOnPath(vec3d1, vec3d, raytraceresult);
         if(entity != null)
         {
             raytraceresult = new RayTraceResult(entity);
+            this.onEntityHit(entity);
         }
-
+        
         if(raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer)
         {
             EntityPlayer entityplayer = (EntityPlayer)raytraceresult.entityHit;
@@ -226,17 +225,48 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
                 raytraceresult = null;
             }
         }
-
+        
         if(raytraceresult != null && !ForgeEventFactory.onProjectileImpact(this, raytraceresult))
         {
             this.onHit(raytraceresult);
         }
         
         move(MoverType.SELF, motionX, motionY, motionZ);
-    }  
+        super.onUpdate();
+    }
+    
+    public void onEntityHit(Entity entity) {
+    	if(entity != null) {
+        	if(!world.isRemote) {
+            	boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
+            	double offset = 0f;
+            	Vec3d vec = entityRaytrace.hitVec;
+            	Block particleBlock = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
+            	
+                if(headshot) {
+                	finalDamage *= 2.5f;
+                	offset = entity.posY + entity.getEyeHeight();
+                }
+                else offset = vec.y;
+                
+                if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
+                	PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(finalDamage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
+                
+                onEntityHit(headshot, entity);
+                entity.hurtResistantTime = 0;
+                
+                this.setDead();
+        	}
+    	}
+    }
+    
+    @Override
+    public boolean canBeCollidedWith() {
+    	return true;
+    }
     
     @Nullable
-    protected Entity findEntityOnPath(Vec3d start, Vec3d end)
+    protected Entity findEntityOnPath(Vec3d start, Vec3d end, RayTraceResult trace)
     {
         Entity entity = null;
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D), ARROW_TARGETS);
@@ -250,9 +280,13 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
             {
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
-
                 if(raytraceresult != null)
                 {
+                	if(trace != null) {
+                		if(getDistanceTo(trace.hitVec) < getDistanceTo(raytraceresult.hitVec)) {
+                			return entity;
+                		}
+                	}
                     double d1 = start.squareDistanceTo(raytraceresult.hitVec);
                     entityRaytrace = raytraceresult;
                     
@@ -268,36 +302,14 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
         return entity;
     }
     
+    private double getDistanceTo(Vec3d vec) {
+    	Vec3d start = PUBGMCUtil.getPositionVec(this);
+    	return PUBGMCUtil.getDistanceToBlockPos3D(new BlockPos(start), new BlockPos(vec));
+    }
+    
     protected void onHit(RayTraceResult raytraceResultIn)
     {
-        Entity entity = raytraceResultIn.entityHit;
-        if(entity != null)
-        {
-        	if(!world.isRemote)
-        	{
-            	boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
-            	double offset = 0f;
-            	Vec3d vec = raytraceResultIn.hitVec;
-            	Block particleBlock = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
-            	
-                if(headshot)
-                {
-                	finalDamage *= 2.5f;
-                	offset = entity.posY + entity.getEyeHeight();
-                }
-                else offset = vec.y;
-                
-                if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
-                	PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(finalDamage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
-                
-                onEntityHit(headshot, entity);
-                entity.hurtResistantTime = 0;
-                
-                this.setDead();
-        	}
-        }
-        
-        else if(raytraceResultIn.getBlockPos() != null && !world.isRemote)
+        if(raytraceResultIn.getBlockPos() != null && !world.isRemote)
         {
         	BlockPos pos = raytraceResultIn.getBlockPos();
         	IBlockState state = world.getBlockState(pos);
@@ -333,7 +345,6 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
         		{
         			this.onTargetHit(pos, hitvec, shooter);
         		}
-        		
         		this.setDead();
         	}
         }

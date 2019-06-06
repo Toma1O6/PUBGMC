@@ -137,7 +137,7 @@ public class CommonEvents
 					float zoneSwitchPoint = phase == 0 ? 2000*(game.getMapSize()/250 + 1) : 1200*(game.getMapSize()/250 + 1);
 					
 					game.increaseTimer();
-					
+					System.out.println(game.getTimer());
 					if(game.getTimer() >= zoneSwitchPoint)
 					{
 						game.setTimer(0);
