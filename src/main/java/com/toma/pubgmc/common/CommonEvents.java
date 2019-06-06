@@ -128,29 +128,33 @@ public class CommonEvents
 			{
 				IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
 				World world = e.world;
-				
-				if(game.isPlaying() && game.getZonePhaseCount() > 0 && game.getCurrentZone() < game.getZonePhaseCount() && !isZoneShrinking(world.getWorldBorder()))
+				if(game.isPlaying() && game.getZonePhaseCount() > 0 && (game.getCurrentZone() < game.getZonePhaseCount() || isZoneShrinking(world.getWorldBorder())))
 				{
 					final int phases = game.getZonePhaseCount();
 					final int phase = game.getCurrentZone();
 					final int diameter = game.getMapSize() * 2;
-					float zoneSwitchPoint = phase == 0 ? 2000*(game.getMapSize()/250 + 1) : 1200*(game.getMapSize()/250 + 1);
-					
-					game.increaseTimer();
-					System.out.println(game.getTimer());
-					if(game.getTimer() >= zoneSwitchPoint)
-					{
-						game.setTimer(0);
-						game.setCurrentZone(game.getCurrentZone() + 1);
-						WorldBorder brd = world.getWorldBorder();
-						double zoneArea = (100 - (phase+1)*(100/(phases)) + 5)/100d;
-						brd.setTransition(brd.getDiameter(), brd.getDiameter() * zoneArea, (long)(1000 * (phases * 10 * (diameter / 250 + 1))));
-						brd.setDamageBuffer(1);
-						brd.setDamageAmount(phase/phases);
-						
-						for(EntityPlayer p : world.playerEntities)
+					float zoneSwitchPoint = phase == 0 ? 2500*(game.getMapSize()/250 + 1) : 1200*(game.getMapSize()/250 + 1);
+					WorldBorder brd = world.getWorldBorder();
+					if(brd.getDamageAmount() != phase/(double)phases) {
+						double dmg = brd.getDamageAmount();
+						brd.setDamageAmount(phase/(double)phases);
+						brd.setDamageBuffer(0);
+						Pubgmc.logger.info("Changed world border damage to {} from {}.", brd.getDamageAmount(), dmg);
+					}
+					if(!isZoneShrinking(brd)) {
+						game.increaseTimer();
+						if(game.getTimer() >= zoneSwitchPoint)
 						{
-							p.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
+							game.setTimer(0);
+							game.setCurrentZone(game.getCurrentZone() + 1);
+							double zoneArea = (100 - (phase+1)*(100/(phases)) + 5)/100d;
+							brd.setTransition(brd.getDiameter(), brd.getDiameter() * zoneArea, (long)(1000 * (phases * 10 * (diameter / 250 + 1))));
+							brd.setDamageBuffer(0);
+							brd.setDamageAmount(phase/(double)phases);
+							for(EntityPlayer p : world.playerEntities)
+							{
+								p.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
+							}
 						}
 					}
 				}
