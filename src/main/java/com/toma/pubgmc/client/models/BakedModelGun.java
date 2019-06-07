@@ -18,6 +18,7 @@ import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -114,13 +115,27 @@ public class BakedModelGun implements IBakedModel
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
 				this.process(held, data);
+				// prevent weapon rendering with bigger scopes
+				if(data.isAiming() && held.getItem() instanceof GunBase && !((GunBase)held.getItem()).getWeaponModel().enableADS(held)) {
+					GlStateManager.scale(0, 0, 0);
+				}
+				
 				transl = this.getTranslation(held, data);
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
+				break;
 			}
 			
 			// Third person animations, sometime later propably
 			case THIRD_PERSON_RIGHT_HAND: {
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
+				break;
+			}
+			
+			case FIXED: {
+				GlStateManager.translate(-0.09, 0, 0);
+				GlStateManager.scale(0.5, 0.5, 0.5);
+				GlStateManager.rotate(-90f, 0f, 1f, 0f);
+				GlStateManager.rotate(30f, 1f, 0f, 0f);
 			}
 			
 			default: break;

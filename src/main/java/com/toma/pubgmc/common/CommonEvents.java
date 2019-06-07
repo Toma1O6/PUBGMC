@@ -31,6 +31,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -151,10 +153,16 @@ public class CommonEvents
 							brd.setTransition(brd.getDiameter(), brd.getDiameter() * zoneArea, (long)(1000 * (phases * 10 * (diameter / 250 + 1))));
 							brd.setDamageBuffer(0);
 							brd.setDamageAmount(phase/(double)phases);
-							for(EntityPlayer p : world.playerEntities)
-							{
-								p.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
-							}
+							world.playerEntities.forEach(player -> {
+								if(ConfigPMC.common.worldSettings.zoneShrinkNotification) {
+									SPacketTitle packet = new SPacketTitle(Type.TITLE, new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"), 5, 80, 5);
+									if(player instanceof EntityPlayerMP) {
+										((EntityPlayerMP)player).connection.sendPacket(packet);
+									}
+								} else {
+									player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
+								}
+							});
 						}
 					}
 				}
@@ -431,8 +439,6 @@ public class CommonEvents
 			EntityPlayer player = (EntityPlayer)e.getEntity();
 			BlockPos p = player.getPosition();
 			World world = player.world;
-			boolean continueSearch = true;
-					
 			//crate position logic
 			if(!world.isAirBlock(p))
 			{

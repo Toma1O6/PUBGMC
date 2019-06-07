@@ -119,6 +119,10 @@ public class ConfigPMC
 		@RangeInt(min = 0, max = 30)
 		@RequiresWorldRestart
 		public int planeWaitTime = 5;
+		
+		@Name("Title zone notification")
+		@Comment("If true you will receive zone shrink notification through title instead of chat")
+		public boolean zoneShrinkNotification = true;
 	}
 	
 	public static class PlayerSettings
