@@ -27,18 +27,13 @@ public class CustomDateEvents
 		}
 		
 		else if(is1stApril()) {
-			message(loggedPlayer, TextFormatting.RED + "It's april fools time! Don't believe anything especially on internet!");
+			message(loggedPlayer, TextFormatting.RED + "It's april fools time! Don't believe anything, especially on internet!");
 		}
 		
 		else if(isPUBGMCAnniversary()) {
 			int year = date.getYear() - 2018;
 			String s = year == 1 ? "year" : "years";
 			message(loggedPlayer, TextFormatting.GOLD + "PUBGMC is now " + TextFormatting.ITALIC + year + TextFormatting.RESET + "" + TextFormatting.GOLD + s + " old! Thank you for your support! -Toma");
-		}
-		
-		else if(isMyBirthday()) {
-			int yrsOld = date.getYear() - 2000;
-			message(loggedPlayer, TextFormatting.DARK_GREEN + "Today is Toma's birtday, again.. I'm already " + yrsOld + " years old. Anyway, thanks everybody for your support!");
 		}
 	}
 	
@@ -61,11 +56,6 @@ public class CustomDateEvents
 	private static boolean isPUBGMCAnniversary()
 	{
 		return isDate(29, 6);
-	}
-	
-	private static boolean isMyBirthday()
-	{
-		return isDate(5, 8);
 	}
 	
 	private static boolean isDate(int day, int month)

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.util.handlers.FlashHandler;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -58,19 +59,14 @@ public class EntityFlashbang extends Entity implements IEntityAdditionalSpawnDat
 	}
 	
 	public void flashPlayers() {
-		List<Entity> entityList = world.getEntitiesWithinAABB(EntityPlayer.class, this.getEntityBoundingBox().grow(15));
+		List<EntityPlayer> entityList = world.getEntitiesWithinAABB(EntityPlayer.class, this.getEntityBoundingBox().grow(15));
 		Vec3d start = PUBGMCUtil.getPositionVec(this);
 		entityList.forEach(e -> {
 			Vec3d entityVec = new Vec3d(e.posX, e.posY + e.getEyeHeight(), e.posZ);
 			RayTraceResult rayTrace = this.world.rayTraceBlocks(start, entityVec, false, true, false);
+			// TODO improve raytracing for opaque and non solid blocks
 			if(rayTrace == null) {
-				// TODO is player facing the flash?
-				// TODO calculate amount of flash amount based on player rotation
-				int flashAmount = 100;
-				if(FLASHED_PLAYERS.containsKey(e.getUniqueID())) {
-					FLASHED_PLAYERS.remove(e.getUniqueID());
-				}
-				FLASHED_PLAYERS.put(e.getUniqueID(), flashAmount);
+				FlashHandler.instance().flashPlayer(e, this);
 			}
 		});
 	}
