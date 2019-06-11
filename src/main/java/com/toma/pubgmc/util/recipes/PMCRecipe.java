@@ -19,7 +19,7 @@ public class PMCRecipe {
 		}
 		for(PMCIngredient ingredient : recipe.ingredients) {
 			ItemStack stack = inv.getStackInSlot(ingredient.slotIndex);
-			if(stack.isEmpty() || stack.getItem() != ingredient.getIngredient() || stack.getCount() < ingredient.count) {
+			if(stack.isEmpty() || stack.getItem() != ingredient.getIngredient().getItem() || stack.getCount() < ingredient.count) {
 				return false;
 			}
 		}

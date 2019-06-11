@@ -23,15 +23,20 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.proxy.IProxy;
 import com.toma.pubgmc.tabs.PMCBlocksTab;
 import com.toma.pubgmc.tabs.PMCItemsTab;
 import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.handlers.GuiHandler;
+import com.toma.pubgmc.util.recipes.PMCRecipeBuilder;
+import com.toma.pubgmc.util.recipes.RecipeRegistry;
 import com.toma.pubgmc.world.OreGen;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -127,6 +132,7 @@ public class Pubgmc
 				}
 			}
 		}
+		registerWorkbenchRecipes();
 		proxy.postInit(event);
 	}
 	
@@ -144,6 +150,23 @@ public class Pubgmc
 		registerGamerules(event);
 		
 		logger.log(Level.INFO, "Registered commands");
+	}
+	
+	private static void registerWorkbenchRecipes() {
+		RecipeRegistry r = RecipeRegistry.instance();
+		r.registerRecipe(PMCRecipeBuilder.create()
+				.result(PMCItems.FLARE_GUN)
+				.ingredient(Items.IRON_INGOT, 15)
+				.ingredient(PMCItems.STEEL_INGOT, 10)
+				.ingredient(Items.DYE, 10, 1)
+				.build());
+		
+		r.registerRecipe(PMCRecipeBuilder.create()
+				.result(PMCItems.P92)
+				.ingredient(Items.IRON_INGOT, 15)
+				.ingredient(PMCItems.STEEL_INGOT, 10)
+				.ingredient(Blocks.PLANKS, 1)
+				.build());
 	}
 	
 	/**

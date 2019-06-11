@@ -20,6 +20,7 @@ import com.toma.pubgmc.common.blocks.PMCBlockHorizontal;
 import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.entity.EntityFlare;
+import com.toma.pubgmc.common.entity.EntityFlashbang;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityMolotov;
 import com.toma.pubgmc.common.entity.EntityParachute;
@@ -30,6 +31,7 @@ import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.ItemBackpack;
+import com.toma.pubgmc.common.items.ItemFlashBang;
 import com.toma.pubgmc.common.items.ItemFuelCan;
 import com.toma.pubgmc.common.items.ItemGrenade;
 import com.toma.pubgmc.common.items.ItemMolotov;
@@ -166,6 +168,7 @@ public class PMCRegistry
 		public static final Item GRENADE = null;
 		public static final Item SMOKE = null;
 		public static final Item MOLOTOV = null;
+		public static final Item FLASHBANG = null;
 		public static final Item AMMO_9MM = null;
 		public static final Item AMMO_45ACP = null;
 		public static final Item AMMO_SHOTGUN = null;
@@ -452,7 +455,8 @@ public class PMCRegistry
 					new PMCItem("copper_ingot"),
 					new ItemFuelCan().addDescription("Hold right click while driving vehicle","Vehicle must be stationary!"),
 					new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ),
-					new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA)
+					new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
+					new ItemFlashBang("flashbang")
 			};
 			
 			final Item[] ITEM_BLOCKS = {
@@ -513,6 +517,7 @@ public class PMCRegistry
 				registerEntity("grenade", EntityGrenade.class, 64, 20, true),
 				registerEntity("smoke", EntitySmokeGrenade.class, 64, 20, true),
 				registerEntity("molotov", EntityMolotov.class, 64, 20, true),
+				registerEntity("flashbang", EntityFlashbang.class, 64, 10, true),
 				registerEntity("flare", EntityFlare.class, 64, 20, true),
 				registerEntity("parachute", EntityParachute.class, 256, 1, true),
 				registerEntity("plane", EntityPlane.class, 128, 25, true),

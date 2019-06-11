@@ -44,6 +44,7 @@ public class FlashHandler {
 		Vec3d flashVec = PUBGMCUtil.getPositionVec(flash);
 		Vec3d playerVec = PUBGMCUtil.getPositionVec(player);
 		
+		double angle = Math.atan2(player.posZ-flash.posZ, player.posX-flash.posX);
 		return true;
 	}
 }

@@ -37,14 +37,20 @@ public class EntityFlashbang extends Entity implements IEntityAdditionalSpawnDat
 		this.setPositionAndRotation(thrower.posX, thrower.posY, thrower.posZ, thrower.rotationYawHead, thrower.rotationPitch);
 		boolean sprint = thrower.isSprinting();
 		boolean right = rightClick;
-		motionX = (this.getLookVec().x*1.5)*(sprint ? 1.25 : 1)*(right ? 0.5 : 1);
-		motionY = (this.getLookVec().y*1.5)*(sprint ? 1.25 : 1)*(right ? 0.5 : 1);
-		motionZ = (this.getLookVec().z*1.5)*(sprint ? 1.25 : 1)*(right ? 0.5 : 1);
+		motionX = (this.getLookVec().x*1.5)*(sprint ? 1.25 : 1)*(right ? 1 : 0.5);
+		motionY = (this.getLookVec().y*1.5)*(sprint ? 1.25 : 1)*(right ? 1 : 0.5);
+		motionZ = (this.getLookVec().z*1.5)*(sprint ? 1.25 : 1)*(right ? 1 : 0.5);
 	}
 	
 	@Override
 	public void onUpdate() {
-		setVelocity(motionX*.98, motionY*.98, motionZ*.98);
+		motionX *= 0.98;
+		motionY -= 0.04;
+		motionZ *= 0.98;
+		if(onGround) {
+			motionX *= 0.8;
+			motionZ *= 0.8;
+		}
         if(Math.abs(motionX) < 0.1 && Math.abs(motionZ) < 0.1) {
         	motionX = 0;
         	motionZ = 0;
