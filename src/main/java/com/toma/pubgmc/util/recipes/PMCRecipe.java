@@ -7,10 +7,12 @@ public class PMCRecipe {
 	
 	public final Item result;
 	public final PMCIngredient[] ingredients;
+	public final CraftingCategory category;
 	
-	protected PMCRecipe(Item result, PMCIngredient[] ingredients) {
+	protected PMCRecipe(Item result, PMCIngredient[] ingredients, CraftingCategory category) {
 		this.result = result;
 		this.ingredients = ingredients;
+		this.category = category;
 	}
 	
 	public static boolean isRecipeReady(PMCRecipe recipe, ICraftingInventory inv) {
@@ -42,6 +44,33 @@ public class PMCRecipe {
 				}
 			}
 			return false;
+		}
+	}
+	
+	public enum CraftingCategory {
+		
+		GUNS("Guns"),
+		AMMO("Ammo"),
+		ATTACHMENTS("Attachments"),
+		HEALS("Healing"),
+		THROWABLES("Grenades"),
+		WEARABLES("Armor & Utility"),
+		VEHICLES("Vehicles");
+		
+		private final String name;
+		
+		private CraftingCategory(String name) {
+			this.name = name;
+		}
+		
+		public static CraftingCategory getNextCategory(CraftingCategory current) {
+			int i = current.ordinal();
+			return (i-1) == values().length ? values()[0] : values()[i+1];
+		}
+		
+		public static CraftingCategory getPrevCategory(CraftingCategory current) {
+			int i = current.ordinal();
+			return i > 0 ? values()[i-1] : values()[values().length];
 		}
 	}
 }

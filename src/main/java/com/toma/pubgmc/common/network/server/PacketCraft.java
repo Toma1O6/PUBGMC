@@ -1,7 +1,6 @@
 package com.toma.pubgmc.common.network.server;
 
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;

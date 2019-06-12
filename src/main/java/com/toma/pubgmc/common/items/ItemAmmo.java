@@ -1,13 +1,10 @@
 package com.toma.pubgmc.common.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.guns.AmmoType;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Items;
@@ -16,10 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class ItemAmmo extends PMCItem implements ICraftable
+public class ItemAmmo extends PMCItem
 {
 	public final AmmoType type;
-	private ArrayList<ItemStack> rec = new ArrayList<ItemStack>();
 	
 	public ItemAmmo(String name, AmmoType type)
 	{
@@ -58,97 +54,5 @@ public class ItemAmmo extends PMCItem implements ICraftable
 			case AMMO300M: tooltip.add(TextFormatting.DARK_GREEN + "For guns: AWM"); break;
 			case FLARE: tooltip.add(TextFormatting.DARK_RED + "For guns: Flare gun"); break;
 		}
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		rec.clear();
-		if(this == PMCRegistry.PMCItems.AMMO_9MM)
-		{
-			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
-			rec.add(new ItemStack(Items.GUNPOWDER, 1));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.AMMO_SHOTGUN)
-		{
-			rec.add(new ItemStack(Items.GOLD_NUGGET, 10));
-			rec.add(new ItemStack(Items.IRON_NUGGET, 8));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
-			rec.add(new ItemStack(Items.GUNPOWDER, 3));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.AMMO_45ACP)
-		{
-			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
-			rec.add(new ItemStack(Items.GOLD_NUGGET, 15));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1));
-			rec.add(new ItemStack(Items.GUNPOWDER, 1));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.AMMO_556)
-		{
-			rec.add(new ItemStack(Items.IRON_NUGGET, 5));
-			rec.add(new ItemStack(Items.GOLD_NUGGET, 5));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1));
-			rec.add(new ItemStack(Items.GUNPOWDER, 2));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.AMMO_762)
-		{
-			rec.add(new ItemStack(Items.IRON_NUGGET, 7));
-			rec.add(new ItemStack(Items.GOLD_NUGGET, 7));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT));
-			rec.add(new ItemStack(Items.GUNPOWDER, 2));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.AMMO_300M)
-		{
-			rec.add(new ItemStack(Items.IRON_INGOT));
-			rec.add(new ItemStack(Items.GOLD_INGOT));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
-			rec.add(new ItemStack(Items.DIAMOND));
-			rec.add(new ItemStack(Items.GUNPOWDER, 5));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.AMMO_FLARE)
-		{
-			rec.add(new ItemStack(Items.DIAMOND, 5));
-			rec.add(new ItemStack(Items.IRON_INGOT));
-			rec.add(new ItemStack(Items.GUNPOWDER, 10));
-			rec.add(new ItemStack(Items.BLAZE_POWDER, 3));
-			rec.add(new ItemStack(Items.DYE, 5, 1));
-		}
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe()
-	{
-		return rec;
-	}
-	
-	public int getCraftCount(Item item)
-	{
-		int i = 0;
-		switch(type)
-		{
-			case AMMO9MM: return i = 30;
-			case AMMO45ACP: return i = 15;
-			case AMMO12G: return i = 5;
-			case AMMO556: return i = 20;
-			case AMMO762: return i = 15;
-			case AMMO300M: return i = 5;
-			case FLARE: return i = 1;
-		}
-		return i;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.AMMO;
 	}
 }

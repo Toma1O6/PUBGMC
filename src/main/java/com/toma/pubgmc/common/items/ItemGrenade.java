@@ -1,14 +1,11 @@
 package com.toma.pubgmc.common.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,10 +25,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
-public class ItemGrenade extends PMCItem implements ICraftable
+public class ItemGrenade extends PMCItem
 {
-	private ArrayList<ItemStack> recipe = new ArrayList();
-	
 	public ItemGrenade(String name) 
 	{
 		super(name);
@@ -132,17 +127,5 @@ public class ItemGrenade extends PMCItem implements ICraftable
 		recipe.add(new ItemStack(Items.IRON_INGOT, 3));
 		recipe.add(new ItemStack(Items.GUNPOWDER, 10));
 		recipe.add(new ItemStack(Blocks.TNT));
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe()
-	{
-		return recipe;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.THROWABLES;
 	}
 }

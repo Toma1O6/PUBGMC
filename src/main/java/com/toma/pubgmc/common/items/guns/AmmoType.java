@@ -10,25 +10,31 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public enum AmmoType
 {
-	AMMO9MM("ammo.9mm"),
-	AMMO45ACP("ammo.45acp"),
-	AMMO12G("ammo.12g"),
-	AMMO556("ammo.556mm"),
-	AMMO762("ammo.762mm"),
-	AMMO300M("ammo.300m"),
-	FLARE("ammo.flare");
+	AMMO9MM("ammo.9mm", 30),
+	AMMO45ACP("ammo.45acp", 20),
+	AMMO12G("ammo.12g", 5),
+	AMMO556("ammo.556mm", 20),
+	AMMO762("ammo.762mm", 15),
+	AMMO300M("ammo.300m", 5),
+	FLARE("ammo.flare", 1);
 	
-	private String name;
+	private final String name;
+	private final int amount;
 	
-	private AmmoType(String name)
+	private AmmoType(String name, int amount)
 	{
 		this.name = name;
+		this.amount = amount;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public String translatedName()
 	{
 		return I18n.format(name);
+	}
+	
+	public int craftAmount() {
+		return amount;
 	}
 	
 	public Item ammo()

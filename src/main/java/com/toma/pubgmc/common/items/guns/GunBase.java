@@ -19,8 +19,6 @@ import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.common.network.sp.PacketSound;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.util.ICraftable;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -45,7 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author Toma1O6
  * This is the core class for all guns
  */
-public class GunBase extends PMCItem implements ICraftable
+public class GunBase extends PMCItem
 {
 	public static final List<GunBase> GUNS = new ArrayList<GunBase>();
 	
@@ -77,8 +75,6 @@ public class GunBase extends PMCItem implements ICraftable
 	private SoundEvent gun_shoot, gun_silenced, gun_reload;
 	private float gun_volume, gun_volume_s;
 	
-	public List<ItemStack> craftingRecipe = new ArrayList<ItemStack>();
-	
 	private ItemAmmo ammoItem;
 	private int ammoCount = 0;
 	
@@ -103,23 +99,6 @@ public class GunBase extends PMCItem implements ICraftable
 	public int getWeaponAmmoLimit(ItemStack stack)
 	{
 		return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? exMaxAmmo : maxAmmo;
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe() 
-	{
-		return craftingRecipe;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.GUN;
 	}
 	
 	/**
@@ -413,11 +392,6 @@ public class GunBase extends PMCItem implements ICraftable
 	public ModelGun getWeaponModel()
 	{
 		return gunModel;
-	}
-	
-	public void setCraftingRecipe(List<ItemStack> recipe)
-	{
-		this.craftingRecipe = recipe;
 	}
 	
 	public void setMaxAmmo(int maxAmmo, int exMaxAmmo)

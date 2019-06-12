@@ -3,8 +3,6 @@ package com.toma.pubgmc.common.items.heal;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.PMCItem;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +15,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public abstract class ItemHealing extends PMCItem implements ICraftable
+public abstract class ItemHealing extends PMCItem
 {
 	public float health;
 	public float boost;
@@ -44,12 +42,6 @@ public abstract class ItemHealing extends PMCItem implements ICraftable
 	public EnumAction getItemUseAction(ItemStack stack)
 	{
 		return getUseAction();
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.HEALING;
 	}
 	
 	@Override

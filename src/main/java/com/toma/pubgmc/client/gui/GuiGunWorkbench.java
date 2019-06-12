@@ -4,7 +4,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.container.ContainerGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,8 +15,6 @@ public class GuiGunWorkbench extends GuiContainer
 	private static final ResourceLocation INFO = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/info.png");
 	private final InventoryPlayer player;
 	private final TileEntityGunWorkbench tileentity;
-	private int index;
-	private CraftMode category;
 	
 	public GuiGunWorkbench(TileEntityGunWorkbench te, InventoryPlayer playerInv)
 	{
@@ -33,6 +30,7 @@ public class GuiGunWorkbench extends GuiContainer
 	{	
 		super.initGui();
 		buttonList.add(new RecipeButton(0, guiLeft + 45, guiTop + 8, null, player));
+		
 	}
 	
 	@Override

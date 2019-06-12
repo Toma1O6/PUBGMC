@@ -23,11 +23,6 @@ public class GunPostInitializeEvent extends Event
 		return gun;
 	}
 	
-	public void addCraftingIngredient(ItemStack stack)
-	{
-		gun.getCraftingRecipe().add(stack);
-	}
-	
 	public void initBarrelAttachments(ItemAttachment... attachments)
 	{
 		List<ItemAttachment> list = new ArrayList<ItemAttachment>();

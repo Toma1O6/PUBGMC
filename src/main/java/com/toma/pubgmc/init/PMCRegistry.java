@@ -918,19 +918,8 @@ public class PMCRegistry
 		public static void onGunInitialized(GunPostInitializeEvent e)
 		{
 			GunBase gun = e.getGun();
-			
-			if(gun == PMCItems.FLARE_GUN)
+			if(gun == PMCItems.P92)
 			{
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
-				e.addCraftingIngredient(new ItemStack(PMCItems.STEEL_INGOT, 20));
-				e.addCraftingIngredient(new ItemStack(Items.DYE, 10, 1));
-			}
-			
-			else if(gun == PMCItems.P92)
-			{
-				e.addCraftingIngredient(new ItemStack(PMCItems.STEEL_INGOT, 10));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS));
 				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
 				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
 				e.initScopeAttachments(PMCItems.RED_DOT);
@@ -938,9 +927,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.P1911)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 12));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 20));
-				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 1));
 				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
 				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
 				e.initScopeAttachments(PMCItems.RED_DOT);
@@ -948,8 +934,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.P18C)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 20));
 				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
 				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
 				e.initScopeAttachments(PMCItems.RED_DOT);
@@ -957,24 +941,16 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.R1895)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 5));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 2));
 				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
 			}
 			
 			else if(gun == PMCItems.R45)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 18));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 5));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 2));
 				e.initScopeAttachments(PMCItems.RED_DOT);
 			}
 			
 			else if(gun == PMCItems.SCORPION)
 			{
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 30));
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
 				e.initBarrelAttachments(PMCItems.SILENCER_PISTOL);
 				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
 				e.initMagazineAttachments(PMCItems.EXTENDED_MAG_PISTOL);
@@ -983,53 +959,32 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.WIN94)
 			{
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 5));
 				e.initStockAttachments(PMCItems.BULLET_LOOPS_SNIPER);
-			}
-			
-			else if(gun == PMCItems.SAWED_OFF)
-			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 10));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 7));
 			}
 			
 			else if(gun == PMCItems.S1897)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 15));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 10));
 				e.initStockAttachments(PMCItems.BULLET_LOOPS_SHOTGUN);
 			}
 			
 			else if(gun == PMCItems.S686)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 20));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 10));
 				e.initStockAttachments(PMCItems.BULLET_LOOPS_SHOTGUN);
 			}
 			
 			else if(gun == PMCItems.S12K)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
 			}
 			
 			else if(gun == PMCItems.MICROUZI)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
 				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
 			}
 			
 			else if(gun == PMCItems.VECTOR)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
 				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
 				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
 				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
@@ -1038,17 +993,12 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.BIZON)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
 				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
 			}
 			
 			else if(gun == PMCItems.TOMMY_GUN)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 3));
 				e.initBarrelAttachments(PMCItems.SILENCER_SMG);
 				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
 				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
@@ -1056,8 +1006,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.UMP45)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 25));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
 				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
@@ -1066,8 +1014,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.M16A4)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
@@ -1075,8 +1021,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.M416)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1085,8 +1029,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.SCAR_L)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1095,8 +1037,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.QBZ)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1105,8 +1045,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.G36C)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1115,8 +1053,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.AUG)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1125,8 +1061,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.AKM)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
@@ -1134,8 +1068,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.BERYL_M762)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1144,8 +1076,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.MK47_MUTANT)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(AttachmentHelper.getARBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
@@ -1154,8 +1084,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.GROZA)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
 				e.initBarrelAttachments(PMCItems.SILENCER_AR);
 				e.initMagazineAttachments(AttachmentHelper.getARMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
@@ -1163,36 +1091,22 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.DP28)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 3));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 10));
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
 			}
 			
 			else if(gun == PMCItems.M249)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 60));
-				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 3));
-				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 5));
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
 			}
 			
 			else if(gun == PMCItems.VSS)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 30));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 20));
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initStockAttachments(PMCItems.CHEEKPAD);
 			}
 			
 			else if(gun == PMCItems.MINI14)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 5));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
@@ -1200,9 +1114,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.QBU)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 5));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
@@ -1210,9 +1121,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.SKS)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 35));
-				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 5));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initGripAttachments(AttachmentHelper.getGrips());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
@@ -1222,8 +1130,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.SLR)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
@@ -1232,9 +1138,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.MK14)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Blocks.STONE, 5));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
@@ -1243,10 +1146,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.KAR98K)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 40));
-				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 1));
-				e.addCraftingIngredient(new ItemStack(Blocks.PLANKS, 15));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
 				e.initStockAttachments(AttachmentHelper.getStock(true));
@@ -1254,9 +1153,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.M24)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 60));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 1));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
@@ -1265,10 +1161,6 @@ public class PMCRegistry
 			
 			else if(gun == PMCItems.AWM)
 			{
-				e.addCraftingIngredient(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Items.IRON_INGOT, 50));
-				e.addCraftingIngredient(new ItemStack(Blocks.IRON_BLOCK, 2));
-				e.addCraftingIngredient(new ItemStack(Items.DIAMOND, 3));
 				e.initBarrelAttachments(AttachmentHelper.getSRBarrelAttachments());
 				e.initMagazineAttachments(AttachmentHelper.getSRMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getScopes());
