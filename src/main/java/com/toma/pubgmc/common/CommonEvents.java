@@ -37,6 +37,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -185,6 +186,15 @@ public class CommonEvents
 		//To prevent the method from being called multiple times at once
 		if(ev.phase == Phase.START && !player.world.isRemote)
 		{
+			if(player.getHeldItemOffhand().getItem() instanceof GunBase) {
+				EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getHeldItemOffhand());
+				Vec3d vec = player.getLookVec();
+				item.setVelocity(vec.x*0.3, vec.y*0.3, vec.z*0.3);
+				item.setPickupDelay(30);
+				player.world.spawnEntity(item);
+				player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
+			}
+			
 			//Inventory limit
 			if(ConfigPMC.common.playerSettings.enableInventoryLimit)
 			{

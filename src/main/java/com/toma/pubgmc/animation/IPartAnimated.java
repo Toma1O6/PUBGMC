@@ -32,7 +32,7 @@ public interface IPartAnimated<T extends Animation>
 	
 	void setRotation(float x, float y, float z);
 	
-	default void process(boolean reload)
+	default void process(boolean bool)
 	{
 		if(this.getPart() == null || animationSteps() == null) {
 			return;
@@ -40,7 +40,7 @@ public interface IPartAnimated<T extends Animation>
 		
 		MutablePair<Vector3f, Vector3f> step = animationSteps()[currentStep()];
 		Vector3f movement = getPartMovement();
-		if(reload) {
+		if(bool) {
 			if(!Animation.isPartMovementFinished(this)) {
 				setMovement(movement.x, Animation.getPartialMovement(movement.y, step.getRight().y, 0.2f * getSpeed()), movement.z);
 			}
@@ -49,7 +49,7 @@ public interface IPartAnimated<T extends Animation>
 				setCurrentStep(currentStep() + 1);
 			}
 		}
-		else if(!reload) {
+		else if(!bool) {
 			setCurrentStep(0);
 			if(!Animation.isPartReturned(this)) {
 				setMovement(
