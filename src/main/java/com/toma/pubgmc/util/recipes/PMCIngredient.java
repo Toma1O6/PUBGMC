@@ -28,6 +28,12 @@ public final class PMCIngredient {
 		this.count = count;
 	}
 	
+	public PMCIngredient(int slotIndex, Block block, int count, int meta) {
+		this.slotIndex = slotIndex;
+		this.ingredient = new ItemStack(block, 1, meta);
+		this.count = count;
+	}
+	
 	public ItemStack getIngredient() {
 		return ingredient;
 	}

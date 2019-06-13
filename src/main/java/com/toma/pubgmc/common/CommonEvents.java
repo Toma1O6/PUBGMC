@@ -669,12 +669,12 @@ public class CommonEvents
 			}
 			
 			case FAILED: {
-				sendMessage(player, "Update check failed! Check your internet connection", TextFormatting.RED);
+				sendMessage(player, "[PUBGMC] Update check failed! Check your internet connection", TextFormatting.RED);
 				break;
 			}
 			
 			case OUTDATED: {
-				sendMessage(player, "You are using old version! Get a new one.", TextFormatting.YELLOW);
+				sendMessage(player, "[PUBGMC] You are using old version! Get a new one.", TextFormatting.YELLOW);
 				TextComponentString comp = new TextComponentString(TextFormatting.YELLOW + "New version is available! You can get it " + TextFormatting.ITALIC +"HERE");
 				comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft.curseforge.com/projects/pubgmc-mod/files")));
 				player.sendMessage(comp);

@@ -3,16 +3,11 @@ package com.toma.pubgmc.common.items.armor;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -57,25 +52,4 @@ public class ItemGhillie extends ItemArmor
 		}
     	return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
     }
-    
-	@Override
-	public void initCraftingRecipe()
-	{
-		recipe.add(new ItemStack(Items.LEATHER_HELMET));
-		recipe.add(new ItemStack(Items.LEATHER_CHESTPLATE));
-		recipe.add(new ItemStack(Items.LEATHER_LEGGINGS));
-		recipe.add(new ItemStack(Blocks.LEAVES, 45));
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe()
-	{
-		return recipe;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.CLOTHING;
-	}
 }

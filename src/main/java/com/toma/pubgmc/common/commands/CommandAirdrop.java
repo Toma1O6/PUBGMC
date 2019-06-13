@@ -1,7 +1,6 @@
 package com.toma.pubgmc.common.commands;
 
-import java.util.Random;
-
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
@@ -18,9 +17,6 @@ import net.minecraft.world.World;
 
 public class CommandAirdrop extends CommandBase
 {
-	/** Pure RNG **/
-	private final Random rand = new Random();
-	
 	/** Used for stopping while loop after the block is spawned **/
 	private boolean spawned;
 	
@@ -45,7 +41,7 @@ public class CommandAirdrop extends CommandBase
 		spawned = false;
 		spawnAttempts = 0;
 		int playerCount = server.getPlayerList().getCurrentPlayerCount();
-		int randomPlayer = rand.nextInt(playerCount);
+		int randomPlayer = Pubgmc.rng().nextInt(playerCount);
 		EntityPlayerMP player = server.getPlayerList().getPlayers().get(randomPlayer);
 		World world = player.world;
 		
@@ -59,8 +55,8 @@ public class CommandAirdrop extends CommandBase
 				BlockPos pos = player.getPosition();
 				
 				//Bit of RNG for random position
-				int xPos = rand.nextInt(10);
-				int zPos = rand.nextInt(10);
+				int xPos = Pubgmc.rng().nextInt(10);
+				int zPos = Pubgmc.rng().nextInt(10);
 				
 				//50% for each coord to be negative. That means the airdrop can spawn anywhere around the player
 				if(Math.random() * 100 <= 50)
@@ -93,7 +89,7 @@ public class CommandAirdrop extends CommandBase
 				if(Math.random() * 100 <= 2)
 				{
 					spawned = false;
-					randomPlayer = rand.nextInt(playerCount);
+					randomPlayer = Pubgmc.rng().nextInt(playerCount);
 					player = server.getPlayerList().getPlayers().get(randomPlayer);
 				}
 				//To stop the while loop

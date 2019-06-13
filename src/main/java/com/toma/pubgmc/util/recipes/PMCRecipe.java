@@ -1,18 +1,38 @@
 package com.toma.pubgmc.util.recipes;
 
+import com.toma.pubgmc.Pubgmc;
+
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class PMCRecipe {
 	
 	public final Item result;
 	public final PMCIngredient[] ingredients;
 	public final CraftingCategory category;
+	public final ItemStack returnStack;
 	
 	protected PMCRecipe(Item result, PMCIngredient[] ingredients, CraftingCategory category) {
+		this(result, ingredients, category, ItemStack.EMPTY);
+	}
+	
+	protected PMCRecipe(Item result, PMCIngredient[] ingredients, CraftingCategory category, ItemStack returnStack) {
 		this.result = result;
 		this.ingredients = ingredients;
 		this.category = category;
+		this.returnStack = returnStack;
+	}
+	
+	public void onCraft(World world, BlockPos pos) {
+		if(!returnStack.isEmpty() && !world.isRemote) {
+			EntityItem item = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, new ItemStack(returnStack.getItem()));
+			item.setVelocity(Pubgmc.rng().nextDouble()*0.15, Pubgmc.rng().nextDouble()*0.15, Pubgmc.rng().nextDouble()*0.15);
+			item.setPickupDelay(30);
+			world.spawnEntity(item);
+		}
 	}
 	
 	public static boolean isRecipeReady(PMCRecipe recipe, ICraftingInventory inv) {

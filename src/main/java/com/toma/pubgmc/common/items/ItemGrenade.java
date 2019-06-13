@@ -11,8 +11,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -119,13 +117,5 @@ public class ItemGrenade extends PMCItem
 	{
 		tooltip.add(TextFormatting.BOLD + I18n.format("grenade.he.fuse") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + I18n.format("grenade.he.fuse.time"));
 		tooltip.add(TextFormatting.ITALIC + I18n.format("grenade.desc.info"));
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		recipe.add(new ItemStack(Items.IRON_INGOT, 3));
-		recipe.add(new ItemStack(Items.GUNPOWDER, 10));
-		recipe.add(new ItemStack(Blocks.TNT));
 	}
 }

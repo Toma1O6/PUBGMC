@@ -32,6 +32,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	private int selectedIndex = 0;
 	private static final int OUTPUT = 8;
 	
+	/** Splits all recipes from registry into it's categories */
 	public static void init() {
 		GUNS = RecipeRegistry.asList(CraftingCategory.GUNS);
 		AMMO = RecipeRegistry.asList(CraftingCategory.AMMO);

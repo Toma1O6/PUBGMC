@@ -1,18 +1,10 @@
 package com.toma.pubgmc.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.init.PMCRegistry.PMCItems;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -21,9 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class ItemVehicleSpawner extends PMCItem implements ICraftable
+public class ItemVehicleSpawner extends PMCItem
 {
-	private ArrayList<ItemStack> rec = new ArrayList();
 	private Vehicles car;
 	
 	public ItemVehicleSpawner(String name, Vehicles vehicle)
@@ -79,42 +70,5 @@ public class ItemVehicleSpawner extends PMCItem implements ICraftable
 				world.spawnEntity(vehicle);
 			}
 		}
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		rec.clear();
-		
-		if(this == PMCItems.VEHICLE_UAZ)
-		{
-			rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
-			rec.add(new ItemStack(Blocks.IRON_BLOCK, 10));
-			rec.add(new ItemStack(Items.LEATHER, 20));
-			rec.add(new ItemStack(Blocks.GLASS, 10));
-			rec.add(new ItemStack(Items.REDSTONE, 40));
-			rec.add(new ItemStack(Items.GOLD_INGOT, 45));
-		}
-		else if(this == PMCItems.VEHICLE_DACIA)
-		{
-			rec.add(new ItemStack(PMCItems.STEEL_INGOT, 50));
-			rec.add(new ItemStack(Blocks.IRON_BLOCK, 10));
-			rec.add(new ItemStack(Items.LEATHER, 20));
-			rec.add(new ItemStack(Blocks.GLASS, 10));
-			rec.add(new ItemStack(Items.REDSTONE, 40));
-			rec.add(new ItemStack(Items.GOLD_INGOT, 45));
-		}
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe() 
-	{
-		return rec;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.OTHER;
 	}
 }

@@ -1,25 +1,19 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.PMCItem;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
+public class ItemAttachment extends PMCItem implements IAttachment
 {
-	private ArrayList<ItemStack> rec = new ArrayList<ItemStack>();
 	private final Type type;
 	
 	public ItemAttachment(String name, Type attachment) 
@@ -100,206 +94,5 @@ public class ItemAttachment extends PMCItem implements IAttachment, ICraftable
 				tooltip.add("Cheekpad: Slightly reduces both vertical and horizontal recoil"); break;
 			}
 		}
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		rec.clear();
-		//Barrel
-		if(this == PMCRegistry.PMCItems.SILENCER_PISTOL)
-		{
-			rec.add(new ItemStack(Blocks.WOOL, 5, 15));
-			rec.add(new ItemStack(Items.IRON_INGOT, 3));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SILENCER_SMG)
-		{
-			rec.add(new ItemStack(Blocks.WOOL, 7, 15));
-			rec.add(new ItemStack(Items.IRON_INGOT, 4));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SILENCER_AR)
-		{
-			rec.add(new ItemStack(Blocks.WOOL, 10, 15));
-			rec.add(new ItemStack(Items.IRON_INGOT, 7));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SILENCER_SNIPER)
-		{
-			rec.add(new ItemStack(Blocks.WOOL, 15, 15));
-			rec.add(new ItemStack(Items.IRON_INGOT, 10));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.COMPENSATOR_SMG)
-		{
-			rec.add(new ItemStack(Items.IRON_INGOT, 3));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.COMPENSATOR_AR)
-		{
-			rec.add(new ItemStack(Items.IRON_INGOT, 6));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 6));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.COMPENSATOR_SNIPER)
-		{
-			rec.add(new ItemStack(Items.IRON_INGOT, 8));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
-		}
-		
-		//Scope
-		else if(this == PMCRegistry.PMCItems.RED_DOT)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 5));
-			rec.add(new ItemStack(Blocks.GLASS_PANE));
-			rec.add(new ItemStack(Items.DYE, 1, 1));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.HOLOGRAPHIC)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 7));
-			rec.add(new ItemStack(Blocks.GLASS_PANE));
-			rec.add(new ItemStack(Items.DYE, 2, 1));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SCOPE2X)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 10));
-			rec.add(new ItemStack(Blocks.GLASS_PANE, 4));
-			rec.add(new ItemStack(Items.DYE, 3, 10));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SCOPE4X)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 20));
-			rec.add(new ItemStack(Blocks.GLASS_PANE, 6));
-			rec.add(new ItemStack(Items.DYE, 6, 1));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SCOPE8X)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 30));
-			rec.add(new ItemStack(Blocks.GLASS_PANE, 10));
-			rec.add(new ItemStack(Items.DYE, 5));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.SCOPE15X)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 50));
-			rec.add(new ItemStack(Blocks.GLASS_PANE, 16));
-			rec.add(new ItemStack(Items.DYE, 15));
-		}
-		
-		//Grips
-		else if(this == PMCRegistry.PMCItems.GRIP_ANGLED || this == PMCRegistry.PMCItems.GRIP_VERTICAL)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 10));
-			rec.add(new ItemStack(Items.IRON_INGOT, 10));
-		}
-		
-		//Magazines
-		else if(this == PMCRegistry.PMCItems.QUICKDRAW_MAG_PISTOL)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
-			rec.add(new ItemStack(Items.IRON_INGOT, 3));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_MAG_PISTOL)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
-			rec.add(new ItemStack(Items.IRON_INGOT, 5));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.QUICKDRAW_MAG_PISTOL));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_MAG_PISTOL));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.QUICKDRAW_MAG_SMG)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 5));
-			rec.add(new ItemStack(Items.IRON_INGOT, 5));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_MAG_SMG)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 5));
-			rec.add(new ItemStack(Items.IRON_INGOT, 8));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SMG)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.QUICKDRAW_MAG_SMG));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_MAG_SMG));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.QUICKDRAW_MAG_AR)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
-			rec.add(new ItemStack(Items.IRON_INGOT, 8));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_MAG_AR)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 8));
-			rec.add(new ItemStack(Items.IRON_INGOT, 15));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_AR)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.QUICKDRAW_MAG_AR));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_MAG_AR));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.QUICKDRAW_MAG_SNIPER)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
-			rec.add(new ItemStack(Items.IRON_INGOT, 15));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_MAG_SNIPER)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 15));
-			rec.add(new ItemStack(Items.IRON_INGOT, 25));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)
-		{
-			rec.add(new ItemStack(PMCRegistry.PMCItems.QUICKDRAW_MAG_SNIPER));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_MAG_SNIPER));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.BULLET_LOOPS_SHOTGUN)
-		{
-			rec.add(new ItemStack(Blocks.PLANKS, 5));
-			rec.add(new ItemStack(Items.IRON_INGOT, 3));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.BULLET_LOOPS_SNIPER)
-		{
-			rec.add(new ItemStack(Items.IRON_INGOT, 5));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 3));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.CHEEKPAD)
-		{
-			rec.add(new ItemStack(Items.IRON_INGOT, 10));
-			rec.add(new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 10));
-		}
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe() 
-	{
-		return rec;
-	}
-	
-	@Override
-	public CraftMode getCraftMode() 
-	{
-		return CraftMode.ATTACHMENT;
 	}
 }

@@ -1,16 +1,9 @@
 package com.toma.pubgmc.common.items.heal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
 
 public class ItemPainkiller extends ItemHealing
 {
-	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
-	
 	public ItemPainkiller(String name) 
 	{
 		super(name);
@@ -39,22 +32,5 @@ public class ItemPainkiller extends ItemHealing
 	public float getBoostAmount()
 	{
 		return 60f;
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		recipe.add(new ItemStack(Items.GLASS_BOTTLE));
-		recipe.add(new ItemStack(Items.APPLE));
-		recipe.add(new ItemStack(Items.CARROT, 3));
-		recipe.add(new ItemStack(Items.SUGAR, 5));
-		recipe.add(new ItemStack(Items.GOLD_NUGGET, 3));
-		recipe.add(new ItemStack(Items.SPECKLED_MELON));
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe()
-	{
-		return recipe;
 	}
 }

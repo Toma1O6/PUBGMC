@@ -1,16 +1,9 @@
 package com.toma.pubgmc.common.items.heal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
 
 public class ItemEnergyDrink extends ItemHealing
 {
-	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
-	
 	public ItemEnergyDrink(String name) 
 	{
 		super(name);
@@ -40,20 +33,4 @@ public class ItemEnergyDrink extends ItemHealing
 	{
 		return 40f;
 	}
-	
-    @Override
-    public void initCraftingRecipe()
-    {
-    	recipe.add(new ItemStack(Items.GLASS_BOTTLE));
-    	recipe.add(new ItemStack(Items.SUGAR, 10));
-    	recipe.add(new ItemStack(Items.APPLE, 3));
-    	recipe.add(new ItemStack(Items.GOLD_NUGGET));
-    	recipe.add(new ItemStack(Items.MELON, 5));
-    }
-    
-    @Override
-    public List<ItemStack> getCraftingRecipe() 
-    {
-    	return recipe;
-    }
 }

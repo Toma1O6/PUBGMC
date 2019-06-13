@@ -1,5 +1,7 @@
 package com.toma.pubgmc;
 
+import java.util.Random;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +69,8 @@ public class Pubgmc
 	/** Creative Tabs **/
 	public static final CreativeTabs pmcitemstab = new PMCItemsTab("pmcitemstab");
 	public static final CreativeTabs pmcblockstab = new PMCBlocksTab("pmcblockstab");
+	
+	private static final Random RANDOM = new Random();
 	
 	public static Logger logger;
 	
@@ -139,6 +143,10 @@ public class Pubgmc
 		registerGamerules(event);
 		
 		logger.log(Level.INFO, "Registered commands");
+	}
+	
+	public static Random rng() {
+		return RANDOM;
 	}
 	
 	/**

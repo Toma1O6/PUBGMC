@@ -45,7 +45,6 @@ import com.toma.pubgmc.common.items.armor.ArmorBase.ArmorLevel;
 import com.toma.pubgmc.common.items.armor.ItemClothing;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.armor.ItemNVGoggles;
-import com.toma.pubgmc.common.items.cases.Case1;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.FlareGun;
 import com.toma.pubgmc.common.items.guns.GunBase;
@@ -80,14 +79,11 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -176,7 +172,6 @@ public class PMCRegistry
 		public static final Item AMMO_762 = null;
 		public static final Item AMMO_300M = null;
 		public static final Item AMMO_FLARE = null;
-		public static final Item CASE1 = null;
 		public static final ItemSword PAN = null;
 		public static final ItemSword CROWBAR = null;
 		public static final ItemSword MACHETE = null;
@@ -192,12 +187,6 @@ public class PMCRegistry
 		public static final Item ARMOR2BODY = null;
 		public static final Item ARMOR3HELMET = null;
 		public static final Item ARMOR3BODY = null;
-		public static final Item BLACK_GLASSES = null;
-		public static final Item YELLOW_TSHIRT = null;
-		public static final Item GRAY_TOP = null;
-		public static final Item BROWN_CAP = null;
-		public static final Item WHITE_BOOTS = null;
-		public static final Item OFFICIAL_LEGS = null;
 		public static final ItemAttachment SILENCER_PISTOL = null;
 		public static final ItemAttachment SILENCER_SMG = null;
 		public static final ItemAttachment SILENCER_AR = null;
@@ -294,10 +283,6 @@ public class PMCRegistry
 		public static final ArmorMaterial LVL1 = EnumHelper.addArmorMaterial("lvl1", Pubgmc.MOD_ID + ":lvl1", 1, new int[] {0, 0, 3, 3}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
 		public static final ArmorMaterial LVL2 = EnumHelper.addArmorMaterial("lvl2", Pubgmc.MOD_ID + ":lvl2", 1, new int[] {0, 0, 6, 6}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
 		public static final ArmorMaterial LVL3 = EnumHelper.addArmorMaterial("lvl3", Pubgmc.MOD_ID + ":lvl3", 1, new int[] {0, 0, 10, 10}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
-		public static final ArmorMaterial CLOTH1 = EnumHelper.addArmorMaterial("set1", Pubgmc.MOD_ID + ":set1", -1, new int[] {0,  0,  0,  0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
-		public static final ArmorMaterial CLOTH2 = EnumHelper.addArmorMaterial("set2", Pubgmc.MOD_ID + ":set2", -1, new int[] {0,  0,  0,  0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
-		public static final ArmorMaterial CLOTH3 = EnumHelper.addArmorMaterial("set3", Pubgmc.MOD_ID + ":set3", -1, new int[] {0,  0,  0,  0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
-		public static final ArmorMaterial HELMET3 = EnumHelper.addArmorMaterial("l3helmet", Pubgmc.MOD_ID + ":level3helmet", 1, new int[] {0, 0, 0, 10}, 0, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0);
 	}
 	
 	@Mod.EventBusSubscriber
@@ -398,7 +383,6 @@ public class PMCRegistry
 					new ItemAmmo("ammo_762", AmmoType.AMMO762),
 					new ItemAmmo("ammo_300m", AmmoType.AMMO300M),
 					new ItemAmmo("ammo_flare", AmmoType.FLARE),
-					new Case1("case1"),
 					MeleeItemBuilder.create("pan").materialName("material_pan").damage(15.0F).build(),
 					MeleeItemBuilder.create("machete").materialName("material_machete").damage(11.0F).build(),
 					MeleeItemBuilder.create("crowbar").materialName("material_crowbar").damage(9.0F).build(),
@@ -413,12 +397,6 @@ public class PMCRegistry
 					new ArmorBase("armor2body", PMCRegistry.ToolMaterials.LVL2, 1, EntityEquipmentSlot.CHEST).setArmorLevel(ArmorLevel.LEVEL_TWO),
 					new ArmorBase("armor3helmet", PMCRegistry.ToolMaterials.LVL3, 1, EntityEquipmentSlot.HEAD).setArmorLevel(ArmorLevel.LEVEL_THREE),
 					new ArmorBase("armor3body", PMCRegistry.ToolMaterials.LVL3, 1, EntityEquipmentSlot.CHEST).setArmorLevel(ArmorLevel.LEVEL_THREE),
-					new ItemClothing("black_glasses", PMCRegistry.ToolMaterials.CLOTH1, 1, EntityEquipmentSlot.HEAD),
-					new ItemClothing("yellow_tshirt", PMCRegistry.ToolMaterials.CLOTH1, 1, EntityEquipmentSlot.CHEST),
-					new ItemClothing("gray_top", PMCRegistry.ToolMaterials.CLOTH2, 1, EntityEquipmentSlot.CHEST),
-					new ItemClothing("brown_cap", PMCRegistry.ToolMaterials.CLOTH2, 1, EntityEquipmentSlot.HEAD),
-					new ItemClothing("white_boots", PMCRegistry.ToolMaterials.CLOTH2, 1, EntityEquipmentSlot.FEET),
-					new ItemClothing("official_legs", PMCRegistry.ToolMaterials.CLOTH3, 2, EntityEquipmentSlot.LEGS),
 					new ItemAttachment("silencer_pistol", Type.BARREL),
 					new ItemAttachment("silencer_smg", Type.BARREL),
 					new ItemAttachment("silencer_ar", Type.BARREL),

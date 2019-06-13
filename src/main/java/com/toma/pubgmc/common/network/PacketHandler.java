@@ -4,7 +4,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.network.server.PacketAim;
 import com.toma.pubgmc.common.network.server.PacketChooseLocation;
-import com.toma.pubgmc.common.network.server.PacketCraft;
 import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
 import com.toma.pubgmc.common.network.server.PacketHandleVehicleInput;
@@ -35,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -56,13 +56,12 @@ public class PacketHandler
 		registerServerPacket(PacketUpdateBoostValue.class);
 		registerServerPacket(PacketShoot.class);
 		registerServerPacket(PacketOpenGui.class);
-		registerServerPacket(PacketCraft.class);
 		registerServerPacket(PacketHandleParachuteInputs.class);
 		registerServerPacket(PacketHandleVehicleInput.class);
 		registerServerPacket(PacketSetScopeVariants.class);
 		registerServerPacket(PacketTeleportPlayer.class);
 		registerServerPacket(PacketChooseLocation.class);
-		INSTANCE.registerMessage(PacketProne.Handler.class, PacketProne.class, nextID(), Side.SERVER);
+		registerServerPacket(PacketProne.Handler.class, PacketProne.class);
 		registerClientPacket(PacketReloadingSP.class);
 		registerClientPacket(PacketUpdatePlayerData.class);
 		registerClientPacket(PacketSound.class);
@@ -134,6 +133,14 @@ public class PacketHandler
 	private static void registerClientPacket(Class packetClass)
 	{
 		INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.CLIENT);
+	}
+	
+	private static <REQ extends IMessage, REPLY extends IMessage> void registerClientPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {
+		INSTANCE.registerMessage(handler, packet, nextID(), Side.CLIENT);
+	}
+	
+	private static <REQ extends IMessage, REPLY extends IMessage> void registerServerPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {
+		INSTANCE.registerMessage(handler, packet, nextID(), Side.SERVER);
 	}
 	
 	/**

@@ -479,7 +479,7 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
     	finalDamage = compound.getFloat("bullet_damage");
     }
     
-    private boolean canEntityGetHeadshot(Entity e)
+    private static boolean canEntityGetHeadshot(Entity e)
     {
     	return e instanceof EntityZombie || e instanceof EntitySkeleton || e instanceof EntityCreeper || e instanceof EntityWitch || e instanceof EntityPigZombie || e instanceof EntityEnderman || e instanceof EntityWitherSkeleton || e instanceof EntityPlayer || e instanceof EntityVillager || e instanceof EntityEvoker || e instanceof EntityStray || e instanceof EntityVindicator || e instanceof EntityIronGolem || e instanceof EntitySnowman;
     }

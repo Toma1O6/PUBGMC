@@ -1,29 +1,20 @@
 package com.toma.pubgmc.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
 import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ItemBackpack extends PMCItem implements ICraftable
+public class ItemBackpack extends PMCItem
 {
-	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
-	
 	public ItemBackpack(String name)
 	{
 		super(name);
@@ -90,40 +81,5 @@ public class ItemBackpack extends PMCItem implements ICraftable
 	private static void clearIcons(InventoryPlayer inv)
 	{
 		inv.clearMatchingItems(PMCRegistry.PMCItems.IBLOCK, 0, inv.getSizeInventory() * 64, null);
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		recipe.clear();
-		if(this == PMCRegistry.PMCItems.BACKPACK1)
-		{
-			recipe.add(new ItemStack(Blocks.CHEST));
-			recipe.add(new ItemStack(Items.LEATHER, 10));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.BACKPACK2)
-		{
-			recipe.add(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
-			recipe.add(new ItemStack(Items.LEATHER, 20));
-		}
-		
-		else if(this == PMCRegistry.PMCItems.BACKPACK3)
-		{
-			recipe.add(new ItemStack(PMCRegistry.PMCItems.BACKPACK2));
-			recipe.add(new ItemStack(Items.LEATHER, 30));
-		}
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe()
-	{
-		return recipe;
-	}
-	
-	@Override
-	public CraftMode getCraftMode() 
-	{
-		return CraftMode.CLOTHING;
 	}
 }

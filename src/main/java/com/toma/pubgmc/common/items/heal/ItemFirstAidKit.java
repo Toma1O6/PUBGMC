@@ -1,20 +1,10 @@
 package com.toma.pubgmc.common.items.heal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.toma.pubgmc.init.PMCRegistry;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
 
 public class ItemFirstAidKit extends ItemHealing
 {
-	private ArrayList<ItemStack> recipe = new ArrayList<ItemStack>();
-	
 	public ItemFirstAidKit(String name)
 	{
 		super(name);
@@ -49,22 +39,5 @@ public class ItemFirstAidKit extends ItemHealing
 	public float getHealAmount(EntityPlayer player)
 	{
 		return 15 - player.getHealth();
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		recipe.add(new ItemStack(PMCRegistry.PMCItems.BANDAGE, 2));
-		recipe.add(new ItemStack(Blocks.WOOL));
-		recipe.add(new ItemStack(Items.IRON_NUGGET));
-		recipe.add(new ItemStack(Items.LEATHER, 2));
-		recipe.add(new ItemStack(Items.GOLD_NUGGET, 3));
-		recipe.add(new ItemStack(Items.SPECKLED_MELON));
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe() 
-	{
-		return recipe;
 	}
 }

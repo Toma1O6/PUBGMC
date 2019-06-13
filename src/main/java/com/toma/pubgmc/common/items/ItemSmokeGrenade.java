@@ -1,18 +1,14 @@
 package com.toma.pubgmc.common.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench.CraftMode;
-import com.toma.pubgmc.util.ICraftable;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -23,10 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class ItemSmokeGrenade extends PMCItem implements ICraftable
+public class ItemSmokeGrenade extends PMCItem
 {
-	private ArrayList<ItemStack> recipe = new ArrayList();
-	
 	public ItemSmokeGrenade(String name)
 	{
 		super(name);
@@ -92,25 +86,5 @@ public class ItemSmokeGrenade extends PMCItem implements ICraftable
 		tooltip.add(TextFormatting.BOLD + I18n.format("grenade.smoke.effect") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + I18n.format("grenade.smoke.effect.duration"));
 		tooltip.add(TextFormatting.RED + I18n.format("grenade.smoke.warn"));
 		tooltip.add(TextFormatting.ITALIC + I18n.format("grenade.desc.info"));
-	}
-	
-	@Override
-	public void initCraftingRecipe()
-	{
-		recipe.add(new ItemStack(Items.IRON_INGOT, 3));
-		recipe.add(new ItemStack(Items.GUNPOWDER, 10));
-		recipe.add(new ItemStack(Items.COAL, 5));
-	}
-	
-	@Override
-	public List<ItemStack> getCraftingRecipe()
-	{
-		return recipe;
-	}
-	
-	@Override
-	public CraftMode getCraftMode()
-	{
-		return CraftMode.THROWABLES;
 	}
 }
