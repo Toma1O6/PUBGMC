@@ -26,9 +26,10 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	private static List<PMCRecipe> HEALING;
 	private static List<PMCRecipe> THROWABLES;
 	private static List<PMCRecipe> VEHICLES;
+	public static ArrayList<List<PMCRecipe>> RECIPES = new ArrayList<>(CraftingCategory.values().length);
 	
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
-	private CraftingCategory selectedCat = CraftingCategory.GUNS;
+	public CraftingCategory selectedCat = CraftingCategory.GUNS;
 	private int selectedIndex = 0;
 	private static final int OUTPUT = 8;
 	
@@ -41,6 +42,13 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 		HEALING = RecipeRegistry.asList(CraftingCategory.HEALS);
 		THROWABLES = RecipeRegistry.asList(CraftingCategory.THROWABLES);
 		VEHICLES = RecipeRegistry.asList(CraftingCategory.VEHICLES);
+		RECIPES.add(GUNS);
+		RECIPES.add(AMMO);
+		RECIPES.add(ATTACHMENT);
+		RECIPES.add(CLOTHING);
+		RECIPES.add(HEALING);
+		RECIPES.add(THROWABLES);
+		RECIPES.add(VEHICLES);
 	}
 	
 	@Override

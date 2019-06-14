@@ -94,8 +94,6 @@ public class Pubgmc
 		CapabilityManager.INSTANCE.register(IGameData.class, new GameDataStorage(), GameData::new);
 		
 		proxy.preInit(event);
-		
-		logger.log(Level.INFO, "Registered sounds and events");
 	}
 	
 	@EventHandler
@@ -108,7 +106,6 @@ public class Pubgmc
 		
 		proxy.init(event);
 		GameRegistry.registerWorldGenerator(new OreGen(), 4);
-		logger.log(Level.INFO, "Initialized");
 	}
 	
 	@EventHandler

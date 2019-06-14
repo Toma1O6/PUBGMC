@@ -1,9 +1,13 @@
 package com.toma.pubgmc.client.gui;
 
+import java.util.List;
+
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.container.ContainerGunWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
+import com.toma.pubgmc.util.recipes.PMCRecipe;
+import com.toma.pubgmc.util.recipes.RecipeRegistry;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,6 +19,7 @@ public class GuiGunWorkbench extends GuiContainer
 	private static final ResourceLocation INFO = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/info.png");
 	private final InventoryPlayer player;
 	private final TileEntityGunWorkbench tileentity;
+	private int page = 0;
 	
 	public GuiGunWorkbench(TileEntityGunWorkbench te, InventoryPlayer playerInv)
 	{
@@ -29,8 +34,13 @@ public class GuiGunWorkbench extends GuiContainer
 	public void initGui()
 	{	
 		super.initGui();
-		buttonList.add(new RecipeButton(0, guiLeft + 45, guiTop + 8, null, player));
-		
+		buttonList.clear();
+		List<PMCRecipe> list = tileentity.RECIPES.get(tileentity.selectedCat.ordinal());
+		for(int i = page*4+4; i > page*4; i--) {
+			if(i < list.size()) {
+				this.buttonList.add(new RecipeButton(buttonList.size(), guiLeft + 45, guiTop + i*18 - 10, list.get(i), player));
+			}
+		}
 	}
 	
 	@Override

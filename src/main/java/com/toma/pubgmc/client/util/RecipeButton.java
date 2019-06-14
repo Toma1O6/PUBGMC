@@ -15,30 +15,43 @@ import net.minecraft.util.ResourceLocation;
 public class RecipeButton extends GuiButton {
 
 	public static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/recipebutton.png");
+	public final ItemStack stackToDraw;
 	public final PMCRecipe recipe;
-	public final InventoryPlayer playerInv;
 	public double yTex, yTexE;
+	private boolean hasIngredients = true;
+	private int renderTime;
 	
 	public RecipeButton(int id, int x, int y, PMCRecipe recipe, InventoryPlayer playerInv) {
 		super(id, x, y, 99, 16, "");
 		this.recipe = recipe;
-		this.playerInv = playerInv;
+		this.stackToDraw = new ItemStack(recipe.result);
+		this.performIngredientCheck(playerInv);
 	}
 
 	
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-		this.updateButtonState(playerInv);
+		this.updateButtonState();
 		ImageUtil.drawImageWithUV(mc, TEXTURE, x, y, width, height, 0, yTex, 1, yTexE, false);
+		mc.getRenderItem().renderItemIntoGUI(stackToDraw, x + 3, y - 1);
+		mc.fontRenderer.drawStringWithShadow(stackToDraw.getDisplayName(), x + 21, y + 4, 0xFFFFFF);
+		if(hovered) {
+			if(renderTime > 0) {
+				this.recipe.drawRecipe(mouseX, mouseY);
+				--renderTime;
+			}
+		} else {
+			renderTime = mc.getDebugFPS() * 2;
+		}
 	}
 	
-	private void updateButtonState(InventoryPlayer inv) {
-		boolean hasIngredients = false;
-		/*for(PMCIngredient ing : recipe.ingredients) {
+	private void performIngredientCheck(InventoryPlayer inv) {
+		hasIngredients = true;
+		for(PMCIngredient ing : recipe.ingredients) {
 			int amount = 0;
 			for(ItemStack stack : inv.mainInventory) {
-				if(!stack.isEmpty() && stack.getItem() == ing.getIngredient()) {
+				if(!stack.isEmpty() && stack.getItem() == ing.getIngredient().getItem()) {
 					amount += stack.getCount();
 				}
 			}
@@ -46,7 +59,10 @@ public class RecipeButton extends GuiButton {
 				hasIngredients = false;
 				break;
 			}
-		}*/
+		}
+	}
+	
+	private void updateButtonState() {
 		this.calculateTextureOffset(hasIngredients);
 	}
 	

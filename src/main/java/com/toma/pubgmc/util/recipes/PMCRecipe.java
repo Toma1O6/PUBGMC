@@ -1,15 +1,23 @@
 package com.toma.pubgmc.util.recipes;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.util.RecipeButton;
+import com.toma.pubgmc.util.ImageUtil;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PMCRecipe {
 	
+	public static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/recipebase.png");
 	public final Item result;
 	public final PMCIngredient[] ingredients;
 	public final CraftingCategory category;
@@ -64,6 +72,20 @@ public class PMCRecipe {
 				}
 			}
 			return false;
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void drawRecipe(int mouseX, int mouseY) {
+		ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), TEXTURE, mouseX, mouseY, 50, 86, false);
+		for(PMCIngredient ing : ingredients) {
+			int x = ing.slotIndex % 2 == 0 ? mouseX + 8 : mouseX + 26;
+			int y = ing.slotIndex/2 * 18 + mouseY + 8;
+			RenderHelper.enableGUIStandardItemLighting();
+			Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(ing.getIngredient(), x, y);
+			RenderHelper.disableStandardItemLighting();
+			boolean flag = ing.count >= 10;
+			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(ing.count+"", flag ? x+5 : x+11, y + 9, 0xFFFFFF);
 		}
 	}
 	
