@@ -20,6 +20,7 @@ public class RecipeButton extends GuiButton {
 	public double yTex, yTexE;
 	private boolean hasIngredients = true;
 	private int renderTime;
+	public boolean active;
 	
 	public RecipeButton(int id, int x, int y, PMCRecipe recipe, InventoryPlayer playerInv) {
 		super(id, x, y, 99, 16, "");
@@ -62,12 +63,17 @@ public class RecipeButton extends GuiButton {
 		}
 	}
 	
+	public void craft() {
+		
+	}
+	
 	private void updateButtonState() {
 		this.calculateTextureOffset(hasIngredients);
 	}
 	
 	private void calculateTextureOffset(boolean ingredients) {
 		if(ingredients) {
+			active = true;
 			if(hovered) {
 				yTex = 1.0/3.0D;
 				yTexE = 2.0/3.0D;
@@ -76,6 +82,7 @@ public class RecipeButton extends GuiButton {
 				yTexE = 1.0/3.0D;
 			}
 		} else {
+			active = false;
 			yTex = 2/3.0D;
 			yTexE = 1.0;
 		}

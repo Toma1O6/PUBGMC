@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.toma.pubgmc.util.recipes.ICraftingInventory;
 import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
@@ -17,7 +18,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
-public class TileEntityGunWorkbench extends TileEntity implements IInventoryTileEntity
+public class TileEntityGunWorkbench extends TileEntity implements ICraftingInventory
 {
 	private static List<PMCRecipe> GUNS;
 	private static List<PMCRecipe> AMMO;
@@ -30,7 +31,7 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 	
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
 	public CraftingCategory selectedCat = CraftingCategory.GUNS;
-	private int selectedIndex = 0;
+	public int selectedIndex = 0;
 	private static final int OUTPUT = 8;
 	
 	/** Splits all recipes from registry into it's categories */
@@ -49,6 +50,11 @@ public class TileEntityGunWorkbench extends TileEntity implements IInventoryTile
 		RECIPES.add(HEALING);
 		RECIPES.add(THROWABLES);
 		RECIPES.add(VEHICLES);
+	}
+	
+	@Override
+	public int getOutputSlot() {
+		return 0;
 	}
 	
 	@Override
