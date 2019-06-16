@@ -4,6 +4,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.network.server.PacketAim;
 import com.toma.pubgmc.common.network.server.PacketChooseLocation;
+import com.toma.pubgmc.common.network.server.PacketCraft;
 import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.server.PacketHandleParachuteInputs;
 import com.toma.pubgmc.common.network.server.PacketHandleVehicleInput;
@@ -64,6 +65,7 @@ public class PacketHandler
 		registerServerPacket(PacketChooseLocation.class);
 		registerServerPacket(PacketProne.Handler.class, PacketProne.class);
 		registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
+		registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
 		registerClientPacket(PacketReloadingSP.class);
 		registerClientPacket(PacketUpdatePlayerData.class);
 		registerClientPacket(PacketSound.class);

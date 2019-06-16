@@ -9,6 +9,7 @@ import com.toma.pubgmc.client.util.PageButton;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.container.ContainerGunWorkbench;
 import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.server.PacketCraft;
 import com.toma.pubgmc.common.network.server.PacketUpdateWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.util.recipes.PMCRecipe;
@@ -23,7 +24,6 @@ import net.minecraft.util.ResourceLocation;
 public class GuiGunWorkbench extends GuiContainer
 {
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/gun_workbench.png");
-	private static final ResourceLocation INFO = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/info.png");
 	private final InventoryPlayer player;
 	private final TileEntityGunWorkbench tileentity;
 	
@@ -80,7 +80,9 @@ public class GuiGunWorkbench extends GuiContainer
 		if(button instanceof RecipeButton) {
 			RecipeButton btn = (RecipeButton)button;
 			PMCRecipe recipe = btn.recipe;
-			btn.craft();
+			if(btn.active) {
+				PacketHandler.sendToServer(new PacketCraft(tileentity.getPos(), RecipeRegistry.RECIPES.indexOf(recipe)));
+			}
 		} else if(button instanceof PageButton) {
 			PageButton btn = (PageButton)button;
 			switch(btn.id) {
@@ -117,28 +119,7 @@ public class GuiGunWorkbench extends GuiContainer
 					}
 				}
 			} catch(Exception e) {
-				
 			}
-			/*Iterator<GuiButton> it = buttonList.iterator();
-			while(it.hasNext()) {
-				GuiButton button = it.next();
-				if(button.mousePressed(mc, mouseX, mouseY)) {
-					if(button instanceof RecipeButton) {
-						if(((RecipeButton)button).active) {
-							this.actionPerformed(button);
-							button.playPressSound(mc.getSoundHandler());
-						}
-					} else if(button instanceof PageButton) {
-						if(((PageButton)button).visible) {
-							button.playPressSound(mc.getSoundHandler());
-							this.actionPerformed(button);
-						}
-					} else {
-						button.playPressSound(mc.getSoundHandler());
-						this.actionPerformed(button);
-					}
-				}
-			}*/
 		}
 	}
 	

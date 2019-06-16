@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.toma.pubgmc.util.recipes.ICraftingInventory;
+import com.toma.pubgmc.util.recipes.PMCIngredient;
 import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
@@ -79,6 +80,13 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
 	public int getSizeInventory()
 	{
 		return inventory.size();
+	}
+	
+	public void craft(PMCRecipe recipe) {
+		for(PMCIngredient ing : recipe.ingredients) {
+			int amount = 0;
+			// TODO: modify container for the new version and iterate through it's input slots, put recipe in and reduce the right amount of items
+		}
 	}
 	
 	@Override
