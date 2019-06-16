@@ -46,9 +46,9 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
 		RECIPES.add(GUNS);
 		RECIPES.add(AMMO);
 		RECIPES.add(ATTACHMENT);
-		RECIPES.add(CLOTHING);
 		RECIPES.add(HEALING);
 		RECIPES.add(THROWABLES);
+		RECIPES.add(CLOTHING);
 		RECIPES.add(VEHICLES);
 	}
 	

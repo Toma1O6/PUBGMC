@@ -96,7 +96,7 @@ public class PMCRecipe {
 		ATTACHMENTS("Attachments"),
 		HEALS("Healing"),
 		THROWABLES("Grenades"),
-		WEARABLES("Armor & Utility"),
+		WEARABLES("Armor&Utility"),
 		VEHICLES("Vehicles");
 		
 		private final String name;
@@ -105,14 +105,18 @@ public class PMCRecipe {
 			this.name = name;
 		}
 		
+		public String getCategoryName() {
+			return name;
+		}
+		
 		public static CraftingCategory getNextCategory(CraftingCategory current) {
 			int i = current.ordinal();
-			return (i-1) == values().length ? values()[0] : values()[i+1];
+			return (i+1) == values().length ? values()[0] : values()[i+1];
 		}
 		
 		public static CraftingCategory getPrevCategory(CraftingCategory current) {
 			int i = current.ordinal();
-			return i > 0 ? values()[i-1] : values()[values().length];
+			return i > 0 ? values()[i-1] : values()[values().length-1];
 		}
 	}
 }

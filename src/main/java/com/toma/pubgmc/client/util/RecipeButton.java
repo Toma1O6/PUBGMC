@@ -47,6 +47,16 @@ public class RecipeButton extends GuiButton {
 		}
 	}
 	
+	
+	public void craft() {
+		
+	}
+	
+	@Override
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+		return active && hovered;
+	}
+	
 	private void performIngredientCheck(InventoryPlayer inv) {
 		hasIngredients = true;
 		for(PMCIngredient ing : recipe.ingredients) {
@@ -61,10 +71,6 @@ public class RecipeButton extends GuiButton {
 				break;
 			}
 		}
-	}
-	
-	public void craft() {
-		
 	}
 	
 	private void updateButtonState() {

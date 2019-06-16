@@ -1,12 +1,15 @@
 package com.toma.pubgmc.client.gui;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.util.PageButton;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.container.ContainerGunWorkbench;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.server.PacketUpdateWorkbench;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
@@ -37,11 +40,22 @@ public class GuiGunWorkbench extends GuiContainer
 	public void initGui()
 	{	
 		super.initGui();
-		buttonList.clear();
+		this.update(0, tileentity.selectedCat == null ? CraftingCategory.GUNS : tileentity.selectedCat);
+		this.updateButtons();
+	}
+	
+	public void updateButtons() {
 		List<PMCRecipe> list = tileentity.RECIPES.get(tileentity.selectedCat.ordinal());
-		for(int i = tileentity.selectedIndex*4+4; i > tileentity.selectedIndex*4; i--) {
+		this.buttonList.clear();
+		this.buttonList.add(createPageButton(0, guiLeft + 8, guiTop + 85, false));
+		this.buttonList.add(createPageButton(1, guiLeft + 90, guiTop + 85, true));
+		this.buttonList.add(createPageButton(2, guiLeft + 120, guiTop + 85, false, list));
+		this.buttonList.add(createPageButton(3, guiLeft + 150, guiTop + 85, true, list));
+		int index = 3;
+		for(int i = tileentity.selectedIndex*4+3; i >= tileentity.selectedIndex*4; i--) {
 			if(i < list.size()) {
-				this.buttonList.add(new RecipeButton(buttonList.size(), guiLeft + 45, guiTop + i*18 - 10, list.get(i), player));
+				this.buttonList.add(new RecipeButton(buttonList.size(), guiLeft + 45, guiTop + index*18 + 8, list.get(i), player));
+				--index;
 			}
 		}
 	}
@@ -50,6 +64,7 @@ public class GuiGunWorkbench extends GuiContainer
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		super.drawScreen(mouseX, mouseY, partialTicks);
+		mc.fontRenderer.drawStringWithShadow(tileentity.selectedCat.getCategoryName(), guiLeft + 28, guiTop + 90, 0xFFFFFF);
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 	
@@ -70,17 +85,19 @@ public class GuiGunWorkbench extends GuiContainer
 			PageButton btn = (PageButton)button;
 			switch(btn.id) {
 				// category
-				case 4: case 5: {
+				case 0: case 1: {
 					CraftingCategory cat = btn.isRight ? CraftingCategory.getNextCategory(tileentity.selectedCat) : CraftingCategory.getPrevCategory(tileentity.selectedCat);
 					int page = 0;
-					// TODO update tileentity
+					update(page, cat);
+					this.updateButtons();
 					break;
 				}
 				
-				case 6: case 7: {
+				case 2: case 3: {
 					List<PMCRecipe> list = TileEntityGunWorkbench.RECIPES.get(tileentity.selectedCat.ordinal());
 					int currentPage = btn.visible ? btn.isRight ? tileentity.selectedIndex + 1 : tileentity.selectedIndex - 1 : tileentity.selectedIndex;
-					// TODO update tileentity
+					update(currentPage, tileentity.selectedCat);
+					this.updateButtons();
 					break;
 				}
 			}
@@ -90,7 +107,21 @@ public class GuiGunWorkbench extends GuiContainer
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		if(mouseButton == 0) {
-			for(GuiButton button : this.buttonList) {
+			try {
+				Iterator<GuiButton> it = buttonList.iterator();
+				while(it.hasNext()) {
+					GuiButton button = it.next();
+					if(button.mousePressed(mc, mouseX, mouseY)) {
+						button.playPressSound(mc.getSoundHandler());
+						this.actionPerformed(button);
+					}
+				}
+			} catch(Exception e) {
+				
+			}
+			/*Iterator<GuiButton> it = buttonList.iterator();
+			while(it.hasNext()) {
+				GuiButton button = it.next();
 				if(button.mousePressed(mc, mouseX, mouseY)) {
 					if(button instanceof RecipeButton) {
 						if(((RecipeButton)button).active) {
@@ -107,7 +138,7 @@ public class GuiGunWorkbench extends GuiContainer
 						this.actionPerformed(button);
 					}
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -119,8 +150,14 @@ public class GuiGunWorkbench extends GuiContainer
 		return button;
 	}
 	
-	private void update(TileEntityGunWorkbench te, int page, CraftingCategory category) {
-		// TODO packet
+	private PageButton createPageButton(int index, int x, int y, boolean right) {
+		PageButton button = new PageButton(index, x, y, right);
+		button.visible = true;
+		return button;
+	}
+	
+	private void update(int page, CraftingCategory category) {
+		PacketHandler.sendToServer(new PacketUpdateWorkbench(tileentity, category, page));
 		tileentity.selectedIndex = page;
 		tileentity.selectedCat = category;
 	}

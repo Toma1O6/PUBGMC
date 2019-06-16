@@ -2,6 +2,7 @@ package com.toma.pubgmc.util.recipes;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.toma.pubgmc.Pubgmc;
@@ -14,7 +15,7 @@ import net.minecraft.init.Items;
 
 public final class RecipeRegistry {
 
-	public static final HashSet<PMCRecipe> RECIPES = new HashSet<>();
+	public static final List<PMCRecipe> RECIPES = new ArrayList<PMCRecipe>();
 	
 	public static void registerWorkbenchRecipes() {
 		long started = System.currentTimeMillis();
@@ -630,9 +631,9 @@ public final class RecipeRegistry {
 	
 	public static ArrayList<PMCRecipe> asList(CraftingCategory cat) {
 		ArrayList<PMCRecipe> list = Lists.newArrayList();
-		for(PMCRecipe rec : RECIPES) {
-			if(rec.category == cat) {
-				list.add(rec);
+		for(int r = 0; r < RECIPES.size(); r++) {
+			if(RECIPES.get(r).category == cat) {
+				list.add(RECIPES.get(r));
 			}
 		}
 		return list;

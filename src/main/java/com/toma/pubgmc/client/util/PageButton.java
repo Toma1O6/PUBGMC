@@ -1,5 +1,6 @@
 package com.toma.pubgmc.client.util;
 
+import com.sun.jna.platform.unix.X11.VisualID;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.util.ImageUtil;
 
@@ -29,5 +30,10 @@ public class PageButton extends GuiButton {
 	
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	
+	@Override
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+		return visible && hovered;
 	}
 }
