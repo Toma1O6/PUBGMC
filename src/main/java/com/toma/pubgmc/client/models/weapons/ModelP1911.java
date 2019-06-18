@@ -58,6 +58,11 @@ public class ModelP1911 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "p1911";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.275f, 0.2f);
@@ -78,7 +83,6 @@ public class ModelP1911 extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

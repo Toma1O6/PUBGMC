@@ -60,6 +60,11 @@ public class ModelP92 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "p92";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.651f, 0.31f, 0.24f);
@@ -88,8 +93,6 @@ public class ModelP92 extends ModelGun
 	
 	private void renderP92(boolean aim, ItemStack stack)
 	{
-		super.preRender(stack);
-		
 		GlStateManager.pushMatrix();
 		transform.defaultPistolTransform();
 		GlStateManager.translate(-3.0, 6.0, 0.0);

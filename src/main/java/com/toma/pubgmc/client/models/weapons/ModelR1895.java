@@ -69,6 +69,11 @@ public class ModelR1895 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "r1895";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.598f, 0.25f, 0.4f);

@@ -1,5 +1,7 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.Pubgmc;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -60,6 +62,7 @@ public interface IInventoryTileEntity extends IInventory
         {
             this.markDirty();
         }
+    	Pubgmc.proxy.notifyWorkbenchUpdate();
         return stack;
     }
 
@@ -69,11 +72,13 @@ public interface IInventoryTileEntity extends IInventory
         ItemStack stack = this.getInventory().get(index);
         if (stack.isEmpty())
         {
+        	Pubgmc.proxy.notifyWorkbenchUpdate();
             return ItemStack.EMPTY;
         }
         else
         {
             this.getInventory().set(index, ItemStack.EMPTY);
+        	Pubgmc.proxy.notifyWorkbenchUpdate();
             return stack;
         }
     }
@@ -87,6 +92,7 @@ public interface IInventoryTileEntity extends IInventory
             stack.setCount(this.getInventoryStackLimit());
         }
         this.markDirty();
+    	Pubgmc.proxy.notifyWorkbenchUpdate();
     }
     
     @Override

@@ -16,8 +16,10 @@ import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -26,6 +28,7 @@ public class GuiGunWorkbench extends GuiContainer
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/gun_workbench.png");
 	private final InventoryPlayer player;
 	private final TileEntityGunWorkbench tileentity;
+	private int timeSinceCraft;
 	
 	public GuiGunWorkbench(TileEntityGunWorkbench te, InventoryPlayer playerInv)
 	{
@@ -40,7 +43,6 @@ public class GuiGunWorkbench extends GuiContainer
 	public void initGui()
 	{	
 		super.initGui();
-		this.update(0, tileentity.selectedCat == null ? CraftingCategory.GUNS : tileentity.selectedCat);
 		this.updateButtons();
 	}
 	
@@ -54,7 +56,7 @@ public class GuiGunWorkbench extends GuiContainer
 		int index = 3;
 		for(int i = tileentity.selectedIndex*4+3; i >= tileentity.selectedIndex*4; i--) {
 			if(i < list.size()) {
-				this.buttonList.add(new RecipeButton(buttonList.size(), guiLeft + 45, guiTop + index*18 + 8, list.get(i), player));
+				this.buttonList.add(new RecipeButton(buttonList.size(), guiLeft + 45, guiTop + index*18 + 8, list.get(i), tileentity));
 				--index;
 			}
 		}
@@ -66,6 +68,12 @@ public class GuiGunWorkbench extends GuiContainer
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		mc.fontRenderer.drawStringWithShadow(tileentity.selectedCat.getCategoryName(), guiLeft + 28, guiTop + 90, 0xFFFFFF);
 		this.renderHoveredToolTip(mouseX, mouseY);
+		if(timeSinceCraft > 0) {
+			--this.timeSinceCraft;
+			if(timeSinceCraft == 0) {
+				this.updateButtons();
+			}
+		}
 	}
 	
 	@Override
@@ -80,8 +88,10 @@ public class GuiGunWorkbench extends GuiContainer
 		if(button instanceof RecipeButton) {
 			RecipeButton btn = (RecipeButton)button;
 			PMCRecipe recipe = btn.recipe;
-			if(btn.active) {
+			if(btn.active && timeSinceCraft == 0) {
 				PacketHandler.sendToServer(new PacketCraft(tileentity.getPos(), RecipeRegistry.RECIPES.indexOf(recipe)));
+				this.updateButtons();
+				timeSinceCraft = Minecraft.getDebugFPS();
 			}
 		} else if(button instanceof PageButton) {
 			PageButton btn = (PageButton)button;
@@ -103,24 +113,14 @@ public class GuiGunWorkbench extends GuiContainer
 					break;
 				}
 			}
+			if(btn.visible) {
+				btn.playPressSound(mc.getSoundHandler());
+			}
 		}
 	}
 	
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		if(mouseButton == 0) {
-			try {
-				Iterator<GuiButton> it = buttonList.iterator();
-				while(it.hasNext()) {
-					GuiButton button = it.next();
-					if(button.mousePressed(mc, mouseX, mouseY)) {
-						button.playPressSound(mc.getSoundHandler());
-						this.actionPerformed(button);
-					}
-				}
-			} catch(Exception e) {
-			}
-		}
+	public List<GuiButton> getButtonList() {
+		return this.buttonList;
 	}
 	
 	private PageButton createPageButton(int index, int x, int y, boolean right, List<PMCRecipe> recipeCollection) {

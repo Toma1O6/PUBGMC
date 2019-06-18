@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.util;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.util.ImageUtil;
 import com.toma.pubgmc.util.recipes.PMCIngredient;
 import com.toma.pubgmc.util.recipes.PMCRecipe;
@@ -21,12 +22,14 @@ public class RecipeButton extends GuiButton {
 	private boolean hasIngredients = true;
 	private int renderTime;
 	public boolean active;
+	private TileEntityGunWorkbench te;
 	
-	public RecipeButton(int id, int x, int y, PMCRecipe recipe, InventoryPlayer playerInv) {
+	public RecipeButton(int id, int x, int y, PMCRecipe recipe, TileEntityGunWorkbench te) {
 		super(id, x, y, 99, 16, "");
 		this.recipe = recipe;
 		this.stackToDraw = new ItemStack(recipe.result);
-		this.performIngredientCheck(playerInv);
+		this.te = te;
+		this.performIngredientCheck();
 	}
 
 	
@@ -47,33 +50,28 @@ public class RecipeButton extends GuiButton {
 		}
 	}
 	
-	
-	public void craft() {
-		
-	}
-	
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 		return active && hovered;
 	}
 	
-	private void performIngredientCheck(InventoryPlayer inv) {
+	public void performIngredientCheck() {
 		hasIngredients = true;
 		for(PMCIngredient ing : recipe.ingredients) {
 			int amount = 0;
-			for(ItemStack stack : inv.mainInventory) {
+			for(ItemStack stack : te.getInventory()) {
 				if(!stack.isEmpty() && stack.getItem() == ing.getIngredient().getItem()) {
 					amount += stack.getCount();
 				}
 			}
-			if(amount < ing.count) {
+			if(amount < ing.getIngredient().getCount()) {
 				hasIngredients = false;
 				break;
 			}
 		}
 	}
 	
-	private void updateButtonState() {
+	public void updateButtonState() {
 		this.calculateTextureOffset(hasIngredients);
 	}
 	

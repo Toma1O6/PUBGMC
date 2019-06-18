@@ -105,6 +105,11 @@ public class ModelMini14 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "mini14";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.275f, 0.23f);
@@ -125,7 +130,6 @@ public class ModelMini14 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

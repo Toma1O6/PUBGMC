@@ -58,6 +58,11 @@ public class ModelP18C extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "p18c";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.585f, 0.22f, 0.235f);
@@ -71,7 +76,6 @@ public class ModelP18C extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

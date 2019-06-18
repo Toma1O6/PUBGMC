@@ -14,6 +14,7 @@ import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase;
+import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.block.state.IBlockState;
@@ -114,13 +115,15 @@ public class BakedModelGun implements IBakedModel
 			// Implement animations here
 			case FIRST_PERSON_RIGHT_HAND: 
 			{
-				this.process(held, data);
-				// prevent weapon rendering with bigger scopes
-				if(data.isAiming() && held.getItem() instanceof GunBase && !((GunBase)held.getItem()).getWeaponModel().enableADS(held)) {
-					GlStateManager.scale(0, 0, 0);
-				}
-				
-				transl = this.getTranslation(held, data);
+				held = player.getHeldItemMainhand();
+				if(held.getItem() instanceof GunBase) {
+					ModelGun gun = ((GunBase)held.getItem()).getWeaponModel();
+					gun.preRender(held);
+					this.process(held, data);
+					if(data.isAiming() && !gun.enableADS(held)) {
+						GlStateManager.scale(0, 0, 0);
+					}
+				} else break;
 				trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
 				break;
 			}
@@ -136,6 +139,7 @@ public class BakedModelGun implements IBakedModel
 				GlStateManager.scale(0.5, 0.5, 0.5);
 				GlStateManager.rotate(-90f, 0f, 1f, 0f);
 				GlStateManager.rotate(30f, 1f, 0f, 0f);
+				break;
 			}
 			
 			default: break;
@@ -156,8 +160,8 @@ public class BakedModelGun implements IBakedModel
 	
 	private void process(ItemStack held, IPlayerData data)
 	{
-		if(held.getItem() instanceof GunBase)
-			((GunBase)held.getItem()).getWeaponModel().processAnimations(data.isAiming(), data.isReloading());
+		ModelGun gun = ((GunBase)held.getItem()).getWeaponModel();
+		gun.processAnimations(data.isAiming(), data.isReloading());
 	}
 	
 	private Vector3f getTranslation(ItemStack held, IPlayerData data)

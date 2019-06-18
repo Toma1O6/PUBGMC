@@ -10,14 +10,19 @@ import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 
 public class TileEntityGunWorkbench extends TileEntity implements ICraftingInventory
 {
@@ -83,10 +88,31 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
 	}
 	
 	public void craft(PMCRecipe recipe) {
+		boolean valid = true;
 		for(PMCIngredient ing : recipe.ingredients) {
 			int amount = 0;
 			// TODO: modify container for the new version and iterate through it's input slots, put recipe in and reduce the right amount of items
+			for(int i = 0; i < 8; i++) {
+				if(this.getStackInSlot(i).getItem() == ing.getIngredient().getItem()) {
+					amount += this.getStackInSlot(i).getCount();
+				}
+			}
+			if(amount < ing.getIngredient().getCount()) {
+				valid = false;
+			}
 		}
+		if(valid) {
+			for(PMCIngredient ing : recipe.ingredients) {
+				this.clearItems(ing.getIngredient(), ing.getIngredient().getCount());
+			}
+			this.setInventorySlotContents(8, new ItemStack(recipe.result));
+			recipe.onCraft(world, pos);
+		}
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return false;
 	}
 	
 	@Override
@@ -107,5 +133,24 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
 		compound.setInteger("selectedIndex", selectedIndex);
 		compound.setInteger("selectedCategory", selectedCat.ordinal());
 		return compound;
+	}
+	
+	private void clearItems(ItemStack itemStack, final int amount) {
+		int remaining = amount;
+		for(ItemStack stack : this.inventory) {
+			if(stack.getItem() == itemStack.getItem()) {
+				if(remaining > stack.getCount()) {
+					remaining -= stack.getCount();
+					stack.shrink(stack.getCount());
+				} else {
+					stack.setCount(stack.getCount() - remaining);
+					remaining = 0;
+					break;
+				}
+			}
+		}
+		if(remaining > 0) {
+			throw new IllegalStateException("Fatal error occured when attempted to remove right item count from inventory. Not enought items");
+		}
 	}
 }

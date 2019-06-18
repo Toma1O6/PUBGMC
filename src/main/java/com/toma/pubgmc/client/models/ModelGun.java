@@ -71,6 +71,8 @@ public abstract class ModelGun extends ModelBase
 	
 	public abstract void render(ItemStack stack);
 	
+	public abstract String textureName();
+	
 	public abstract void initAnimations();
 	
 	/**

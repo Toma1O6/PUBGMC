@@ -80,6 +80,11 @@ public class ModelAWM extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "awm";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.557f, 0.255f, 0.2f);
@@ -102,7 +107,6 @@ public class ModelAWM extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

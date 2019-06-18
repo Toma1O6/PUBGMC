@@ -89,6 +89,11 @@ public class ModelFlareGun extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "flare_gun";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.57f, 0.215f, 0.225f);

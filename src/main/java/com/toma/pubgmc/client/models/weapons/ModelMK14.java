@@ -115,6 +115,11 @@ public class ModelMK14 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "m762";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.58f, 0.26f, 0.33f);
@@ -135,7 +140,6 @@ public class ModelMK14 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

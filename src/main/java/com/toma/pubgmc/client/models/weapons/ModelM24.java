@@ -207,6 +207,11 @@ public class ModelM24 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "m24";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.265f, 0.335f);
@@ -228,7 +233,6 @@ public class ModelM24 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

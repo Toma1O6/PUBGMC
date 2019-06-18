@@ -3,6 +3,7 @@ package com.toma.pubgmc.animation;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class AimingAnimation extends Animation
 {
@@ -63,8 +64,7 @@ public class AimingAnimation extends Animation
 			{
 				handleReturning();
 			}
-			
-			else return;
+			GlStateManager.translate(mx, my, mz);
 		}
 	}
 	

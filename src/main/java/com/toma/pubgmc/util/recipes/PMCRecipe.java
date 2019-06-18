@@ -49,7 +49,7 @@ public class PMCRecipe {
 		}
 		for(PMCIngredient ingredient : recipe.ingredients) {
 			ItemStack stack = inv.getStackInSlot(ingredient.slotIndex);
-			if(stack.isEmpty() || stack.getItem() != ingredient.getIngredient().getItem() || stack.getCount() < ingredient.count) {
+			if(stack.isEmpty() || stack.getItem() != ingredient.getIngredient().getItem() || stack.getCount() < ingredient.getIngredient().getCount()) {
 				return false;
 			}
 		}
@@ -65,7 +65,7 @@ public class PMCRecipe {
 				PMCIngredient i2 = r2.ingredients[i];
 				if(i1.getIngredient() == i2.getIngredient()) {
 					if(i1.slotIndex == i2.slotIndex) {
-						if(i1.count == i2.count) {
+						if(i1.getIngredient().getCount() == i2.getIngredient().getCount()) {
 							return true;
 						}
 					}
@@ -84,8 +84,8 @@ public class PMCRecipe {
 			RenderHelper.enableGUIStandardItemLighting();
 			Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(ing.getIngredient(), x, y);
 			RenderHelper.disableStandardItemLighting();
-			boolean flag = ing.count >= 10;
-			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(ing.count+"", flag ? x+5 : x+11, y + 9, 0xFFFFFF);
+			boolean flag = ing.getIngredient().getCount() >= 10;
+			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(ing.getIngredient().getCount()+"", flag ? x+5 : x+11, y + 9, 0xFFFFFF);
 		}
 	}
 	

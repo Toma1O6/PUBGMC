@@ -12,6 +12,8 @@ import com.toma.pubgmc.common.container.ContainerLootSpawner;
 import com.toma.pubgmc.common.container.ContainerPlayerCrate;
 import com.toma.pubgmc.common.items.guns.attachments.ContainerAttachments;
 import com.toma.pubgmc.common.items.guns.attachments.GuiAttachments;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketSyncTileEntity;
 import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.common.tileentity.TileEntityBigAirdrop;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
@@ -19,6 +21,8 @@ import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -46,7 +50,11 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == GUI_ATTACHMENTS) return new ContainerAttachments(player.inventory, player);
 		
-		if(ID == GUI_GUNCRAFTINGTABLE) return new ContainerGunWorkbench((TileEntityGunWorkbench)world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
+		if(ID == GUI_GUNCRAFTINGTABLE) { 
+			ContainerGunWorkbench c = new ContainerGunWorkbench((TileEntityGunWorkbench)world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
+			update(world, player, x, y, z);
+			return c;
+		}
 		
 		if(ID == GUI_BIG_AIRDROP) return new ContainerBigAirdrop(player.inventory, (TileEntityBigAirdrop)world.getTileEntity(new BlockPos(x, y, z)));
 		
@@ -76,4 +84,10 @@ public class GuiHandler implements IGuiHandler
 		return guiID += 1;
 	}
 	
+	public static void update(World world, EntityPlayer player, int x, int y, int z) {
+		if(player instanceof EntityPlayerMP) {
+			BlockPos p = new BlockPos(x,y,z);
+			PacketHandler.sendToClient(new PacketSyncTileEntity(world.getTileEntity(p).serializeNBT(), p), (EntityPlayerMP)player);
+		}
+	}
 }

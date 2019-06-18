@@ -106,6 +106,11 @@ public class ModelSLR extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "m762";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.28f, 0.3f);
@@ -126,7 +131,6 @@ public class ModelSLR extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			
 			GlStateManager.pushMatrix();

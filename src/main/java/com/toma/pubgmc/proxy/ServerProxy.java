@@ -18,4 +18,9 @@ public class ServerProxy implements IProxy
 	{
 		
 	}
+	
+	@Override
+	public void notifyWorkbenchUpdate() {
+		// only for client gui, nothing needed server side
+	}
 }

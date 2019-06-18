@@ -1,12 +1,15 @@
 package com.toma.pubgmc.common.blocks;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketSyncTileEntity;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

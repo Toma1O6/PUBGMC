@@ -31,6 +31,11 @@ public class ModelG36C extends ModelGun
 	private final ModelRenderer ironsight;
 	
 	@Override
+	public String textureName() {
+		return "m762";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.581f, 0.188f, 0.3f);
@@ -51,7 +56,6 @@ public class ModelG36C extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

@@ -119,6 +119,11 @@ public class ModelM16A4 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "microuzi";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.195f, 0.215f);
@@ -139,7 +144,6 @@ public class ModelM16A4 extends ModelGun
 		
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aim = data.isAiming();
 			

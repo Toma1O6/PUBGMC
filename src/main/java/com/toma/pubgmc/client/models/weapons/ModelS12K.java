@@ -96,6 +96,11 @@ public class ModelS12K extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "s12k";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.535f, 0.27f, 0.235f);
@@ -108,7 +113,6 @@ public class ModelS12K extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

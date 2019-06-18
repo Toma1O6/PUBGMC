@@ -87,6 +87,11 @@ public class ModelR45 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "r45";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.555f, 0.175f, 0.255f);
@@ -108,7 +113,6 @@ public class ModelR45 extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

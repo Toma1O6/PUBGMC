@@ -54,6 +54,11 @@ public class ModelWin94 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "win94";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.5625f, 0.365f, 0.29f);

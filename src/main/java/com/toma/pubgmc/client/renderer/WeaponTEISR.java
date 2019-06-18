@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.renderer;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.models.weapons.ModelAKM;
 import com.toma.pubgmc.client.models.weapons.ModelAUG;
 import com.toma.pubgmc.client.models.weapons.ModelAWM;
@@ -16,6 +17,7 @@ import com.toma.pubgmc.client.models.weapons.ModelM249;
 import com.toma.pubgmc.client.models.weapons.ModelM416;
 import com.toma.pubgmc.client.models.weapons.ModelMK14;
 import com.toma.pubgmc.client.models.weapons.ModelMK47Mutant;
+import com.toma.pubgmc.client.models.weapons.ModelMP5K;
 import com.toma.pubgmc.client.models.weapons.ModelMicroUzi;
 import com.toma.pubgmc.client.models.weapons.ModelMini14;
 import com.toma.pubgmc.client.models.weapons.ModelP18C;
@@ -39,7 +41,9 @@ import com.toma.pubgmc.client.models.weapons.ModelUmp45;
 import com.toma.pubgmc.client.models.weapons.ModelVSS;
 import com.toma.pubgmc.client.models.weapons.ModelVector;
 import com.toma.pubgmc.client.models.weapons.ModelWin94;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
@@ -65,6 +69,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	public final ModelUmp45 ump = new ModelUmp45();
 	public final ModelTommyGun tommygun = new ModelTommyGun();
 	public final ModelPP19Bizon bizon = new ModelPP19Bizon();
+	public final ModelMP5K mp5k = new ModelMP5K();
 	public final ModelVector vector = new ModelVector();
 	public final ModelM16A4 m16a4 = new ModelM16A4();
 	public final ModelM416 m416 = new ModelM416();
@@ -92,7 +97,12 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 	@Override
 	public void renderByItem(ItemStack stack)
 	{
-		if(stack.getItem() == PMCRegistry.PMCItems.FLARE_GUN)
+		GunBase.GUNS.stream().filter(g -> g == stack.getItem()).forEach(g -> {
+			ModelGun gun = g.getWeaponModel();
+			bindTexture(gun.textureName());
+			gun.render(stack);
+		});
+		/*if(stack.getItem() == PMCRegistry.PMCItems.FLARE_GUN)
 		{
 			bindTexture("flare_gun");
 			flareGun.render(stack);
@@ -193,6 +203,11 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		{
 			bindTexture("m762");
 			bizon.render(stack);
+		}
+		
+		else if(stack.getItem() == PMCItems.MP5K) {
+			bindTexture("mp5k");
+			mp5k.render(stack);
 		}
 		
 		else if(stack.getItem() == PMCRegistry.PMCItems.M16A4)
@@ -319,7 +334,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer
 		{
 			bindTexture("awm");
 			awm.render(stack);
-		}
+		}*/
 	}
 	
 	private void bindTexture(String name)

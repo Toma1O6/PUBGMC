@@ -134,9 +134,13 @@ public class ModelVSS extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "groza";
+	}
+	
+	@Override
 	public void initAnimations() 
 	{
-		
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)

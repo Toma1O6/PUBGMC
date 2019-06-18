@@ -121,6 +121,11 @@ public class ModelScorpion extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "m762";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.2f, 0.2f);
@@ -142,7 +147,6 @@ public class ModelScorpion extends ModelGun
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-			super.preRender(stack);
 			GlStateManager.pushMatrix();
 			{
 				renderScorpion(data.isAiming(), stack);

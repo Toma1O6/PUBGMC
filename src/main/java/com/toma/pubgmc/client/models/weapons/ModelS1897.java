@@ -60,6 +60,11 @@ public class ModelS1897 extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "sawed_off";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.525f, 0.31f, 0.315f);

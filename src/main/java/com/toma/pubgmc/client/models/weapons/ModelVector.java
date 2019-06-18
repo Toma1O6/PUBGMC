@@ -80,6 +80,11 @@ public class ModelVector extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "vector";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.315f, 0.225f);
@@ -104,7 +109,6 @@ public class ModelVector extends ModelGun
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			boolean aiming = data.isAiming();
 			
-			super.preRender(stack);
 			GlStateManager.pushMatrix();
 			renderVector(aiming, stack);
 			GlStateManager.popMatrix();

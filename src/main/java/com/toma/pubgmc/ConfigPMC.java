@@ -248,6 +248,10 @@ public class ConfigPMC
 		@RequiresMcRestart
 		public WeaponCFG bizon = new WeaponCFG(4f, 8f, 0.035f, 4);
 		
+		@Name("MP5K")
+		@RequiresMcRestart
+		public WeaponCFG mp5k = new WeaponCFG(4.0f, 8f, 0.035f, 4);
+		
 		@Name("Vector")
 		@RequiresMcRestart
 		public WeaponCFG vector = new WeaponCFG(4f, 8f, 0.035f, 4);

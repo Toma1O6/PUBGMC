@@ -106,6 +106,11 @@ public class ModelAUG extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "aug";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.2825f, 0.215f);
@@ -127,7 +132,6 @@ public class ModelAUG extends ModelGun
 		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null))
 		{
-			super.preRender(stack);
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 			GlStateManager.pushMatrix();
 			{

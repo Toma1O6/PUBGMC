@@ -103,6 +103,11 @@ public final class RecipeRegistry {
 				.ingredient(PMCItems.STEEL_INGOT, 25)
 				.build());
 		registerRecipe(PMCRecipeBuilder.createGun()
+				.result(PMCItems.MP5K)
+				.ingredient(Items.IRON_INGOT, 15)
+				.ingredient(PMCItems.STEEL_INGOT, 45)
+				.build());
+		registerRecipe(PMCRecipeBuilder.createGun()
 				.result(PMCItems.TOMMY_GUN)
 				.ingredient(Items.IRON_INGOT, 25)
 				.ingredient(PMCItems.STEEL_INGOT, 15)

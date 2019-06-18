@@ -48,11 +48,17 @@ public class ModelMicroUzi extends ModelGun
 	}
 	
 	@Override
+	public String textureName() {
+		return "microuzi";
+	}
+	
+	@Override
 	public void initAnimations()
 	{
 		initAimAnimation(-0.56f, 0.21f, 0.23f);
 		initAimingAnimationStates(0.21f);
 		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
+		System.out.println("init");
 	}
 	
 	@Override

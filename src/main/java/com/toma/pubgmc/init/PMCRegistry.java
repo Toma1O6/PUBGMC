@@ -140,6 +140,7 @@ public class PMCRegistry
 		public static final GunBase VECTOR = null;
 		public static final GunBase TOMMY_GUN = null;
 		public static final GunBase BIZON = null;
+		public static final GunBase MP5K = null;
 		public static final GunBase M16A4 = null;
 		public static final GunBase M416 = null;
 		public static final GunBase SCAR_L = null;
@@ -623,6 +624,13 @@ public class PMCRegistry
 					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
 					.build();
 			
+			// TODO: sounds
+			GunBase mp5k = GunBuilder.create("mp5k").stats(cfg.mp5k).firerate(2)
+					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_bizon).ammo(AmmoType.AMMO9MM, 30, 40)
+					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
+					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
+					.build();
+			
 			GunBase tommy = GunBuilder.create("tommy_gun").stats(cfg.tommygun).firerate(2)
 					.recoil(2f, 0.75f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_tommygun).ammo(AmmoType.AMMO45ACP, 30, 50)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
@@ -765,7 +773,7 @@ public class PMCRegistry
 			{
 				p92, p1911, p18c, r1895, r45, scorpion, win94,
 				sawedoff, s1897, s686, s12k,
-				uzi, vector, bizon, tommy, ump,
+				uzi, vector, bizon, mp5k, tommy, ump,
 				m16a4, m416, scarl, qbz, g36c, aug, akm, m762, mk47, groza,
 				dp28, m249,
 				vss, mini14, qbu, sks, slr, mk14,
@@ -830,6 +838,7 @@ public class PMCRegistry
 				case "microuzi": e.attachModel(e.getTEISR().microuzi); break;
 				case "vector": e.attachModel(e.getTEISR().vector); break;
 				case "bizon": e.attachModel(e.getTEISR().bizon); break;
+				case "mp5k": e.attachModel(e.getTEISR().mp5k); break;
 				case "tommy_gun": e.attachModel(e.getTEISR().tommygun); break;
 				case "ump45": e.attachModel(e.getTEISR().ump); break;
 				case "m16a4": e.attachModel(e.getTEISR().m16a4); break;
@@ -972,6 +981,13 @@ public class PMCRegistry
 			else if(gun == PMCItems.BIZON)
 			{
 				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
+				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
+			}
+			
+			else if(gun == PMCItems.MP5K) {
+				e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
+				e.initGripAttachments(AttachmentHelper.getGrips());
+				e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
 				e.initScopeAttachments(AttachmentHelper.getSmallScopes());
 			}
 			
