@@ -64,7 +64,7 @@ public class GuiGunWorkbench extends GuiContainer
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		mc.fontRenderer.drawStringWithShadow(tileentity.selectedCat.getCategoryName(), guiLeft + 28, guiTop + 90, 0xFFFFFF);
+		mc.fontRenderer.drawString(tileentity.selectedCat.getCategoryName(), guiLeft + 26, guiTop + 90, 4210752);
 		this.renderHoveredToolTip(mouseX, mouseY);
 		if(timeSinceCraft > 0) {
 			--this.timeSinceCraft;

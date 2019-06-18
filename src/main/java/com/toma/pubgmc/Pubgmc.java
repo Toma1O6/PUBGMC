@@ -37,7 +37,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
@@ -144,10 +143,6 @@ public class Pubgmc
 	
 	public static Random rng() {
 		return RANDOM;
-	}
-	
-	public static boolean isDeobfEnv() {
-		return (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	}
 	
 	/**

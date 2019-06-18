@@ -105,9 +105,10 @@ public class BakedModelGun implements IBakedModel
 		switch(cameraTransformType)
 		{
 			case GUI: {
-				leftRot = new Quat4f(-90.0f, 45.0f, 90.0f, 0f);
-				rightRot = new Quat4f(15f, 0f, 0f, 0f);
-				trsrt = new TRSRTransformation(new Vector3f(0f, -0.1f, 0f), leftRot, new Vector3f(0.5f, 0.5f, 0.5f), rightRot);
+				GlStateManager.translate(0, -0.15, 0);
+				GlStateManager.scale(0.5f, 0.5f, 0.5f);
+				GlStateManager.rotate(90f, 0f, 1f, 0f);
+				GlStateManager.rotate(30f, 1f, 0f, 0f);
 				break;
 			}
 			

@@ -1,6 +1,7 @@
 package com.toma.pubgmc.proxy;
 
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.gui.GuiGunWorkbench;
@@ -50,8 +51,9 @@ public class ClientProxy implements IProxy
 	public void init(FMLInitializationEvent e)
 	{
 		KeyBinds.registerKeybinding();
-		if(Pubgmc.isDeobfEnv()) {
+		if(DevUtil.isDev()) {
 			ModelDebugger.init();
+			Pubgmc.logger.info("Initialized model debugger");
 		}
 		if(ConfigPMC.client.other.lootRenderType > 0)
 		{
