@@ -1,8 +1,7 @@
 package com.toma.pubgmc.proxy;
 
-import java.util.List;
-
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.gui.GuiGunWorkbench;
 import com.toma.pubgmc.client.renderer.LootSpawnerRenderer;
@@ -15,6 +14,7 @@ import com.toma.pubgmc.client.renderer.RenderPlane;
 import com.toma.pubgmc.client.renderer.RenderSmokeGrenade;
 import com.toma.pubgmc.client.renderer.RenderUAZ;
 import com.toma.pubgmc.client.util.KeyBinds;
+import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityGrenade;
@@ -28,10 +28,6 @@ import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.sound.SoundHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -54,7 +50,9 @@ public class ClientProxy implements IProxy
 	public void init(FMLInitializationEvent e)
 	{
 		KeyBinds.registerKeybinding();
-		
+		if(Pubgmc.isDeobfEnv()) {
+			ModelDebugger.init();
+		}
 		if(ConfigPMC.client.other.lootRenderType > 0)
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());

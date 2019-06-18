@@ -1,7 +1,6 @@
 package com.toma.pubgmc.common.tileentity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.toma.pubgmc.util.recipes.ICraftingInventory;
@@ -10,11 +9,8 @@ import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

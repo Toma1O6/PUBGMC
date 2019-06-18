@@ -23,7 +23,6 @@ import com.toma.pubgmc.common.commands.CommandLootGenerate;
 import com.toma.pubgmc.common.commands.CommandPlayerData;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
@@ -38,6 +37,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
@@ -144,6 +144,10 @@ public class Pubgmc
 	
 	public static Random rng() {
 		return RANDOM;
+	}
+	
+	public static boolean isDeobfEnv() {
+		return (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	}
 	
 	/**

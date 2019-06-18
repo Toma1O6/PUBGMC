@@ -14,7 +14,6 @@ import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.block.state.IBlockState;
@@ -155,20 +154,12 @@ public class BakedModelGun implements IBakedModel
 	
 	private Quat4f debugQuat1()
 	{
-		return new Quat4f(ModelDebugger.X, ModelDebugger.Y, ModelDebugger.Z, 0f);
+		return new Quat4f(ModelDebugger.x, ModelDebugger.y, ModelDebugger.z, 0f);
 	}
 	
 	private void process(ItemStack held, IPlayerData data)
 	{
 		ModelGun gun = ((GunBase)held.getItem()).getWeaponModel();
 		gun.processAnimations(data.isAiming(), data.isReloading());
-	}
-	
-	private Vector3f getTranslation(ItemStack held, IPlayerData data)
-	{
-		if(held.getItem() instanceof GunBase)
-			return ((GunBase)held.getItem()).getWeaponModel().enableADS(held) ? ((GunBase)held.getItem()).getWeaponModel().getMovementVecFromAnimations() : Animation.EMPTYVEC;
-		
-		return Animation.EMPTYVEC;
 	}
 }

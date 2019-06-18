@@ -1,7 +1,6 @@
 package com.toma.pubgmc.util.recipes;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.util.ImageUtil;
 
 import net.minecraft.client.Minecraft;

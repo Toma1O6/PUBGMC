@@ -42,8 +42,6 @@ import com.toma.pubgmc.client.models.weapons.ModelVSS;
 import com.toma.pubgmc.client.models.weapons.ModelVector;
 import com.toma.pubgmc.client.models.weapons.ModelWin94;
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;

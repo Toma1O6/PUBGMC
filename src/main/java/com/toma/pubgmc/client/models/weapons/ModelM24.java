@@ -244,7 +244,6 @@ public class ModelM24 extends ModelGun
 	
 	private void renderM24(boolean aim, ItemStack stack)
 	{
-		//System.out.println(this.hasRedDot(stack));
 		GlStateManager.pushMatrix();
 		{
 			transform.defaultSRTransform();

@@ -8,7 +8,6 @@ import com.toma.pubgmc.common.entity.EntityFlashbang;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class FlashHandler {

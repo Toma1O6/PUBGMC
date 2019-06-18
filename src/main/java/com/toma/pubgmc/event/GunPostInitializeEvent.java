@@ -6,7 +6,6 @@ import java.util.List;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class GunPostInitializeEvent extends Event

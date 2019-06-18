@@ -53,8 +53,6 @@ public class BlockOre extends PMCBlock
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune)
 	{
-		//setDrop(drop);
-		System.out.println(drop);
 		return getDrop().getItem();
 	}
 	

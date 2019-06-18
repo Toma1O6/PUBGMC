@@ -1,7 +1,6 @@
 package com.toma.pubgmc.util.recipes;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import com.google.common.collect.Lists;

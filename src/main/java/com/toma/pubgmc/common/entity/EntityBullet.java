@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.ConfigPMC.WeaponCFG;
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -21,8 +21,8 @@ import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
-import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.util.PUBGMCUtil;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -58,7 +58,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;

@@ -2,7 +2,6 @@ package com.toma.pubgmc.common.network.server;
 
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import com.toma.pubgmc.util.PacketHelper;
-import com.toma.pubgmc.util.recipes.PMCRecipe;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 
 import io.netty.buffer.ByteBuf;

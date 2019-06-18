@@ -10,7 +10,6 @@ import com.toma.pubgmc.ConfigPMC.ActionType;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
-import com.toma.pubgmc.client.util.ModelDebugger;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityParachute;
@@ -364,111 +363,6 @@ public class ClientEvents
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
     	EntityPlayerSP sp = Minecraft.getMinecraft().player;
-    	/** DEBUGGER **/
-    	if(KeyBinds.TRANSLATEXPLUS.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.X += ModelDebugger.SMALL_MODIFIER;
-    		}
-    		else
-    		{
-    			ModelDebugger.X += ModelDebugger.MODIFIER;
-    		}
-    	}
-    	
-    	if(KeyBinds.TRANSLATEXMINUS.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.X -= ModelDebugger.SMALL_MODIFIER;
-    		}
-    		else
-    		{
-    			ModelDebugger.X -= ModelDebugger.MODIFIER;
-    		}
-    	}
-    	
-    	if(KeyBinds.TRANSLATEYPLUS.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.Y += ModelDebugger.SMALL_MODIFIER;
-    		}
-    		else
-    		{
-    			ModelDebugger.Y += ModelDebugger.MODIFIER;
-    		}
-    	}
-    	
-    	if(KeyBinds.TRANSLATEYMINUS.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.Y -= ModelDebugger.SMALL_MODIFIER;
-    		}
-    		else
-    		{
-    			ModelDebugger.Y -= ModelDebugger.MODIFIER;
-    		}
-    	}
-    	
-    	if(KeyBinds.TRANSLATEZPLUS.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.Z += ModelDebugger.SMALL_MODIFIER;
-    		}
-    		else
-    		{
-    			ModelDebugger.Z += ModelDebugger.MODIFIER;
-    		}
-    	}
-    	
-    	if(KeyBinds.TRANSLATEZMINUS.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.Z -= ModelDebugger.SMALL_MODIFIER;
-    		}
-    		else
-    		{
-    			ModelDebugger.Z -= ModelDebugger.MODIFIER;
-    		}
-    	}
-    	
-    	if(KeyBinds.PRINT.isPressed())
-    	{
-    		ModelDebugger.printCode();
-    	}
-    	
-    	if(KeyBinds.RESET.isPressed())
-    	{
-    		ModelDebugger.resetAllValues();
-    	}
-    	
-    	if(KeyBinds.SCALE_UP.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.scale += 0.01f;
-    		}
-    		
-    		else ModelDebugger.scale += 0.1f;
-    	}
-    	
-    	if(KeyBinds.SCALE_DOWN.isPressed())
-    	{
-    		if(sp.isSneaking())
-    		{
-    			ModelDebugger.scale -= 0.01f;
-    		}
-    		
-    		else ModelDebugger.scale -= 0.1f;
-    	}
-    	
-    	/** NORMAL MODE ========================================================================== **/
-    	
     	/** Scope Variants */
     	if(KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null)))
     	{

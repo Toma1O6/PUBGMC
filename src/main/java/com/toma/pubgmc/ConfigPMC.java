@@ -73,7 +73,7 @@ public class ConfigPMC
 		public int lootRenderType = 2;
 		
 		@Name("Enhanced sound")
-		@Comment("Enable improved sound physics for gun shots")
+		@Comment({"Enable improved sound physics for gun shots","Currently does nothing!"})
 		@RequiresMcRestart
 		public boolean betterSound = true;
 	}

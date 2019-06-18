@@ -1,8 +1,8 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.HeldAnimation;
-import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
+import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -213,7 +213,7 @@ public class ModelMP5K extends ModelGun {
 		renderScope4X(5, 8, -15, 1f, stack);
 		renderVerticalGrip(-3.4, 5, -10, 1f, stack);
 		renderAngledGrip(2.5, 4, 5, 1f, stack);
-		renderSMGSilencer(debug.X, debug.Y, debug.Z, debug.scale, stack);
+		renderSMGSilencer(debug.x, debug.y, debug.z, debug.scale, stack);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

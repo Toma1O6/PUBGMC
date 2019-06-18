@@ -321,13 +321,6 @@ public abstract class ModelGun extends ModelBase
 		}
 	}
 	
-	public Vector3f getMovementVecFromAnimations()
-	{
-		Vector3f v3f = new Vector3f(0f, 0f, 0f);
-		v3f = new Vector3f(v3f.x + aimAnimation.getMovementVec().x, v3f.y + aimAnimation.getMovementVec().y, v3f.z + aimAnimation.getMovementVec().z);
-		return v3f;
-	}
-	
 	public void processAnimations(boolean aim, boolean reload)
 	{
 		aimAnimation.processAnimation(aim);
