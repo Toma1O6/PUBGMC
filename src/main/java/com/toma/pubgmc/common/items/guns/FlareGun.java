@@ -65,6 +65,6 @@ public class FlareGun extends GunBase
 	@Override
 	public SoundEvent getWeaponReloadSound()
 	{
-		return PMCSounds.reload_flaregun;
+		return PMCSounds.reload_flare;
 	}
 }

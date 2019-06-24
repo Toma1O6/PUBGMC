@@ -165,7 +165,7 @@ public class PMCRegistry
 		public static final Item GRENADE = null;
 		public static final Item SMOKE = null;
 		public static final Item MOLOTOV = null;
-		public static final Item FLASHBANG = null;
+		//public static final Item FLASHBANG = null;
 		public static final Item AMMO_9MM = null;
 		public static final Item AMMO_45ACP = null;
 		public static final Item AMMO_SHOTGUN = null;
@@ -435,7 +435,7 @@ public class PMCRegistry
 					new ItemFuelCan().addDescription("Hold right click while driving vehicle","Vehicle must be stationary!"),
 					new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ),
 					new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
-					new ItemFlashBang("flashbang")
+					//new ItemFlashBang("flashbang")
 			};
 			
 			final Item[] ITEM_BLOCKS = {
@@ -496,7 +496,7 @@ public class PMCRegistry
 				registerEntity("grenade", EntityGrenade.class, 64, 20, true),
 				registerEntity("smoke", EntitySmokeGrenade.class, 64, 20, true),
 				registerEntity("molotov", EntityMolotov.class, 64, 20, true),
-				registerEntity("flashbang", EntityFlashbang.class, 64, 10, true),
+				//registerEntity("flashbang", EntityFlashbang.class, 64, 10, true),
 				registerEntity("flare", EntityFlare.class, 64, 20, true),
 				registerEntity("parachute", EntityParachute.class, 256, 1, true),
 				registerEntity("plane", EntityPlane.class, 128, 25, true),
@@ -624,11 +624,10 @@ public class PMCRegistry
 					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
 					.build();
 			
-			// TODO: sounds
 			GunBase mp5k = GunBuilder.create("mp5k").stats(cfg.mp5k).firerate(2)
-					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 60, PMCSounds.reload_bizon).ammo(AmmoType.AMMO9MM, 30, 40)
+					.recoil(2f, 1f).reload(ReloadType.MAGAZINE, 64, PMCSounds.reload_mp5k).ammo(AmmoType.AMMO9MM, 30, 40)
 					.firemode(Firemode.AUTO, Firemode.noBurst()).weaponType(GunType.SMG)
-					.sound(PMCSounds.gun_bizon, 8f, PMCSounds.gun_bizon_silenced, 4f)
+					.sound(PMCSounds.gun_mp5k, 8f, PMCSounds.gun_mp5k_silenced, 4f)
 					.build();
 			
 			GunBase tommy = GunBuilder.create("tommy_gun").stats(cfg.tommygun).firerate(2)
