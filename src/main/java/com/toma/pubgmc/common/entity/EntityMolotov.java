@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
@@ -215,7 +216,6 @@ public class EntityMolotov extends Entity
 	{
 		BlockPos m = getPosition();
 		Iterable<BlockPos> affectedPos = BlockPos.getAllInBox(m.getX() - range, m.getY(), m.getZ() - range, m.getX() + range, m.getY(), m.getZ() + range);
-		
 		for(BlockPos p : affectedPos)
 		{
 			while(world.getBlockState(p.down()).getBlock().isReplaceable(world, p.down()))
@@ -225,10 +225,12 @@ public class EntityMolotov extends Entity
 			
 			if(PUBGMCUtil.getDistanceToBlockPos3D(p, getPosition()) < range + 1)
 			{
-				RayTraceResult raytrace = world.rayTraceBlocks(new Vec3d(p.getX() + 0.5, p.getY(), p.getZ() + 0.5), PUBGMCUtil.getPositionVec(this), true, true, true);
-				
+				RayTraceResult raytrace = world.rayTraceBlocks(new Vec3d(p.getX() + 0.5, p.getY(), p.getZ() + 0.5), PUBGMCUtil.getPositionVec(this), true, true, false);
 				if(raytrace == null)
 				{
+					positions.add(p);
+				}
+				else if(world.getBlockState(p).getBlock() != Blocks.AIR && world.getBlockState(p).getCollisionBoundingBox(world, p) != null && world.getBlockState(p).getCollisionBoundingBox(world, p).maxY < 0.25) {
 					positions.add(p);
 				}
 			}
