@@ -478,7 +478,7 @@ public class ClientEvents
     	EntityPlayerSP player = Minecraft.getMinecraft().player;
     	CooldownTracker tracker = player.getCooldownTracker();
     	//To prevent crash on startup
-    	if(player != null)
+    	if(player != null && !player.isSpectator())
     	{
     		ItemStack stack = player.getHeldItemMainhand();
     		if(stack.getItem() instanceof GunBase)
@@ -626,7 +626,7 @@ public class ClientEvents
         	//Automatic fire is handled here because Mouse input event is acting weirdly
         	if(gs.keyBindAttack.isKeyDown() && ev.phase == Phase.END)
         	{	
-        		if(player.getHeldItemMainhand().getItem() instanceof GunBase)
+        		if(!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase)
         		{
         			if(ConfigPMC.common.worldSettings.enableGuns)
         			{
@@ -656,7 +656,7 @@ public class ClientEvents
         	}
         	
         	//Burst fire is handled here
-        	if(player.getHeldItemMainhand().getItem() instanceof GunBase)
+        	if(player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator())
         	{
         		ItemStack stack = player.getHeldItemMainhand();
         		GunBase gun = (GunBase)player.getHeldItemMainhand().getItem();
