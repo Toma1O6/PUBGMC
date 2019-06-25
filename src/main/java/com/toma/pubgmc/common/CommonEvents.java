@@ -672,11 +672,6 @@ public class CommonEvents
 				player.sendMessage(discordNotification);
 				break;
 			}
-		
-			case AHEAD: {
-				sendMessage(player, "How did you get this very new version? Hello friend!", TextFormatting.AQUA);
-				break;
-			}
 			
 			case FAILED: {
 				sendMessage(player, "[PUBGMC] Update check failed! Check your internet connection", TextFormatting.RED);

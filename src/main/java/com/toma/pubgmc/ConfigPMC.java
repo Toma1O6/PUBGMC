@@ -373,7 +373,7 @@ public class ConfigPMC
 		
 		@Name("Bullet velocity")
 		@Comment("Bullet movement per tick")
-		@RangeDouble(min = 0.1)
+		@RangeDouble(min = 0.1, max = 50)
 		public float velocity;
 		
 		@Name("Gravity modifier")
