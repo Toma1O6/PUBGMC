@@ -26,9 +26,14 @@ import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.sound.SoundHandler;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -76,6 +81,15 @@ public class ClientProxy implements IProxy
 			GuiGunWorkbench gui = (GuiGunWorkbench)mc.currentScreen;
 			gui.getButtonList().stream().filter(b -> b instanceof RecipeButton).forEach(b -> {((RecipeButton)b).performIngredientCheck();});
 		}
+	}
+	
+	@Override
+	public void playDelayedSound(SoundEvent event, double x, double y, double z, float volume) {
+		PositionedSoundRecord sound = new PositionedSoundRecord(event, SoundCategory.MASTER, volume, 1f, (float)x, (float)y, (float)z);
+		Minecraft mc = Minecraft.getMinecraft();
+		double distance = PUBGMCUtil.getDistanceToBlockPos3D(new BlockPos(x, y, z), mc.getRenderViewEntity().getPosition());
+		int ticks = (int)((distance / 34)*5);
+		mc.getSoundHandler().playDelayedSound(sound, ticks);
 	}
 	
 	private static void registerEntityRenderers()

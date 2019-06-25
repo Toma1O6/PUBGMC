@@ -1,5 +1,6 @@
 package com.toma.pubgmc.proxy;
 
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -21,6 +22,9 @@ public class ServerProxy implements IProxy
 	
 	@Override
 	public void notifyWorkbenchUpdate() {
-		// only for client gui, nothing needed server side
+	}
+	
+	@Override
+	public void playDelayedSound(SoundEvent event, double x, double y, double z, float volume) {
 	}
 }
