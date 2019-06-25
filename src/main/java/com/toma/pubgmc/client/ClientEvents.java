@@ -262,7 +262,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			//e.setCanceled(true);
+    			e.setCanceled(true);
     		}
     	}
     	
@@ -1126,10 +1126,10 @@ public class ClientEvents
     			{
     				if(gun.getTagCompound().getInteger("barrel") == 2)
     				{
-    					player.rotationYaw = player.rotationYaw + ((wep.getHorizontalRecoil(gun) * 0.8f * angledGrip * stockMod) * (float)rand.nextDouble() * 1.5f);
+    					player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun)*wep.getConfigurableStats().recoilHorizontalMultiplier) * 0.8f * angledGrip * stockMod) * (float)rand.nextDouble() * 1.5f);
     				}
     				
-    				else player.rotationYaw = player.rotationYaw + ((wep.getHorizontalRecoil(gun) * angledGrip * stockMod) * (float)rand.nextDouble() * 1.5f);
+    				else player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun)*wep.getConfigurableStats().recoilHorizontalMultiplier) * angledGrip * stockMod) * (float)rand.nextDouble() * 1.5f);
     			}
     		}
     	}
