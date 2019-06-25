@@ -231,7 +231,9 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
         {
             this.onHit(raytraceresult);
         }
-        
+        if(collided) {
+        	setDead();
+        }
         move(MoverType.SELF, motionX, motionY, motionZ);
         super.onUpdate();
     }
@@ -315,7 +317,6 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
         	BlockPos pos = raytraceResultIn.getBlockPos();
         	IBlockState state = world.getBlockState(pos);
         	Block block = state.getBlock();
-        	
         	if(state.getMaterial() == Material.GLASS)
         	{
         		if(world.getGameRules().getBoolean("weaponGriefing"))
@@ -327,12 +328,7 @@ public class EntityBullet extends Entity implements IEntityAdditionalSpawnData
         		else return;
         	}
         	
-        	else if(!block.isFullCube(state))
-        	{
-        		return;
-        	}
-        	
-        	else if(!block.isReplaceable(world, pos))
+        	else if(!block.isReplaceable(world, pos) || block == Blocks.SNOW_LAYER)
         	{
         		Vec3d hitvec = raytraceResultIn.hitVec;
         		PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, hitvec, block), this.dimension);
