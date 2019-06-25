@@ -4,6 +4,7 @@ import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.ClientEvents;
+import com.toma.pubgmc.client.RenderHandler;
 import com.toma.pubgmc.client.gui.GuiGunWorkbench;
 import com.toma.pubgmc.client.renderer.LootSpawnerRenderer;
 import com.toma.pubgmc.client.renderer.RenderAirdrop;
@@ -49,6 +50,7 @@ public class ClientProxy implements IProxy
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
+		MinecraftForge.EVENT_BUS.register(new RenderHandler());
 		registerEntityRenderers();
 	}
 	
