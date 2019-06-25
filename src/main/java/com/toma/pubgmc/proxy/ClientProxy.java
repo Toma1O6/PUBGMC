@@ -28,7 +28,6 @@ import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.util.sound.SoundHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -66,9 +65,6 @@ public class ClientProxy implements IProxy
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
 		}
-		
-		if(ConfigPMC.client.other.betterSound)
-			SoundHandler.initSoundHandler();
 	}
 	
 	@SideOnly(Side.CLIENT)

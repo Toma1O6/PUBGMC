@@ -18,7 +18,6 @@ import com.toma.pubgmc.common.network.server.PacketShoot;
 import com.toma.pubgmc.common.network.server.PacketTeleportPlayer;
 import com.toma.pubgmc.common.network.server.PacketUpdateBoostValue;
 import com.toma.pubgmc.common.network.server.PacketUpdateWorkbench;
-import com.toma.pubgmc.common.network.sp.PacketAddSoundHandlerEntry;
 import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
@@ -78,7 +77,6 @@ public class PacketHandler
 		registerClientPacket(PacketSpawnVehicle.class);
 		registerClientPacket(PacketVehicleData.class);
 		registerClientPacket(PacketUpdateConfig.class);
-		registerClientPacket(PacketAddSoundHandlerEntry.class);
 		registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
 	}
 	

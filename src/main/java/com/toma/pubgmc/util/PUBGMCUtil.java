@@ -260,4 +260,8 @@ public class PUBGMCUtil
 	{
 		return prev + partial * (current - prev);
 	}
+	
+	public static Vec3d multiply(Vec3d vec, double amount) {
+		return new Vec3d(vec.x*amount, vec.y*amount, vec.z*amount);
+	}
 }

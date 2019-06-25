@@ -165,7 +165,7 @@ public class PMCRegistry
 		public static final Item GRENADE = null;
 		public static final Item SMOKE = null;
 		public static final Item MOLOTOV = null;
-		//public static final Item FLASHBANG = null;
+		public static final Item FLASHBANG = null;
 		public static final Item AMMO_9MM = null;
 		public static final Item AMMO_45ACP = null;
 		public static final Item AMMO_SHOTGUN = null;
@@ -435,7 +435,7 @@ public class PMCRegistry
 					new ItemFuelCan().addDescription("Hold right click while driving vehicle","Vehicle must be stationary!"),
 					new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ),
 					new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
-					//new ItemFlashBang("flashbang")
+					new ItemFlashBang("flashbang")
 			};
 			
 			final Item[] ITEM_BLOCKS = {
@@ -496,7 +496,7 @@ public class PMCRegistry
 				registerEntity("grenade", EntityGrenade.class, 64, 20, true),
 				registerEntity("smoke", EntitySmokeGrenade.class, 64, 20, true),
 				registerEntity("molotov", EntityMolotov.class, 64, 20, true),
-				//registerEntity("flashbang", EntityFlashbang.class, 64, 10, true),
+				registerEntity("flashbang", EntityFlashbang.class, 64, 10, true),
 				registerEntity("flare", EntityFlare.class, 64, 20, true),
 				registerEntity("parachute", EntityParachute.class, 256, 1, true),
 				registerEntity("plane", EntityPlane.class, 128, 25, true),

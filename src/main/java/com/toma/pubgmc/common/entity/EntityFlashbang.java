@@ -72,7 +72,7 @@ public class EntityFlashbang extends Entity implements IEntityAdditionalSpawnDat
 			RayTraceResult rayTrace = this.world.rayTraceBlocks(start, entityVec, false, true, false);
 			// TODO improve raytracing for opaque and non solid blocks
 			if(rayTrace == null) {
-				FlashHandler.instance().flashPlayer(e, this);
+				FlashHandler.isInRangeToFlash(e, this);
 			}
 		});
 	}
