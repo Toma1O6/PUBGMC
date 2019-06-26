@@ -18,7 +18,7 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
-import com.toma.pubgmc.common.network.sp.PacketSound;
+import com.toma.pubgmc.common.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -137,7 +137,7 @@ public class GunBase extends PMCItem
                         stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                     }
                     
-                    PacketHandler.sendToClientsAround(new PacketSound(playWeaponSound(stack), playWeaponSoundVolume(stack), 1f, player.posX, player.posY, player.posZ), new TargetPoint(0, player.posX, player.posY, player.posZ, 150));
+                    PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(0, player.posX, player.posY, player.posZ, 150));
             	}
             	
             	tracker.setCooldown(stack.getItem(), getFireRate());

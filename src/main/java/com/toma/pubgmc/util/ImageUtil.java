@@ -35,6 +35,30 @@ public class ImageUtil
 		else tessellator.draw();
 	}
 	
+	public static void drawFullScreenImage(Minecraft minecraft, ScaledResolution resolution, ResourceLocation imageLocation, float f)
+	{
+		minecraft.getTextureManager().bindTexture(imageLocation);
+		GlStateManager.color(1f, 1f, 1f);
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buffer = tessellator.getBuffer();
+		
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buffer.pos(0, resolution.getScaledHeight(), 0).tex(0, 1).endVertex();
+		buffer.pos(resolution.getScaledWidth(), resolution.getScaledHeight(), 0).tex(1, 1).endVertex();
+		buffer.pos(resolution.getScaledWidth(), 0, 0).tex(1, 0).endVertex();
+		buffer.pos(0, 0, 0).tex(0, 0).endVertex();
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.color(1f, 1f, 1f, f);
+		GlStateManager.enableAlpha();
+		GlStateManager.enableBlend();
+		tessellator.draw();
+		GlStateManager.disableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.color(1f, 1f, 1f);
+		GlStateManager.popMatrix();
+	}
+	
 	public static void drawCustomSizedImage(Minecraft minecraft, ResourceLocation imageLocation, double startX, double startY, double width, double height, boolean transparent)
 	{
 		minecraft.getTextureManager().bindTexture(imageLocation);

@@ -7,7 +7,7 @@ import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketSound;
+import com.toma.pubgmc.common.network.sp.PacketDelayedSound;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -83,9 +83,9 @@ public class PUBGMCUtil
 		return compound;
 	}
 	
-	public static void sendSoundPacket(SoundEvent event, float volume, float pitch, BlockPos pos, TargetPoint target)
+	public static void sendSoundPacket(SoundEvent event, float volume, BlockPos pos, TargetPoint target)
 	{
-		PacketHandler.INSTANCE.sendToAllAround(new PacketSound(event, volume, pitch, pos.getX(), pos.getY(), pos.getZ()), target);
+		PacketHandler.INSTANCE.sendToAllAround(new PacketDelayedSound(event, volume, pos.getX(), pos.getY(), pos.getZ()), target);
 	}
 	
 	public static boolean shouldSendCommandFeedback(World world)

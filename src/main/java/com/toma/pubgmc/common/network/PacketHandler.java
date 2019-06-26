@@ -22,11 +22,12 @@ import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
-import com.toma.pubgmc.common.network.sp.PacketSound;
+import com.toma.pubgmc.common.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.common.network.sp.PacketSpawnVehicle;
 import com.toma.pubgmc.common.network.sp.PacketSyncTileEntity;
 import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
 import com.toma.pubgmc.common.network.sp.PacketUpdateConfig;
+import com.toma.pubgmc.common.network.sp.PacketUpdateFlashStatus;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerData;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
 import com.toma.pubgmc.common.network.sp.PacketVehicleData;
@@ -68,7 +69,7 @@ public class PacketHandler
 		registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
 		registerClientPacket(PacketReloadingSP.class);
 		registerClientPacket(PacketUpdatePlayerData.class);
-		registerClientPacket(PacketSound.class);
+		registerClientPacket(PacketDelayedSound.class);
 		registerClientPacket(PacketCreateNBT.class);
 		registerClientPacket(PacketUpdateAttachmentGUI.class);
 		registerClientPacket(PacketParticle.class);
@@ -78,6 +79,7 @@ public class PacketHandler
 		registerClientPacket(PacketVehicleData.class);
 		registerClientPacket(PacketUpdateConfig.class);
 		registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
+		registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
 	}
 	
 	public static void sendToClient(IMessage packet, EntityPlayerMP player)
