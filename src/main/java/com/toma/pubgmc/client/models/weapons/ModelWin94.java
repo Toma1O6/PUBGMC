@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -86,7 +87,7 @@ public class ModelWin94 extends ModelGun
 	private void renderWin(boolean aim)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultPistolTransform();
+		ModelTransformationHelper.defaultPistolTransform();
 		GlStateManager.scale(0.59, 0.59, 0.59);
 		GlStateManager.translate(-0.2, 15, 4);
 		if(aim) rotateModelForADSRendering();

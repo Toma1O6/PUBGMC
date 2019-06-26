@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -119,7 +120,7 @@ public class ModelAWM extends ModelGun
 	private void renderAWM(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultSRTransform();
+		ModelTransformationHelper.defaultSRTransform();
 		GlStateManager.translate(0.0, 2.0, 6.0);
 		
 		if(aim && enableADS(stack))

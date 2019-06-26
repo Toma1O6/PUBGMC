@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -145,7 +146,7 @@ public class ModelDP28 extends ModelGun
 	private void renderDP28(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultARTransform();
+		ModelTransformationHelper.defaultARTransform();
 		GlStateManager.translate(0.0, 5.0, -5.0);
 		
 		if(aim && enableADS(stack))

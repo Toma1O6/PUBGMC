@@ -5,6 +5,7 @@ import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -109,7 +110,7 @@ public class ModelR1895 extends ModelGun
 		GlStateManager.pushMatrix();
 		{
 			GlStateManager.scale(0.7f, 0.7f, 0.7f);
-			transform.defaultPistolTransform();
+			ModelTransformationHelper.defaultPistolTransform();
 			GlStateManager.translate(-9.0, -1.0, 0.0);
 			
 			if(aim && enableADS(stack))

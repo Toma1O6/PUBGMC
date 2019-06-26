@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -169,7 +170,7 @@ public class ModelVSS extends ModelGun
 	private void renderVSS()
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultARTransform();
+		ModelTransformationHelper.defaultARTransform();
 		GlStateManager.translate(0.0, 8.0, -14.0);
 		renderParts();
 		GlStateManager.popMatrix();

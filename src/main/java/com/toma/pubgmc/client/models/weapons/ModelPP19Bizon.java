@@ -5,6 +5,7 @@ import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -187,7 +188,7 @@ public class ModelPP19Bizon extends ModelGun
 	{
 		GlStateManager.pushMatrix();
 		{
-			transform.defaultSMGTransform();
+			ModelTransformationHelper.defaultSMGTransform();
 			GlStateManager.translate(-4.0, -2.0, 7.0);
 			if(aim && enableADS(stack))
 			{

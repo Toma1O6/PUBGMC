@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -319,7 +320,7 @@ public class ModelAKM extends ModelGun
 	private void renderAKM(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultARTransform();
+		ModelTransformationHelper.defaultARTransform();
 		GlStateManager.scale(1.5, 1.5, 1.5);
 		GlStateManager.translate(0.0, -3.7, -7);
 

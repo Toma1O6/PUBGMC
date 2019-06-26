@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -97,7 +98,7 @@ public class ModelP1911 extends ModelGun
 	{
 		GlStateManager.pushMatrix();
 		{
-			transform.defaultPistolTransform();
+			ModelTransformationHelper.defaultPistolTransform();
 			GlStateManager.translate(0.0, 0.3, 0.9);
 			if(aim) rotateModelForADSRendering();
 			renderAll();

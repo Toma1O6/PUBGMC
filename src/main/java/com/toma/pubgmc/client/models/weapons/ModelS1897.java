@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -91,7 +92,7 @@ public class ModelS1897 extends ModelGun
 	{
 		GlStateManager.pushMatrix();
 		{
-			transform.defaultShotgunTransform();
+			ModelTransformationHelper.defaultShotgunTransform();
 			GlStateManager.translate(0.0, 3.6, 7.3);
 			if(aim && enableADS(stack)) rotateModelForADSRendering();
 			renderParts();

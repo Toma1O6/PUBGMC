@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -158,7 +159,7 @@ public class ModelM16A4 extends ModelGun
 	private void renderM16A4(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultARTransform();
+		ModelTransformationHelper.defaultARTransform();
 		
 		if(aim && enableADS(stack))
 		{

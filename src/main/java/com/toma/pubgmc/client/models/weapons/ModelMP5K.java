@@ -5,6 +5,8 @@ import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelDebugger;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -200,7 +202,7 @@ public class ModelMP5K extends ModelGun {
 	
 	private void renderMP5K(ItemStack stack, boolean aim) {
 		GlStateManager.pushMatrix();
-		transform.defaultSMGTransform();
+		ModelTransformationHelper.defaultSMGTransform();
 		GlStateManager.translate(-1.1000001, 2.0, -9.0);
 		if(aim && enableADS(stack)) {
 			rotateModelForADSRendering();
@@ -213,7 +215,7 @@ public class ModelMP5K extends ModelGun {
 		renderScope4X(5, 8, -15, 1f, stack);
 		renderVerticalGrip(-3.4, 5, -10, 1f, stack);
 		renderAngledGrip(2.5, 4, 5, 1f, stack);
-		renderSMGSilencer(debug.x, debug.y, debug.z, debug.scale, stack);
+		renderSMGSilencer(1.76, -5.24, -16, 1.3f, stack);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

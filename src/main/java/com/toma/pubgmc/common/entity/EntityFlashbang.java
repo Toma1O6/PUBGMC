@@ -77,10 +77,10 @@ public class EntityFlashbang extends Entity implements IEntityAdditionalSpawnDat
 	}
 	
 	public void flashPlayers() {
-		List<EntityPlayer> entityList = world.getEntitiesWithinAABB(EntityPlayer.class, Block.FULL_BLOCK_AABB.offset(getPosition()).grow(14));
+		List<EntityPlayer> entityList = world.getEntitiesWithinAABB(EntityPlayer.class, Block.FULL_BLOCK_AABB.offset(getPosition()).grow(30));
 		Vec3d start = PUBGMCUtil.getPositionVec(this);
 		entityList.forEach(e -> {
-			Vec3d entityVec = new Vec3d(e.posX, e.posY + e.getEyeHeight(), e.posZ);
+			Vec3d entityVec = new Vec3d(e.posX, e.posY + e.getEyeHeight() + 0.25, e.posZ);
 			RayTraceResult rayTrace = this.world.rayTraceBlocks(start, entityVec, false, true, false);
 			// TODO improve raytracing for opaque and non solid blocks
 			if(rayTrace == null) {

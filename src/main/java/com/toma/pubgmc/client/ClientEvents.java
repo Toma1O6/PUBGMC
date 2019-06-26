@@ -262,7 +262,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			e.setCanceled(true);
+    			//e.setCanceled(true);
     		}
     	}
     	
@@ -397,9 +397,7 @@ public class ClientEvents
                 {	
                 	if(data.isReloading())
                 	{
-                		data.setReloading(false);
-                		data.setReloadingTime(0);
-                		PacketHandler.INSTANCE.sendToServer(new PacketReloading(false));
+                		return;
                 	}
                 	//Check if the player is able to reload
                 	//Ammo checking is being handled in the onReload method from GunBase.class

@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -130,7 +131,7 @@ public class ModelGroza extends ModelGun
 	private void renderGroza(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultARTransform();
+		ModelTransformationHelper.defaultARTransform();
 		GlStateManager.translate(0.0, 4.0, 3.0);
 		
 		if(aim && enableADS(stack))

@@ -29,10 +29,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
 public abstract class ModelGun extends ModelBase
-{	
-	public ModelTransformationHelper transform = ModelTransformationHelper.instance;
-	public ModelDebugger debug = ModelDebugger.instance;
-	
+{
 	protected static final MutablePair[] DEFAULT_PART_ANIMATION = 
 	{
 		new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0.5f, 0f)),
@@ -170,7 +167,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasRedDot(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.defaultPistolRedDotTransform();
+			ModelTransformationHelper.defaultPistolRedDotTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			red_dot.render();
@@ -183,7 +180,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasHoloSight(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.defaultHoloTransform();
+			ModelTransformationHelper.defaultHoloTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			holo.render();
@@ -196,7 +193,7 @@ public abstract class ModelGun extends ModelBase
 		if(has2X(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.default2XTransform();
+			ModelTransformationHelper.default2XTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			scope2x.render();
@@ -209,7 +206,7 @@ public abstract class ModelGun extends ModelBase
 		if(has4X(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.default4XTransform();
+			ModelTransformationHelper.default4XTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			scope4x.render();
@@ -222,7 +219,7 @@ public abstract class ModelGun extends ModelBase
 		if(has8X(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.default8XTransform();
+			ModelTransformationHelper.default8XTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			scope8x.render();
@@ -235,7 +232,7 @@ public abstract class ModelGun extends ModelBase
 		if(has15X(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.default15XTransform();
+			ModelTransformationHelper.default15XTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			scope15x.render();
@@ -248,7 +245,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasSilencer(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.defaultPistolSilencerTransform();
+			ModelTransformationHelper.defaultPistolSilencerTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			silencer_pistol.render();
@@ -261,7 +258,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasSilencer(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.silencerSMGTransform();
+			ModelTransformationHelper.silencerSMGTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			silencer.render();
@@ -274,7 +271,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasSilencer(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.silencerARTransform();
+			ModelTransformationHelper.silencerARTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			silencer.render();
@@ -287,7 +284,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasSilencer(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.silencerSRTransform();
+			ModelTransformationHelper.silencerSRTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			silencer.render();
@@ -300,7 +297,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasVerticalGrip(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.verticalGripTransform();
+			ModelTransformationHelper.verticalGripTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			grip_vertical.render();
@@ -313,7 +310,7 @@ public abstract class ModelGun extends ModelBase
 		if(hasAngledGrip(stack))
 		{
 			GlStateManager.pushMatrix();
-			transform.angledGripTransform();
+			ModelTransformationHelper.angledGripTransform();
 			GlStateManager.scale(scale, scale, scale);
 			GlStateManager.translate(x, y, z);
 			grip_angled.render();
@@ -346,6 +343,7 @@ public abstract class ModelGun extends ModelBase
 	/**
 	 * Initialize aiming animation for model
 	 * Default animation speed is 3.0F
+	 * <b>Not a single parameter can be == 0!</b>
 	 * @param x - final x location of the model
 	 * @param y - final y location of the model (this is changed inside the initAimAnimationStates method for more options) 
 	 * @param z - final z location of the model

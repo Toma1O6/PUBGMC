@@ -30,7 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public final class FlashHandler {
 
 	public static final Map<UUID, Integer> FLASHED_PLAYERS = new HashMap<>();
-	public static final int MAX_FLASH_RANGE = 14;
+	public static final int MAX_FLASH_RANGE = 20;
 	
 	public static void flashPlayer(EntityPlayer player, EntityFlashbang from) {
 		UUID uuid = player.getUniqueID();
@@ -47,7 +47,14 @@ public final class FlashHandler {
 	
 	public static int getFlashAmountFor(EntityPlayer player, EntityFlashbang flash) {
 		float f0 = (float)PUBGMCUtil.getDistanceToBlockPos3D(player.getPosition(), flash.getPosition());
-		return f0 > MAX_FLASH_RANGE ? 0 : (int)(100*(1-(f0/100)) + 100);
+		int amount = 180;
+		if(f0 > MAX_FLASH_RANGE + 5) {
+			return 0;
+		}
+		else if(f0 > MAX_FLASH_RANGE - 5 && f0 <= MAX_FLASH_RANGE + 5) {
+			amount = 1;
+		}
+		return amount;
 	}
 	
 	public static boolean isInRangeToFlash(EntityPlayer player, EntityFlashbang flash) {

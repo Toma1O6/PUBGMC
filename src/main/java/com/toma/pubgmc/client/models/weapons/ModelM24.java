@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -246,7 +247,7 @@ public class ModelM24 extends ModelGun
 	{
 		GlStateManager.pushMatrix();
 		{
-			transform.defaultSRTransform();
+			ModelTransformationHelper.defaultSRTransform();
 			GlStateManager.scale(0.79999995, 0.79999995, 0.79999995);
 			GlStateManager.translate(0.0, -15.300001, -18.0);
 			

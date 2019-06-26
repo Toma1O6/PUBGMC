@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -118,7 +119,7 @@ public class ModelVector extends ModelGun
 	private void renderVector(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultSMGTransform();
+		ModelTransformationHelper.defaultSMGTransform();
 		GlStateManager.translate(0.0, 11.0, 0.0);
 		
 		if(aim && enableADS(stack))

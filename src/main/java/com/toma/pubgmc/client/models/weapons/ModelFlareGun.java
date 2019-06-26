@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -128,7 +129,7 @@ public class ModelFlareGun extends ModelGun
 	private void renderFlareGun(boolean aim)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultPistolTransform();
+		ModelTransformationHelper.defaultPistolTransform();
 		GlStateManager.translate(-0.4, 2.9, 1.3);
 		if(aim) rotateModelForADSRendering();
 		renderParts();

@@ -3,11 +3,13 @@ package com.toma.pubgmc.client.util;
 import org.lwjgl.input.Keyboard;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.models.ModelGun;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -16,7 +18,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 public class ModelDebugger
 {
 	public static final double MODIFIER = 1f;
-	public static final double SMALL_MODIFIER = 0.1f;
+	public static final double SMALL_MODIFIER = 0.08f;
 	
 	public static ModelDebugger instance;
 	public static float x = 0;
@@ -98,6 +100,46 @@ public class ModelDebugger
 		y = 0;
 		z = 0;
 		scale = 1f;
+	}
+	
+	public static void debugRedDot(ModelGun gun, ItemStack stack) {
+		gun.renderRedDot(x, y, z, scale, stack);
+	}
+	
+	public static void debugHolo(ModelGun gun, ItemStack stack) {
+		gun.renderHolo(x, y, z, scale, stack);
+	}
+	
+	public static void debug2x(ModelGun gun, ItemStack stack) {
+		gun.renderScope2X(x, y, z, scale, stack);
+	}
+	
+	public static void debug4x(ModelGun gun, ItemStack stack) {
+		gun.renderScope4X(x, y, z, scale, stack);
+	}
+	
+	public static void debug8x(ModelGun gun, ItemStack stack) {
+		gun.renderScope8X(x, y, z, scale, stack);
+	}
+	
+	public static void debug15x(ModelGun gun, ItemStack stack) {
+		gun.renderScope15X(x, y, z, scale, stack);
+	}
+	
+	public static void debugPistolSilencer(ModelGun gun, ItemStack stack) {
+		gun.renderPistolSilencer(x, y, z, scale, stack);
+	}
+	
+	public static void debugSMGSilencer(ModelGun gun, ItemStack stack) {
+		gun.renderSMGSilencer(x, y, z, scale, stack);
+	}
+	
+	public static void debugARSilencer(ModelGun gun, ItemStack stack) {
+		gun.renderARSilencer(x, y, z, scale, stack);
+	}
+	
+	public static void debugSRSilencer(ModelGun gun, ItemStack stack) {
+		gun.renderSniperSilencer(x, y, z, scale, stack);
 	}
 	
 	public static class Handler {

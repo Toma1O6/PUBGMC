@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -155,7 +156,7 @@ public class ModelSKS extends ModelGun
 	private void renderSKS(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultSRTransform();
+		ModelTransformationHelper.defaultSRTransform();
 		GlStateManager.translate(0.0, 1.0, 3.0);
 		
 		if(aim && enableADS(stack)) rotateModelForADSRendering();

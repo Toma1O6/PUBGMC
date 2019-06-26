@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -69,7 +70,7 @@ public class ModelG36C extends ModelGun
 	{
 		GlStateManager.pushMatrix();
 		{
-			transform.defaultARTransform();
+			ModelTransformationHelper.defaultARTransform();
 			GlStateManager.translate(-1.0, 3.0, 17.0);
 			if(aim && enableADS(stack)) rotateModelForADSRendering();
 			

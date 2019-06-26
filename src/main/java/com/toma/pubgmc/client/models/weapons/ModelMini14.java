@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -143,7 +144,7 @@ public class ModelMini14 extends ModelGun
 	private void renderMini14(boolean aim, ItemStack stack)
 	{
 		GlStateManager.pushMatrix();
-		transform.defaultSRTransform();
+		ModelTransformationHelper.defaultSRTransform();
 		
 		if(aim && enableADS(stack))
 		{

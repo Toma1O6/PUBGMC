@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 
@@ -159,7 +160,7 @@ public class ModelScorpion extends ModelGun
 	{
 		GlStateManager.pushMatrix();
 		{
-			transform.defaultPistolTransform();
+			ModelTransformationHelper.defaultPistolTransform();
 			GlStateManager.scale(0.8, 0.8, 0.8);
 			GlStateManager.translate(0.0, 8.0, 4.0);
 			
