@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 public class ModelDebugger
 {
 	public static final double MODIFIER = 1f;
-	public static final double SMALL_MODIFIER = 0.08f;
+	public static final double SMALL_MODIFIER = 0.05f;
 	
 	public static ModelDebugger instance;
 	public static float x = 0;

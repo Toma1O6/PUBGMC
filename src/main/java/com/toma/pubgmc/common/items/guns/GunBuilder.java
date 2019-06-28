@@ -144,8 +144,8 @@ public class GunBuilder
 		weaponType = checkNotNull(weaponType);
 		shootNormal = checkNotNull(shootNormal);
 		shootSilenced = checkNotNull(shootSilenced);
-		volumeNormal = validateFloat(volumeNormal, 1f, 20f);
-		volumeSilenced = validateFloat(volumeSilenced, 1f, 20f);
+		volumeNormal = validateFloat(volumeNormal, 1f, 40f);
+		volumeSilenced = validateFloat(volumeSilenced, 1f, 30f);
 		reloadSound = checkNotNull(reloadSound);
 		
 		if(twoRoundBurst) {

@@ -216,6 +216,10 @@ public class ConfigPMC
 		@RequiresMcRestart
 		public WeaponCFG scorpion = new WeaponCFG(4f, 7f, 0.015f, 4);
 		
+		@Name("Deagle")
+		@RequiresMcRestart
+		public WeaponCFG deagle = new WeaponCFG(12.5f, 9f, 0.015f, 4);
+		
 		@Name("Winchester-94")
 		@RequiresMcRestart
 		public WeaponCFG win94 = new WeaponCFG(10f, 12f, 0.008f, 7);

@@ -11,6 +11,7 @@ import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.util.TileEntitySync;
 
 import net.minecraft.block.state.IBlockState;
@@ -695,6 +696,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		PISTOLS.add(new ItemStack(PMCRegistry.PMCItems.P18C));
 		PISTOLS.add(new ItemStack(PMCRegistry.PMCItems.WIN94));
 		PISTOLS.add(new ItemStack(PMCRegistry.PMCItems.SCORPION));
+		PISTOLS.add(new ItemStack(PMCItems.DEAGLE));
 	}
 	
 	private void addShotguns()
@@ -716,6 +718,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory
 		SMGS.add(new ItemStack(PMCRegistry.PMCItems.VECTOR));
 		SMGS.add(new ItemStack(PMCRegistry.PMCItems.TOMMY_GUN));
 		SMGS.add(new ItemStack(PMCRegistry.PMCItems.BIZON));
+		SMGS.add(new ItemStack(PMCItems.MP5K));
 	}
 	
 	private void addARs(boolean airdrop)

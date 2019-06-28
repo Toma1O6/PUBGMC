@@ -130,6 +130,7 @@ public class PMCRegistry
 		public static final GunBase R45 = null;
 		public static final GunBase P18C = null;
 		public static final GunBase SCORPION = null;
+		public static final GunBase DEAGLE = null;
 		public static final GunBase WIN94 = null;
 		public static final GunBase SAWED_OFF = null;
 		public static final GunBase S1897 = null;
@@ -576,6 +577,12 @@ public class PMCRegistry
 					.sound(PMCSounds.gun_scorpion, 12f, PMCSounds.gun_scorpion_silenced, 8f)
 					.build();
 			
+			GunBase deagle = GunBuilder.create("deagle").stats(cfg.deagle).firerate(4)
+					.recoil(4.5f, 3f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_akm).ammo(AmmoType.AMMO45ACP, 7, 10)
+					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
+					.sound(PMCSounds.gun_akm, 14f)
+					.build();
+			
 			GunBase win94 = GunBuilder.create("win94").stats(cfg.win94).firerate(25)
 					.recoil(5.5f, 3.5f).reload(ReloadType.SINGLE, 15, PMCSounds.reload_win94).ammo(AmmoType.AMMO45ACP, 8)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
@@ -770,7 +777,7 @@ public class PMCRegistry
 			
 			final GunBase[] entry = 
 			{
-				p92, p1911, p18c, r1895, r45, scorpion, win94,
+				p92, p1911, p18c, r1895, r45, scorpion, deagle, win94,
 				sawedoff, s1897, s686, s12k,
 				uzi, vector, bizon, mp5k, tommy, ump,
 				m16a4, m416, scarl, qbz, g36c, aug, akm, m762, mk47, groza,
@@ -829,6 +836,7 @@ public class PMCRegistry
 				case "r1895": e.attachModel(e.getTEISR().r1895); break;
 				case "r45": e.attachModel(e.getTEISR().r45); break;
 				case "scorpion": e.attachModel(e.getTEISR().scorpion); break;
+				case "deagle": e.attachModel(e.getTEISR().deagle); break;
 				case "win94": e.attachModel(e.getTEISR().win94); break;
 				case "sawed_off": e.attachModel(e.getTEISR().sawedOff); break;
 				case "s1897": e.attachModel(e.getTEISR().s1897); break;
@@ -941,6 +949,11 @@ public class PMCRegistry
 				e.initGripAttachments(PMCItems.GRIP_VERTICAL);
 				e.initMagazineAttachments(PMCItems.EXTENDED_MAG_PISTOL);
 				e.initScopeAttachments(PMCItems.RED_DOT);
+			}
+			
+			else if(gun == PMCItems.DEAGLE) {
+				e.initScopeAttachments(PMCItems.RED_DOT);
+				e.initMagazineAttachments(AttachmentHelper.getPistolMagazineAttachments());
 			}
 			
 			else if(gun == PMCItems.WIN94)
