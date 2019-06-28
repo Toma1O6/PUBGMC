@@ -2,7 +2,9 @@ package com.toma.pubgmc.common.items.guns;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.ConfigPMC.WeaponCFG;
@@ -814,6 +816,15 @@ public class GunBase extends PMCItem
 	public enum GunType
 	{
 		LMG, PISTOL, SHOTGUN, SMG, AR, DMR, SR;
+		
+		public static List<GunType> toCollection() {
+			List<GunType> list = new ArrayList<>(values().length);
+			for(int i = 0; i < values().length; i++) {
+				list.add(values()[i]);
+			}
+			list = list.stream().filter(type -> type != LMG).collect(Collectors.toList());
+			return list;
+		}
 	}
 	
 	public void setHasTwoRoundBurst(boolean hasTwoRoundBurst)

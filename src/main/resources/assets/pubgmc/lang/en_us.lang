@@ -37,6 +37,7 @@ item.r1895.name=R1895
 item.p18c.name=P18C
 item.r45.name=R45
 item.scorpion.name=Scorpion
+item.deagle.name=Deagle
 item.win94.name=Win-94
 item.sawed_off.name=Sawed-Off Shotgun
 item.s1897.name=S1897
@@ -74,9 +75,6 @@ item.grenade.name=Grenade
 item.smoke.name=Smoke Grenade
 item.molotov.name=Molotov
 item.flashbang.name=Flashbang
-
-//Cases
-item.case1.name=BETA CASE
 
 //This will be removed in future
 item.ghilliehelmet.name=Ghillie helmet
@@ -135,12 +133,6 @@ item.armor2helmet.name=Level 2 helmet
 item.armor2body.name=Level 2 vest
 item.armor3helmet.name=Level 3 helmet
 item.armor3body.name=Level 3 vest
-item.yellow_tshirt.name=Yellow T-Shirt (common)
-item.black_glasses.name=Black glasses (very rare)
-item.brown_cap.name=Brown cap (common)
-item.gray_top.name=Gray top (common)
-item.white_boots.name=White boots (rare)
-item.official_legs.name=Official PUBGMC leggings (LEGENDARY)
 
 //Blocks
 tile.roadasphalt.name=Asphalt road

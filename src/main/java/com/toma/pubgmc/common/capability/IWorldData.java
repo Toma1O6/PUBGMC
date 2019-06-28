@@ -65,9 +65,9 @@ public interface IWorldData
 	
 	public class WorldData implements IWorldData
 	{
-		private boolean airdropWep, ammoLoot, randomAmmoCount;
-		private double chance;
-		private List<GunType> weaponTypes = new ArrayList<GunType>();
+		private boolean airdropWep = false, ammoLoot = true, randomAmmoCount = false;
+		private double chance = 1;
+		private List<GunType> weaponTypes = new ArrayList<GunType>(GunType.toCollection());
 		
 		@Override
 		public void toggleAirdropWeapons(boolean enable)

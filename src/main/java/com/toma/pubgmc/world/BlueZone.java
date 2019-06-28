@@ -10,6 +10,7 @@ public class BlueZone
 	private static final BlueZone INSTANCE = new BlueZone();
 	private int phase;
 	private BlueZone lastZone;
+	private BlockPos[] corners = new BlockPos[2];
 	
 	public void create(IGameData data) {
 		this.reset();

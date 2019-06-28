@@ -483,9 +483,10 @@ public class PMCRegistry
 					new PMCItemBlock(PMCRegistry.PMCBlocks.STORAGETOP)
 			};
 			
+			final GunBase[] GUNS = getInitializedGuns();
 			event.getRegistry().registerAll(ITEMS);
 			event.getRegistry().registerAll(ITEM_BLOCKS);
-			event.getRegistry().registerAll(registeredGuns());
+			event.getRegistry().registerAll(GUNS);
 		}
 		
 		@SubscribeEvent
@@ -537,7 +538,7 @@ public class PMCRegistry
 			return entityID;
 		}
 		
-		public static GunBase[] registeredGuns()
+		private static GunBase[] getInitializedGuns()
 		{
 			WeaponSettings cfg = ConfigPMC.common.weaponSettings;
 			
@@ -578,9 +579,9 @@ public class PMCRegistry
 					.build();
 			
 			GunBase deagle = GunBuilder.create("deagle").stats(cfg.deagle).firerate(4)
-					.recoil(4.5f, 3f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_akm).ammo(AmmoType.AMMO45ACP, 7, 10)
+					.recoil(4.5f, 3f).reload(ReloadType.MAGAZINE, 50, PMCSounds.reload_deagle).ammo(AmmoType.AMMO45ACP, 7, 10)
 					.firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
-					.sound(PMCSounds.gun_akm, 14f)
+					.sound(PMCSounds.gun_deagle, 14f)
 					.build();
 			
 			GunBase win94 = GunBuilder.create("win94").stats(cfg.win94).firerate(25)

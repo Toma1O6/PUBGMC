@@ -51,8 +51,8 @@ public class ModelDeagle extends ModelGun {
 
 	@Override
 	public void initAnimations() {
-		initAimAnimation(-0.366f, 0.16f, 0.057f);
-		initAimingAnimationStates(0.16f, 0.11f, 0.145f);
+		initAimAnimation(-0.561f, 0.268f, 0.085f);
+		initAimingAnimationStates(0.268f, 0.208f, 0.268f);
 		heldAnimation = new HeldAnimation(HeldStyle.SMALL);
 		reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
 	}
@@ -76,10 +76,10 @@ public class ModelDeagle extends ModelGun {
 		GlStateManager.pushMatrix();
 		ModelTransformationHelper.defaultPistolTransform();
 		GlStateManager.scale(0.39999992, 0.39999992, 0.39999992);
-		GlStateManager.translate(16.24, 2.0, 0.0);
+		GlStateManager.translate(0.0, 11.0, -8.0);
 		deagle.render(1f);
 		GlStateManager.popMatrix();
-		renderRedDot(10.2, -10.9, -5.55, 1.2f, stack);
+		renderRedDot(-0.45, -5.45, -8, 1.2f, stack);
 	}
 	
 	public ModelDeagle() {
