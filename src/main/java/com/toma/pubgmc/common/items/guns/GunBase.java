@@ -701,6 +701,7 @@ public class GunBase extends PMCItem
 		SINGLE,
 		KAR98K;
 		
+		// TODO: clean
 		public void handleReload(EntityPlayer player)
 		{
 			IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);

@@ -33,7 +33,7 @@ public class CustomDateEvents
 		else if(isPUBGMCAnniversary()) {
 			int year = date.getYear() - 2018;
 			String s = year == 1 ? "year" : "years";
-			message(loggedPlayer, TextFormatting.GOLD + "PUBGMC is now " + TextFormatting.ITALIC + year + TextFormatting.RESET + "" + TextFormatting.GOLD + s + " old! Thank you for your support! -Toma");
+			message(loggedPlayer, TextFormatting.GOLD + "PUBGMC is now " + TextFormatting.ITALIC + year + TextFormatting.RESET + " " + TextFormatting.GOLD + s + " old! Thank you for your support! -Toma");
 		}
 	}
 	

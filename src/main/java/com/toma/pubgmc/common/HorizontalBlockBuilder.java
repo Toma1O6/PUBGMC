@@ -1,5 +1,7 @@
 package com.toma.pubgmc.common;
 
+import java.util.List;
+
 import com.toma.pubgmc.common.blocks.PMCBlockHorizontal;
 import com.toma.pubgmc.util.IBuilder;
 
@@ -9,7 +11,9 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,6 +32,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal>
 	private int lightValue;
 	private AxisAlignedBB[] boxes;
 	private BlockFaceShape faceShape;
+	private String[] desc;
 	
 	private HorizontalBlockBuilder() {}
 	
@@ -130,6 +135,11 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal>
 		return this;
 	}
 	
+	public HorizontalBlockBuilder description(String... strings) {
+		this.desc = strings;
+		return this;
+	}
+	
 	@Override
 	public PMCBlockHorizontal build()
 	{
@@ -185,6 +195,15 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal>
 			public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
 			{
 				return faceShape;
+			}
+			
+			@Override
+			public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
+				if(desc != null) {
+					for(String s : desc) {
+						tooltip.add(s);
+					}
+				}
 			}
 		};
 		

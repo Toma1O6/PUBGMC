@@ -10,7 +10,7 @@ import javax.vecmath.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.toma.pubgmc.animation.Animation;
-import com.toma.pubgmc.client.util.ModelDebugger;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase;
@@ -155,7 +155,7 @@ public class BakedModelGun implements IBakedModel
 	
 	private Quat4f debugQuat1()
 	{
-		return new Quat4f(ModelDebugger.x, ModelDebugger.y, ModelDebugger.z, 0f);
+		return new Quat4f(ModelHelper.x, ModelHelper.y, ModelHelper.z, 0f);
 	}
 	
 	private void process(ItemStack held, IPlayerData data)

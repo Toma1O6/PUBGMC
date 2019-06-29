@@ -1,6 +1,8 @@
 package com.toma.pubgmc.init;
 
 import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.DevUtil;
+import com.toma.pubgmc.DevUtil.ModelCreator;
 import com.toma.pubgmc.ConfigPMC.WeaponSettings;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
@@ -254,6 +256,7 @@ public class PMCRegistry
 		public static final Block PROP3 = null;
 		public static final Block PROP4 = null;
 		public static final Block PROP5 = null;
+		public static final Block PROP6 = null;
 		public static final Block FENCE = null;
 		public static final Block CONCRETE = null;
 		public static final Block ELECTRICPOLE = null;
@@ -322,10 +325,11 @@ public class PMCRegistry
 						.renderType(BlockRenderLayer.CUTOUT).setTransparent().build(),
 					new BlockPlant("wheat", Material.PLANTS, SoundType.PLANT, MapColor.YELLOW),
 					HorizontalBlockBuilder.create("prop1", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
-					HorizontalBlockBuilder.create("prop2", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
+					HorizontalBlockBuilder.create("prop2", Material.PLANTS).soundType(SoundType.PLANT).setProp().description("My own prop.. For making the mod I guess").build(),
 					HorizontalBlockBuilder.create("prop3", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
 					HorizontalBlockBuilder.create("prop4", Material.IRON).soundType(SoundType.METAL).setProp().build(),
 					HorizontalBlockBuilder.create("prop5", Material.CLOTH).soundType(SoundType.CLOTH).setProp().build(),
+					BlockBuilder.create("prop6", Material.ROCK).soundType(SoundType.GLASS).aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB).transparency(false, false).description("OfficialMajonaise's prop for doing great models").renderType(BlockRenderLayer.CUTOUT).build(),
 					HorizontalBlockBuilder.create("fence", Material.IRON).soundType(SoundType.METAL).setTransparent()
 						.aabb(new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1),new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6),new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1),new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6))
 						.build(),
@@ -466,6 +470,7 @@ public class PMCRegistry
 					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP3),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP4),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP5),
+					new PMCItemBlock(PMCRegistry.PMCBlocks.PROP6),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.FENCE),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.CONCRETE),
 					new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICPOLE),
@@ -876,6 +881,11 @@ public class PMCRegistry
 		@SubscribeEvent
 		public static void registerModels(ModelRegistryEvent e)
 		{
+			if(DevUtil.isDev()) {
+				ModelCreator modelCreator = DevUtil.creator();
+				modelCreator.createBlockstateFile(PMCBlocks.PROP6);
+				modelCreator.createItemBlockFile(PMCBlocks.PROP6);
+			}
 			for(ResourceLocation rl : ForgeRegistries.ITEMS.getKeys())
 			{
 				if(rl.getResourceDomain().equals(Pubgmc.MOD_ID))

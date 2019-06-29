@@ -1,5 +1,7 @@
 package com.toma.pubgmc.common;
 
+import java.util.List;
+
 import com.toma.pubgmc.common.blocks.PMCBlock;
 import com.toma.pubgmc.util.IBuilder;
 
@@ -8,7 +10,9 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,6 +31,7 @@ public class BlockBuilder implements IBuilder<PMCBlock>
 	protected float lightValue = 0;
 	protected AxisAlignedBB[] boxes;
 	protected boolean isGlass = false;
+	protected String[] description = null;
 	
 	protected BlockBuilder() {}
 	
@@ -106,6 +111,11 @@ public class BlockBuilder implements IBuilder<PMCBlock>
 		return this;
 	}
 	
+	public BlockBuilder description(String... strings) {
+		this.description = strings;
+		return this;
+	}
+	
 	@Override
 	public PMCBlock build()
 	{
@@ -160,6 +170,15 @@ public class BlockBuilder implements IBuilder<PMCBlock>
 			public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
 			{
 				return isGlass ? blockAccess.getBlockState(pos.offset(side)).getBlock() == this ? false : super.shouldSideBeRendered(blockState, blockAccess, pos, side) : super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+			}
+			
+			@Override
+			public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
+				if(description != null) {
+					for(String s : description) {
+						tooltip.add(s);
+					}
+				}
 			}
 		};
 		builtBlock.setLightLevel(lightValue);

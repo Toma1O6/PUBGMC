@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GlStateManager;
 public class ModelTransformationHelper 
 {
 	public static ModelTransformationHelper instance;
-	private static ModelDebugger d = ModelDebugger.instance;
+	private static ModelHelper d = ModelHelper.instance;
 	
 	public static void defaultPistolTransform()
 	{

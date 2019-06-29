@@ -20,7 +20,7 @@ import com.toma.pubgmc.client.models.atachments.ModelScope8X;
 import com.toma.pubgmc.client.models.atachments.ModelSilencer;
 import com.toma.pubgmc.client.models.atachments.ModelSilencerPistol;
 import com.toma.pubgmc.client.models.atachments.ModelVerticalGrip;
-import com.toma.pubgmc.client.util.ModelDebugger;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 

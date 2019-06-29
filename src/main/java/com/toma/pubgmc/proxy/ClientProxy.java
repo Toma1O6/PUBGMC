@@ -17,7 +17,7 @@ import com.toma.pubgmc.client.renderer.RenderPlane;
 import com.toma.pubgmc.client.renderer.RenderSmokeGrenade;
 import com.toma.pubgmc.client.renderer.RenderUAZ;
 import com.toma.pubgmc.client.util.KeyBinds;
-import com.toma.pubgmc.client.util.ModelDebugger;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityFlashbang;
@@ -60,7 +60,7 @@ public class ClientProxy implements IProxy
 	{
 		KeyBinds.registerKeybinding();
 		if(DevUtil.isDev()) {
-			ModelDebugger.init();
+			ModelHelper.init();
 			Pubgmc.logger.info("Initialized model debugger");
 		}
 		if(ConfigPMC.client.other.lootRenderType > 0)
