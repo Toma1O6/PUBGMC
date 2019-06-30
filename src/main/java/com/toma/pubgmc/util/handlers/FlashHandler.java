@@ -10,6 +10,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.EntityFlashbang;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketUpdateFlashStatus;
+import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
 import com.toma.pubgmc.util.PUBGMCUtil;
 
@@ -17,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -42,6 +44,8 @@ public final class FlashHandler {
 					PacketHandler.sendToClient(new PacketUpdateFlashStatus(true), (EntityPlayerMP)player);
 				}
 			}
+		} else if(getFlashAmountFor(player, from) > 0) {
+			player.playSound(PMCSounds.flash_short, 10f, 1f);
 		}
 	}
 	
@@ -54,6 +58,8 @@ public final class FlashHandler {
 		else if(f0 > MAX_FLASH_RANGE - 5 && f0 <= MAX_FLASH_RANGE + 5) {
 			amount = 1;
 		}
+		SoundEvent e = amount == 1 ? PMCSounds.flash_short : PMCSounds.flash;
+		player.playSound(e, 10f, 1f);
 		return amount;
 	}
 	
