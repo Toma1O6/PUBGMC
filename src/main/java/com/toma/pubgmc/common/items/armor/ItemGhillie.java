@@ -3,10 +3,14 @@ package com.toma.pubgmc.common.items.armor;
 import java.util.List;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -19,6 +23,8 @@ import net.minecraft.world.World;
 
 public class ItemGhillie extends ItemArmor
 {
+	private final ModelGhillie ghillie = new ModelGhillie();
+	
 	public ItemGhillie(String name)
 	{
 		super(PMCRegistry.ToolMaterials.GHILLIE_SUIT, 1, EntityEquipmentSlot.LEGS);
@@ -51,5 +57,33 @@ public class ItemGhillie extends ItemArmor
 			}
 		}
     	return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+    }
+    
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+    	return null;
+    	//return Pubgmc.MOD_ID+":textures/models/armor/ghillie_suit_layer_2.png";
+    }
+    
+    @Override
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+    	/*if(!itemStack.isEmpty()) {
+    		if(itemStack.getItem() == PMCItems.GHILLIE_SUIT) {
+    			boolean flag = armorSlot == EntityEquipmentSlot.CHEST;
+    			ghillie.bipedHead.showModel = flag;
+    			ghillie.bipedBody.showModel = flag;
+    			ghillie.bipedLeftArm.showModel = flag;
+    			ghillie.bipedRightArm.showModel = flag;
+    			ghillie.bipedLeftLeg.showModel = flag;
+    			ghillie.bipedRightLeg.showModel = flag;
+    			ghillie.isChild = _default.isChild;
+    			ghillie.isSneak = _default.isSneak;
+    			ghillie.isRiding = _default.isRiding;
+    			ghillie.leftArmPose = _default.leftArmPose;
+    			ghillie.rightArmPose = _default.rightArmPose;
+    			return ghillie;
+    		}
+    	}*/
+    	return null;
     }
 }

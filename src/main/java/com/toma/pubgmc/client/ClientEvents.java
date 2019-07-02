@@ -45,6 +45,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -133,8 +134,14 @@ public class ClientEvents
 	//@SubscribeEvent
 	public void renderPlayerPost(RenderPlayerEvent.Post e) {
 		EntityPlayer player = e.getEntityPlayer();
-		if(player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() instanceof ItemGhillie) {
-			ghillieSuit.render(player, e.getRenderer().getMainModel(), e.getPartialRenderTick());
+		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
+		if(stack.getItem() instanceof ItemGhillie) {
+			GlStateManager.pushMatrix();
+			GlStateManager.scale(0.2, 0.2, 0.2);
+			GlStateManager.rotate(180f, 1f, 0f, 0f);
+			GlStateManager.translate(0, -10, 0);
+			ghillieSuit.render(player, player.limbSwing, player.limbSwingAmount, player.ticksExisted, player.rotationYawHead, player.rotationPitch, 0.625f);
+			GlStateManager.popMatrix();
 		}
 	}
 	
@@ -262,7 +269,7 @@ public class ClientEvents
     	{
     		if(stack.getItem() instanceof GunBase)
     		{
-    			e.setCanceled(true);
+    			//e.setCanceled(true);
     		}
     	}
     	
