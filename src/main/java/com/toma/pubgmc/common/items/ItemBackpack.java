@@ -4,7 +4,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.init.PMCRegistry;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,73 +12,60 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ItemBackpack extends PMCItem
-{
-	public ItemBackpack(String name)
-	{
-		super(name);
-		this.setCreativeTab(Pubgmc.pmcitemstab);
-		this.setMaxStackSize(1);
-	}
-	
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
-	{
-		ItemStack stack = playerIn.getHeldItem(handIn);
-		IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+public class ItemBackpack extends PMCItem {
+    public ItemBackpack(String name) {
+        super(name);
+        this.setCreativeTab(Pubgmc.pmcitemstab);
+        this.setMaxStackSize(1);
+    }
 
-		if(stack.getItem() == PMCRegistry.PMCItems.BACKPACK1 && data.getBackpackLevel() == 0)
-		{
-			if(!playerIn.capabilities.isCreativeMode)
-			{
-				stack.shrink(1);
-			}
-				
-			data.setBackpackLevel(1);
-		}
-			
-		if(stack.getItem() == PMCRegistry.PMCItems.BACKPACK2 && (data.getBackpackLevel() == 0 || data.getBackpackLevel() == 1))
-		{
-			if(!playerIn.capabilities.isCreativeMode)
-			{
-				stack.shrink(1);
-			}
-				
-			if(data.getBackpackLevel() == 1)
-			{
-				playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
-			}
-				
-			data.setBackpackLevel(2);
-		}
-			
-		if(stack.getItem() == PMCRegistry.PMCItems.BACKPACK3 && data.getBackpackLevel() < 3)
-		{
-			if(!playerIn.capabilities.isCreativeMode)
-			{
-				stack.shrink(1);
-			}
-				
-			if(data.getBackpackLevel() == 1)
-			{
-				playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
-			}
-				
-			if(data.getBackpackLevel() == 2)
-			{
-				playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.BACKPACK2));
-			}
-				
-			data.setBackpackLevel(3);	
-		}
-		
-		clearIcons(playerIn.inventory);
-		
-		return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
-	}
-	
-	private static void clearIcons(InventoryPlayer inv)
-	{
-		inv.clearMatchingItems(PMCRegistry.PMCItems.IBLOCK, 0, inv.getSizeInventory() * 64, null);
-	}
+    private static void clearIcons(InventoryPlayer inv) {
+        inv.clearMatchingItems(PMCRegistry.PMCItems.IBLOCK, 0, inv.getSizeInventory() * 64, null);
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack stack = playerIn.getHeldItem(handIn);
+        IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+
+        if (stack.getItem() == PMCRegistry.PMCItems.BACKPACK1 && data.getBackpackLevel() == 0) {
+            if (!playerIn.capabilities.isCreativeMode) {
+                stack.shrink(1);
+            }
+
+            data.setBackpackLevel(1);
+        }
+
+        if (stack.getItem() == PMCRegistry.PMCItems.BACKPACK2 && (data.getBackpackLevel() == 0 || data.getBackpackLevel() == 1)) {
+            if (!playerIn.capabilities.isCreativeMode) {
+                stack.shrink(1);
+            }
+
+            if (data.getBackpackLevel() == 1) {
+                playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
+            }
+
+            data.setBackpackLevel(2);
+        }
+
+        if (stack.getItem() == PMCRegistry.PMCItems.BACKPACK3 && data.getBackpackLevel() < 3) {
+            if (!playerIn.capabilities.isCreativeMode) {
+                stack.shrink(1);
+            }
+
+            if (data.getBackpackLevel() == 1) {
+                playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
+            }
+
+            if (data.getBackpackLevel() == 2) {
+                playerIn.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.BACKPACK2));
+            }
+
+            data.setBackpackLevel(3);
+        }
+
+        clearIcons(playerIn.inventory);
+
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+    }
 }

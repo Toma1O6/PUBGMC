@@ -3,20 +3,18 @@ package com.toma.pubgmc.common.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 
-public class BlockOre extends PMCBlock
-{	
-	private ItemStack drop;
-	private int quantity = 1;
-	private boolean isDropRandom = false;
-	private int dropScale = 1;
-	
-	public BlockOre(String name)
-	{
-		super(name, Material.ROCK);
-		setHardness(1.5f);
-		setResistance(15f);
-		setHarvestLevel("pickaxe", 1);
-	}
+public class BlockOre extends PMCBlock {
+    private ItemStack drop;
+    private int quantity = 1;
+    private boolean isDropRandom = false;
+    private int dropScale = 1;
+
+    public BlockOre(String name) {
+        super(name, Material.ROCK);
+        setHardness(1.5f);
+        setResistance(15f);
+        setHarvestLevel("pickaxe", 1);
+    }
 	
 	/*public BlockOre(String name, Block drop)
 	{

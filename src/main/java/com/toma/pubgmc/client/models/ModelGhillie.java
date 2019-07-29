@@ -1,22 +1,18 @@
 package com.toma.pubgmc.client.models;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 
-public class ModelGhillie extends ModelBiped
-{
-	public ModelRenderer head;
-	public ModelRenderer r_arm;
-	public ModelRenderer l_arm;
-	public ModelRenderer body;
-	public ModelRenderer r_leg;
-	public ModelRenderer l_leg;
-	
-    public ModelGhillie()
-    {
+public class ModelGhillie extends ModelBiped {
+    public ModelRenderer head;
+    public ModelRenderer r_arm;
+    public ModelRenderer l_arm;
+    public ModelRenderer body;
+    public ModelRenderer r_leg;
+    public ModelRenderer l_leg;
+
+    public ModelGhillie() {
         this.textureWidth = 128;
         this.textureHeight = 64;
         this.head = new ModelRenderer(this, 90, 32);
@@ -44,21 +40,21 @@ public class ModelGhillie extends ModelBiped
         bipedRightArm.addChild(r_arm);
         bipedRightLeg.addChild(r_leg);
     }
-    
+
+    private static void setRotationAngle(ModelRenderer model, float x, float y, float z) {
+        model.rotateAngleX = x;
+        model.rotateAngleY = y;
+        model.rotateAngleZ = z;
+    }
+
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-    		float headPitch, float scale) {
-    	// TODO Auto-generated method stub
-    	super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+                       float headPitch, float scale) {
+        // TODO Auto-generated method stub
+        super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
-    
+
     private float interpolate(float current, float prev, float partial) {
-    	return prev + partial * (current - prev);
-    }
-    
-    private static void setRotationAngle(ModelRenderer model, float x, float y, float z) {
-    	model.rotateAngleX = x;
-    	model.rotateAngleY = y;
-    	model.rotateAngleZ = z;
+        return prev + partial * (current - prev);
     }
 }

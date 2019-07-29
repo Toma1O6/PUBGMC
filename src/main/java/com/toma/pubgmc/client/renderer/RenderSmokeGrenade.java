@@ -1,14 +1,7 @@
 package com.toma.pubgmc.client.renderer;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import com.toma.pubgmc.common.entity.EntitySmokeGrenade;
 import com.toma.pubgmc.init.PMCRegistry;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,34 +16,33 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import org.lwjgl.opengl.GL11;
 
-public class RenderSmokeGrenade extends Render<EntitySmokeGrenade>
-{
-	public RenderSmokeGrenade(RenderManager manager)
-	{
-		super(manager);
-	}
-	
-	@Nullable
-	@Override
-	protected ResourceLocation getEntityTexture(EntitySmokeGrenade entity)
-	{
-		return null;
-	}
-	
-	@Override
-	public void doRender(EntitySmokeGrenade entity, double x, double y, double z, float entityYaw, float partialTicks)
-	{
-		GlStateManager.pushMatrix();
-		{
+import javax.annotation.Nullable;
+import java.util.List;
+
+public class RenderSmokeGrenade extends Render<EntitySmokeGrenade> {
+    public RenderSmokeGrenade(RenderManager manager) {
+        super(manager);
+    }
+
+    @Nullable
+    @Override
+    protected ResourceLocation getEntityTexture(EntitySmokeGrenade entity) {
+        return null;
+    }
+
+    @Override
+    public void doRender(EntitySmokeGrenade entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        GlStateManager.pushMatrix();
+        {
             GlStateManager.translate(x, y, z);
             GlStateManager.translate(-0.5, 0, -0.5);
-			GlStateManager.scale(0.6f, 0.6f, 0.6f);
-            
-            if(entity.onGround)
-            {
-            	GlStateManager.rotate(90, 0, 0, 1);
-            	GlStateManager.translate(-0.2, -1.0, 0.4);
+            GlStateManager.scale(0.6f, 0.6f, 0.6f);
+
+            if (entity.onGround) {
+                GlStateManager.rotate(90, 0, 0, 1);
+                GlStateManager.translate(-0.2, -1.0, 0.4);
             }
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -62,8 +54,7 @@ public class RenderSmokeGrenade extends Render<EntitySmokeGrenade>
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
-            for(EnumFacing enumfacing : EnumFacing.values())
-            {
+            for (EnumFacing enumfacing : EnumFacing.values()) {
                 this.renderQuads(buffer, model.getQuads(null, enumfacing, 0L));
             }
 
@@ -71,16 +62,14 @@ public class RenderSmokeGrenade extends Render<EntitySmokeGrenade>
             tessellator.draw();
 
             GlStateManager.enableLighting();
-		}
-		GlStateManager.popMatrix();
-		super.doRender(entity, x, y, z, entityYaw, partialTicks);
-	}
-	
-    private void renderQuads(BufferBuilder buffer, List<BakedQuad> quads)
-    {
+        }
+        GlStateManager.popMatrix();
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+    }
+
+    private void renderQuads(BufferBuilder buffer, List<BakedQuad> quads) {
         int i = 0;
-        for(int j = quads.size(); i < j; ++i)
-        {
+        for (int j = quads.size(); i < j; ++i) {
             BakedQuad quad = quads.get(i);
             LightUtil.renderQuadColor(buffer, quad, -1);
         }
