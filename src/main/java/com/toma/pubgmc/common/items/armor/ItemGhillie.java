@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 public class ItemGhillie extends ItemArmor
 {
-	private final ModelGhillie ghillie = new ModelGhillie();
+	private ModelGhillie ghillie;
 	
 	public ItemGhillie(String name)
 	{
