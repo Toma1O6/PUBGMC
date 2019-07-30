@@ -176,7 +176,7 @@ public class InventoryAttachments extends InventoryBasic {
             GunBase gun = (GunBase) stack.getItem();
             int grip = stack.getTagCompound().getInteger("grip");
 
-            //cannot be 0 because of the check while attaching; anything bigger will simply return the angled grip
+            //cannot be 0 because of the check while attaching; anything bigger will simply return the AttachmentGripAngled grip
             return grip == 1 ? new ItemStack(PMCRegistry.PMCItems.GRIP_VERTICAL) : new ItemStack(PMCRegistry.PMCItems.GRIP_ANGLED);
         }
         return ItemStack.EMPTY;

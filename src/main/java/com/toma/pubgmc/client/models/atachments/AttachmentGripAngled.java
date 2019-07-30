@@ -1,6 +1,6 @@
-//Made with Blockbench
-//Paste this code into your mod.
+package com.toma.pubgmc.client.models.atachments;
 
+import com.toma.pubgmc.client.models.ModelAtachmentBase;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
@@ -8,7 +8,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
-public class angled extends ModelBase {
+public class AttachmentGripAngled extends ModelAtachmentBase {
+
 	private final ModelRenderer bone;
 	private final ModelRenderer bone2;
 	private final ModelRenderer bone3;
@@ -20,7 +21,7 @@ public class angled extends ModelBase {
 	private final ModelRenderer bone10;
 	private final ModelRenderer bone7;
 
-	public angled() {
+	public AttachmentGripAngled() {
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -100,9 +101,10 @@ public class angled extends ModelBase {
 	}
 
 	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		bone.render(f5);
+	public void render() {
+		bone.render(1f);
 	}
+
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;

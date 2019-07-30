@@ -1,14 +1,12 @@
-//Made with Blockbench
-//Paste this code into your mod.
+package com.toma.pubgmc.client.models.atachments;
 
-import org.lwjgl.opengl.GL11;
+import com.toma.pubgmc.client.models.ModelAtachmentBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
-public class 4x extends ModelBase {
+public class AttachmentScope4x extends ModelAtachmentBase {
 	private final ModelRenderer acog;
 	private final ModelRenderer bone1;
 	private final ModelRenderer bone;
@@ -30,7 +28,7 @@ public class 4x extends ModelBase {
 	private final ModelRenderer bone18;
 	private final ModelRenderer bone2;
 
-	public 4x() {
+	public AttachmentScope4x() {
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -203,9 +201,10 @@ public class 4x extends ModelBase {
 	}
 
 	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		acog.render(f5);
+	public void render() {
+		bone.render(1f);
 	}
+
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;

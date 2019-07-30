@@ -1,14 +1,11 @@
-//Made with Blockbench
-//Paste this code into your mod.
+package com.toma.pubgmc.client.models.atachments;
 
-import org.lwjgl.opengl.GL11;
-import net.minecraft.client.model.ModelBase;
+import com.toma.pubgmc.client.models.ModelAtachmentBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 
-public class vertical extends ModelBase {
+public class AttachmentGripVertical extends ModelAtachmentBase {
+
 	private final ModelRenderer gripsegment1;
 	private final ModelRenderer grip3;
 	private final ModelRenderer grip2;
@@ -18,7 +15,7 @@ public class vertical extends ModelBase {
 	private final ModelRenderer grip7;
 	private final ModelRenderer gripsegment2;
 
-	public vertical() {
+	public AttachmentGripVertical() {
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -113,9 +110,9 @@ public class vertical extends ModelBase {
 	}
 
 	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		gripsegment1.render(f5);
-		gripsegment2.render(f5);
+	public void render() {
+		gripsegment1.render(1f);
+		gripsegment2.render(1f);
 	}
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;

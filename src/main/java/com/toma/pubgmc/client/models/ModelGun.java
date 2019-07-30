@@ -17,23 +17,25 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import javax.vecmath.Vector3f;
 
 public abstract class ModelGun extends ModelBase {
-    protected static final MutablePair[] DEFAULT_PART_ANIMATION =
-            {
-                    new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0.5f, 0f)),
-                    new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 11.5f, 0f)),
-                    new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f))
-            };
+    protected static final MutablePair[] DEFAULT_PART_ANIMATION = {
+            // TODO make better
+            new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0.5f, 0f)),
+            new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 11.5f, 0f)),
+            new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f))
+    };
 
-    private final ModelSilencerPistol silencer_pistol = new ModelSilencerPistol();
-    private final ModelSilencer silencer = new ModelSilencer();
-    private final ModelVerticalGrip grip_vertical = new ModelVerticalGrip();
-    private final ModelAngledGrip grip_angled = new ModelAngledGrip();
-    private final ModelRedDotPistol red_dot = new ModelRedDotPistol();
-    private final ModelHolographic holo = new ModelHolographic();
-    private final ModelScope2X scope2x = new ModelScope2X();
-    private final ModelScope4X scope4x = new ModelScope4X();
-    private final ModelScope8X scope8x = new ModelScope8X();
-    private final ModelScope15X scope15x = new ModelScope15X();
+    private static final AttachmentSuppressorPistol pistolSupp = new AttachmentSuppressorPistol();
+    private static final AttachmentSuppressorSMG smgSupp = new AttachmentSuppressorSMG();
+    private static final AttachmentSuppressorAR arSupp = new AttachmentSuppressorAR();
+    private static final AttachmentSuppressorSR srSupp = new AttachmentSuppressorSR();
+    private static final AttachmentGripVertical grip_vertical = new AttachmentGripVertical();
+    private static final AttachmentGripAngled grip_angled = new AttachmentGripAngled();
+    private static final AttachmentScopeRDS red_dot = new AttachmentScopeRDS();
+    private static final AttachmentScopeHolo holo = new AttachmentScopeHolo();
+    private static final AttachmentScope2x scope2x = new AttachmentScope2x();
+    private static final AttachmentScope4x scope4x = new AttachmentScope4x();
+    private static final AttachmentScope8x scope8x = new AttachmentScope8x();
+    private static final AttachmentScope15x scope15x = new AttachmentScope15x();
 
     public AimingAnimation aimAnimation;
     public HeldAnimation heldAnimation;
@@ -201,7 +203,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.defaultPistolSilencerTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            silencer_pistol.render();
+            pistolSupp.render();
             GlStateManager.popMatrix();
         }
     }
@@ -212,7 +214,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.silencerSMGTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            silencer.render();
+            smgSupp.render();
             GlStateManager.popMatrix();
         }
     }
@@ -223,7 +225,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.silencerARTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            silencer.render();
+            arSupp.render();
             GlStateManager.popMatrix();
         }
     }
@@ -234,7 +236,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.silencerSRTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            silencer.render();
+            srSupp.render();
             GlStateManager.popMatrix();
         }
     }

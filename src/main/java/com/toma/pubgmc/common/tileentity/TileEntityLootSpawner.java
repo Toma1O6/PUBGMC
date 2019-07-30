@@ -205,7 +205,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory 
      *
      * @param airdroploot - enable airdrop weapons in the loot + awm ammo will spawn
      * @param addAmmo     - Decides if ammo will be generated with guns
-     * @param lootType    - 0 = all, 1 = pistol, 2 = shotguns, 3 = smgs, 4 = ar + lmg, 5 = dmr, 6 = sr, 7 = dmr + sr
+     * @param lootType    - 0 = all, 1 = pistol, 2 = shotguns, 3 = smgs, 4 = AttachmentSuppressorAR + lmg, 5 = dmr, 6 = sr, 7 = dmr + sr
      */
     public void generateLoot(boolean airdroploot, boolean addAmmo, boolean randomAmmo, double chanceMultiplier, List<GunType> weaponList) {
         LootType type = LootType.getTypeFromState(world.getBlockState(pos));

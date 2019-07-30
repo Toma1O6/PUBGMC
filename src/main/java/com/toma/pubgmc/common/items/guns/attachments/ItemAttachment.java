@@ -81,21 +81,21 @@ public class ItemAttachment extends PMCItem implements IAttachment {
 
             case GRIP: {
 
-                tooltip.add("Vertical grip: Reduces vertical recoil");
+                tooltip.add("Vertical grip: Reduces AttachmentGripVertical recoil");
                 tooltip.add("Angled grip: Reduces horizontal recoil");
                 break;
             }
 
             case BARREL: {
 
-                tooltip.add("Compensators greatly reduce both vertical and horizontal recoil");
+                tooltip.add("Compensators greatly reduce both AttachmentGripVertical and horizontal recoil");
                 break;
             }
 
             case STOCK: {
 
                 tooltip.add("Bullet loops: Reduces reloading time by 30%");
-                tooltip.add("Cheekpad: Slightly reduces both vertical and horizontal recoil");
+                tooltip.add("Cheekpad: Slightly reduces both AttachmentGripVertical and horizontal recoil");
                 break;
             }
         }

@@ -1075,7 +1075,7 @@ public class ClientEvents {
 
             GunBase wep = (GunBase) gun.getItem();
 
-            //10% vertical recoil reduction while you're sneaking
+            //10% AttachmentGripVertical recoil reduction while you're sneaking
             if (player.isSneaking()) {
                 if (gun.hasTagCompound()) {
                     if (gun.getTagCompound().getInteger("barrel") == 2) {

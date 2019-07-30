@@ -1,14 +1,10 @@
-//Made with Blockbench
-//Paste this code into your mod.
+package com.toma.pubgmc.client.models.atachments;
 
-import org.lwjgl.opengl.GL11;
-import net.minecraft.client.model.ModelBase;
+import com.toma.pubgmc.client.models.ModelAtachmentBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 
-public class 15x extends ModelBase {
+public class AttachmentScope15x extends ModelAtachmentBase {
 	private final ModelRenderer scope;
 	private final ModelRenderer ring1;
 	private final ModelRenderer bone;
@@ -86,7 +82,7 @@ public class 15x extends ModelBase {
 	private final ModelRenderer bone51;
 	private final ModelRenderer cover;
 
-	public 15x() {
+	public AttachmentScope15x() {
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -641,8 +637,8 @@ public class 15x extends ModelBase {
 	}
 
 	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		scope.render(f5);
+	public void render() {
+		scope.render(1f);
 	}
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;

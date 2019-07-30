@@ -270,7 +270,7 @@ public class CommandLootGenerate extends CommandBase {
                     break;
                 }
 
-                case "smg": {
+                case "AttachmentSuppressorSMG": {
                     if (!data.getWeaponList().contains(GunType.SMG)) {
                         data.addWeaponTypeToLootGeneration(GunType.SMG);
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added SMGs into loot generation!"));
@@ -288,7 +288,7 @@ public class CommandLootGenerate extends CommandBase {
                     break;
                 }
 
-                case "ar": {
+                case "AttachmentSuppressorAR": {
                     if (!data.getWeaponList().contains(GunType.AR)) {
                         data.addWeaponTypeToLootGeneration(GunType.AR);
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Added assault rifles into loot generation!"));
@@ -316,7 +316,7 @@ public class CommandLootGenerate extends CommandBase {
                 }
 
                 default: {
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, smg, ar, dmr, sr]."));
+                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, AttachmentSuppressorSMG, AttachmentSuppressorAR, dmr, sr]."));
                     break;
                 }
             }
@@ -336,7 +336,7 @@ public class CommandLootGenerate extends CommandBase {
                     break;
                 }
 
-                case "smg": {
+                case "AttachmentSuppressorSMG": {
                     if (data.getWeaponList().contains(GunType.SMG)) {
                         data.removeWeaponTypeFromLootGeneration(GunType.SMG);
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed SMGs from loot generation!"));
@@ -354,7 +354,7 @@ public class CommandLootGenerate extends CommandBase {
                     break;
                 }
 
-                case "ar": {
+                case "AttachmentSuppressorAR": {
                     if (data.getWeaponList().contains(GunType.AR)) {
                         data.removeWeaponTypeFromLootGeneration(GunType.AR);
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Removed assault rifles from loot generation!"));
@@ -382,7 +382,7 @@ public class CommandLootGenerate extends CommandBase {
                 }
 
                 default: {
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, smg, ar, dmr, sr]."));
+                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Unknown weapon type! Valid weapons types: [pistol, shotgun, AttachmentSuppressorSMG, AttachmentSuppressorAR, dmr, sr]."));
                     break;
                 }
             }
@@ -417,7 +417,7 @@ public class CommandLootGenerate extends CommandBase {
             }
         } else if (args.length == 4) {
             if (args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("remove")) {
-                return getListOfStringsMatchingLastWord(args, new String[]{"pistol", "shotgun", "smg", "ar", "dmr", "sr"});
+                return getListOfStringsMatchingLastWord(args, new String[]{"pistol", "shotgun", "AttachmentSuppressorSMG", "AttachmentSuppressorAR", "dmr", "sr"});
             }
         }
 

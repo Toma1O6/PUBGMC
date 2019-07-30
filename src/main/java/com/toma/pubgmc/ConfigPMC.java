@@ -163,7 +163,7 @@ public class ConfigPMC {
         public int imgOverlayX = 0;
 
         @Name("Boost overlay y-position offset")
-        @Comment("Use this to adjust your boost overlay position if you have problems with it - this is vertical movement")
+        @Comment("Use this to adjust your boost overlay position if you have problems with it - this is AttachmentGripVertical movement")
         public int imgOverlayY = 0;
 
         @Name("Textured boost bar position x")
