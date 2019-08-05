@@ -251,6 +251,7 @@ public final class RecipeRegistry {
                 .ingredient(Items.DYE, 5, 1)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAmmo()
+                .resultAmount(30)
                 .result(PMCItems.AMMO_9MM)
                 .ingredient(Items.GOLD_NUGGET, 5)
                 .ingredient(PMCItems.COPPER_INGOT, 1)
@@ -258,6 +259,7 @@ public final class RecipeRegistry {
                 .ingredient(Items.GUNPOWDER, 1)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAmmo()
+                .resultAmount(30)
                 .result(PMCItems.AMMO_SHOTGUN)
                 .ingredient(Items.GOLD_NUGGET, 10)
                 .ingredient(Items.IRON_NUGGET, 8)
@@ -265,6 +267,7 @@ public final class RecipeRegistry {
                 .ingredient(Items.GUNPOWDER, 3)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAmmo()
+                .resultAmount(30)
                 .result(PMCItems.AMMO_45ACP)
                 .ingredient(Items.GOLD_NUGGET, 5)
                 .ingredient(Items.IRON_NUGGET, 5)
@@ -272,6 +275,7 @@ public final class RecipeRegistry {
                 .ingredient(Items.GUNPOWDER, 1)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAmmo()
+                .resultAmount(30)
                 .result(PMCItems.AMMO_556)
                 .ingredient(Items.GOLD_NUGGET, 10)
                 .ingredient(Items.IRON_NUGGET, 10)
@@ -279,6 +283,7 @@ public final class RecipeRegistry {
                 .ingredient(Items.GUNPOWDER, 2)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAmmo()
+                .resultAmount(30)
                 .result(PMCItems.AMMO_762)
                 .ingredient(Items.GOLD_NUGGET, 15)
                 .ingredient(Items.IRON_NUGGET, 10)
@@ -286,6 +291,7 @@ public final class RecipeRegistry {
                 .ingredient(Items.GUNPOWDER, 2)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAmmo()
+                .resultAmount(30)
                 .result(PMCItems.AMMO_300M)
                 .ingredient(Items.GOLD_INGOT, 3)
                 .ingredient(Items.IRON_INGOT, 3)
@@ -384,7 +390,13 @@ public final class RecipeRegistry {
                 .ingredient(Items.COAL, 5)
                 .ingredient(Items.GLASS_BOTTLE, 1)
                 .build());
-        // TODO : FlashBang
+        registerRecipe(PMCRecipeBuilder.createGrenade()
+                .result(PMCItems.FLASHBANG)
+                .ingredient(Items.GLOWSTONE_DUST, 5)
+                .ingredient(Items.GUNPOWDER, 10)
+                .ingredient(Items.IRON_INGOT, 3)
+                .ingredient(Blocks.SAND, 1)
+                .build());
 
         // Healing
         registerRecipe(PMCRecipeBuilder.createHeal()

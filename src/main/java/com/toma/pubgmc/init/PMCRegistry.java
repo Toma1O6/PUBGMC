@@ -443,10 +443,9 @@ public class PMCRegistry {
                     new PMCItemBlock(PMCRegistry.PMCBlocks.STORAGETOP)
             };
 
-            final GunBase[] GUNS = getInitializedGuns();
             event.getRegistry().registerAll(ITEMS);
             event.getRegistry().registerAll(ITEM_BLOCKS);
-            event.getRegistry().registerAll(GUNS);
+            event.getRegistry().registerAll(getInitializedGuns());
         }
 
         @SubscribeEvent

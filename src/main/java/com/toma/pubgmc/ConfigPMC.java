@@ -78,6 +78,10 @@ public class ConfigPMC {
     }
 
     public static class WorldSettings {
+
+        @Name("Allow vehicle spawns")
+        public boolean allowVehicleSpawning = true;
+
         @Name("Airdrop loot generation type")
         @Comment({"Loot is being generated when airdrop is created", "0 - No loot", "1 - Only armor and healing items", "2 - Weapons"})
         @RangeInt(min = 0, max = 2)

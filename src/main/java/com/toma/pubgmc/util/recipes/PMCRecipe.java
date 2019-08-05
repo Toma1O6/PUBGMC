@@ -17,16 +17,22 @@ public class PMCRecipe {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/recipebase.png");
     public final Item result;
+    public final int resultCount;
     public final PMCIngredient[] ingredients;
     public final CraftingCategory category;
     public final ItemStack returnStack;
 
-    protected PMCRecipe(Item result, PMCIngredient[] ingredients, CraftingCategory category) {
-        this(result, ingredients, category, ItemStack.EMPTY);
+    protected PMCRecipe(Item result, int amount, PMCIngredient[] ingredients, CraftingCategory category) {
+        this(result, amount, ingredients, category, ItemStack.EMPTY);
     }
 
     protected PMCRecipe(Item result, PMCIngredient[] ingredients, CraftingCategory category, ItemStack returnStack) {
+        this(result, 1, ingredients, category, returnStack);
+    }
+
+    protected PMCRecipe(Item result, int amount, PMCIngredient[] ingredients, CraftingCategory category, ItemStack returnStack) {
         this.result = result;
+        this.resultCount = amount;
         this.ingredients = ingredients;
         this.category = category;
         this.returnStack = returnStack;

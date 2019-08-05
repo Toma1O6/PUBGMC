@@ -202,7 +202,7 @@ public class AttachmentScope4x extends ModelAtachmentBase {
 
 	@Override
 	public void render() {
-		bone.render(1f);
+		acog.render(1f);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

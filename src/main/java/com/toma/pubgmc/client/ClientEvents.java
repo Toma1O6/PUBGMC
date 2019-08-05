@@ -174,28 +174,6 @@ public class ClientEvents {
         player.sendMessage(new TextComponentString(TextFormatting.RED + textToSend));
     }
 
-    private static void initScopes() {
-        SCOPES.clear();
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_red.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_green.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_yellow.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_blue.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_red.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_green.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_yellow.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_blue.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_red.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_green.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_yellow.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_blue.png"));
-
-        HOLOS.clear();
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_red.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_green.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_yellow.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_blue.png"));
-    }
-
     private static int getScopeTypeID(int scope, int color) {
         int id = 0;
         switch (scope) {
@@ -311,6 +289,27 @@ public class ClientEvents {
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
         }
+    }
+
+    static {
+        SCOPES.clear();
+        HOLOS.clear();
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_red.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_green.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_yellow.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_blue.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_red.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_green.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_yellow.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_blue.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_red.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_green.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_yellow.png"));
+        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_blue.png"));
+        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_red.png"));
+        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_green.png"));
+        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_yellow.png"));
+        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_blue.png"));
     }
 
 // ========================================================================================================
@@ -706,8 +705,6 @@ public class ClientEvents {
         if (e.getEntity() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e.getEntity();
             if (player.world.isRemote) {
-                initScopes();
-
                 //Your fov cannot be under the "Normal" setting since it would be overpowered in some cases
                 //Purely balance stuff
                 float prevfov = Minecraft.getMinecraft().gameSettings.fovSetting;

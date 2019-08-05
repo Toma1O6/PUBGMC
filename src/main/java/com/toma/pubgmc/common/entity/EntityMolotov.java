@@ -82,6 +82,7 @@ public class EntityMolotov extends Entity {
         this.motionZ *= 0.98D;
 
         if (this.onGround) {
+            setInvisible(true);
             if (range == 0) calculateRange();
 
             this.motionX = 0;

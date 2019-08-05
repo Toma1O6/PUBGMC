@@ -188,6 +188,11 @@ public class EntityBullet extends Entity {
     protected void onHit(RayTraceResult raytraceResultIn) {
         Entity entity = raytraceResultIn.entityHit;
         if (entity != null) {
+            if(entity instanceof EntityMolotov) {
+                entity.onGround = true;
+                return;
+            }
+
             if (!world.isRemote) {
                 boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
                 double offset = 0f;
@@ -334,10 +339,6 @@ public class EntityBullet extends Entity {
      * <li> 40% For level 2 armor
      * <li> 60% For level 3 armor
      * </ul>
-     *
-     * @param player     - the player who got hit
-     * @param baseDamage - base weapon damage
-     * @param isHeadShot
      */
     private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot) {
         float baseDamage = damage;

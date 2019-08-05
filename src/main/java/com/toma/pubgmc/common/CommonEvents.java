@@ -122,6 +122,9 @@ public class CommonEvents {
         Map<BlockPos, TileEntity> map = chunk.getTileEntityMap();
         IGameData data = world.getCapability(GameDataProvider.GAMEDATA, null);
         IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
+        if (!data.isPlaying()) {
+            return;
+        }
 
         for (TileEntity tileEntity : map.values()) {
             if (tileEntity instanceof TileEntityLootSpawner) {

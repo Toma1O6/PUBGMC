@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
@@ -24,7 +25,7 @@ public class ItemVehicleSpawner extends PMCItem {
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
 
-        if (!worldIn.isRemote) {
+        if (!worldIn.isRemote && ConfigPMC.common.worldSettings.allowVehicleSpawning) {
             car.spawnEntity(worldIn, pos);
 
             if (!player.capabilities.isCreativeMode) {

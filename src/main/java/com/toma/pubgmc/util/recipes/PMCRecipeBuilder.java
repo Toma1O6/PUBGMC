@@ -1,6 +1,7 @@
 package com.toma.pubgmc.util.recipes;
 
 import com.google.common.base.Preconditions;
+import com.toma.pubgmc.util.IBuilder;
 import com.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class PMCRecipeBuilder {
 
     private Item result = null;
+    private int amount = 1;
     private Item returnItem = Items.AIR;
     private ArrayList<PMCIngredient> ingredients = new ArrayList<>();
     private CraftingCategory category;
@@ -88,12 +90,18 @@ public class PMCRecipeBuilder {
         return this;
     }
 
+    public PMCRecipeBuilder resultAmount(int amount) {
+        this.amount = amount;
+        return this;
+    }
+
     public PMCRecipe build() {
         Preconditions.checkNotNull(result);
+        Preconditions.checkState(amount > 0 && amount <= 64);
         Preconditions.checkNotNull(category);
         Preconditions.checkState(!ingredients.isEmpty());
         Preconditions.checkState(result != null && result != Items.AIR);
         PMCIngredient[] ingredient = ingredients.toArray(new PMCIngredient[0]);
-        return returnItem == Items.AIR ? new PMCRecipe(result, ingredient, category) : new PMCRecipe(result, ingredient, category, new ItemStack(returnItem));
+        return returnItem == Items.AIR ? new PMCRecipe(result, amount, ingredient, category) : new PMCRecipe(result, amount, ingredient, category, new ItemStack(returnItem));
     }
 }
