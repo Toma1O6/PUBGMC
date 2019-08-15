@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.network.sp;
 
-import com.toma.pubgmc.ConfigPMC;
-import com.toma.pubgmc.ConfigPMC.WeaponCFG;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.util.VehicleConfiguration;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

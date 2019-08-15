@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;

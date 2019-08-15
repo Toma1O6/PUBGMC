@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.blocks;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.handlers.GuiHandler;

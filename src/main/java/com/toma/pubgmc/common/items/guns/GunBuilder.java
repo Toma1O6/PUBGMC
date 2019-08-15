@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.items.guns;
 
-import com.toma.pubgmc.ConfigPMC.WeaponCFG;
+import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;

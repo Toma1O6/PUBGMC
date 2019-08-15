@@ -1,5 +1,6 @@
-package com.toma.pubgmc;
+package com.toma.pubgmc.config;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.util.VehicleConfiguration;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.common.config.Config;
@@ -11,16 +12,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Config(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME + " Config")
 public class ConfigPMC {
-    @Name("Client-side only options")
-    public static ClientConfig client = new ClientConfig();
 
     @Name("Common options")
     public static CommonConfig common = new CommonConfig();
-
-    public enum ActionType {
-        TOGGLE,
-        HOLD;
-    }
 
     public static class CommonConfig {
         @Name("World Settings")
@@ -38,43 +32,6 @@ public class ConfigPMC {
         @Name("Vehicle Settings")
         @Comment("All vehicle related fiels are here")
         public VehicleSettings vehicleSettings = new VehicleSettings();
-    }
-
-    /**
-     * Fields which won't be synced from server -> client on player join
-     */
-    public static class ClientConfig {
-        @Name("Overlays")
-        @Comment("Overlay rendering options")
-        public OverlaySettings overlays = new OverlaySettings();
-
-        @Name("Other")
-        public OtherSettings other = new OtherSettings();
-
-        @Name("Keybind settings")
-        public KeySettings keys = new KeySettings();
-    }
-
-    public static class OtherSettings {
-        @Config.Name("Messages on world join")
-        @Config.Comment("You will receive message when you join world")
-        public boolean enableMessagesSentOnJoin = true;
-
-        @Config.Name("Loot render quality")
-        @Config.Comment({"0 - OFF", "1 - Fast", "2 - Fancy"})
-        @Config.RangeInt(min = 0, max = 2)
-        @Config.RequiresMcRestart
-        public int lootRenderType = 2;
-
-        @Name("Enhanced sound")
-        @Comment({"Enable improved sound physics for gun shots", "Currently does nothing!"})
-        @RequiresMcRestart
-        public boolean betterSound = true;
-    }
-
-    public static class KeySettings {
-        @Name("Aiming mode")
-        public ActionType aimStyle = ActionType.TOGGLE;
     }
 
     public static class WorldSettings {
@@ -164,32 +121,6 @@ public class ConfigPMC {
 
         @Name("Dacia")
         public VehicleConfiguration dacia = new VehicleConfiguration(200F, 2.35F, 3.3F, 0.01F, 0.3f);
-    }
-
-    public static class OverlaySettings {
-        @Name("Use image overlay for boost rendering")
-        @Comment("Your boost overlay will be rendered instead of the XP bar. If this is disabled, you'll be able to see numbers above hunger bar which will indicate your boost value")
-        public boolean imageBoostOverlay = true;
-
-        @Name("Boost overlay x-position offset")
-        @Comment("Use this to adjust your boost overlay position if you have problems with it - this is horizontal movement")
-        public int imgOverlayX = 0;
-
-        @Name("Boost overlay y-position offset")
-        @Comment("Use this to adjust your boost overlay position if you have problems with it - this is AttachmentGripVertical movement")
-        public int imgOverlayY = 0;
-
-        @Name("Textured boost bar position x")
-        @Comment("Use this to adjust position of the overlay")
-        public int overlayX = 0;
-
-        @Name("Textured boost bar position y")
-        @Comment("Use this to adjust position of the overlay")
-        public int overlayY = 0;
-
-        @Name("Armor icons in HUD")
-        @Comment("Icons indicating your state of gear will be rendered next to your hotbar")
-        public boolean armorOverlayIcons = true;
     }
 
     public static class WeaponSettings {

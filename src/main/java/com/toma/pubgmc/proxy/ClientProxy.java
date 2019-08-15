@@ -1,6 +1,6 @@
 package com.toma.pubgmc.proxy;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.ClientEvents;

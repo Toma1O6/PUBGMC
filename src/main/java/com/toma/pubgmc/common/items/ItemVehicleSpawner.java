@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;

@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.entity.vehicles;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.init.PMCSounds;
 import net.minecraft.util.SoundEvent;

@@ -1,9 +1,7 @@
 package com.toma.pubgmc.init;
 
-import com.toma.pubgmc.ConfigPMC;
-import com.toma.pubgmc.ConfigPMC.WeaponSettings;
-import com.toma.pubgmc.DevUtil;
-import com.toma.pubgmc.DevUtil.ModelCreator;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC.WeaponSettings;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;

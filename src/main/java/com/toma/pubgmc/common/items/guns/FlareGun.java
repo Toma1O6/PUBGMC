@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.items.guns;
 
-import com.toma.pubgmc.ConfigPMC.WeaponCFG;
+import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityFlare;

@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.entity;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.tileentity.IAirdropTileEntity;
 import com.toma.pubgmc.init.PMCRegistry.PMCBlocks;
 import com.toma.pubgmc.util.PUBGMCUtil;

@@ -1,6 +1,6 @@
 package com.toma.pubgmc.client.renderer;
 
-import com.toma.pubgmc.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.heal.ItemBandage;
 import com.toma.pubgmc.common.items.heal.ItemEnergyDrink;

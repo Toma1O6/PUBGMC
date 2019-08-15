@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.items.guns;
 
-import com.toma.pubgmc.ConfigPMC;
-import com.toma.pubgmc.ConfigPMC.WeaponCFG;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;

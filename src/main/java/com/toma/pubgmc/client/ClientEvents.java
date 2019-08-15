@@ -1,7 +1,7 @@
 package com.toma.pubgmc.client;
 
-import com.toma.pubgmc.ConfigPMC;
-import com.toma.pubgmc.ConfigPMC.ActionType;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.ConfigPMC.ActionType;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
