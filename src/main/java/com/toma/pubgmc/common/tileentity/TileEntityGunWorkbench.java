@@ -82,7 +82,6 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
         boolean valid = true;
         for (PMCIngredient ing : recipe.ingredients) {
             int amount = 0;
-            // TODO: modify container for the new version and iterate through it's input slots, put recipe in and reduce the right amount of items
             for (int i = 0; i < 8; i++) {
                 if (this.getStackInSlot(i).getItem() == ing.getIngredient().getItem()) {
                     amount += this.getStackInSlot(i).getCount();
@@ -96,7 +95,7 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
             for (PMCIngredient ing : recipe.ingredients) {
                 this.clearItems(ing.getIngredient(), ing.getIngredient().getCount());
             }
-            this.setInventorySlotContents(8, new ItemStack(recipe.result));
+            this.setInventorySlotContents(8, new ItemStack(recipe.result, recipe.resultCount));
             recipe.onCraft(world, pos);
         }
     }

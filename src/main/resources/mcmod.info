@@ -3,11 +3,11 @@
   "modid": "pubgmc",
   "name": "PUBGMC",
   "description": "Mod which adds lot of ways to make fighting in Minecraft more interesting.",
-  "version": "1.5.4",
+  "version": "1.5.4.2",
   "mcversion": "1.12.2",
   "authorList": ["Toma1O6"],
   "logoFile": "",
-  "credits": "Credits to OfficialMajonaise for making most of the props & weapon models; Weapon sound and attachment icons do not belong to me, it's taken from PUBG game",
+  "credits": "Credits to OfficialMajonaise for making most of the props & weapon models. Thanks Tomano123 for your ideas and bug reports and long time support; Weapon sound and attachment icons do not belong to me, it's taken from PUBG game",
   "screenshots": [],
   "dependencies": []
 }

@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class EntityPlane extends Entity {
-    public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap<EntityPlayer, BlockPos>();
+    public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap();
     protected IGameData gameData;
     protected BlockPos endPos;
     private BlockPos startPos;

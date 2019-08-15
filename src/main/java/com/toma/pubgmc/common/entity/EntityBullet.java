@@ -13,7 +13,6 @@ import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.init.DamageSourceGun;
-import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
@@ -238,21 +237,13 @@ public class EntityBullet extends Entity {
     }
 
     protected void onEntityHit(boolean isHeadshot, Entity entity) {
-        if (world.getGameRules().getBoolean("weaponKnockback")) {
-            DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();
+        DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();
 
-            if (entity instanceof EntityLivingBase) {
-                getCalculatedDamage((EntityLivingBase) entity, isHeadshot);
-            }
-
-            entity.attackEntityFrom(gunsource, damage);
-        } else {
-            if (entity instanceof EntityLivingBase) {
-                getCalculatedDamage((EntityLivingBase) entity, isHeadshot);
-            }
-
-            entity.attackEntityFrom(PMCDamageSources.WEAPON_GENERIC, damage);
+        if (entity instanceof EntityLivingBase) {
+            getCalculatedDamage((EntityLivingBase) entity, isHeadshot);
         }
+
+        entity.attackEntityFrom(gunsource, damage);
     }
 
     @Override

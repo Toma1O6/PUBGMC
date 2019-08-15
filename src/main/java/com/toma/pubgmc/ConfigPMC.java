@@ -122,6 +122,15 @@ public class ConfigPMC {
     }
 
     public static class PlayerSettings {
+
+        @Name("Ammo stack limit")
+        @RangeInt(min = 1, max = 64)
+        @RequiresMcRestart
+        public int ammoStackLimit = 30;
+
+        @Name("Knockback on hit")
+        public boolean enableKnockback;
+
         @Config.Name("Disable third person perspective")
         @Config.Comment("Enable/disable third person perspective")
         @RequiresWorldRestart

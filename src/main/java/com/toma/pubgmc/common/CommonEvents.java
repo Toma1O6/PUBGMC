@@ -48,6 +48,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -65,6 +66,11 @@ public class CommonEvents {
 
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
         switch (result.status) {
+            case AHEAD: {
+                sendMessage(player, "[PUBGMC] It appears you're using unofficial version, expect bugs ;)", TextFormatting.AQUA);
+                break;
+            }
+
             case UP_TO_DATE: {
                 sendMessage(player, "You have the newest version of PUBGMC!", TextFormatting.GREEN);
                 TextComponentString discordNotification = new TextComponentString(TextFormatting.GREEN + "Join my official " + TextFormatting.AQUA + "DISCORD" + TextFormatting.GREEN + ". Click HERE");
@@ -87,7 +93,7 @@ public class CommonEvents {
             }
 
             case PENDING: {
-                sendMessage(player, "Unable to check new version, check took too long!", TextFormatting.BLUE);
+                sendMessage(player, "[PUBGMC] Unable to check new version, check took too long!", TextFormatting.BLUE);
                 break;
             }
 
@@ -116,15 +122,24 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public void onKnockback(LivingKnockBackEvent e) {
+        // yes, it's named badly, I don't care :p
+        if(ConfigPMC.common.playerSettings.enableKnockback)
+            return;
+
+        e.setCanceled(true);
+    }
+
+    @SubscribeEvent
     public void onChunkLoad(ChunkEvent.Load e) {
         World world = e.getWorld();
-        Chunk chunk = e.getChunk();
-        Map<BlockPos, TileEntity> map = chunk.getTileEntityMap();
         IGameData data = world.getCapability(GameDataProvider.GAMEDATA, null);
-        IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
         if (!data.isPlaying()) {
             return;
         }
+        Chunk chunk = e.getChunk();
+        Map<BlockPos, TileEntity> map = chunk.getTileEntityMap();
+        IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
 
         for (TileEntity tileEntity : map.values()) {
             if (tileEntity instanceof TileEntityLootSpawner) {

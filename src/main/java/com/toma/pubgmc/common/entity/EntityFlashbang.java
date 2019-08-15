@@ -24,7 +24,6 @@ import java.util.UUID;
 
 public class EntityFlashbang extends Entity implements IEntityAdditionalSpawnData {
 
-    public static final Map<UUID, Integer> FLASHED_PLAYERS = new HashMap<>();
     private EntityLivingBase thrower;
     private int fuse;
 

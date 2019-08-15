@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items;
 
+import com.toma.pubgmc.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -17,7 +18,7 @@ public class ItemAmmo extends PMCItem {
 
     public ItemAmmo(String name, AmmoType type) {
         super(name);
-        this.setMaxStackSize(30);
+        this.setMaxStackSize(ConfigPMC.common.playerSettings.ammoStackLimit);
         this.type = type;
         setCreativeTab(Pubgmc.pmcitemstab);
     }

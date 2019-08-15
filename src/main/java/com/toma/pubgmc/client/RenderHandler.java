@@ -34,14 +34,5 @@ public class RenderHandler {
 
     @SubscribeEvent
     public void renderHands(RenderSpecificHandEvent e) {
-        if (e.getItemStack().getItem() instanceof GunBase) {
-            ItemStack stack = e.getItemStack();
-            GunBase gun = (GunBase) stack.getItem();
-            GlStateManager.pushMatrix();
-            {
-
-            }
-            GlStateManager.popMatrix();
-        }
     }
 }

@@ -401,6 +401,7 @@ public final class RecipeRegistry {
         // Healing
         registerRecipe(PMCRecipeBuilder.createHeal()
                 .result(PMCItems.BANDAGE)
+                .resultAmount(5)
                 .ingredient(Items.PAPER, 5)
                 .ingredient(Blocks.WOOL, 1)
                 .ingredient(Items.REDSTONE, 5)

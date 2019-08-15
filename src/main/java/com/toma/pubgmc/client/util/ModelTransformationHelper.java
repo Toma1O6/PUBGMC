@@ -41,20 +41,17 @@ public class ModelTransformationHelper {
     }
 
     public static void defaultPistolRedDotTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.scale(0.15, 0.15, 0.15);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.translate(-32.8, -70.5, 32);
+        GlStateManager.scale(0.00999994, 0.00999994, 0.00999994);
+        GlStateManager.translate(-50.25001, -96.20001, 42.0);
     }
 
     public static void defaultHoloTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.scale(0.17999992, 0.17999992, 0.17999992);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.translate(-32.8, -70.5, 32);
-        GlStateManager.translate(7.0, 8.600000000000001, -0.6000000000000001);
+        GlStateManager.scale(0.02999994, 0.02999994, 0.02999994);
+        GlStateManager.translate(-16.850002, -48.54999, 20.0);
     }
 
     public static void default2XTransform() {
