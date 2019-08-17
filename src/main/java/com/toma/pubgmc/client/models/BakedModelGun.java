@@ -40,8 +40,7 @@ public class BakedModelGun implements IBakedModel {
 
     @Override
     public TextureAtlasSprite getParticleTexture() {
-        TextureMap map = Minecraft.getMinecraft().getTextureMapBlocks();
-        return map.getMissingSprite();
+        return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
     }
 
     @Override
@@ -71,10 +70,9 @@ public class BakedModelGun implements IBakedModel {
 
         EntityPlayer player = Minecraft.getMinecraft().player;
         IPlayerData data = null;
-        ItemStack held = ItemStack.EMPTY;
+        ItemStack held;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            held = player.getHeldItemMainhand();
             data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
             if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
                 held = player.getHeldItemMainhand();
@@ -83,7 +81,6 @@ public class BakedModelGun implements IBakedModel {
                 }
             }
         } else {
-            player = Minecraft.getMinecraft().player;
             return Pair.of(this, trsrt.getMatrix());
         }
 
@@ -112,8 +109,8 @@ public class BakedModelGun implements IBakedModel {
             }
 
             // Third person animations, sometime later propably
-            case THIRD_PERSON_RIGHT_HAND: {
-                trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
+            case THIRD_PERSON_RIGHT_HAND: case GROUND: {
+                trsrt = new TRSRTransformation(transl, leftRot, new Vector3f(0.65F, 0.65F, 0.65F), rightRot);
                 break;
             }
 

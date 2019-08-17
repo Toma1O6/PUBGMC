@@ -98,6 +98,9 @@ public class ModelAKM extends ModelGun {
 
         renderRedDot(0, 0, 0, 1f, stack);
         renderHolo(0, 0, 0, 1f, stack);
+        renderScope2X(0, 0, 0, 1f, stack);
+        renderScope4X(0, 0, 0, 1f, stack);
+        renderARSilencer(0, 0, 0, 1f, stack);
     }
 
     private void render() {

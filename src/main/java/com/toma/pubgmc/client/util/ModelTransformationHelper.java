@@ -55,19 +55,17 @@ public class ModelTransformationHelper {
     }
 
     public static void default2XTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.scale(0.2, 0.2, 0.2);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.translate(-32.8, -70.5, 32);
+        GlStateManager.scale(0.01999991, 0.01999991, 0.01999991);
+        GlStateManager.translate(-24.800003, -61.95, 24.0);
     }
 
     public static void default4XTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.scale(0.2, 0.2, 0.2);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.translate(-32.8, -70.5, 32);
+        GlStateManager.scale(0.014f, 0.014f, 0.014f);
+        GlStateManager.translate(-35.600006, -83.64998, 37.0);
     }
 
     public static void default8XTransform() {
@@ -94,8 +92,8 @@ public class ModelTransformationHelper {
     }
 
     public static void silencerARTransform() {
-        GlStateManager.scale(0.03, 0.03, 0.03);
-        GlStateManager.translate(16.7, 1.0, -22.0);
+        GlStateManager.scale(0.01999994, 0.01999994, 0.016);
+        GlStateManager.translate(24.800018, 7.8999996, -67.899994);
     }
 
     public static void silencerSRTransform() {
