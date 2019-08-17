@@ -125,7 +125,7 @@ public class GunBase extends PMCItem {
                         stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                     }
 
-                    PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(0, player.posX, player.posY, player.posZ, 150));
+                    PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 150));
                 }
 
                 tracker.setCooldown(stack.getItem(), getFireRate());

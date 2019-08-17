@@ -47,11 +47,7 @@ public class PacketDelayedSound implements IMessage, IMessageHandler<PacketDelay
     public IMessage onMessage(PacketDelayedSound message, MessageContext ctx) {
         if (ctx.side.isClient()) {
             EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-            Minecraft.getMinecraft().addScheduledTask(() ->
-            {
-                Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume);
-            });
+            Minecraft.getMinecraft().addScheduledTask(() -> Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume));
         }
         return null;
     }
