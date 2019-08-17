@@ -2,7 +2,7 @@ package com.toma.pubgmc.config.client;
 
 import net.minecraftforge.common.config.Config;
 
-public class ClientConfig {
+public final class ClientConfig {
 
     @Config.Name("Aim type")
     public CFGAimType aimType = CFGAimType.TOGGLE;

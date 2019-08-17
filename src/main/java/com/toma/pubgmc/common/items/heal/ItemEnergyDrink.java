@@ -1,11 +1,12 @@
 package com.toma.pubgmc.common.items.heal;
 
+import com.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.item.EnumAction;
 
 public class ItemEnergyDrink extends ItemHealing {
     public ItemEnergyDrink(String name) {
         super(name);
-        this.setMaxStackSize(3);
+        setMaxStackSize(ConfigPMC.common.items.energyDrinkLimit);
     }
 
     @Override

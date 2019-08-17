@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class CFGWorld implements INBTSerializable<NBTTagCompound> {
+public final class CFGWorld implements INBTSerializable<NBTTagCompound> {
 
     @Config.Name("Allow vehicles")
     public boolean vehicleSpawning = true;

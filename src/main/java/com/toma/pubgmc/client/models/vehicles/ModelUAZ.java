@@ -6,7 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 
 /**
  * Parts of wheels are missing, exhaust is partially white, and some decorations parts too
- * TODO: FIX
  */
 public class ModelUAZ extends ModelVehicle {
     private final ModelRenderer bone;

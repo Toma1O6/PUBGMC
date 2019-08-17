@@ -1,9 +1,9 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import com.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -25,7 +25,7 @@ public class ItemVehicleSpawner extends PMCItem {
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
 
-        if (!worldIn.isRemote && ConfigPMC.common.worldSettings.allowVehicleSpawning) {
+        if (!worldIn.isRemote && ConfigPMC.common.world.vehicleSpawning) {
             car.spawnEntity(worldIn, pos);
 
             if (!player.capabilities.isCreativeMode) {

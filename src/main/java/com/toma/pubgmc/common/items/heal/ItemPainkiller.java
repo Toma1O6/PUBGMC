@@ -1,11 +1,12 @@
 package com.toma.pubgmc.common.items.heal;
 
+import com.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.item.EnumAction;
 
 public class ItemPainkiller extends ItemHealing {
     public ItemPainkiller(String name) {
         super(name);
-        setMaxStackSize(3);
+        setMaxStackSize(ConfigPMC.common.items.painkillerLimit);
     }
 
     @Override

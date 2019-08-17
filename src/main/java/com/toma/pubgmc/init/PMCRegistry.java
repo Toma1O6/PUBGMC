@@ -1,7 +1,5 @@
 package com.toma.pubgmc.init;
 
-import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.config.ConfigPMC.WeaponSettings;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
@@ -30,6 +28,8 @@ import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.common.items.heal.*;
 import com.toma.pubgmc.common.items.melee.MeleeItemBuilder;
 import com.toma.pubgmc.common.tileentity.*;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.common.CFGWeapons;
 import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.util.AttachmentHelper;
@@ -490,7 +490,7 @@ public class PMCRegistry {
         }
 
         private static GunBase[] getInitializedGuns() {
-            WeaponSettings cfg = ConfigPMC.common.weaponSettings;
+            CFGWeapons cfg = ConfigPMC.common.weapons;
 
             GunBase p92 = GunBuilder.create("p92").stats(cfg.p92).firerate(2)
                     .recoil(2f, 0.5f).reload(ReloadType.MAGAZINE, 25, PMCSounds.reload_p92).ammo(AmmoType.AMMO9MM, 15, 20)

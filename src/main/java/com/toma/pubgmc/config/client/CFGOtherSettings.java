@@ -2,7 +2,7 @@ package com.toma.pubgmc.config.client;
 
 import net.minecraftforge.common.config.Config;
 
-public class CFGOtherSettings {
+public final class CFGOtherSettings {
 
     @Config.Name("On-join world notifications")
     public boolean messagesOnJoin = true;

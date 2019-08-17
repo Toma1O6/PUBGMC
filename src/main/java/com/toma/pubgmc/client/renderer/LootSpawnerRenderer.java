@@ -1,12 +1,13 @@
 package com.toma.pubgmc.client.renderer;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.heal.ItemBandage;
 import com.toma.pubgmc.common.items.heal.ItemEnergyDrink;
 import com.toma.pubgmc.common.items.heal.ItemFirstAidKit;
 import com.toma.pubgmc.common.items.heal.ItemPainkiller;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.client.CFGLootRenderStyle;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,7 +22,6 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
     private EntityItem entityItem = new EntityItem(null, 0D, 0D, 0D);
     private RenderEntityItem itemRenderer;
 
-    //TODO: some optimalizations
     @Override
     public void render(TileEntityLootSpawner te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         if (te == null || te.isInvalid()) {
@@ -48,7 +48,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
         boolean medkit = te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.MEDKIT;
 
-        if (ConfigPMC.client.other.lootRenderType == 2) {
+        if (ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FANCY) {
             if (te.isInvalid() || te == null) {
                 return;
             }
@@ -100,7 +100,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
                 GL11.glPopMatrix();
                 GlStateManager.popMatrix();
             }
-        } else if (ConfigPMC.client.other.lootRenderType == 1) {
+        } else if (ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FAST) {
             if (te.isInvalid() || te == null || te.getStackInSlot(slot).isEmpty()) {
                 return;
             }

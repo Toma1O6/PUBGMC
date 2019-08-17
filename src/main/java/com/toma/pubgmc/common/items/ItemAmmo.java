@@ -1,8 +1,8 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.guns.AmmoType;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Items;
@@ -18,7 +18,7 @@ public class ItemAmmo extends PMCItem {
 
     public ItemAmmo(String name, AmmoType type) {
         super(name);
-        this.setMaxStackSize(ConfigPMC.common.playerSettings.ammoStackLimit);
+        this.setMaxStackSize(ConfigPMC.common.items.ammoLimit);
         this.type = type;
         setCreativeTab(Pubgmc.pmcitemstab);
     }

@@ -59,7 +59,7 @@ public class ClientProxy implements IProxy {
             ModelHelper.init();
             Pubgmc.logger.info("Initialized model debugger");
         }
-        if (ConfigPMC.client.other.lootRenderType > 0) {
+        if (ConfigPMC.client.other.lootRenderStyle.ordinal() < 2) {
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
         }
     }

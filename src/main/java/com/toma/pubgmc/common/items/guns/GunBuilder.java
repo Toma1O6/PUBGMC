@@ -1,9 +1,9 @@
 package com.toma.pubgmc.common.items.guns;
 
-import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
+import com.toma.pubgmc.config.common.CFGWeapon;
 import net.minecraft.util.SoundEvent;
 
 public class GunBuilder {
@@ -17,7 +17,7 @@ public class GunBuilder {
     Firemode defFiremode;
     Firemode[] validFiremodes;
     SoundEvent reloadSound, shootNormal, shootSilenced;
-    WeaponCFG cfgStats;
+    CFGWeapon cfgStats;
 
     private GunBuilder() {
     }
@@ -74,7 +74,7 @@ public class GunBuilder {
         return intToValidate;
     }
 
-    public GunBuilder stats(WeaponCFG cfg) {
+    public GunBuilder stats(CFGWeapon cfg) {
         this.cfgStats = cfg;
         return this;
     }

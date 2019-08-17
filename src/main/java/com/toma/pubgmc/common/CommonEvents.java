@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
@@ -15,9 +14,9 @@ import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketUpdateConfig;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
@@ -124,7 +123,7 @@ public class CommonEvents {
     @SubscribeEvent
     public void onKnockback(LivingKnockBackEvent e) {
         // yes, it's named badly, I don't care :p
-        if(ConfigPMC.common.playerSettings.enableKnockback)
+        if(ConfigPMC.common.player.knockbackEnabled)
             return;
 
         e.setCanceled(true);
@@ -196,7 +195,7 @@ public class CommonEvents {
                             brd.setDamageBuffer(0);
                             brd.setDamageAmount(phase / (double) phases);
                             world.playerEntities.forEach(player -> {
-                                if (ConfigPMC.common.worldSettings.zoneShrinkNotification) {
+                                if (ConfigPMC.common.world.titleZoneNotifications) {
                                     SPacketTitle packet = new SPacketTitle(Type.TITLE, new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"), 5, 80, 5);
                                     if (player instanceof EntityPlayerMP) {
                                         ((EntityPlayerMP) player).connection.sendPacket(packet);
@@ -234,7 +233,7 @@ public class CommonEvents {
             }
 
             //Inventory limit
-            if (ConfigPMC.common.playerSettings.enableInventoryLimit) {
+            if (ConfigPMC.common.player.inventoryLimit) {
                 for (int i = 9; i < 36; i++) {
                     ItemStack stack = player.inventory.getStackInSlot(i);
 
@@ -379,7 +378,7 @@ public class CommonEvents {
     //Once player logs in
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerLoggedInEvent e) {
-        if (ConfigPMC.client.other.enableMessagesSentOnJoin) {
+        if (ConfigPMC.client.other.messagesOnJoin) {
             if (e.player instanceof EntityPlayer && e.player != null) {
                 ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
                 handleUpdateResults(version, e.player);
@@ -389,7 +388,8 @@ public class CommonEvents {
         if (e.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) e.player;
             if (player != null && !player.world.isRemote) {
-                PacketHandler.sendToClient(new PacketUpdateConfig(), player);
+                // TODO
+                //PacketHandler.sendToClient(new PacketUpdateConfig(), player);
 
                 //We get the last player data and later sync it to client
                 player.getCapability(PlayerDataProvider.PLAYER_DATA, null);

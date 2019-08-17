@@ -2,7 +2,6 @@ package com.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -12,6 +11,7 @@ import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
+import com.toma.pubgmc.config.common.CFGWeapon;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
@@ -69,7 +69,7 @@ public class EntityBullet extends Entity {
         this.noClip = true;
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
-        WeaponCFG cfg = gun.getConfigurableStats();
+        CFGWeapon cfg = gun.getConfigurableStats();
         gravitystart = cfg.gravityEffectStart;
         gravity = cfg.gravityModifier;
         velocity = cfg.velocity;

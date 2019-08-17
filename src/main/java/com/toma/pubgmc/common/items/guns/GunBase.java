@@ -1,7 +1,5 @@
 package com.toma.pubgmc.common.items.guns;
 
-import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.config.ConfigPMC.WeaponCFG;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -15,6 +13,8 @@ import com.toma.pubgmc.common.network.server.PacketFiremode;
 import com.toma.pubgmc.common.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.common.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.common.network.sp.PacketReloadingSP;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.common.CFGWeapon;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class GunBase extends PMCItem {
     public static final List<GunBase> GUNS = new ArrayList<GunBase>();
 
-    private WeaponCFG wepStats;
+    private CFGWeapon wepStats;
     private float horizontal_recoil = 0f;
     private float vertical_recoil = 0f;
     private double reloadTime = 100;
@@ -404,7 +404,7 @@ public class GunBase extends PMCItem {
         return false;
     }
 
-    public void setStats(WeaponCFG cfgStats) {
+    public void setStats(CFGWeapon cfgStats) {
         this.wepStats = cfgStats;
     }
 
@@ -437,7 +437,7 @@ public class GunBase extends PMCItem {
         return this;
     }
 
-    public WeaponCFG getConfigurableStats() {
+    public CFGWeapon getConfigurableStats() {
         return wepStats;
     }
 
@@ -588,7 +588,7 @@ public class GunBase extends PMCItem {
         // TODO: clean
         public void handleReload(EntityPlayer player) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if (ConfigPMC.common.worldSettings.enableGuns) {
+            if (ConfigPMC.common.world.gunsEnabled) {
                 ItemStack heldItem = player.getHeldItemMainhand();
 
                 if (heldItem.getItem() instanceof GunBase) {

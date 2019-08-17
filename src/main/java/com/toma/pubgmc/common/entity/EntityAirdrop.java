@@ -40,7 +40,7 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
         IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
         world.setBlockState(this.getPosition(), state, 3);
 
-        if (world.getTileEntity(this.getPosition()) instanceof IAirdropTileEntity && ConfigPMC.common.worldSettings.airdropLootGen > 0) {
+        if (world.getTileEntity(this.getPosition()) instanceof IAirdropTileEntity && ConfigPMC.common.world.airdropLoot.ordinal() > 0) {
             ((IAirdropTileEntity) world.getTileEntity(getPosition())).generateLoot();
         }
     }

@@ -18,12 +18,12 @@ public class EntityVehicleUAZ extends EntityVehicle {
     public EntityVehicleUAZ(World world, double x, double y, double z) {
         this(world);
         setPosition(x, y, z);
-        maxHealth = ConfigPMC.common.vehicleSettings.uaz.maxHealth;
-        health = ConfigPMC.common.vehicleSettings.uaz.maxHealth;
-        maxSpeed = ConfigPMC.common.vehicleSettings.uaz.maxSpeed;
-        acceleration = ConfigPMC.common.vehicleSettings.uaz.acceleration;
-        maximalTurningModifier = ConfigPMC.common.vehicleSettings.uaz.maxTurningAngle;
-        turnSpeed = ConfigPMC.common.vehicleSettings.uaz.turningSpeed;
+        maxHealth = ConfigPMC.common.vehicles.uaz.maxHealth;
+        health = ConfigPMC.common.vehicles.uaz.maxHealth;
+        maxSpeed = ConfigPMC.common.vehicles.uaz.maxSpeed;
+        acceleration = ConfigPMC.common.vehicles.uaz.acceleration;
+        maximalTurningModifier = ConfigPMC.common.vehicles.uaz.maxTurningAngle;
+        turnSpeed = ConfigPMC.common.vehicles.uaz.turningSpeed;
         fuel = this.generateFuel();
     }
 

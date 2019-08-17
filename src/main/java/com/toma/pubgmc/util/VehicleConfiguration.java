@@ -11,30 +11,30 @@ public final class VehicleConfiguration {
     @Comment("Vehicle maximum health")
     @RangeDouble(min = 1.0D, max = 1500.0D)
     @RequiresWorldRestart
-    public float maxHealth = 250.0F;
+    public float maxHealth;
 
     @Name("Max Speed")
     @Comment("Vehicle max speed")
     @RangeDouble(min = 0.5D, max = 3.0D)
     @RequiresWorldRestart
-    public float maxSpeed = 1.6F;
+    public float maxSpeed;
 
     @Name("Acceleration")
     @Comment({"Vehicle speed acceleration", "This also applies for braking, which is Acceleration*2"})
     @RangeDouble(min = 0.001D, max = 1.0D)
     @RequiresWorldRestart
-    public float acceleration = 0.015F;
+    public float acceleration;
 
     @Name("Turning Speed")
     @Comment("Turning angle increase per tick")
     @RangeDouble(min = 0.1D, max = 1.0D)
     @RequiresWorldRestart
-    public float turningSpeed = 0.3F;
+    public float turningSpeed;
 
     @Name("Max Turning Angle")
     @Comment("Maximal angle at which can vehicle turn")
     @RangeDouble(min = 1.0D, max = 10.0D)
-    public float maxTurningAngle = 3.0F;
+    public float maxTurningAngle;
 
     public VehicleConfiguration(float health, float speed, float angle, float acceleration, float turningAcceleration) {
         this.maxHealth = health;

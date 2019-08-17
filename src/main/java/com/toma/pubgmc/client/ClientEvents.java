@@ -1,7 +1,5 @@
 package com.toma.pubgmc.client;
 
-import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.config.ConfigPMC.ActionType;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.util.KeyBinds;
@@ -20,7 +18,9 @@ import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import com.toma.pubgmc.common.items.heal.ItemHealing;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.*;
-import com.toma.pubgmc.event.SoundTickEvent;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.client.CFGAimType;
+import com.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.util.ImageUtil;
@@ -43,7 +43,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -151,22 +150,22 @@ public class ClientEvents {
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
 
-        if (ConfigPMC.client.overlays.imageBoostOverlay) {
+        if (ConfigPMC.client.overlays.imageBoostOverlay == CFGEnumOverlayStyle.IMAGE) {
             int left = width / 2 - 91;
             int top = height - 32 + 3;
             short barWidth = 182;
 
             //Actual drawing code
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgOverlayX, top + ConfigPMC.client.overlays.imgOverlayY, barWidth, 5, false);
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.x, top + ConfigPMC.client.overlays.imgBoostOverlayPos.y, barWidth, 5, false);
 
             if (data.getBoost() > 0) {
                 int boost = (int) data.getBoost();
                 double sizeX = ((182D / 100D) * boost);
-                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgOverlayX, top + ConfigPMC.client.overlays.imgOverlayY, sizeX, 5, false);
+                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.x, top + ConfigPMC.client.overlays.imgBoostOverlayPos.y, sizeX, 5, false);
             }
 
             //This will render after these 2 above to make sure this will always be on the top
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgOverlayX, top + ConfigPMC.client.overlays.imgOverlayY, barWidth, 5, true);
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.x, top + ConfigPMC.client.overlays.imgBoostOverlayPos.y, barWidth, 5, true);
         }
     }
 
@@ -362,7 +361,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void drawNameTags(RenderLivingEvent.Specials.Pre e) {
         if (e.getEntity() instanceof EntityPlayer && e.isCancelable()) {
-            if (!ConfigPMC.common.playerSettings.renderPlayerNameTags) {
+            if (!ConfigPMC.common.player.renderNames) {
                 e.setCanceled(true);
             }
         }
@@ -378,7 +377,7 @@ public class ClientEvents {
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
         //e.getType() == ElementType.TEXT - this is very important otherwise it will mess all fonts used in mc
-        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && !ConfigPMC.client.overlays.imageBoostOverlay && data.getBoost() > 0) {
+        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && ConfigPMC.client.overlays.imageBoostOverlay == CFGEnumOverlayStyle.TEXT && data.getBoost() > 0) {
             mc.entityRenderer.setupOverlayRendering();
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
@@ -402,7 +401,7 @@ public class ClientEvents {
             //There is the rendering
             //Users can edit the position using their configs
             //Position by default: Above hunger bar
-            mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.client.overlays.overlayX, top + ConfigPMC.client.overlays.overlayY, color);
+            mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.client.overlays.textBoostOverlayPos.x, top + ConfigPMC.client.overlays.textBoostOverlayPos.y, color);
         }
 
         //Ammo and Firemode info rendering
@@ -453,10 +452,10 @@ public class ClientEvents {
             }
         }
 
-        if (ConfigPMC.client.overlays.imageBoostOverlay) {
+        if (ConfigPMC.client.overlays.imageBoostOverlay == CFGEnumOverlayStyle.IMAGE) {
             //We cancel the xp bar, but just only if the boost bar position is different than by default
             if (e.getType() == ElementType.EXPERIENCE) {
-                if (ConfigPMC.client.overlays.imgOverlayX == 0 && ConfigPMC.client.overlays.imgOverlayY == 0 && data.getBoost() > 0) {
+                if (ConfigPMC.client.overlays.imgBoostOverlayPos.x == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.y == 0 && data.getBoost() > 0) {
                     e.setCanceled(true);
                 }
             }
@@ -505,7 +504,7 @@ public class ClientEvents {
                 }
             }
 
-            if (ConfigPMC.client.overlays.armorOverlayIcons && !sp.isSpectator())
+            if (ConfigPMC.client.overlays.renderArmorIcons && !sp.isSpectator())
                 renderArmorIcons(e, sp, res, mc, data);
 
             if (stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan) {
@@ -537,7 +536,7 @@ public class ClientEvents {
             }
         }
 
-        if (ConfigPMC.common.worldSettings.enableGuns) {
+        if (ConfigPMC.common.world.gunsEnabled) {
             if (sp instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) sp;
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -621,7 +620,7 @@ public class ClientEvents {
 
                 //Check if the LMB has been pressed
                 if (gs.keyBindAttack.isPressed()) {
-                    if (ConfigPMC.common.worldSettings.enableGuns) {
+                    if (ConfigPMC.common.world.gunsEnabled) {
                         //Shoot only once if the firemode is single
                         if (gun.getFiremode() == Firemode.SINGLE) {
                             //If the gun has no cooldown
@@ -641,7 +640,7 @@ public class ClientEvents {
                     }
                     //This is being handled in ClientTickEvent so we just prepare some stuff here
                     if (gun.getFiremode() == Firemode.BURST) {
-                        if (ConfigPMC.common.worldSettings.enableGuns) {
+                        if (ConfigPMC.common.world.gunsEnabled) {
                             if (!tracker.hasCooldown(gun) && !shooting && !data.isReloading()) {
                                 if (gun.hasAmmo(stack)) {
                                     shooting = true;
@@ -668,10 +667,7 @@ public class ClientEvents {
 
                         //sensitivity modifier
                         switch (scopeID) {
-                            case 1:
-                                gs.mouseSensitivity *= 0.95f;
-                                break;
-                            case 2:
+                            case 1: case 2:
                                 gs.mouseSensitivity *= 0.95f;
                                 break;
                             case 3:
@@ -741,7 +737,7 @@ public class ClientEvents {
             //Automatic fire is handled here because Mouse input event is acting weirdly
             if (gs.keyBindAttack.isKeyDown() && ev.phase == Phase.END) {
                 if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    if (ConfigPMC.common.worldSettings.enableGuns) {
+                    if (ConfigPMC.common.world.gunsEnabled) {
                         GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
                         CooldownTracker tracker = player.getCooldownTracker();
 
@@ -775,7 +771,7 @@ public class ClientEvents {
                 }
 
                 if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
-                    if (shooting && gun.getFiremode() == Firemode.BURST && ConfigPMC.common.worldSettings.enableGuns) {
+                    if (shooting && gun.getFiremode() == Firemode.BURST && ConfigPMC.common.world.gunsEnabled) {
                         shootingTimer++;
 
                         //Set it to 5 for 3 round burst
@@ -813,7 +809,7 @@ public class ClientEvents {
                     gs.mouseSensitivity = this.mouseSens;
                 }
 
-                if (ConfigPMC.client.keys.aimStyle == ActionType.HOLD) {
+                if (ConfigPMC.client.aimType == CFGAimType.HOLD) {
                     if (!gs.keyBindUseItem.isKeyDown()) {
                         setAiming(data, false);
                     }
@@ -856,7 +852,7 @@ public class ClientEvents {
             }
 
             //Check if the player is having selected the slot where he started reloading
-            if (ConfigPMC.common.worldSettings.enableGuns) {
+            if (ConfigPMC.common.world.gunsEnabled) {
                 if (data.isReloading()) {
                     if (reloadingSlot != player.inventory.currentItem) {
                         setReloading(data, true);
@@ -878,7 +874,7 @@ public class ClientEvents {
                 }
             }
 
-            if (ConfigPMC.common.playerSettings.enableTP) {
+            if (!ConfigPMC.common.player.tppAllowed) {
                 if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0 && !player.capabilities.isCreativeMode && !(player.getRidingEntity() instanceof EntityParachute)) {
                     Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
                 }
@@ -934,11 +930,11 @@ public class ClientEvents {
             }
 
             //For better experience with NV googles
-            if (ConfigPMC.common.playerSettings.forceBrightness) {
+            if (ConfigPMC.common.player.brightnessForced) {
                 float bright = Minecraft.getMinecraft().gameSettings.gammaSetting;
 
-                if (bright != ConfigPMC.common.playerSettings.brightness) {
-                    Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.common.playerSettings.brightness;
+                if (bright != ConfigPMC.common.player.brightnessValue) {
+                    Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.common.player.brightnessValue;
                 }
             }
 
@@ -1041,8 +1037,6 @@ public class ClientEvents {
                     hasAmmo = false;
                 }
             }
-            if (ConfigPMC.client.other.betterSound)
-                MinecraftForge.EVENT_BUS.post(new SoundTickEvent());
         }
     }
 

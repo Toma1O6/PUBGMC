@@ -38,16 +38,13 @@ public class PacketHandler {
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
         registerClientPacket(PacketReloadingSP.class);
-        registerClientPacket(PacketUpdatePlayerData.class);
         registerClientPacket(PacketDelayedSound.class);
         registerClientPacket(PacketCreateNBT.class);
         registerClientPacket(PacketUpdateAttachmentGUI.class);
         registerClientPacket(PacketParticle.class);
         registerClientPacket(PacketClientCapabilitySync.class);
         registerClientPacket(PacketUpdatePlayerRotation.class);
-        registerClientPacket(PacketSpawnVehicle.class);
         registerClientPacket(PacketVehicleData.class);
-        registerClientPacket(PacketUpdateConfig.class);
         registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
     }

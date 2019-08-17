@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.entity.vehicles;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCSounds;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -19,12 +19,12 @@ public class EntityVehicleDacia extends EntityVehicle {
     public EntityVehicleDacia(World world, double x, double y, double z) {
         this(world);
         setPosition(x, y, z);
-        maxHealth = ConfigPMC.common.vehicleSettings.dacia.maxHealth;
-        health = ConfigPMC.common.vehicleSettings.dacia.maxHealth;
-        maxSpeed = ConfigPMC.common.vehicleSettings.dacia.maxSpeed;
-        acceleration = ConfigPMC.common.vehicleSettings.dacia.acceleration;
-        turnSpeed = ConfigPMC.common.vehicleSettings.dacia.turningSpeed;
-        maximalTurningModifier = ConfigPMC.common.vehicleSettings.dacia.maxTurningAngle;
+        maxHealth = ConfigPMC.common.vehicles.dacia.maxHealth;
+        health = ConfigPMC.common.vehicles.dacia.maxHealth;
+        maxSpeed = ConfigPMC.common.vehicles.dacia.maxSpeed;
+        acceleration = ConfigPMC.common.vehicles.dacia.acceleration;
+        turnSpeed = ConfigPMC.common.vehicles.dacia.turningSpeed;
+        maximalTurningModifier = ConfigPMC.common.vehicles.dacia.maxTurningAngle;
     }
 
     @Override

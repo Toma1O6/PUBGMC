@@ -2,7 +2,7 @@ package com.toma.pubgmc.config.client;
 
 import net.minecraftforge.common.config.Config;
 
-public class CFGOverlaySettings {
+public final class CFGOverlaySettings {
 
     @Config.Name("Use image overlay for boost rendering")
     @Config.Comment("Your boost overlay will be rendered instead of the XP bar. If this == TEXT, you'll be able to see numbers above hunger bar which will indicate your boost value")

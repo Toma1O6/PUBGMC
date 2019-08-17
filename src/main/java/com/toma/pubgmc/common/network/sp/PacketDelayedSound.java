@@ -15,7 +15,6 @@ public class PacketDelayedSound implements IMessage, IMessageHandler<PacketDelay
     private double x, y, z;
 
     public PacketDelayedSound() {
-        // TODO Auto-generated constructor stub
     }
 
     public PacketDelayedSound(SoundEvent sound, float volume, double x, double y, double z) {

@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.tileentity;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.common.items.guns.GunBase;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -161,7 +161,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
         }
 
         if (!world.isRemote) {
-            if (world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigPMC.common.worldSettings.aidropRange, false) == null) {
+            if (world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigPMC.common.world.airdropRange, false) == null) {
                 world.setBlockToAir(pos);
             }
         }

@@ -28,30 +28,30 @@ import java.util.Random;
 
 public class TileEntityLootSpawner extends TileEntitySync implements IInventory {
     //Loot related - guns
-    private static final List<ItemStack> PISTOLS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> SHOTGUNS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> SMGS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> ARS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> DMRS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> SRS = new ArrayList<ItemStack>();
+    private static final List<ItemStack> PISTOLS = new ArrayList<>();
+    private static final List<ItemStack> SHOTGUNS = new ArrayList<>();
+    private static final List<ItemStack> SMGS = new ArrayList<>();
+    private static final List<ItemStack> ARS = new ArrayList<>();
+    private static final List<ItemStack> DMRS = new ArrayList<>();
+    private static final List<ItemStack> SRS = new ArrayList<>();
     //healing
-    private static final List<ItemStack> COMMON_HEAL = new ArrayList<ItemStack>();
-    private static final List<ItemStack> RARE_HEAL = new ArrayList<ItemStack>();
+    private static final List<ItemStack> COMMON_HEAL = new ArrayList<>();
+    private static final List<ItemStack> RARE_HEAL = new ArrayList<>();
     //Wearable
-    private static final List<ItemStack> WEARABLE = new ArrayList<ItemStack>();
-    private static final List<ItemStack> BACKPACKS = new ArrayList<ItemStack>();
+    private static final List<ItemStack> WEARABLE = new ArrayList<>();
+    private static final List<ItemStack> BACKPACKS = new ArrayList<>();
     //Ammo & grenades
-    private static final List<ItemStack> AMMO = new ArrayList<ItemStack>();
-    private static final List<ItemStack> THROWABLES = new ArrayList<ItemStack>();
+    private static final List<ItemStack> AMMO = new ArrayList<>();
+    private static final List<ItemStack> THROWABLES = new ArrayList<>();
     //Attachments
-    private static final List<ItemStack> ATTACHMENTS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> BARREL_ATT = new ArrayList<ItemStack>();
-    private static final List<ItemStack> GRIP_ATT = new ArrayList<ItemStack>();
-    private static final List<ItemStack> SCOPE_ATT = new ArrayList<ItemStack>();
-    private static final List<ItemStack> MAG_ATT = new ArrayList<ItemStack>();
-    private static final List<ItemStack> STOCK_ATT = new ArrayList<ItemStack>();
+    private static final List<ItemStack> ATTACHMENTS = new ArrayList<>();
+    private static final List<ItemStack> BARREL_ATT = new ArrayList<>();
+    private static final List<ItemStack> GRIP_ATT = new ArrayList<>();
+    private static final List<ItemStack> SCOPE_ATT = new ArrayList<>();
+    private static final List<ItemStack> MAG_ATT = new ArrayList<>();
+    private static final List<ItemStack> STOCK_ATT = new ArrayList<>();
     private final Random rand = new Random();
-    private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
     private int slot;
     private boolean randomAmmo = false;
@@ -205,7 +205,6 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory 
      *
      * @param airdroploot - enable airdrop weapons in the loot + awm ammo will spawn
      * @param addAmmo     - Decides if ammo will be generated with guns
-     * @param lootType    - 0 = all, 1 = pistol, 2 = shotguns, 3 = smgs, 4 = AttachmentSuppressorAR + lmg, 5 = dmr, 6 = sr, 7 = dmr + sr
      */
     public void generateLoot(boolean airdroploot, boolean addAmmo, boolean randomAmmo, double chanceMultiplier, List<GunType> weaponList) {
         LootType type = LootType.getTypeFromState(world.getBlockState(pos));
@@ -229,7 +228,7 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory 
 
         if (Math.random() * 100 <= 45 * chanceMultiplier * type.getLootMultiplier()) {
             //Actual gun gen
-            if (ConfigPMC.common.worldSettings.enableGunLoot) {
+            if (ConfigPMC.common.world.enableGunLoot) {
                 //Flare gun 0.5% spawn
                 if (Math.random() * 100 <= 0.5 * chanceMultiplier * type.getLootMultiplier()) {
                     setInventorySlotContents(getEmptySlot(), new ItemStack(PMCRegistry.PMCItems.FLARE_GUN));

@@ -1,11 +1,13 @@
 package com.toma.pubgmc.common.items.heal;
 
+import com.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 
 public class ItemMedkit extends ItemHealing {
     public ItemMedkit(String name) {
         super(name);
+        setMaxStackSize(ConfigPMC.common.items.medkitLimit);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.entity;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
@@ -8,6 +7,7 @@ import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -138,9 +138,9 @@ public class EntityPlane extends Entity {
             }
         }
 
-        endPos = new BlockPos(endX, ConfigPMC.common.worldSettings.planeHeight, endZ);
-        setPosition(startX, ConfigPMC.common.worldSettings.planeHeight, startZ);
-        startPos = new BlockPos(startX, ConfigPMC.common.worldSettings.planeHeight, startZ);
+        endPos = new BlockPos(endX, ConfigPMC.common.world.planeHeight, endZ);
+        setPosition(startX, ConfigPMC.common.world.planeHeight, startZ);
+        startPos = new BlockPos(startX, ConfigPMC.common.world.planeHeight, startZ);
         rotationYaw = 180f;
         updateHeading(startX, startZ, endPos);
 
@@ -159,7 +159,7 @@ public class EntityPlane extends Entity {
     public void onUpdate() {
         super.onUpdate();
 
-        canFly = this.ticksExisted >= (ConfigPMC.common.worldSettings.planeWaitTime * 20);
+        canFly = this.ticksExisted >= (ConfigPMC.common.world.planeDelay * 20);
 
         if (gameData == null) {
             Pubgmc.logger.fatal("Couldn't load gamedata for plane, getting new instance...");
@@ -184,7 +184,7 @@ public class EntityPlane extends Entity {
 
                 if (!gameData.isPlaying()) setDead();
 
-                if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.worldSettings.planeWaitTime * 20 + 15) {
+                if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.world.planeDelay * 20 + 15) {
                     setDead();
                     Pubgmc.logger.error("Plane is in invalid position, despawning...");
                 }
@@ -259,7 +259,7 @@ public class EntityPlane extends Entity {
         motionY = compound.getDouble("motY");
         motionZ = compound.getDouble("motZ");
         rotationYaw = compound.getFloat("rotYaw");
-        endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.common.worldSettings.planeHeight, compound.getDouble("endZ"));
+        endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.common.world.planeHeight, compound.getDouble("endZ"));
         hasReachedDestination = compound.getBoolean("reachedDest");
         timeSinceDestination = compound.getShort("timeSinceDest");
         setUniqueId(compound.getUniqueId("UUID"));

@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -196,7 +197,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
         slot = -1;
 
         // Create armor loot which is same in every drop; 1 medical loot, 2 gun and med loot
-        if (ConfigPMC.common.worldSettings.airdropLootGen == 1) {
+        if (ConfigPMC.common.world.airdropLoot == CFGEnumAirdropLoot.ARMOR_HEALS) {
             setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3HELMET));
             setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3BODY));
             setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.BACKPACK3));
@@ -217,7 +218,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
             generateGhillie();
         }
 
-        if (ConfigPMC.common.worldSettings.airdropLootGen == 2) {
+        if (ConfigPMC.common.world.airdropLoot == CFGEnumAirdropLoot.ALL) {
             setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3HELMET));
             setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.ARMOR3BODY));
             setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.BACKPACK3));
@@ -295,7 +296,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
         }
 
         if (!world.isRemote) {
-            if (world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.common.worldSettings.aidropRange, false) == null) {
+            if (world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.common.world.airdropRange, false) == null) {
                 world.setBlockToAir(pos);
             }
         }

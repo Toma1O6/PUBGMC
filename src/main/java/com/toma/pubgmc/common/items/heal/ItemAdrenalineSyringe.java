@@ -1,10 +1,12 @@
 package com.toma.pubgmc.common.items.heal;
 
+import com.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.item.EnumAction;
 
 public class ItemAdrenalineSyringe extends ItemHealing {
     public ItemAdrenalineSyringe(String name) {
         super(name);
+        setMaxStackSize(ConfigPMC.common.items.adrenalineSyringeLimit);
     }
 
     @Override
