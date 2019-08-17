@@ -72,6 +72,8 @@ public class ModelAKM extends ModelGun {
 
     @Override
     public void initAnimations() {
+        initAimAnimation(-0.5581F, 0.23F, 0.18F);
+        initAimingAnimationStates(0.23F, 0.18F, 0.14F);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
@@ -93,6 +95,7 @@ public class ModelAKM extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 41.0, -13.0);
+        rotateModelForADSRendering();
         this.render();
         GlStateManager.popMatrix();
 

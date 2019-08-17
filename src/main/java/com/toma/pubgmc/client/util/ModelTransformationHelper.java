@@ -44,14 +44,14 @@ public class ModelTransformationHelper {
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
         GlStateManager.scale(0.00999994, 0.00999994, 0.00999994);
-        GlStateManager.translate(-50.25001, -96.20001, 42.0);
+        GlStateManager.translate(-50, -96.20001, 42.0);
     }
 
     public static void defaultHoloTransform() {
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
         GlStateManager.scale(0.02999994, 0.02999994, 0.02999994);
-        GlStateManager.translate(-16.850002, -48.54999, 20.0);
+        GlStateManager.translate(-16.6, -48.44, 20.0);
     }
 
     public static void default2XTransform() {
