@@ -69,21 +69,17 @@ public class ModelTransformationHelper {
     }
 
     public static void default8XTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.scale(0.2, 0.2, 0.2);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.scale(0.9, 0.9, 0.9);
-        GlStateManager.translate(-27.7, -63.0, 22.0);
+        GlStateManager.scale(0.02, 0.02, 0.02);
+        GlStateManager.translate(-24.85, -56.15, 12.0);
     }
 
     public static void default15XTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.scale(0.2, 0.2, 0.2);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.scale(0.9, 0.9, 0.9);
-        GlStateManager.translate(-27.8, -64.0, 26.0);
+        GlStateManager.scale(0.02, 0.02, 0.02);
+        GlStateManager.translate(-25.0, -68.0, 10.0);
     }
 
     public static void silencerSMGTransform() {
@@ -97,8 +93,8 @@ public class ModelTransformationHelper {
     }
 
     public static void silencerSRTransform() {
-        GlStateManager.scale(0.035, 0.035, 0.04);
-        GlStateManager.translate(14.4, -2.6, -20.0);
+        GlStateManager.scale(0.017, 0.017, 0.014);
+        GlStateManager.translate(29.25, 14.25, -103.0);
     }
 
     public static void verticalGripTransform() {

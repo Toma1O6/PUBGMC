@@ -543,7 +543,11 @@ public class ClientEvents {
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
                 if (KeyBinds.ATTACHMENT.isPressed()) {
-                    PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
+                    if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
+                        PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
+                    } else {
+                        player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
+                    }
                 }
 
                 if (KeyBinds.RELOAD.isPressed()) {

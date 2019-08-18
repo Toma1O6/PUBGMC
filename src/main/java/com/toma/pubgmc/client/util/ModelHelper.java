@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 
 public class ModelHelper {
     public static final double MODIFIER = 1f;
-    public static final double SMALL_MODIFIER = 0.05f;
+    public static final double SMALL_MODIFIER = 0.01f;
 
     public static ModelHelper instance;
     public static float x = 0;
