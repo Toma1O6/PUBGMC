@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.util.ITooltipFlag;
@@ -8,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -63,7 +65,7 @@ public class ItemAttachment extends PMCItem implements IAttachment {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(TextFormatting.BOLD + "Add attachment to weapon throught attachment GUI - press P");
+        tooltip.add(TextFormatting.BOLD + "Add attachment to weapon throught attachment GUI - press " + Keyboard.getKeyName(KeyBinds.ATTACHMENT.getKeyCode()));
         switch (type) {
             case SCOPE: {
 

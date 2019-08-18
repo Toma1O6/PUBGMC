@@ -282,8 +282,9 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 
     @Override
     public void update() {
-        World world = getWorld();
-        BlockPos pos = getPos();
+        if(ConfigPMC.common.world.airdropRange < 0) {
+            return;
+        }
         if (world.isRemote) {
             i++;
 

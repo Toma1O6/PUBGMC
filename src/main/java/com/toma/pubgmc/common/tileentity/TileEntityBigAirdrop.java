@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -42,6 +43,10 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 
     @Override
     public void generateLoot() {
+        clear();
+        if(ConfigPMC.common.world.airdropLoot == CFGEnumAirdropLoot.NOTHING) {
+            return;
+        }
         slot = -1;
         //setup
         generateWeaponLoot();
@@ -52,16 +57,18 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
         createArmorLoot();
 
         //2 weapons + ammo
-        setInventorySlotContents(nextID(), WEAPONS.get(RANDOM.nextInt(WEAPONS.size())));
-        addAmmoToCurrentWeapon();
-        setInventorySlotContents(nextID(), WEAPONS.get(RANDOM.nextInt(WEAPONS.size())));
-        addAmmoToCurrentWeapon();
+        if(ConfigPMC.common.world.airdropLoot == CFGEnumAirdropLoot.ALL) {
+            setInventorySlotContents(nextID(), WEAPONS.get(RANDOM.nextInt(WEAPONS.size())));
+            addAmmoToCurrentWeapon();
+            setInventorySlotContents(nextID(), WEAPONS.get(RANDOM.nextInt(WEAPONS.size())));
+            addAmmoToCurrentWeapon();
+            setInventorySlotContents(nextID(), ATACHMENTS.get(RANDOM.nextInt(ATACHMENTS.size())));
+            setInventorySlotContents(nextID(), ATACHMENTS.get(RANDOM.nextInt(ATACHMENTS.size())));
+        }
 
         //2 sets of heals and atachments
         setInventorySlotContents(nextID(), HEALS.get(RANDOM.nextInt(HEALS.size())));
         setInventorySlotContents(nextID(), HEALS.get(RANDOM.nextInt(HEALS.size())));
-        setInventorySlotContents(nextID(), ATACHMENTS.get(RANDOM.nextInt(ATACHMENTS.size())));
-        setInventorySlotContents(nextID(), ATACHMENTS.get(RANDOM.nextInt(ATACHMENTS.size())));
 
         generateGhillie();
     }
@@ -151,6 +158,9 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 
     @Override
     public void update() {
+        if(ConfigPMC.common.world.airdropRange < 0) {
+            return;
+        }
         timer++;
 
         if (timer >= 3 && world.isRemote) {
