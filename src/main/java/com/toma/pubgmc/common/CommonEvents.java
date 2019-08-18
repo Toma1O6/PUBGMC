@@ -14,6 +14,7 @@ import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.config.ConfigPMC;
@@ -555,6 +556,7 @@ public class CommonEvents {
                 player.setGameType(GameType.SPECTATOR);
             }
         }
+        PacketHandler.sendToClient(new PacketClientCapabilitySync(player.getCapability(PlayerDataProvider.PLAYER_DATA, null)), (EntityPlayerMP)player);
     }
 
     /**
