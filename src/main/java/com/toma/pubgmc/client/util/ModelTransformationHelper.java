@@ -36,8 +36,8 @@ public class ModelTransformationHelper {
     }
 
     public static void defaultPistolSilencerTransform() {
-        GlStateManager.scale(0.1, 0.1, 0.1);
-        GlStateManager.translate(5.4, -17.2, 1.4);
+        GlStateManager.scale(0.03, 0.03, 0.025);
+        GlStateManager.translate(17.63, -2.0, -19.33);
     }
 
     public static void defaultPistolRedDotTransform() {
