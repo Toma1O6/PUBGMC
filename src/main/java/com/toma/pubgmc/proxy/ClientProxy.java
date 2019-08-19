@@ -31,7 +31,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientProxy implements IProxy {
-    private final ModelGhillie ghillieModel = new ModelGhillie();
 
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);

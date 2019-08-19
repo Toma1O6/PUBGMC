@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -460,16 +461,16 @@ public class ModelSLR extends ModelGun {
     private void renderSLR(ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.translate(0.0, -9.0, -8.0);
+        GlStateManager.translate(0, -9.0, -8.0);
         ironsights.offsetY = hasScopeAtachment(stack) ? 6.5f : 0f;
         SLR.render(1f);
         GlStateManager.popMatrix();
-        renderRedDot(-0.2, -1.8, 7, 1.4f, stack);
-        renderHolo(-1.5, -2, 0, 1.3f, stack);
-        renderScope2X(7.6, 16.6, 0, 1f, stack);
-        renderScope4X(7.6, 16.6, 0, 1f, stack);
-        renderScope8X(-0.4, 6, 3, 1f, stack);
-        renderScope15X(-0.4, 7.2, 4, 1f, stack);
-        renderSniperSilencer(0, -4, -3.9, 1f, stack);
+        renderRedDot(0, 14, 13, 1f, stack);
+        renderHolo(0, 4.5, 0, 1f, stack);
+        renderScope2X(0, 7, 7, 1f, stack);
+        renderScope4X(0, 9.35, 10, 1f, stack);
+        renderScope8X(-0.15, 8, 14, 1f, stack);
+        renderScope15X(0, 7, 12, 1f, stack);
+        renderSniperSilencer(0.1, -14.9, 13, 1.7f, stack);
     }
 }
