@@ -3,6 +3,7 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -467,14 +468,13 @@ public class ModelM416 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.5575f, 0.235f, 0.25f);
-        initAimingAnimationStates(0.235f, 0.215f, 0.175f);
+        initAimingAnimationStates(0.235f, 0.205f, 0.175f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
     @Override
     public void render(ItemStack stack) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             GlStateManager.pushMatrix();
@@ -498,41 +498,13 @@ public class ModelM416 extends ModelGun {
         renderParts(hasScopeAtachment(stack));
         GlStateManager.popMatrix();
 
-        renderSilencer(stack);
-        renderVerticalGrip(stack);
-        renderAngledGrip(stack);
-        renderRedDot(stack);
-        renderHolo(stack);
-        render2X(stack);
-        render4X(stack);
-    }
-
-    private void renderSilencer(ItemStack stack) {
-        renderARSilencer(0, -2.25, -9, 1f, stack);
-    }
-
-    private void renderVerticalGrip(ItemStack stack) {
-        renderVerticalGrip(-1, 1.5, -5, 1.4f, stack);
-    }
-
-    private void renderAngledGrip(ItemStack stack) {
-        renderAngledGrip(0.4, 2.8, 6, 1.1f, stack);
-    }
-
-    private void renderRedDot(ItemStack stack) {
-        renderRedDot(-0.3, -6, -2, 1.3f, stack);
-    }
-
-    private void renderHolo(ItemStack stack) {
-        renderHolo(-1.45, -6.4, -5, 1.3f, stack);
-    }
-
-    private void render2X(ItemStack stack) {
-        renderScope2X(7.2, 8, -8, 1.1f, stack);
-    }
-
-    private void render4X(ItemStack stack) {
-        renderScope4X(7, 8, -9, 1.1f, stack);
+        renderARSilencer(0, -2, 3, 1f, stack);
+        ModelHelper.debugVerticalGrip(this, stack);
+        ModelHelper.debugAngledGrip(this, stack);
+        renderRedDot(0, 2, 5, 1f, stack);
+        renderHolo(0, 1, -1, 1f, stack);
+        renderScope2X(0, 1, 2, 1f, stack);
+        renderScope4X(0, 2, 0, 1f, stack);
     }
 
     private void renderParts(boolean scope) {

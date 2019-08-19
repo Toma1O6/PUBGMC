@@ -131,6 +131,14 @@ public class ModelHelper {
         gun.renderSniperSilencer(x, y, z, scale, stack);
     }
 
+    public static void debugVerticalGrip(ModelGun gun, ItemStack stack) {
+        gun.renderVerticalGrip(x, y, z, scale, stack);
+    }
+
+    public static void debugAngledGrip(ModelGun gun, ItemStack stack) {
+        gun.renderAngledGrip(x, y, z, scale, stack);
+    }
+
     public static class Handler {
 
         @SubscribeEvent
