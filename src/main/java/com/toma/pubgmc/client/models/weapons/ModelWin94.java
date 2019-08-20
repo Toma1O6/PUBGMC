@@ -3,7 +3,6 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -79,6 +78,7 @@ public class ModelWin94 extends ModelGun {
     }
 
     public ModelWin94() {
+        super();
         textureWidth = 128;
         textureHeight = 128;
 
@@ -430,6 +430,7 @@ public class ModelWin94 extends ModelGun {
         bone.addChild(bone20);
         bone20.cubeList.add(new ModelBox(bone20, 82, 29, 12.7832F, -15.1367F, 7.0313F, 1, 1, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 82, 29, 14.1367F, -13.7832F, 7.0313F, 1, 1, 1, 0.0F, true));
+        initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

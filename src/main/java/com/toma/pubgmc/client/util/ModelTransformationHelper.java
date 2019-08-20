@@ -100,14 +100,14 @@ public class ModelTransformationHelper {
     public static void verticalGripTransform() {
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(180, 1, 0, 0);
-        GlStateManager.scale(0.14, 0.14, 0.14);
-        GlStateManager.translate(-3.0, -4.05, -0.5);
+        GlStateManager.scale(0.02, 0.02, 0.02);
+        GlStateManager.translate(-25.0, -26.1, -12.0);
     }
 
     public static void angledGripTransform() {
         GlStateManager.rotate(180, 1, 0, 0);
         GlStateManager.rotate(180, 0, 1, 0);
-        GlStateManager.scale(0.13, 0.13, 0.13);
-        GlStateManager.translate(-3.25, -5.6, -0.75);
+        GlStateManager.scale(0.02, 0.02, 0.02);
+        GlStateManager.translate(-24.85, -37.95, -12.0);
     }
 }

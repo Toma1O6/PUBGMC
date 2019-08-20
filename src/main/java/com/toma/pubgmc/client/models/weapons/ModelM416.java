@@ -499,8 +499,8 @@ public class ModelM416 extends ModelGun {
         GlStateManager.popMatrix();
 
         renderARSilencer(0, -2, 3, 1f, stack);
-        ModelHelper.debugVerticalGrip(this, stack);
-        ModelHelper.debugAngledGrip(this, stack);
+        renderAngledGrip(0, -6, 1, 1, stack);
+        renderVerticalGrip(0, -5, 6, 1, stack);
         renderRedDot(0, 2, 5, 1f, stack);
         renderHolo(0, 1, -1, 1f, stack);
         renderScope2X(0, 1, 2, 1f, stack);
