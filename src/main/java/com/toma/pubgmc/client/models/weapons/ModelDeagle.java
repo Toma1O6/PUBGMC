@@ -5,7 +5,6 @@ import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -13,7 +12,6 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Mod;
 
 /**
  * {@code slightly edited by Toma}

@@ -1308,40 +1308,12 @@ public class ModelMK47Mutant extends ModelGun {
         Mk47.render(1f);
         GlStateManager.popMatrix();
 
-        renderRedDot(stack);
-        renderHolo(stack);
-        render2x(stack);
-        render4x(stack);
-        renderSilencer(stack);
-        renderVerticalGrip(stack);
-        renderAngledGrip(stack);
-    }
-
-    private void renderRedDot(ItemStack stack) {
-        renderRedDot(-0.4, -8.3, 0, 1.3f, stack);
-    }
-
-    private void renderHolo(ItemStack stack) {
-        renderHolo(-1.5, -8.5, -2, 1.3f, stack);
-    }
-
-    private void render2x(ItemStack stack) {
-        renderScope2X(7.9, 8.8, -9, 1f, stack);
-    }
-
-    private void render4x(ItemStack stack) {
-        renderScope4X(7.9, 8.8, -11, 1f, stack);
-    }
-
-    private void renderSilencer(ItemStack stack) {
-        renderARSilencer(0, -0.6, -11, 1f, stack);
-    }
-
-    private void renderVerticalGrip(ItemStack stack) {
-        renderVerticalGrip(0, 4, -12, 1f, stack);
-    }
-
-    private void renderAngledGrip(ItemStack stack) {
-        renderAngledGrip(0, 3, 7, 1f, stack);
+        renderARSilencer(0, 0.125, 6, 1f, stack);
+        renderVerticalGrip(0, -7, 3, 1f, stack);
+        renderAngledGrip(0, -6.125, 5, 1f, stack);
+        renderRedDot(0, -1.125, 3, 1f, stack);
+        renderHolo(-0.075, -0.6, 0, 1f, stack);
+        renderScope2X(0, -1, 0, 1f, stack);
+        renderScope4X(0, -1.925, 0, 1f, stack);
     }
 }

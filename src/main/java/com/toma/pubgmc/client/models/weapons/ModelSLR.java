@@ -3,7 +3,6 @@ package com.toma.pubgmc.client.models.weapons;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import net.minecraft.client.Minecraft;

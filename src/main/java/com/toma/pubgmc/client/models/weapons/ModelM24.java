@@ -252,41 +252,13 @@ public class ModelM24 extends ModelGun {
         }
         GlStateManager.popMatrix();
 
-        if (hasSilencer(stack)) renderSilencer(stack);
-        if (hasRedDot(stack)) renderRedDot(stack);
-        else if (hasHoloSight(stack)) renderHolo(stack);
-        else if (has2X(stack)) render2x(stack);
-        else if (has4X(stack)) render4x(stack);
-        else if (has8X(stack)) render8x(stack);
-        else if (has15X(stack)) render15x(stack);
-    }
-
-    private void renderRedDot(ItemStack stack) {
-        renderRedDot(-0.5, -2.8, 4, 1f, stack);
-    }
-
-    private void renderHolo(ItemStack stack) {
-        renderHolo(-1.95, -3.4, -1, 1f, stack);
-    }
-
-    private void render2x(ItemStack stack) {
-        renderScope2X(7.7, 10, -7, 1f, stack);
-    }
-
-    private void render4x(ItemStack stack) {
-        renderScope4X(7.7, 10, -7, 1f, stack);
-    }
-
-    private void render8x(ItemStack stack) {
-        renderScope8X(0, -2, 8, 1f, stack);
-    }
-
-    private void render15x(ItemStack stack) {
-        renderScope15X(0, -1, 3, 1f, stack);
-    }
-
-    private void renderSilencer(ItemStack stack) {
-        renderSniperSilencer(0, 1.3, -8.5, 1f, stack);
+        renderRedDot(0, 2, -19, 1f, stack);
+        renderHolo(-0.025, 0.725, -8.15, 1f, stack);
+        renderScope2X(0, 0, 5, 1f, stack);
+        renderScope4X(0, 0, 8, 1f, stack);
+        renderScope8X(0, 1.3, -2, 1f, stack);
+        renderScope15X(0, -1.75, 0, 1f, stack);
+        renderSniperSilencer(0.175, -6.45, 9, 1.46f, stack);
     }
 
     private void renderParts() {

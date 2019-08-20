@@ -2,7 +2,6 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import net.minecraft.client.Minecraft;
@@ -10,7 +9,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ModelAKM extends ModelGun {
