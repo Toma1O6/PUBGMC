@@ -68,7 +68,7 @@ public abstract class ModelGun extends ModelBase {
      * Manipulates with Y value of aim animation to react to different scopes
      * <p><b>Call inside the render(ItemStack) function!</b></p>
      *
-     * @param stack
+     * @param stack - item
      */
     public void preRender(ItemStack stack) {
         if ((!hasScopeAtachment(stack) || this.getScopeLevel(stack) > 2) && aimAnimation.getFinalState().y != aimStates[0]) {

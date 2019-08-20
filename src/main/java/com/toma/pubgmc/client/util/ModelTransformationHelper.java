@@ -83,8 +83,8 @@ public class ModelTransformationHelper {
     }
 
     public static void silencerSMGTransform() {
-        GlStateManager.scale(0.02999994, 0.02999994, 0.02999994);
-        GlStateManager.translate(16.6, 1.0, 0.0);
+        GlStateManager.scale(0.01999994, 0.01999994, 0.01999994);
+        GlStateManager.translate(25.05, 10.0, -21.0);
     }
 
     public static void silencerARTransform() {

@@ -5,6 +5,7 @@ import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -226,41 +227,13 @@ public class ModelUmp45 extends ModelGun {
         renderAll();
         GlStateManager.popMatrix();
 
-        renderSilencer(stack);
-        renderGripVertical(stack);
-        renderGripAngled(stack);
-        renderRedDotSight(stack);
-        renderHolographic(stack);
-        render2X(stack);
-        render4X(stack);
-    }
-
-    private void renderSilencer(ItemStack stack) {
-        renderSMGSilencer(0, 0.5, -15, 1f, stack);
-    }
-
-    private void renderRedDotSight(ItemStack stack) {
-        renderRedDot(-0.5, -11.9, 3, 1.5f, stack);
-    }
-
-    private void renderHolographic(ItemStack stack) {
-        renderHolo(-1.4, -11, -3, 1.4f, stack);
-    }
-
-    private void render2X(ItemStack stack) {
-        renderScope2X(8, 7, -5, 1f, stack);
-    }
-
-    private void render4X(ItemStack stack) {
-        renderScope4X(8, 7, -5, 1f, stack);
-    }
-
-    private void renderGripVertical(ItemStack stack) {
-        renderVerticalGrip(-1, 2, 1, 1f, stack);
-    }
-
-    private void renderGripAngled(ItemStack stack) {
-        renderAngledGrip(1, 6, -3, 0.8f, stack);
+        renderSMGSilencer(0, 0, 0, 1f, stack);
+        renderVerticalGrip(0, -13, 21, 0.7f, stack);
+        renderAngledGrip(0, -8, 20, 0.8f, stack);
+        renderRedDot(0, -5.95, 16, 1f, stack);
+        renderHolo(-0.05, -0.05, 3, 0.9f, stack);
+        renderScope2X(0, -3, 7, 1f, stack);
+        renderScope4X(0, -3.95, 5, 1f, stack);
     }
 
     private void renderAll() {

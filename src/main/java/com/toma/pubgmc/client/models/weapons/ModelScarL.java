@@ -70,7 +70,7 @@ public class ModelScarL extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.245f, 0.225f);
-        initAimingAnimationStates(0.245f, 0.185f, 0.14f);
+        initAimingAnimationStates(0.245f, 0.245f, 0.205f);
     }
 
     @Override
