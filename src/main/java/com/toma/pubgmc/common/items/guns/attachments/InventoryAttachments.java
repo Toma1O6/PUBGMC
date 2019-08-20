@@ -11,13 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryAttachments extends InventoryBasic {
-    private ItemStack prevWepStack;
-    private ItemAttachment attach;
-    private GunType type;
     private boolean using = false;
+    private GunBase gun;
 
-    public InventoryAttachments() {
-        super("Weapon Crafting Table", true, 7);
+    public InventoryAttachments(int slots, GunBase gun) {
+        super("Weapon Attachments", true, slots);
+        this.gun = gun;
     }
 
     @Override
@@ -29,13 +28,7 @@ public class InventoryAttachments extends InventoryBasic {
             return;
         }
 
-        if (gunToDetach.getItem() instanceof GunBase) {
-            using = true;
-            detachAttachments(gunToDetach);
-            using = false;
-        }
-
-        if (gun != prevWepStack || getStackInSlot(1).getItem() != Items.AIR || getStackInSlot(2).getItem() != Items.AIR || getStackInSlot(3).getItem() != Items.AIR || getStackInSlot(4).getItem() != Items.AIR || getStackInSlot(5).getItem() != Items.AIR) {
+        if (getStackInSlot(1).getItem() != Items.AIR || getStackInSlot(2).getItem() != Items.AIR || getStackInSlot(3).getItem() != Items.AIR || getStackInSlot(4).getItem() != Items.AIR || getStackInSlot(5).getItem() != Items.AIR) {
             using = true;
 
             PUBGMCUtil.createNBT(gun);
@@ -110,8 +103,6 @@ public class InventoryAttachments extends InventoryBasic {
                         removeStackFromSlot(5);
                     }
                 }
-
-                prevWepStack = gun;
             }
 
             using = false;

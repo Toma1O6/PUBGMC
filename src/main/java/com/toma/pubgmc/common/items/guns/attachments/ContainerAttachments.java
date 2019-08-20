@@ -21,35 +21,20 @@ public class ContainerAttachments extends Container {
     private InventoryAttachments inv;
     private InventoryPlayer playerInv;
     private EntityPlayer invUser;
-    private List<Slot> slots = new ArrayList<Slot>();
-
+    public ItemStack stack;
 
     public ContainerAttachments(InventoryPlayer playerInv, EntityPlayer player) {
-        inv = new InventoryAttachments();
-        slots.clear();
         this.playerInv = playerInv;
         this.invUser = player;
-
-        addSlotToContainer(new SlotWeapon(inv, 0, 80, 31));
-        slots.add(new SlotWeapon(0));
-
-        addSlotToContainer(new SlotAttachment(inv, 1, 80, 12, Type.SCOPE));
-        slots.add(new SlotAttachment(Type.SCOPE, 1));
-
-        addSlotToContainer(new SlotAttachment(inv, 2, 20, 31, Type.BARREL));
-        slots.add(new SlotAttachment(Type.BARREL, 2));
-
-        addSlotToContainer(new SlotAttachment(inv, 3, 42, 50, Type.GRIP));
-        slots.add(new SlotAttachment(Type.GRIP, 3));
-
-        addSlotToContainer(new SlotAttachment(inv, 4, 80, 50, Type.MAGAZINE));
-        slots.add(new SlotAttachment(Type.MAGAZINE, 4));
-
-        addSlotToContainer(new SlotAttachment(inv, 5, 124, 31, Type.STOCK));
-        slots.add(new SlotAttachment(Type.STOCK, 5));
-
-        addSlotToContainer(new Slot(inv, 6, 152, 55));
-        slots.add(new SlotWeapon(6));
+        this.stack = player.getHeldItemMainhand();
+        GunBase gun = (GunBase) stack.getItem();
+        int slots = 0;
+        slots = gun.getBarrelAttachments().length > 0 ? slots + 1 : slots;
+        slots = gun.getGripAttachments().length > 0 ? slots + 1 : slots;
+        slots = gun.getMagazineAttachments().length > 0 ? slots + 1 : slots;
+        slots = gun.getStockAttachments().length > 0 ? slots + 1 : slots;
+        slots = gun.getScopeAttachments().length > 0 ? slots + 1 : slots;
+        inv = new InventoryAttachments(slots);
 
         //Block slots
         for (int x = 0; x < 9; x++) {

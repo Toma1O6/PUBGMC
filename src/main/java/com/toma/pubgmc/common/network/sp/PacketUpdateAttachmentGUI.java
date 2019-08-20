@@ -40,11 +40,6 @@ public class PacketUpdateAttachmentGUI implements IMessage, IMessageHandler<Pack
     @Override
     public IMessage onMessage(PacketUpdateAttachmentGUI message, MessageContext ctx) {
         if (ctx.side.isClient()) {
-            Minecraft.getMinecraft().addScheduledTask(() ->
-            {
-                GuiAttachments.ITEMS.clear();
-                GuiAttachments.ITEMS.addAll(message.items);
-            });
         }
         return null;
     }
