@@ -4,7 +4,6 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
@@ -32,17 +31,6 @@ public class InventoryAttachments extends InventoryBasic {
 
     @Override
     public void closeInventory(EntityPlayer player) {
-        if(player.getHeldItemMainhand() != gun) {
-            for(int i = 0; i < this.getSizeInventory(); i++) {
-                ItemStack s = this.getStackInSlot(i);
-                if(!s.isEmpty() && !player.world.isRemote) {
-                    EntityItem item = new EntityItem(player.world, player.posX, player.posY + 1, player.posZ, s);
-                    item.setPickupDelay(30);
-                    player.world.spawnEntity(item);
-                }
-            }
-            return;
-        }
         resetNBT();
         for(int i = 0; i < this.getSizeInventory(); i++) {
             ItemStack stack = this.getStackInSlot(i);

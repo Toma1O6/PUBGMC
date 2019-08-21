@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -57,71 +56,52 @@ public class ContainerAttachments extends Container {
             ItemStack stack1 = slot.getStack();
             stack = stack1.copy();
 
-            //Getting the weapons and attachments into right place in the container
-            if (index >= 7 && index <= 42) {
-                if (slot.getStack().getItem() instanceof GunBase) {
-                    if (inventorySlots.get(0).getHasStack()) {
-                        return ItemStack.EMPTY;
-                    } else {
-                        inventorySlots.get(0).putStack(stack);
-                        slot.putStack(ItemStack.EMPTY);
-                    }
-                } else if (slot.getStack().getItem() instanceof ItemAttachment) {
+            if (index >= 5 && index <= 40) {
+                if (slot.getStack().getItem() instanceof ItemAttachment) {
                     if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.SCOPE) {
-                        if (inventorySlots.get(1).getHasStack()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(1).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.BARREL) {
-                        if (inventorySlots.get(2).getHasStack()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(2).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.GRIP) {
-                        if (inventorySlots.get(3).getHasStack()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(3).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.MAGAZINE) {
-                        if (inventorySlots.get(4).getHasStack()) {
+                        if (inventorySlots.get(4).getHasStack() || !slot.isEnabled()) {
                             return ItemStack.EMPTY;
                         } else {
                             inventorySlots.get(4).putStack(stack);
                             slot.putStack(ItemStack.EMPTY);
                         }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.STOCK) {
-                        if (inventorySlots.get(5).getHasStack()) {
+                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.BARREL) {
+                        if (inventorySlots.get(0).getHasStack() || !slot.isEnabled()) {
                             return ItemStack.EMPTY;
                         } else {
-                            inventorySlots.get(5).putStack(stack);
+                            inventorySlots.get(0).putStack(stack);
+                            slot.putStack(ItemStack.EMPTY);
+                        }
+                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.GRIP) {
+                        if (inventorySlots.get(1).getHasStack() || !slot.isEnabled()) {
+                            return ItemStack.EMPTY;
+                        } else {
+                            inventorySlots.get(1).putStack(stack);
+                            slot.putStack(ItemStack.EMPTY);
+                        }
+                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.MAGAZINE) {
+                        if (inventorySlots.get(2).getHasStack() || !slot.isEnabled()) {
+                            return ItemStack.EMPTY;
+                        } else {
+                            inventorySlots.get(2).putStack(stack);
+                            slot.putStack(ItemStack.EMPTY);
+                        }
+                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.STOCK) {
+                        if (inventorySlots.get(3).getHasStack() || !slot.isEnabled()) {
+                            return ItemStack.EMPTY;
+                        } else {
+                            inventorySlots.get(3).putStack(stack);
                             slot.putStack(ItemStack.EMPTY);
                         }
                     } else return ItemStack.EMPTY;
                 }
             } else {
-                if (!this.mergeItemStack(stack1, 7, 43, false)) {
+                if (!this.mergeItemStack(stack1, 5, 41, false)) {
                     return ItemStack.EMPTY;
                 }
-
-                slot.onSlotChange(stack1, stack);
-            }
-
-            //Getting items from the gui
-            if (index >= 0 && index <= 6) {
-                if (!this.mergeItemStack(stack1, 7, 43, true)) {
-                    return ItemStack.EMPTY;
-                }
-
                 slot.onSlotChange(stack1, stack);
             }
         }
-
         return ItemStack.EMPTY;
     }
 
