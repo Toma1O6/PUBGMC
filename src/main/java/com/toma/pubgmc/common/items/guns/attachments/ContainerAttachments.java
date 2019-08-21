@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -23,33 +24,12 @@ public class ContainerAttachments extends Container {
         this.playerInv = playerInv;
         this.invUser = player;
         this.stack = player.getHeldItemMainhand();
-        GunBase gun = (GunBase) stack.getItem();
-        inv = new InventoryAttachments(5, gun);
-        int[] xPos = {20, 42, 80, 124, 80};
-        int[] yPos = {31, 50, 50, 31, 12};
+        inv = new InventoryAttachments(5, stack);
+        int[] xPos = {20, 48, 80, 135, 90};
+        int[] yPos = {31, 60, 65, 31, 12};
         for(i = 0; i < Type.values().length; i++) {
-            addSlotToContainer(new Slot(inv, i, xPos[i], yPos[i]) {
-                @Override
-                public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() instanceof ItemAttachment && ((ItemAttachment)stack.getItem()).getType() == Type.values()[ContainerAttachments.this.i];
-                }
+            addSlotToContainer(this.new AttachmentSlot(inv, i, xPos[i], yPos[i], stack));
 
-                @Override
-                public boolean isEnabled() {
-                    int j = ContainerAttachments.this.i;
-                    if(!(ContainerAttachments.this.stack.getItem() instanceof GunBase)) {
-                        return false;
-                    }
-                    switch(j) {
-                        case 0: return ((GunBase)ContainerAttachments.this.stack.getItem()).getBarrelAttachments().length > 0;
-                        case 1: return ((GunBase)ContainerAttachments.this.stack.getItem()).getGripAttachments().length > 0;
-                        case 2: return ((GunBase)ContainerAttachments.this.stack.getItem()).getMagazineAttachments().length > 0;
-                        case 3: return ((GunBase)ContainerAttachments.this.stack.getItem()).getStockAttachments().length > 0;
-                        case 4: return ((GunBase)ContainerAttachments.this.stack.getItem()).getScopeAttachments().length > 0;
-                        default: return false;
-                    }
-                }
-            });
         }
         // Vanilla inv
         for (int y = 0; y < 3; y++) {
@@ -161,5 +141,43 @@ public class ContainerAttachments extends Container {
 
     public InventoryAttachments getAttachmentInventory() {
         return inv;
+    }
+
+    class AttachmentSlot extends Slot {
+
+        private boolean enabled;
+
+        public AttachmentSlot(IInventory inv, int i, int x, int y, ItemStack stack) {
+            super(inv, i, x, y);
+            this.updateStatus(stack);
+        }
+
+        private void updateStatus(ItemStack stack) {
+            enabled = this.enabled(stack);
+        }
+
+        private boolean enabled(ItemStack stack) {
+            if(!(stack.getItem() instanceof GunBase)) {
+                return false;
+            }
+            switch(this.getSlotIndex()) {
+                case 0: return ((GunBase)stack.getItem()).getBarrelAttachments().length > 0;
+                case 1: return ((GunBase)stack.getItem()).getGripAttachments().length > 0;
+                case 2: return ((GunBase)stack.getItem()).getMagazineAttachments().length > 0;
+                case 3: return ((GunBase)stack.getItem()).getStockAttachments().length > 0;
+                case 4: return ((GunBase)stack.getItem()).getScopeAttachments().length > 0;
+                default: return false;
+            }
+        }
+
+        @Override
+        public boolean isItemValid(ItemStack stack) {
+            return stack.getItem() instanceof ItemAttachment && ((ItemAttachment)stack.getItem()).getType() == Type.values()[this.getSlotIndex()];
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return enabled;
+        }
     }
 }

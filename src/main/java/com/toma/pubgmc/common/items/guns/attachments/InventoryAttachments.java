@@ -13,9 +13,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryAttachments extends InventoryBasic {
     private boolean using = false;
-    private GunBase gun;
+    private ItemStack gun;
 
-    public InventoryAttachments(int slots, GunBase gun) {
+    public InventoryAttachments(int slots, ItemStack gun) {
         super("Weapon Attachments", true, slots);
         this.gun = gun;
     }
@@ -31,7 +31,7 @@ public class InventoryAttachments extends InventoryBasic {
             return;
         }
 
-        if (getStackInSlot(1).getItem() != Items.AIR || getStackInSlot(2).getItem() != Items.AIR || getStackInSlot(3).getItem() != Items.AIR || getStackInSlot(4).getItem() != Items.AIR || getStackInSlot(5).getItem() != Items.AIR) {
+        if (getStackInSlot(0).getItem() != Items.AIR || getStackInSlot(1).getItem() != Items.AIR || getStackInSlot(2).getItem() != Items.AIR || getStackInSlot(3).getItem() != Items.AIR || getStackInSlot(4).getItem() != Items.AIR) {
             using = true;
 
             PUBGMCUtil.createNBT(gun);
@@ -40,70 +40,70 @@ public class InventoryAttachments extends InventoryBasic {
                 GunBase gunItem = (GunBase) gun.getItem();
 
                 //Scopes
-                if (getStackInSlot(1).getItem() instanceof ItemAttachment) {
-                    ItemAttachment attach = (ItemAttachment) getStackInSlot(1).getItem();
-
-                    if (gunItem.containsAttachment(gunItem.getScopeAttachments(), attach)) {
-                        if (gun.getTagCompound().getInteger("scope") > 0) {
-                            setInventorySlotContents(6, getScopeAttachment(gun));
-                        }
-
-                        gun.getTagCompound().setInteger("scope", attach.getID(getStackInSlot(1).getItem()));
-                        removeStackFromSlot(1);
-                    }
-                }
-
-                //Barrel
-                if (getStackInSlot(2).getItem() instanceof ItemAttachment) {
-                    ItemAttachment attach = (ItemAttachment) getStackInSlot(2).getItem();
-                    if (gunItem.containsAttachment(gunItem.getBarrelAttachments(), attach)) {
-                        if (gun.getTagCompound().getInteger("barrel") > 0) {
-                            setInventorySlotContents(6, getBarrelAttachment(gun));
-                        }
-
-                        gun.getTagCompound().setInteger("barrel", attach.getID(getStackInSlot(2).getItem()));
-                        removeStackFromSlot(2);
-                    }
-                }
-
-                //Grip
-                if (getStackInSlot(3).getItem() instanceof ItemAttachment) {
-                    ItemAttachment attach = (ItemAttachment) getStackInSlot(3).getItem();
-                    if (gunItem.containsAttachment(gunItem.getGripAttachments(), attach)) {
-                        if (gun.getTagCompound().getInteger("grip") > 0) {
-                            setInventorySlotContents(6, getGripAttachment(gun));
-                        }
-
-                        gun.getTagCompound().setInteger("grip", attach.getID(getStackInSlot(3).getItem()));
-                        removeStackFromSlot(3);
-                    }
-                }
-
-                //Magazines
                 if (getStackInSlot(4).getItem() instanceof ItemAttachment) {
                     ItemAttachment attach = (ItemAttachment) getStackInSlot(4).getItem();
 
-                    if (gunItem.containsAttachment(gunItem.getMagazineAttachments(), attach)) {
-                        if (gun.getTagCompound().getInteger("magazine") > 0) {
-                            setInventorySlotContents(6, getMagazineAttachment(gun));
+                    if (gunItem.containsAttachment(gunItem.getScopeAttachments(), attach)) {
+                        if (gun.getTagCompound().getInteger("scope") > 0) {
+                            setInventorySlotContents(4, getScopeAttachment(gun));
                         }
 
-                        gun.getTagCompound().setInteger("magazine", attach.getID(getStackInSlot(4).getItem()));
+                        gun.getTagCompound().setInteger("scope", attach.getID(getStackInSlot(4).getItem()));
                         removeStackFromSlot(4);
                     }
                 }
 
+                //Barrel
+                if (getStackInSlot(0).getItem() instanceof ItemAttachment) {
+                    ItemAttachment attach = (ItemAttachment) getStackInSlot(0).getItem();
+                    if (gunItem.containsAttachment(gunItem.getBarrelAttachments(), attach)) {
+                        if (gun.getTagCompound().getInteger("barrel") > 0) {
+                            setInventorySlotContents(0, getBarrelAttachment(gun));
+                        }
+
+                        gun.getTagCompound().setInteger("barrel", attach.getID(getStackInSlot(0).getItem()));
+                        removeStackFromSlot(0);
+                    }
+                }
+
+                //Grip
+                if (getStackInSlot(1).getItem() instanceof ItemAttachment) {
+                    ItemAttachment attach = (ItemAttachment) getStackInSlot(1).getItem();
+                    if (gunItem.containsAttachment(gunItem.getGripAttachments(), attach)) {
+                        if (gun.getTagCompound().getInteger("grip") > 0) {
+                            setInventorySlotContents(1, getGripAttachment(gun));
+                        }
+
+                        gun.getTagCompound().setInteger("grip", attach.getID(getStackInSlot(1).getItem()));
+                        removeStackFromSlot(1);
+                    }
+                }
+
+                //Magazines
+                if (getStackInSlot(2).getItem() instanceof ItemAttachment) {
+                    ItemAttachment attach = (ItemAttachment) getStackInSlot(2).getItem();
+
+                    if (gunItem.containsAttachment(gunItem.getMagazineAttachments(), attach)) {
+                        if (gun.getTagCompound().getInteger("magazine") > 0) {
+                            setInventorySlotContents(2, getMagazineAttachment(gun));
+                        }
+
+                        gun.getTagCompound().setInteger("magazine", attach.getID(getStackInSlot(2).getItem()));
+                        removeStackFromSlot(2);
+                    }
+                }
+
                 //Stock
-                if (getStackInSlot(5).getItem() instanceof ItemAttachment) {
-                    ItemAttachment attach = (ItemAttachment) getStackInSlot(5).getItem();
+                if (getStackInSlot(3).getItem() instanceof ItemAttachment) {
+                    ItemAttachment attach = (ItemAttachment) getStackInSlot(3).getItem();
 
                     if (gunItem.containsAttachment(gunItem.getStockAttachments(), attach)) {
                         if (gun.getTagCompound().getInteger("stock") > 0) {
-                            setInventorySlotContents(6, getStockAttachment(gun));
+                            setInventorySlotContents(3, getStockAttachment(gun));
                         }
 
-                        gun.getTagCompound().setInteger("stock", attach.getID(getStackInSlot(5).getItem()));
-                        removeStackFromSlot(5);
+                        gun.getTagCompound().setInteger("stock", attach.getID(getStackInSlot(3).getItem()));
+                        removeStackFromSlot(3);
                     }
                 }
             }
@@ -128,13 +128,12 @@ public class InventoryAttachments extends InventoryBasic {
                 weaponType = 2;
             else if (gun.getGunType() == GunType.DMR || gun.getGunType() == GunType.SR)
                 weaponType = 3;
-            Item[][] attachments =
-                    {
-                            {PMCRegistry.PMCItems.SILENCER_PISTOL},
-                            {PMCRegistry.PMCItems.SILENCER_SMG, PMCRegistry.PMCItems.COMPENSATOR_SMG},
-                            {PMCRegistry.PMCItems.SILENCER_AR, PMCRegistry.PMCItems.COMPENSATOR_AR},
-                            {PMCRegistry.PMCItems.SILENCER_SNIPER, PMCRegistry.PMCItems.COMPENSATOR_SNIPER}
-                    };
+            Item[][] attachments = {
+                    {PMCRegistry.PMCItems.SILENCER_PISTOL},
+                    {PMCRegistry.PMCItems.SILENCER_SMG, PMCRegistry.PMCItems.COMPENSATOR_SMG},
+                    {PMCRegistry.PMCItems.SILENCER_AR, PMCRegistry.PMCItems.COMPENSATOR_AR},
+                    {PMCRegistry.PMCItems.SILENCER_SNIPER, PMCRegistry.PMCItems.COMPENSATOR_SNIPER}
+            };
 
             return new ItemStack(attachments[weaponType][attachment]);
         }
