@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.items.guns.attachments;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiAttachments extends GuiContainer {
@@ -22,7 +24,8 @@ public class GuiAttachments extends GuiContainer {
         super(new ContainerAttachments(inventory, player));
         xSize = 176;
         ySize = 170;
-        stack = ((ContainerAttachments)inventorySlots).stack;
+        stack = new ItemStack(((ContainerAttachments)inventorySlots).stack.getItem());
+        stack.setTagCompound(new NBTTagCompound());
     }
 
     @Override
@@ -42,6 +45,9 @@ public class GuiAttachments extends GuiContainer {
                 continue;
             }
             ImageUtil.drawCustomSizedImage(mc, SLOT, guiLeft + slot.xPos - 2, guiTop + slot.yPos - 2, 20, 20, false);
+            ItemStack s = slot.getStack();
+            String tag = IAttachment.Type.values()[slot.getSlotIndex()].getName();
+            stack.getTagCompound().setInteger(tag, s.isEmpty() ? 0 : s.getItem() instanceof ItemAttachment ? ((ItemAttachment)s.getItem()).getID(s.getItem()) : 0);
         }
     }
 

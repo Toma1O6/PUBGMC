@@ -134,9 +134,7 @@ public class ContainerAttachments extends Container {
 
     @Override
     public void onContainerClosed(EntityPlayer playerIn) {
-        if (!playerIn.world.isRemote) {
-            InventoryHelper.dropInventoryItems(playerIn.world, playerIn, inv);
-        }
+        inv.closeInventory(playerIn);
     }
 
     public InventoryAttachments getAttachmentInventory() {
