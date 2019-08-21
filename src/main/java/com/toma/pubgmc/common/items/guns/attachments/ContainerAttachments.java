@@ -1,7 +1,5 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
-import com.toma.pubgmc.client.util.slots.SlotAttachment;
-import com.toma.pubgmc.client.util.slots.SlotWeapon;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 import com.toma.pubgmc.common.network.PacketHandler;
@@ -14,43 +12,55 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ContainerAttachments extends Container {
     private InventoryAttachments inv;
     private InventoryPlayer playerInv;
     private EntityPlayer invUser;
     public ItemStack stack;
+    private short i;
 
     public ContainerAttachments(InventoryPlayer playerInv, EntityPlayer player) {
         this.playerInv = playerInv;
         this.invUser = player;
         this.stack = player.getHeldItemMainhand();
         GunBase gun = (GunBase) stack.getItem();
-        int slots = 0;
-        slots = gun.getBarrelAttachments().length > 0 ? slots + 1 : slots;
-        slots = gun.getGripAttachments().length > 0 ? slots + 1 : slots;
-        slots = gun.getMagazineAttachments().length > 0 ? slots + 1 : slots;
-        slots = gun.getStockAttachments().length > 0 ? slots + 1 : slots;
-        slots = gun.getScopeAttachments().length > 0 ? slots + 1 : slots;
-        inv = new InventoryAttachments(slots);
+        inv = new InventoryAttachments(5, gun);
+        int[] xPos = {20, 42, 80, 124, 80};
+        int[] yPos = {31, 50, 50, 31, 12};
+        for(i = 0; i < Type.values().length; i++) {
+            addSlotToContainer(new Slot(inv, i, xPos[i], yPos[i]) {
+                @Override
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() instanceof ItemAttachment && ((ItemAttachment)stack.getItem()).getType() == Type.values()[ContainerAttachments.this.i];
+                }
 
-        //Block slots
-        for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new Slot(playerInv, x + 9, x * 18 + 8, 88));
+                @Override
+                public boolean isEnabled() {
+                    int j = ContainerAttachments.this.i;
+                    if(!(ContainerAttachments.this.stack.getItem() instanceof GunBase)) {
+                        return false;
+                    }
+                    switch(j) {
+                        case 0: return ((GunBase)ContainerAttachments.this.stack.getItem()).getBarrelAttachments().length > 0;
+                        case 1: return ((GunBase)ContainerAttachments.this.stack.getItem()).getGripAttachments().length > 0;
+                        case 2: return ((GunBase)ContainerAttachments.this.stack.getItem()).getMagazineAttachments().length > 0;
+                        case 3: return ((GunBase)ContainerAttachments.this.stack.getItem()).getStockAttachments().length > 0;
+                        case 4: return ((GunBase)ContainerAttachments.this.stack.getItem()).getScopeAttachments().length > 0;
+                        default: return false;
+                    }
+                }
+            });
         }
-        for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new Slot(playerInv, x + 18, x * 18 + 8, 106));
+        // Vanilla inv
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
+                addSlotToContainer(new Slot(playerInv, x + y * 9 + 9, 8 + x * 18, 88 + y * 18));
+            }
         }
-        for (int x = 0; x < 9; x++) {
-            addSlotToContainer(new Slot(playerInv, x + 27, x * 18 + 8, 124));
-        }
-
-        //Player slots
         for (int x = 0; x < 9; x++) {
             addSlotToContainer(new Slot(playerInv, x, x * 18 + 8, 146));
         }
+        inv.openInventory(player);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
@@ -20,10 +21,12 @@ public class InventoryAttachments extends InventoryBasic {
     }
 
     @Override
-    public void markDirty() {
-        ItemStack gun = getStackInSlot(0);
-        ItemStack gunToDetach = getStackInSlot(6);
+    public void openInventory(EntityPlayer player) {
 
+    }
+
+    @Override
+    public void markDirty() {
         if (using) {
             return;
         }
