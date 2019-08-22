@@ -1,7 +1,9 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
+import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -127,14 +129,38 @@ public class ContainerAttachments extends Container {
         Slot toSwitch = this.inventorySlots.get(this.getAppropriateSlot((ItemAttachment) slot.getStack().getItem()));
         ItemStack stackToSwitch = toSwitch.getStack();
         if(stackToSwitch.isEmpty()) {
+            if(!this.canAttachTo((GunBase)this.stack.getItem(), (ItemAttachment)stack.getItem())) {
+                return false;
+            }
+
             toSwitch.putStack(stack.copy());
             slot.putStack(ItemStack.EMPTY);
         } else {
+            if(!this.canAttachTo((GunBase)this.stack.getItem(), (ItemAttachment)stack.getItem())) {
+                return false;
+            }
+
             ItemStack help = stackToSwitch.copy();
             toSwitch.putStack(stack.copy());
             slot.putStack(help.copy());
         }
         return true;
+    }
+
+    private boolean canAttachTo(GunBase gun, ItemAttachment attachment) {
+        switch(attachment.getType()) {
+            case BARREL:
+                return DevUtil.containsD(gun.getBarrelAttachments(), attachment);
+            case GRIP:
+                return DevUtil.containsD(gun.getGripAttachments(), attachment);
+            case MAGAZINE:
+                return DevUtil.containsD(gun.getMagazineAttachments(), attachment);
+            case SCOPE:
+                return DevUtil.containsD(gun.getScopeAttachments(), attachment);
+            case STOCK:
+                DevUtil.containsD(gun.getStockAttachments(), attachment);
+            default: return false;
+        }
     }
 
     private int getAppropriateSlot(ItemAttachment item) {

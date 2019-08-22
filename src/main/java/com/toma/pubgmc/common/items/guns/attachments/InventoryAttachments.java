@@ -4,6 +4,7 @@ import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
@@ -35,7 +36,15 @@ public class InventoryAttachments extends InventoryBasic {
         for(int i = 0; i < this.getSizeInventory(); i++) {
             ItemStack stack = this.getStackInSlot(i);
             if(!stack.isEmpty() && stack.getItem() instanceof ItemAttachment) {
-                gun.getTagCompound().setInteger(IAttachment.Type.values()[i].getName(), ((ItemAttachment)stack.getItem()).getID(stack.getItem()));
+                if(GunBase.canAttachAttachment((GunBase)gun.getItem(), (ItemAttachment)stack.getItem())) {
+                    gun.getTagCompound().setInteger(IAttachment.Type.values()[i].getName(), ((ItemAttachment)stack.getItem()).getID(stack.getItem()));
+                } else {
+                    if(!player.world.isRemote) {
+                        EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, stack.copy());
+                        item.setPickupDelay(30);
+                        player.world.spawnEntity(item);
+                    }
+                }
             }
         }
     }

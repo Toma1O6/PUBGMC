@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items.guns;
 
+import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -82,6 +83,22 @@ public class GunBase extends PMCItem {
         setCreativeTab(Pubgmc.pmcitemstab);
         setMaxStackSize(1);
         GUNS.add(this);
+    }
+
+    public static boolean canAttachAttachment(GunBase gun, ItemAttachment attachment) {
+        switch(attachment.getType()) {
+            case BARREL:
+                return DevUtil.containsD(gun.getBarrelAttachments(), attachment);
+            case GRIP:
+                return DevUtil.containsD(gun.getGripAttachments(), attachment);
+            case MAGAZINE:
+                return DevUtil.containsD(gun.getMagazineAttachments(), attachment);
+            case SCOPE:
+                return DevUtil.containsD(gun.getScopeAttachments(), attachment);
+            case STOCK:
+                DevUtil.containsD(gun.getStockAttachments(), attachment);
+            default: return false;
+        }
     }
 
     public SoundEvent getWeaponReloadSound() {
@@ -247,11 +264,7 @@ public class GunBase extends PMCItem {
             }
         }
 
-        if (player.capabilities.isCreativeMode) {
-            return true;
-        }
-
-        return false;
+        return player.capabilities.isCreativeMode;
     }
 
     //Here we add all info which will be displayed on the item
@@ -558,7 +571,7 @@ public class GunBase extends PMCItem {
 
         private String name;
 
-        private Firemode(String name) {
+        Firemode(String name) {
             this.name = name;
         }
 

@@ -18,6 +18,18 @@ public class DevUtil {
         return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
     }
 
+    /**
+     * Compares elements in group directly using the ==
+     */
+    public static <E> boolean containsD(E[] group, E element) {
+        for(E e : group) {
+            if(element == e) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static final class ModelCreator {
 
         public void createAllFiles() {
