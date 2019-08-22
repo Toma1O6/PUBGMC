@@ -37,16 +37,18 @@ public class PacketHandler {
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
+        registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
         registerClientPacket(PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.class);
         registerClientPacket(PacketCreateNBT.class);
-        registerClientPacket(PacketUpdateAttachmentGUI.class);
         registerClientPacket(PacketParticle.class);
         registerClientPacket(PacketClientCapabilitySync.class);
         registerClientPacket(PacketUpdatePlayerRotation.class);
         registerClientPacket(PacketVehicleData.class);
         registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
+        registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
+        registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

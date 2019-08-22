@@ -3,7 +3,6 @@ package com.toma.pubgmc.common.items.guns.attachments;
 import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
-import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

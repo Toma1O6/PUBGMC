@@ -15,6 +15,8 @@ import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
+import com.toma.pubgmc.common.network.sp.PacketGetConfigFromServer;
+import com.toma.pubgmc.common.network.sp.PacketLoadConfig;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.config.ConfigPMC;
@@ -28,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.potion.PotionEffect;
@@ -59,10 +62,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class CommonEvents {
     private double prevDiameter = 0;
+    public static final HashMap<UUID, NBTTagCompound> CONFIGS = new HashMap<>();
 
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
         switch (result.status) {
@@ -389,8 +395,8 @@ public class CommonEvents {
         if (e.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) e.player;
             if (player != null && !player.world.isRemote) {
-                // TODO
-                //PacketHandler.sendToClient(new PacketUpdateConfig(), player);
+
+                PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
 
                 //We get the last player data and later sync it to client
                 player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -399,6 +405,14 @@ public class CommonEvents {
                 //Sync some data from capability to client for overlay rendering
                 PacketHandler.syncPlayerDataToClient(data, player);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
+        if(e.player instanceof EntityPlayerMP) {
+            PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP)e.player);
+            CONFIGS.remove(e.player.getUniqueID());
         }
     }
 
