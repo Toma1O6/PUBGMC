@@ -2,10 +2,7 @@ package com.toma.pubgmc.common.items.guns.attachments;
 
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
-import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketUpdateAttachmentGUI;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -57,8 +54,15 @@ public class ContainerAttachments extends Container {
             stack = stack1.copy();
 
             if (index >= 5 && index <= 40) {
-                if (slot.getStack().getItem() instanceof ItemAttachment) {
-                    if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.SCOPE) {
+                if (stack.getItem() instanceof ItemAttachment) {
+                    for(Type type : Type.values()) {
+                        if(((ItemAttachment)stack.getItem()).getType() == type) {
+                            if(!canSwitchItems(slot)) {
+                                return ItemStack.EMPTY;
+                            }
+                        }
+                    }
+                    /*if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.SCOPE) {
                         if (inventorySlots.get(4).getHasStack() || !slot.isEnabled()) {
                             return ItemStack.EMPTY;
                         } else {
@@ -93,7 +97,8 @@ public class ContainerAttachments extends Container {
                             inventorySlots.get(3).putStack(stack);
                             slot.putStack(ItemStack.EMPTY);
                         }
-                    } else return ItemStack.EMPTY;
+                    } else*/
+                    return ItemStack.EMPTY;
                 }
             } else {
                 if (!this.mergeItemStack(stack1, 5, 41, false)) {
@@ -106,19 +111,34 @@ public class ContainerAttachments extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        if (!invUser.world.isRemote)
-            PacketHandler.sendToClient(new PacketUpdateAttachmentGUI(inv), (EntityPlayerMP) invUser);
-        super.detectAndSendChanges();
-    }
-
-    @Override
     public void onContainerClosed(EntityPlayer playerIn) {
         inv.closeInventory(playerIn);
     }
 
     public InventoryAttachments getAttachmentInventory() {
         return inv;
+    }
+
+    private boolean canSwitchItems(Slot slot) {
+        ItemStack stack = slot.getStack();
+        if(stack.isEmpty() || !slot.isEnabled()) {
+            return false;
+        }
+        Slot toSwitch = this.inventorySlots.get(this.getAppropriateSlot((ItemAttachment) slot.getStack().getItem()));
+        ItemStack stackToSwitch = toSwitch.getStack();
+        if(stackToSwitch.isEmpty()) {
+            toSwitch.putStack(stack.copy());
+            slot.putStack(ItemStack.EMPTY);
+        } else {
+            ItemStack help = stackToSwitch.copy();
+            toSwitch.putStack(stack.copy());
+            slot.putStack(help.copy());
+        }
+        return true;
+    }
+
+    private int getAppropriateSlot(ItemAttachment item) {
+        return item.getType().ordinal();
     }
 
     class AttachmentSlot extends Slot {
