@@ -159,15 +159,6 @@ public class CommonEvents {
         }
     }
 
-    //Attach capability to entity
-    @SubscribeEvent
-    public void attachCapabilities(AttachCapabilitiesEvent<Entity> e) {
-        if (e.getObject() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) e.getObject();
-            e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":playerdata"), new PlayerDataProvider());
-        }
-    }
-
     @SubscribeEvent
     public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new WorldDataProvider());
@@ -570,7 +561,6 @@ public class CommonEvents {
                 player.setGameType(GameType.SPECTATOR);
             }
         }
-        PacketHandler.sendToClient(new PacketClientCapabilitySync(player.getCapability(PlayerDataProvider.PLAYER_DATA, null)), (EntityPlayerMP)player);
     }
 
     /**

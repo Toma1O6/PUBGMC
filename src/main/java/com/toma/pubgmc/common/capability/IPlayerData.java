@@ -1,50 +1,60 @@
 package com.toma.pubgmc.common.capability;
 
+import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-public interface IPlayerData {
-    public boolean isReloading();
+public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
+    boolean isReloading();
 
-    public void setReloading(boolean reloading);
+    void setReloading(boolean reloading);
 
-    public boolean isAiming();
+    boolean isAiming();
 
-    public void setAiming(boolean aiming);
+    void setAiming(boolean aiming);
 
-    public void setNV(boolean nv);
+    void setNV(boolean nv);
 
-    public boolean isUsingNV();
+    boolean isUsingNV();
 
-    public int getReloadingTime();
+    int getReloadingTime();
 
-    public void setReloadingTime(int rt);
+    void setReloadingTime(int rt);
 
-    public int getTimer();
+    int getTimer();
 
-    public void setTimer(int t);
+    void setTimer(int t);
 
-    public void addBoost(float boost);
+    void addBoost(float boost);
 
-    public void removeBoost(float boost);
+    void removeBoost(float boost);
 
-    public float getBoost();
+    float getBoost();
 
-    public void setBoost(float boost);
+    void setBoost(float boost);
 
-    public int setBackpackLevel(int level);
+    int setBackpackLevel(int level);
 
-    public int getBackpackLevel();
+    int getBackpackLevel();
 
-    public boolean hasEquippedNV(boolean nv);
+    boolean hasEquippedNV(boolean nv);
 
-    public boolean getEquippedNV();
+    boolean getEquippedNV();
 
     boolean isProning();
 
@@ -52,65 +62,44 @@ public interface IPlayerData {
     void setProning(boolean proning);
 
     //grenades
-    public boolean setGrenadeCooking(boolean cooking);
+    boolean setGrenadeCooking(boolean cooking);
 
-    public boolean isGrenadeCooking();
+    boolean isGrenadeCooking();
 
-    public int setCookingTime(int time);
+    int setCookingTime(int time);
 
-    public int getCookingTime();
+    int getCookingTime();
 
-    public int getScopeType();
+    int getScopeType();
 
     //scope variants
-    public void setScopeType(int type);
+    void setScopeType(int type);
 
-    public int getScopeColor();
+    int getScopeColor();
 
-    public void setScopeColor(int color);
+    void setScopeColor(int color);
 
-    public double getDistance();
+    double getDistance();
 
     // map drop location distance
-    public void setDistance(double dist);
+    void setDistance(double dist);
 
-    public class PlayerDataStorage implements IStorage<IPlayerData> {
+    void sync();
+
+    class PlayerDataStorage implements IStorage<IPlayerData> {
         @Override
         public NBTBase writeNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side) {
-            NBTTagCompound c = new NBTTagCompound();
-            c.setBoolean("reloading", instance.isReloading());
-            c.setBoolean("aiming", instance.isAiming());
-            c.setBoolean("nv", instance.isUsingNV());
-            c.setInteger("reloading_time", instance.getReloadingTime());
-            c.setInteger("timer", instance.getTimer());
-            c.setFloat("boost", instance.getBoost());
-            c.setInteger("level", instance.getBackpackLevel());
-            c.setBoolean("eqnv", instance.getEquippedNV());
-            c.setBoolean("cooking", instance.isGrenadeCooking());
-            c.setInteger("cookTime", instance.getCookingTime());
-            c.setInteger("scopetype", instance.getScopeType());
-            c.setInteger("scopecolor", instance.getScopeColor());
-            return c;
+            return instance.serializeNBT();
         }
 
         @Override
         public void readNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side, NBTBase nbt) {
-            instance.setReloading(((NBTTagCompound) nbt).getBoolean("reloading"));
-            instance.setAiming(((NBTTagCompound) nbt).getBoolean("aiming"));
-            instance.setNV(((NBTTagCompound) nbt).getBoolean("nv"));
-            instance.setReloadingTime(((NBTTagCompound) nbt).getInteger("reloading_time"));
-            instance.setTimer(((NBTTagCompound) nbt).getInteger("timer"));
-            instance.setBoost(((NBTTagCompound) nbt).getFloat("boost"));
-            instance.setBackpackLevel(((NBTTagCompound) nbt).getInteger("level"));
-            instance.hasEquippedNV(((NBTTagCompound) nbt).getBoolean("eqnv"));
-            instance.setGrenadeCooking(((NBTTagCompound) nbt).getBoolean("cooking"));
-            instance.setCookingTime(((NBTTagCompound) nbt).getInteger("cookingTime"));
-            instance.setScopeType(((NBTTagCompound) nbt).getInteger("scopetype"));
-            instance.setScopeColor(((NBTTagCompound) nbt).getInteger("scopecolor"));
+            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
         }
     }
 
-    public class PlayerData implements IPlayerData {
+    class PlayerData implements IPlayerData {
+        private EntityPlayer player;
         private boolean reloading;
         private boolean aiming;
         private boolean nv;
@@ -129,6 +118,12 @@ public interface IPlayerData {
         private int scopecolor;
 
         private double dist;
+
+        public PlayerData() {}
+
+        public PlayerData(EntityPlayer player) {
+            this.player = player;
+        }
 
         public static IPlayerData get(EntityPlayer player) {
             if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -287,9 +282,49 @@ public interface IPlayerData {
         public void setProning(boolean proning) {
             this.isProne = proning;
         }
+
+        @Override
+        public NBTTagCompound serializeNBT() {
+            NBTTagCompound c = new NBTTagCompound();
+            c.setBoolean("reloading", reloading);
+            c.setBoolean("aiming", aiming);
+            c.setBoolean("nv", nv);
+            c.setInteger("reloading_time", reloading_time);
+            c.setInteger("timer", timer);
+            c.setFloat("boost", boost);
+            c.setInteger("level", level);
+            c.setBoolean("eqnv", eqNV);
+            c.setBoolean("cooking", cooking);
+            c.setInteger("cookTime", cookTime);
+            c.setInteger("scopetype", scopetype);
+            c.setInteger("scopecolor", scopecolor);
+            return c;
+        }
+
+        @Override
+        public void deserializeNBT(NBTTagCompound nbt) {
+            reloading = nbt.getBoolean("reloading");
+            aiming = nbt.getBoolean("aiming");
+            nv = nbt.getBoolean("nv");
+            reloading_time = nbt.getInteger("reloading_time");
+            timer = nbt.getInteger("timer");
+            boost = nbt.getFloat("boost");
+            level = nbt.getInteger("level");
+            eqNV = nbt.getBoolean("eqnv");
+            cooking = nbt.getBoolean("cooking");
+            cookTime = nbt.getInteger("cookTime");
+            scopetype = nbt.getInteger("scopetype");
+            scopecolor = nbt.getInteger("scopecolor");
+        }
+
+        @Override
+        public void sync() {
+            // TODO fix: player == null
+            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
+        }
     }
 
-    public class PlayerDataProvider implements ICapabilitySerializable<NBTBase> {
+    class PlayerDataProvider implements ICapabilitySerializable<NBTBase> {
         @CapabilityInject(IPlayerData.class)
         public static final Capability<IPlayerData> PLAYER_DATA = null;
 
@@ -313,6 +348,43 @@ public interface IPlayerData {
         @Override
         public void deserializeNBT(NBTBase nbt) {
             PLAYER_DATA.getStorage().readNBT(PLAYER_DATA, this.instance, null, nbt);
+        }
+    }
+
+    @Mod.EventBusSubscriber
+    class Events {
+
+        @SubscribeEvent
+        public static void attach(AttachCapabilitiesEvent<Entity> e) {
+            if(e.getObject() instanceof EntityPlayer) {
+                e.addCapability(new ResourceLocation(Pubgmc.MOD_ID, "playerdata"), new PlayerDataProvider());
+            }
+        }
+
+        @SubscribeEvent
+        public static void onRespawn(PlayerEvent.PlayerRespawnEvent e) {
+            getCap(e.player).sync();
+        }
+
+        @SubscribeEvent
+        public static void clone(net.minecraftforge.event.entity.player.PlayerEvent.Clone e) {
+            Capability.IStorage storage = PlayerDataProvider.PLAYER_DATA.getStorage();
+            IPlayerData oldData = getCap(e.getOriginal());
+            IPlayerData newData = getCap(e.getEntityPlayer());
+            NBTTagCompound nbt = (NBTTagCompound) storage.writeNBT(PlayerDataProvider.PLAYER_DATA, oldData, null);
+            storage.readNBT(PlayerDataProvider.PLAYER_DATA, newData, null, nbt);
+            getCap(e.getEntityPlayer()).sync();
+        }
+
+        @SubscribeEvent
+        public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent e) {
+            getCap(e.player).sync();
+        }
+
+        public static IPlayerData getCap(EntityPlayer p) {
+            if(p.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+                return p.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            } else throw new IllegalStateException("[PUBGMC] Couldn't get player data for " + p.getName());
         }
     }
 }

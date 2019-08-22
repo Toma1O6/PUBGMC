@@ -88,7 +88,7 @@ public class PacketHandler {
     }
 
     public static void syncPlayerDataToClient(IPlayerData data, EntityPlayerMP player) {
-        sendToClient(new PacketClientCapabilitySync(data), player);
+        sendToClient(new PacketClientCapabilitySync(player, data.serializeNBT()), player);
     }
 
     /**
