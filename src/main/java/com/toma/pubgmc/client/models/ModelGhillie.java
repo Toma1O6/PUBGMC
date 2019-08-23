@@ -1,7 +1,10 @@
 package com.toma.pubgmc.client.models;
 
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
 public class ModelGhillie extends ModelBiped {
@@ -33,12 +36,6 @@ public class ModelGhillie extends ModelBiped {
         this.r_leg = new ModelRenderer(this, 0, 32);
         this.r_leg.setRotationPoint(-3.9F, 12.0F, -2.0F);
         this.r_leg.addBox(-0.5F, -0.5F, -0.5F, 5, 11, 5, 0.0F);
-        bipedHead.addChild(head);
-        bipedBody.addChild(body);
-        bipedLeftArm.addChild(l_arm);
-        bipedLeftLeg.addChild(l_leg);
-        bipedRightArm.addChild(r_arm);
-        bipedRightLeg.addChild(r_leg);
     }
 
     private static void setRotationAngle(ModelRenderer model, float x, float y, float z) {
@@ -47,12 +44,17 @@ public class ModelGhillie extends ModelBiped {
         model.rotateAngleZ = z;
     }
 
-    @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+    public void render(ModelPlayer model) {
+        // nothing works ffs
     }
 
     private float interpolate(float current, float prev, float partial) {
         return prev + partial * (current - prev);
+    }
+
+    private void copyAngles(ModelRenderer from, ModelRenderer to) {
+        to.rotateAngleX = from.rotateAngleX;
+        to.rotateAngleY = from.rotateAngleY;
+        to.rotateAngleZ = from.rotateAngleZ;
     }
 }
