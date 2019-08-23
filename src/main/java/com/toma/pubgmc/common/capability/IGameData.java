@@ -19,54 +19,54 @@ import java.util.List;
  * Preparation for customizable map zone etc
  */
 public interface IGameData {
-    public boolean isPlaying();
+    boolean isPlaying();
 
     //TODO zone customization
-    public void setPlaying(boolean play);
+    void setPlaying(boolean play);
 
-    public void addSpawnLocation(BlockPos pos, String name);
+    void addSpawnLocation(BlockPos pos, String name);
 
-    public int getSpawnLocationCount();
+    int getSpawnLocationCount();
 
-    public void setSpawnLocationCount(int count);
+    void setSpawnLocationCount(int count);
 
-    public void removeSpawnLocation(BlockPos pos);
+    void removeSpawnLocation(BlockPos pos);
 
-    public List<BlockPos> getSpawnLocations();
+    List<BlockPos> getSpawnLocations();
 
-    public List<String> getLocationNames();
+    List<String> getLocationNames();
 
-    public void setMapCenter(double x, double z, int size, int count);
+    void setMapCenter(double x, double z, int size, int count);
 
-    public BlockPos getMapCenter();
+    BlockPos getMapCenter();
 
-    public int getMapSize();
+    int getMapSize();
 
-    public int getZonePhaseCount();
+    int getZonePhaseCount();
 
     //zones
-    public void setZonePhaseCount(int count);
+    void setZonePhaseCount(int count);
 
-    public int getCurrentZone();
+    int getCurrentZone();
 
-    public void setCurrentZone(int zone);
+    void setCurrentZone(int zone);
 
-    public void increaseTimer();
+    void increaseTimer();
 
-    public void resetTimer();
+    void resetTimer();
 
-    public int getTimer();
+    int getTimer();
 
-    public void setTimer(int time);
+    void setTimer(int time);
 
-    public String getGameID();
+    String getGameID();
 
-    public void setGameID(String id);
+    void setGameID(String id);
 
-    public void createGameID();
+    void createGameID();
 
 
-    public class GameDataStorage implements IStorage<IGameData> {
+    class GameDataStorage implements IStorage<IGameData> {
         @Override
         public void readNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side, NBTBase nbt) {
             instance.setPlaying(((NBTTagCompound) nbt).getBoolean("isPlaying"));
@@ -117,7 +117,7 @@ public interface IGameData {
         }
     }
 
-    public class GameData implements IGameData {
+    class GameData implements IGameData {
         boolean isPlaying;
         List<BlockPos> locations = new ArrayList<BlockPos>();
         List<String> names = new ArrayList<String>();
@@ -247,7 +247,7 @@ public interface IGameData {
         }
     }
 
-    public class GameDataProvider implements ICapabilitySerializable<NBTBase> {
+    class GameDataProvider implements ICapabilitySerializable<NBTBase> {
         @CapabilityInject(IGameData.class)
         public static final Capability<IGameData> GAMEDATA = null;
 

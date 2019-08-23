@@ -48,9 +48,7 @@ public class ModelGhillie extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-                       float headPitch, float scale) {
-        // TODO Auto-generated method stub
+    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
