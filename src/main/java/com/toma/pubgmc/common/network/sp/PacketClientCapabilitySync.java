@@ -28,8 +28,6 @@ public class PacketClientCapabilitySync implements IMessage, IMessageHandler<Pac
 
     @Override
     public void toBytes(ByteBuf buf) {
-        if(player == null)
-            return;
         ByteBufUtils.writeTag(buf, nbt);
         ByteBufUtils.writeUTF8String(buf, player.getGameProfile().getId().toString());
     }

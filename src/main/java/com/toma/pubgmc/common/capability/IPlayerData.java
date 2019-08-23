@@ -84,7 +84,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
     // map drop location distance
     void setDistance(double dist);
 
-    void sync();
+    void sync(EntityPlayer player);
 
     class PlayerDataStorage implements IStorage<IPlayerData> {
         @Override
@@ -99,7 +99,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
     }
 
     class PlayerData implements IPlayerData {
-        private EntityPlayer player;
         private boolean reloading;
         private boolean aiming;
         private boolean nv;
@@ -120,11 +119,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         private double dist;
 
         public PlayerData() {}
-
-        public PlayerData(EntityPlayer player) {
-            this.player = player;
-        }
-
+        
         public static IPlayerData get(EntityPlayer player) {
             if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
                 return player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -318,8 +313,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         }
 
         @Override
-        public void sync() {
-            // TODO fix: player == null
+        public void sync(EntityPlayer player) {
             PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
         }
     }
@@ -363,7 +357,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
         @SubscribeEvent
         public static void onRespawn(PlayerEvent.PlayerRespawnEvent e) {
-            getCap(e.player).sync();
+            getCap(e.player).sync(e.player);
         }
 
         @SubscribeEvent
@@ -373,12 +367,12 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
             IPlayerData newData = getCap(e.getEntityPlayer());
             NBTTagCompound nbt = (NBTTagCompound) storage.writeNBT(PlayerDataProvider.PLAYER_DATA, oldData, null);
             storage.readNBT(PlayerDataProvider.PLAYER_DATA, newData, null, nbt);
-            getCap(e.getEntityPlayer()).sync();
+            getCap(e.getEntityPlayer()).sync(e.getEntityPlayer());
         }
 
         @SubscribeEvent
         public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent e) {
-            getCap(e.player).sync();
+            getCap(e.player).sync(e.player);
         }
 
         public static IPlayerData getCap(EntityPlayer p) {
