@@ -119,7 +119,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         private double dist;
 
         public PlayerData() {}
-        
+
         public static IPlayerData get(EntityPlayer player) {
             if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
                 return player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
