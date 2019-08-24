@@ -57,9 +57,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
                 return;
             }
 
-            if (entityItem == null || entityItem.getItem().getItem() != te.getStackInSlot(slot).getItem()) {
-                entityItem.setItem(te.getStackInSlot(slot));
-            }
+            entityItem.setItem(te.getStackInSlot(slot));
 
             if (te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.FUELCAN) {
                 GlStateManager.pushMatrix();
@@ -85,7 +83,6 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
             } else if (medkit) {
                 medkitRenderer(slot, te, x, y, z);
             } else {
-                GlStateManager.pushMatrix();
                 GL11.glPushMatrix();
                 GL11.glDisable(GL11.GL_LIGHTING);
 
@@ -98,7 +95,6 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
 
                 GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glPopMatrix();
-                GlStateManager.popMatrix();
             }
         } else if (ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FAST) {
             if (te.isInvalid() || te == null || te.getStackInSlot(slot).isEmpty()) {

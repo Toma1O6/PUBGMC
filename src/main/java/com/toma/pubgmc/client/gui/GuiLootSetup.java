@@ -14,4 +14,9 @@ public class GuiLootSetup extends GuiScreen {
             return;
         }
     }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+    }
 }

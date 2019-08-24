@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.commands;
 
+import com.toma.pubgmc.common.blocks.BlockLootSpawner;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData;
@@ -9,10 +10,12 @@ import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.TileEntityUtil;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -143,11 +146,13 @@ public class CommandLootGenerate extends CommandBase {
                 sender.sendMessage(new TextComponentString("Cleared loot inside all loaded loot spawners"));
         } else if (args[0].equalsIgnoreCase("show")) {
             int counter = 0;
+            ItemStack[] stack = new ItemStack[] {new ItemStack(Items.DYE, 1, 1), new ItemStack(Items.DYE, 1, 11), new ItemStack(Items.DYE, 1, 10)};
             for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
                 if (te instanceof TileEntityLootSpawner) {
                     counter++;
+                    int tier = world.getBlockState(te.getPos()).getValue(BlockLootSpawner.LOOT).intValue();
                     for (int i = 0; i < ((TileEntityLootSpawner) te).getSizeInventory(); i++) {
-                        ((TileEntityLootSpawner) te).setInventorySlotContents(i, new ItemStack(PMCRegistry.PMCItems.IBLOCK));
+                        ((TileEntityLootSpawner) te).setInventorySlotContents(i, stack[tier].copy());
                         world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
                     }
                 }
