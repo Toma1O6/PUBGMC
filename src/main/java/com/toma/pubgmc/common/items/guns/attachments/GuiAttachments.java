@@ -40,7 +40,7 @@ public class GuiAttachments extends GuiContainer {
         renderItem(stack, 15, -5);
         GlStateManager.popMatrix();
         for(Slot slot : this.inventorySlots.inventorySlots) {
-            if(!slot.isEnabled() || slot.inventory instanceof InventoryPlayer) {
+            if(!(slot instanceof ContainerAttachments.AttachmentSlot) || !((ContainerAttachments.AttachmentSlot)slot).isSlotAvailable()) {
                 continue;
             }
             ImageUtil.drawCustomSizedImage(mc, SLOT, guiLeft + slot.xPos - 2, guiTop + slot.yPos - 2, 20, 20, false);

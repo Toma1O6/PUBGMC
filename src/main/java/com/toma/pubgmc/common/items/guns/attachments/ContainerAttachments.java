@@ -122,7 +122,7 @@ public class ContainerAttachments extends Container {
 
     private boolean canSwitchItems(Slot slot) {
         ItemStack stack = slot.getStack();
-        if(stack.isEmpty() || !slot.isEnabled()) {
+        if(stack.isEmpty() || (slot instanceof AttachmentSlot && !((AttachmentSlot) slot).isSlotAvailable())) {
             return false;
         }
         Slot toSwitch = this.inventorySlots.get(this.getAppropriateSlot((ItemAttachment) slot.getStack().getItem()));
@@ -196,6 +196,10 @@ public class ContainerAttachments extends Container {
         @Override
         public boolean isItemValid(ItemStack stack) {
             return stack.getItem() instanceof ItemAttachment && ((ItemAttachment)stack.getItem()).getType() == Type.values()[this.getSlotIndex()];
+        }
+
+        public boolean isSlotAvailable() {
+            return enabled;
         }
 
         @Override

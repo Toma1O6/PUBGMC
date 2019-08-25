@@ -287,8 +287,8 @@ public class GunBase extends PMCItem {
             if (c.getInteger("scope") == 4) scope = "4X";
             if (c.getInteger("scope") == 5) scope = "8X";
             if (c.getInteger("scope") == 6) scope = "15X";
-            if (c.getInteger("grip") == 1) grip = "AttachmentGripVertical grip";
-            if (c.getInteger("grip") == 2) grip = "AttachmentGripAngled grip";
+            if (c.getInteger("grip") == 1) grip = "vertical grip";
+            if (c.getInteger("grip") == 2) grip = "angled grip";
             if (c.getInteger("magazine") == 1) magazine = "quickdraw";
             if (c.getInteger("magazine") == 2) magazine = "extended";
             if (c.getInteger("magazine") == 3) magazine = "extended quickdraw";

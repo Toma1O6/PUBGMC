@@ -6,13 +6,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public interface IProxy {
-    public void preInit(FMLPreInitializationEvent e);
+    void preInit(FMLPreInitializationEvent e);
 
-    public void init(FMLInitializationEvent e);
+    void init(FMLInitializationEvent e);
 
-    public void postInit(FMLPostInitializationEvent e);
+    void postInit(FMLPostInitializationEvent e);
 
-    public void notifyWorkbenchUpdate();
+    void notifyWorkbenchUpdate();
 
-    public void playDelayedSound(SoundEvent event, double x, double y, double z, float volume);
+    void playDelayedSound(SoundEvent event, double x, double y, double z, float volume);
 }

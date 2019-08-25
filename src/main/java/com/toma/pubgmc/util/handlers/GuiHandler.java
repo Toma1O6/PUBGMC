@@ -1,6 +1,7 @@
 package com.toma.pubgmc.util.handlers;
 
 import com.toma.pubgmc.client.gui.*;
+import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.container.*;
 import com.toma.pubgmc.common.items.guns.attachments.ContainerAttachments;
 import com.toma.pubgmc.common.items.guns.attachments.GuiAttachments;
@@ -22,6 +23,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUI_ATTACHMENTS = getNextGuiID();
     public static final int GUI_GUNCRAFTINGTABLE = getNextGuiID();
     public static final int GUI_BIG_AIRDROP = getNextGuiID();
+    public static final int GUI_LOOT_SETUP = getNextGuiID();
 
     private static int getNextGuiID() {
         return guiID += 1;
@@ -78,6 +80,9 @@ public class GuiHandler implements IGuiHandler {
         if (ID == GUI_BIG_AIRDROP)
             return new GuiBigAirdrop(player.inventory, (TileEntityBigAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
 
+        if (ID == GUI_LOOT_SETUP) {
+            return new GuiLootSetup(world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null));
+        }
         return null;
     }
 }

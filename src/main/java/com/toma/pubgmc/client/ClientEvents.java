@@ -449,7 +449,7 @@ public class ClientEvents {
         if (e.getType() == ElementType.CROSSHAIRS) {
             if (stack.getItem() instanceof GunBase) {
                 //TODO
-                //e.setCanceled(true);
+                e.setCanceled(true);
             }
         }
 

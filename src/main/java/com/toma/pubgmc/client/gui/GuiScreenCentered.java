@@ -11,12 +11,13 @@ public class GuiScreenCentered extends GuiScreen {
 
     public void calculateGuiPosition() {
         guiLeft = (this.width - this.guiWidth) / 2;
-        guiTop = (this.height - this.guiTop) / 2;
+        guiTop = (this.height - this.guiHeight) / 2;
     }
 
-    public final void setDimension(int width, int height) {
+    public final GuiScreenCentered setDimension(int width, int height) {
         this.guiWidth = width;
         this.guiHeight = height;
+        return this;
     }
 
     public int getGuiWidth() {

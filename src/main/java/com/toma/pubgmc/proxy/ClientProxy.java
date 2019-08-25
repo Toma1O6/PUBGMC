@@ -1,12 +1,10 @@
 package com.toma.pubgmc.proxy;
 
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.DevUtil;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.RenderHandler;
 import com.toma.pubgmc.client.gui.GuiGunWorkbench;
-import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.client.renderer.*;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.client.util.ModelHelper;
@@ -15,6 +13,7 @@ import com.toma.pubgmc.common.entity.*;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
