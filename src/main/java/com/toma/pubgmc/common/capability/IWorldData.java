@@ -13,33 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IWorldData {
-    public void toggleAirdropWeapons(boolean enable);
+    void toggleAirdropWeapons(boolean enable);
 
-    public boolean hasAirdropWeapons();
+    boolean hasAirdropWeapons();
 
-    public void toggleAmmoLoot(boolean enableAmmo);
+    void toggleAmmoLoot(boolean enableAmmo);
 
-    public boolean isAmmoLootEnabled();
+    boolean isAmmoLootEnabled();
 
-    public void toggleRandomAmmoCount(boolean randomAmmo);
+    void toggleRandomAmmoCount(boolean randomAmmo);
 
-    public boolean isRandomAmmoCountEnabled();
+    boolean isRandomAmmoCountEnabled();
 
-    public double getLootChanceMultiplier();
+    double getLootChanceMultiplier();
 
-    public void setLootChanceMultiplier(double chance);
+    void setLootChanceMultiplier(double chance);
 
-    public void addWeaponTypeToLootGeneration(GunType typeToAdd);
+    void addWeaponTypeToLootGeneration(GunType typeToAdd);
 
-    public void removeWeaponTypeFromLootGeneration(GunType typeToRemove);
+    void removeWeaponTypeFromLootGeneration(GunType typeToRemove);
 
-    public List<GunType> getWeaponList();
+    List<GunType> getWeaponList();
 
-    public void setWeaponList(int[] enumIDs);
+    void setWeaponList(int[] enumIDs);
 
-    public void resetWeaponLootGeneration();
+    void resetWeaponLootGeneration();
 
-    public class WorldDataStorage implements IStorage<IWorldData> {
+    class WorldDataStorage implements IStorage<IWorldData> {
         @Override
         public NBTBase writeNBT(Capability<IWorldData> cap, IWorldData i, EnumFacing side) {
             NBTTagCompound c = new NBTTagCompound();
@@ -68,7 +68,7 @@ public interface IWorldData {
         }
     }
 
-    public class WorldData implements IWorldData {
+    class WorldData implements IWorldData {
         private boolean airdropWep = false, ammoLoot = true, randomAmmoCount = false;
         private double chance = 1;
         private List<GunType> weaponTypes = new ArrayList<GunType>(GunType.toCollection());
@@ -156,7 +156,7 @@ public interface IWorldData {
         }
     }
 
-    public class WorldDataProvider implements ICapabilitySerializable<NBTBase> {
+    class WorldDataProvider implements ICapabilitySerializable<NBTBase> {
         @CapabilityInject(IWorldData.class)
         public static final Capability<IWorldData> WORLD_DATA = null;
 
