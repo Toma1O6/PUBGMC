@@ -49,6 +49,7 @@ public class PacketHandler {
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
         registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
         registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
+        registerClientPacket(PacketDisplayGuiScreen.Handler.class, PacketDisplayGuiScreen.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {
