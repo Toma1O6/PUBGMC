@@ -7,7 +7,7 @@ import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketDisplayGuiScreen;
+import com.toma.pubgmc.common.network.sp.PacketDisplayLootSetupGui;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.TileEntityUtil;
@@ -90,7 +90,7 @@ public class CommandLootGenerate extends CommandBase {
             data.toggleAmmoLoot(true);
             data.toggleRandomAmmoCount(false);
             resetWeapons(data);
-            data.setLootChanceMultiplier(1d);
+            data.setLootChanceMultiplier(1.0D);
             if (shouldSendCommandFeedback(world.getGameRules()))
                 sender.sendMessage(new TextComponentString("Reseting all values..."));
         } else if (args[0].equalsIgnoreCase("generate")) {
@@ -164,7 +164,7 @@ public class CommandLootGenerate extends CommandBase {
                 sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Currently showing " + TextFormatting.YELLOW + counter + TextFormatting.GREEN + " loot spawners"));
         } else if (args[0].equalsIgnoreCase("setup")) {
             if(sender instanceof EntityPlayerMP) {
-                PacketHandler.sendToClient(new PacketDisplayGuiScreen(GuiHandler.GUI_LOOT_SETUP), (EntityPlayerMP)sender);
+                PacketHandler.sendToClient(new PacketDisplayLootSetupGui(data.serializeNBT()), (EntityPlayerMP)sender);
             }
         } else if (args[0].equalsIgnoreCase("count")) {
             int total = 0;

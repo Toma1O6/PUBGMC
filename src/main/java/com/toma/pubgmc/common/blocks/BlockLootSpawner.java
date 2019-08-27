@@ -129,7 +129,7 @@ public class BlockLootSpawner extends PMCBlock {
         private final Vec3d rgb;
         private final float multiplier;
 
-        private LootType(final double r, final double g, final double b, final float multiplier) {
+        LootType(final double r, final double g, final double b, final float multiplier) {
             this.rgb = new Vec3d(r, g, b);
             this.multiplier = multiplier;
         }

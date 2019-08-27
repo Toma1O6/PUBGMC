@@ -3,16 +3,20 @@ package com.toma.pubgmc.common.capability;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public interface IWorldData {
+public interface IWorldData extends INBTSerializable<NBTTagCompound> {
     void toggleAirdropWeapons(boolean enable);
 
     boolean hasAirdropWeapons();
@@ -42,33 +46,17 @@ public interface IWorldData {
     class WorldDataStorage implements IStorage<IWorldData> {
         @Override
         public NBTBase writeNBT(Capability<IWorldData> cap, IWorldData i, EnumFacing side) {
-            NBTTagCompound c = new NBTTagCompound();
-            c.setBoolean("airdropWeapons", i.hasAirdropWeapons());
-            c.setBoolean("ammoLoot", i.isAmmoLootEnabled());
-            c.setBoolean("randomAmmo", i.isRandomAmmoCountEnabled());
-            c.setDouble("chance", i.getLootChanceMultiplier());
-
-            //Pretty weird way for handling this, but atleast it works
-            for (int j = 0; j < i.getWeaponList().size(); j++) {
-                c.setInteger("weapon" + j, i.getWeaponList().get(j).ordinal());
-            }
-
-            return c;
+            return i.serializeNBT();
         }
 
         @Override
         public void readNBT(Capability<IWorldData> capability, IWorldData instance, EnumFacing side, NBTBase nbt) {
-            instance.toggleAirdropWeapons(((NBTTagCompound) nbt).getBoolean("airdropWeapons"));
-            instance.toggleAmmoLoot(((NBTTagCompound) nbt).getBoolean("ammoLoot"));
-            instance.toggleRandomAmmoCount(((NBTTagCompound) nbt).getBoolean("randomAmmo"));
-            instance.setLootChanceMultiplier(((NBTTagCompound) nbt).getDouble("chance"));
-            for (int j = 0; j < GunType.values().length; j++) {
-                instance.addWeaponTypeToLootGeneration(GunType.values()[((NBTTagCompound) nbt).getInteger("weapon" + j)]);
-            }
+            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
         }
     }
 
     class WorldData implements IWorldData {
+
         private boolean airdropWep = false, ammoLoot = true, randomAmmoCount = false;
         private double chance = 1;
         private List<GunType> weaponTypes = new ArrayList<GunType>(GunType.toCollection());
@@ -153,6 +141,34 @@ public interface IWorldData {
             //serves no purpose for loot gen
             if (weaponTypes.contains(GunType.LMG))
                 removeWeaponTypeFromLootGeneration(GunType.LMG);
+        }
+
+        @Override
+        public NBTTagCompound serializeNBT() {
+            NBTTagCompound c = new NBTTagCompound();
+            c.setBoolean("airdropWeapons", this.airdropWep);
+            c.setBoolean("ammoLoot", this.ammoLoot);
+            c.setBoolean("randomAmmo", this.randomAmmoCount);
+            c.setDouble("chance", this.chance);
+            NBTTagList weaponlist = new NBTTagList();
+            for(int i = 0; i < this.weaponTypes.size(); i++) {
+                weaponlist.appendTag(new NBTTagInt(weaponTypes.get(i).ordinal()));
+            }
+            c.setTag("list", weaponlist);
+            return c;
+        }
+
+        @Override
+        public void deserializeNBT(NBTTagCompound nbt) {
+            this.weaponTypes.clear();
+            this.airdropWep = nbt.getBoolean("airdropWeapons");
+            this.ammoLoot = nbt.getBoolean("ammoLoot");
+            this.randomAmmoCount = nbt.getBoolean("randomAmmo");
+            this.chance = nbt.getDouble("chance");
+            NBTTagList list = nbt.getTagList("list", Constants.NBT.TAG_INT);
+            for(int i = 0; i < list.tagCount(); i++) {
+                this.weaponTypes.add(GunType.values()[list.getIntAt(i)]);
+            }
         }
     }
 

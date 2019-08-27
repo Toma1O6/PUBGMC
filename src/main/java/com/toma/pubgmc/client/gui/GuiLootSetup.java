@@ -3,6 +3,8 @@ package com.toma.pubgmc.client.gui;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.items.guns.GunBase;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.server.PacketUpdateLootData;
 import com.toma.pubgmc.util.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -13,12 +15,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class GuiLootSetup extends GuiScreenCentered {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/lootsetup.png");
+    private final DecimalFormat decFormat = new DecimalFormat("##,##0.00");
     private IWorldData data;
+    private ChanceLabel label;
 
     public GuiLootSetup(IWorldData lootData) {
         mc = Minecraft.getMinecraft();
@@ -43,6 +48,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         this.buttonList.add(this.new BTNLootBool(2, guiLeft + 90, guiTop + 60, 75, 20, data.isRandomAmmoCountEnabled()));
         this.buttonList.add(this.new ChanceModifierButton(data, 3, true, guiLeft + 90, guiTop + 85));
         this.buttonList.add(this.new ChanceModifierButton(data, 4, false, guiLeft + 145, guiTop + 85));
+        label = this.new ChanceLabel(this, guiLeft + 110, guiTop + 85, 35, 20);
         int j = 0;
         for(int i = 0; i < GunBase.GunType.values().length; i++) {
             GunBase.GunType type = GunBase.GunType.values()[i];
@@ -63,6 +69,10 @@ public class GuiLootSetup extends GuiScreenCentered {
         mc.fontRenderer.drawString("Random ammo", guiLeft + 10, guiTop + 65, 0x3F3F3F);
         mc.fontRenderer.drawString("Chance", guiLeft + 10, guiTop + 90, 0x3F3F3F);
         mc.fontRenderer.drawString("Weapon classes:", guiLeft + 10, guiTop + 115, 0x3F3F3F);
+        label.draw(mc, mouseX, mouseY);
+        String chanceAmount = decFormat.format(data.getLootChanceMultiplier());
+        int chancePosModified = (label.width - mc.fontRenderer.getStringWidth(chanceAmount)) / 2;
+        mc.fontRenderer.drawString(chanceAmount, guiLeft + 111 + chancePosModified, guiTop + 91, 0xFFFFFF);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -93,7 +103,75 @@ public class GuiLootSetup extends GuiScreenCentered {
 
     @Override
     public void onGuiClosed() {
+        PacketHandler.sendToServer(new PacketUpdateLootData(data.serializeNBT()));
+    }
 
+    private class ChanceLabel {
+
+        private int x;
+        private int y;
+        private int width;
+        private int height;
+        private boolean hovered;
+        private int hoverTime;
+        private int fpsCounter;
+        private GuiLootSetup parent;
+
+        public ChanceLabel(GuiLootSetup parent, int x, int y, int width, int height) {
+            this.parent = parent;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            hoverTime = 0;
+            fpsCounter = Minecraft.getDebugFPS();
+        }
+
+        public void draw(Minecraft mc, int mouseX, int mouseY) {
+            this.hovered = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+            this.updateCounters();
+            ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 196/256D, hovered ? 60/256D : 40/256D, 231/256D, hovered ? 80/256D : 60/256D, false);
+            if (hovered && hoverTime < 15) {
+                this.drawHoveredText(mc, mouseX, mouseY);
+            }
+        }
+
+        private void drawHoveredText(Minecraft mc, int mouseX, int mouseY) {
+            int x = mouseX + 243 > parent.width ? mouseX - 243 : mouseX + 3;
+            FontRenderer font = mc.fontRenderer;
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0, 0, 1);
+            ImageUtil.drawImageWithUV(mc, TEXTURE, x, mouseY + 3, 240, 86, 176/256D, 80/256D, 251/256D, 100/256D, false);
+            mc.fontRenderer.drawString("Weapon spawn chances (tier 1/tier 2/tier 3)", x + 3, mouseY + 8, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Flare gun", 0.5D), x + 3, mouseY + 18, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Snipers", 2D), x + 3, mouseY + 28, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("DMRs", 3D), x + 3, mouseY + 38, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Assault rifles", 15D), x + 3, mouseY + 48, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Sub-machine guns", 20D), x + 3, mouseY + 58, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Shotguns", 35D), x + 3, mouseY + 68, 0xFFFFFF);
+            mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Pistols", 25D), x + 3, mouseY + 78, 0xFFFFFF);
+            GlStateManager.popMatrix();
+        }
+
+        private String getGunDescSpawnChanceString(String className, double baseAmount) {
+            double d = parent.data.getLootChanceMultiplier();
+            return className + ": " + TextFormatting.RED + decFormat.format(baseAmount*d) + "%" + TextFormatting.WHITE + "/"
+                    + TextFormatting.YELLOW + decFormat.format(baseAmount*1.4F*d) + "%" + TextFormatting.WHITE + "/"
+                    + TextFormatting.GREEN + decFormat.format(baseAmount*2.0F*d) + "%";
+        }
+
+        private void updateCounters() {
+            if (hovered) {
+                --fpsCounter;
+                if (fpsCounter <= 0) {
+                    hoverTime++;
+                    fpsCounter = Minecraft.getDebugFPS();
+                }
+            } else {
+                fpsCounter = Minecraft.getDebugFPS();
+                hoverTime = 0;
+            }
+        }
     }
 
     private class ChanceModifierButton extends GuiButton implements BTNClickable {
@@ -122,7 +200,6 @@ public class GuiLootSetup extends GuiScreenCentered {
             // decrease
             double amount = GuiScreen.isShiftKeyDown() ? 0.25D : GuiScreen.isCtrlKeyDown() ? 0.1D : 1.0D;
             if(isLeft) {
-                amount = -amount;
                 ins.setLootChanceMultiplier(this.decrease(amount));
             } else {
                 ins.setLootChanceMultiplier(this.increase(amount));
@@ -137,6 +214,9 @@ public class GuiLootSetup extends GuiScreenCentered {
         }
 
         private double increase(double amount) {
+            if(ins.getLootChanceMultiplier() + amount > 99.99D) {
+                return 99.99D;
+            }
             return ins.getLootChanceMultiplier() + amount;
         }
     }
@@ -148,7 +228,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         public BTNLootBool(int index, int x, int y, int width, int height, boolean initialVal) {
             super(index, x, y, width, height, "");
             this.buttonState = initialVal;
-            this.displayString = initialVal + "";
+            this.displayString = initialVal ? "enabled" : "disabled";
         }
 
         @Override
@@ -166,7 +246,24 @@ public class GuiLootSetup extends GuiScreenCentered {
         @Override
         public void buttonClicked() {
             this.buttonState = !this.buttonState;
-            this.displayString = buttonState ? "true" : "false";
+            this.displayString = buttonState ? "enabled" : "disabled";
+            /*IWorldData data = GuiLootSetup.this.data;
+            switch (id) {
+                case 0: {
+                    data.toggleAirdropWeapons(!data.hasAirdropWeapons());
+                    break;
+                }
+                case 1: {
+                    data.toggleAmmoLoot(!data.isAmmoLootEnabled());
+                    break;
+                }
+                case 2: {
+                    data.toggleRandomAmmoCount(!data.isRandomAmmoCountEnabled());
+                    break;
+                }
+            }
+
+            GuiLootSetup.this.data = data;*/
         }
 
         public boolean getButtonState() {
@@ -202,11 +299,11 @@ public class GuiLootSetup extends GuiScreenCentered {
         public void buttonClicked() {
             List<GunBase.GunType> wepList = parent.data.getWeaponList();
             if(wepList.contains(weaponType)) {
-                wepList.remove(weaponType);
+                parent.data.getWeaponList().remove(weaponType);
             } else {
-                wepList.add(weaponType);
+                parent.data.getWeaponList().add(weaponType);
             }
-            buttonState = wepList.contains(weaponType);
+            buttonState = parent.data.getWeaponList().contains(weaponType);
         }
 
         public GunBase.GunType getWeaponType() {
