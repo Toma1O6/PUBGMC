@@ -1,0 +1,20 @@
+{
+	"variants": {
+		"axis=ns,broken=false,part=lower_left": { "model": "pubgmc:window1x1" },
+		"axis=ns,broken=true,part=lower_left": { "model": "pubgmc:window1x1_broken" },
+		"axis=we,broken=false,part=lower_left": { "model": "pubgmc:window1x1", "y": 90 },
+		"axis=we,broken=true,part=lower_left": { "model": "pubgmc:window1x1_broken", "y": 90 },
+		"axis=ns,broken=false,part=lower_right": { "model": "pubgmc:window1x1" },
+		"axis=ns,broken=true,part=lower_right": { "model": "pubgmc:window1x1_broken" },
+		"axis,we,broken=false,part=lower_right": { "model": "pubgmc:window1x1", "y": 90 },
+		"axis=we,broken=true,part=lower_right": { "model": "pubgmc:window1x1_broken", "y": 90 },
+		"axis=ns,broken=false,part=upper_left": { "model": "pubgmc:window1x1" },
+		"axis=ns,broken=true,part=upper_left": { "model": "pubgmc:window1x1_broken" },
+		"axis=we,broken=false,part=upper_left": { "model": "pubgmc:window1x1", "y": 90 },
+		"axis=we,broken=true,part=upper_left": { "model": "pubgmc:window1x1_broken", "y": 90 },
+		"axis=ns,broken=false,part=upper_right": { "model": "pubgmc:window1x1" },
+		"axis=ns,broken=true,part=upper_right": { "model": "pubgmc:window1x1_broken" },
+		"axis=we,broken=false,part=upper_right": { "model": "pubgmc:window1x1", "y": 90 },
+		"axis=we,broken=true,part=upper_right": { "model": "pubgmc:window1x1_broken", "y": 90 }
+	}
+}

@@ -3,6 +3,7 @@ package com.toma.pubgmc.common.entity;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
+import com.toma.pubgmc.common.blocks.BlockWindow;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
@@ -200,8 +201,7 @@ public class EntityBullet extends Entity {
 
                 if (headshot) {
                     damage *= 2.5f;
-                    offset = entity.posY + entity.getEyeHeight();
-                } else offset = vec.y;
+                }
 
                 if (entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
                     PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
@@ -215,7 +215,19 @@ public class EntityBullet extends Entity {
             BlockPos pos = raytraceResultIn.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-
+            if(block instanceof BlockWindow) {
+                if(!state.getValue(BlockWindow.BROKEN)) {
+                    ((BlockWindow)block).breakWindow(state, pos, world);
+                }
+                Vec3d vec0 = PUBGMCUtil.getPositionVec(this);
+                Vec3d vec1 = PUBGMCUtil.getMotionVec(this);
+                RayTraceResult trace = world.rayTraceBlocks(vec0, vec1, false, true, false);
+                Entity e = this.findEntityOnPath(vec0, vec1, trace);
+                if(e != null) {
+                    trace = new RayTraceResult(e);
+                    this.onHit(trace);
+                }
+            }
             if (state.getMaterial() == Material.GLASS) {
                 if (world.getGameRules().getBoolean("weaponGriefing")) {
                     world.setBlockToAir(pos);

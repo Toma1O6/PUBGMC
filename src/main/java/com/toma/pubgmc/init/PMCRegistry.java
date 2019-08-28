@@ -876,11 +876,6 @@ public class PMCRegistry {
 
         @SubscribeEvent
         public static void registerModels(ModelRegistryEvent e) {
-            /*if (DevUtil.isDev()) {
-                ModelCreator modelCreator = DevUtil.creator();
-                modelCreator.createBlockstateFile(PMCBlocks.PROP6);
-                modelCreator.createItemBlockFile(PMCBlocks.PROP6);
-            }*/
             for (ResourceLocation rl : ForgeRegistries.ITEMS.getKeys()) {
                 if (rl.getResourceDomain().equals(Pubgmc.MOD_ID))
                     registerModel(ForgeRegistries.ITEMS.getValue(rl));

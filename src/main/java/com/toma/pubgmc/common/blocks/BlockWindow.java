@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
@@ -29,18 +30,22 @@ public class BlockWindow extends PMCBlock {
     private final WindowType windowType;
 
     public BlockWindow(String name, WindowType windowType) {
-        super(name, Material.GLASS);
+        super(name, Material.WOOD);
         this.setSoundType(SoundType.GLASS);
         this.setHardness(0.75f);
         this.windowType = windowType;
         this.setDefaultState(blockState.getBaseState().withProperty(BROKEN, false).withProperty(AXIS, EnumWindowAxis.NS).withProperty(PART, EnumWindowPart.LOWER_LEFT));
     }
 
+    public void breakWindow(IBlockState state, BlockPos pos, World world) {
+        if(!state.getValue(BROKEN)) {
+            world.setBlockState(pos, state.withProperty(BROKEN, true));
+        }
+    }
+
     @Override
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
-        if(!state.getValue(BROKEN)) {
-            worldIn.setBlockState(pos, state.withProperty(BROKEN, true));
-        }
+        this.breakWindow(state, pos, worldIn);
     }
 
     @Override
@@ -55,6 +60,21 @@ public class BlockWindow extends PMCBlock {
             return NULL_AABB;
         }
         return COLLISION_BOX[blockState.getValue(AXIS).ordinal()];
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override

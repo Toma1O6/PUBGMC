@@ -11,7 +11,6 @@ import com.toma.pubgmc.common.network.sp.PacketDisplayLootSetupGui;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.TileEntityUtil;
-import com.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -108,7 +107,7 @@ public class CommandLootGenerate extends CommandBase {
 
                             if (totalRange <= range) {
                                 count++;
-                                ((TileEntityLootSpawner) te).setGameID(game.getGameID());
+                                ((TileEntityLootSpawner) te).setGameHash(game.getGameID());
                                 ((TileEntityLootSpawner) te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
                                 TileEntityUtil.syncToClient(te);
                             }
