@@ -17,15 +17,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockLamp extends Block {
+public class BlockLamp extends PMCBlock {
     public static final PropertyBool ON = PropertyBool.create("on");
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
-    public BlockLamp(String name, Material materialIn) {
-        super(materialIn);
-        setUnlocalizedName(name);
-        setRegistryName(name);
-        setCreativeTab(Pubgmc.pmcblockstab);
+    public BlockLamp(String name, Material material) {
+        super(name, material);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ON, false));
         this.setSoundType(SoundType.METAL);
         this.setHarvestLevel("pickaxe", 0);

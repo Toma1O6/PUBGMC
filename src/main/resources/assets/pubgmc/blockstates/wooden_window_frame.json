@@ -1,0 +1,11 @@
+{
+    "multipart": [{
+            "when": {
+                "broken": "false"
+            },
+            "apply": {
+                "model": "window_frame_glass"
+            }
+        }
+    ]
+}

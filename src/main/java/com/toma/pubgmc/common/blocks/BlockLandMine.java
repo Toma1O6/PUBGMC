@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockLandMine extends PMCBlock //implements ICraftable
+public class BlockLandMine extends PMCBlock
 {
     private static final AxisAlignedBB AABB = new AxisAlignedBB(0.15d, 0d, 0.15d, 0.85d, 0.1d, 0.85d);
 

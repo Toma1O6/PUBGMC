@@ -33,7 +33,6 @@ import com.toma.pubgmc.config.common.CFGWeapons;
 import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.util.AttachmentHelper;
-import com.toma.pubgmc.util.PMCItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -45,6 +44,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSword;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -64,6 +64,9 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PMCRegistry {
     @ObjectHolder(Pubgmc.MOD_ID)
@@ -226,6 +229,10 @@ public class PMCRegistry {
         public static final Block CHAIR = null;
         public static final Block TABLE = null;
         public static final Block COPPER_ORE = null;
+        public static final Block WINDOW1X1 = null;
+        public static final Block WINDOW1X2 = null;
+        public static final Block WINDOW2X1 = null;
+        public static final Block WINDOW2X2 = null;
 
         /**
          * Props by OfficialMajonaise
@@ -248,7 +255,8 @@ public class PMCRegistry {
 
     @Mod.EventBusSubscriber
     public static class Registry {
-        static int entityID = -1;
+        private static int entityID = -1;
+        private static List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
         @SubscribeEvent
         public static void registerBlocks(Register<Block> event) {
@@ -310,7 +318,11 @@ public class PMCRegistry {
                             .build(),
                     HorizontalBlockBuilder.create("storagetop", Material.WOOD).aabb(new AxisAlignedBB(0, 0, 0, 1, 0.8, 0.85), new AxisAlignedBB(0.15, 0, 0, 1, 0.8, 1), new AxisAlignedBB(0, 0, 0.15, 1, 0.8, 1), new AxisAlignedBB(0, 0, 0, 0.85, 0.8, 1))
                             .soundType(SoundType.WOOD).transparency(false, false)
-                            .build()
+                            .build(),
+                    new BlockWindow("window1x1", BlockWindow.WindowType.WINDOW_1X1),
+                    new BlockWindow("window1x2", BlockWindow.WindowType.WINDOW_1X2),
+                    new BlockWindow("window2x1", BlockWindow.WindowType.WINDOW_2X1),
+                    new BlockWindow("window2x2", BlockWindow.WindowType.WINDOW_2X2)
             };
 
             event.getRegistry().registerAll(BLOCKS);
@@ -396,54 +408,10 @@ public class PMCRegistry {
                     new ItemFlashBang("flashbang")
             };
 
-            final Item[] ITEM_BLOCKS = {
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.ROADASPHALT),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.SCHOOLWALL),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.SCHOOLROOF),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.SCHOOLWINDOW),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.AIRDROP),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.DARKWOOD),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.LOOT_SPAWNER),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PLAYER_CRATE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.CHAIR),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.TABLE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.RUINSWALL),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.BLUEGLASS),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.TARGET),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.LAMPBOTTOM),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.LAMPPOST),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.LAMPTOP),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.LIGHT),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.CRATE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.CRATES),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.BUSH),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.WHEAT),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PROP1),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PROP2),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PROP3),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PROP4),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PROP5),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.PROP6),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.FENCE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.CONCRETE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICPOLE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICPOLETOP),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.ELECTRICCABLE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.RADIOTOWER),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.RADIOTOWERTOP),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.GUN_WORKBENCH),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.BIG_AIRDROP),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.COPPER_ORE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.LANDMINE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.DESK),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.CHAIR1),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.STORAGEBASE),
-                    new PMCItemBlock(PMCRegistry.PMCBlocks.STORAGETOP)
-            };
-
             event.getRegistry().registerAll(ITEMS);
-            event.getRegistry().registerAll(ITEM_BLOCKS);
+            event.getRegistry().registerAll(ITEM_BLOCKS.toArray(new ItemBlock[ITEM_BLOCKS.size()]));
             event.getRegistry().registerAll(getInitializedGuns());
+            ITEM_BLOCKS = null;
         }
 
         @SubscribeEvent
@@ -464,6 +432,16 @@ public class PMCRegistry {
                     };
 
             e.getRegistry().registerAll(entries);
+        }
+
+        public static void registerItemBlock(Block block) {
+            ItemBlock itemBlock = new ItemBlock(block);
+            itemBlock.setRegistryName(block.getRegistryName());
+            try {
+                ITEM_BLOCKS.add(itemBlock);
+            } catch (NullPointerException e) {
+                Pubgmc.logger.fatal("Attempted to register itemblock for {} after PMC registration was complete!", block.getRegistryName());
+            }
         }
 
         private static EntityEntry registerEntity(String name, Class<? extends Entity> cl, int trackRange, int frequency, boolean velocityUpdates) {
