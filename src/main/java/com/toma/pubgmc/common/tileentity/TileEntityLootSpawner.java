@@ -1,5 +1,7 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.blocks.BlockLootSpawner.LootType;
@@ -26,7 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TileEntityLootSpawner extends TileEntitySync implements IInventory {
+// TODO stop using IInventory
+public class TileEntityLootSpawner extends TileEntitySync implements IInventory, IGameTileEntity {
     //Loot related - guns
     private static final List<ItemStack> PISTOLS = new ArrayList<>();
     private static final List<ItemStack> SHOTGUNS = new ArrayList<>();
@@ -177,17 +180,28 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory 
 
     }
 
-    public String getGameID() {
+    @Override
+    public String getGameHash() {
         return gameID;
     }
 
-    public void setGameID(String gameID) {
-        this.gameID = gameID;
+    @Override
+    public void setGameHash(String hash) {
+        this.gameID = hash;
+    }
+
+    @Override
+    public Runnable onLoaded() {
+        return () -> {
+            TileEntityLootSpawner te = TileEntityLootSpawner.this;
+            IWorldData data = te.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
+            TileEntityLootSpawner.this.generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
+        };
     }
 
     @Override
     public int getFieldCount() {
-        return 9;
+        return 0;
     }
 
     @Override

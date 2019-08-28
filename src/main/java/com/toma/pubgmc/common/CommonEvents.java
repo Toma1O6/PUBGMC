@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
@@ -148,12 +149,14 @@ public class CommonEvents {
         IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
 
         for (TileEntity tileEntity : map.values()) {
-            if (tileEntity instanceof TileEntityLootSpawner) {
-                TileEntityLootSpawner te = (TileEntityLootSpawner) tileEntity;
-
-                if (!te.getGameID().equalsIgnoreCase(data.getGameID())) {
-                    te.setGameID(data.getGameID());
-                    te.generateLoot(loot.hasAirdropWeapons(), loot.isAmmoLootEnabled(), loot.isRandomAmmoCountEnabled(), loot.getLootChanceMultiplier(), loot.getWeaponList());
+            if (tileEntity instanceof IGameTileEntity) {
+                IGameTileEntity te = (IGameTileEntity)tileEntity;
+                if(!te.getGameHash().equals(data.getGameID())) {
+                    Runnable runnable = te.onLoaded();
+                    if(runnable != null) {
+                        te.setGameHash(data.getGameID());
+                        runnable.run();
+                    }
                 }
             }
         }
