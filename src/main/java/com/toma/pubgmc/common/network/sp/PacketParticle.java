@@ -12,25 +12,21 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.Random;
 
-public class PacketParticle implements IMessage, IMessageHandler<PacketParticle, IMessage> {
+public class PacketParticle implements IMessage {
     private EnumParticleTypes particle;
     private double x, y, z;
     private Block hitBlock;
     private int amount;
+    private ParticleAction action;
 
     public PacketParticle() {
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, Vec3d hitVec, Block block) {
-        this.particle = particle;
-        this.x = hitVec.x;
-        this.y = hitVec.y;
-        this.z = hitVec.z;
-        this.hitBlock = block;
-        this.amount = amountOfParticles;
+    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, Vec3d hitVec, Block block, ParticleAction action) {
+        this(particle, amountOfParticles, hitVec.x, hitVec.y, hitVec.z, block, action);
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, Block block) {
+    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, Block block, ParticleAction action) {
         this.particle = particle;
         this.x = x;
         this.y = y;
@@ -42,6 +38,7 @@ public class PacketParticle implements IMessage, IMessageHandler<PacketParticle,
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(particle.ordinal());
+        buf.writeInt(action.ordinal());
         buf.writeDouble(x);
         buf.writeDouble(y);
         buf.writeDouble(z);
@@ -53,6 +50,7 @@ public class PacketParticle implements IMessage, IMessageHandler<PacketParticle,
     @Override
     public void fromBytes(ByteBuf buf) {
         particle = EnumParticleTypes.values()[buf.readInt()];
+        action = ParticleAction.values()[buf.readInt()];
         x = buf.readDouble();
         y = buf.readDouble();
         z = buf.readDouble();
@@ -60,18 +58,37 @@ public class PacketParticle implements IMessage, IMessageHandler<PacketParticle,
         amount = buf.readInt();
     }
 
-    @Override
-    public IMessage onMessage(PacketParticle message, MessageContext ctx) {
-        if (ctx.side.isClient()) {
-            Minecraft.getMinecraft().addScheduledTask(() ->
-            {
-                World world = Minecraft.getMinecraft().player.world;
-                final Random rand = new Random();
+    public static class Handler implements IMessageHandler<PacketParticle, IMessage> {
+        @Override
+        public IMessage onMessage(PacketParticle message, MessageContext ctx) {
+            if (ctx.side.isClient()) {
+                Minecraft.getMinecraft().addScheduledTask(() ->
+                {
+                    World world = Minecraft.getMinecraft().player.world;
+                    final Random rand = new Random();
+                    switch(message.action) {
+                        case SPREAD_RANDOMLY: {
+                            for (int i = 0; i < message.amount; i++)
+                                world.spawnParticle(message.particle, true, message.x, message.y, message.z, rand.nextDouble() / 5, rand.nextDouble() / 5, rand.nextDouble() / 5, Block.getIdFromBlock(message.hitBlock));
+                            break;
+                        }
+                        case CREATE_LINE: {
+                            Vec3d start = new Vec3d(message.x, message.y, message.z);
+                            for(int i = 0; i < message.amount; i++) {
+                                world.spawnParticle(message.particle, start.x + rand.nextDouble(), start.y, start.z + rand.nextDouble(), 0, -0.25, 0);
+                            }
+                            break;
+                        }
+                    }
 
-                for (int i = 0; i < message.amount; i++)
-                    world.spawnParticle(message.particle, true, message.x, message.y, message.z, rand.nextDouble() / 5, rand.nextDouble() / 5, rand.nextDouble() / 5, Block.getIdFromBlock(message.hitBlock));
-            });
+                });
+            }
+            return null;
         }
-        return null;
+    }
+
+    public enum ParticleAction {
+        SPREAD_RANDOMLY,
+        CREATE_LINE
     }
 }
