@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.blocks;
 
-import net.minecraft.block.Block;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.sp.PacketParticle;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -46,6 +47,13 @@ public class BlockWindow extends PMCBlock {
         if(!state.getValue(BROKEN)) {
             world.setBlockState(pos, state.withProperty(BROKEN, true));
             this.notifyNeighboringWindows(pos, world);
+            if(!world.isRemote) {
+                if(state.getValue(PART).ordinal() < 2) {
+                    int axis = state.getValue(AXIS).ordinal();
+                    PacketParticle packet = new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 15, pos.getX(), pos.getY(), pos.getZ(), this, PacketParticle.ParticleAction.CREATE_LINE, axis);
+                    PacketHandler.sendToAllClients(packet);
+                }
+            }
         }
     }
 
@@ -54,8 +62,11 @@ public class BlockWindow extends PMCBlock {
             world.setBlockState(pos, state.withProperty(BROKEN, true));
             this.notifyNeighboringWindows(pos, world);
             world.playSound(null, pos, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
-            // TODO particles
         }
+    }
+
+    public void setToAir(World world, BlockPos pos) {
+        world.setBlockToAir(pos);
     }
 
     @Override
@@ -98,9 +109,9 @@ public class BlockWindow extends PMCBlock {
             case WINDOW_1X2: {
                 EnumWindowPart part = state.getValue(PART);
                 if (part == EnumWindowPart.LOWER_LEFT) {
-                    worldIn.setBlockToAir(pos.up());
+                    setToAir(worldIn, pos.up());
                 } else {
-                    worldIn.setBlockToAir(pos.down());
+                    setToAir(worldIn, pos.down());
                 }
                 break;
             }
@@ -108,61 +119,61 @@ public class BlockWindow extends PMCBlock {
                 if(state.getValue(AXIS) == EnumWindowAxis.NS) {
                     IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.WEST));
                     if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                        worldIn.setBlockToAir(pos.offset(EnumFacing.WEST));
+                        setToAir(worldIn, pos.offset(EnumFacing.WEST));
                     } else {
-                        worldIn.setBlockToAir(pos.offset(EnumFacing.EAST));
+                        setToAir(worldIn, pos.offset(EnumFacing.EAST));
                     }
                 } else {
                     IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.NORTH));
                     if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                        worldIn.setBlockToAir(pos.offset(EnumFacing.NORTH));
+                        setToAir(worldIn, pos.offset(EnumFacing.NORTH));
                     } else {
-                        worldIn.setBlockToAir(pos.offset(EnumFacing.SOUTH));
+                        setToAir(worldIn, pos.offset(EnumFacing.SOUTH));
                     }
                 }
                 break;
             }
             case WINDOW_2X2: {
                 if(state.getValue(PART).isLower()) {
-                    worldIn.setBlockToAir(pos.up());
+                    setToAir(worldIn, pos.up());
                     if(state.getValue(AXIS) == EnumWindowAxis.NS) {
                         IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.WEST));
                         if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.WEST));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.WEST).up());
+                            setToAir(worldIn, pos.offset(EnumFacing.WEST));
+                            setToAir(worldIn, pos.offset(EnumFacing.WEST).up());
                         } else {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.EAST));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.EAST).up());
+                            setToAir(worldIn, pos.offset(EnumFacing.EAST));
+                            setToAir(worldIn, pos.offset(EnumFacing.EAST).up());
                         }
                     } else {
                         IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.NORTH));
                         if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.NORTH));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.NORTH).up());
+                            setToAir(worldIn, pos.offset(EnumFacing.NORTH));
+                            setToAir(worldIn, pos.offset(EnumFacing.NORTH).up());
                         } else {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.SOUTH));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.SOUTH).up());
+                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH));
+                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH).up());
                         }
                     }
                 } else {
-                    worldIn.setBlockToAir(pos.down());
+                    setToAir(worldIn, pos.down());
                     if(state.getValue(AXIS) == EnumWindowAxis.NS) {
                         IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.NORTH));
                         if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.NORTH));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.NORTH).down());
+                            setToAir(worldIn, pos.offset(EnumFacing.NORTH));
+                            setToAir(worldIn, pos.offset(EnumFacing.NORTH).down());
                         } else {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.SOUTH));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.SOUTH).down());
+                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH));
+                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH).down());
                         }
                     } else {
                         IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.WEST));
                         if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.WEST));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.WEST).down());
+                            setToAir(worldIn, pos.offset(EnumFacing.WEST));
+                            setToAir(worldIn, pos.offset(EnumFacing.WEST).down());
                         } else {
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.EAST));
-                            worldIn.setBlockToAir(pos.offset(EnumFacing.EAST).down());
+                            setToAir(worldIn, pos.offset(EnumFacing.EAST));
+                            setToAir(worldIn, pos.offset(EnumFacing.EAST).down());
                         }
                     }
                 }

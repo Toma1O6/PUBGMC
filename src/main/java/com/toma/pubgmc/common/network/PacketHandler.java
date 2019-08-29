@@ -42,7 +42,7 @@ public class PacketHandler {
         registerClientPacket(PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.class);
         registerClientPacket(PacketCreateNBT.class);
-        registerClientPacket(PacketParticle.class);
+        registerClientPacket(PacketParticle.Handler.class, PacketParticle.class);
         registerClientPacket(PacketClientCapabilitySync.class);
         registerClientPacket(PacketUpdatePlayerRotation.class);
         registerClientPacket(PacketVehicleData.class);

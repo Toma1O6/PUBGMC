@@ -204,7 +204,7 @@ public class EntityBullet extends Entity {
                 }
 
                 if (entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
-                    PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock), this.dimension);
+                    PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
 
                 onEntityHit(headshot, entity);
                 entity.hurtResistantTime = 0;
@@ -235,7 +235,7 @@ public class EntityBullet extends Entity {
                 } else return;
             } else if (!block.isReplaceable(world, pos)) {
                 Vec3d hitvec = raytraceResultIn.hitVec;
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, hitvec, block), this.dimension);
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, hitvec, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5f, block.getSoundType().getPitch() * 0.8f);
                 if (block instanceof BlockLandMine) {
                     ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);

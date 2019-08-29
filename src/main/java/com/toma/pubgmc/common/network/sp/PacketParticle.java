@@ -18,21 +18,24 @@ public class PacketParticle implements IMessage {
     private Block hitBlock;
     private int amount;
     private ParticleAction action;
+    private int parameter;
 
     public PacketParticle() {
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, Vec3d hitVec, Block block, ParticleAction action) {
-        this(particle, amountOfParticles, hitVec.x, hitVec.y, hitVec.z, block, action);
+    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, Vec3d hitVec, Block block, ParticleAction action, int par) {
+        this(particle, amountOfParticles, hitVec.x, hitVec.y, hitVec.z, block, action, par);
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, Block block, ParticleAction action) {
+    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, Block block, ParticleAction action, int par) {
         this.particle = particle;
         this.x = x;
         this.y = y;
         this.z = z;
         this.hitBlock = block;
         this.amount = amountOfParticles;
+        this.action = action;
+        this.parameter = par;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class PacketParticle implements IMessage {
         buf.writeDouble(z);
         buf.writeInt(Block.getIdFromBlock(hitBlock));
         buf.writeInt(amount);
+        buf.writeInt(parameter);
 
     }
 
@@ -56,6 +60,7 @@ public class PacketParticle implements IMessage {
         z = buf.readDouble();
         hitBlock = Block.getBlockById(buf.readInt());
         amount = buf.readInt();
+        parameter = buf.readInt();
     }
 
     public static class Handler implements IMessageHandler<PacketParticle, IMessage> {
@@ -74,8 +79,9 @@ public class PacketParticle implements IMessage {
                         }
                         case CREATE_LINE: {
                             Vec3d start = new Vec3d(message.x, message.y, message.z);
+                            boolean eastWest = message.parameter > 0;
                             for(int i = 0; i < message.amount; i++) {
-                                world.spawnParticle(message.particle, start.x + rand.nextDouble(), start.y, start.z + rand.nextDouble(), 0, -0.25, 0);
+                                world.spawnParticle(message.particle, eastWest ? start.x + rand.nextDouble() : start.x + 0.5, start.y + 1, eastWest ? start.z + 0.5 : start.z + rand.nextDouble(), 0, -0.25, 0, Block.getIdFromBlock(message.hitBlock));
                             }
                             break;
                         }
