@@ -726,6 +726,7 @@ public class PMCRegistry {
             registerTileEntity(TileEntityGunWorkbench.class, "gun_workbench");
             registerTileEntity(TileEntityBigAirdrop.class, "big_airdrop");
             registerTileEntity(TileEntityLandMine.class, "landmine");
+            registerTileEntity(TileEntityWindow.class, "window");
         }
 
         private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name) {

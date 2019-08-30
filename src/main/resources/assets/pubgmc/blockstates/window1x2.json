@@ -6,7 +6,7 @@
 		"axis=we,broken=true,part=lower_left": { "model": "pubgmc:window1x2_lower_broken", "y": 90 },
 		"axis=ns,broken=false,part=lower_right": { "model": "pubgmc:window1x2_lower" },
 		"axis=ns,broken=true,part=lower_right": { "model": "pubgmc:window1x2_lower_broken" },
-		"axis,we,broken=false,part=lower_right": { "model": "pubgmc:window1x2_lower", "y": 90 },
+		"axis=we,broken=false,part=lower_right": { "model": "pubgmc:window1x2_lower", "y": 90 },
 		"axis=we,broken=true,part=lower_right": { "model": "pubgmc:window1x2_lower_broken", "y": 90 },
 		"axis=ns,broken=false,part=upper_left": { "model": "pubgmc:window1x2_upper" },
 		"axis=ns,broken=true,part=upper_left": { "model": "pubgmc:window1x2_upper_broken" },

@@ -15,10 +15,8 @@ import com.toma.pubgmc.common.items.ItemMolotov;
 import com.toma.pubgmc.common.items.ItemSmokeGrenade;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
 import com.toma.pubgmc.common.network.sp.PacketGetConfigFromServer;
 import com.toma.pubgmc.common.network.sp.PacketLoadConfig;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
@@ -45,6 +43,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeVersion;
@@ -63,8 +62,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.UUID;
 
 public class CommonEvents {
@@ -145,20 +145,22 @@ public class CommonEvents {
             return;
         }
         Chunk chunk = e.getChunk();
-        Map<BlockPos, TileEntity> map = chunk.getTileEntityMap();
+        Iterator<TileEntity> it = chunk.getTileEntityMap().values().iterator();
         IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
-
-        for (TileEntity tileEntity : map.values()) {
-            if (tileEntity instanceof IGameTileEntity) {
-                IGameTileEntity te = (IGameTileEntity)tileEntity;
-                if(!te.getGameHash().equals(data.getGameID())) {
-                    Runnable runnable = te.onLoaded();
-                    if(runnable != null) {
+        try {
+            while (it.hasNext()) {
+                TileEntity tileEntity = it.next();
+                if (tileEntity instanceof IGameTileEntity) {
+                    IGameTileEntity te = (IGameTileEntity)tileEntity;
+                    if(!te.getGameHash().equals(data.getGameID())) {
                         te.setGameHash(data.getGameID());
-                        runnable.run();
+                        te.onLoaded();
+                        tileEntity.markDirty();
                     }
                 }
             }
+        } catch (ConcurrentModificationException ex) {
+            ex.printStackTrace();
         }
     }
 

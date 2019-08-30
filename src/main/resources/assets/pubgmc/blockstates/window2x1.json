@@ -1,7 +1,20 @@
 {
 	"variants": {
-		"normal": {
-			"model": "pubgmc:window2x1"
-		}
+		"axis=ns,broken=false,part=lower_left": { "model": "pubgmc:window2x1_left" },
+		"axis=ns,broken=true,part=lower_left": { "model": "pubgmc:window2x1_left_broken" },
+		"axis=we,broken=false,part=lower_left": { "model": "pubgmc:window2x1_left", "y": 90 },
+		"axis=we,broken=true,part=lower_left": { "model": "pubgmc:window2x1_left_broken", "y": 90 },
+		"axis=ns,broken=false,part=lower_right": { "model": "pubgmc:window2x1_right" },
+		"axis=ns,broken=true,part=lower_right": { "model": "pubgmc:window2x1_right_broken" },
+		"axis=we,broken=false,part=lower_right": { "model": "pubgmc:window2x1_right", "y": 90 },
+		"axis=we,broken=true,part=lower_right": { "model": "pubgmc:window2x1_right_broken", "y": 90 },
+		"axis=ns,broken=false,part=upper_left": { "model": "pubgmc:window2x1_left" },
+		"axis=ns,broken=true,part=upper_left": { "model": "pubgmc:window2x1_left_broken" },
+		"axis=we,broken=false,part=upper_left": { "model": "pubgmc:window2x1_left", "y": 90 },
+		"axis=we,broken=true,part=upper_left": { "model": "pubgmc:window2x1_left_broken", "y": 90 },
+		"axis=ns,broken=false,part=upper_right": { "model": "pubgmc:window2x1_right" },
+		"axis=ns,broken=true,part=upper_right": { "model": "pubgmc:window2x1_right_broken" },
+		"axis=we,broken=false,part=upper_right": { "model": "pubgmc:window2x1_right", "y": 90 },
+		"axis=we,broken=true,part=upper_right": { "model": "pubgmc:window2x1_right_broken", "y": 90 }
 	}
 }

@@ -1,7 +1,9 @@
 package com.toma.pubgmc.common.blocks;
 
+import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
+import com.toma.pubgmc.common.tileentity.TileEntityWindow;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -12,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -19,6 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class BlockWindow extends PMCBlock {
 
@@ -40,7 +44,7 @@ public class BlockWindow extends PMCBlock {
     @Override
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         boolean b = blockAccess.getBlockState(pos.offset(side)).getBlock() == this;
-        return b ? false : super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+        return !b && super.shouldSideBeRendered(blockState, blockAccess, pos, side);
     }
 
     public void neighborBroken(EnumFacing side, World world, BlockPos pos, IBlockState state) {
@@ -63,10 +67,6 @@ public class BlockWindow extends PMCBlock {
             this.notifyNeighboringWindows(pos, world);
             world.playSound(null, pos, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
         }
-    }
-
-    public void setToAir(World world, BlockPos pos) {
-        world.setBlockToAir(pos);
     }
 
     @Override
@@ -104,79 +104,95 @@ public class BlockWindow extends PMCBlock {
     }
 
     @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileEntityWindow();
+    }
+
+    @Override
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+        if(state.getValue(BROKEN)) {
+            worldIn.setBlockState(pos, state.withProperty(BROKEN, false));
+        }
+    }
+
+    @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         switch(windowType) {
             case WINDOW_1X2: {
                 EnumWindowPart part = state.getValue(PART);
-                if (part == EnumWindowPart.LOWER_LEFT) {
-                    setToAir(worldIn, pos.up());
+                if (part.ordinal() > 1) {
+                    worldIn.setBlockToAir(pos.up());
+                    TileEntity te = worldIn.getTileEntity(pos.up());
+                    System.out.println(te);
+                    String hash = te instanceof IGameTileEntity ? ((IGameTileEntity)te).getGameHash() : "unknown";
+                    hash = hash.replace(".", ",");
+                    System.out.println(hash);
                 } else {
-                    setToAir(worldIn, pos.down());
+                    worldIn.setBlockToAir(pos.down());
                 }
+                super.breakBlock(worldIn, pos, state);
                 break;
             }
             case WINDOW_2X1: {
-                if(state.getValue(AXIS) == EnumWindowAxis.NS) {
-                    IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.WEST));
-                    if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                        setToAir(worldIn, pos.offset(EnumFacing.WEST));
-                    } else {
-                        setToAir(worldIn, pos.offset(EnumFacing.EAST));
+                if(state.getValue(AXIS) == EnumWindowAxis.WE) {
+                    EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.WEST : EnumFacing.EAST;
+                    IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
+                    if(state1.getBlock() instanceof BlockWindow) {
+                        worldIn.setBlockToAir(pos.offset(offset));
                     }
                 } else {
-                    IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.NORTH));
-                    if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                        setToAir(worldIn, pos.offset(EnumFacing.NORTH));
-                    } else {
-                        setToAir(worldIn, pos.offset(EnumFacing.SOUTH));
+                    EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.SOUTH : EnumFacing.NORTH;
+                    IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
+                    if(state1.getBlock() instanceof BlockWindow) {
+                        worldIn.setBlockToAir(pos.offset(offset));
                     }
                 }
+                super.breakBlock(worldIn, pos, state);
                 break;
             }
             case WINDOW_2X2: {
                 if(state.getValue(PART).isLower()) {
-                    setToAir(worldIn, pos.up());
+                    worldIn.setBlockToAir(pos.up());
                     if(state.getValue(AXIS) == EnumWindowAxis.NS) {
-                        IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.WEST));
-                        if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            setToAir(worldIn, pos.offset(EnumFacing.WEST));
-                            setToAir(worldIn, pos.offset(EnumFacing.WEST).up());
-                        } else {
-                            setToAir(worldIn, pos.offset(EnumFacing.EAST));
-                            setToAir(worldIn, pos.offset(EnumFacing.EAST).up());
+                        EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.SOUTH : EnumFacing.NORTH;
+                        IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
+                        if(state1.getBlock() instanceof BlockWindow) {
+                            worldIn.setBlockToAir(pos.offset(offset));
+                            worldIn.setBlockToAir(pos.offset(offset).up());
                         }
                     } else {
-                        IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.NORTH));
-                        if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            setToAir(worldIn, pos.offset(EnumFacing.NORTH));
-                            setToAir(worldIn, pos.offset(EnumFacing.NORTH).up());
-                        } else {
-                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH));
-                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH).up());
+                        EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.WEST : EnumFacing.EAST;
+                        IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
+                        if(state1.getBlock() instanceof BlockWindow) {
+                            worldIn.setBlockToAir(pos.offset(offset));
+                            worldIn.setBlockToAir(pos.offset(offset).up());
                         }
                     }
                 } else {
-                    setToAir(worldIn, pos.down());
+                    worldIn.setBlockToAir(pos.down());
                     if(state.getValue(AXIS) == EnumWindowAxis.NS) {
-                        IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.NORTH));
-                        if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            setToAir(worldIn, pos.offset(EnumFacing.NORTH));
-                            setToAir(worldIn, pos.offset(EnumFacing.NORTH).down());
-                        } else {
-                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH));
-                            setToAir(worldIn, pos.offset(EnumFacing.SOUTH).down());
+                        EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.SOUTH : EnumFacing.NORTH;
+                        IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
+                        if(state1.getBlock() instanceof BlockWindow) {
+                            worldIn.setBlockToAir(pos.offset(offset));
+                            worldIn.setBlockToAir(pos.offset(offset).down());
                         }
                     } else {
-                        IBlockState state1 = worldIn.getBlockState(pos.offset(EnumFacing.WEST));
-                        if(state1.getBlock() instanceof BlockWindow && state1.getValue(PART) == state.getValue(PART).getOpposite()) {
-                            setToAir(worldIn, pos.offset(EnumFacing.WEST));
-                            setToAir(worldIn, pos.offset(EnumFacing.WEST).down());
-                        } else {
-                            setToAir(worldIn, pos.offset(EnumFacing.EAST));
-                            setToAir(worldIn, pos.offset(EnumFacing.EAST).down());
+                        EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.WEST : EnumFacing.EAST;
+                        IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
+                        if(state1.getBlock() instanceof BlockWindow) {
+                            worldIn.setBlockToAir(pos.offset(offset));
+                            worldIn.setBlockToAir(pos.offset(offset).down());
                         }
                     }
                 }
+                super.breakBlock(worldIn, pos, state);
                 break;
             }
             default: case WINDOW_1X1: {
@@ -189,22 +205,24 @@ public class BlockWindow extends PMCBlock {
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         EnumFacing f = placer.getHorizontalFacing();
-        IBlockState iBlockState = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(AXIS, EnumWindowAxis.getAxisFromFacing(f)).withProperty(PART, EnumWindowPart.LOWER_LEFT);
+        boolean flag = f == EnumFacing.NORTH || f == EnumFacing.WEST;
+        IBlockState iBlockState = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(AXIS, EnumWindowAxis.getAxisFromFacing(f)).withProperty(PART, flag ? EnumWindowPart.LOWER_RIGHT : EnumWindowPart.LOWER_LEFT);
         switch (windowType) {
             case WINDOW_1X1: {
                 return iBlockState;
             }
             case WINDOW_1X2: {
                 if (world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up())) {
-                    world.setBlockState(pos.up(), iBlockState.withProperty(PART, EnumWindowPart.UPPER_LEFT));
+                    world.setBlockState(pos.up(), iBlockState.withProperty(PART, flag ? EnumWindowPart.UPPER_RIGHT : EnumWindowPart.UPPER_LEFT));
                     return iBlockState;
                 }
                 return Blocks.AIR.getDefaultState();
             }
             case WINDOW_2X1: {
                 BlockPos neighbor = pos.offset(f.rotateY());
+
                 if(world.getBlockState(neighbor).getBlock().isReplaceable(world, neighbor)) {
-                    world.setBlockState(neighbor, iBlockState.withProperty(PART, EnumWindowPart.LOWER_RIGHT));
+                    world.setBlockState(neighbor, iBlockState.withProperty(PART, flag ? EnumWindowPart.LOWER_LEFT : EnumWindowPart.LOWER_RIGHT));
                     return iBlockState;
                 }
                 return Blocks.AIR.getDefaultState();
@@ -217,9 +235,9 @@ public class BlockWindow extends PMCBlock {
                 if(world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()) &&
                     world.getBlockState(neighbor).getBlock().isReplaceable(world, neighbor) &&
                     world.getBlockState(neighbor.up()).getBlock().isReplaceable(world, neighbor.up())) {
-                    world.setBlockState(pos.up(), iBlockState.withProperty(PART, EnumWindowPart.UPPER_LEFT));
-                    world.setBlockState(neighbor, iBlockState.withProperty(PART, EnumWindowPart.LOWER_RIGHT));
-                    world.setBlockState(neighbor.up(), iBlockState.withProperty(PART, EnumWindowPart.UPPER_RIGHT));
+                    world.setBlockState(pos.up(), iBlockState.withProperty(PART, flag ? EnumWindowPart.UPPER_RIGHT : EnumWindowPart.UPPER_LEFT));
+                    world.setBlockState(neighbor, iBlockState.withProperty(PART, flag ? EnumWindowPart.LOWER_LEFT : EnumWindowPart.LOWER_RIGHT));
+                    world.setBlockState(neighbor.up(), iBlockState.withProperty(PART, flag ? EnumWindowPart.UPPER_LEFT : EnumWindowPart.UPPER_RIGHT));
                     return iBlockState;
                 }
                 return Blocks.AIR.getDefaultState();

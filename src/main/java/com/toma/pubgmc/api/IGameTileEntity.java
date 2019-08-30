@@ -30,6 +30,5 @@ public interface IGameTileEntity {
      * but the tileentity will be ignored and hash won't update
      * @return action which will be executed
      */
-    @Nullable
-    Runnable onLoaded();
+    void onLoaded();
 }
