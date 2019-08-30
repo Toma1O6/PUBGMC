@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.items.guns.attachments;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.util.ImageUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -12,6 +13,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+
+import javax.vecmath.Vector2d;
 
 public class GuiAttachments extends GuiContainer {
 
@@ -62,6 +65,7 @@ public class GuiAttachments extends GuiContainer {
         GlStateManager.pushMatrix();
         mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        Vector2d translate = this.applyScaleFactor();
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(516, 0.1F);
@@ -69,7 +73,7 @@ public class GuiAttachments extends GuiContainer {
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.setupGuiTransform(x, y, bakedmodel.isGui3d());
-        GlStateManager.translate(x - 0.25, y - 0.5, 0);
+        GlStateManager.translate(x + translate.x, y + translate.y, 0);
         GlStateManager.scale(2.5, 2.5, 2.5);
         GlStateManager.rotate(70, 0, 1, 0);
         GlStateManager.rotate(20, 1, 0, 0);
@@ -92,6 +96,18 @@ public class GuiAttachments extends GuiContainer {
             GlStateManager.enableLighting();
         } else {
             GlStateManager.disableLighting();
+        }
+    }
+
+    private Vector2d applyScaleFactor() {
+        int scale = mc.gameSettings.guiScale;
+        switch (scale) {
+            // AUTO
+            case 0: return new Vector2d(-0.25, -0.5);
+            case 1: return new Vector2d(44, -24);
+            case 2: return new Vector2d(14, -8.5);
+            case 3: return new Vector2d(3.5, -3);
+            default: return new Vector2d();
         }
     }
 }

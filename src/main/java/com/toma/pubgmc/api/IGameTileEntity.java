@@ -1,7 +1,5 @@
 package com.toma.pubgmc.api;
 
-import javax.annotation.Nullable;
-
 /**
  * Interface for executing game related tasks once tileentity gets loaded in
  * world. These functions are only executed when IGameData#isPlaying is true

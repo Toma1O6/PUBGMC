@@ -276,7 +276,7 @@ public class ModelG36C extends ModelGun {
         g36.cubeList.add(new ModelBox(g36, 68, 17, -5.5F, -42.0F, 14.0859F, 11, 1, 2, 0.0F, false));
         g36.cubeList.add(new ModelBox(g36, 64, 26, -5.5F, -44.0F, -14.0F, 11, 2, 9, 0.0F, false));
         g36.cubeList.add(new ModelBox(g36, 66, 31, -7.0F, -47.0F, -28.0F, 14, 5, 14, 0.0F, false));
-        g36.cubeList.add(new ModelBox(g36, 66, 31, -7.0F, -47.0F, -39.0F, 14, 5, 11, 0.0F, false));
+        g36.cubeList.add(new ModelBox(g36, 64, 21, -7.0F, -47.0F, -39.0F, 14, 5, 11, 0.0F, false));
         g36.cubeList.add(new ModelBox(g36, 66, 31, -7.0F, -47.0F, -54.0F, 2, 5, 15, 0.0F, false));
         g36.cubeList.add(new ModelBox(g36, 67, 30, -5.5858F, -42.5858F, -54.0F, 6, 2, 20, 0.0F, false));
         g36.cubeList.add(new ModelBox(g36, 76, 16, -5.5858F, -42.5858F, -34.0F, 6, 2, 20, 0.0F, false));
@@ -555,7 +555,7 @@ public class ModelG36C extends ModelGun {
         bone79.setRotationPoint(14.0F, -19.0F, -67.0F);
         setRotationAngle(bone79, 0.0F, 0.0F, -0.2618F);
         g36.addChild(bone79);
-        bone79.cubeList.add(new ModelBox(bone79, 64, 26, -1.5145F, -33.8577F, 28.0F, 2, 5, 25, 0.0F, false));
+        bone79.cubeList.add(new ModelBox(bone79, 64, 25, -1.5145F, -33.8577F, 28.0F, 2, 5, 25, 0.0F, false));
         bone79.cubeList.add(new ModelBox(bone79, 64, 26, -1.5145F, -33.8577F, 23.0F, 2, 1, 5, 0.0F, false));
         bone79.cubeList.add(new ModelBox(bone79, 64, 26, -1.5145F, -33.8577F, 20.0F, 2, 5, 3, 0.0F, false));
         bone79.cubeList.add(new ModelBox(bone79, 64, 26, -1.5145F, -33.8577F, 13.0F, 2, 5, 2, 0.0F, false));
@@ -661,12 +661,14 @@ public class ModelG36C extends ModelGun {
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -15.9099F, -14.7886F, 32.5F, 1, 1, 21, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -10.5459F, -20.1525F, 32.5F, 1, 1, 21, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -10.9602F, -20.1525F, 32.5F, 1, 1, 18, 0.0F, false));
-        bone81.cubeList.add(new ModelBox(bone81, 64, 21, -2.0F, -14.1421F, 32.5F, 2, 2, 40, 0.0F, false));
+        bone81.cubeList.add(new ModelBox(bone81, 64, 21, -2.0F, -14.1421F, 42.5F, 2, 2, 30, 0.0F, false));
+        bone81.cubeList.add(new ModelBox(bone81, 64, 31, -2.0F, -14.1421F, 32.5F, 2, 2, 10, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -12.3744F, -21.5668F, 167.5F, 1, 1, 3, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -17.3241F, -16.617F, 167.5F, 1, 1, 3, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -17.3241F, -16.2028F, 167.5F, 1, 1, 3, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -11.9602F, -21.5668F, 167.5F, 1, 1, 3, 0.0F, false));
-        bone81.cubeList.add(new ModelBox(bone81, 64, 21, -9.8995F, -6.2426F, 32.5F, 2, 2, 40, 0.0F, false));
+        bone81.cubeList.add(new ModelBox(bone81, 64, 27, -9.8995F, -6.2426F, 42.5F, 2, 2, 30, 0.0F, false));
+        bone81.cubeList.add(new ModelBox(bone81, 64, 27, -9.8995F, -6.2426F, 32.5F, 2, 2, 10, 0.0F, false));
         bone81.cubeList.add(new ModelBox(bone81, 64, 21, -15.9099F, -15.2028F, 32.5F, 1, 1, 18, 0.0F, false));
 
         bone53 = new ModelRenderer(this);

@@ -14,6 +14,16 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 public class ModelHelper {
+    /*
+     ModelHelper.debugSRSilencer(this, stack);
+     ModelHelper.debugRedDot(this, stack);
+     ModelHelper.debugHolo(this, stack);
+     ModelHelper.debug2x(this, stack);
+     ModelHelper.debug4x(this, stack);
+     ModelHelper.debug8x(this, stack);
+     ModelHelper.debug15x(this, stack);
+     */
+
     public static final double MODIFIER = 1f;
     public static final double SMALL_MODIFIER = 0.025f;
 

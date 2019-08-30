@@ -147,20 +147,16 @@ public class CommonEvents {
         Chunk chunk = e.getChunk();
         Iterator<TileEntity> it = chunk.getTileEntityMap().values().iterator();
         IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
-        try {
-            while (it.hasNext()) {
-                TileEntity tileEntity = it.next();
-                if (tileEntity instanceof IGameTileEntity) {
-                    IGameTileEntity te = (IGameTileEntity)tileEntity;
-                    if(!te.getGameHash().equals(data.getGameID())) {
-                        te.setGameHash(data.getGameID());
-                        te.onLoaded();
-                        tileEntity.markDirty();
-                    }
+        while (it.hasNext()) {
+            TileEntity tileEntity = it.next();
+            if (tileEntity instanceof IGameTileEntity) {
+                IGameTileEntity te = (IGameTileEntity)tileEntity;
+                if(!te.getGameHash().equals(data.getGameID())) {
+                    te.setGameHash(data.getGameID());
+                    te.onLoaded();
+                    tileEntity.markDirty();
                 }
             }
-        } catch (ConcurrentModificationException ex) {
-            ex.printStackTrace();
         }
     }
 
