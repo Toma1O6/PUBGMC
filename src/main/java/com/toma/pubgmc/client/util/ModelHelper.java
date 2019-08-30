@@ -26,7 +26,7 @@ public class ModelHelper {
      */
 
     public static final double MODIFIER = 1f;
-    public static final double SMALL_MODIFIER = 0.005f;
+    public static final double SMALL_MODIFIER = 0.025f;
 
     public static ModelHelper instance;
     public static float x = 0;
