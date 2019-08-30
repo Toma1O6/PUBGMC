@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.util;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -25,7 +26,7 @@ public class ModelHelper {
      */
 
     public static final double MODIFIER = 1f;
-    public static final double SMALL_MODIFIER = 0.025f;
+    public static final double SMALL_MODIFIER = 0.005f;
 
     public static ModelHelper instance;
     public static float x = 0;
@@ -42,6 +43,7 @@ public class ModelHelper {
     public static KeyBinding SCALE_DOWN;
     public static KeyBinding PRINT;
     public static KeyBinding RESET;
+    public static KeyBinding ANIMATION_RESET;
     private static boolean initialized = false;
 
     public static void init() {
@@ -59,6 +61,7 @@ public class ModelHelper {
         SCALE_DOWN = init("debug.scaleDown", Keyboard.KEY_MINUS);
         PRINT = init("debug.printCode", Keyboard.KEY_END);
         RESET = init("debug.reset", Keyboard.KEY_BACK);
+        ANIMATION_RESET = init("debug.anim_reset", Keyboard.KEY_SLASH);
         MinecraftForge.EVENT_BUS.register(new Handler());
         initialized = true;
     }
@@ -157,6 +160,15 @@ public class ModelHelper {
                 return;
             }
             EntityPlayer sp = Minecraft.getMinecraft().player;
+            if(ModelHelper.ANIMATION_RESET.isPressed()) {
+                if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                    ModelGun model = ((GunBase)sp.getHeldItemMainhand().getItem()).getWeaponModel();
+                    if (model != null) {
+                        model.initAnimations();
+                    }
+                }
+            }
+
             if (ModelHelper.TRANSLATEXPLUS.isPressed()) {
                 if (sp.isSneaking()) {
                     ModelHelper.x += ModelHelper.SMALL_MODIFIER;

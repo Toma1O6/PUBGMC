@@ -161,16 +161,19 @@ public class ModelQBU extends ModelGun {
         qbu.cubeList.add(new ModelBox(qbu, 67, 21, -4.0F, -16.0F, -72.0F, 2, 6, 2, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 67, 21, 3.0F, -16.0F, -72.0F, 2, 6, 2, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 67, 21, -4.0F, -16.0F, -70.0F, 9, 6, 12, 0.0F, false));
-        qbu.cubeList.add(new ModelBox(qbu, 67, 21, 4.2143F, -11.9361F, -70.0F, 2, 2, 29, 0.0F, false));
-        qbu.cubeList.add(new ModelBox(qbu, 67, 21, -5.2143F, -11.9361F, -70.0F, 2, 2, 29, 0.0F, true));
-        qbu.cubeList.add(new ModelBox(qbu, 67, 21, 0.369F, -10.1235F, -70.0F, 5, 2, 29, 0.0F, true));
-        qbu.cubeList.add(new ModelBox(qbu, 67, 21, -4.369F, -10.1235F, -70.0F, 5, 2, 29, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 66, 21, 4.2143F, -11.9361F, -70.0F, 2, 2, 29, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 66, 21, -5.2143F, -11.9361F, -70.0F, 2, 2, 29, 0.0F, true));
+        qbu.cubeList.add(new ModelBox(qbu, 65, 23, 0.369F, -10.1235F, -70.0F, 5, 2, 26, 0.0F, true));
+        qbu.cubeList.add(new ModelBox(qbu, 80, 50, 0.369F, -10.1235F, -44.0F, 5, 2, 3, 0.0F, true));
+        qbu.cubeList.add(new ModelBox(qbu, 65, 20, -4.369F, -10.1235F, -70.0F, 5, 2, 26, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 65, 20, -4.369F, -10.1235F, -44.0F, 5, 2, 3, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 16, -4.0F, -18.0F, -51.0F, 9, 2, 4, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 16, -4.0F, -18.0F, -58.0F, 9, 2, 4, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 16, -4.0F, -18.0F, -65.0F, 9, 2, 4, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 16, -4.0F, -18.0F, -72.0F, 2, 2, 4, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 16, 3.0F, -18.0F, -72.0F, 2, 2, 4, 0.0F, false));
-        qbu.cubeList.add(new ModelBox(qbu, 64, 16, -4.0F, -20.0F, -37.0F, 9, 2, 34, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 64, 29, -4.0F, -20.0F, -37.0F, 9, 2, 23, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 64, 29, -4.0F, -20.0F, -14.0F, 9, 2, 11, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 0, 65, -2.5F, -21.6914F, -10.1055F, 6, 4, 10, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 0, 65, -1.5F, -23.5547F, -2.1055F, 4, 2, 2, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 0, 65, -1.5F, -23.5547F, -10.1055F, 4, 2, 2, 0.0F, false));
@@ -236,7 +239,7 @@ public class ModelQBU extends ModelGun {
         qbu.cubeList.add(new ModelBox(qbu, 89, 16, 4.0F, -17.0F, 0.0F, 1, 4, 17, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 71, 16, -4.0F, -18.0F, 0.0F, 9, 1, 17, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 82, 21, -3.0F, -19.7321F, -3.0F, 7, 1, 25, 0.0F, false));
-        qbu.cubeList.add(new ModelBox(qbu, 66, 6, -3.0F, -19.7321F, 22.0F, 7, 2, 24, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 66, 5, -3.0F, -19.7321F, 22.0F, 7, 2, 24, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 15, -3.0F, -19.7321F, -57.0F, 7, 1, 20, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 15, -3.0F, -19.7321F, -71.0F, 7, 1, 14, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 64, 15, -3.0F, -19.7321F, -72.0F, 7, 2, 1, 0.0F, false));
@@ -275,8 +278,7 @@ public class ModelQBU extends ModelGun {
         qbu.cubeList.add(new ModelBox(qbu, 32, 11, 4.4141F, -9.5563F, -96.6445F, 3, 3, 12, 0.0F, true));
         qbu.cubeList.add(new ModelBox(qbu, 0, 71, -3.0F, -18.7321F, -54.0F, 7, 3, 10, 0.0F, false));
         qbu.cubeList.add(new ModelBox(qbu, 0, 71, -3.0F, -18.7321F, -68.0F, 7, 3, 10, 0.0F, false));
-        qbu.cubeList.add(new ModelBox(qbu, 1, 8, -3.7F, -17.0F, 7.0F, 1, 4, 10, 0.0F, false));
-        qbu.cubeList.add(new ModelBox(qbu, 7, 9, -3.7F, -17.0F, 0.0F, 1, 4, 7, 0.0F, false));
+        qbu.cubeList.add(new ModelBox(qbu, 0, 8, -3.7F, -17.0F, 0.0F, 1, 4, 17, 0.0F, false));
 
         bone = new ModelRenderer(this);
         bone.setRotationPoint(-1.5F, 0.0391F, 17.5352F);
@@ -394,7 +396,7 @@ public class ModelQBU extends ModelGun {
         bone21.cubeList.add(new ModelBox(bone21, 67, 21, -1.5F, -2.2344F, -22.5F, 3, 3, 4, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 67, 21, -1.5F, -2.2344F, -27.5F, 3, 3, 2, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 67, 21, -1.5F, -2.2344F, -15.5F, 3, 3, 4, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 67, 21, 6.703F, -2.2517F, -27.5F, 3, 2, 29, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 64, 26, 6.703F, -2.2517F, -27.5F, 3, 2, 29, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 67, 21, -1.5F, -2.2344F, -8.5F, 3, 3, 4, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 67, 21, -1.5F, -2.2344F, -1.5F, 3, 3, 3, 0.0F, true));
 
@@ -405,7 +407,7 @@ public class ModelQBU extends ModelGun {
         bone22.cubeList.add(new ModelBox(bone22, 67, 21, -1.5F, -2.2344F, -22.5F, 3, 3, 4, 0.0F, false));
         bone22.cubeList.add(new ModelBox(bone22, 67, 21, -1.5F, -2.2344F, -27.5F, 3, 3, 2, 0.0F, false));
         bone22.cubeList.add(new ModelBox(bone22, 67, 21, -1.5F, -2.2344F, -15.5F, 3, 3, 4, 0.0F, false));
-        bone22.cubeList.add(new ModelBox(bone22, 67, 21, -9.703F, -2.2517F, -27.5F, 3, 2, 29, 0.0F, false));
+        bone22.cubeList.add(new ModelBox(bone22, 64, 21, -9.703F, -2.2517F, -27.5F, 3, 2, 29, 0.0F, false));
         bone22.cubeList.add(new ModelBox(bone22, 67, 21, -1.5F, -2.2344F, -8.5F, 3, 3, 4, 0.0F, false));
         bone22.cubeList.add(new ModelBox(bone22, 67, 21, -1.5F, -2.2344F, -1.5F, 3, 3, 3, 0.0F, false));
 
