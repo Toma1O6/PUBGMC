@@ -3,7 +3,7 @@ package com.toma.pubgmc.api;
 import com.toma.pubgmc.common.capability.IGameData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -18,7 +18,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
     public final World world;
     private final List<EntityPlayer> joinedPlayers;
 
-    public Game(World world) {
+    public Game(World world, ResourceLocation registryName) {
         this.world = world;
         this.joinedPlayers = new ArrayList<>();
         gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);

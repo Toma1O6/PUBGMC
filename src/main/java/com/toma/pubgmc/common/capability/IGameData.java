@@ -1,16 +1,20 @@
 package com.toma.pubgmc.common.capability;
 
+import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +22,16 @@ import java.util.List;
 /**
  * Preparation for customizable map zone etc
  */
-public interface IGameData {
+public interface IGameData extends INBTSerializable<NBTTagCompound> {
     boolean isPlaying();
 
-    //TODO zone customization
     void setPlaying(boolean play);
 
-    void addSpawnLocation(BlockPos pos, String name);
+    void addSpawnLocation(MapLocation location);
 
-    int getSpawnLocationCount();
+    boolean removeSpawnLocation(String name);
 
-    void setSpawnLocationCount(int count);
-
-    void removeSpawnLocation(BlockPos pos);
-
-    List<BlockPos> getSpawnLocations();
-
-    List<String> getLocationNames();
+    List<MapLocation> getSpawnLocations();
 
     void setMapCenter(double x, double z, int size, int count);
 
@@ -44,7 +41,6 @@ public interface IGameData {
 
     int getZonePhaseCount();
 
-    //zones
     void setZonePhaseCount(int count);
 
     int getCurrentZone();
@@ -65,69 +61,34 @@ public interface IGameData {
 
     void createGameID();
 
+    void setGame(Game game);
+
+    Game getCurrentGame();
+
 
     class GameDataStorage implements IStorage<IGameData> {
         @Override
         public void readNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side, NBTBase nbt) {
-            instance.setPlaying(((NBTTagCompound) nbt).getBoolean("isPlaying"));
-            double x = ((NBTTagCompound) nbt).getDouble("mapCenterX");
-            double z = ((NBTTagCompound) nbt).getDouble("mapCenterZ");
-            int size = ((NBTTagCompound) nbt).getInteger("mapSize");
-            int zones = ((NBTTagCompound) nbt).getInteger("zoneCount");
-            instance.setMapCenter(x, z, size, zones);
-            instance.setSpawnLocationCount(((NBTTagCompound) nbt).getInteger("locationsSize"));
-            instance.setTimer(((NBTTagCompound) nbt).getInteger("timer"));
-            instance.setCurrentZone(((NBTTagCompound) nbt).getInteger("currentZone"));
-
-            NBTTagList list = ((NBTTagCompound) nbt).getTagList("list", 10);
-
-            for (int i = 0; i < list.tagCount(); i++) {
-                instance.addSpawnLocation(NBTUtil.getPosFromTag((NBTTagCompound) list.get(i)), ((NBTTagCompound) nbt).getString("name" + i));
-            }
-
-            instance.setGameID(((NBTTagCompound) nbt).getString("gameID"));
+            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
         }
 
         @Override
         public NBTBase writeNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side) {
-            NBTTagCompound c = new NBTTagCompound();
-            NBTTagList list = new NBTTagList();
-
-            if (instance.getMapCenter() == null) {
-                instance.setMapCenter(0, 0, 0, 1);
-            }
-
-            c.setBoolean("isPlaying", instance.isPlaying());
-            c.setDouble("mapCenterX", instance.getMapCenter().getX());
-            c.setDouble("mapCenterZ", instance.getMapCenter().getZ());
-            c.setInteger("mapSize", instance.getMapSize());
-            c.setInteger("zoneCount", instance.getZonePhaseCount());
-            c.setInteger("locationsSize", instance.getSpawnLocationCount());
-            c.setInteger("timer", instance.getTimer());
-            c.setInteger("currentZone", instance.getCurrentZone());
-
-            for (int i = 0; i < instance.getSpawnLocations().size(); i++) {
-                list.appendTag(NBTUtil.createPosTag(instance.getSpawnLocations().get(i)));
-                c.setString("name" + i, instance.getLocationNames().get(i));
-            }
-
-            c.setTag("list", list);
-            c.setString("gameID", instance.getGameID());
-            return c;
+            return instance.serializeNBT();
         }
     }
 
     class GameData implements IGameData {
         boolean isPlaying;
-        List<BlockPos> locations = new ArrayList<BlockPos>();
-        List<String> names = new ArrayList<String>();
-        int numLocations;
+        List<MapLocation> locations = new ArrayList<>();
+        List<String> names = new ArrayList<>();
         BlockPos gameZoneCenter;
         int mapSize;
         int zoneCount;
         int timer;
         int currentZone;
-        String gameID;
+        String gameHash;
+        Game game;
 
         @Override
         public boolean isPlaying() {
@@ -140,32 +101,23 @@ public interface IGameData {
         }
 
         @Override
-        public void addSpawnLocation(BlockPos pos, String name) {
-            locations.add(pos);
-            names.add(name);
-            numLocations++;
+        public void addSpawnLocation(MapLocation location) {
+            locations.add(location);
         }
 
         @Override
-        public void removeSpawnLocation(BlockPos pos) {
-            if (locations.contains(pos)) {
-                locations.remove(pos);
-                numLocations--;
+        public boolean removeSpawnLocation(String name) {
+            MapLocation location = this.findLocationByName(name);
+            if(location == null) {
+                Pubgmc.logger.error("Attempted to remove location with name {} which doesn't exist!", name);
+                return false;
             }
+            locations.remove(location);
+            return true;
         }
 
         @Override
-        public int getSpawnLocationCount() {
-            return numLocations;
-        }
-
-        @Override
-        public void setSpawnLocationCount(int count) {
-            this.numLocations = count;
-        }
-
-        @Override
-        public List<BlockPos> getSpawnLocations() {
+        public List<MapLocation> getSpawnLocations() {
             return locations;
         }
 
@@ -184,11 +136,6 @@ public interface IGameData {
         @Override
         public int getMapSize() {
             return mapSize;
-        }
-
-        @Override
-        public List<String> getLocationNames() {
-            return names;
         }
 
         @Override
@@ -233,17 +180,79 @@ public interface IGameData {
 
         @Override
         public String getGameID() {
-            return gameID == null || gameID.isEmpty() ? "undefined" : gameID;
+            return gameHash == null || gameHash.isEmpty() ? "undefined" : gameHash;
         }
 
         @Override
         public void setGameID(String id) {
-            this.gameID = id;
+            this.gameHash = id;
         }
 
         @Override
         public void createGameID() {
-            gameID = PUBGMCUtil.generateID(16);
+            gameHash = PUBGMCUtil.generateID(16);
+        }
+
+        @Override
+        public void setGame(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        public Game getCurrentGame() {
+            return game;
+        }
+
+        @Override
+        public NBTTagCompound serializeNBT() {
+            NBTTagCompound c = new NBTTagCompound();
+            NBTTagList positions = new NBTTagList();
+
+            if (gameZoneCenter == null) {
+                this.setMapCenter(0, 0, 0, 1);
+            }
+
+            c.setBoolean("isPlaying", isPlaying);
+            c.setInteger("mapCenterX", gameZoneCenter.getX());
+            c.setInteger("mapCenterZ", gameZoneCenter.getZ());
+            c.setInteger("mapSize", mapSize);
+            c.setInteger("zoneCount", zoneCount);
+            c.setInteger("timer", timer);
+            c.setInteger("currentZone", currentZone);
+            NBTTagList locationsList = new NBTTagList();
+            for (int i = 0; i < locations.size(); i++) {
+                locationsList.appendTag(locations.get(i).serializeNBT());
+            }
+
+            c.setTag("list", locationsList);
+            c.setString("gameID", gameHash);
+            return c;
+        }
+
+        @Override
+        public void deserializeNBT(NBTTagCompound nbt) {
+            isPlaying = nbt.getBoolean("isPlaying");
+            gameZoneCenter = new BlockPos(nbt.getInteger("mapCenterX"), 0, nbt.getInteger("mapCenterZ"));
+            mapSize = nbt.getInteger("mapSize");
+            zoneCount = nbt.getInteger("zoneCount");
+            timer = nbt.getInteger("timer");
+            currentZone = nbt.getInteger("currentZone");
+            NBTTagList locList = nbt.getTagList("list", Constants.NBT.TAG_COMPOUND);
+            for(int i = 0; i < locList.tagCount(); i++) {
+                MapLocation location = new MapLocation(null, null);
+                location.deserializeNBT(locList.getCompoundTagAt(i));
+                this.addSpawnLocation(location);
+            }
+            gameHash = nbt.getString("gameID");
+        }
+
+        private MapLocation findLocationByName(String name) {
+            for(MapLocation mapLocation : locations) {
+                if(mapLocation.name().equalsIgnoreCase(name)) {
+                    return mapLocation;
+                }
+            }
+            return null;
         }
     }
 
@@ -260,7 +269,7 @@ public interface IGameData {
 
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-            return capability == GAMEDATA ? GAMEDATA.<T>cast(instance) : null;
+            return capability == GAMEDATA ? GAMEDATA.cast(instance) : null;
         }
 
         @Override
