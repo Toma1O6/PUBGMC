@@ -311,7 +311,7 @@ public class ModelS686 extends ModelGun {
 
     @Override
     public String textureName() {
-        return "s686";
+        return "slr";
     }
 
     @Override

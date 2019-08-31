@@ -21,7 +21,7 @@ public class ModelP1911 extends ModelGun {
 
     @Override
     public String textureName() {
-        return "p1911";
+        return "p92";
     }
 
     @Override

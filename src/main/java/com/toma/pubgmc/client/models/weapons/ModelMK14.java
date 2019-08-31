@@ -89,7 +89,7 @@ public class ModelMK14 extends ModelGun {
 
     @Override
     public String textureName() {
-        return "mk14";
+        return "scar";
     }
 
     @Override

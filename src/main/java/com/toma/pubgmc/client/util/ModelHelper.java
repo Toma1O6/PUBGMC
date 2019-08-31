@@ -61,7 +61,7 @@ public class ModelHelper {
         SCALE_DOWN = init("debug.scaleDown", Keyboard.KEY_MINUS);
         PRINT = init("debug.printCode", Keyboard.KEY_END);
         RESET = init("debug.reset", Keyboard.KEY_BACK);
-        ANIMATION_RESET = init("debug.anim_reset", Keyboard.KEY_SLASH);
+        ANIMATION_RESET = init("debug.anim_reset", Keyboard.KEY_COMMA);
         MinecraftForge.EVENT_BUS.register(new Handler());
         initialized = true;
     }

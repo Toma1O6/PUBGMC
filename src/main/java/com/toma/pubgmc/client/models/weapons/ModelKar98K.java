@@ -39,7 +39,7 @@ public class ModelKar98K extends ModelGun {
 
     @Override
     public String textureName() {
-        return "kar98k";
+        return "m16a4";
     }
 
     @Override
