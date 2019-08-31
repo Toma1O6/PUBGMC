@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:locker", "y": 180 },
+        "facing=east": { "model": "pubgmc:locker", "y": 270 },
+        "facing=south": { "model": "pubgmc:locker" },
+        "facing=west": { "model": "pubgmc:locker", "y": 90 }
+    }
+}

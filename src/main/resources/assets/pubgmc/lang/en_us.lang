@@ -177,6 +177,14 @@ tile.chair1.name=School Chair
 tile.desk.name=Desk
 tile.storagebase.name=Storage Base
 tile.storagetop.name=Storage Top
+tile.window1x1.name=Window (1x1)
+tile.window1x2.name=Window (1x2)
+tile.window2x1.name=Window (2x1)
+tile.window2x2.name=Window (2x2)
+tile.locker.name=Locker
+tile.screen.name=Screen
+tile.box_single.name=Single Box
+tile.box_double.name=Double Box
 
 //Creative Tabs
 itemGroup.pmcitemstab=PUBGMC: Items

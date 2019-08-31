@@ -1,0 +1,9 @@
+{
+    "variants":
+    {
+        "facing=north": { "model": "pubgmc:box_double", "y": 270 },
+        "facing=east": { "model": "pubgmc:box_double", "y": 180 },
+        "facing=south": { "model": "pubgmc:box_double", "y": 90 },
+        "facing=west": { "model": "pubgmc:box_double", "y": 0 }
+    }
+}

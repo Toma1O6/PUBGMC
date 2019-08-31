@@ -241,6 +241,10 @@ public class PMCRegistry {
         public static final PMCBlockHorizontal CHAIR1 = null;
         public static final PMCBlockHorizontal STORAGEBASE = null;
         public static final PMCBlockHorizontal STORAGETOP = null;
+        public static final PMCBlockHorizontal LOCKER = null;
+        public static final PMCBlockHorizontal SCREEN = null;
+        public static final PMCBlockHorizontal BOX_SINGLE = null;
+        public static final PMCBlockHorizontal BOX_DOUBLE = null;
 
     }
 
@@ -322,7 +326,19 @@ public class PMCRegistry {
                     new BlockWindow("window1x1", BlockWindow.WindowType.WINDOW_1X1),
                     new BlockWindow("window1x2", BlockWindow.WindowType.WINDOW_1X2),
                     new BlockWindow("window2x1", BlockWindow.WindowType.WINDOW_2X1),
-                    new BlockWindow("window2x2", BlockWindow.WindowType.WINDOW_2X2)
+                    new BlockWindow("window2x2", BlockWindow.WindowType.WINDOW_2X2),
+                    HorizontalBlockBuilder.create("locker", Material.IRON)
+                            .soundType(SoundType.METAL).transparency(false, false).aabb(new AxisAlignedBB(0, 0, 0, 1, 1.5, 1))
+                            .build(),
+                    HorizontalBlockBuilder.create("screen", Material.ROCK).soundType(SoundType.STONE)
+                            .aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB)
+                            .transparency(false, false).build(),
+                    HorizontalBlockBuilder.create("box_single", Material.IRON).aabb(new AxisAlignedBB(0, 0, 0, 1, 0.5, 1))
+                            .soundType(SoundType.METAL).transparency(false, false)
+                            .build(),
+                    HorizontalBlockBuilder.create("box_double", Material.IRON)
+                            .soundType(SoundType.METAL).transparency(false, false)
+                            .build()
             };
 
             event.getRegistry().registerAll(BLOCKS);
