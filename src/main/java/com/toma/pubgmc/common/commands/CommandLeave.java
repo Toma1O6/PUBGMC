@@ -24,17 +24,19 @@ public class CommandLeave extends CommandBase {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length == 0) {
             World world = sender.getEntityWorld();
             BlockPos sp = world.getSpawnPoint();
             Entity e = sender.getCommandSenderEntity();
-            EntityPlayer player = (EntityPlayer) e;
-            if (player instanceof EntityPlayer && world.getSpawnPoint() != null) {
-                ((EntityPlayer) player).attemptTeleport(sp.getX() + 0.5, sp.getY() + 1, sp.getZ() + 0.5);
+            if (e instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) e;
+                if(world.getSpawnPoint() == null) {
+                    warnPlayer(player);
+                    return;
+                }
+                player.attemptTeleport(sp.getX() + 0.5, sp.getY() + 1, sp.getZ() + 0.5);
                 player.sendMessage(new TextComponentString(TextFormatting.GREEN + "You have been teleported back to lobby."));
-            } else {
-                warnPlayer(player);
             }
 
         }
