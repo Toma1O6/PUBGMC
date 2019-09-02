@@ -21,7 +21,10 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class EntityPlane extends Entity {
     public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap();
@@ -31,6 +34,7 @@ public class EntityPlane extends Entity {
     private boolean hasReachedDestination;
     private short timeSinceDestination;
     private boolean canFly;
+    public List<UUID> pendingPlayers = new ArrayList<>();
 
     public EntityPlane(World world) {
         super(world);

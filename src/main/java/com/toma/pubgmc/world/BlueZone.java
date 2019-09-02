@@ -1,64 +1,30 @@
 package com.toma.pubgmc.world;
 
-import com.toma.pubgmc.common.capability.IGameData;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.util.game.ZoneSettings;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public class BlueZone {
-    private static final BlueZone INSTANCE = new BlueZone();
-    private int phase;
-    private BlueZone lastZone;
-    private BlockPos[] corners = new BlockPos[2];
+public final class BlueZone implements INBTSerializable<NBTTagCompound> {
 
-    public static BlueZone instance() {
-        return INSTANCE;
+    private Game game;
+    private ZoneSettings settings;
+
+    public BlueZone(ZoneSettings settings, Game game) {
+        this.settings = settings;
     }
 
-    private static boolean doesPositionFit(int coordinate, int corner1, int corner2) {
-        if (corner1 >= corner2) {
-            if (coordinate <= corner1 && coordinate >= corner2) {
-                return true;
-            }
-            return false;
-        } else {
-            if (coordinate >= corner1 && coordinate <= corner2) {
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public void create(IGameData data) {
-        this.reset();
-        BlockPos pos = data.getMapCenter();
-        // TODO: create zone center within map border
-    }
-
-    public void reset() {
-        this.phase = 0;
-    }
-
-    public void next() {
-        lastZone = this;
-        ++phase;
-        // TODO gen new zone center, increase damage, recalculate movement
-    }
-
-    public BlockPos getCorner1() {
-        // TODO
+    @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setTag("settings", settings.serializeNBT());
+        nbt.setTag("game", game.serializeNBT());
         return null;
     }
 
-    public BlockPos getCorner2() {
-        // TODO
-        return null;
-    }
-
-    public boolean isInsideZone(World world, BlockPos pos) {
-        if (world.isBlockLoaded(pos)) {
-            return doesPositionFit(pos.getX(), this.getCorner1().getX(), this.getCorner2().getX())
-                    && doesPositionFit(pos.getZ(), this.getCorner1().getZ(), this.getCorner2().getZ());
-        }
-        return false;
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        settings.deserializeNBT(nbt.getCompoundTag("settings"));
+        game.deserializeNBT(nbt.getCompoundTag("game"));
     }
 }
