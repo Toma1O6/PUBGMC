@@ -1,6 +1,8 @@
 package com.toma.pubgmc.init;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.games.GameBattleRoyale;
+import com.toma.pubgmc.api.games.GameInactive;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
 import com.toma.pubgmc.common.BlockBuilder;
@@ -448,6 +450,12 @@ public class PMCRegistry {
                     };
 
             e.getRegistry().registerAll(entries);
+        }
+
+        @SubscribeEvent
+        public static void registerGameModes(com.toma.pubgmc.init.GameRegistry.GameRegisterEvent e) {
+            e.register(new GameInactive(new ResourceLocation(Pubgmc.MOD_ID, "inactive")));
+            e.register(new GameBattleRoyale(new ResourceLocation(Pubgmc.MOD_ID, "battleroyale")));
         }
 
         public static void registerItemBlock(Block block) {

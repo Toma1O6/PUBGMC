@@ -9,6 +9,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
     public float damagePerSecond;
     public float speedModifier;
     public boolean isStatic;
+    public boolean alwaysCentered;
 
     private ZoneSettings() {}
 
@@ -18,6 +19,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
         nbt.setFloat("damage", damagePerSecond);
         nbt.setFloat("speed", speedModifier);
         nbt.setBoolean("isStatic", isStatic);
+        nbt.setBoolean("centered", alwaysCentered);
         return nbt;
     }
 
@@ -26,13 +28,14 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
         damagePerSecond = nbt.getFloat("damage");
         speedModifier = nbt.getFloat("speed");
         isStatic = nbt.getBoolean("isStatic");
+        alwaysCentered = nbt.getBoolean("centered");
     }
 
     public static final class Builder implements IBuilder<ZoneSettings> {
 
         float dmg;
         float speed;
-        boolean keepStatic;
+        boolean keepStatic = false, centered = false;
 
         private Builder(){}
 
@@ -55,14 +58,20 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
             return this;
         }
 
+        public Builder setAlwaysCentered() {
+            this.centered = true;
+            return this;
+        }
+
         @Override
         public ZoneSettings build() {
             checkFloat(dmg, 0.1F, 15.0F);
-            checkFloat(speed, 0, Float.MAX_VALUE);
+            checkFloat(speed, 0.1F, 1.0F);
             ZoneSettings settings = new ZoneSettings();
             settings.damagePerSecond = dmg;
             settings.speedModifier = speed;
             settings.isStatic = keepStatic;
+            settings.alwaysCentered = centered;
             return settings;
         }
     }

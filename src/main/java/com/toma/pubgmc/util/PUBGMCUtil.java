@@ -129,21 +129,6 @@ public class PUBGMCUtil {
         return valid;
     }
 
-    public static double getZoneSizeMultiplier(IGameData data) {
-        int zone = data.getCurrentZone();
-        int zoneModifier = 100 / data.getZonePhaseCount();
-
-        return (100 - zone * zoneModifier + 5) / 100;
-    }
-
-    public static int getZoneTimer(IGameData data) {
-        int mapSize = data.getMapSize();
-        int zoneCount = data.getZonePhaseCount();
-        int zone = data.getCurrentZone();
-
-        return mapSize * (100 / zoneCount);
-    }
-
     /**
      * Position calculated between X and Z coordinate of given positions
      **/

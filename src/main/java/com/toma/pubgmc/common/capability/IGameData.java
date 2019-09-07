@@ -2,6 +2,8 @@ package com.toma.pubgmc.common.capability;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.Lobby;
+import com.toma.pubgmc.init.GameRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.nbt.NBTBase;
@@ -33,27 +35,11 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
     List<MapLocation> getSpawnLocations();
 
-    void setMapCenter(double x, double z, int size, int count);
+    void setMapCenter(double x, double z, int size);
 
     BlockPos getMapCenter();
 
     int getMapSize();
-
-    int getZonePhaseCount();
-
-    void setZonePhaseCount(int count);
-
-    int getCurrentZone();
-
-    void setCurrentZone(int zone);
-
-    void increaseTimer();
-
-    void resetTimer();
-
-    int getTimer();
-
-    void setTimer(int time);
 
     String getGameID();
 
@@ -64,6 +50,12 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
     void setGame(Game game);
 
     Game getCurrentGame();
+
+    void setLobby(Lobby lobby);
+
+    Lobby getLobby();
+
+    boolean isInactiveGame();
 
 
     class GameDataStorage implements IStorage<IGameData> {
@@ -84,11 +76,9 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         List<String> names = new ArrayList<>();
         BlockPos gameZoneCenter;
         int mapSize;
-        int zoneCount;
-        int timer;
-        int currentZone;
         String gameHash;
         Game game;
+        Lobby lobby;
 
         @Override
         public boolean isPlaying() {
@@ -122,10 +112,9 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         }
 
         @Override
-        public void setMapCenter(double x, double z, int size, int count) {
+        public void setMapCenter(double x, double z, int size) {
             gameZoneCenter = new BlockPos(x, 0d, z);
             this.mapSize = size;
-            this.zoneCount = count;
         }
 
         @Override
@@ -136,46 +125,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         @Override
         public int getMapSize() {
             return mapSize;
-        }
-
-        @Override
-        public int getZonePhaseCount() {
-            return zoneCount;
-        }
-
-        @Override
-        public void setZonePhaseCount(int count) {
-            this.zoneCount = count;
-        }
-
-        @Override
-        public void increaseTimer() {
-            timer++;
-        }
-
-        @Override
-        public void resetTimer() {
-            timer = 0;
-        }
-
-        @Override
-        public int getTimer() {
-            return timer;
-        }
-
-        @Override
-        public void setTimer(int time) {
-            this.timer = time;
-        }
-
-        @Override
-        public int getCurrentZone() {
-            return currentZone;
-        }
-
-        @Override
-        public void setCurrentZone(int zone) {
-            this.currentZone = zone;
         }
 
         @Override
@@ -200,7 +149,25 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public Game getCurrentGame() {
+            if(game == null) {
+                this.setGame(GameRegistry.findGameInRegistry("inactive"));
+            }
             return game;
+        }
+
+        @Override
+        public void setLobby(Lobby lobby) {
+            this.lobby = lobby;
+        }
+
+        @Override
+        public Lobby getLobby() {
+            return lobby;
+        }
+
+        @Override
+        public boolean isInactiveGame() {
+            return game.registryName.getResourcePath().equals("inactive");
         }
 
         @Override
@@ -209,16 +176,13 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             NBTTagList positions = new NBTTagList();
 
             if (gameZoneCenter == null) {
-                this.setMapCenter(0, 0, 0, 1);
+                this.setMapCenter(0, 0, 0);
             }
 
             c.setBoolean("isPlaying", isPlaying);
             c.setInteger("mapCenterX", gameZoneCenter.getX());
             c.setInteger("mapCenterZ", gameZoneCenter.getZ());
             c.setInteger("mapSize", mapSize);
-            c.setInteger("zoneCount", zoneCount);
-            c.setInteger("timer", timer);
-            c.setInteger("currentZone", currentZone);
             NBTTagList locationsList = new NBTTagList();
             for (int i = 0; i < locations.size(); i++) {
                 locationsList.appendTag(locations.get(i).serializeNBT());
@@ -226,6 +190,8 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
             c.setTag("list", locationsList);
             c.setString("gameID", gameHash);
+            c.setTag("lobby", Lobby.toNBT(lobby));
+            c.setTag("game", this.getCurrentGame().serializeNBT());
             return c;
         }
 
@@ -234,9 +200,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             isPlaying = nbt.getBoolean("isPlaying");
             gameZoneCenter = new BlockPos(nbt.getInteger("mapCenterX"), 0, nbt.getInteger("mapCenterZ"));
             mapSize = nbt.getInteger("mapSize");
-            zoneCount = nbt.getInteger("zoneCount");
-            timer = nbt.getInteger("timer");
-            currentZone = nbt.getInteger("currentZone");
             NBTTagList locList = nbt.getTagList("list", Constants.NBT.TAG_COMPOUND);
             for(int i = 0; i < locList.tagCount(); i++) {
                 MapLocation location = new MapLocation(null, null);
@@ -244,6 +207,8 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
                 this.addSpawnLocation(location);
             }
             gameHash = nbt.getString("gameID");
+            lobby = Lobby.fromNBT(nbt.getCompoundTag("lobby"));
+            this.getCurrentGame().deserializeNBT(nbt.getCompoundTag("nbt"));
         }
 
         private MapLocation findLocationByName(String name) {

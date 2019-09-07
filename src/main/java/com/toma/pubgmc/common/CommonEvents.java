@@ -1,12 +1,10 @@
 package com.toma.pubgmc.common;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
-import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityVehicle;
@@ -30,8 +28,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketTitle;
-import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -43,9 +39,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.border.WorldBorder;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -53,18 +47,14 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.UUID;
 
 public class CommonEvents {
@@ -138,80 +128,9 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public void onChunkLoad(ChunkEvent.Load e) {
-        World world = e.getWorld();
-        IGameData data = world.getCapability(GameDataProvider.GAMEDATA, null);
-        if (!data.isPlaying()) {
-            return;
-        }
-        Chunk chunk = e.getChunk();
-        Iterator<TileEntity> it = chunk.getTileEntityMap().values().iterator();
-        IWorldData loot = world.getCapability(WorldDataProvider.WORLD_DATA, null);
-        while (it.hasNext()) {
-            TileEntity tileEntity = it.next();
-            if (tileEntity instanceof IGameTileEntity) {
-                IGameTileEntity te = (IGameTileEntity)tileEntity;
-                if(!te.getGameHash().equals(data.getGameID())) {
-                    te.setGameHash(data.getGameID());
-                    te.onLoaded();
-                    tileEntity.markDirty();
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new WorldDataProvider());
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new GameDataProvider());
-    }
-
-    @SubscribeEvent
-    public void onWorldTick(TickEvent.WorldTickEvent e) {
-        if (e.phase == Phase.END && !e.world.isRemote) {
-            if (e.world.hasCapability(GameDataProvider.GAMEDATA, null)) {
-                IGameData game = e.world.getCapability(GameDataProvider.GAMEDATA, null);
-                World world = e.world;
-                if (game.isPlaying() && game.getZonePhaseCount() > 0 && (game.getCurrentZone() < game.getZonePhaseCount() || isZoneShrinking(world.getWorldBorder()))) {
-                    final int phases = game.getZonePhaseCount();
-                    final int phase = game.getCurrentZone();
-                    final int diameter = game.getMapSize() * 2;
-                    float zoneSwitchPoint = phase == 0 ? 2500 * (game.getMapSize() / 250 + 1) : 1200 * (game.getMapSize() / 250 + 1);
-                    WorldBorder brd = world.getWorldBorder();
-                    if (brd.getDamageAmount() != phase / (double) phases) {
-                        double dmg = brd.getDamageAmount();
-                        brd.setDamageAmount(phase / (double) phases);
-                        brd.setDamageBuffer(0);
-                        Pubgmc.logger.info("Changed world border damage to {} from {}.", brd.getDamageAmount(), dmg);
-                    }
-                    if (!isZoneShrinking(brd)) {
-                        game.increaseTimer();
-                        if (game.getTimer() >= zoneSwitchPoint) {
-                            game.setTimer(0);
-                            game.setCurrentZone(game.getCurrentZone() + 1);
-                            double zoneArea = (100 - (phase + 1) * (100 / (phases)) + 5) / 100d;
-                            brd.setTransition(brd.getDiameter(), brd.getDiameter() * zoneArea, (long) (1000 * (phases * 10 * (diameter / 250 + 1))));
-                            brd.setDamageBuffer(0);
-                            brd.setDamageAmount(phase / (double) phases);
-                            world.playerEntities.forEach(player -> {
-                                if (ConfigPMC.common.world.titleZoneNotifications) {
-                                    SPacketTitle packet = new SPacketTitle(Type.TITLE, new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"), 5, 80, 5);
-                                    if (player instanceof EntityPlayerMP) {
-                                        ((EntityPlayerMP) player).connection.sendPacket(packet);
-                                    }
-                                } else {
-                                    player.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Zone is shrinking!"));
-                                }
-                            });
-                        }
-                    }
-                }
-
-                if (game.isPlaying() || prevDiameter == 0) {
-                    prevDiameter = world.getWorldBorder().getDiameter();
-                }
-            }
-        }
     }
 
     //Tick event function which fires on all players

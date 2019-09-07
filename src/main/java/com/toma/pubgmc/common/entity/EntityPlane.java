@@ -30,11 +30,11 @@ public class EntityPlane extends Entity {
     public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap();
     protected IGameData gameData;
     protected BlockPos endPos;
-    private BlockPos startPos;
+    protected BlockPos startPos;
     private boolean hasReachedDestination;
     private short timeSinceDestination;
     private boolean canFly;
-    public List<UUID> pendingPlayers = new ArrayList<>();
+    public List<EntityPlayer> pendingPlayers = new ArrayList<>();
 
     public EntityPlane(World world) {
         super(world);

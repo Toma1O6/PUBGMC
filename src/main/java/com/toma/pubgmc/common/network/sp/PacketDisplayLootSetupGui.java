@@ -35,10 +35,13 @@ public class PacketDisplayLootSetupGui implements IMessage {
         public IMessage onMessage(PacketDisplayLootSetupGui message, MessageContext ctx) {
             if (ctx.side.isClient()) {
                 Minecraft mc = Minecraft.getMinecraft();
-                mc.addScheduledTask(() -> {
-                    IWorldData data = mc.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
-                    data.deserializeNBT(message.nbt);
-                    mc.displayGuiScreen(new GuiLootSetup(data));
+                mc.addScheduledTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        IWorldData data = mc.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
+                        data.deserializeNBT(message.nbt);
+                        mc.displayGuiScreen(new GuiLootSetup(data));
+                    }
                 });
             }
             return null;

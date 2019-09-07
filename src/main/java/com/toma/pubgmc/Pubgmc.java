@@ -132,6 +132,7 @@ public class Pubgmc {
 
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
+        com.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
     }
 
     @EventHandler
