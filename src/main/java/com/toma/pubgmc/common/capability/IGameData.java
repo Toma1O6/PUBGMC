@@ -191,6 +191,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             c.setTag("list", locationsList);
             c.setString("gameID", gameHash);
             c.setTag("lobby", Lobby.toNBT(lobby));
+            c.setString("gameMode", this.getCurrentGame().registryName.getResourcePath());
             c.setTag("game", this.getCurrentGame().serializeNBT());
             return c;
         }
@@ -208,7 +209,8 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             }
             gameHash = nbt.getString("gameID");
             lobby = Lobby.fromNBT(nbt.getCompoundTag("lobby"));
-            this.getCurrentGame().deserializeNBT(nbt.getCompoundTag("nbt"));
+            this.setGame(GameRegistry.findGameInRegistry(nbt.getString("gameMode")));
+            this.getCurrentGame().deserializeNBT(nbt.getCompoundTag("game"));
         }
 
         private MapLocation findLocationByName(String name) {

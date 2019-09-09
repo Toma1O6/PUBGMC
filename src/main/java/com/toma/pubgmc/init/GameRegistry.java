@@ -6,7 +6,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class GameRegistry {
 
@@ -36,6 +39,13 @@ public class GameRegistry {
 
     public static void dispatchRegistryEvent() {
         MinecraftForge.EVENT_BUS.post(new GameRegisterEvent());
+    }
+
+    public static List<String> getValuesPaths() {
+        Collection<ResourceLocation> registryNames = REGISTRY.keySet();
+        List<String> paths = new ArrayList<>();
+        registryNames.forEach(resourceLocation -> paths.add(resourceLocation.getResourcePath()));
+        return paths;
     }
 
     public static class GameRegisterEvent extends Event {

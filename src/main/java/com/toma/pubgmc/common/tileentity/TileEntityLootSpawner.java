@@ -194,7 +194,8 @@ public class TileEntityLootSpawner extends TileEntitySync implements IInventory,
     public void onLoaded() {
         TileEntityLootSpawner te = TileEntityLootSpawner.this;
         IWorldData data = te.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
-        TileEntityLootSpawner.this.generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
+        te.generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
+        world.notifyBlockUpdate(pos, PMCRegistry.PMCBlocks.LOOT_SPAWNER.getDefaultState(), PMCRegistry.PMCBlocks.LOOT_SPAWNER.getDefaultState(), 3);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class GameInactive extends Game {
 
     @Override
     public BlueZone initializeZone(World world) {
-        return new BlueZone(ZoneSettings.Builder.create().setStatic().damage(10.0F).speed(10.0F).build(), this);
+        return new BlueZone(ZoneSettings.Builder.create().setStatic().damage(10.0F).speed(10.0F).build(), this.getGameData(world));
     }
 
     @Override

@@ -45,7 +45,7 @@ public class GameHandler {
                 return;
             }
             Game game = gameData.getCurrentGame();
-            if(!gameData.isInactiveGame()) {
+            if(gameData.isInactiveGame()) {
                 return;
             }
             game.tickGame(e.world);
@@ -55,7 +55,7 @@ public class GameHandler {
         public static void onChunkLoaded(ChunkEvent.Load e) {
             IGameData gameData = e.getWorld().getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = gameData.getCurrentGame();
-            if(gameData == null || game == null || !game.shouldUpdateTileEntities()) {
+            if(gameData == null || !gameData.isInactiveGame() || !game.shouldUpdateTileEntities()) {
                 return;
             }
             Map<BlockPos, TileEntity> map = e.getChunk().getTileEntityMap();

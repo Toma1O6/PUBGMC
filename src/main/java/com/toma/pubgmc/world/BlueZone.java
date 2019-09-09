@@ -2,6 +2,7 @@ package com.toma.pubgmc.world;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -11,9 +12,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-public final class BlueZone implements INBTSerializable<NBTTagCompound> {
+public final class BlueZone {
 
     private Game game;
+    private IGameData gameData;
     private ZoneSettings settings;
     public MutablePair<BlockPos, BlockPos> currentCorners;
     public Pair<BlockPos, BlockPos> nextCorners;
@@ -23,18 +25,22 @@ public final class BlueZone implements INBTSerializable<NBTTagCompound> {
     private boolean shrinking;
     private float shrinkX, shrinkZ, shrinkXn, shrinkZn;
 
-    public BlueZone(ZoneSettings settings, Game game) {
+    public BlueZone(ZoneSettings settings, IGameData gameData) {
         this.settings = settings;
-        BlockPos center = game.gameData.getMapCenter();
-        int offset = game.gameData.getMapSize()/2;
-        this.diameter = offset;
-        this.currentCorners = new MutablePair<>(new BlockPos(center.getX()-offset, 256, center.getZ()-offset), new BlockPos(center.getX()+offset, 256, center.getZ()+offset));
+        this.gameData = gameData;
+        if(gameData != null) {
+            this.game = gameData.getCurrentGame();
+            BlockPos center = gameData.getMapCenter();
+            int offset = gameData.getMapSize()/2;
+            this.diameter = offset;
+            this.currentCorners = new MutablePair<>(new BlockPos(center.getX()-offset, 256, center.getZ()-offset), new BlockPos(center.getX()+offset, 256, center.getZ()+offset));
+        }
     }
 
-    public void notifyFirstZoneCreation() {
+    public void notifyFirstZoneCreation(World world) {
         if(nextCorners == null) {
             ++currentStage;
-            calculateNextZone();
+            calculateNextZone(world);
         }
     }
 
@@ -53,9 +59,17 @@ public final class BlueZone implements INBTSerializable<NBTTagCompound> {
     }
 
     public void bluezoneTick(World world) {
+        if(gameData == null) {
+            this.gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
+            this.game = gameData.getCurrentGame();
+            BlockPos center = gameData.getMapCenter();
+            int offset = gameData.getMapSize()/2;
+            this.diameter = offset;
+            this.currentCorners = new MutablePair<>(new BlockPos(center.getX()-offset, 256, center.getZ()-offset), new BlockPos(center.getX()+offset, 256, center.getZ()+offset));
+        }
         this.damagePlayersOutsideZone();
         if(shrinking) {
-            this.shrinkCurrentZone();
+            this.shrinkCurrentZone(world);
         }
     }
 
@@ -63,16 +77,17 @@ public final class BlueZone implements INBTSerializable<NBTTagCompound> {
         return shrinking;
     }
 
-    @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("settings", settings.serializeNBT());
         return nbt;
     }
 
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        settings.deserializeNBT(nbt.getCompoundTag("settings"));
+    public static BlueZone fromNBT(NBTTagCompound nbt) {
+        BlueZone zone = new BlueZone(null, null);
+        zone.settings = new ZoneSettings();
+        zone.settings.deserializeNBT(nbt.getCompoundTag("settings"));
+        return zone;
     }
 
     protected void shrinkZonePartially() {
@@ -83,11 +98,11 @@ public final class BlueZone implements INBTSerializable<NBTTagCompound> {
 
     }
 
-    protected void onShrinkingFinished() {
+    protected void onShrinkingFinished(World world) {
         shrinking = false;
         if(currentStage < 7) {
             ++currentStage;
-            this.calculateNextZone();
+            this.calculateNextZone(world);
         } else {
             BlockPos prevStart = currentCorners.getLeft();
             BlockPos prevEnd = currentCorners.getRight();
@@ -113,8 +128,8 @@ public final class BlueZone implements INBTSerializable<NBTTagCompound> {
         return new MutablePair<>(left, right);
     }
 
-    private void calculateNextZone() {
-        int newDiameter = game.gameData.getMapSize() / (2^currentStage);
+    private void calculateNextZone(World world) {
+        int newDiameter = game.getGameData(world).getMapSize() / (2^currentStage);
         BlockPos startPoint = currentCorners.getLeft();
         BlockPos endPoint = currentCorners.getRight();
         int xMax = endPoint.getX() - startPoint.getX() - newDiameter / 2;
@@ -127,11 +142,11 @@ public final class BlueZone implements INBTSerializable<NBTTagCompound> {
         this.calculateShrinkModifiers(x, z, xMax, zMax);
     }
 
-    private void shrinkCurrentZone() {
+    private void shrinkCurrentZone(World world) {
         currentCorners.setLeft(new BlockPos(currentCorners.getLeft().getX() + shrinkX, 256, currentCorners.getLeft().getZ() + shrinkZ));
         currentCorners.setRight(new BlockPos(currentCorners.getRight().getX() - shrinkXn, 256, currentCorners.getRight().getZ() - shrinkZn));
         if(hasZoneArrivedToFinalPos()) {
-            this.onShrinkingFinished();
+            this.onShrinkingFinished(world);
         }
     }
 

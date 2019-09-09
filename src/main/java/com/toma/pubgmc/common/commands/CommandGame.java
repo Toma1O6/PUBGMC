@@ -5,7 +5,7 @@ import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.init.GameRegistry;
-import joptsimple.internal.Strings;
+import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class CommandGame extends CommandBase {
 
-    private static final String[] completions = {"start","stop","help","info","mode","map","lobby"};
+    private static final String[] completions = {"start","stop","help","info","mode","map","lobby","location"};
 
     @Override
     public String getName() {
@@ -44,6 +44,13 @@ public class CommandGame extends CommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
+        if(args.length > 1) {
+            if(args[0].equalsIgnoreCase("mode")) {
+                return GameRegistry.getValuesPaths();
+            } else if(args[0].equalsIgnoreCase("location")) {
+                return getListOfStringsMatchingLastWord(args, "add", "remove", "list");
+            }
+        }
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, completions) : Collections.EMPTY_LIST;
     }
 
@@ -60,6 +67,8 @@ public class CommandGame extends CommandBase {
             case "start": {
                 if(gameData.getLobby() == null) {
                     throw new CommandException("You must create lobby first! Add it using the '/game lobby' command");
+                } else if(gameData.isPlaying()) {
+                    throw new CommandException("There is already one active game!");
                 }
                 Game game = gameData.getCurrentGame();
                 if(game == null) {
@@ -68,9 +77,10 @@ public class CommandGame extends CommandBase {
                     throw new CommandException("Cannot start this type of game!");
                 }
                 if(!game.startGame(sender.getEntityWorld())) {
-                    throw new CommandException("Error occured when launching game! Contact GAME AUTHOR about this issue!");
+                    throw new CommandException("Error occured when launching game! Check logs and contact GAME AUTHOR about this issue!");
                 }
                 gameData.setPlaying(true);
+                game.updateDataToClients(sender.getEntityWorld());
                 sendCommandFeedback(sender, "Started game");
                 break;
             }
@@ -82,6 +92,7 @@ public class CommandGame extends CommandBase {
                 gameData.getCurrentGame().stopGame(sender.getEntityWorld());
                 gameData.setPlaying(false);
                 sendCommandFeedback(sender, "Stopped game");
+                gameData.getCurrentGame().updateDataToClients(sender.getEntityWorld());
                 break;
             }
 
@@ -143,9 +154,16 @@ public class CommandGame extends CommandBase {
                 if(args.length < 4) {
                     throw new WrongUsageException("You must specify X, Z position and map size!");
                 }
-                int x = Integer.parseInt(args[1]);
-                int z = Integer.parseInt(args[2]);
-                int size = Integer.parseInt(args[3]);
+                int x;
+                int z;
+                int size;
+                try {
+                    x = Integer.parseInt(args[1]);
+                    z = Integer.parseInt(args[2]);
+                    size = Integer.parseInt(args[3]);
+                } catch (NumberFormatException e) {
+                    throw new CommandException("Invalid number!");
+                }
                 gameData.setMapCenter(x, z, size);
                 sendCommandFeedback(sender, "Successfully created game map");
                 break;
@@ -155,13 +173,74 @@ public class CommandGame extends CommandBase {
                 if(args.length < 5) {
                     throw new WrongUsageException("You must specify X,Y,Z position and radius!");
                 }
-                int x = Integer.parseInt(args[1]);
-                int y = Integer.parseInt(args[2]);
-                int z = Integer.parseInt(args[3]);
-                int radius = Integer.parseInt(args[4]);
+                int x;
+                int y;
+                int z;
+                int radius;
+                try {
+                    x = Integer.parseInt(args[1]);
+                    y = Integer.parseInt(args[2]);
+                    z = Integer.parseInt(args[3]);
+                    radius = Integer.parseInt(args[4]);
+                } catch (NumberFormatException e) {
+                    throw new CommandException("Invalid number!");
+                }
                 Lobby lobby = new Lobby(new BlockPos(x, y, z), radius);
                 gameData.setLobby(lobby);
                 sendCommandFeedback(sender, "Created new game lobby. Now you can use '/leave' to get there");
+                break;
+            }
+
+            case "location": {
+                if(args.length < 2) {
+                    throw new CommandException("Unknown operation! Use /game location [add;remove;list]");
+                }
+                switch (args[1]) {
+                    case "add": {
+                        if(args.length < 6) {
+                            throw new WrongUsageException("Unknown arguments! Use /game location add [x] [y] [z] [name]");
+                        }
+                        int x;
+                        int y;
+                        int z;
+                        try {
+                            x = Integer.parseInt(args[2]);
+                            y = Integer.parseInt(args[3]);
+                            z = Integer.parseInt(args[4]);
+                        } catch (NumberFormatException e) {
+                            throw new CommandException("Invalid number!");
+                        }
+                        String name = args[5];
+                        gameData.addSpawnLocation(new MapLocation(name, new BlockPos(x, y, z)));
+                        sendCommandFeedback(sender, "Added new map location into this world");
+                        break;
+                    }
+
+                    case "remove": {
+                        if(args.length < 3) {
+                            throw new WrongUsageException("Unknown arguments! Use /game location remove [locationName]");
+                        }
+                        String locName = args[2];
+                        MapLocation location = MapLocation.findLocation(locName, gameData);
+                        if(location == null) {
+                            throw new CommandException("There is no such location with name " + locName);
+                        }
+                        gameData.getSpawnLocations().remove(location);
+                        sendCommandFeedback(sender, "Removed map location: " + location.toString());
+                        break;
+                    }
+
+                    case "list": {
+                        for(int i = 0; i < gameData.getSpawnLocations().size(); i++) {
+                            MapLocation location = gameData.getSpawnLocations().get(i);
+                            sender.sendMessage(new TextComponentString("- " + location.toString()));
+                        }
+                        break;
+                    }
+
+                    default:
+                        throw new WrongUsageException("Unknown argument! Use /game location [add;remove;list]");
+                }
                 break;
             }
 

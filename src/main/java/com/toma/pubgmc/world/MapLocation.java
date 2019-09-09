@@ -1,5 +1,6 @@
 package com.toma.pubgmc.world;
 
+import com.toma.pubgmc.common.capability.IGameData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
@@ -44,5 +45,19 @@ public class MapLocation implements INBTSerializable<NBTTagCompound> {
             return this.name.equalsIgnoreCase(map.name) && pos.getX() == map.pos.getX() && pos.getZ() == map.pos.getZ();
         }
         return false;
+    }
+
+    public static MapLocation findLocation(String name, IGameData gameData) {
+        for (MapLocation location : gameData.getSpawnLocations()) {
+            if(location.name().equalsIgnoreCase(name)) {
+                return location;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + this.name + ", Position [" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
     }
 }

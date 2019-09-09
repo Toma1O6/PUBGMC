@@ -2,16 +2,21 @@ package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -41,37 +46,13 @@ public class GameBattleRoyale extends Game {
                 .damage(0.1f)
                 .speed(0.1f)
                 .build();
-        return new BlueZone(settings, this);
+        return new BlueZone(settings, this.getGameData(world));
     }
 
     @Override
     public void onGameStart(World world) {
-        if(!world.isRemote) {
-            EntityPlane plane = new EntityPlane(world, gameData);
-            int joined = 0;
-            Iterator<EntityPlayer> iterator = joinedPlayers.iterator();
-            while(iterator.hasNext()) {
-                EntityPlayer player = iterator.next();
-                boolean flag = iterator.hasNext();
-                ++joined;
-                plane.pendingPlayers.add(iterator.next());
-                if(joined >= 31) {
-                    BlockPos start = plane.getStartingPosition();
-                    plane.pendingPlayers.forEach(p -> p.attemptTeleport(start.getX(), ConfigPMC.common.world.planeHeight, start.getZ()));
-                    world.spawnEntity(plane);
-                    for(EntityPlayer p : plane.pendingPlayers) {
-                        if(p != null) {
-                            p.startRiding(plane);
-                        }
-                    }
-                    plane.pendingPlayers = null;
-                    if(flag) {
-                        plane = new EntityPlane(world, gameData);
-                        joined = 0;
-                    }
-                }
-            }
-        }
+        if(world.isRemote) return;
+        GameUtils.createAndFillPlanes(world);
         zoneTimer = 0;
         scheduledAirdrops.clear();
     }
@@ -89,7 +70,7 @@ public class GameBattleRoyale extends Game {
             zoneTimer++;
             if(zone.currentStage == 0) {
                 if(zoneTimer >= 2400) {
-                    zone.notifyFirstZoneCreation();
+                    zone.notifyFirstZoneCreation(world);
                     this.scheduleAirdrop(world);
                 }
             }

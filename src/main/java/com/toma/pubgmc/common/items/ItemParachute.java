@@ -21,16 +21,16 @@ public class ItemParachute extends PMCItem {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
         if (!playerIn.isRiding()) {
-            EntityParachute chute = new EntityParachute(worldIn, playerIn);
             if (!worldIn.isRemote) {
+                EntityParachute chute = new EntityParachute(worldIn, playerIn);
                 worldIn.spawnEntity(chute);
+                playerIn.startRiding(chute);
                 if (!playerIn.capabilities.isCreativeMode) {
                     stack.shrink(1);
                 }
             } else playerIn.playSound(PMCSounds.chute_open, 1f, 1f);
-            playerIn.startRiding(chute);
-            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+        return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 }

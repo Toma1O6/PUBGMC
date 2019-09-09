@@ -166,7 +166,7 @@ public class EntityPlane extends Entity {
         canFly = this.ticksExisted >= (ConfigPMC.common.world.planeDelay * 20);
 
         if (gameData == null) {
-            Pubgmc.logger.fatal("Couldn't load gamedata for plane, getting new instance...");
+            Pubgmc.logger.debug("Couldn't load gamedata for plane, getting new instance...");
             gameData = world.hasCapability(GameDataProvider.GAMEDATA, null) ? world.getCapability(GameDataProvider.GAMEDATA, null) : null;
         }
 

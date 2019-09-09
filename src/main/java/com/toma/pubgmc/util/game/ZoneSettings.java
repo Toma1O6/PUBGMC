@@ -11,7 +11,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
     public boolean isStatic;
     public boolean alwaysCentered;
 
-    private ZoneSettings() {}
+    public ZoneSettings() {}
 
     @Override
     public NBTTagCompound serializeNBT() {
