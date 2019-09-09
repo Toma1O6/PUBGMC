@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -17,7 +16,7 @@ public final class BlueZone {
     private Game game;
     private IGameData gameData;
     private ZoneSettings settings;
-    public MutablePair<BlockPos, BlockPos> currentCorners;
+    public Pair<BlockPos, BlockPos> currentCorners;
     public Pair<BlockPos, BlockPos> nextCorners;
     public int currentStage;
     public int diameter;
@@ -80,6 +79,11 @@ public final class BlueZone {
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("settings", settings.serializeNBT());
+        nbt.setInteger("stage", currentStage);
+        nbt.setBoolean("shrinking", shrinking);
+        nbt.setTag("current", cornersToNBT(currentCorners));
+        if(nextCorners != null)
+            nbt.setTag("planned", cornersToNBT(nextCorners));
         return nbt;
     }
 
@@ -87,6 +91,12 @@ public final class BlueZone {
         BlueZone zone = new BlueZone(null, null);
         zone.settings = new ZoneSettings();
         zone.settings.deserializeNBT(nbt.getCompoundTag("settings"));
+        zone.currentStage = nbt.getInteger("stage");
+        zone.shrinking = nbt.getBoolean("shrinking");
+        zone.currentCorners = cornersFromNBT(nbt.getCompoundTag("current"));
+        if(nbt.hasKey("planned")) {
+            zone.nextCorners = cornersFromNBT(nbt.getCompoundTag("planned"));
+        }
         return zone;
     }
 
@@ -115,14 +125,14 @@ public final class BlueZone {
         }
     }
 
-    private NBTTagCompound cornersToNBT(Pair<BlockPos, BlockPos> pair) {
+    private static NBTTagCompound cornersToNBT(Pair<BlockPos, BlockPos> pair) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("left", NBTUtil.createPosTag(pair.getLeft()));
         nbt.setTag("right", NBTUtil.createPosTag(pair.getRight()));
         return nbt;
     }
 
-    private Pair<BlockPos, BlockPos> cornersFromNBT(NBTTagCompound nbt) {
+    private static Pair<BlockPos, BlockPos> cornersFromNBT(NBTTagCompound nbt) {
         BlockPos left = NBTUtil.getPosFromTag(nbt.getCompoundTag("left"));
         BlockPos right = NBTUtil.getPosFromTag(nbt.getCompoundTag("right"));
         return new MutablePair<>(left, right);
@@ -143,8 +153,7 @@ public final class BlueZone {
     }
 
     private void shrinkCurrentZone(World world) {
-        currentCorners.setLeft(new BlockPos(currentCorners.getLeft().getX() + shrinkX, 256, currentCorners.getLeft().getZ() + shrinkZ));
-        currentCorners.setRight(new BlockPos(currentCorners.getRight().getX() - shrinkXn, 256, currentCorners.getRight().getZ() - shrinkZn));
+        currentCorners = new MutablePair<>(new BlockPos(currentCorners.getLeft().getX() + shrinkX, 256, currentCorners.getLeft().getZ() + shrinkZ), new BlockPos(currentCorners.getRight().getX() - shrinkXn, 256, currentCorners.getRight().getZ() - shrinkZn));
         if(hasZoneArrivedToFinalPos()) {
             this.onShrinkingFinished(world);
         }
@@ -157,24 +166,15 @@ public final class BlueZone {
     }
 
     private void calculateShrinkModifiers(int xOffset, int zOffset, int xOffsetMax, int zOffsetMax) {
-        int mode = 0;
-        boolean isStartXDistLonger = (xOffsetMax / 2) - xOffset >= 0;
-        boolean isStartZDistLonger = (zOffsetMax / 2) - zOffset >= 0;
-        boolean isXDistLonger = (xOffsetMax / 2) - xOffset >= (zOffsetMax / 2) - zOffset;
-        // capital == longest dist
-        // x z -x -z
-        /*if(isStartXDistLonger) {
-            if(isXDistLonger) {
-                // X z -x -z
-
-            } else {
-                // x Z -x -z
-            }
-        }*/
-
-        shrinkX = settings.speedModifier;
-        shrinkZ = shrinkX * ((float)(zOffset/xOffset));
-        shrinkXn = shrinkX * ((float)((xOffsetMax - xOffset) / xOffset));
-        shrinkZn = shrinkX * ((float)((zOffsetMax - zOffset) / xOffset));
+        BlockPos currentX = currentCorners.getLeft();
+        BlockPos currentZ = currentCorners.getRight();
+        BlockPos nextX = nextCorners.getLeft();
+        BlockPos nextZ = nextCorners.getRight();
+        float xMax = currentZ.getX() - currentX.getX();
+        float zMax = currentZ.getZ() - currentX.getZ();
+        shrinkX = ((nextX.getX() - currentX.getX())/xMax) * settings.speedModifier;
+        shrinkZ = ((nextX.getZ() - currentX.getZ())/zMax) * settings.speedModifier;
+        shrinkXn = ((currentZ.getX() - nextX.getX())/xMax) * settings.speedModifier;
+        shrinkZn = ((currentZ.getZ() - nextX.getZ())/zMax) * settings.speedModifier;
     }
 }
