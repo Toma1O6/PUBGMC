@@ -144,6 +144,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
             e.printStackTrace();
             getGameData(world).setPlaying(false);
             Pubgmc.logger.fatal("Exception occured during game tick! Stopping game!");
+            updateDataToClients(world);
         }
     }
 
@@ -152,6 +153,8 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
         if(data != null && data.getLobby() != null && data.getLobby().center.getY() > 0) {
             BlockPos pos = data.getLobby().center;
             joinedPlayers.forEach(p -> teleportEntityTo(p, pos.getX(), pos.getY() + 1, pos.getZ()));
+            data.setPlaying(false);
+            updateDataToClients(world);
         }
     }
 

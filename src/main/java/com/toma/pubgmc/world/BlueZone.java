@@ -4,25 +4,26 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.util.game.ZoneSettings;
+import com.toma.pubgmc.util.math.ZoneBounds;
+import com.toma.pubgmc.util.math.ZonePos;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class BlueZone {
 
     private Game game;
     private IGameData gameData;
     private ZoneSettings settings;
-    public Pair<BlockPos, BlockPos> currentCorners;
-    public Pair<BlockPos, BlockPos> nextCorners;
+    public ZoneBounds currentBounds;
+    public ZoneBounds nextBounds;
     public int currentStage;
     public int diameter;
 
     private boolean shrinking;
-    private float shrinkX, shrinkZ, shrinkXn, shrinkZn;
+    private double shrinkX, shrinkZ, shrinkXn, shrinkZn;
 
     public BlueZone(ZoneSettings settings, IGameData gameData) {
         this.settings = settings;
@@ -32,12 +33,12 @@ public final class BlueZone {
             BlockPos center = gameData.getMapCenter();
             int offset = gameData.getMapSize()/2;
             this.diameter = offset;
-            this.currentCorners = new MutablePair<>(new BlockPos(center.getX()-offset, 256, center.getZ()-offset), new BlockPos(center.getX()+offset, 256, center.getZ()+offset));
+            this.currentBounds = new ZoneBounds(center.getX() - offset, center.getZ() - offset, center.getX() + offset, center.getZ() + offset);
         }
     }
 
     public void notifyFirstZoneCreation(World world) {
-        if(nextCorners == null) {
+        if(nextBounds == null) {
             ++currentStage;
             calculateNextZone(world);
         }
@@ -49,7 +50,7 @@ public final class BlueZone {
             return;
         } else {
             // first zone
-            if(nextCorners == null) {
+            if(nextBounds == null) {
                 Pubgmc.logger.error("Cannot shrink zone, since it doesn't know where to shrink! Call 'BlueZone::notifyFirstZoneCreation' first!");
                 return;
             }
@@ -62,12 +63,18 @@ public final class BlueZone {
             this.gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             this.game = gameData.getCurrentGame();
             BlockPos center = gameData.getMapCenter();
-            int offset = gameData.getMapSize()/2;
-            this.diameter = offset;
-            this.currentCorners = new MutablePair<>(new BlockPos(center.getX()-offset, 256, center.getZ()-offset), new BlockPos(center.getX()+offset, 256, center.getZ()+offset));
+            this.diameter = gameData.getMapSize();
+            this.currentBounds = new ZoneBounds(center.getX() - diameter, center.getZ() - diameter, center.getX() + diameter, center.getZ() + diameter);
         }
         this.damagePlayersOutsideZone();
         if(shrinking) {
+            if(currentStage == 7) {
+                if(game.getJoinedPlayers().size() < 2) {
+                    game.notifyAllPlayers(TextFormatting.ITALIC + "Match finished!");
+                    game.stopGame(world);
+                }
+                return;
+            }
             this.shrinkCurrentZone(world);
         }
     }
@@ -76,14 +83,48 @@ public final class BlueZone {
         return shrinking;
     }
 
+    public double minX() {
+        return currentBounds.min().x;
+    }
+
+    public double minZ() {
+        return currentBounds.min().z;
+    }
+
+    public double maxX() {
+        return currentBounds.max().x;
+    }
+
+    public double maxZ() {
+        return currentBounds.max().z;
+    }
+
+    public double getClosestDistance(double x, double z) {
+        double startx = x - minX();
+        double endx = maxX() - x;
+        double startz = z - minZ();
+        double endz = maxZ() - z;
+        double min = Math.min(startx, endx);
+        min = Math.min(min, endx);
+        return Math.min(min, startz);
+    }
+
+    public double getClosestDistance(Entity entity) {
+        return this.getClosestDistance(entity.posX, entity.posZ);
+    }
+
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("settings", settings.serializeNBT());
         nbt.setInteger("stage", currentStage);
         nbt.setBoolean("shrinking", shrinking);
-        nbt.setTag("current", cornersToNBT(currentCorners));
-        if(nextCorners != null)
-            nbt.setTag("planned", cornersToNBT(nextCorners));
+        nbt.setTag("current", ZoneBounds.toNBT(currentBounds));
+        nbt.setDouble("xMin", shrinkX);
+        nbt.setDouble("zMin", shrinkZ);
+        nbt.setDouble("xMax", shrinkXn);
+        nbt.setDouble("zMax", shrinkZn);
+        if(nextBounds != null)
+            nbt.setTag("planned", ZoneBounds.toNBT(nextBounds));
         return nbt;
     }
 
@@ -93,9 +134,13 @@ public final class BlueZone {
         zone.settings.deserializeNBT(nbt.getCompoundTag("settings"));
         zone.currentStage = nbt.getInteger("stage");
         zone.shrinking = nbt.getBoolean("shrinking");
-        zone.currentCorners = cornersFromNBT(nbt.getCompoundTag("current"));
+        zone.currentBounds = ZoneBounds.fromNBT(nbt.getCompoundTag("current"));
+        zone.shrinkX = nbt.getDouble("xMin");
+        zone.shrinkZ = nbt.getDouble("zMin");
+        zone.shrinkXn = nbt.getDouble("xMax");
+        zone.shrinkZn = nbt.getDouble("zMax");
         if(nbt.hasKey("planned")) {
-            zone.nextCorners = cornersFromNBT(nbt.getCompoundTag("planned"));
+            zone.nextBounds = ZoneBounds.fromNBT(nbt.getCompoundTag("planned"));
         }
         return zone;
     }
@@ -114,67 +159,84 @@ public final class BlueZone {
             ++currentStage;
             this.calculateNextZone(world);
         } else {
-            BlockPos prevStart = currentCorners.getLeft();
-            BlockPos prevEnd = currentCorners.getRight();
-            int xCenter = (prevEnd.getX() - prevStart.getX()) / 2;
-            int zCenter = (prevEnd.getZ() - prevStart.getZ()) / 2;
-            BlockPos centered = new BlockPos(xCenter, 256, zCenter);
-            BlockPos centerStartModified = new BlockPos(centered.getX() - 0.25, 256, centered.getZ() - 0.25);
-            BlockPos centerEndModified = new BlockPos(centered.getX() + 0.25, 256, centered.getZ() + 0.25);
-            nextCorners = new MutablePair<>(centerStartModified, centerEndModified);
+            ZonePos prevStart = currentBounds.min();
+            ZonePos prevEnd = currentBounds.max();
+            int xCenter = (int)(prevEnd.x - prevStart.x) / 2;
+            int zCenter = (int)(prevEnd.z - prevStart.z) / 2;
+            ZonePos centered = new ZonePos(xCenter, zCenter);
+            ZonePos centerStartModified = new ZonePos(centered.x - 0.25F, centered.z - 0.25F);
+            ZonePos centerEndModified = new ZonePos(centered.x + 0.25F, centered.z + 0.25F);
+            nextBounds = new ZoneBounds(centerStartModified, centerEndModified);
         }
     }
 
-    private static NBTTagCompound cornersToNBT(Pair<BlockPos, BlockPos> pair) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("left", NBTUtil.createPosTag(pair.getLeft()));
-        nbt.setTag("right", NBTUtil.createPosTag(pair.getRight()));
-        return nbt;
-    }
-
-    private static Pair<BlockPos, BlockPos> cornersFromNBT(NBTTagCompound nbt) {
-        BlockPos left = NBTUtil.getPosFromTag(nbt.getCompoundTag("left"));
-        BlockPos right = NBTUtil.getPosFromTag(nbt.getCompoundTag("right"));
-        return new MutablePair<>(left, right);
-    }
-
+    // TODO: Always centered option implementation
     private void calculateNextZone(World world) {
-        int newDiameter = game.getGameData(world).getMapSize() / (2^currentStage);
-        BlockPos startPoint = currentCorners.getLeft();
-        BlockPos endPoint = currentCorners.getRight();
-        int xMax = endPoint.getX() - startPoint.getX() - newDiameter / 2;
-        int zMax = endPoint.getZ() - startPoint.getZ() - newDiameter / 2;
-        int x = Pubgmc.rng().nextInt(xMax);
-        int z = Pubgmc.rng().nextInt(zMax);
-        BlockPos newStartPoint = new BlockPos(startPoint.getX() + x, 256, startPoint.getZ() + z);
-        BlockPos newEndPoint = new BlockPos(newStartPoint.getX()+newDiameter, 256, newStartPoint.getZ()+newDiameter);
-        nextCorners = new MutablePair<>(newStartPoint, newEndPoint);
-        this.calculateShrinkModifiers(x, z, xMax, zMax);
+        int newDiameter = game.getGameData(world).getMapSize() / (int)(Math.pow(2, currentStage));
+        ZonePos startPoint = currentBounds.min();
+        ZonePos endPoint = currentBounds.max();
+        int xMax = (int)Math.abs((endPoint.x - startPoint.x) - newDiameter * 2);
+        int zMax = (int)Math.abs((endPoint.z - startPoint.z) - newDiameter * 2);
+        int x = Pubgmc.rng().nextInt(Math.abs(xMax));
+        int z = Pubgmc.rng().nextInt(Math.abs(zMax));
+        ZonePos newStartPoint = new ZonePos(startPoint.x + x, startPoint.z + z);
+        ZonePos newEndPoint = new ZonePos(newStartPoint.x+newDiameter*2, newStartPoint.z+newDiameter*2);
+        nextBounds = new ZoneBounds(newStartPoint, newEndPoint);
+        this.calculateShrinkModifiers();
     }
 
     private void shrinkCurrentZone(World world) {
-        currentCorners = new MutablePair<>(new BlockPos(currentCorners.getLeft().getX() + shrinkX, 256, currentCorners.getLeft().getZ() + shrinkZ), new BlockPos(currentCorners.getRight().getX() - shrinkXn, 256, currentCorners.getRight().getZ() - shrinkZn));
+        currentBounds.shrink(shrinkX, shrinkZ, shrinkXn, shrinkZn);
         if(hasZoneArrivedToFinalPos()) {
             this.onShrinkingFinished(world);
         }
     }
 
     private boolean hasZoneArrivedToFinalPos() {
-        BlockPos moving = currentCorners.getLeft();
-        BlockPos next = nextCorners.getLeft();
-        return Math.abs(next.getX() - moving.getX()) < 1 || Math.abs(next.getZ() - moving.getZ()) < 1;
+        ZonePos movingMin = currentBounds.min();
+        ZonePos nextMin = nextBounds.min();
+        ZonePos movingMax = currentBounds.max();
+        ZonePos nextMax = nextBounds.max();
+        boolean b0 = movingMin.x >= nextMin.x;
+        boolean b1 = movingMin.z >= nextMin.z;
+        boolean b2 = movingMax.x <= nextMax.x;
+        boolean b3 = movingMax.z <= nextMax.z;
+        return b0 && b1 && b2 && b3;
     }
 
-    private void calculateShrinkModifiers(int xOffset, int zOffset, int xOffsetMax, int zOffsetMax) {
-        BlockPos currentX = currentCorners.getLeft();
-        BlockPos currentZ = currentCorners.getRight();
-        BlockPos nextX = nextCorners.getLeft();
-        BlockPos nextZ = nextCorners.getRight();
-        float xMax = currentZ.getX() - currentX.getX();
-        float zMax = currentZ.getZ() - currentX.getZ();
-        shrinkX = ((nextX.getX() - currentX.getX())/xMax) * settings.speedModifier;
-        shrinkZ = ((nextX.getZ() - currentX.getZ())/zMax) * settings.speedModifier;
-        shrinkXn = ((currentZ.getX() - nextX.getX())/xMax) * settings.speedModifier;
-        shrinkZn = ((currentZ.getZ() - nextX.getZ())/zMax) * settings.speedModifier;
+    private void calculateShrinkModifiers() {
+        float base = this.settings.speedModifier;
+        double d0 = Math.abs(nextBounds.min().x - currentBounds.min().x);
+        double d1 = Math.abs(nextBounds.min().z - currentBounds.min().z);
+        double d2 = Math.abs(currentBounds.max().x - nextBounds.max().x);
+        double d3 = Math.abs(currentBounds.max().z - nextBounds.max().z);
+        boolean isXDiffBigger = Math.abs(d2 - d0) >= Math.abs(d3 - d1);
+        boolean xs = d0 <= d2;
+        boolean zs = d1 <= d3;
+        if(isXDiffBigger) {
+            if(xs) {
+                shrinkX = Math.abs((base * d0) / d2);
+                shrinkZ = Math.abs((base * d1) / d2);
+                shrinkXn = base;
+                shrinkZn = Math.abs((base * d3) / d2);
+            } else {
+                shrinkX = base;
+                shrinkZ = Math.abs((base * d1) / d0);
+                shrinkXn = Math.abs((base * d2) / d0);
+                shrinkZn = Math.abs((base * d3) / d0);
+            }
+        } else {
+            if(zs) {
+                shrinkX = Math.abs((base * d0) / d3);
+                shrinkZ = Math.abs((base * d1) / d3);
+                shrinkXn = Math.abs((base * d2) / d3);
+                shrinkZn = base;
+            } else {
+                shrinkX = Math.abs((base * d0) / d1);
+                shrinkZ = base;
+                shrinkXn = Math.abs((base * d2) / d1);
+                shrinkZn = Math.abs((base * d3) / d1);
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
+import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -36,7 +37,7 @@ public class GameBattleRoyale extends Game {
     public BlueZone initializeZone(World world) {
         ZoneSettings settings = ZoneSettings.Builder.create()
                 .damage(0.1f)
-                .speed(0.1f)
+                .speed(0.5f)
                 .build();
         return new BlueZone(settings, this.getGameData(world));
     }
@@ -51,9 +52,7 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public void populatePlayerList(World world) {
-        world.playerEntities.stream()
-                .filter(player -> !player.isCreative() && !player.isSpectator())
-                .forEach(joinedPlayers::add);
+        joinedPlayers.addAll(world.playerEntities);
     }
 
     @Override
@@ -61,22 +60,24 @@ public class GameBattleRoyale extends Game {
         if(!zone.isShrinking()) {
             zoneTimer++;
             if(zone.currentStage == 0) {
-                if(zoneTimer >= 2400) {
+                if(zoneTimer >= 200) {
                     zone.notifyFirstZoneCreation(world);
                     this.scheduleAirdrop(world);
                     zoneTimer = 0;
                 }
             }
-            else if(zoneTimer >= 2000) {
+            else if(zoneTimer >= 200) {
                 zone.shrink();
-                this.scheduleAirdrop(world);
+                if(zone.currentStage < 5) {
+                    this.scheduleAirdrop(world);
+                }
                 zoneTimer = 0;
             }
         }
         if(gameTimer % 20 == 0) {
             this.tickScheduledDrops(world);
             if(gameTimer % 100 == 0) {
-                updateDataToClients(world);
+                //updateDataToClients(world);
             }
         }
     }
@@ -86,7 +87,7 @@ public class GameBattleRoyale extends Game {
     public void renderGameInfo(ScaledResolution res) {
         Minecraft mc = Minecraft.getMinecraft();
         mc.fontRenderer.drawStringWithShadow("Players left: " + joinedPlayers.size(), 10, 10, 0xFFFFFF);
-        int time = zone.currentStage == 0 ? 2400 : 2000;
+        int time = zone.currentStage == 0 ? 200 : 200;
         int timeleft = time/20 - zoneTimer/20;
         mc.fontRenderer.drawStringWithShadow("Airdrop in " + timeleft + "s", 100, 10, 0xFFFFFF);
     }
@@ -111,17 +112,17 @@ public class GameBattleRoyale extends Game {
     }
 
     private void scheduleAirdrop(World world) {
-        BlockPos min = zone.nextCorners.getLeft();
-        BlockPos max = zone.nextCorners.getRight();
+        ZonePos min = zone.nextBounds.min();
+        ZonePos max = zone.nextBounds.max();
         // to allow multiple airdrops
         boolean hasDroppedOnce = false;
         while(world.rand.nextFloat() <= 0.01F || !hasDroppedOnce) {
-            int x = Pubgmc.rng().nextInt(Math.abs(max.getX() - min.getX()));
-            int z = Pubgmc.rng().nextInt(Math.abs(max.getZ() - min.getZ()));
-            int y = world.getTopSolidOrLiquidBlock(new BlockPos(min.getX() + x, 250, min.getZ() + z)).getY();
+            int x = Pubgmc.rng().nextInt(Math.abs((int)max.distanceX(min)));
+            int z = Pubgmc.rng().nextInt(Math.abs((int)max.distanceZ(min)));
+            int y = world.getTopSolidOrLiquidBlock(new BlockPos(min.x + x, 250, min.z + z)).getY();
             y += 100;
             if(y > 255) y = 255;
-            BlockPos airdrop = new BlockPos(min.getX() + x, y, min.getZ() + z);
+            BlockPos airdrop = new BlockPos(min.x + x, y, min.z + z);
             scheduledAirdrops.add(airdrop);
             this.notifyAllPlayers(TextFormatting.BOLD + "Airdrop is appearing at [ " + airdrop.getX() + " ; " + airdrop.getZ() + " ]! Hurry up!");
             hasDroppedOnce = true;
