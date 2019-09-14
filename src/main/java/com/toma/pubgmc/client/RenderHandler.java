@@ -3,6 +3,7 @@ package com.toma.pubgmc.client;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.client.models.ModelGhillie;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -10,7 +11,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -43,19 +43,16 @@ public class RenderHandler {
             double interpolatedPlayerX = interpolate(player.posX, player.lastTickPosX, partialTicks);
             double interpolatedPlayerY = interpolate(player.posY, player.lastTickPosY, partialTicks);
             double interpolatedPlayerZ = interpolate(player.posZ, player.lastTickPosZ, partialTicks);
-            float a = 0.75F;
-            float r = 0.0F;
-            float g = 1.0F;
-            float b = 1.0F;
+            int clientZoneColor = ConfigPMC.client.other.zoneColor;
+            float a = 0.25F;
+            float r = ((clientZoneColor >> 16) & 255) / 255.0F;
+            float g = ((clientZoneColor >>  8) & 255) / 255.0F;
+            float b = (clientZoneColor & 255) / 255.0F;
             //actual rendering
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferBuilder = tessellator.getBuffer();
-
             GlStateManager.enableBlend();
-            GlStateManager.pushMatrix();
-            // TODO customizable color?
-            GlStateManager.alphaFunc(516, 0.1F);
-            GlStateManager.enableAlpha();
+            GlStateManager.disableTexture2D();
             GlStateManager.disableCull();
             bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
             bufferBuilder.setTranslation(-interpolatedPlayerX, -interpolatedPlayerY, -interpolatedPlayerZ);
@@ -90,22 +87,10 @@ public class RenderHandler {
 
             tessellator.draw();
             bufferBuilder.setTranslation(0, 0, 0);
+            GlStateManager.enableTexture2D();
             GlStateManager.enableCull();
-            GlStateManager.disableAlpha();
             GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
         }
-    }
-
-    public void drawSelectedBoundingBox(AxisAlignedBB box, float red, float green, float blue) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferBuilder.pos(box.minX - 5, box.maxY + 5, box.minZ).color(red, green, blue, 0.2F).endVertex();
-        bufferBuilder.pos(box.maxX + 5, box.maxY + 5, box.minZ).color(red, green, blue, 0.2F).endVertex();
-        bufferBuilder.pos(box.maxX + 5, box.minY, box.minZ).color(red, green, blue, 0.2F).endVertex();
-        bufferBuilder.pos(box.minX - 5, box.minY, box.minZ).color(red, green, blue, 0.2F).endVertex();
-        tessellator.draw();
     }
 
     public boolean isCloseToBorder(EntityPlayerSP player, BlueZone zone, double maxDist) {
