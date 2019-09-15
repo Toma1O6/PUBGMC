@@ -3,38 +3,42 @@ package com.toma.pubgmc.world;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.util.math.ZoneBounds;
 import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public final class BlueZone {
 
-    private Game game;
-    private IGameData gameData;
     private ZoneSettings settings;
+    public ZoneBounds prevBounds;
     public ZoneBounds currentBounds;
     public ZoneBounds nextBounds;
     public int currentStage;
-    public int diameter;
+    public BlockPos origin;
 
     private boolean shrinking;
     private double shrinkX, shrinkZ, shrinkXn, shrinkZn;
 
-    public BlueZone(ZoneSettings settings, IGameData gameData) {
+    public BlueZone() {
+        this(0, new BlockPos(0, 0, 0), ZoneSettings.Builder.create().speed(0.1F).damage(0.1F).build());
+    }
+
+    public BlueZone(int mapSize, BlockPos center, ZoneSettings settings) {
         this.settings = settings;
-        this.gameData = gameData;
-        if(gameData != null) {
-            this.game = gameData.getCurrentGame();
-            BlockPos center = gameData.getMapCenter();
-            int offset = gameData.getMapSize()/2;
-            this.diameter = offset;
-            this.currentBounds = new ZoneBounds(center.getX() - offset, center.getZ() - offset, center.getX() + offset, center.getZ() + offset);
-        }
+        this.origin = center;
+        this.currentBounds = new ZoneBounds(center.getX() - mapSize, center.getZ() - mapSize, center.getX() + mapSize, center.getZ() + mapSize);
+        this.prevBounds = new ZoneBounds(currentBounds);
+    }
+
+    public BlueZone(IGameData gameData, ZoneSettings settings) {
+        this(gameData.getMapSize(), gameData.getMapCenter(), settings);
     }
 
     public void notifyFirstZoneCreation(World world) {
@@ -59,13 +63,9 @@ public final class BlueZone {
     }
 
     public void bluezoneTick(World world) {
-        if(gameData == null) {
-            this.gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-            this.game = gameData.getCurrentGame();
-            BlockPos center = gameData.getMapCenter();
-            this.diameter = gameData.getMapSize();
-            this.currentBounds = new ZoneBounds(center.getX() - diameter, center.getZ() - diameter, center.getX() + diameter, center.getZ() + diameter);
-        }
+        IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
+        Game game = gameData.getCurrentGame();
+        this.prevBounds = new ZoneBounds(currentBounds);
         this.damagePlayersOutsideZone();
         if(shrinking) {
             if(currentStage == 7) {
@@ -83,27 +83,27 @@ public final class BlueZone {
         return shrinking;
     }
 
-    public double minX() {
-        return currentBounds.min().x;
+    public double minX(double partialTicks) {
+        return PUBGMCUtil.interpolate(prevBounds.min().x, currentBounds.min().x, partialTicks);
     }
 
-    public double minZ() {
-        return currentBounds.min().z;
+    public double minZ(double partialTicks) {
+        return PUBGMCUtil.interpolate(prevBounds.min().z, currentBounds.min().z, partialTicks);
     }
 
-    public double maxX() {
-        return currentBounds.max().x;
+    public double maxX(double partialTicks) {
+        return PUBGMCUtil.interpolate(prevBounds.max().x, currentBounds.max().x, partialTicks);
     }
 
-    public double maxZ() {
-        return currentBounds.max().z;
+    public double maxZ(double partialTicks) {
+        return PUBGMCUtil.interpolate(prevBounds.max().z, currentBounds.max().z, partialTicks);
     }
 
     public double getClosestDistance(double x, double z) {
-        double startx = x - minX();
-        double endx = maxX() - x;
-        double startz = z - minZ();
-        double endz = maxZ() - z;
+        double startx = x - minX(1.0F);
+        double endx = maxX(1.0F) - x;
+        double startz = z - minZ(1.0F);
+        double endz = maxZ(1.0F) - z;
         double min = Math.min(startx, endx);
         min = Math.min(min, endx);
         return Math.min(min, startz);
@@ -116,9 +116,11 @@ public final class BlueZone {
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("settings", settings.serializeNBT());
+        nbt.setTag("origin", NBTUtil.createPosTag(origin));
         nbt.setInteger("stage", currentStage);
         nbt.setBoolean("shrinking", shrinking);
         nbt.setTag("current", ZoneBounds.toNBT(currentBounds));
+        nbt.setTag("prev", ZoneBounds.toNBT(prevBounds == null ? currentBounds : prevBounds));
         nbt.setDouble("xMin", shrinkX);
         nbt.setDouble("zMin", shrinkZ);
         nbt.setDouble("xMax", shrinkXn);
@@ -129,12 +131,15 @@ public final class BlueZone {
     }
 
     public static BlueZone fromNBT(NBTTagCompound nbt) {
-        BlueZone zone = new BlueZone(null, null);
-        zone.settings = new ZoneSettings();
-        zone.settings.deserializeNBT(nbt.getCompoundTag("settings"));
+        ZoneSettings settings = new ZoneSettings();
+        settings.deserializeNBT(nbt.getCompoundTag("settings"));
+        BlueZone zone = new BlueZone();
+        zone.settings = settings;
+        zone.origin = NBTUtil.getPosFromTag(nbt.getCompoundTag("origin"));
         zone.currentStage = nbt.getInteger("stage");
         zone.shrinking = nbt.getBoolean("shrinking");
         zone.currentBounds = ZoneBounds.fromNBT(nbt.getCompoundTag("current"));
+        zone.prevBounds = ZoneBounds.fromNBT(nbt.getCompoundTag("prev"));
         zone.shrinkX = nbt.getDouble("xMin");
         zone.shrinkZ = nbt.getDouble("zMin");
         zone.shrinkXn = nbt.getDouble("xMax");
@@ -155,6 +160,7 @@ public final class BlueZone {
 
     protected void onShrinkingFinished(World world) {
         shrinking = false;
+        currentBounds = new ZoneBounds(nextBounds);
         if(currentStage < 7) {
             ++currentStage;
             this.calculateNextZone(world);
@@ -172,7 +178,7 @@ public final class BlueZone {
 
     // TODO: Always centered option implementation
     private void calculateNextZone(World world) {
-        int newDiameter = game.getGameData(world).getMapSize() / (int)(Math.pow(2, currentStage));
+        int newDiameter = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getMapSize() / (int)(Math.pow(2, currentStage));
         ZonePos startPoint = currentBounds.min();
         ZonePos endPoint = currentBounds.max();
         int xMax = (int)Math.abs((endPoint.x - startPoint.x) - newDiameter * 2);

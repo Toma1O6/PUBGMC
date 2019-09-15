@@ -16,6 +16,10 @@ public class ZoneBounds {
         this(new ZonePos(x1, z1), new ZonePos(x2, z2));
     }
 
+    public ZoneBounds(ZoneBounds zone) {
+        this(zone.min.x, zone.min.z, zone.max.x, zone.max.z);
+    }
+
     public void shrink(double x, double z, double xn, double zn) {
         min.add(x, z);
         max.subtract(xn, zn);

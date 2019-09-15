@@ -19,7 +19,7 @@ public class RenderHandler {
 
     private final ModelGhillie ghillie = new ModelGhillie();
 
-    private double interpolate(double current, double previous, float partial) {
+    private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
     }
 
@@ -39,7 +39,7 @@ public class RenderHandler {
         EntityPlayerSP player = mc.player;
         double maxClientRenderDist = mc.gameSettings.renderDistanceChunks * 16;
         if (isCloseToBorder(player, zone, maxClientRenderDist)) {
-            float partialTicks = e.getPartialTicks();
+            double partialTicks = e.getPartialTicks();
             double interpolatedPlayerX = interpolate(player.posX, player.lastTickPosX, partialTicks);
             double interpolatedPlayerY = interpolate(player.posY, player.lastTickPosY, partialTicks);
             double interpolatedPlayerZ = interpolate(player.posZ, player.lastTickPosZ, partialTicks);
@@ -56,33 +56,33 @@ public class RenderHandler {
             GlStateManager.disableCull();
             bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
             bufferBuilder.setTranslation(-interpolatedPlayerX, -interpolatedPlayerY, -interpolatedPlayerZ);
-            double minRenderPosZ = Math.max(Math.floor(interpolatedPlayerZ - maxClientRenderDist), zone.minZ());
-            double maxRenderPosZ = Math.min(Math.ceil(interpolatedPlayerZ + maxClientRenderDist), zone.maxZ());
-            double minRenderPosX = Math.max(Math.floor(interpolatedPlayerX - maxClientRenderDist), zone.minX());
-            double maxRenderPosX = Math.min(Math.ceil(interpolatedPlayerX + maxClientRenderDist), zone.maxX());
-            if (interpolatedPlayerX > zone.maxX() - maxClientRenderDist) {
-                bufferBuilder.pos(zone.maxX(), 256D, minRenderPosZ).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(zone.maxX(), 256D, maxRenderPosZ).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(zone.maxX(), 0D, maxRenderPosZ).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(zone.maxX(), 0D, minRenderPosZ).color(r, g, b, a).endVertex();
+            double minRenderPosZ = Math.max(Math.floor(interpolatedPlayerZ - maxClientRenderDist), zone.minZ(partialTicks));
+            double maxRenderPosZ = Math.min(Math.ceil(interpolatedPlayerZ + maxClientRenderDist), zone.maxZ(partialTicks));
+            double minRenderPosX = Math.max(Math.floor(interpolatedPlayerX - maxClientRenderDist), zone.minX(partialTicks));
+            double maxRenderPosX = Math.min(Math.ceil(interpolatedPlayerX + maxClientRenderDist), zone.maxX(partialTicks));
+            if (interpolatedPlayerX > zone.maxX(partialTicks) - maxClientRenderDist) {
+                bufferBuilder.pos(zone.maxX(partialTicks), 256D, minRenderPosZ).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(zone.maxX(partialTicks), 256D, maxRenderPosZ).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(zone.maxX(partialTicks), 0D, maxRenderPosZ).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(zone.maxX(partialTicks), 0D, minRenderPosZ).color(r, g, b, a).endVertex();
             }
-            if(interpolatedPlayerX < zone.minX() + maxClientRenderDist) {
-                bufferBuilder.pos(zone.minX(), 256D, minRenderPosZ).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(zone.minX(), 256D, maxRenderPosZ).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(zone.minX(), 0D, maxRenderPosZ).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(zone.minX(), 0D, minRenderPosZ).color(r, g, b, a).endVertex();
+            if(interpolatedPlayerX < zone.minX(partialTicks) + maxClientRenderDist) {
+                bufferBuilder.pos(zone.minX(partialTicks), 256D, minRenderPosZ).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(zone.minX(partialTicks), 256D, maxRenderPosZ).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(zone.minX(partialTicks), 0D, maxRenderPosZ).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(zone.minX(partialTicks), 0D, minRenderPosZ).color(r, g, b, a).endVertex();
             }
-            if(interpolatedPlayerZ > zone.maxZ() - maxClientRenderDist) {
-                bufferBuilder.pos(minRenderPosX, 256D, zone.maxZ()).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(maxRenderPosX, 256D, zone.maxZ()).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(maxRenderPosX, 0D, zone.maxZ()).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(minRenderPosX, 0D, zone.maxZ()).color(r, g, b, a).endVertex();
+            if(interpolatedPlayerZ > zone.maxZ(partialTicks) - maxClientRenderDist) {
+                bufferBuilder.pos(minRenderPosX, 256D, zone.maxZ(partialTicks)).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(maxRenderPosX, 256D, zone.maxZ(partialTicks)).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(maxRenderPosX, 0D, zone.maxZ(partialTicks)).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(minRenderPosX, 0D, zone.maxZ(partialTicks)).color(r, g, b, a).endVertex();
             }
-            if(interpolatedPlayerZ < zone.minZ() + maxClientRenderDist) {
-                bufferBuilder.pos(minRenderPosX, 256D, zone.minZ()).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(maxRenderPosX, 256D, zone.minZ()).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(maxRenderPosX, 0D, zone.minZ()).color(r, g, b, a).endVertex();
-                bufferBuilder.pos(minRenderPosX, 0D, zone.minZ()).color(r, g, b, a).endVertex();
+            if(interpolatedPlayerZ < zone.minZ(partialTicks) + maxClientRenderDist) {
+                bufferBuilder.pos(minRenderPosX, 256D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(maxRenderPosX, 256D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(maxRenderPosX, 0D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
+                bufferBuilder.pos(minRenderPosX, 0D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
             }
 
             tessellator.draw();
@@ -94,6 +94,6 @@ public class RenderHandler {
     }
 
     public boolean isCloseToBorder(EntityPlayerSP player, BlueZone zone, double maxDist) {
-        return player.posX >= zone.maxX() - maxDist || player.posX <= zone.minX() + maxDist || player.posZ >= zone.maxZ() - maxDist || player.posZ <= zone.minZ() + maxDist;
+        return player.posX >= zone.maxX(1.0F) - maxDist || player.posX <= zone.minX(1.0F) + maxDist || player.posZ >= zone.maxZ(1.0F) - maxDist || player.posZ <= zone.minZ(1.0F) + maxDist;
     }
 }

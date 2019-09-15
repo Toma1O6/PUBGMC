@@ -35,11 +35,8 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public BlueZone initializeZone(World world) {
-        ZoneSettings settings = ZoneSettings.Builder.create()
-                .damage(0.1f)
-                .speed(0.5f)
-                .build();
-        return new BlueZone(settings, this.getGameData(world));
+        ZoneSettings settings = ZoneSettings.Builder.create().damage(0.1f).speed(0.25f).build();
+        return new BlueZone(this.getGameData(world), settings);
     }
 
     @Override
@@ -77,6 +74,7 @@ public class GameBattleRoyale extends Game {
         if(gameTimer % 20 == 0) {
             this.tickScheduledDrops(world);
             if(gameTimer % 100 == 0) {
+                // TODO update data on join
                 //updateDataToClients(world);
             }
         }

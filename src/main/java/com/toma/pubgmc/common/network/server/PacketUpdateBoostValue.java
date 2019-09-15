@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketUpdateBoostValue implements IMessage, IMessageHandler<PacketUpdateBoostValue, IMessage> {
+public class PacketUpdateBoostValue implements IMessage {
     private float boost;
 
     public PacketUpdateBoostValue() {
@@ -27,13 +27,15 @@ public class PacketUpdateBoostValue implements IMessage, IMessageHandler<PacketU
         boost = buf.readFloat();
     }
 
-    @Override
-    public IMessage onMessage(PacketUpdateBoostValue message, MessageContext ctx) {
-        ctx.getServerHandler().player.getServer().addScheduledTask(() ->
-        {
-            IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            data.setBoost(message.boost);
-        });
-        return null;
+    public static class Handler implements IMessageHandler<PacketUpdateBoostValue, IMessage> {
+        @Override
+        public IMessage onMessage(PacketUpdateBoostValue message, MessageContext ctx) {
+            ctx.getServerHandler().player.getServer().addScheduledTask(() ->
+            {
+                IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+                data.setBoost(message.boost);
+            });
+            return null;
+        }
     }
 }

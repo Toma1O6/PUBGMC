@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicleData, IMessage> {
+public class PacketVehicleData implements IMessage {
     private int ID;
     private float fuel, health, turnMod, currentSpeed;
     private boolean isBroken;
@@ -45,22 +45,23 @@ public class PacketVehicleData implements IMessage, IMessageHandler<PacketVehicl
         isBroken = buf.readBoolean();
     }
 
-    @Override
-    public IMessage onMessage(PacketVehicleData m, MessageContext ctx) {
-        if (ctx.side.isClient()) {
-            Minecraft.getMinecraft().addScheduledTask(() ->
-            {
-                World world = Minecraft.getMinecraft().player.world;
-                if (world.getEntityByID(m.ID) instanceof EntityVehicle) {
-                    EntityVehicle car = (EntityVehicle) world.getEntityByID(m.ID);
-                    car.currentSpeed = m.currentSpeed;
-                    car.turnModifier = m.turnMod;
-                    car.health = m.health;
-                    car.fuel = m.fuel;
-                    car.isBroken = m.isBroken;
-                }
-            });
+    public static class Handler implements IMessageHandler<PacketVehicleData, IMessage> {
+        @Override
+        public IMessage onMessage(PacketVehicleData m, MessageContext ctx) {
+            if (ctx.side.isClient()) {
+                Minecraft.getMinecraft().addScheduledTask(() -> {
+                    World world = Minecraft.getMinecraft().player.world;
+                    if (world.getEntityByID(m.ID) instanceof EntityVehicle) {
+                        EntityVehicle car = (EntityVehicle) world.getEntityByID(m.ID);
+                        car.currentSpeed = m.currentSpeed;
+                        car.turnModifier = m.turnMod;
+                        car.health = m.health;
+                        car.fuel = m.fuel;
+                        car.isBroken = m.isBroken;
+                    }
+                });
+            }
+            return null;
         }
-        return null;
     }
 }

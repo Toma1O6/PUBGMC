@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketOpenGui implements IMessage, IMessageHandler<PacketOpenGui, IMessage> {
+public class PacketOpenGui implements IMessage {
     private int guiID;
 
     public PacketOpenGui() {
@@ -27,14 +27,12 @@ public class PacketOpenGui implements IMessage, IMessageHandler<PacketOpenGui, I
         guiID = buf.readInt();
     }
 
-    @Override
-    public IMessage onMessage(PacketOpenGui message, MessageContext ctx) {
-        EntityPlayer player = ctx.getServerHandler().player;
-        player.getServer().addScheduledTask(() ->
-        {
-            player.openGui(Pubgmc.instance, message.guiID, player.world, (int) player.posX, (int) player.posY, (int) player.posZ);
-        });
-
-        return null;
+    public static class Handler implements IMessageHandler<PacketOpenGui, IMessage> {
+        @Override
+        public IMessage onMessage(PacketOpenGui message, MessageContext ctx) {
+            EntityPlayer player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() -> player.openGui(Pubgmc.instance, message.guiID, player.world, (int) player.posX, (int) player.posY, (int) player.posZ));
+            return null;
+        }
     }
 }

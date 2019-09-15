@@ -11,11 +11,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketCreateNBT implements IMessage, IMessageHandler<PacketCreateNBT, IMessage> {
+public class PacketCreateNBT implements IMessage {
     private int ammo;
 
     public PacketCreateNBT() {
-        // TODO Auto-generated constructor stub
     }
 
     public PacketCreateNBT(int ammo) {
@@ -32,21 +31,20 @@ public class PacketCreateNBT implements IMessage, IMessageHandler<PacketCreateNB
         buf.readInt();
     }
 
-    @Override
-    public IMessage onMessage(PacketCreateNBT message, MessageContext ctx) {
-        if (ctx.side.isClient()) {
-            Minecraft mc = Minecraft.getMinecraft();
-            EntityPlayerSP player = mc.player;
-
-            mc.addScheduledTask(() ->
-            {
-                ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-
-                if (!heldItem.hasTagCompound() && heldItem.getItem() instanceof GunBase) {
-                    PUBGMCUtil.createWeaponNBT(heldItem, message.ammo);
-                }
-            });
+    public static class Handler implements IMessageHandler<PacketCreateNBT, IMessage> {
+        @Override
+        public IMessage onMessage(PacketCreateNBT message, MessageContext ctx) {
+            if (ctx.side.isClient()) {
+                Minecraft mc = Minecraft.getMinecraft();
+                EntityPlayerSP player = mc.player;
+                mc.addScheduledTask(() -> {
+                    ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
+                    if (!heldItem.hasTagCompound() && heldItem.getItem() instanceof GunBase) {
+                        PUBGMCUtil.createWeaponNBT(heldItem, message.ammo);
+                    }
+                });
+            }
+            return null;
         }
-        return null;
     }
 }

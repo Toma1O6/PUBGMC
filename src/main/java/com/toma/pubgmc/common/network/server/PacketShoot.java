@@ -9,14 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketShoot implements IMessage, IMessageHandler<PacketShoot, IMessage> {
-    private static void handle(EntityPlayer player, World world) {
-        ItemStack stack = player.getHeldItemMainhand();
-
-        if (stack.getItem() instanceof GunBase) {
-            ((GunBase) stack.getItem()).shoot(world, player, stack);
-        }
-    }
+public class PacketShoot implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
@@ -26,13 +19,20 @@ public class PacketShoot implements IMessage, IMessageHandler<PacketShoot, IMess
     public void fromBytes(ByteBuf buf) {
     }
 
-    @Override
-    public IMessage onMessage(PacketShoot message, MessageContext ctx) {
-        World world = ctx.getServerHandler().player.world;
-        EntityPlayer player = ctx.getServerHandler().player;
+    public static class Handler implements IMessageHandler<PacketShoot, IMessage> {
+        @Override
+        public IMessage onMessage(PacketShoot message, MessageContext ctx) {
+            World world = ctx.getServerHandler().player.world;
+            EntityPlayer player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() -> handle(player, world));
+            return null;
+        }
 
-        player.getServer().addScheduledTask(() -> handle(player, world));
-
-        return null;
+        private void handle(EntityPlayer player, World world) {
+            ItemStack stack = player.getHeldItemMainhand();
+            if (stack.getItem() instanceof GunBase) {
+                ((GunBase) stack.getItem()).shoot(world, player, stack);
+            }
+        }
     }
 }

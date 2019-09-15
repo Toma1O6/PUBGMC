@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketUpdatePlayerRotation implements IMessage, IMessageHandler<PacketUpdatePlayerRotation, IMessage> {
+public class PacketUpdatePlayerRotation implements IMessage {
     float rotYaw;
 
     public PacketUpdatePlayerRotation() {
@@ -28,16 +28,16 @@ public class PacketUpdatePlayerRotation implements IMessage, IMessageHandler<Pac
         rotYaw = buf.readFloat();
     }
 
-    @Override
-    public IMessage onMessage(PacketUpdatePlayerRotation message, MessageContext ctx) {
-        if (ctx.side.isClient()) {
-            Minecraft.getMinecraft().addScheduledTask(() ->
-            {
-                EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-                player.rotationYaw = message.rotYaw;
-            });
+    public static class Handler implements IMessageHandler<PacketUpdatePlayerRotation, IMessage> {
+        @Override
+        public IMessage onMessage(PacketUpdatePlayerRotation message, MessageContext ctx) {
+            if (ctx.side.isClient()) {
+                Minecraft.getMinecraft().addScheduledTask(() -> {
+                    EntityPlayerSP player = Minecraft.getMinecraft().player;
+                    player.rotationYaw = message.rotYaw;
+                });
+            }
+            return null;
         }
-        return null;
     }
 }

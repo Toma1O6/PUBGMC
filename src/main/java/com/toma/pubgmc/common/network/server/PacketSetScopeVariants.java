@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketSetScopeVariants implements IMessage, IMessageHandler<PacketSetScopeVariants, IMessage> {
+public class PacketSetScopeVariants implements IMessage {
     private int scopetype, scopecolor;
 
     public PacketSetScopeVariants() {
@@ -32,17 +32,18 @@ public class PacketSetScopeVariants implements IMessage, IMessageHandler<PacketS
         scopecolor = buf.readInt();
     }
 
-    @Override
-    public IMessage onMessage(PacketSetScopeVariants message, MessageContext ctx) {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        player.getServer().addScheduledTask(() ->
-        {
-            if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                data.setScopeType(message.scopetype);
-                data.setScopeColor(message.scopecolor);
-            }
-        });
-        return null;
+    public static class Handler implements IMessageHandler<PacketSetScopeVariants, IMessage> {
+        @Override
+        public IMessage onMessage(PacketSetScopeVariants message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() -> {
+                if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+                    IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+                    data.setScopeType(message.scopetype);
+                    data.setScopeColor(message.scopecolor);
+                }
+            });
+            return null;
+        }
     }
 }

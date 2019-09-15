@@ -7,11 +7,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketReloading implements IMessage, IMessageHandler<PacketReloading, IMessage> {
+public class PacketReloading implements IMessage {
     private boolean reload;
 
     public PacketReloading() {
-
     }
 
     public PacketReloading(boolean reloading) {
@@ -28,10 +27,12 @@ public class PacketReloading implements IMessage, IMessageHandler<PacketReloadin
         reload = buf.readBoolean();
     }
 
-    @Override
-    public IMessage onMessage(PacketReloading message, MessageContext ctx) {
-        IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        data.setReloading(message.reload);
-        return null;
+    public static class Handler implements IMessageHandler<PacketReloading, IMessage> {
+        @Override
+        public IMessage onMessage(PacketReloading message, MessageContext ctx) {
+            IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.setReloading(message.reload);
+            return null;
+        }
     }
 }

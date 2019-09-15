@@ -8,11 +8,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketFiremode implements IMessage, IMessageHandler<PacketFiremode, IMessage> {
+public class PacketFiremode implements IMessage {
     private Firemode mode;
 
     public PacketFiremode() {
-
     }
 
     public PacketFiremode(Firemode mode) {
@@ -29,14 +28,16 @@ public class PacketFiremode implements IMessage, IMessageHandler<PacketFiremode,
         mode = Firemode.values()[buf.readInt()];
     }
 
-    @Override
-    public IMessage onMessage(PacketFiremode message, MessageContext ctx) {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        player.getServer().addScheduledTask(() ->
-        {
-            GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-            gun.setFiremode(message.mode);
-        });
-        return null;
+    public static class Handler implements IMessageHandler<PacketFiremode, IMessage> {
+        @Override
+        public IMessage onMessage(PacketFiremode message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() ->
+            {
+                GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+                gun.setFiremode(message.mode);
+            });
+            return null;
+        }
     }
 }

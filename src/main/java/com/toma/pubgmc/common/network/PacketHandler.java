@@ -21,31 +21,28 @@ public class PacketHandler {
      * Register packets here
      */
     public static void initialize() {
-        registerServerPacket(PacketAim.class);
-        registerServerPacket(PacketReload.class);
-        registerServerPacket(PacketFiremode.class);
-        registerServerPacket(PacketNightVision.class);
-        registerServerPacket(PacketReloading.class);
-        registerServerPacket(PacketUpdateBoostValue.class);
-        registerServerPacket(PacketShoot.class);
-        registerServerPacket(PacketOpenGui.class);
-        registerServerPacket(PacketHandleParachuteInputs.class);
-        registerServerPacket(PacketHandleVehicleInput.class);
-        registerServerPacket(PacketSetScopeVariants.class);
-        registerServerPacket(PacketTeleportPlayer.class);
-        registerServerPacket(PacketChooseLocation.class);
+        registerServerPacket(PacketServerAction.Handler.class, PacketServerAction.class);
+        registerServerPacket(PacketFiremode.Handler.class, PacketFiremode.class);
+        registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
+        registerServerPacket(PacketUpdateBoostValue.Handler.class, PacketUpdateBoostValue.class);
+        registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
+        registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
+        registerServerPacket(PacketHandleParachuteInputs.Handler.class, PacketHandleParachuteInputs.class);
+        registerServerPacket(PacketHandleVehicleInput.Handler.class, PacketHandleVehicleInput.class);
+        registerServerPacket(PacketSetScopeVariants.Handler.class, PacketSetScopeVariants.class);
+        registerServerPacket(PacketChooseLocation.Handler.class, PacketChooseLocation.class);
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
         registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
         registerServerPacket(PacketUpdateLootData.Handler.class, PacketUpdateLootData.class);
-        registerClientPacket(PacketReloadingSP.class);
-        registerClientPacket(PacketDelayedSound.class);
-        registerClientPacket(PacketCreateNBT.class);
+        registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
+        registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
+        registerClientPacket(PacketCreateNBT.Handler.class, PacketCreateNBT.class);
         registerClientPacket(PacketParticle.Handler.class, PacketParticle.class);
-        registerClientPacket(PacketClientCapabilitySync.class);
-        registerClientPacket(PacketUpdatePlayerRotation.class);
-        registerClientPacket(PacketVehicleData.class);
+        registerClientPacket(PacketClientCapabilitySync.Handler.class, PacketClientCapabilitySync.class);
+        registerClientPacket(PacketUpdatePlayerRotation.Handler.class, PacketUpdatePlayerRotation.class);
+        registerClientPacket(PacketVehicleData.Handler.class, PacketVehicleData.class);
         registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
         registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
@@ -94,30 +91,12 @@ public class PacketHandler {
         sendToClient(new PacketClientCapabilitySync(player, data.serializeNBT()), player);
     }
 
-    /**
-     * Registers packet for Server -> Client
-     *
-     * @param packetClass
-     */
-    private static void registerClientPacket(Class packetClass) {
-        INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.CLIENT);
-    }
-
     private static <REQ extends IMessage, REPLY extends IMessage> void registerClientPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {
         INSTANCE.registerMessage(handler, packet, nextID(), Side.CLIENT);
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerServerPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {
         INSTANCE.registerMessage(handler, packet, nextID(), Side.SERVER);
-    }
-
-    /**
-     * Registers packet for Client -> Server
-     *
-     * @param packetClass
-     */
-    private static void registerServerPacket(Class packetClass) {
-        INSTANCE.registerMessage(packetClass, packetClass, nextID(), Side.SERVER);
     }
 
     private static int nextID() {

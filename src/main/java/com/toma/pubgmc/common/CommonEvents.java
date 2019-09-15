@@ -315,6 +315,11 @@ public class CommonEvents {
 
                 //Sync some data from capability to client for overlay rendering
                 PacketHandler.syncPlayerDataToClient(data, player);
+
+                IGameData gameData = player.world.getCapability(GameDataProvider.GAMEDATA, null);
+                if(gameData != null) {
+                    gameData.getCurrentGame().updateDataToClient(player.world, player);
+                }
             }
         }
     }

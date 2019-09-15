@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketChooseLocation implements IMessage, IMessageHandler<PacketChooseLocation, IMessage> {
+public class PacketChooseLocation implements IMessage {
     int id;
     private BlockPos pos;
 
@@ -34,16 +34,17 @@ public class PacketChooseLocation implements IMessage, IMessageHandler<PacketCho
         id = buf.readInt();
     }
 
-    @Override
-    public IMessage onMessage(PacketChooseLocation message, MessageContext ctx) {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        player.getServer().addScheduledTask(() ->
-        {
-            if (player.world.getEntityByID(message.id) instanceof EntityPlane) {
-                EntityPlane plane = (EntityPlane) player.world.getEntityByID(message.id);
-                plane.dropLoc.put(player, message.pos);
-            }
-        });
-        return null;
+    public static class Handler implements IMessageHandler<PacketChooseLocation, IMessage> {
+        @Override
+        public IMessage onMessage(PacketChooseLocation message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() -> {
+                if (player.world.getEntityByID(message.id) instanceof EntityPlane) {
+                    EntityPlane plane = (EntityPlane) player.world.getEntityByID(message.id);
+                    plane.dropLoc.put(player, message.pos);
+                }
+            });
+            return null;
+        }
     }
 }

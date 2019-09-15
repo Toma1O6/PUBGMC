@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketDelayedSound implements IMessage, IMessageHandler<PacketDelayedSound, IMessage> {
+public class PacketDelayedSound implements IMessage {
     private SoundEvent event;
     private float volume;
     private double x, y, z;
@@ -43,12 +43,14 @@ public class PacketDelayedSound implements IMessage, IMessageHandler<PacketDelay
         z = buf.readDouble();
     }
 
-    @Override
-    public IMessage onMessage(PacketDelayedSound message, MessageContext ctx) {
-        if (ctx.side.isClient()) {
-            EntityPlayerSP player = Minecraft.getMinecraft().player;
-            Minecraft.getMinecraft().addScheduledTask(() -> Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume));
+    public static class Handler implements IMessageHandler<PacketDelayedSound, IMessage> {
+        @Override
+        public IMessage onMessage(PacketDelayedSound message, MessageContext ctx) {
+            if (ctx.side.isClient()) {
+                EntityPlayerSP player = Minecraft.getMinecraft().player;
+                Minecraft.getMinecraft().addScheduledTask(() -> Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume));
+            }
+            return null;
         }
-        return null;
     }
 }

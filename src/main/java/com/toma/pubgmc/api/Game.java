@@ -10,6 +10,7 @@ import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -182,6 +183,10 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
     public final void updateDataToClients(World world) {
         PacketHandler.sendToAllClients(new PacketSyncGameData(world.getCapability(IGameData.GameDataProvider.GAMEDATA, null)));
+    }
+
+    public final void updateDataToClient(World world, EntityPlayerMP player) {
+        PacketHandler.sendToClient(new PacketSyncGameData(world.getCapability(IGameData.GameDataProvider.GAMEDATA, null)), player);
     }
 
     @Override

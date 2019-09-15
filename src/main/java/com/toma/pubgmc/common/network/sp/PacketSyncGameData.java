@@ -14,7 +14,6 @@ public class PacketSyncGameData implements IMessage {
     private NBTTagCompound data;
 
     public PacketSyncGameData() {
-
     }
 
     public PacketSyncGameData(IGameData gameData) {

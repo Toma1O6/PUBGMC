@@ -1,7 +1,6 @@
 package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -29,7 +28,7 @@ public class GameInactive extends Game {
 
     @Override
     public BlueZone initializeZone(World world) {
-        return new BlueZone(ZoneSettings.Builder.create().setStatic().damage(10.0F).speed(10.0F).build(), this.getGameData(world));
+        return new BlueZone();
     }
 
     @Override

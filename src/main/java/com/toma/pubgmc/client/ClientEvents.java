@@ -575,7 +575,7 @@ public class ClientEvents {
                                 //You can't aim while you're reloading
                                 if (data.isAiming()) {
                                     data.setAiming(false);
-                                    PacketHandler.INSTANCE.sendToServer(new PacketAim(false));
+                                    PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
                                     Minecraft.getMinecraft().gameSettings.mouseSensitivity = this.mouseSens;
                                 }
                             }
@@ -586,13 +586,8 @@ public class ClientEvents {
                 //Same as above, we just send packet to server and everything else will be done in the rendering method above
                 if (KeyBinds.NV.isPressed()) {
                     if (data.getEquippedNV()) {
-                        if (!data.isUsingNV()) {
-                            data.setNV(true);
-                            PacketHandler.INSTANCE.sendToServer(new PacketNightVision(true));
-                        } else {
-                            data.setNV(false);
-                            PacketHandler.INSTANCE.sendToServer(new PacketNightVision(false));
-                        }
+                        data.setNV(!data.isUsingNV());
+                        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.NIGHT_VISION));
                     }
                 }
 
@@ -667,7 +662,7 @@ public class ClientEvents {
                         aimSlot = player.inventory.currentItem;
                         data.setAiming(true);
                         //We have to tell the server the player is aiming to make it work on servers
-                        PacketHandler.INSTANCE.sendToServer(new PacketAim(true));
+                        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
                         int scopeID = stack.getTagCompound().getInteger("scope");
 
                         //sensitivity modifier
@@ -692,7 +687,7 @@ public class ClientEvents {
                         }
                     } else {
                         data.setAiming(false);
-                        PacketHandler.INSTANCE.sendToServer(new PacketAim(false));
+                        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
                         gs.mouseSensitivity = this.mouseSens;
                     }
                 }
@@ -960,14 +955,12 @@ public class ClientEvents {
 
                             if (gun.getReloadType() == ReloadType.MAGAZINE) {
                                 if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
-                                    PacketHandler.INSTANCE.sendToServer(new PacketReload());
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
                                     setReloading(data, false);
                                 }
                             } else if (gun.getReloadType() == ReloadType.SINGLE) {
                                 if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
-                                    PacketHandler.INSTANCE.sendToServer(new PacketReload());
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
                                 }
@@ -975,13 +968,11 @@ public class ClientEvents {
                                 if (itemstack.hasTagCompound()) {
                                     if (itemstack.getTagCompound().getInteger("ammo") == 0) {
                                         if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
-                                            PacketHandler.INSTANCE.sendToServer(new PacketReload());
                                             data.setReloadingTime(0);
                                             hasAmmo = false;
                                         }
                                     } else {
                                         if (data.getReloadingTime() >= 18) {
-                                            PacketHandler.INSTANCE.sendToServer(new PacketReload());
                                             data.setReloadingTime(0);
                                             hasAmmo = false;
                                         }
@@ -1109,12 +1100,12 @@ public class ClientEvents {
 
     private void setReloading(IPlayerData data, boolean reload) {
         data.setReloading(reload);
-        PacketHandler.INSTANCE.sendToServer(new PacketReloading(reload));
+        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.RELOAD));
     }
 
     private void setAiming(IPlayerData data, boolean aim) {
         data.setAiming(aim);
-        PacketHandler.INSTANCE.sendToServer(new PacketAim(aim));
+        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
     }
 
     private void switchScopeType(IPlayerData data) {

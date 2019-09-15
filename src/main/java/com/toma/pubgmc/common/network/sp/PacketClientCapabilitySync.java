@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.UUID;
 
-public class PacketClientCapabilitySync implements IMessage, IMessageHandler<PacketClientCapabilitySync, IMessage> {
+public class PacketClientCapabilitySync implements IMessage {
 
     private EntityPlayer player;
     private NBTTagCompound nbt;
@@ -40,11 +40,13 @@ public class PacketClientCapabilitySync implements IMessage, IMessageHandler<Pac
         player = Minecraft.getMinecraft().player.world.getPlayerEntityByUUID(UUID.fromString(ByteBufUtils.readUTF8String(buf)));
     }
 
-    @Override
-    public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
-        if (ctx.side.isClient()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> IPlayerData.PlayerData.get(m.player).deserializeNBT(m.nbt));
+    public static class Handler implements IMessageHandler<PacketClientCapabilitySync, IMessage> {
+        @Override
+        public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
+            if (ctx.side.isClient()) {
+                Minecraft.getMinecraft().addScheduledTask(() -> IPlayerData.PlayerData.get(m.player).deserializeNBT(m.nbt));
+            }
+            return null;
         }
-        return null;
     }
 }

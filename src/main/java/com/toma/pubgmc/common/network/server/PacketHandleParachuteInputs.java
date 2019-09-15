@@ -7,11 +7,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketHandleParachuteInputs implements IMessage, IMessageHandler<PacketHandleParachuteInputs, IMessage> {
+public class PacketHandleParachuteInputs implements IMessage {
     private boolean pitchUp, pitchDown, right, left;
 
     public PacketHandleParachuteInputs() {
-        // TODO Auto-generated constructor stub
     }
 
     public PacketHandleParachuteInputs(boolean pitchUp, boolean pitchDown, boolean right, boolean left) {
@@ -37,18 +36,19 @@ public class PacketHandleParachuteInputs implements IMessage, IMessageHandler<Pa
         left = buf.readBoolean();
     }
 
-    @Override
-    public IMessage onMessage(PacketHandleParachuteInputs message, MessageContext ctx) {
-        EntityPlayer player = ctx.getServerHandler().player;
+    public static class Handler implements IMessageHandler<PacketHandleParachuteInputs, IMessage> {
+        @Override
+        public IMessage onMessage(PacketHandleParachuteInputs message, MessageContext ctx) {
+            EntityPlayer player = ctx.getServerHandler().player;
 
-        player.getServer().addScheduledTask(() ->
-        {
-            if (player.getRidingEntity() instanceof EntityParachute) {
-                EntityParachute chute = (EntityParachute) player.getRidingEntity();
+            player.getServer().addScheduledTask(() -> {
+                if (player.getRidingEntity() instanceof EntityParachute) {
+                    EntityParachute chute = (EntityParachute) player.getRidingEntity();
 
-                chute.handleInputs(message.pitchDown, message.pitchUp, message.right, message.left);
-            }
-        });
-        return null;
+                    chute.handleInputs(message.pitchDown, message.pitchUp, message.right, message.left);
+                }
+            });
+            return null;
+        }
     }
 }
