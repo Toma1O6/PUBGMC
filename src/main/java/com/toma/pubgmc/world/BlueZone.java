@@ -176,18 +176,23 @@ public final class BlueZone {
         }
     }
 
-    // TODO: Always centered option implementation
     private void calculateNextZone(World world) {
         int newDiameter = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getMapSize() / (int)(Math.pow(2, currentStage));
-        ZonePos startPoint = currentBounds.min();
-        ZonePos endPoint = currentBounds.max();
-        int xMax = (int)Math.abs((endPoint.x - startPoint.x) - newDiameter * 2);
-        int zMax = (int)Math.abs((endPoint.z - startPoint.z) - newDiameter * 2);
-        int x = Pubgmc.rng().nextInt(Math.abs(xMax));
-        int z = Pubgmc.rng().nextInt(Math.abs(zMax));
-        ZonePos newStartPoint = new ZonePos(startPoint.x + x, startPoint.z + z);
-        ZonePos newEndPoint = new ZonePos(newStartPoint.x+newDiameter*2, newStartPoint.z+newDiameter*2);
-        nextBounds = new ZoneBounds(newStartPoint, newEndPoint);
+        if(settings.alwaysCentered) {
+            ZonePos start = new ZonePos(origin.getX() - newDiameter, origin.getZ() - newDiameter);
+            ZonePos end = new ZonePos(origin.getX() + newDiameter, origin.getZ() + newDiameter);
+            nextBounds = new ZoneBounds(start, end);
+        } else {
+            ZonePos startPoint = currentBounds.min();
+            ZonePos endPoint = currentBounds.max();
+            int xMax = (int)Math.abs((endPoint.x - startPoint.x) - newDiameter * 2);
+            int zMax = (int)Math.abs((endPoint.z - startPoint.z) - newDiameter * 2);
+            int x = Pubgmc.rng().nextInt(Math.abs(xMax));
+            int z = Pubgmc.rng().nextInt(Math.abs(zMax));
+            ZonePos newStartPoint = new ZonePos(startPoint.x + x, startPoint.z + z);
+            ZonePos newEndPoint = new ZonePos(newStartPoint.x+newDiameter*2, newStartPoint.z+newDiameter*2);
+            nextBounds = new ZoneBounds(newStartPoint, newEndPoint);
+        }
         this.calculateShrinkModifiers();
     }
 

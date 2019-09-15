@@ -3,10 +3,14 @@ package com.toma.pubgmc.api.games;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.common.network.server.PacketChooseLocation;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
+import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +18,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -43,8 +50,26 @@ public class GameBattleRoyale extends Game {
     public void onGameStart(World world) {
         if(world.isRemote) return;
         GameUtils.createAndFillPlanes(world);
+        IGameData gameData = this.getGameData(world);
         zoneTimer = 0;
         scheduledAirdrops.clear();
+        joinedPlayers.forEach(p -> {
+            for(MapLocation location : gameData.getSpawnLocations()) {
+                TextComponentString msg = new TextComponentString("- " + location.name());
+                msg.setStyle(msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "") {
+                    @Override
+                    public Action getAction() {
+                        PacketHandler.sendToServer(new PacketChooseLocation(location.pos(), p.getRidingEntity().getEntityId()));
+                        for(int i = 0; i < 50; i++) {
+                            p.sendMessage(new TextComponentString(""));
+                        }
+                        p.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully selected drop location, you will be dropped automatically"));
+                        return super.getAction();
+                    }
+                }).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(location.pos().toString()))));
+                p.sendMessage(msg);
+            }
+        });
     }
 
     @Override
@@ -73,10 +98,6 @@ public class GameBattleRoyale extends Game {
         }
         if(gameTimer % 20 == 0) {
             this.tickScheduledDrops(world);
-            if(gameTimer % 100 == 0) {
-                // TODO update data on join
-                //updateDataToClients(world);
-            }
         }
     }
 

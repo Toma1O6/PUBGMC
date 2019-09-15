@@ -12,7 +12,6 @@ public class PacketUpdateFlashStatus implements IMessage {
     boolean blind;
 
     public PacketUpdateFlashStatus() {
-        // TODO Auto-generated constructor stub
     }
 
     public PacketUpdateFlashStatus(boolean blind) {

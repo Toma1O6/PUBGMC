@@ -81,7 +81,6 @@ public final class FlashHandler {
     @EventBusSubscriber
     public static class ServerHandler {
 
-        // TODO: check properly
         @SubscribeEvent
         public static void worldTick(TickEvent.WorldTickEvent e) {
             if (!FLASHED_PLAYERS.isEmpty()) {

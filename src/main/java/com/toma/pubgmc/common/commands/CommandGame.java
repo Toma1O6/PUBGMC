@@ -19,10 +19,6 @@ import net.minecraft.util.text.TextComponentString;
 import java.util.Collections;
 import java.util.List;
 
-/*
-    TODO in order to start you have to select game first
-    TODO let the selected game setup it's playzone with it's bluezone settings
- */
 public class CommandGame extends CommandBase {
 
     private static final String[] completions = {"start","stop","help","info","mode","map","lobby","location"};
