@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -27,7 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RenderHandler {
 
     private final ModelBiped ghillie = new ModelBiped(1.0F);
-    private final ResourceLocation ghillieTexture = new ResourceLocation(Pubgmc.MOD_ID +":textures/models/armor/ghillie_layer_1.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/armor/ghillie_layer_1.png");
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
@@ -105,14 +106,24 @@ public class RenderHandler {
     @SubscribeEvent
     public void onPlayerRenderPost(RenderPlayerEvent.Post e) {
         EntityPlayer player = e.getEntityPlayer();
-        if (player.getHeldItemMainhand().getItem() == PMCRegistry.PMCItems.GHILLIE_SUIT) {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(ghillieTexture);
+        if (player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() == PMCRegistry.PMCItems.GHILLIE_SUIT) {
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             ModelPlayer main = e.getRenderer().getMainModel();
             ghillie.swingProgress = player.getSwingProgress(e.getPartialRenderTick());
             boolean shouldSit = player.isRiding() && (player.getRidingEntity() != null && player.getRidingEntity().shouldRiderSit());
+            boolean sneak = main.isSneak;
+            ghillie.bipedBody.offsetZ = sneak ? -0.1f : 0;
+            ghillie.bipedBody.offsetY = sneak ? 0.4f : 0;
+            ghillie.bipedHeadwear.offsetY = sneak ? 0.5f : 0;
+            ghillie.bipedRightArm.offsetY = sneak ? 0.5f : 0;
+            ghillie.bipedLeftArm.offsetY = sneak ? 0.5f : 0;
+            ghillie.bipedRightLeg.offsetY = sneak ? 0.7f : 0.2f;
+            ghillie.bipedLeftLeg.offsetY = sneak ? 0.7f : 0.2f;
+            ghillie.bipedRightLeg.offsetZ = sneak ? 0.12f : 0f;
+            ghillie.bipedLeftLeg.offsetZ = sneak ? 0.12f : 0f;
             ghillie.isRiding = shouldSit;
+            ghillie.isSneak = main.isSneak;
             ghillie.leftArmPose = main.leftArmPose;
             ghillie.rightArmPose = main.rightArmPose;
             ghillie.bipedLeftArm.offsetX = 0.075f;
@@ -140,7 +151,6 @@ public class RenderHandler {
                 yaw = f1 - f;
             }
             float f7 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * partial;
-            //GlStateManager.translate(player.posX, player.posY, player.posZ);
             float f8 = player.ticksExisted + partial;
             GlStateManager.rotate(180.0F - f, 0.0F, 1.0F, 0.0F);
             float f4 = this.prepareScale(player, partial);
@@ -160,7 +170,7 @@ public class RenderHandler {
             GlStateManager.enableAlpha();
             ghillie.setLivingAnimations(player, f6, f5, partial);
             ghillie.setRotationAngles(f6, f5, f8, yaw, f7, f4, player);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Pubgmc.MOD_ID));
+            Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
             ghillie.render(player, f6, f5, f8, yaw, f7, f4);
             GlStateManager.disableRescaleNormal();
             GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -174,9 +184,9 @@ public class RenderHandler {
     public float prepareScale(EntityPlayer player, float partial) {
         GlStateManager.enableRescaleNormal();
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
-        GlStateManager.translate(0.0F, -3.0F, 0.0F);
-        return 0.125F;
+        //GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
+        GlStateManager.translate(0.0F, -2.45F, 0.0F);
+        return 0.09F;
     }
 
     public float normalizeAndInterpolateRotation(float prev, float current, float partial) {
