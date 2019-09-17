@@ -22,7 +22,7 @@ public class BlockGunWorkbench extends PMCBlock {
         setHardness(1.2f);
         setResistance(5f);
         setHarvestLevel("pickaxe", 0);
-        setCreativeTab(Pubgmc.pmcblockstab);
+        setCreativeTab(Pubgmc.TAB_BLOCKS);
     }
 
     @Override

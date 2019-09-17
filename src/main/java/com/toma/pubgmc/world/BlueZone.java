@@ -8,11 +8,17 @@ import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.util.math.ZoneBounds;
 import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 public final class BlueZone {
 
@@ -66,11 +72,13 @@ public final class BlueZone {
         IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         Game game = gameData.getCurrentGame();
         this.prevBounds = new ZoneBounds(currentBounds);
-        this.damagePlayersOutsideZone();
+        if(game.getGameTimer() % 20 == 0) {
+            this.damagePlayersOutsideZone(world);
+        }
         if(shrinking) {
             if(currentStage == 7) {
                 if(game.getJoinedPlayers().size() < 2) {
-                    game.notifyAllPlayers(TextFormatting.ITALIC + "Match finished!");
+                    game.notifyAllPlayers(world, TextFormatting.ITALIC + "Match finished!");
                     game.stopGame(world);
                 }
                 return;
@@ -154,8 +162,22 @@ public final class BlueZone {
         final float baseSpeed = settings.speedModifier;
     }
 
-    protected void damagePlayersOutsideZone() {
-
+    // doesn't care if each player is member of current game or not, as long as he can be damaged, he will be damaged
+    // called once per second
+    protected void damagePlayersOutsideZone(World world) {
+        Iterator<EntityPlayer> iterator = world.playerEntities.iterator();
+        // TODO calculate
+        // TODO implement bluezone damage type
+        double damageModifier = settings.damagePerSecond;
+        while (iterator.hasNext()) {
+            EntityPlayer player = iterator.next();
+            if(player.posX >= minX(1.0F) && player.posX <= maxX(1.0F) && player.posZ >= minZ(1.0F) && player.posZ <= maxZ(1.0f)) {
+                continue;
+            }
+            if(!player.getIsInvulnerable()) {
+                player.attackEntityFrom(DamageSource.ON_FIRE, (float)damageModifier);
+            }
+        }
     }
 
     protected void onShrinkingFinished(World world) {

@@ -40,7 +40,7 @@ public class MeleeItemBuilder implements IBuilder<ItemSword> {
         material = EnumHelper.addToolMaterial(materialName, 0, -1, 0.0F, damage, 0);
         checkNotNull(material);
         ItemSword sword = new ItemSword(material);
-        sword.setUnlocalizedName(registryName).setRegistryName(registryName).setMaxStackSize(1).setCreativeTab(Pubgmc.pmcitemstab);
+        sword.setUnlocalizedName(registryName).setRegistryName(registryName).setMaxStackSize(1).setCreativeTab(Pubgmc.TAB_ITEMS);
         return sword;
     }
 }

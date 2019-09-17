@@ -125,7 +125,7 @@ public class CommandGame extends CommandBase {
                 if(gameData.isInactiveGame()) {
                     break;
                 }
-                sendMessage(player, "Alive players: " + game.getJoinedPlayers().size());
+                sendMessage(player, "Alive players: " + game.onlinePlayers);
                 sendMessage(player, "Time: " + (game.getGameTimer() / 20) + "s");
                 sendMessage(player, "Mode: " + game.registryName.getResourcePath());
                 if(gameData.isPlaying()) sendMessage(player, "Zone stage: " + game.zone.currentStage);

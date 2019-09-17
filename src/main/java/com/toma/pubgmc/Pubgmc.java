@@ -61,9 +61,9 @@ public class Pubgmc {
 
     /**
      * Creative Tabs
-     **/
-    public static final CreativeTabs pmcitemstab = new PMCItemsTab("pmcitemstab");
-    public static final CreativeTabs pmcblockstab = new PMCBlocksTab("pmcblockstab");
+     */
+    public static final CreativeTabs TAB_ITEMS = new PMCItemsTab("pmcitemstab");
+    public static final CreativeTabs TAB_BLOCKS = new PMCBlocksTab("pmcblockstab");
 
     private static final Random RANDOM = new Random();
 

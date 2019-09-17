@@ -22,7 +22,7 @@ public class ItemSmokeGrenade extends PMCItem {
     public ItemSmokeGrenade(String name) {
         super(name);
         this.setMaxStackSize(1);
-        this.setCreativeTab(Pubgmc.pmcitemstab);
+        this.setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 
     @Override

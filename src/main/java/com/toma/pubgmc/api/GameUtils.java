@@ -50,7 +50,7 @@ public final class GameUtils {
         Game game = gameData.getCurrentGame();
         EntityPlane plane = new EntityPlane(world, gameData);
         int joined = 0;
-        Iterator<EntityPlayer> iterator = game.getJoinedPlayers().iterator();
+        Iterator<EntityPlayer> iterator = game.getOnlinePlayers(world).iterator();
         while(iterator.hasNext()) {
             EntityPlayer player = iterator.next();
             player.inventory.clear();

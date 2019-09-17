@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class PMCBlocksTab extends CreativeTabs {
     public PMCBlocksTab(String label) {
-        super("pmcblockstab");
+        super(label);
     }
 
     public ItemStack getTabIconItem() {

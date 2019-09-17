@@ -113,11 +113,11 @@ public class RenderHandler {
             ghillie.swingProgress = player.getSwingProgress(e.getPartialRenderTick());
             boolean shouldSit = player.isRiding() && (player.getRidingEntity() != null && player.getRidingEntity().shouldRiderSit());
             boolean sneak = main.isSneak;
-            ghillie.bipedBody.offsetZ = sneak ? -0.1f : 0;
-            ghillie.bipedBody.offsetY = sneak ? 0.4f : 0;
-            ghillie.bipedHeadwear.offsetY = sneak ? 0.5f : 0;
-            ghillie.bipedRightArm.offsetY = sneak ? 0.5f : 0;
-            ghillie.bipedLeftArm.offsetY = sneak ? 0.5f : 0;
+            ghillie.bipedBody.offsetZ = sneak ? -0.028f : 0;
+            ghillie.bipedBody.offsetY = sneak ? 0.3f : 0;
+            ghillie.bipedHeadwear.offsetY = sneak ? 0.32f : 0;
+            ghillie.bipedRightArm.offsetY = sneak ? 0.23f : 0;
+            ghillie.bipedLeftArm.offsetY = sneak ? 0.23f : 0;
             ghillie.bipedRightLeg.offsetY = sneak ? 0.7f : 0.0f;
             ghillie.bipedLeftLeg.offsetY = sneak ? 0.7f : 0.0f;
             ghillie.bipedRightLeg.offsetZ = sneak ? 0.12f : 0f;

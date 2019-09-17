@@ -15,7 +15,6 @@ import com.toma.pubgmc.common.items.*;
 import com.toma.pubgmc.common.items.ItemVehicleSpawner.Vehicles;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.armor.ArmorBase.ArmorLevel;
-import com.toma.pubgmc.common.items.armor.ItemClothing;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.armor.ItemNVGoggles;
 import com.toma.pubgmc.common.items.guns.AmmoType;
@@ -140,11 +139,6 @@ public class PMCRegistry {
         public static final ItemSword CROWBAR = null;
         public static final ItemSword MACHETE = null;
         public static final ItemSword SICKLE = null;
-        //TODO remove - replace with ghillie suit
-        public static final Item GHILLIEHELMET = null;
-        public static final Item GHILLIEBODY = null;
-        public static final Item GHILLIELEGS = null;
-        public static final Item GHILLIEBOOTS = null;
         public static final Item ARMOR1HELMET = null;
         public static final Item ARMOR1BODY = null;
         public static final Item ARMOR2HELMET = null;
@@ -253,7 +247,6 @@ public class PMCRegistry {
     public static final class ToolMaterials {
         public static final ToolMaterial MATERIAL_PAN = EnumHelper.addToolMaterial("material_pan", 0, -1, 0.0F, 15.0F, 0);
         public static final ArmorMaterial GHILLIE_SUIT = EnumHelper.addArmorMaterial("ghillie_suit", Pubgmc.MOD_ID + ":ghillie_suit", -1, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
-        public static final ArmorMaterial GHILLIE = EnumHelper.addArmorMaterial("ghillie", Pubgmc.MOD_ID + ":ghillie", -1, new int[]{1, 1, 1, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
         public static final ArmorMaterial LVL1 = EnumHelper.addArmorMaterial("lvl1", Pubgmc.MOD_ID + ":lvl1", 1, new int[]{0, 0, 3, 3}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
         public static final ArmorMaterial LVL2 = EnumHelper.addArmorMaterial("lvl2", Pubgmc.MOD_ID + ":lvl2", 1, new int[]{0, 0, 6, 6}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
         public static final ArmorMaterial LVL3 = EnumHelper.addArmorMaterial("lvl3", Pubgmc.MOD_ID + ":lvl3", 1, new int[]{0, 0, 10, 10}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
@@ -376,10 +369,6 @@ public class PMCRegistry {
                     MeleeItemBuilder.create("machete").materialName("material_machete").damage(11.0F).build(),
                     MeleeItemBuilder.create("crowbar").materialName("material_crowbar").damage(9.0F).build(),
                     MeleeItemBuilder.create("sickle").materialName("material_sickle").damage(10.0F).build(),
-                    new ItemClothing("ghilliehelmet", PMCRegistry.ToolMaterials.GHILLIE, 1, EntityEquipmentSlot.HEAD),
-                    new ItemClothing("ghilliebody", PMCRegistry.ToolMaterials.GHILLIE, 1, EntityEquipmentSlot.CHEST),
-                    new ItemClothing("ghillielegs", PMCRegistry.ToolMaterials.GHILLIE, 2, EntityEquipmentSlot.LEGS),
-                    new ItemClothing("ghillieboots", PMCRegistry.ToolMaterials.GHILLIE, 1, EntityEquipmentSlot.FEET),
                     new ArmorBase("armor1helmet", PMCRegistry.ToolMaterials.LVL1, 1, EntityEquipmentSlot.HEAD).setArmorLevel(ArmorLevel.LEVEL_ONE),
                     new ArmorBase("armor1body", PMCRegistry.ToolMaterials.LVL1, 1, EntityEquipmentSlot.CHEST).setArmorLevel(ArmorLevel.LEVEL_ONE),
                     new ArmorBase("armor2helmet", PMCRegistry.ToolMaterials.LVL2, 1, EntityEquipmentSlot.HEAD).setArmorLevel(ArmorLevel.LEVEL_TWO),

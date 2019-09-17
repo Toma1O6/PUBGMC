@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 public class ItemBackpack extends PMCItem {
     public ItemBackpack(String name) {
         super(name);
-        this.setCreativeTab(Pubgmc.pmcitemstab);
+        this.setCreativeTab(Pubgmc.TAB_ITEMS);
         this.setMaxStackSize(1);
     }
 

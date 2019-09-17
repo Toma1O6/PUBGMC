@@ -11,6 +11,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -24,9 +25,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,15 +39,14 @@ import java.util.stream.Collectors;
  */
 public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
-    public BlueZone zone;
     public final ResourceLocation registryName;
-
+    public BlueZone zone;
+    public int onlinePlayers;
     protected int gameTimer;
-    protected List<EntityPlayer> joinedPlayers;
-    private List<UUID> temporaryPlayerStorage;
+    private List<UUID> playersInGame;
 
     public Game(final ResourceLocation registryName) {
-        this.joinedPlayers = new ArrayList<>();
+        this.playersInGame = new ArrayList<>();
         this.registryName = registryName;
         GameRegistry.registerGame(registryName, this);
     }
@@ -72,6 +73,15 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
     public abstract void onGameStopped(final World world, Game game);
 
     /**
+     * Called when player gets killed
+     *
+     * @param player           - the player who died
+     * @param entityLivingBase - source of death, may be null
+     * @param gun              - the weapon itemstack used to kill this player, may be EMPTY
+     */
+    public abstract void onPlayerKilled(EntityPlayer player, @Nullable EntityLivingBase entityLivingBase, ItemStack gun, boolean headshot);
+
+    /**
      * @return - new Bluezone instance
      */
     @Nonnull
@@ -79,6 +89,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
     /**
      * Decide what to do when player dies and attempts to respawn
+     *
      * @return if player should get removed from the game
      */
     public boolean respawnPlayer(final EntityPlayer player) {
@@ -105,7 +116,13 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
      */
     @SideOnly(Side.CLIENT)
     public void renderGameInfo(ScaledResolution res) {
+    }
 
+    /**
+     * At which rate (ticks) will be online player display updated, default 100 (5s)
+     */
+    public int playerCounterUpdateFrequency() {
+        return 100;
     }
 
     /* ============================================[                   API END                    ]============================================ */
@@ -113,38 +130,44 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
     public final boolean startGame(World world) {
         try {
+            playersInGame = new ArrayList<>();
             IGameData gameData = this.getGameData(world);
             this.zone = this.initializeZone(world);
             this.populatePlayerList(world);
-            if(joinedPlayers.size() < 1) {
-                throw new IllegalStateException("Cannot start game as there are no valid players");
+            this.onlinePlayers = playersInGame.size();
+            if (playersInGame.size() < 1) {
+                throw new IllegalStateException("Cannot start game because there are no valid players");
             }
             this.onGameStart(world);
             gameData.setGame(this);
             gameData.setGameID(PUBGMCUtil.generateID(7));
             gameTimer = 0;
-            if(shouldUpdateTileEntities()) {
+            if (shouldUpdateTileEntities()) {
                 GameUtils.updateLoadedTileEntities(world, this, true);
             }
         } catch (Exception e) {
-            Pubgmc.logger.fatal(e.getMessage()  + " => aborting game start!");
+            e.printStackTrace();
+            Pubgmc.logger.fatal(e.getMessage() + " => aborting game start!");
             return false;
         }
         return true;
     }
 
+    public final void updatePlayerCounter(World world) {
+        this.onlinePlayers = playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).collect(Collectors.toList()).size();
+    }
+
     public final void tickGame(World world) {
         try {
             IGameData gameData = this.getGameData(world);
-            if(gameData.isPlaying()) {
-                if(temporaryPlayerStorage != null) {
-                    temporaryPlayerStorage.forEach(uuid -> joinedPlayers.add(world.getPlayerEntityByUUID(uuid)));
-                    temporaryPlayerStorage = null;
-                    joinedPlayers = joinedPlayers.stream().filter(Objects::nonNull).collect(Collectors.toList());
-                }
+            if (gameData.isPlaying()) {
                 ++gameTimer;
                 this.onGameTick(world);
                 this.zone.bluezoneTick(world);
+                if (gameTimer % playerCounterUpdateFrequency() == 0) {
+                    updatePlayerCounter(world);
+                    updateDataToClients(world);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,35 +179,45 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
     public final void stopGame(World world) {
         IGameData data = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-        if(data != null && data.getLobby() != null && data.getLobby().center.getY() > 0) {
+        if (data != null && data.getLobby() != null && data.getLobby().center.getY() > 0) {
             BlockPos pos = data.getLobby().center;
-            joinedPlayers.forEach(p -> teleportEntityTo(p, pos.getX(), pos.getY() + 1, pos.getZ()));
+            Iterator<UUID> it = playersInGame.iterator();
+            while (it.hasNext()) {
+                UUID uuid = it.next();
+                EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                if (player != null) {
+                    teleportEntityTo(player, pos.getX(), pos.getY() + 1, pos.getZ());
+                }
+                it.remove();
+            }
             data.setPlaying(false);
+            playersInGame = null;
             this.onGameStopped(world, data.getCurrentGame());
             updateDataToClients(world);
         }
     }
 
-    public final void onPlayerRespawning(EntityPlayer player) {
-        if(joinedPlayers.contains(player)) {
-            boolean remove = this.respawnPlayer(player);
-            if(remove) {
-                joinedPlayers.remove(player);
-                this.updateDataToClients(player.world);
-            }
-        }
+    @Deprecated
+    public final void playerLoggingIn(EntityPlayer player) {
+    // no purpose for this right now, might be useless
     }
 
-    public final List<EntityPlayer> getJoinedPlayers() {
-        return joinedPlayers;
+    public final List<UUID> getJoinedPlayers() {
+        return playersInGame;
     }
 
     public final int getGameTimer() {
         return gameTimer;
     }
 
-    public void notifyAllPlayers(String message) {
-        joinedPlayers.forEach(p -> p.sendMessage(new TextComponentString(message)));
+    public final List<EntityPlayer> getOnlinePlayers(World world) {
+        List<EntityPlayer> list = new ArrayList<>();
+        playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).forEach(uuid -> list.add(world.getPlayerEntityByUUID(uuid)));
+        return list;
+    }
+
+    public void notifyAllPlayers(World world, String message) {
+        playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).forEach(uuid -> world.getPlayerEntityByUUID(uuid).sendMessage(new TextComponentString(message)));
     }
 
     public final void updateDataToClients(World world) {
@@ -198,11 +231,14 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
+        if (playersInGame == null) {
+            playersInGame = new ArrayList<>();
+        }
         nbt.setInteger("timer", gameTimer);
         NBTTagList uuidList = new NBTTagList();
-        joinedPlayers.forEach(p -> uuidList.appendTag(new NBTTagString(p.getUniqueID().toString())));
+        playersInGame.forEach(uuid -> uuidList.appendTag(new NBTTagString(uuid.toString())));
         nbt.setTag("players", uuidList);
-        if(zone != null) {
+        if (zone != null) {
             nbt.setTag("zone", zone.serializeNBT());
         }
         return nbt;
@@ -210,12 +246,11 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        temporaryPlayerStorage = new ArrayList<>();
-        joinedPlayers.clear();
+        playersInGame = new ArrayList<>();
         gameTimer = nbt.getInteger("timer");
         NBTTagList uuids = nbt.getTagList("players", Constants.NBT.TAG_STRING);
-        uuids.forEach(tag -> temporaryPlayerStorage.add(UUID.fromString(((NBTTagString) tag).getString())));
-        if(nbt.hasKey("zone")) {
+        uuids.forEach(tag -> playersInGame.add(UUID.fromString(((NBTTagString) tag).getString())));
+        if (nbt.hasKey("zone")) {
             zone = BlueZone.fromNBT(nbt.getCompoundTag("zone"));
         }
     }

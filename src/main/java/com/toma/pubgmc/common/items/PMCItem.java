@@ -18,7 +18,7 @@ public class PMCItem extends Item {
     public PMCItem(String name) {
         setUnlocalizedName(name);
         setRegistryName(name);
-        setCreativeTab(Pubgmc.pmcitemstab);
+        setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 
     public Item addDescription(String... strings) {

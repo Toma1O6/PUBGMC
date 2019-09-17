@@ -34,11 +34,19 @@ public class DamageSourceGun extends EntityDamageSourceIndirect {
 
     @Override
     public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn) {
-        TextComponentString message = null;
         GunBase gun = (GunBase) weapon.getItem();
         String[] s = getMessageType();
         int i = rand.nextInt(s.length);
-        return message = new TextComponentString(source.getName() + " " + s[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
+        return new TextComponentString(source.getName() + " " + s[i] + " " + indirect.getName() + " using " + weapon.getDisplayName());
+    }
+
+    @Nullable
+    public ItemStack getGun() {
+        return weapon.getItem() instanceof GunBase ? weapon : ItemStack.EMPTY;
+    }
+
+    public boolean wasHeadshot() {
+        return headshot;
     }
 
     @Override

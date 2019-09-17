@@ -4,6 +4,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketChooseLocation;
 import com.toma.pubgmc.util.PUBGMCUtil;
@@ -13,6 +14,9 @@ import com.toma.pubgmc.world.BlueZone;
 import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
@@ -27,9 +31,11 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 public class GameBattleRoyale extends Game {
 
@@ -54,6 +60,7 @@ public class GameBattleRoyale extends Game {
         IGameData gameData = this.getGameData(world);
         zoneTimer = 0;
         scheduledAirdrops.clear();
+        List<EntityPlayer> joinedPlayers = this.getOnlinePlayers(world);
         joinedPlayers.forEach(p -> {
             for(MapLocation location : gameData.getSpawnLocations()) {
                 TextComponentString msg = new TextComponentString("- " + location.name());
@@ -76,6 +83,20 @@ public class GameBattleRoyale extends Game {
     }
 
     @Override
+    public void onPlayerKilled(EntityPlayer player, @Nullable EntityLivingBase entityLivingBase, ItemStack gun, boolean headshot) {
+        TextComponentString deathMessage = new TextComponentString(entityLivingBase == null ? "You have been killed!" : "You have been killed by " + entityLivingBase.getDisplayName() + (gun != null ?
+                " using " + gun.getDisplayName() + "!" + (headshot ? "(headshot)" : "" ) : "!"));
+        player.sendMessage(deathMessage);
+        if(entityLivingBase != null) {
+            int range = (int)PUBGMCUtil.getDistanceToBlockPos(player.getPosition(), entityLivingBase.getPosition());
+            TextComponentString killerMSG = new TextComponentString("You have killed " + player.getDisplayName() + " [" + range + "m]");
+            TextComponentString msgForOthers = new TextComponentString(player.getDisplayName() + (entityLivingBase == null ? "has been killed!" : "has been killed by ") + entityLivingBase.getDisplayName() + (gun != null ?
+                    " using " + gun.getDisplayName() + "!" + (headshot ? "(headshot)" : "" ) : "!"));
+            getOnlinePlayers(player.world).stream().filter(p -> p.equals(player) || p.equals(entityLivingBase)).forEach(p -> p.sendMessage(msgForOthers));
+        }
+    }
+
+    @Override
     public void onGameStopped(World world, Game game) {
         if(hadRegenActive) {
             world.getGameRules().setOrCreateGameRule("naturalRegeneration", "true");
@@ -84,7 +105,7 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public void populatePlayerList(World world) {
-        joinedPlayers.addAll(world.playerEntities);
+        world.playerEntities.forEach(p -> this.getJoinedPlayers().add(p.getUniqueID()));
     }
 
     @Override
@@ -115,7 +136,7 @@ public class GameBattleRoyale extends Game {
     @Override
     public void renderGameInfo(ScaledResolution res) {
         Minecraft mc = Minecraft.getMinecraft();
-        mc.fontRenderer.drawStringWithShadow("Players left: " + joinedPlayers.size(), 10, 10, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow("Players left: " + onlinePlayers, 10, 10, 0xFFFFFF);
         int time = zone.currentStage == 0 ? 200 : 200;
         int timeleft = time/20 - zoneTimer/20;
         mc.fontRenderer.drawStringWithShadow("Airdrop in " + timeleft + "s", 100, 10, 0xFFFFFF);
@@ -155,7 +176,7 @@ public class GameBattleRoyale extends Game {
             if(y > 255) y = 255;
             BlockPos airdrop = new BlockPos(min.x + x, y, min.z + z);
             scheduledAirdrops.add(airdrop);
-            this.notifyAllPlayers(TextFormatting.BOLD + "Airdrop is appearing at [ " + airdrop.getX() + " ; " + airdrop.getZ() + " ]! Hurry up!");
+            this.notifyAllPlayers(world, TextFormatting.BOLD + "Airdrop is appearing at [ " + airdrop.getX() + " ; " + airdrop.getZ() + " ]! Hurry up!");
             hasDroppedOnce = true;
         }
     }

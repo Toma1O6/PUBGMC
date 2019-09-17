@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 public class ItemParachute extends PMCItem {
     public ItemParachute(String name) {
         super(name);
-        setCreativeTab(Pubgmc.pmcitemstab);
+        setCreativeTab(Pubgmc.TAB_ITEMS);
         setMaxStackSize(1);
     }
 

@@ -8,6 +8,6 @@ public class ItemPan extends ItemSword {
         super(material);
         setUnlocalizedName(name);
         setRegistryName(name);
-        setCreativeTab(Pubgmc.pmcitemstab);
+        setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 }

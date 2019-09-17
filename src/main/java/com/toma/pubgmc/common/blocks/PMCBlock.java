@@ -19,7 +19,7 @@ public class PMCBlock extends Block {
         super(material);
         setUnlocalizedName(name);
         setRegistryName(name);
-        setCreativeTab(Pubgmc.pmcblockstab);
+        setCreativeTab(Pubgmc.TAB_BLOCKS);
         PMCRegistry.Registry.registerItemBlock(this);
         this.setHardness(0.7f);
     }

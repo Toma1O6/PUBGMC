@@ -26,7 +26,7 @@ public class ItemGrenade extends PMCItem {
     public ItemGrenade(String name) {
         super(name);
         setMaxStackSize(1);
-        setCreativeTab(Pubgmc.pmcitemstab);
+        setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 
     @Override

@@ -12,7 +12,7 @@ public class ArmorBase extends ItemArmor {
         super(materialIn, renderIndexIn, equipmentSlotIn);
         setUnlocalizedName(name);
         setRegistryName(name);
-        setCreativeTab(Pubgmc.pmcitemstab);
+        setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 
     public ArmorBase setArmorLevel(ArmorLevel level) {

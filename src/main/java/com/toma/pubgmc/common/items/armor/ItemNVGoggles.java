@@ -16,7 +16,7 @@ public class ItemNVGoggles extends PMCItem {
     public ItemNVGoggles(String name) {
         super(name);
         this.setMaxStackSize(1);
-        this.setCreativeTab(Pubgmc.pmcitemstab);
+        this.setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 
     @Override
