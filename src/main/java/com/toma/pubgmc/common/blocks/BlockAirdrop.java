@@ -15,6 +15,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class BlockAirdrop extends PMCBlock {
     private MapColor color;
 
@@ -22,6 +24,11 @@ public class BlockAirdrop extends PMCBlock {
         super(name, material);
         this.setSoundType(sound);
         this.color = color;
+    }
+
+    @Override
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+        worldIn.setBlockToAir(pos);
     }
 
     @Override

@@ -18,7 +18,10 @@ public class GameInactive extends Game {
 
     @Override
     public void populatePlayerList(World world) {
+    }
 
+    @Override
+    public void onGameStopped(World world, Game game) {
     }
 
     @Override

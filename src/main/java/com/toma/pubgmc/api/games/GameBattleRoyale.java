@@ -35,6 +35,7 @@ public class GameBattleRoyale extends Game {
 
     private int zoneTimer;
     private List<BlockPos> scheduledAirdrops = new ArrayList<>();
+    private boolean hadRegenActive = false;
 
     public GameBattleRoyale(ResourceLocation resourceLocation) {
         super(resourceLocation);
@@ -70,6 +71,15 @@ public class GameBattleRoyale extends Game {
                 p.sendMessage(msg);
             }
         });
+        hadRegenActive = world.getGameRules().getBoolean("naturalRegeneration");
+        world.getGameRules().setOrCreateGameRule("naturalRegeneration", "false");
+    }
+
+    @Override
+    public void onGameStopped(World world, Game game) {
+        if(hadRegenActive) {
+            world.getGameRules().setOrCreateGameRule("naturalRegeneration", "true");
+        }
     }
 
     @Override
@@ -118,6 +128,7 @@ public class GameBattleRoyale extends Game {
         NBTTagList scheduledDrops = new NBTTagList();
         scheduledAirdrops.forEach(p -> scheduledDrops.appendTag(NBTUtil.createPosTag(p)));
         nbt.setTag("scheduledAirdrops", scheduledDrops);
+        nbt.setBoolean("regen", hadRegenActive);
         return nbt;
     }
 
@@ -128,6 +139,7 @@ public class GameBattleRoyale extends Game {
         zoneTimer = nbt.getInteger("zoneTimer");
         NBTTagList list = nbt.getTagList("scheduledAirdrops", Constants.NBT.TAG_COMPOUND);
         list.forEach(tag -> scheduledAirdrops.add(NBTUtil.getPosFromTag((NBTTagCompound) tag)));
+        hadRegenActive = nbt.getBoolean("regen");
     }
 
     private void scheduleAirdrop(World world) {

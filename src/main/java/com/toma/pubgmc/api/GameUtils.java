@@ -30,10 +30,10 @@ public final class GameUtils {
                     } catch (Exception e) {
                         Pubgmc.logger.fatal("Fatal error occurred when updating {}, aborting update!", tileEntity);
                     }
-                    return;
+                    continue;
                 }
                 if(te.getGameHash().equals(gameData.getGameID())) {
-                    return;
+                    continue;
                 }
                 te.setGameHash(gameData.getGameID());
                 try {

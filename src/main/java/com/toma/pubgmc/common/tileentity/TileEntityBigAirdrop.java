@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEntity, ITickable, IAirdropTileEntity {
+public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEntity, ITickable, IAirdropTileEntity, IGameTileEntity {
     private static final Random RANDOM = new Random();
     //LOOT GEN
     private static final List<ItemStack> WEAPONS = new ArrayList<ItemStack>();
@@ -158,22 +159,28 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 
     @Override
     public void update() {
-        if(ConfigPMC.common.world.airdropRange < 0) {
-            return;
-        }
-        timer++;
-
-        if (timer >= 3 && world.isRemote) {
+        if (timer++ >= 3 && world.isRemote && !inventory.isEmpty()) {
             timer = 0;
             world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.5, pos.getY() + 1.3, pos.getZ() + 0.5, 0.1, 0.06, 0.1, 0);
             world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.4, pos.getY() + 1.3, pos.getZ() + 0.6, 0.09, 0.04, 0.11, 0);
             world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.6, pos.getY() + 1.3, pos.getZ() + 0.4, 0.11, 0.05, 0.09, 0);
         }
+    }
 
-        if (!world.isRemote) {
-            if (world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(), ConfigPMC.common.world.airdropRange, false) == null) {
-                world.setBlockToAir(pos);
-            }
-        }
+    private String hash;
+
+    @Override
+    public void setGameHash(String hash) {
+        this.hash = hash;
+    }
+
+    @Override
+    public String getGameHash() {
+        return hash;
+    }
+
+    @Override
+    public void onLoaded() {
+        world.scheduleBlockUpdate(pos, blockType, 3, 0);
     }
 }

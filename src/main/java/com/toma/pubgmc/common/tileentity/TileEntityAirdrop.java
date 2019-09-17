@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TileEntityAirdrop extends TileEntity implements IInventory, ITickable, IAirdropTileEntity {
+public class TileEntityAirdrop extends TileEntity implements IInventory, ITickable, IAirdropTileEntity, IGameTileEntity {
     private static final List<ItemStack> ATTACHMENTS = new ArrayList<ItemStack>();
     private static final List<ItemStack> HEALS = new ArrayList<ItemStack>();
     private final Random rand = new Random();
@@ -282,24 +283,30 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 
     @Override
     public void update() {
-        if(ConfigPMC.common.world.airdropRange < 0) {
-            return;
-        }
         if (world.isRemote) {
-            i++;
-
-            if (i >= 2) {
+            if (i++ >= 2 && !inventory.isEmpty()) {
                 i = 0;
                 world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 0.1, 0.06, 0.1, 0);
                 world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.4, pos.getY() + 1.1, pos.getZ() + 0.6, 0.09, 0.04, 0.11, 0);
                 world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.6, pos.getY() + 1.1, pos.getZ() + 0.4, 0.11, 0.05, 0.09, 0);
             }
         }
+    }
 
-        if (!world.isRemote) {
-            if (world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ConfigPMC.common.world.airdropRange, false) == null) {
-                world.setBlockToAir(pos);
-            }
-        }
+    private String hash = "EMPTY";
+
+    @Override
+    public void setGameHash(String hash) {
+        this.hash = hash;
+    }
+
+    @Override
+    public String getGameHash() {
+        return hash;
+    }
+
+    @Override
+    public void onLoaded() {
+        world.scheduleBlockUpdate(pos, PMCRegistry.PMCBlocks.AIRDROP, 3, 0);
     }
 }

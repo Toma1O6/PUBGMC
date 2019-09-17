@@ -86,7 +86,6 @@ public class CommandGame extends CommandBase {
                     throw new CommandException("There is no active game!");
                 }
                 gameData.getCurrentGame().stopGame(sender.getEntityWorld());
-                gameData.setPlaying(false);
                 sendCommandFeedback(sender, "Stopped game");
                 gameData.getCurrentGame().updateDataToClients(sender.getEntityWorld());
                 break;

@@ -12,11 +12,6 @@ public final class CFGWorld implements INBTSerializable<NBTTagCompound> {
     @Config.Name("Allow gun loot")
     public boolean enableGunLoot = true;
 
-    @Config.Name("Airdrop range")
-    @Config.Comment({"If there are no players in specified radius around the drop, it will despawn","Set this to -1 to disable despawning"})
-    @Config.RangeInt(min = -1, max = 200)
-    public int airdropRange = 40;
-
     @Config.Name("Airdrop loot")
     public CFGEnumAirdropLoot airdropLoot = CFGEnumAirdropLoot.ALL;
 
@@ -41,7 +36,6 @@ public final class CFGWorld implements INBTSerializable<NBTTagCompound> {
         NBTTagCompound c = new NBTTagCompound();
         c.setBoolean("vehicles", vehicleSpawning);
         c.setBoolean("gunLoot", enableGunLoot);
-        c.setInteger("airdropRange", airdropRange);
         c.setInteger("airdropLoot", airdropLoot.ordinal());
         c.setBoolean("guns", gunsEnabled);
         c.setInteger("planeHeight", planeHeight);
@@ -54,7 +48,6 @@ public final class CFGWorld implements INBTSerializable<NBTTagCompound> {
     public void deserializeNBT(NBTTagCompound nbt) {
         vehicleSpawning = nbt.getBoolean("vehicles");
         enableGunLoot = nbt.getBoolean("gunLoot");
-        airdropRange = nbt.getInteger("airdropRange");
         airdropLoot = CFGEnumAirdropLoot.values()[nbt.getInteger("airdropLoot")];
         gunsEnabled = nbt.getBoolean("guns");
         planeHeight = nbt.getInteger("planeHeight");

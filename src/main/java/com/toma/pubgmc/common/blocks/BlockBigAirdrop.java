@@ -15,6 +15,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class BlockBigAirdrop extends PMCBlock {
     private static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(-1.4d, 0d, -1.4d, 1.5d, 1.4d, 1.4d);
 
@@ -25,6 +27,11 @@ public class BlockBigAirdrop extends PMCBlock {
         setHarvestLevel("pickaxe", 1);
         setLightOpacity(0);
         setCreativeTab(Pubgmc.pmcblockstab);
+    }
+
+    @Override
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+        worldIn.setBlockToAir(pos);
     }
 
     @Override

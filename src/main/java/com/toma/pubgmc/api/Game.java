@@ -67,6 +67,11 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
     public abstract void onGameTick(final World world);
 
     /**
+     * Called when game is getting stopped
+     */
+    public abstract void onGameStopped(final World world, Game game);
+
+    /**
      * @return - new Bluezone instance
      */
     @Nonnull
@@ -155,6 +160,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
             BlockPos pos = data.getLobby().center;
             joinedPlayers.forEach(p -> teleportEntityTo(p, pos.getX(), pos.getY() + 1, pos.getZ()));
             data.setPlaying(false);
+            this.onGameStopped(world, data.getCurrentGame());
             updateDataToClients(world);
         }
     }

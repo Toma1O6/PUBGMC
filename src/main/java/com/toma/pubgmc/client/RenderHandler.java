@@ -118,8 +118,8 @@ public class RenderHandler {
             ghillie.bipedHeadwear.offsetY = sneak ? 0.5f : 0;
             ghillie.bipedRightArm.offsetY = sneak ? 0.5f : 0;
             ghillie.bipedLeftArm.offsetY = sneak ? 0.5f : 0;
-            ghillie.bipedRightLeg.offsetY = sneak ? 0.7f : 0.2f;
-            ghillie.bipedLeftLeg.offsetY = sneak ? 0.7f : 0.2f;
+            ghillie.bipedRightLeg.offsetY = sneak ? 0.7f : 0.0f;
+            ghillie.bipedLeftLeg.offsetY = sneak ? 0.7f : 0.0f;
             ghillie.bipedRightLeg.offsetZ = sneak ? 0.12f : 0f;
             ghillie.bipedLeftLeg.offsetZ = sneak ? 0.12f : 0f;
             ghillie.isRiding = shouldSit;
@@ -184,9 +184,9 @@ public class RenderHandler {
     public float prepareScale(EntityPlayer player, float partial) {
         GlStateManager.enableRescaleNormal();
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-        //GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
-        GlStateManager.translate(0.0F, -2.45F, 0.0F);
-        return 0.09F;
+        GlStateManager.scale(1.9F, 1.9F, 1.9F);
+        GlStateManager.translate(0.0F, -1.5F, 0.0F);
+        return 0.0625F;
     }
 
     public float normalizeAndInterpolateRotation(float prev, float current, float partial) {
