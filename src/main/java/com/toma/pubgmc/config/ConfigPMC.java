@@ -3,10 +3,9 @@ package com.toma.pubgmc.config;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.config.client.ClientConfig;
 import com.toma.pubgmc.config.common.CommonConfig;
-import com.toma.pubgmc.util.VehicleConfiguration;
-import io.netty.buffer.ByteBuf;
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.Config.*;
+import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.Type;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,8 +20,10 @@ public class ConfigPMC {
     @Name("Common options")
     public static CommonConfig common = new CommonConfig();
 
+
     @Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
     public static class Synchronization {
+
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent e) {
             if (e.getModID().equals(Pubgmc.MOD_ID)) {

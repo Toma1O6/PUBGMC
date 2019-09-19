@@ -27,4 +27,9 @@ public interface IBuilder<RESULT> {
         if (bool != expectedValue)
             throw new IllegalArgumentException(bool + " is not equal the " + expectedValue);
     }
+
+    default void checkBoolean(boolean bool) throws IllegalArgumentException {
+        if (!bool)
+            throw new IllegalArgumentException(bool + " is not true!");
+    }
 }

@@ -3,6 +3,7 @@ package com.toma.pubgmc.world;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.util.math.ZoneBounds;
@@ -17,8 +18,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
 public final class BlueZone {
 
@@ -31,6 +30,7 @@ public final class BlueZone {
 
     private boolean shrinking;
     private double shrinkX, shrinkZ, shrinkXn, shrinkZn;
+    private float currentDamageMultiplier;
 
     public BlueZone() {
         this(0, new BlockPos(0, 0, 0), ZoneSettings.Builder.create().speed(0.1F).damage(0.1F).build());
@@ -81,7 +81,6 @@ public final class BlueZone {
                     game.notifyAllPlayers(world, TextFormatting.ITALIC + "Match finished!");
                     game.stopGame(world);
                 }
-                return;
             }
             this.shrinkCurrentZone(world);
         }
@@ -183,6 +182,7 @@ public final class BlueZone {
     protected void onShrinkingFinished(World world) {
         shrinking = false;
         currentBounds = new ZoneBounds(nextBounds);
+        this.currentDamageMultiplier = (float)(settings.damagePerSecond * Math.pow(2, currentStage));
         if(currentStage < 7) {
             ++currentStage;
             this.calculateNextZone(world);
@@ -199,7 +199,8 @@ public final class BlueZone {
     }
 
     private void calculateNextZone(World world) {
-        int newDiameter = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getMapSize() / (int)(Math.pow(2, currentStage));
+        float modifier = settings.shrinkModifiers[currentStage];
+        int newDiameter = (int)(world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getMapSize() * modifier);
         if(settings.alwaysCentered) {
             ZonePos start = new ZonePos(origin.getX() - newDiameter, origin.getZ() - newDiameter);
             ZonePos end = new ZonePos(origin.getX() + newDiameter, origin.getZ() + newDiameter);
