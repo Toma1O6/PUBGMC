@@ -46,4 +46,9 @@ public class GameInactive extends Game {
     public boolean shouldUpdateTileEntities() {
         return false;
     }
+
+    @Override
+    public boolean shouldCreateDeathCrate() {
+        return false;
+    }
 }

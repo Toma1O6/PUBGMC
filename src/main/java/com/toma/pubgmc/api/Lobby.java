@@ -17,7 +17,7 @@ public final class Lobby {
 
     public boolean isInLobby(EntityPlayer player) {
         BlockPos playerPos = player.getPosition();
-        return Math.abs(center.getX() - playerPos.getX()) >= radius && Math.abs(center.getZ() - playerPos.getZ()) >= radius;
+        return Math.abs(center.getX() - playerPos.getX()) <= radius && Math.abs(center.getZ() - playerPos.getZ()) <= radius;
     }
 
     public static NBTTagCompound toNBT(Lobby lobby) {

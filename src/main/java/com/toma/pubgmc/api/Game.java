@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Game creation API
@@ -90,10 +89,15 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
     /**
      * Decide what to do when player dies and attempts to respawn
      *
-     * @return if player should get removed from the game
+     * @return if player should return into the game
      */
     public boolean respawnPlayer(final EntityPlayer player) {
         return false;
+    }
+
+    /** If player death crate will be created on player death **/
+    public boolean shouldCreateDeathCrate() {
+        return true;
     }
 
     /**
@@ -154,7 +158,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
     }
 
     public final void updatePlayerCounter(World world) {
-        this.onlinePlayers = playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).collect(Collectors.toList()).size();
+        this.onlinePlayers = (int) playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).count();
     }
 
     public final void tickGame(World world) {
@@ -195,11 +199,6 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
             this.onGameStopped(world, data.getCurrentGame());
             updateDataToClients(world);
         }
-    }
-
-    @Deprecated
-    public final void playerLoggingIn(EntityPlayer player) {
-    // no purpose for this right now, might be useless
     }
 
     public final List<UUID> getJoinedPlayers() {

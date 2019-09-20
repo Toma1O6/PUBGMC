@@ -1,5 +1,7 @@
 package com.toma.pubgmc.common.commands;
 
+import com.toma.pubgmc.api.Lobby;
+import com.toma.pubgmc.common.capability.IGameData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -27,15 +29,20 @@ public class CommandLeave extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length == 0) {
             World world = sender.getEntityWorld();
-            BlockPos sp = world.getSpawnPoint();
             Entity e = sender.getCommandSenderEntity();
             if (e instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) e;
-                if(world.getSpawnPoint() == null) {
+                Lobby lobby = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getLobby();
+                BlockPos pos = null;
+                if(lobby == null) {
+                    warnPlayer(player);
+                    pos = lobby.center;
+                } else if(world.getSpawnPoint() == null) {
                     warnPlayer(player);
                     return;
                 }
-                player.attemptTeleport(sp.getX() + 0.5, sp.getY() + 1, sp.getZ() + 0.5);
+                if(pos == null) pos = world.getSpawnPoint();
+                player.attemptTeleport(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
                 player.sendMessage(new TextComponentString(TextFormatting.GREEN + "You have been teleported back to lobby."));
             }
 
@@ -48,6 +55,6 @@ public class CommandLeave extends CommandBase {
     }
 
     private void warnPlayer(EntityPlayer player) {
-        player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to locate world spawn. Create new: /setworldspawn!"));
+        player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to locate lobby/world spawn. Create new: /setworldspawn!"));
     }
 }

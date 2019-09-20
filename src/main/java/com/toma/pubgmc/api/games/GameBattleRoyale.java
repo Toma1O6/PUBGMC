@@ -3,8 +3,9 @@ package com.toma.pubgmc.api.games;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.common.items.guns.GunBase;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketChooseLocation;
 import com.toma.pubgmc.util.PUBGMCUtil;
@@ -35,7 +36,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 public class GameBattleRoyale extends Game {
 
@@ -62,6 +62,9 @@ public class GameBattleRoyale extends Game {
         scheduledAirdrops.clear();
         List<EntityPlayer> joinedPlayers = this.getOnlinePlayers(world);
         joinedPlayers.forEach(p -> {
+            p.setHealth(20.0F);
+            p.getFoodStats().setFoodLevel(20);
+            p.getFoodStats().setFoodSaturationLevel(15000.0F);
             for(MapLocation location : gameData.getSpawnLocations()) {
                 TextComponentString msg = new TextComponentString("- " + location.name());
                 msg.setStyle(msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "") {
@@ -101,6 +104,7 @@ public class GameBattleRoyale extends Game {
         if(hadRegenActive) {
             world.getGameRules().setOrCreateGameRule("naturalRegeneration", "true");
         }
+        this.getOnlinePlayers(world).forEach(player -> player.getFoodStats().setFoodSaturationLevel(15.0F));
     }
 
     @Override
@@ -109,17 +113,29 @@ public class GameBattleRoyale extends Game {
     }
 
     @Override
+    public boolean respawnPlayer(EntityPlayer player) {
+        Lobby lobby = this.getGameData(player.world).getLobby();
+        BlockPos pos = lobby.center;
+        player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+        IPlayerData data = IPlayerData.PlayerData.get(player);
+        data.setBoost(0F);
+        data.setBackpackLevel(0);
+        data.hasEquippedNV(false);
+        return super.respawnPlayer(player);
+    }
+
+    @Override
     public void onGameTick(World world) {
         if(!zone.isShrinking()) {
             zoneTimer++;
             if(zone.currentStage == 0) {
-                if(zoneTimer >= 200) {
+                if(zoneTimer >= 2400) {
                     zone.notifyFirstZoneCreation(world);
                     this.scheduleAirdrop(world);
                     zoneTimer = 0;
                 }
             }
-            else if(zoneTimer >= 200) {
+            else if(zoneTimer >= 2000) {
                 zone.shrink();
                 if(zone.currentStage < 5) {
                     this.scheduleAirdrop(world);
@@ -136,10 +152,12 @@ public class GameBattleRoyale extends Game {
     @Override
     public void renderGameInfo(ScaledResolution res) {
         Minecraft mc = Minecraft.getMinecraft();
-        mc.fontRenderer.drawStringWithShadow("Players left: " + onlinePlayers, 10, 10, 0xFFFFFF);
-        int time = zone.currentStage == 0 ? 200 : 200;
-        int timeleft = time/20 - zoneTimer/20;
-        mc.fontRenderer.drawStringWithShadow("Airdrop in " + timeleft + "s", 100, 10, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow("Players left: " + onlinePlayers, res.getScaledWidth() - 85, 10, 0xFFFFFF);
+        boolean shrink = zone.isShrinking();
+        int ticksLeft = zone.currentStage == 0 ? 2400 : 2000;
+        int secs = (ticksLeft-zoneTimer)/20;
+        mc.fontRenderer.drawStringWithShadow("Zone: ", 10, 10, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow(shrink ? "Shrinking.." : (zone.currentStage > 0 ? "Shrinking in " + secs + "s" : "-"), 40, 10, shrink ? 0xFF2323 : 0x23FF23);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class MapLocation implements INBTSerializable<NBTTagCompound> {
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         name = nbt.getString("name");
-        pos = NBTUtil.getPosFromTag(nbt);
+        pos = NBTUtil.getPosFromTag(nbt.getCompoundTag("position"));
     }
 
     @Override

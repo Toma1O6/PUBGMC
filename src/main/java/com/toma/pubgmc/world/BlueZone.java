@@ -3,7 +3,7 @@ package com.toma.pubgmc.world;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.util.math.ZoneBounds;
@@ -12,12 +12,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-
-import java.util.Iterator;
 
 public final class BlueZone {
 
@@ -41,6 +38,7 @@ public final class BlueZone {
         this.origin = center;
         this.currentBounds = new ZoneBounds(center.getX() - mapSize, center.getZ() - mapSize, center.getX() + mapSize, center.getZ() + mapSize);
         this.prevBounds = new ZoneBounds(currentBounds);
+        this.currentDamageMultiplier = settings.damagePerSecond;
     }
 
     public BlueZone(IGameData gameData, ZoneSettings settings) {
@@ -49,8 +47,8 @@ public final class BlueZone {
 
     public void notifyFirstZoneCreation(World world) {
         if(nextBounds == null) {
-            ++currentStage;
             calculateNextZone(world);
+            ++currentStage;
         }
     }
 
@@ -151,30 +149,23 @@ public final class BlueZone {
         zone.shrinkZ = nbt.getDouble("zMin");
         zone.shrinkXn = nbt.getDouble("xMax");
         zone.shrinkZn = nbt.getDouble("zMax");
+        zone.currentDamageMultiplier = (float)(zone.settings.damagePerSecond * Math.pow(2, zone.currentStage));
         if(nbt.hasKey("planned")) {
             zone.nextBounds = ZoneBounds.fromNBT(nbt.getCompoundTag("planned"));
         }
         return zone;
     }
 
-    protected void shrinkZonePartially() {
-        final float baseSpeed = settings.speedModifier;
-    }
-
     // doesn't care if each player is member of current game or not, as long as he can be damaged, he will be damaged
     // called once per second
     protected void damagePlayersOutsideZone(World world) {
-        Iterator<EntityPlayer> iterator = world.playerEntities.iterator();
-        // TODO calculate
-        // TODO implement bluezone damage type
-        double damageModifier = settings.damagePerSecond;
-        while (iterator.hasNext()) {
-            EntityPlayer player = iterator.next();
-            if(player.posX >= minX(1.0F) && player.posX <= maxX(1.0F) && player.posZ >= minZ(1.0F) && player.posZ <= maxZ(1.0f)) {
+        for (EntityPlayer player : world.playerEntities) {
+            boolean inLobby = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getLobby().isInLobby(player);
+            if (inLobby || player.posX >= minX(1.0F) && player.posX <= maxX(1.0F) && player.posZ >= minZ(1.0F) && player.posZ <= maxZ(1.0f)) {
                 continue;
             }
-            if(!player.getIsInvulnerable()) {
-                player.attackEntityFrom(DamageSource.ON_FIRE, (float)damageModifier);
+            if (!player.getIsInvulnerable()) {
+                player.attackEntityFrom(PMCDamageSources.ZONE, currentDamageMultiplier);
             }
         }
     }
@@ -182,10 +173,9 @@ public final class BlueZone {
     protected void onShrinkingFinished(World world) {
         shrinking = false;
         currentBounds = new ZoneBounds(nextBounds);
-        this.currentDamageMultiplier = (float)(settings.damagePerSecond * Math.pow(2, currentStage));
         if(currentStage < 7) {
-            ++currentStage;
             this.calculateNextZone(world);
+            ++currentStage;
         } else {
             ZonePos prevStart = currentBounds.min();
             ZonePos prevEnd = currentBounds.max();
@@ -196,11 +186,13 @@ public final class BlueZone {
             ZonePos centerEndModified = new ZonePos(centered.x + 0.25F, centered.z + 0.25F);
             nextBounds = new ZoneBounds(centerStartModified, centerEndModified);
         }
+        this.currentDamageMultiplier = (float)(settings.damagePerSecond * Math.pow(2, currentStage));
     }
 
     private void calculateNextZone(World world) {
         float modifier = settings.shrinkModifiers[currentStage];
         int newDiameter = (int)(world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getMapSize() * modifier);
+        System.out.println(newDiameter + " /// " + modifier);
         if(settings.alwaysCentered) {
             ZonePos start = new ZonePos(origin.getX() - newDiameter, origin.getZ() - newDiameter);
             ZonePos end = new ZonePos(origin.getX() + newDiameter, origin.getZ() + newDiameter);

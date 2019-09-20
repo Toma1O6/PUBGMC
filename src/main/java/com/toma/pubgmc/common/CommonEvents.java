@@ -84,7 +84,7 @@ public class CommonEvents {
             case OUTDATED: {
                 sendMessage(player, "[PUBGMC] You are using old version! Get a new one.", TextFormatting.YELLOW);
                 TextComponentString comp = new TextComponentString(TextFormatting.YELLOW + "New version is available! You can get it " + TextFormatting.ITALIC + "HERE");
-                comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft.curseforge.com/projects/pubgmc-mod/files")));
+                comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files")));
                 player.sendMessage(comp);
                 break;
             }
@@ -358,132 +358,6 @@ public class CommonEvents {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerDeath(LivingDeathEvent e) {
-        if (e.getEntity() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) e.getEntity();
-            BlockPos p = player.getPosition();
-            World world = player.world;
-            //crate position logic
-            if (!world.isAirBlock(p)) {
-                //check if the position is suitable for crate to spawn
-                if (world.isAirBlock(new BlockPos(p.getX(), p.getY() + 1, p.getZ()))) {
-                    p = new BlockPos(p.getX(), p.getY() + 1, p.getZ());
-                }
-
-                //if not, this checks all blocks horizontally around the player
-                else {
-                    if (world.isAirBlock(new BlockPos(p.getX() + 1, p.getY(), p.getZ()))) {
-                        p = new BlockPos(p.getX() + 1, p.getY(), p.getZ());
-                    } else if (world.isAirBlock(new BlockPos(p.getX() - 1, p.getY(), p.getZ()))) {
-                        p = new BlockPos(p.getX() - 1, p.getY(), p.getZ());
-                    } else if (world.isAirBlock(new BlockPos(p.getX(), p.getY(), p.getZ() + 1))) {
-                        p = new BlockPos(p.getX(), p.getY(), p.getZ() + 1);
-                    } else if (world.isAirBlock(new BlockPos(p.getX(), p.getY(), p.getZ() - 1))) {
-                        p = new BlockPos(p.getX(), p.getY(), p.getZ() - 1);
-                    } else if (world.isAirBlock(new BlockPos(p.getX() + 1, p.getY(), p.getZ() + 1))) {
-                        p = new BlockPos(p.getX() + 1, p.getY(), p.getZ() + 1);
-                    } else if (world.isAirBlock(new BlockPos(p.getX() + 1, p.getY(), p.getZ() - 1))) {
-                        p = new BlockPos(p.getX() + 1, p.getY(), p.getZ() - 1);
-                    } else if (world.isAirBlock(new BlockPos(p.getX() - 1, p.getY(), p.getZ() + 1))) {
-                        p = new BlockPos(p.getX() - 1, p.getY(), p.getZ() + 1);
-                    } else if (world.isAirBlock(new BlockPos(p.getX() - 1, p.getY(), p.getZ() - 1))) {
-                        p = new BlockPos(p.getX() - 1, p.getY(), p.getZ() - 1);
-                    }
-
-                    //If there's no empty space, we set the pos to null.
-                    //Since blockpos cannot be null we have to run check later to prevent crashes
-                    //Also this allows us to not spawn the crate at all when there's no space for the crate
-                    else {
-                        p = null;
-                    }
-                }
-            }
-
-            if (p != null) {
-                //This is here to prevent floating crates
-                while (world.isAirBlock(new BlockPos(p.getX(), p.getY() - 1, p.getZ()))) {
-                    p = new BlockPos(p.getX(), p.getY() - 1, p.getZ());
-                }
-            }
-
-            //Here we check if the position has been found for the crate to spawn and if player has empty space in inventory
-            if (p != null && !player.inventory.isEmpty() && player.getCapability(PlayerDataProvider.PLAYER_DATA, null) != null && !player.world.getGameRules().getBoolean("keepInventory")) {
-                //get the player capability and place the block
-                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                world.setBlockState(p, PMCRegistry.PMCBlocks.PLAYER_CRATE.getDefaultState(), 3);
-
-                //get the tileentity of the block
-                TileEntity tileentity = world.getTileEntity(p);
-
-                //if the tileentity is the tileentity we need
-                //It is not really necessary to have it here, since it will always return true
-                if (tileentity instanceof TileEntityPlayerCrate) {
-                    TileEntityPlayerCrate te = (TileEntityPlayerCrate) tileentity;
-
-                    //We get all player inventory slots
-                    for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                        //Get the itemstacks from all slots
-                        ItemStack stack = player.inventory.getStackInSlot(i);
-
-                        //Clear the unwanted items used for filling the inventory
-                        player.inventory.clearMatchingItems(PMCRegistry.PMCItems.IBLOCK, 0, 250, null);
-
-                        //fill the inventory with all items from slots
-                        te.setInventorySlotContents(i, stack);
-
-                        //Add backpacks to the crate if player has equipped one and reset the player capability
-                        if (data.getBackpackLevel() != 0) {
-                            switch (data.getBackpackLevel()) {
-                                case 1:
-                                    te.setInventorySlotContents(41, new ItemStack(PMCRegistry.PMCItems.BACKPACK1));
-                                case 2:
-                                    te.setInventorySlotContents(41, new ItemStack(PMCRegistry.PMCItems.BACKPACK2));
-                                case 3:
-                                    te.setInventorySlotContents(41, new ItemStack(PMCRegistry.PMCItems.BACKPACK3));
-                            }
-
-                            data.setBackpackLevel(0);
-                        }
-
-                        //Same as above but just for the night vision googles
-                        if (data.getEquippedNV()) {
-                            te.setInventorySlotContents(42, new ItemStack(PMCRegistry.PMCItems.NV_GOGGLES));
-
-                            data.hasEquippedNV(false);
-                        }
-                    }
-
-                    //now clear player inventory to prevent item drops from the player
-                    player.inventory.clear();
-                    data.setBoost(0);
-                }
-            }
-        }
-    }
-
-    /**
-     * Event which is responsible for getting the player into the safe zone when they die
-     */
-    @SubscribeEvent
-    public void onPlayerRespawned(PlayerEvent.PlayerRespawnEvent event) {
-        EntityPlayer player = event.player;
-        World world = player.world;
-        if (world.hasCapability(GameDataProvider.GAMEDATA, null)) {
-            IGameData game = world.getCapability(GameDataProvider.GAMEDATA, null);
-
-            if (game.isPlaying()) {
-                BlockPos tpPos = new BlockPos(game.getMapCenter().getX(), 256, game.getMapCenter().getZ());
-                while (world.isAirBlock(tpPos)) {
-                    tpPos = new BlockPos(tpPos.getX(), tpPos.getY() - 1, tpPos.getZ());
-                }
-
-                player.attemptTeleport(tpPos.getX() + 0.5, tpPos.getY() + 1, tpPos.getZ() + 0.5);
-                player.setGameType(GameType.SPECTATOR);
             }
         }
     }

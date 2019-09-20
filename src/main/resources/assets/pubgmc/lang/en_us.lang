@@ -236,4 +236,5 @@ grenade.smoke.effect=Effect
 grenade.smoke.effect.duration=20 seconds
 grenade.smoke.warn=Water will cancel the effect!
 
-death.attack.genericWeapon=%s has been killed!
+death.attack.vehicle=%s has been run over by wild vehicle!
+death.attack.zone=%s couldn't outrun the zone.
