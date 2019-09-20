@@ -19,7 +19,6 @@ public class ModelAWM extends ModelGun {
     private final ModelRenderer bolt;
     private final ModelRenderer bone;
     private final ModelRenderer bone12;
-    private final ModelRenderer bone9;
     private final ModelRenderer bone4;
     private final ModelRenderer bone2;
     private final ModelRenderer bone3;
@@ -33,7 +32,6 @@ public class ModelAWM extends ModelGun {
     private final ModelRenderer bone10;
     private final ModelRenderer bone33;
     private final ModelRenderer bone28;
-    private final ModelRenderer bone29;
     private final ModelRenderer bone30;
     private final ModelRenderer bone31;
     private final ModelRenderer bone32;
@@ -57,11 +55,6 @@ public class ModelAWM extends ModelGun {
     private final ModelRenderer magazine;
     private final ModelRenderer bone34;
     private final ModelRenderer bone35;
-    private final ModelRenderer ironsights;
-    private final ModelRenderer bone38;
-    private final ModelRenderer bone39;
-    private final ModelRenderer bone36;
-    private final ModelRenderer bone37;
 
     @Override
     public String textureName() {
@@ -119,7 +112,6 @@ public class ModelAWM extends ModelGun {
     }
 
     public ModelAWM() {
-        super();
         textureWidth = 128;
         textureHeight = 128;
 
@@ -226,12 +218,12 @@ public class ModelAWM extends ModelGun {
         bone = new ModelRenderer(this);
         bone.setRotationPoint(0.0F, 0.0F, 0.0F);
         bolt.addChild(bone);
-        bone.cubeList.add(new ModelBox(bone, 36, 11, 1.0F, -29.0F, -3.0F, 6, 4, 6, 0.0F, false));
+        bone.cubeList.add(new ModelBox(bone, 36, 11, 2.0F, -29.0F, -3.0F, 6, 4, 6, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 0, 0, -6.0F, -28.8F, -1.5F, 8, 3, 3, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 36, 109, -15.001F, -28.5F, 2.0F, 9, 3, 1, 0.0F, false));
-        bone.cubeList.add(new ModelBox(bone, 38, 10, 9.0F, -29.0F, -3.0F, 2, 4, 6, 0.0F, false));
-        bone.cubeList.add(new ModelBox(bone, 46, 5, 8.0F, -29.0F, -3.0F, 1, 1, 6, 0.0F, false));
-        bone.cubeList.add(new ModelBox(bone, 44, 10, 8.0F, -28.0F, -3.0F, 1, 3, 3, 0.0F, false));
+        bone.cubeList.add(new ModelBox(bone, 38, 10, 9.0F, -28.0F, 2.0F, 2, 3, 1, 0.0F, false));
+        bone.cubeList.add(new ModelBox(bone, 38, 10, 8.0F, -28.0F, -3.0F, 3, 3, 1, 0.0F, false));
+        bone.cubeList.add(new ModelBox(bone, 46, 5, 8.0F, -29.0F, -3.0F, 3, 1, 6, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 46, 12, 11.0F, -29.0F, -2.0F, 1, 4, 4, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 75, 58, 11.1914F, -28.0F, -0.5F, 1, 2, 1, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 34, 12, 2.0F, -30.0F, -2.0F, 9, 1, 4, 0.0F, false));
@@ -241,11 +233,6 @@ public class ModelAWM extends ModelGun {
         setRotationAngle(bone12, 0.0F, 0.2618F, 0.0F);
         bone.addChild(bone12);
         bone12.cubeList.add(new ModelBox(bone12, 45, 111, -1.1416F, -23.5F, -1.4514F, 3, 2, 1, 0.0F, false));
-
-        bone9 = new ModelRenderer(this);
-        bone9.setRotationPoint(14.5F, -5.5F, -2.5F);
-        setRotationAngle(bone9, -0.3491F, -1.1345F, -0.3491F);
-        bone.addChild(bone9);
 
         bone4 = new ModelRenderer(this);
         bone4.setRotationPoint(11.5F, -6.5F, 0.0F);
@@ -346,11 +333,6 @@ public class ModelAWM extends ModelGun {
         bone28.cubeList.add(new ModelBox(bone28, 37, 42, -33.7974F, 6.4847F, -3.5F, 3, 1, 7, 0.0F, true));
         bone28.cubeList.add(new ModelBox(bone28, 36, 39, -0.3187F, -3.4716F, 2.5F, 6, 3, 1, 0.0F, false));
 
-        bone29 = new ModelRenderer(this);
-        bone29.setRotationPoint(-63.0F, -24.5F, 0.0F);
-        setRotationAngle(bone29, 0.5236F, 0.0F, 0.0F);
-        awm.addChild(bone29);
-
         bone30 = new ModelRenderer(this);
         bone30.setRotationPoint(-63.0F, -24.5F, 0.0F);
         setRotationAngle(bone30, -0.7854F, 0.0F, 0.0F);
@@ -448,9 +430,9 @@ public class ModelAWM extends ModelGun {
         bone21.cubeList.add(new ModelBox(bone21, 32, 41, -9.645F, -2.0146F, -3.5F, 9, 7, 7, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 32, 39, -0.645F, -2.0146F, -3.5F, 9, 7, 7, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 36, 41, -7.645F, 4.6925F, -0.2071F, 9, 1, 3, 0.0F, false));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 5, -9.645F, -2.7217F, -0.2071F, 18, 1, 3, 0.0F, false));
         bone21.cubeList.add(new ModelBox(bone21, 36, 41, -7.645F, 4.6925F, -2.7929F, 9, 1, 3, 0.0F, false));
-        bone21.cubeList.add(new ModelBox(bone21, 32, 32, -1.645F, -2.7217F, -2.7929F, 10, 1, 6, 0.0F, false));
-        bone21.cubeList.add(new ModelBox(bone21, 32, 32, -9.645F, -2.7217F, -2.7929F, 10, 1, 6, 0.0F, false));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 5, -9.645F, -2.7217F, -2.7929F, 18, 1, 3, 0.0F, false));
 
         bone27 = new ModelRenderer(this);
         bone27.setRotationPoint(-4.0F, 11.6964F, -0.0F);
@@ -566,15 +548,10 @@ public class ModelAWM extends ModelGun {
         magazine.setRotationPoint(-6.6929F, -15.3929F, 0.0F);
         setRotationAngle(magazine, 0.0F, 0.0F, 0.0873F);
         awm.addChild(magazine);
-        magazine.cubeList.add(new ModelBox(magazine, 83, 47, -8.9071F, -3.3071F, -2.5F, 14, 10, 5, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, -8.9071F, -3.3071F, 1.7F, 2, 10, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, -8.9071F, -3.3071F, -2.7F, 2, 10, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, -6.9071F, 5.6929F, -2.7F, 10, 1, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, -6.9071F, 5.6929F, 1.7F, 10, 1, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, 3.0929F, -3.3071F, 1.7F, 2, 10, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, 3.0929F, -3.3071F, -2.7F, 2, 10, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, -3.9071F, -3.3071F, 1.7F, 4, 10, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 71, 5, -3.9071F, -3.3071F, -2.7F, 4, 10, 1, 0.0F, true));
+        magazine.cubeList.add(new ModelBox(magazine, 103, 36, 0.0929F, 4.6929F, -2.5F, 5, 1, 5, 0.0F, true));
+        magazine.cubeList.add(new ModelBox(magazine, 81, 12, -2.9071F, 3.6929F, -2.5F, 8, 1, 5, 0.0F, true));
+        magazine.cubeList.add(new ModelBox(magazine, 74, 40, -5.9071F, 2.6929F, -2.5F, 11, 1, 5, 0.0F, true));
+        magazine.cubeList.add(new ModelBox(magazine, 80, 22, -8.9071F, -3.3071F, -2.5F, 14, 6, 5, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 78, 30, -8.9071F, -7.3071F, -2.5F, 14, 4, 1, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 79, 26, 4.0929F, -6.3071F, -1.5F, 1, 3, 3, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 11, 100, 3.0929F, -7.0071F, -1.5F, 1, 3, 3, 0.0F, true));
@@ -595,30 +572,6 @@ public class ModelAWM extends ModelGun {
         setRotationAngle(bone35, -0.4363F, 0.0F, 0.0F);
         magazine.addChild(bone35);
         bone35.cubeList.add(new ModelBox(bone35, 79, 26, -7.0F, 1.3549F, -3.8671F, 14, 1, 1, 0.0F, true));
-
-        ironsights = new ModelRenderer(this);
-        ironsights.setRotationPoint(0.0F, 0.0F, 1.2929F);
-        awm.addChild(ironsights);
-
-        bone38 = new ModelRenderer(this);
-        bone38.setRotationPoint(-21.6F, -33.5071F, -2.7929F);
-        setRotationAngle(bone38, -0.2618F, 0.0F, 0.0F);
-        ironsights.addChild(bone38);
-
-        bone39 = new ModelRenderer(this);
-        bone39.setRotationPoint(-21.6F, -33.5071F, 0.2071F);
-        setRotationAngle(bone39, 0.2618F, 0.0F, 0.0F);
-        ironsights.addChild(bone39);
-
-        bone36 = new ModelRenderer(this);
-        bone36.setRotationPoint(-1.6F, -33.4071F, -1.2929F);
-        setRotationAngle(bone36, -0.5236F, 0.0F, 0.0F);
-        ironsights.addChild(bone36);
-
-        bone37 = new ModelRenderer(this);
-        bone37.setRotationPoint(-1.6F, -33.4071F, -1.2929F);
-        setRotationAngle(bone37, 0.5236F, 0.0F, 0.0F);
-        ironsights.addChild(bone37);
-        initAnimations();
+        this.initAnimations();
     }
 }

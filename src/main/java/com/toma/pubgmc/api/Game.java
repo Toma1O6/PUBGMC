@@ -211,6 +211,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
 
     public final List<EntityPlayer> getOnlinePlayers(World world) {
         List<EntityPlayer> list = new ArrayList<>();
+        if(playersInGame == null || playersInGame.isEmpty()) return list;
         playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).forEach(uuid -> list.add(world.getPlayerEntityByUUID(uuid)));
         return list;
     }
