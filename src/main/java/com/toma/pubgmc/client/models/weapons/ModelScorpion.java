@@ -52,7 +52,7 @@ public class ModelScorpion extends ModelGun {
 
     @Override
     public void initAnimations() {
-        initAimAnimation(-0.56f, 0.2f, 0.2f);
+        initAimAnimation(-0.56f, 0.2f, -0.2f, 2.0F);
         initAimingAnimationStates(0.2f, 0.117f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);

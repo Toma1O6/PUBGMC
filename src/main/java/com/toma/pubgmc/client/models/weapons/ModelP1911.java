@@ -26,7 +26,7 @@ public class ModelP1911 extends ModelGun {
 
     @Override
     public void initAnimations() {
-        initAimAnimation(-0.56f, 0.275f, 0.2f);
+        initAimAnimation(-0.56f, 0.275f, -0.01f, 2.5F);
         initAimingAnimationStates(0.275f, 0.185f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);

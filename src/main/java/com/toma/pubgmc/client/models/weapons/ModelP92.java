@@ -40,7 +40,7 @@ public class ModelP92 extends ModelGun {
 
     @Override
     public void initAnimations() {
-        initAimAnimation(-0.651f, 0.31f, 0.24f, 1.25F);
+        initAimAnimation(-0.651f, 0.31f, -0.01f, 2.8F);
         initAimingAnimationStates(0.31f, 0.255f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
     }

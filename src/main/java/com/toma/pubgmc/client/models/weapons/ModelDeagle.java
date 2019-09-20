@@ -327,7 +327,7 @@ public class ModelDeagle extends ModelGun {
 
     @Override
     public void initAnimations() {
-        initAimAnimation(-0.561f, 0.268f, 0.085f);
+        initAimAnimation(-0.561f, 0.268f, -0.1f, 2.0F);
         initAimingAnimationStates(0.268f, 0.193f, 0.268f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
