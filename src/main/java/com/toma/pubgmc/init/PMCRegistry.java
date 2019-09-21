@@ -952,6 +952,7 @@ public class PMCRegistry {
             } else if (gun == PMCItems.MICROUZI) {
                 e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
                 e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
+                e.initScopeAttachments(PMCItems.RED_DOT, PMCItems.HOLOGRAPHIC);
             } else if (gun == PMCItems.VECTOR) {
                 e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
                 e.initGripAttachments(PMCItems.GRIP_VERTICAL);
