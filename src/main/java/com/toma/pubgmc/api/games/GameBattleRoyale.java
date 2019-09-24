@@ -161,24 +161,29 @@ public class GameBattleRoyale extends Game {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = super.serializeNBT();
+    public void writeDataToNBT(NBTTagCompound nbt) {
         nbt.setInteger("zoneTimer", zoneTimer);
         NBTTagList scheduledDrops = new NBTTagList();
         scheduledAirdrops.forEach(p -> scheduledDrops.appendTag(NBTUtil.createPosTag(p)));
         nbt.setTag("scheduledAirdrops", scheduledDrops);
         nbt.setBoolean("regen", hadRegenActive);
-        return nbt;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
+    public void readDataFromNBT(NBTTagCompound nbt) {
         scheduledAirdrops.clear();
         zoneTimer = nbt.getInteger("zoneTimer");
         NBTTagList list = nbt.getTagList("scheduledAirdrops", Constants.NBT.TAG_COMPOUND);
         list.forEach(tag -> scheduledAirdrops.add(NBTUtil.getPosFromTag((NBTTagCompound) tag)));
         hadRegenActive = nbt.getBoolean("regen");
+    }
+
+    @Nullable
+    @Override
+    public String[] getGameInfo() {
+        return new String[]{
+                "Time to next zone action: " + (zone.currentStage == 0 ? (2400 - zoneTimer) / 20 : (2000 - zoneTimer) / 20)
+        };
     }
 
     private void scheduleAirdrop(World world) {

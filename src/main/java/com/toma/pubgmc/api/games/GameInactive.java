@@ -5,6 +5,7 @@ import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -45,6 +46,14 @@ public class GameInactive extends Game {
     @Override
     public boolean shouldUpdateTileEntities() {
         return false;
+    }
+
+    @Override
+    public void writeDataToNBT(NBTTagCompound compound) {
+    }
+
+    @Override
+    public void readDataFromNBT(NBTTagCompound compound) {
     }
 
     @Override

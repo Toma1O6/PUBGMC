@@ -129,6 +129,12 @@ public class CommandGame extends CommandBase {
                 sendMessage(player, "Time: " + (game.getGameTimer() / 20) + "s");
                 sendMessage(player, "Mode: " + game.registryName.getResourcePath());
                 if(gameData.isPlaying()) sendMessage(player, "Zone stage: " + game.zone.currentStage);
+                String[] data = game.getGameInfo();
+                if(data == null) break;
+                sendMessage(player, "Additional info: ");
+                for(int i = 0; i < data.length; i++) {
+                    sendMessage(player, data[i]);
+                }
                 break;
             }
 

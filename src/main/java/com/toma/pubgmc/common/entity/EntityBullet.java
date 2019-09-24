@@ -104,6 +104,70 @@ public class EntityBullet extends Entity {
         return shooter;
     }
 
+    public void onBulletCollided(RayTraceResult rayTraceResult) {
+        if(rayTraceResult == null) {
+            return;
+        }
+        Entity entity = rayTraceResult.entityHit;
+        if(entity != null && !world.isRemote) {
+            boolean isHeadshot = this.canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
+            Vec3d vec = rayTraceResult.hitVec;
+            Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
+            if(isHeadshot) {
+                damage *= 2.5;
+            }
+            if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle) {
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+            }
+            this.onEntityHit(isHeadshot, entity);
+            entity.hurtResistantTime = 0;
+            this.setDead();
+        } else if(rayTraceResult.getBlockPos() != null && !world.isRemote) {
+            BlockPos pos = rayTraceResult.getBlockPos();
+            IBlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            boolean canBePenetrated = false;
+            if(block instanceof BlockWindow) {
+                canBePenetrated = true;
+                ((BlockWindow)block).breakWindow(state, pos, world);
+            } else if(state.getMaterial() == Material.GLASS) {
+                if(world.getGameRules().getBoolean("weaponGriefing")) {
+                    world.setBlockToAir(pos);
+                    world.playSound(null, posX, posY, posZ, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
+                }
+                canBePenetrated = true;
+            } else if(!block.isReplaceable(world, pos)) {
+                Vec3d vec = rayTraceResult.hitVec;
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, vec, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+                world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
+                if(block instanceof BlockLandMine) {
+                    ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);
+                }
+                this.setDead();
+            }
+
+            if(canBePenetrated && damage > 0) {
+                Vec3d startVec = PUBGMCUtil.getPositionVec(this);
+                Vec3d nextPos = PUBGMCUtil.getMotionVec(this);
+                RayTraceResult trace = world.rayTraceBlocks(nextPos, startVec, false, true, false);
+                Entity e = this.findEntityOnPath(nextPos, startVec, trace);
+                if(e != null) {
+                    trace = new RayTraceResult(e);
+                }
+                if(trace != null && rayTraceResult.entityHit instanceof EntityPlayer) {
+                    EntityPlayer player = (EntityPlayer) rayTraceResult.entityHit;
+                    if(shooter instanceof EntityPlayer && !((EntityPlayer)shooter).canAttackPlayer(player)) {
+                        trace = null;
+                    }
+                }
+                if(trace != null) {
+                    // allows shooting through multiple objects
+                    this.onBulletCollided(trace);
+                }
+            }
+        }
+    }
+
     @Override
     public void onUpdate() {
         super.onUpdate();
@@ -145,7 +209,7 @@ public class EntityBullet extends Entity {
             }
         }
         if (raytraceresult != null && !ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-            this.onHit(raytraceresult);
+            this.onBulletCollided(raytraceresult);
         }
 
         move(MoverType.SELF, motionX, motionY, motionZ);
@@ -185,7 +249,7 @@ public class EntityBullet extends Entity {
         return entity;
     }
 
-    protected void onHit(RayTraceResult raytraceResultIn) {
+    /*protected void onHit(RayTraceResult raytraceResultIn) {
         Entity entity = raytraceResultIn.entityHit;
         if (entity != null) {
             if(entity instanceof EntityMolotov) {
@@ -246,7 +310,7 @@ public class EntityBullet extends Entity {
                 this.setDead();
             }
         }
-    }
+    }*/
 
     protected void onEntityHit(boolean isHeadshot, Entity entity) {
         DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();

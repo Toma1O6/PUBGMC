@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -36,7 +35,7 @@ import java.util.UUID;
  *
  * @author Toma
  */
-public abstract class Game implements INBTSerializable<NBTTagCompound> {
+public abstract class Game {
 
     public final ResourceLocation registryName;
     public BlueZone zone;
@@ -70,6 +69,13 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
      * Called when game is getting stopped
      */
     public abstract void onGameStopped(final World world, Game game);
+
+    /**
+     * Allows you to save additional data to disk
+     */
+    public abstract void writeDataToNBT(NBTTagCompound compound);
+
+    public abstract void readDataFromNBT(NBTTagCompound compound);
 
     /**
      * Called when player gets killed
@@ -120,6 +126,16 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
      */
     @SideOnly(Side.CLIENT)
     public void renderGameInfo(ScaledResolution res) {
+    }
+
+    /**
+     * Additional information which will be displayed upon '/game info' command
+     * execution.
+     * @return null for no additional messages
+     */
+    @Nullable
+    public String[] getGameInfo() {
+        return null;
     }
 
     /**
@@ -196,6 +212,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
             }
             data.setPlaying(false);
             playersInGame = null;
+            gameTimer = 0;
             this.onGameStopped(world, data.getCurrentGame());
             updateDataToClients(world);
         }
@@ -228,8 +245,7 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
         PacketHandler.sendToClient(new PacketSyncGameData(world.getCapability(IGameData.GameDataProvider.GAMEDATA, null)), player);
     }
 
-    @Override
-    public NBTTagCompound serializeNBT() {
+    public final NBTTagCompound writeToNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         if (playersInGame == null) {
             playersInGame = new ArrayList<>();
@@ -241,11 +257,13 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
         if (zone != null) {
             nbt.setTag("zone", zone.serializeNBT());
         }
+
+        this.writeDataToNBT(nbt);
+
         return nbt;
     }
 
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public final void readFromNBT(NBTTagCompound nbt) {
         playersInGame = new ArrayList<>();
         gameTimer = nbt.getInteger("timer");
         NBTTagList uuids = nbt.getTagList("players", Constants.NBT.TAG_STRING);
@@ -253,6 +271,8 @@ public abstract class Game implements INBTSerializable<NBTTagCompound> {
         if (nbt.hasKey("zone")) {
             zone = BlueZone.fromNBT(nbt.getCompoundTag("zone"));
         }
+
+        this.readDataFromNBT(nbt);
     }
 
     public IGameData getGameData(World world) {
