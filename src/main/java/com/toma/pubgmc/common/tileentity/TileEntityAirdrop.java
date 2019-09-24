@@ -1,8 +1,8 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,24 +14,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class TileEntityAirdrop extends TileEntity implements IInventory, ITickable, IAirdropTileEntity, IGameTileEntity {
-    private static final List<ItemStack> ATTACHMENTS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> HEALS = new ArrayList<ItemStack>();
+    private static final List<ItemStack> ATTACHMENTS = new ArrayList<>();
+    private static final List<ItemStack> HEALS = new ArrayList<>();
     private final Random rand = new Random();
-    private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
     private int i = 0;
     private int slot;
+    private String hash = "EMPTY";
 
     @Override
     public String getName() {
@@ -67,7 +66,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return (ItemStack) this.inventory.get(index);
+        return this.inventory.get(index);
     }
 
     @Override
@@ -82,13 +81,13 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        ItemStack itemstack = (ItemStack) this.inventory.get(index);
+        ItemStack itemstack = this.inventory.get(index);
         boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
         this.inventory.set(index, stack);
 
         if (stack.getCount() > this.getInventoryStackLimit()) stack.setCount(this.getInventoryStackLimit());
-        if (index == 0 && index + 1 == 1 && !flag) {
-            ItemStack stack1 = (ItemStack) this.inventory.get(index + 1);
+        if (index == 0 && !flag) {
+            ItemStack stack1 = this.inventory.get(index + 1);
 
         }
     }
@@ -96,9 +95,9 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        this.inventory = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(compound, this.inventory);
-
+        hash = compound.getString("hash");
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
     }
 
@@ -106,7 +105,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, this.inventory);
-
+        compound.setString("hash", hash);
         if (this.hasCustomName()) compound.setString("CustomName", this.customName);
         return compound;
     }
@@ -118,7 +117,7 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
-        return this.world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -292,8 +291,6 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
             }
         }
     }
-
-    private String hash = "EMPTY";
 
     @Override
     public void setGameHash(String hash) {

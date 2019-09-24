@@ -1,11 +1,14 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
 import com.toma.pubgmc.init.PMCRegistry;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
@@ -15,15 +18,9 @@ import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEntity, ITickable, IAirdropTileEntity, IGameTileEntity {
-    private static final Random RANDOM = new Random();
-    //LOOT GEN
-    private static final List<ItemStack> WEAPONS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> HEALS = new ArrayList<ItemStack>();
-    private static final List<ItemStack> ATACHMENTS = new ArrayList<ItemStack>();
-    private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(18, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(18, ItemStack.EMPTY);
     private int slot;
     private short timer;
 
@@ -56,20 +53,20 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 
         //2 sets of armor
         createArmorLoot();
-
-        //2 weapons + ammo
         if(ConfigPMC.common.world.airdropLoot == CFGEnumAirdropLoot.ALL) {
-            setInventorySlotContents(nextID(), WEAPONS.get(RANDOM.nextInt(WEAPONS.size())));
-            addAmmoToCurrentWeapon();
-            setInventorySlotContents(nextID(), WEAPONS.get(RANDOM.nextInt(WEAPONS.size())));
-            addAmmoToCurrentWeapon();
-            setInventorySlotContents(nextID(), ATACHMENTS.get(RANDOM.nextInt(ATACHMENTS.size())));
-            setInventorySlotContents(nextID(), ATACHMENTS.get(RANDOM.nextInt(ATACHMENTS.size())));
-        }
+            List<ItemStack> weapons = this.generateWeaponLoot();
+            List<ItemStack> attachments = this.generateAtachments();
 
-        //2 sets of heals and atachments
-        setInventorySlotContents(nextID(), HEALS.get(RANDOM.nextInt(HEALS.size())));
-        setInventorySlotContents(nextID(), HEALS.get(RANDOM.nextInt(HEALS.size())));
+            setInventorySlotContents(nextID(), weapons.get(Pubgmc.rng().nextInt(weapons.size())));
+            addAmmoToCurrentWeapon();
+            setInventorySlotContents(nextID(), weapons.get(Pubgmc.rng().nextInt(weapons.size())));
+            addAmmoToCurrentWeapon();
+            setInventorySlotContents(nextID(), attachments.get(Pubgmc.rng().nextInt(attachments.size())));
+            setInventorySlotContents(nextID(), attachments.get(Pubgmc.rng().nextInt(attachments.size())));
+        }
+        List<ItemStack> heals = this.generateHeals();
+        setInventorySlotContents(nextID(), heals.get(Pubgmc.rng().nextInt(heals.size())));
+        setInventorySlotContents(nextID(), heals.get(Pubgmc.rng().nextInt(heals.size())));
 
         generateGhillie();
     }
@@ -77,7 +74,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
     private void addAmmoToCurrentWeapon() {
         switch (((GunBase) getStackInSlot(slot).getItem()).getAmmoType()) {
             case AMMO556: {
-                for (int i = 0; i < 1 + RANDOM.nextInt(3); i++) {
+                for (int i = 0; i < 1 + Pubgmc.rng().nextInt(3); i++) {
                     setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.PMCItems.AMMO_556, 30));
                 }
 
@@ -85,7 +82,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
             }
 
             case AMMO762: {
-                for (int i = 0; i < 1 + RANDOM.nextInt(3); i++) {
+                for (int i = 0; i < 1 + Pubgmc.rng().nextInt(3); i++) {
                     setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.PMCItems.AMMO_762, 30));
                 }
 
@@ -103,36 +100,37 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
         }
     }
 
-    private void generateWeaponLoot() {
-        WEAPONS.clear();
+    private List<ItemStack> generateWeaponLoot() {
+        List<ItemStack> list = new ArrayList<>();
 
-        WEAPONS.add(new ItemStack(PMCRegistry.PMCItems.AUG));
-        WEAPONS.add(new ItemStack(PMCRegistry.PMCItems.M249));
-        WEAPONS.add(new ItemStack(PMCRegistry.PMCItems.GROZA));
-        WEAPONS.add(new ItemStack(PMCRegistry.PMCItems.MK14));
-        WEAPONS.add(new ItemStack(PMCRegistry.PMCItems.AWM));
+        list.add(new ItemStack(PMCRegistry.PMCItems.AUG));
+        list.add(new ItemStack(PMCRegistry.PMCItems.M249));
+        list.add(new ItemStack(PMCRegistry.PMCItems.GROZA));
+        list.add(new ItemStack(PMCRegistry.PMCItems.MK14));
+        list.add(new ItemStack(PMCRegistry.PMCItems.AWM));
+        return list;
     }
 
-    private void generateAtachments() {
-        ATACHMENTS.clear();
-
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_AR));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.SILENCER_AR));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.SILENCER_SNIPER));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.COMPENSATOR_SNIPER));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.SCOPE4X));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.SCOPE8X));
-        ATACHMENTS.add(new ItemStack(PMCRegistry.PMCItems.SCOPE15X));
+    private List<ItemStack> generateAtachments() {
+        List<ItemStack> list = new ArrayList<>();
+        list.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_AR));
+        list.add(new ItemStack(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER));
+        list.add(new ItemStack(PMCRegistry.PMCItems.SILENCER_AR));
+        list.add(new ItemStack(PMCRegistry.PMCItems.SILENCER_SNIPER));
+        list.add(new ItemStack(PMCRegistry.PMCItems.COMPENSATOR_SNIPER));
+        list.add(new ItemStack(PMCRegistry.PMCItems.SCOPE4X));
+        list.add(new ItemStack(PMCRegistry.PMCItems.SCOPE8X));
+        list.add(new ItemStack(PMCRegistry.PMCItems.SCOPE15X));
+        return list;
     }
 
-    private void generateHeals() {
-        HEALS.clear();
-
-        HEALS.add(new ItemStack(PMCRegistry.PMCItems.PAINKILLERS));
-        HEALS.add(new ItemStack(PMCRegistry.PMCItems.FIRSTAIDKIT));
-        HEALS.add(new ItemStack(PMCRegistry.PMCItems.MEDKIT));
-        HEALS.add(new ItemStack(PMCRegistry.PMCItems.ADRENALINESYRINGE));
+    private List<ItemStack> generateHeals() {
+        List<ItemStack> list = new ArrayList<>();
+        list.add(new ItemStack(PMCRegistry.PMCItems.PAINKILLERS));
+        list.add(new ItemStack(PMCRegistry.PMCItems.FIRSTAIDKIT));
+        list.add(new ItemStack(PMCRegistry.PMCItems.MEDKIT));
+        list.add(new ItemStack(PMCRegistry.PMCItems.ADRENALINESYRINGE));
+        return list;
     }
 
     private void createArmorLoot() {
@@ -182,5 +180,20 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
     @Override
     public void onLoaded() {
         world.scheduleBlockUpdate(pos, blockType, 3, 0);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+        compound.setString("hash", hash);
+        ItemStackHelper.saveAllItems(compound, inventory);
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        hash = compound.getString("hash");
+        ItemStackHelper.loadAllItems(compound, inventory);
     }
 }

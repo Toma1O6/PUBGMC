@@ -5,6 +5,7 @@ import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -89,5 +90,9 @@ public final class GameUtils {
                 }
             }
         }
+    }
+
+    public static void markBlockForRemoval(World world, BlockPos pos, Block block) {
+        world.scheduleUpdate(pos, block, 3);
     }
 }

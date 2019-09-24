@@ -1,6 +1,9 @@
 package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -12,9 +15,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class TileEntityPlayerCrate extends TileEntity implements IInventory {
-    private NonNullList<ItemStack> inv = NonNullList.<ItemStack>withSize(45, ItemStack.EMPTY);
+public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGameTileEntity {
+    private NonNullList<ItemStack> inv = NonNullList.withSize(45, ItemStack.EMPTY);
     private String customName;
+    private String hash = "EMPTY";
 
     @Override
     public String getName() {
@@ -50,7 +54,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory {
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return (ItemStack) this.inv.get(index);
+        return this.inv.get(index);
     }
 
     @Override
@@ -65,13 +69,13 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory {
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        ItemStack itemstack = (ItemStack) this.inv.get(index);
+        ItemStack itemstack = this.inv.get(index);
         boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
         this.inv.set(index, stack);
 
         if (stack.getCount() > this.getInventoryStackLimit()) stack.setCount(this.getInventoryStackLimit());
-        if (index == 0 && index + 1 == 1 && !flag) {
-            ItemStack stack1 = (ItemStack) this.inv.get(index + 1);
+        if (index == 0 && !flag) {
+            ItemStack stack1 = this.inv.get(index + 1);
 
         }
     }
@@ -79,7 +83,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory {
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        this.inv = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        this.inv = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(compound, this.inv);
 
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
@@ -101,7 +105,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory {
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
-        return this.world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -141,5 +145,20 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory {
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public void setGameHash(String hash) {
+        this.hash = hash;
+    }
+
+    @Override
+    public String getGameHash() {
+        return hash;
+    }
+
+    @Override
+    public void onLoaded() {
+        GameUtils.markBlockForRemoval(world, pos, PMCRegistry.PMCBlocks.PLAYER_CRATE);
     }
 }
