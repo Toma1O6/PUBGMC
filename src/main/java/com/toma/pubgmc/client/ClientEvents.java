@@ -821,12 +821,9 @@ public class ClientEvents {
                 PacketHandler.INSTANCE.sendToServer(new PacketUpdateBoostValue(data.getBoost()));
             }
 
-            //Check if the player is having selected the slot where he started reloading
-            if (ConfigPMC.common.world.gunsEnabled) {
-                if (data.isReloading()) {
-                    if (reloadingSlot != player.inventory.currentItem) {
-                        setReloading(data, true);
-                    }
+            if (data.isReloading()) {
+                if (reloadingSlot != player.inventory.currentItem) {
+                    setReloading(data, true);
                 }
             }
         }
@@ -865,7 +862,7 @@ public class ClientEvents {
                 if (player.getHeldItemMainhand().getItem() instanceof GunBase && player.getHeldItemMainhand().getTagCompound().getBoolean("isValidWeapon")) {
                     GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
                     data.setReloadingTime(data.getReloadingTime() + 1);
-
+                    // TODO optimize
                     for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                         ItemStack stack = player.inventory.getStackInSlot(i);
                         if ((stack.getItem() instanceof ItemAmmo) && player.world.isRemote) {
@@ -879,11 +876,13 @@ public class ClientEvents {
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
                                     setReloading(data, false);
+                                    PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
                                 }
                             } else if (gun.getReloadType() == ReloadType.SINGLE) {
                                 if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
+                                    PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
                                 }
                             } else if (gun.getReloadType() == ReloadType.KAR98K) {
                                 if (itemstack.hasTagCompound()) {
@@ -891,11 +890,13 @@ public class ClientEvents {
                                         if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
                                             data.setReloadingTime(0);
                                             hasAmmo = false;
+                                            PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
                                         }
                                     } else {
                                         if (data.getReloadingTime() >= 18) {
                                             data.setReloadingTime(0);
                                             hasAmmo = false;
+                                            PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
                                         }
                                     }
                                 }
@@ -1021,7 +1022,7 @@ public class ClientEvents {
 
     private void setReloading(IPlayerData data, boolean reload) {
         data.setReloading(reload);
-        PacketHandler.sendToServer(new PacketServerAction(reload, PacketServerAction.ServerAction.RELOAD));
+        PacketHandler.sendToServer(new PacketReloading(reload));
     }
 
     private void setAiming(IPlayerData data, boolean aim) {
