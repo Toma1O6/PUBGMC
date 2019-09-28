@@ -11,20 +11,24 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketServerAction implements IMessage {
 
     private ServerAction action;
+    private boolean data;
 
     public PacketServerAction() {}
 
-    public PacketServerAction(ServerAction action) {
+    public PacketServerAction(boolean data, ServerAction action) {
+        this.data = data;
         this.action = action;
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
+        buf.writeBoolean(data);
         buf.writeInt(action.ordinal());
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
+        data = buf.readBoolean();
         action = ServerAction.values()[buf.readInt()];
     }
 
@@ -35,7 +39,7 @@ public class PacketServerAction implements IMessage {
                 switch (message.action) {
                     case AIM: {
                         IPlayerData data = ctx.getServerHandler().player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-                        data.setAiming(!data.isAiming());
+                        data.setAiming(message.data);
                         break;
                     }
 
@@ -50,7 +54,7 @@ public class PacketServerAction implements IMessage {
 
                     case NIGHT_VISION: {
                         IPlayerData data = ctx.getServerHandler().player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-                        data.setNV(!data.isUsingNV());
+                        data.setNV(message.data);
                         break;
                     }
                 }

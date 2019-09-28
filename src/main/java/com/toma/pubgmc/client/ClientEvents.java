@@ -43,7 +43,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -69,8 +68,8 @@ public class ClientEvents {
     private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
     private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
-    private static final List<ResourceLocation> SCOPES = new ArrayList<ResourceLocation>();
-    private static final List<ResourceLocation> HOLOS = new ArrayList<ResourceLocation>();
+    private static final List<ResourceLocation> SCOPES = new ArrayList<>();
+    private static final List<ResourceLocation> HOLOS = new ArrayList<>();
     private static final DecimalFormat DECIMAL = new DecimalFormat("###");
     /**
      * Time it takes to render red dot / holographic overlay after aiming
@@ -89,11 +88,6 @@ public class ClientEvents {
      * Slot to determine which gun is being reloaded
      **/
     private int reloadingSlot;
-
-    /**
-     * Fov the player has before he started aiming
-     **/
-    private float prevFov;
 
     /**
      * The brightness the player had when joins world
@@ -340,23 +334,23 @@ public class ClientEvents {
         }
     }
 
-    //@SubscribeEvent
+    /*//@SubscribeEvent
     public void renderPlayerPre(RenderPlayerEvent.Pre e) {
         EntityPlayer player = e.getEntityPlayer();
         if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if (data.isProning()) {
-				/*e.setCanceled(true);
+				*//*e.setCanceled(true);
 				ModelPlayer model = e.getRenderer().getMainModel();
 				Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
 				GlStateManager.pushMatrix();
 				GlStateManager.rotate(180, 1f, 0, 0);
 				GlStateManager.translate(0, -2, 0);
 				model.render(player, player.limbSwing, player.limbSwingAmount, 0, player.rotationYaw, player.rotationPitch, 0.625f);
-				GlStateManager.popMatrix();*/
+				GlStateManager.popMatrix();*//*
             }
         }
-    }
+    }*/
 
     @SubscribeEvent
     public void drawNameTags(RenderLivingEvent.Specials.Pre e) {
@@ -521,7 +515,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
-        /** Scope Variants */
+        /* Scope Variants */
         if (KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null))) {
             switchScopeType(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
         }
@@ -538,68 +532,65 @@ public class ClientEvents {
         }
 
         if (ConfigPMC.common.world.gunsEnabled) {
-            if (sp instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) sp;
-                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
-                if (KeyBinds.ATTACHMENT.isPressed()) {
-                    if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                        PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
-                    } else {
-                        player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
-                    }
+            if (KeyBinds.ATTACHMENT.isPressed()) {
+                if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                    PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
+                } else {
+                    sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
                 }
+            }
 
-                if (KeyBinds.RELOAD.isPressed()) {
-                    if (data.isReloading()) {
-                        return;
-                    }
-                    //Check if the player is able to reload
-                    //Ammo checking is being handled in the onReload method from GunBase.class
-                    if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                        GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+            if (KeyBinds.RELOAD.isPressed()) {
+                if (data.isReloading()) {
+                    return;
+                }
+                //Check if the player is able to reload
+                //Ammo checking is being handled in the onReload method from GunBase.class
+                if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                    GunBase gun = (GunBase) sp.getHeldItemMainhand().getItem();
 
-                        if (player.getHeldItemMainhand().hasTagCompound()) {
-                            int ammo = player.getHeldItemMainhand().getTagCompound().getInteger("ammo");
+                    if (sp.getHeldItemMainhand().hasTagCompound()) {
+                        int ammo = sp.getHeldItemMainhand().getTagCompound().getInteger("ammo");
 
-                            if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(player.getHeldItemMainhand())) {
-                                data.setReloading(true);
-                                data.setReloadingTime(0);
+                        if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(sp.getHeldItemMainhand())) {
+                            data.setReloading(true);
+                            data.setReloadingTime(0);
 
-                                //Sync with server
-                                PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
+                            //Sync with server
+                            PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
 
-                                //Get the slot with gun which is being reloaded
-                                reloadingSlot = player.inventory.currentItem;
+                            //Get the slot with gun which is being reloaded
+                            reloadingSlot = sp.inventory.currentItem;
 
-                                //You can't aim while you're reloading
-                                if (data.isAiming()) {
-                                    data.setAiming(false);
-                                    PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
-                                    Minecraft.getMinecraft().gameSettings.mouseSensitivity = this.mouseSens;
-                                }
+                            //You can't aim while you're reloading
+                            if (data.isAiming()) {
+                                data.setAiming(false);
+                                PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
+                                Minecraft.getMinecraft().gameSettings.mouseSensitivity = this.mouseSens;
                             }
                         }
                     }
                 }
+            }
 
-                //Same as above, we just send packet to server and everything else will be done in the rendering method above
-                if (KeyBinds.NV.isPressed()) {
-                    if (data.getEquippedNV()) {
-                        data.setNV(!data.isUsingNV());
-                        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.NIGHT_VISION));
-                    }
+            //Same as above, we just send packet to server and everything else will be done in the rendering method above
+            if (KeyBinds.NV.isPressed()) {
+                if (data.getEquippedNV()) {
+                    data.setNV(!data.isUsingNV());
+                    PacketHandler.sendToServer(new PacketServerAction(data.isUsingNV(), PacketServerAction.ServerAction.NIGHT_VISION));
                 }
+            }
 
-                //Switch firemode
-                //Syncing happens from the GunBase.class
-                if (KeyBinds.FIREMODE.isPressed()) {
-                    if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                        GunBase item = (GunBase) player.getHeldItemMainhand().getItem();
+            //Switch firemode
+            //Syncing happens from the GunBase.class
+            if (KeyBinds.FIREMODE.isPressed()) {
+                if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                    GunBase item = (GunBase) sp.getHeldItemMainhand().getItem();
 
-                        if (item.getCanSwitchFiremode()) {
-                            item.getNextFiremode(player);
-                        }
+                    if (item.getCanSwitchFiremode()) {
+                        item.getNextFiremode(sp);
                     }
                 }
             }
@@ -657,12 +648,12 @@ public class ClientEvents {
 
                 //Aiming on RMB press
                 if (gs.keyBindUseItem.isPressed()) {
-                    if (!data.isAiming()) {
+                    if (!data.isAiming() && !player.isSprinting()) {
                         aimingTicks = 0;
                         aimSlot = player.inventory.currentItem;
                         data.setAiming(true);
                         //We have to tell the server the player is aiming to make it work on servers
-                        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
+                        PacketHandler.sendToServer(new PacketServerAction(true, PacketServerAction.ServerAction.AIM));
                         int scopeID = stack.getTagCompound().getInteger("scope");
 
                         //sensitivity modifier
@@ -687,31 +678,10 @@ public class ClientEvents {
                         }
                     } else {
                         data.setAiming(false);
-                        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
+                        PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
                         gs.mouseSensitivity = this.mouseSens;
                     }
                 }
-            }
-        }
-    }
-
-    //We get the player fov setting which will be used later with scopes; This is for returning the fov to the base value
-    @SubscribeEvent
-    public void onInitialize(EntityEvent.EntityConstructing e) {
-        if (e.getEntity() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) e.getEntity();
-            if (player.world.isRemote) {
-                //Your fov cannot be under the "Normal" setting since it would be overpowered in some cases
-                //Purely balance stuff
-                float prevfov = Minecraft.getMinecraft().gameSettings.fovSetting;
-
-                if (prevfov < 70) {
-                    prevfov = 70;
-                    Minecraft.getMinecraft().gameSettings.fovSetting = 70f;
-                }
-
-                //We set the base value to this if the previous value didn't meet our requirements
-                this.prevFov = prevfov;
             }
         }
     }
@@ -760,7 +730,7 @@ public class ClientEvents {
                 ItemStack stack = player.getHeldItemMainhand();
                 GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
                 CooldownTracker tracker = player.getCooldownTracker();
-                int maxRounds = 0;
+                int maxRounds;
 
                 if (gun.isHasTwoRoundBurst()) {
                     maxRounds = 3;
@@ -874,71 +844,22 @@ public class ClientEvents {
                 }
             }
 
-            if (!ConfigPMC.common.player.tppAllowed) {
+            if (!ConfigPMC.player().tppAllowed) {
                 if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0 && !player.capabilities.isCreativeMode && !(player.getRidingEntity() instanceof EntityParachute)) {
                     Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
                 }
             }
 
-            //Zoom level based on weapon type; in future this will be based on item NBT - The scope you have attached
-            if (data.isAiming()) {
-                if (item instanceof GunBase) {
-                    GunBase gun = (GunBase) item;
-
-                    if (itemstack.hasTagCompound()) {
-                        if (itemstack.getTagCompound().getInteger("scope") == 1 || itemstack.getTagCompound().getInteger("scope") == 2) {
-                            if (Minecraft.getMinecraft().gameSettings.fovSetting != 45) {
-                                Minecraft.getMinecraft().gameSettings.fovSetting = 45;
-                            }
-                        }
-
-                        if (itemstack.getTagCompound().getInteger("scope") == 3) {
-                            if (Minecraft.getMinecraft().gameSettings.fovSetting != 38) {
-                                Minecraft.getMinecraft().gameSettings.fovSetting = 38;
-                            }
-                        }
-
-                        if (itemstack.getTagCompound().getInteger("scope") == 4 || itemstack.getItem() == PMCRegistry.PMCItems.VSS) {
-                            if (Minecraft.getMinecraft().gameSettings.fovSetting != 25) {
-                                Minecraft.getMinecraft().gameSettings.fovSetting = 25;
-                            }
-                        }
-
-                        if (itemstack.getTagCompound().getInteger("scope") == 5) {
-                            if (Minecraft.getMinecraft().gameSettings.fovSetting != 10) {
-                                Minecraft.getMinecraft().gameSettings.fovSetting = 10;
-                            }
-                        }
-
-                        if (itemstack.getTagCompound().getInteger("scope") == 6) {
-                            if (Minecraft.getMinecraft().gameSettings.fovSetting != 3) {
-                                Minecraft.getMinecraft().gameSettings.fovSetting = 3;
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (Minecraft.getMinecraft().gameSettings.fovSetting < prevFov) {
-                    Minecraft.getMinecraft().gameSettings.fovSetting += 5;
-                }
-
-                if (Minecraft.getMinecraft().gameSettings.fovSetting > prevFov) {
-                    Minecraft.getMinecraft().gameSettings.fovSetting = prevFov;
-                }
-
-                Minecraft.getMinecraft().gameSettings.mouseSensitivity = this.mouseSens;
-            }
-
             //For better experience with NV googles
-            if (ConfigPMC.common.player.brightnessForced) {
+            if (ConfigPMC.player().brightnessForced) {
                 float bright = Minecraft.getMinecraft().gameSettings.gammaSetting;
 
-                if (bright != ConfigPMC.common.player.brightnessValue) {
-                    Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.common.player.brightnessValue;
+                if (bright != ConfigPMC.player().brightnessValue) {
+                    Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.player().brightnessValue;
                 }
             }
 
-            /** =========================================[RELOADING]=========================================== **/
+            /* =========================================[RELOADING]=========================================== */
 
             if (data.isReloading()) {
                 if (player.getHeldItemMainhand().getItem() instanceof GunBase && player.getHeldItemMainhand().getTagCompound().getBoolean("isValidWeapon")) {
@@ -1100,12 +1021,12 @@ public class ClientEvents {
 
     private void setReloading(IPlayerData data, boolean reload) {
         data.setReloading(reload);
-        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.RELOAD));
+        PacketHandler.sendToServer(new PacketServerAction(reload, PacketServerAction.ServerAction.RELOAD));
     }
 
     private void setAiming(IPlayerData data, boolean aim) {
         data.setAiming(aim);
-        PacketHandler.sendToServer(new PacketServerAction(PacketServerAction.ServerAction.AIM));
+        PacketHandler.sendToServer(new PacketServerAction(aim, PacketServerAction.ServerAction.AIM));
     }
 
     private void switchScopeType(IPlayerData data) {

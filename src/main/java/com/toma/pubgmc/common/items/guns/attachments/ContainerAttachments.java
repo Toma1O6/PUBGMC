@@ -47,7 +47,7 @@ public class ContainerAttachments extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack;
         Slot slot = inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack()) {
@@ -63,42 +63,6 @@ public class ContainerAttachments extends Container {
                             }
                         }
                     }
-                    /*if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.SCOPE) {
-                        if (inventorySlots.get(4).getHasStack() || !slot.isEnabled()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(4).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.BARREL) {
-                        if (inventorySlots.get(0).getHasStack() || !slot.isEnabled()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(0).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.GRIP) {
-                        if (inventorySlots.get(1).getHasStack() || !slot.isEnabled()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(1).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.MAGAZINE) {
-                        if (inventorySlots.get(2).getHasStack() || !slot.isEnabled()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(2).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else if (((ItemAttachment) slot.getStack().getItem()).getType() == Type.STOCK) {
-                        if (inventorySlots.get(3).getHasStack() || !slot.isEnabled()) {
-                            return ItemStack.EMPTY;
-                        } else {
-                            inventorySlots.get(3).putStack(stack);
-                            slot.putStack(ItemStack.EMPTY);
-                        }
-                    } else*/
                     return ItemStack.EMPTY;
                 }
             } else {
@@ -157,7 +121,7 @@ public class ContainerAttachments extends Container {
             case SCOPE:
                 return DevUtil.containsD(gun.getScopeAttachments(), attachment);
             case STOCK:
-                DevUtil.containsD(gun.getStockAttachments(), attachment);
+                return DevUtil.containsD(gun.getStockAttachments(), attachment);
             default: return false;
         }
     }

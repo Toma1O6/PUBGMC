@@ -1,12 +1,16 @@
 package com.toma.pubgmc.client;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -14,13 +18,20 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,6 +43,28 @@ public class RenderHandler {
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
+    }
+
+    @SubscribeEvent
+    public void onFOVChanged(FOVUpdateEvent e) {
+        EntityPlayer player = e.getEntity();
+        IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        GameSettings settings = Minecraft.getMinecraft().gameSettings;
+        if(data.isAiming()) {
+            ItemStack stack = player.getHeldItemMainhand();
+            if(stack.getItem() instanceof GunBase) {
+                int scope = stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
+                switch (scope) {
+                    case 1: case 2: settings.fovSetting = 45; break;
+                    case 3: settings.fovSetting = 35; break;
+                    case 4: settings.fovSetting = 25; break;
+                    case 5: settings.fovSetting = 10; break;
+                    case 6: settings.fovSetting = 3; break;
+                }
+            }
+        } else {
+            if(settings.fovSetting < 70) settings.fovSetting = 70;
+        }
     }
 
     @SubscribeEvent
@@ -179,6 +212,36 @@ public class RenderHandler {
             GlStateManager.enableCull();
             GlStateManager.popMatrix();
         }
+    }
+
+    //@SubscribeEvent
+    public void renderHand(RenderHandEvent e) {
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.player;
+        ItemStack stack = player.getHeldItemMainhand();
+        if(!(stack.getItem() instanceof GunBase)) {
+            IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+            boolean aim = data.isAiming();
+            //boolean oneHand = ((GunBase)stack.getItem()).getWeaponModel().heldAnimation.getHeldStyle() == HeldAnimation.HeldStyle.SMALL;
+            RenderManager manager = mc.getRenderManager();
+            Render<AbstractClientPlayer> abstractClientPlayerRender = manager.getEntityRenderObject(player);
+            RenderPlayer renderPlayer = (RenderPlayer) abstractClientPlayerRender;
+            GlStateManager.pushMatrix();
+            GlStateManager.disableCull();
+
+            GlStateManager.rotate(90F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(92.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(45.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(41.0F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.translate(-0.3F, -1.1F, 0.45F);
+            renderPlayer.renderLeftArm(mc.player);
+            GlStateManager.enableCull();
+            GlStateManager.popMatrix();
+        }
+    }
+
+    public void renderHand() {
+
     }
 
     public float prepareScale(EntityPlayer player, float partial) {
