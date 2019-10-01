@@ -1,34 +1,25 @@
 package com.toma.pubgmc.client;
 
-import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.client.layers.LayerGhillie;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -36,10 +27,13 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class RenderHandler {
 
-    private final ModelBiped ghillie = new ModelBiped(1.0F);
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/armor/ghillie_layer_1.png");
+    private static List<UUID> playersWithAddedRenderLayer = new ArrayList<>();
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
@@ -139,79 +133,11 @@ public class RenderHandler {
     @SubscribeEvent
     public void onPlayerRenderPost(RenderPlayerEvent.Post e) {
         EntityPlayer player = e.getEntityPlayer();
-        if (player.getItemStackFromSlot(EntityEquipmentSlot.LEGS).getItem() == PMCRegistry.PMCItems.GHILLIE_SUIT) {
-            GlStateManager.pushMatrix();
-            GlStateManager.disableCull();
-            ModelPlayer main = e.getRenderer().getMainModel();
-            ghillie.swingProgress = player.getSwingProgress(e.getPartialRenderTick());
-            boolean shouldSit = player.isRiding() && (player.getRidingEntity() != null && player.getRidingEntity().shouldRiderSit());
-            boolean sneak = main.isSneak;
-            ghillie.bipedBody.offsetZ = sneak ? -0.028f : 0;
-            ghillie.bipedBody.offsetY = sneak ? 0.3f : 0;
-            ghillie.bipedHeadwear.offsetY = sneak ? 0.32f : 0;
-            ghillie.bipedRightArm.offsetY = sneak ? 0.23f : 0;
-            ghillie.bipedLeftArm.offsetY = sneak ? 0.23f : 0;
-            ghillie.bipedRightLeg.offsetY = sneak ? 0.7f : 0.0f;
-            ghillie.bipedLeftLeg.offsetY = sneak ? 0.7f : 0.0f;
-            ghillie.bipedRightLeg.offsetZ = sneak ? 0.12f : 0f;
-            ghillie.bipedLeftLeg.offsetZ = sneak ? 0.12f : 0f;
-            ghillie.isRiding = shouldSit;
-            ghillie.isSneak = main.isSneak;
-            ghillie.leftArmPose = main.leftArmPose;
-            ghillie.rightArmPose = main.rightArmPose;
-            ghillie.bipedLeftArm.offsetX = 0.075f;
-            ghillie.bipedRightArm.offsetX = -0.075f;
-            ghillie.bipedHead.showModel = false;
-            float partial = e.getPartialRenderTick();
-            float f = this.normalizeAndInterpolateRotation(player.prevRenderYawOffset, player.renderYawOffset, partial);
-            float f1 = this.normalizeAndInterpolateRotation(player.prevRotationYawHead, player.rotationYawHead, partial);
-            float yaw = f1 - f;
-            if (shouldSit && player.getRidingEntity() instanceof EntityLivingBase) {
-                EntityLivingBase entitylivingbase = (EntityLivingBase) player.getRidingEntity();
-                f = this.normalizeAndInterpolateRotation(entitylivingbase.prevRenderYawOffset, entitylivingbase.renderYawOffset, partial);
-                yaw = f1 - f;
-                float f3 = MathHelper.wrapDegrees(yaw);
-                if (f3 < -85.0F) {
-                    f3 = -85.0F;
-                }
-                if (f3 >= 85.0F) {
-                    f3 = 85.0F;
-                }
-                f = f1 - f3;
-                if (f3 * f3 > 2500.0F) {
-                    f += f3 * 0.2F;
-                }
-                yaw = f1 - f;
-            }
-            float f7 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * partial;
-            float f8 = player.ticksExisted + partial;
-            GlStateManager.rotate(180.0F - f, 0.0F, 1.0F, 0.0F);
-            float f4 = this.prepareScale(player, partial);
-            float f5 = 0.0F;
-            float f6 = 0.0F;
-            if (!player.isRiding()) {
-                f5 = player.prevLimbSwingAmount + (player.limbSwingAmount - player.prevLimbSwingAmount) * partial;
-                f6 = player.limbSwing - player.limbSwingAmount * (1.0F - partial);
-                if (player.isChild()) {
-                    f6 *= 3.0F;
-                }
-                if (f5 > 1.0F) {
-                    f5 = 1.0F;
-                }
-                yaw = f1 - f;
-            }
-            GlStateManager.enableAlpha();
-            ghillie.setLivingAnimations(player, f6, f5, partial);
-            ghillie.setRotationAngles(f6, f5, f8, yaw, f7, f4, player);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
-            ghillie.render(player, f6, f5, f8, yaw, f7, f4);
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GlStateManager.enableTexture2D();
-            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.enableCull();
-            GlStateManager.popMatrix();
+        if(playersWithAddedRenderLayer.contains(player.getUniqueID())) {
+            return;
         }
+        playersWithAddedRenderLayer.add(player.getUniqueID());
+        e.getRenderer().addLayer(new LayerGhillie(e.getRenderer()));
     }
 
     //@SubscribeEvent

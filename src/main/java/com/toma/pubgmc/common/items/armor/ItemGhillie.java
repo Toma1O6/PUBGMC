@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -26,8 +27,17 @@ public class ItemGhillie extends ItemArmor {
     }
 
     @Override
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        if(!stack.hasTagCompound()) {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger("ghillieColor", 0x359E35);
+            stack.setTagCompound(nbt);
+        }
+    }
+
+    @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(TextFormatting.GREEN + "Use for leg slot for ghillie suit");
+        tooltip.add(TextFormatting.GREEN + "Use the leg slot for ghillie suit");
     }
 
     @Override
