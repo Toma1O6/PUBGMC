@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.layers;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,8 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
 
-    public static final ResourceLocation TEXTURE_MAIN = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/ghillie_main.java");
-    public static final ResourceLocation TEXTURE_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/ghillie_overlay.java");
+    public static final ResourceLocation TEXTURE_MAIN = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/ghillie_main.png");
+    public static final ResourceLocation TEXTURE_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/ghillie_overlay.png");
 
     protected final RenderLivingBase<?> renderLivingBase;
     protected final ModelBiped baseLayer;
@@ -23,7 +24,7 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
     public LayerGhillie(RenderLivingBase<?> renderLivingBase) {
         this.renderLivingBase = renderLivingBase;
         this.baseLayer = new ModelBiped(1.2F);
-        this.overlay = new ModelBiped(1.25F);
+        this.overlay = new ModelBiped(1.4F);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
             this.overlay.setModelAttributes(this.renderLivingBase.getMainModel());
             this.baseLayer.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
             this.overlay.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
-            int color = stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : 0x359E35;
+            int color = stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : ItemGhillie.DEFAULT_COLOR;
             float red = (color >> 16 & 255) / 255.0F;
             float green = (color >> 8 & 255) / 255.0F;
             float blue = (color & 255) / 255.0F;

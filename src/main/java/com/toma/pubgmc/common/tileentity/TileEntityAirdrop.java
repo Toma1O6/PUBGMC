@@ -2,6 +2,8 @@ package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.common.capability.IWorldData;
+import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -275,15 +277,20 @@ public class TileEntityAirdrop extends TileEntity implements IInventory, ITickab
     }
 
     private void generateGhillie() {
-        if (Math.random() * 100 <= 25) {
-            setInventorySlotContents(nextSlot(), new ItemStack(PMCRegistry.PMCItems.GHILLIE_SUIT));
+        if (rand.nextInt(4) >= 1) {
+            NBTTagCompound nbt = new NBTTagCompound();
+            Integer[] ints = world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null).getGhillieSuitsColorVariants().toArray(new Integer[0]);
+            nbt.setInteger("ghillieColor", ints.length == 0 ? ItemGhillie.DEFAULT_COLOR : ints[rand.nextInt(ints.length)]);
+            ItemStack stack = new ItemStack(PMCRegistry.PMCItems.GHILLIE_SUIT);
+            stack.setTagCompound(nbt);
+            setInventorySlotContents(nextSlot(), stack);
         }
     }
 
     @Override
     public void update() {
         if (world.isRemote) {
-            if (i++ >= 2 && !inventory.isEmpty()) {
+            if (i++ >= 2 && !this.isEmpty()) {
                 i = 0;
                 world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 0.1, 0.06, 0.1, 0);
                 world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.4, pos.getY() + 1.1, pos.getZ() + 0.6, 0.09, 0.04, 0.11, 0);

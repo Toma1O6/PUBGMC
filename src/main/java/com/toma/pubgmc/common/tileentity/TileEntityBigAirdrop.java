@@ -2,6 +2,8 @@ package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.common.capability.IWorldData;
+import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGEnumAirdropLoot;
@@ -144,7 +146,12 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 
     private void generateGhillie() {
         if (Math.random() * 100 <= 25) {
-            setInventorySlotContents(nextID(), new ItemStack(PMCRegistry.PMCItems.GHILLIE_SUIT));
+            NBTTagCompound nbt = new NBTTagCompound();
+            Integer[] ints = world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null).getGhillieSuitsColorVariants().toArray(new Integer[0]);
+            nbt.setInteger("ghillieColor", ints.length == 0 ? ItemGhillie.DEFAULT_COLOR : ints[Pubgmc.rng().nextInt(ints.length)]);
+            ItemStack stack = new ItemStack(PMCRegistry.PMCItems.GHILLIE_SUIT);
+            stack.setTagCompound(nbt);
+            setInventorySlotContents(nextID(), stack);
         }
     }
 

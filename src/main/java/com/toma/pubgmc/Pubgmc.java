@@ -157,6 +157,7 @@ public class Pubgmc {
         event.registerServerCommand(new CommandAirdrop());
         event.registerServerCommand(new CommandGame());
         event.registerServerCommand(new CommandPlayerData());
+        event.registerServerCommand(new CommandManageGhillieVariants());
 
         registerGamerules(event);
 

@@ -17,6 +17,7 @@ import java.util.List;
 public class ItemGhillie extends ItemArmor {
 
     private static final ResourceLocation texture = new ResourceLocation(Pubgmc.MOD_ID + ":textures/empty_texture.png");
+    public static final int DEFAULT_COLOR = 0x52D900;
 
     public ItemGhillie(String name) {
         super(PMCRegistry.ToolMaterials.GHILLIE_SUIT, 1, EntityEquipmentSlot.LEGS);
@@ -28,9 +29,9 @@ public class ItemGhillie extends ItemArmor {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if(!stack.hasTagCompound()) {
+        if(!stack.hasTagCompound() && !worldIn.isRemote) {
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("ghillieColor", 0x359E35);
+            nbt.setInteger("ghillieColor", DEFAULT_COLOR);
             stack.setTagCompound(nbt);
         }
     }

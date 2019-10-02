@@ -91,6 +91,15 @@ public class PUBGMCUtil {
         return player.getRidingEntity() instanceof EntityVehicle && player.getRidingEntity().getPassengers().get(0) == player;
     }
 
+    public static <T> boolean contains(T object, T[] array) {
+        for(T t : array) {
+            if(object == t) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isValidNumber(String text) {
         char[] num = text.toCharArray();
         boolean valid = true;

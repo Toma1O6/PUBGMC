@@ -14,9 +14,12 @@ import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -60,6 +63,8 @@ public class ClientProxy implements IProxy {
         if (ConfigPMC.client.other.lootRenderStyle.ordinal() < 2) {
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
         }
+        ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
+        itemColors.registerItemColorHandler((stack, tintIndex) -> stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : 0x359E35, PMCRegistry.PMCItems.GHILLIE_SUIT);
     }
 
     @SideOnly(Side.CLIENT)
