@@ -164,7 +164,7 @@ public class TileEntityBigAirdrop extends TileEntity implements IInventoryTileEn
 
     @Override
     public void update() {
-        if (timer++ >= 3 && world.isRemote && !inventory.isEmpty()) {
+        if (timer++ >= 3 && world.isRemote && !this.isEmpty()) {
             timer = 0;
             world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.5, pos.getY() + 1.3, pos.getZ() + 0.5, 0.1, 0.06, 0.1, 0);
             world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.getX() + 0.4, pos.getY() + 1.3, pos.getZ() + 0.6, 0.09, 0.04, 0.11, 0);
