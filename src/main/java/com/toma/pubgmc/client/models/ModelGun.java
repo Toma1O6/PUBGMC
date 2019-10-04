@@ -19,8 +19,8 @@ import javax.vecmath.Vector3f;
 public abstract class ModelGun extends ModelBase {
     protected static final MutablePair[] DEFAULT_PART_ANIMATION = {
             // TODO make better
-            new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0.5f, 0f)),
-            new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 11.5f, 0f)),
+            new MutablePair(new Vector3f(0f, 0f, -0.1f), new Vector3f(0f, 0.5f, 0f)),
+            new MutablePair(new Vector3f(0f, 0f, -0.4f), new Vector3f(0f, 15.5f, 0f)),
             new MutablePair(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f))
     };
 

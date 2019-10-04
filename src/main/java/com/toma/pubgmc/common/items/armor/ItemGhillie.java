@@ -28,15 +28,6 @@ public class ItemGhillie extends ItemArmor {
     }
 
     @Override
-    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if(!stack.hasTagCompound() && !worldIn.isRemote) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("ghillieColor", DEFAULT_COLOR);
-            stack.setTagCompound(nbt);
-        }
-    }
-
-    @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(TextFormatting.GREEN + "Use the leg slot for ghillie suit");
     }

@@ -76,9 +76,7 @@ public class ClientProxy implements IProxy {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen instanceof GuiGunWorkbench) {
             GuiGunWorkbench gui = (GuiGunWorkbench) mc.currentScreen;
-            gui.getButtonList().stream().filter(b -> b instanceof RecipeButton).forEach(b -> {
-                ((RecipeButton) b).performIngredientCheck();
-            });
+            gui.getButtonList().stream().filter(b -> b instanceof RecipeButton).forEach(b -> ((RecipeButton) b).performIngredientCheck());
         }
     }
 
