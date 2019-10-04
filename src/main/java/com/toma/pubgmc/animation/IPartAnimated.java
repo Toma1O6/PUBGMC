@@ -39,8 +39,8 @@ public interface IPartAnimated<T extends Animation> {
         Vector3f rotation = this.getPartRotation();
         if (bool) {
             if (!Animation.isPartMovementFinished(this)) {
-                setMovement(movement.x, Animation.getPartialMovement(movement.y, step.getRight().y, 0.4f * getSpeed()), movement.z);
-                setRotation(rotation.x, rotation.y, Animation.getPartialMovement(rotation.z, step.getLeft().z, 0.005f * this.getSpeed()));
+                setMovement(movement.x, Animation.getPartialMovement(movement.y, step.getRight().y, 0.9F * getSpeed()), movement.z);
+                setRotation(Animation.getPartialMovement(rotation.x, step.getLeft().x, 0.02f * this.getSpeed()), rotation.y, Animation.getPartialMovement(rotation.z, step.getLeft().z, 0.02f * this.getSpeed()));
             } else if (Animation.canExecuteNextStep(currentStep(), animationSteps())) {
                 setCurrentStep(currentStep() + 1);
             }
@@ -48,13 +48,13 @@ public interface IPartAnimated<T extends Animation> {
             setCurrentStep(0);
             if (!Animation.isPartReturned(this)) {
                 setMovement(
-                        Animation.getPartialMovement(movement.x, 0f, 0.4f * getSpeed()),
-                        Animation.getPartialMovement(movement.y, 0f, 0.4f * getSpeed()),
-                        Animation.getPartialMovement(movement.z, 0f, 0.4f * getSpeed()));
+                        Animation.getPartialMovement(movement.x, 0f, 0.9F * getSpeed()),
+                        Animation.getPartialMovement(movement.y, 0f, 0.9F * getSpeed()),
+                        Animation.getPartialMovement(movement.z, 0f, 0.9F * getSpeed()));
                 setRotation(
-                        Animation.getPartialMovement(rotation.x, this.getDefaultRotationAngles()[0], 0.005F * this.getSpeed()),
-                        Animation.getPartialMovement(rotation.y, this.getDefaultRotationAngles()[1], 0.005F * this.getSpeed()),
-                        Animation.getPartialMovement(rotation.z, this.getDefaultRotationAngles()[2], 0.005F * this.getSpeed())
+                        Animation.getPartialMovement(rotation.x, this.getDefaultRotationAngles()[0], 0.02F * this.getSpeed()),
+                        Animation.getPartialMovement(rotation.y, this.getDefaultRotationAngles()[1], 0.02F * this.getSpeed()),
+                        Animation.getPartialMovement(rotation.z, this.getDefaultRotationAngles()[2], 0.02F * this.getSpeed())
                 );
             }
         }

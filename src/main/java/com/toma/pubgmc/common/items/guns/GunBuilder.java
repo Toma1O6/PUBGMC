@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items.guns;
 
+import com.google.common.base.Preconditions;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
@@ -18,6 +19,7 @@ public class GunBuilder {
     Firemode[] validFiremodes;
     SoundEvent reloadSound, shootNormal, shootSilenced;
     CFGWeapon cfgStats;
+    IBoltAction action;
 
     private GunBuilder() {
     }
@@ -143,6 +145,11 @@ public class GunBuilder {
         return this;
     }
 
+    public GunBuilder addBoltAction(IBoltAction action) {
+        this.action = action;
+        return this;
+    }
+
     /**
      * <i><u>In order to successfully build new Gun object you need to call:</u></i>
      * <b>
@@ -176,6 +183,10 @@ public class GunBuilder {
         volumeSilenced = validateFloat(volumeSilenced, 1f, 30f);
         reloadSound = checkNotNull(reloadSound);
 
+        if(action != null) {
+            Preconditions.checkNotNull(action.getSoundEvent(), "Cannot add IBoltAction with null soundevent");
+        }
+
         if (twoRoundBurst) {
             if (!isObjectInsideGroup(Firemode.BURST, validFiremodes)) {
                 throw new NullPointerException("Two round is registered, but BURST firemode isn't valid for the weapon " + name);
@@ -200,6 +211,7 @@ public class GunBuilder {
         gun.setGunSilencedSound(shootSilenced);
         gun.setGunSilencedSoundVolume(volumeSilenced);
         gun.setReloadSound(reloadSound);
+        gun.action = action;
         return gun;
     }
 }

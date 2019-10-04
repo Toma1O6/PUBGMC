@@ -59,6 +59,7 @@ public class GunBase extends PMCItem {
     private ReloadType reloadType;
     private GunType gunType;
     private boolean hasTwoRoundBurst = false;
+    protected IBoltAction action = null;
 
     @SideOnly(Side.CLIENT)
     private ModelGun gunModel;
@@ -333,6 +334,10 @@ public class GunBase extends PMCItem {
 //-------------------------------------------------
 // Setters and getters
 //-------------------------------------------------
+
+    public IBoltAction getAction() {
+        return action;
+    }
 
     @SideOnly(Side.CLIENT)
     public void setGunModel(ModelGun model) {

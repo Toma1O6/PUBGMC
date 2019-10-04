@@ -528,7 +528,7 @@ public class PMCRegistry {
             GunBase win94 = GunBuilder.create("win94").stats(cfg.win94).firerate(25)
                     .recoil(5.5f, 3.5f).reload(ReloadType.SINGLE, 15, PMCSounds.reload_win94).ammo(AmmoType.AMMO45ACP, 8)
                     .firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.PISTOL)
-                    .sound(PMCSounds.gun_win94, 20f)
+                    .sound(PMCSounds.gun_win94, 20f).addBoltAction(() -> PMCSounds.gun_noammo)
                     .build();
 
             GunBase sawedoff = GunBuilder.create("sawed_off").stats(cfg.sawedoff).firerate(10)
@@ -702,19 +702,19 @@ public class PMCRegistry {
             GunBase kar98k = GunBuilder.create("kar98k").stats(cfg.kar98k).firerate(30)
                     .recoil(2.5f, 1.25f).reload(ReloadType.KAR98K, 63, PMCSounds.reload_kar98k).ammo(AmmoType.AMMO762, 5)
                     .firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
-                    .sound(PMCSounds.gun_kar98k, 30f, PMCSounds.gun_kar98k_silenced, 20f)
+                    .sound(PMCSounds.gun_kar98k, 30f, PMCSounds.gun_kar98k_silenced, 20f).addBoltAction(() -> PMCSounds.gun_noammo)
                     .build();
 
             GunBase m24 = GunBuilder.create("m24").stats(cfg.m24).firerate(35)
                     .recoil(2.5f, 1.25f).reload(ReloadType.MAGAZINE, 71, PMCSounds.reload_m24).ammo(AmmoType.AMMO762, 5, 7)
                     .firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
-                    .sound(PMCSounds.gun_m24, 30f, PMCSounds.gun_m24_silenced, 20f)
+                    .sound(PMCSounds.gun_m24, 30f, PMCSounds.gun_m24_silenced, 20f).addBoltAction(() -> PMCSounds.gun_noammo)
                     .build();
 
             GunBase awm = GunBuilder.create("awm").stats(cfg.awm).firerate(35)
                     .recoil(2.5f, 1.25f).reload(ReloadType.MAGAZINE, 78, PMCSounds.reload_awm).ammo(AmmoType.AMMO300M, 5, 7)
                     .firemode(Firemode.SINGLE, Firemode.SINGLE).weaponType(GunType.SR)
-                    .sound(PMCSounds.gun_awm, 30f, PMCSounds.gun_awm_silenced, 20f)
+                    .sound(PMCSounds.gun_awm, 30f, PMCSounds.gun_awm_silenced, 20f).addBoltAction(() -> PMCSounds.gun_noammo)
                     .build();
 
             return new GunBase[]{
