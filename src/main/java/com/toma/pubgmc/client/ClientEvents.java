@@ -619,6 +619,7 @@ public class ClientEvents {
                                 if (gun.hasAmmo(stack)) {
                                     //We send packet to server telling it to spawn new entity
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                    if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                                     //Do the recoil
                                     applyRecoil(player, stack);
                                 } else {
@@ -714,6 +715,7 @@ public class ClientEvents {
                         if (gun.getFiremode() == Firemode.AUTO && !tracker.hasCooldown(gun) && !data.isReloading()) {
                             if (gun.hasAmmo(player.getHeldItemMainhand())) {
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                                 this.applyRecoil(player, player.getHeldItemMainhand());
                             } else {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
@@ -747,6 +749,7 @@ public class ClientEvents {
                         //Set it to 5 for 3 round burst
                         if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
                             PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                            if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                             applyRecoil(player, stack);
                             shotsFired++;
                             shootingTimer = 0;
@@ -811,11 +814,8 @@ public class ClientEvents {
                 }
             }
 
-            //Increase the boost timer
-            timer++;
-
             //After 4 seconds decrease the boost by 1 and send the new boost value to server
-            if (timer >= 80 && data.getBoost() > 0) {
+            if (timer++ >= 80 && data.getBoost() > 0) {
                 timer = 0;
                 data.removeBoost(1);
                 PacketHandler.INSTANCE.sendToServer(new PacketUpdateBoostValue(data.getBoost()));

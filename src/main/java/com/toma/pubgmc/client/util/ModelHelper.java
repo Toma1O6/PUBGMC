@@ -25,7 +25,7 @@ public class ModelHelper {
      ModelHelper.debug15x(this, stack);
      */
 
-    public static final double MODIFIER = 1f;
+    public static final double MODIFIER = 1.0f;
     public static final double SMALL_MODIFIER = 0.025f;
 
     public static ModelHelper instance;

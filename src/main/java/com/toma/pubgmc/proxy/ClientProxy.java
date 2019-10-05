@@ -18,6 +18,7 @@ import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -78,6 +79,13 @@ public class ClientProxy implements IProxy {
             GuiGunWorkbench gui = (GuiGunWorkbench) mc.currentScreen;
             gui.getButtonList().stream().filter(b -> b instanceof RecipeButton).forEach(b -> ((RecipeButton) b).performIngredientCheck());
         }
+    }
+
+    @Override
+    public void playMCDelayedSound(SoundEvent event, double x, double y, double z, float volume, int delay) {
+        SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
+        PositionedSoundRecord sound = new PositionedSoundRecord(event, SoundCategory.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
+        handler.playDelayedSound(sound, delay);
     }
 
     @Override

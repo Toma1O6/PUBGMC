@@ -71,6 +71,7 @@ public class PMCSounds {
     public static SoundEvent gun_win94, gun_m249, gun_dp28;
     public static SoundEvent airdrop_plane_fly_by;
     public static SoundEvent chute_open, chute_land;
+    public static SoundEvent bolt_win94, bolt_kar98k, bolt_m24, bolt_awm;
 
     //vehicle
     public static SoundEvent vehicleIdle;
@@ -81,6 +82,7 @@ public class PMCSounds {
      * ========================================[UTIL]==========================================================
      **/
 
+    // TODO move into Forge controlled registry event
     public static void registerSounds() {
         gun_p92 = registerSound("gun.p92");
         gun_p92_silenced = registerSound("gun.p92.silenced");
@@ -198,6 +200,11 @@ public class PMCSounds {
         reload_kar98k_single = registerSound("reload.kar98k.single");
         reload_m24 = registerSound("reload.m24");
         reload_awm = registerSound("reload.awm");
+
+        bolt_win94 = registerSound("bolt.win94");
+        bolt_kar98k = registerSound("bolt.kar98k");
+        bolt_m24 = registerSound("bolt.m24");
+        bolt_awm = registerSound("bolt.awm");
 
         gun_noammo = registerSound("gun.noammo");
         bullet_whizz = registerSound("bullet.whizz");

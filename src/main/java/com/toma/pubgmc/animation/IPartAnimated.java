@@ -39,7 +39,7 @@ public interface IPartAnimated<T extends Animation> {
         Vector3f rotation = this.getPartRotation();
         if (bool) {
             if (!Animation.isPartMovementFinished(this)) {
-                setMovement(movement.x, Animation.getPartialMovement(movement.y, step.getRight().y, 0.9F * getSpeed()), movement.z);
+                setMovement(movement.x, Animation.getPartialMovement(movement.y, step.getRight().y, 0.9F * getSpeed()), Animation.getPartialMovement(movement.z, step.getRight().z, 0.8F * getSpeed()));
                 setRotation(Animation.getPartialMovement(rotation.x, step.getLeft().x, 0.02f * this.getSpeed()), rotation.y, Animation.getPartialMovement(rotation.z, step.getLeft().z, 0.02f * this.getSpeed()));
             } else if (Animation.canExecuteNextStep(currentStep(), animationSteps())) {
                 setCurrentStep(currentStep() + 1);

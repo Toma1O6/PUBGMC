@@ -23,4 +23,8 @@ public class ServerProxy implements IProxy {
     @Override
     public void playDelayedSound(SoundEvent event, double x, double y, double z, float volume) {
     }
+
+    @Override
+    public void playMCDelayedSound(SoundEvent event, double x, double y, double z, float volume, int delay) {
+    }
 }

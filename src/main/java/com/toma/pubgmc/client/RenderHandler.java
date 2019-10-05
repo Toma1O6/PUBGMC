@@ -20,11 +20,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -44,20 +42,31 @@ public class RenderHandler {
         EntityPlayer player = e.getEntity();
         IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
         GameSettings settings = Minecraft.getMinecraft().gameSettings;
-        if(data.isAiming()) {
+        if (data.isAiming()) {
             ItemStack stack = player.getHeldItemMainhand();
-            if(stack.getItem() instanceof GunBase) {
+            if (stack.getItem() instanceof GunBase) {
                 int scope = stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
                 switch (scope) {
-                    case 1: case 2: settings.fovSetting = 45; break;
-                    case 3: settings.fovSetting = 35; break;
-                    case 4: settings.fovSetting = 25; break;
-                    case 5: settings.fovSetting = 10; break;
-                    case 6: settings.fovSetting = 3; break;
+                    case 1:
+                    case 2:
+                        settings.fovSetting = 45;
+                        break;
+                    case 3:
+                        settings.fovSetting = 35;
+                        break;
+                    case 4:
+                        settings.fovSetting = 25;
+                        break;
+                    case 5:
+                        settings.fovSetting = 10;
+                        break;
+                    case 6:
+                        settings.fovSetting = 3;
+                        break;
                 }
             }
         } else {
-            if(settings.fovSetting < 70) settings.fovSetting = 70;
+            if (settings.fovSetting < 70) settings.fovSetting = 70;
         }
     }
 
@@ -133,7 +142,7 @@ public class RenderHandler {
     @SubscribeEvent
     public void onPlayerRenderPost(RenderPlayerEvent.Post e) {
         EntityPlayer player = e.getEntityPlayer();
-        if(playersWithAddedRenderLayer.contains(player.getUniqueID())) {
+        if (playersWithAddedRenderLayer.contains(player.getUniqueID())) {
             return;
         }
         playersWithAddedRenderLayer.add(player.getUniqueID());
@@ -145,7 +154,7 @@ public class RenderHandler {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         ItemStack stack = player.getHeldItemMainhand();
-        if(!(stack.getItem() instanceof GunBase)) {
+        if (!(stack.getItem() instanceof GunBase)) {
             IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
             boolean aim = data.isAiming();
             //boolean oneHand = ((GunBase)stack.getItem()).getWeaponModel().heldAnimation.getHeldStyle() == HeldAnimation.HeldStyle.SMALL;

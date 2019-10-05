@@ -2,6 +2,7 @@ package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -71,7 +72,7 @@ public class ModelScarL extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.245f, 0.225f);
         initAimingAnimationStates(0.245f, 0.245f, 0.205f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION).withSpeed(0.8F);
     }
 
     @Override

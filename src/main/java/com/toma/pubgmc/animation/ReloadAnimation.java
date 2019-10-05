@@ -16,11 +16,13 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
     private float px, py, pz, prx, pry, prz;
     private int step;
     private float speedMultiplier;
+    private final float[] defaultRotationAngles;
 
     public ReloadAnimation(final ModelRenderer partToAnimate, final ReloadStyle styleOfReload) {
         this.magazine = partToAnimate;
         this.style = styleOfReload;
         this.speedMultiplier = 1.0F;
+        this.defaultRotationAngles = partToAnimate == null ? new float[0] : new float[] {partToAnimate.rotateAngleX, partToAnimate.rotateAngleY, partToAnimate.rotateAngleZ};
     }
 
     public ReloadAnimation withSpeed(float speed) {
@@ -61,7 +63,17 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
 
     @Override
     public ReloadAnimation initMovement(MutablePair<Vector3f, Vector3f>[] steps) {
-        this.steps = steps;
+        if(magazine == null) return this;
+        MutablePair<Vector3f, Vector3f>[] modifiedSteps = new MutablePair[steps.length+1];
+        for(int i = 0; i < steps.length; i++) {
+            Vector3f rotation = steps[i].getLeft();
+            rotation.x = rotation.x == 0.0F ? defaultRotationAngles[0] : rotation.x;
+            rotation.y = rotation.y == 0.0F ? defaultRotationAngles[1] : rotation.y;
+            rotation.z = rotation.z == 0.0F ? defaultRotationAngles[2] : rotation.z;
+            modifiedSteps[i] = new MutablePair<>(rotation, steps[i].getRight());
+        }
+        modifiedSteps[modifiedSteps.length-1] = new MutablePair<>(new Vector3f(defaultRotationAngles[0], defaultRotationAngles[1], defaultRotationAngles[2]), EMPTYVEC);
+        this.steps = modifiedSteps;
         return this;
     }
 
@@ -72,8 +84,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
 
     @Override
     public float[] getDefaultRotationAngles() {
-        ModelRenderer part = this.getPart();
-        return new float[]{part.rotateAngleX, part.rotateAngleY, part.rotateAngleZ};
+        return defaultRotationAngles;
     }
 
     @Override
@@ -145,7 +156,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
     }
 
     public enum ReloadStyle {
-        MAGAZINE(new Vector3f(60f, 0f, -20f), new Vector3f(0f, 0f, -0.5f)),
+        MAGAZINE(new Vector3f(60f, 0f, 0f), new Vector3f(0f, 0.5f, -0.25f)),
         REVOLVER(new Vector3f(-20f, 0f, -15f), EMPTYVEC),
         SINGLE(new Vector3f(0f, 10f, 15f), new Vector3f(-0.05f, 0f, 0.05f));
 
