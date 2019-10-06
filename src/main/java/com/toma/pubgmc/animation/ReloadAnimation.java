@@ -1,19 +1,20 @@
 package com.toma.pubgmc.animation;
 
+import com.toma.pubgmc.client.models.ModelGun;
+import com.toma.pubgmc.client.models.weapons.ModelGroza;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.vecmath.Vector3f;
 
 public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAnimation> {
     final ModelRenderer magazine;
     final ReloadStyle style;
-    private MutablePair<Vector3f, Vector3f>[] steps;
+    private Vector3f[] steps = ModelGun.DEFAULT_PART_ANIMATION;
     private float x, y, z;
     private float rx, ry, rz;
-    private float px, py, pz, prx, pry, prz;
+    private float px, py, pz;
     private int step;
     private float speedMultiplier;
     private final float[] defaultRotationAngles;
@@ -55,36 +56,39 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
     }
 
     @Override
-    public void setRotation(float x, float y, float z) {
-        this.prx = x;
-        this.pry = y;
-        this.prz = z;
-    }
-
-    @Override
-    public ReloadAnimation initMovement(MutablePair<Vector3f, Vector3f>[] steps) {
+    public ReloadAnimation initMovement(Vector3f[] steps) {
         if(magazine == null) return this;
-        MutablePair<Vector3f, Vector3f>[] modifiedSteps = new MutablePair[steps.length+1];
-        for(int i = 0; i < steps.length; i++) {
-            Vector3f rotation = steps[i].getLeft();
-            rotation.x = rotation.x == 0.0F ? defaultRotationAngles[0] : rotation.x;
-            rotation.y = rotation.y == 0.0F ? defaultRotationAngles[1] : rotation.y;
-            rotation.z = rotation.z == 0.0F ? defaultRotationAngles[2] : rotation.z;
-            modifiedSteps[i] = new MutablePair<>(rotation, steps[i].getRight());
-        }
-        modifiedSteps[modifiedSteps.length-1] = new MutablePair<>(new Vector3f(defaultRotationAngles[0], defaultRotationAngles[1], defaultRotationAngles[2]), EMPTYVEC);
-        this.steps = modifiedSteps;
+        this.steps = steps;
         return this;
     }
 
-    @Override
-    public MutablePair<Vector3f, Vector3f>[] animationSteps() {
-        return steps;
+    public ReloadAnimation initMovement(Vector3f[] steps, int rotationDegrees) {
+        Vector3f[] modified = new Vector3f[steps.length];
+        for(int i = 0; i < steps.length; i++) {
+            Vector3f vec = steps[i];
+            Vector3f vector3f;
+            switch(rotationDegrees) {
+                case 90: case -90: {
+                    vector3f = new Vector3f(vec.z, vec.y, -vec.x);
+                    break;
+                }
+                case 180: {
+                    vector3f = new Vector3f(-vec.x, vec.y, -vec.z);
+                    break;
+                }
+                case 0: default: {
+                    vector3f = vec;
+                    break;
+                }
+            }
+            modified[i] = vector3f;
+        }
+        return this.initMovement(modified);
     }
 
     @Override
-    public float[] getDefaultRotationAngles() {
-        return defaultRotationAngles;
+    public Vector3f[] animationSteps() {
+        return steps;
     }
 
     @Override
@@ -110,21 +114,6 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
     @Override
     public Vector3f getPartMovement() {
         return new Vector3f(px, py, pz);
-    }
-
-    @Override
-    public Vector3f getPartRotation() {
-        return new Vector3f(prx, pry, prz);
-    }
-
-    //Crashes the game during model initialization
-    @Deprecated
-    public MutablePair<Vector3f, Vector3f>[] getDefaultAnimation() {
-        return new MutablePair[]{
-                new MutablePair(new Vector3f(getPart().rotateAngleX, getPart().rotateAngleY, getPart().rotateAngleZ), new Vector3f(0f, 0.5f, 0f)),
-                new MutablePair(new Vector3f(getPart().rotateAngleX, getPart().rotateAngleY, getPart().rotateAngleZ), new Vector3f(0f, 11.5f, 0f)),
-                new MutablePair(new Vector3f(getPart().rotateAngleX, getPart().rotateAngleY, getPart().rotateAngleZ), new Vector3f(0f, 0f, 0f))
-        };
     }
 
     public ReloadStyle getReloadStyle() {
@@ -162,7 +151,7 @@ public class ReloadAnimation extends Animation implements IPartAnimated<ReloadAn
 
         private final Vector3f rotation, translation;
 
-        private ReloadStyle(final Vector3f rotation, final Vector3f translation) {
+        ReloadStyle(final Vector3f rotation, final Vector3f translation) {
             this.rotation = rotation;
             this.translation = translation;
         }

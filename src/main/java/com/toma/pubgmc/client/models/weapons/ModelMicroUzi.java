@@ -39,7 +39,7 @@ public class ModelMicroUzi extends ModelGun {
         initAimAnimation(-0.56f, 0.21f, 0.23f);
         initAimingAnimationStates(0.21f, 0.125f, 0.12f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.2F);
     }
 
     @Override

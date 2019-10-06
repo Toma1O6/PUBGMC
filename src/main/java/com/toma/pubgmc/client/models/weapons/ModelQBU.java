@@ -67,7 +67,7 @@ public class ModelQBU extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.305f, 0.22f);
         initAimingAnimationStates(0.305f, 0.3f, 0.2625f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.3F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

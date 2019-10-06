@@ -55,7 +55,7 @@ public class ModelScorpion extends ModelGun {
         initAimAnimation(-0.56f, 0.2f, -0.2f, 2.0F);
         initAimingAnimationStates(0.2f, 0.117f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.3F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

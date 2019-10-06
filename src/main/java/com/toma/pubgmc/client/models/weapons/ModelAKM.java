@@ -72,7 +72,7 @@ public class ModelAKM extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.5581F, 0.23F, 0.18F);
         initAimingAnimationStates(0.23F, 0.18F, 0.14F);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.15F);
     }
 
     @Override

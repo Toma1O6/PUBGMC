@@ -57,7 +57,7 @@ public class ModelM16A4 extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.195f, 0.215f);
         initAimingAnimationStates(0.195f, 0.18f, 0.145f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 90);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

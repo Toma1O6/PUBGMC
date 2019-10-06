@@ -1,22 +1,19 @@
 package com.toma.pubgmc.animation;
 
 import net.minecraft.client.model.ModelRenderer;
-import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.vecmath.Vector3f;
 
 public class GunEventAnimation extends Animation implements IPartAnimated<GunEventAnimation> {
 
     private final ModelRenderer part;
-    private final float[] defaultRotation;
     private int step;
-    private float x, y, z, rx, ry, rz;
-    private MutablePair<Vector3f, Vector3f>[] steps;
+    private float x, y, z;
+    private Vector3f[] steps;
     private float speed;
 
     public GunEventAnimation(ModelRenderer part) {
         this.part = part;
-        defaultRotation = new float[]{part.rotateAngleX, part.rotateAngleY, part.rotateAngleZ};
     }
 
     @Override
@@ -35,7 +32,7 @@ public class GunEventAnimation extends Animation implements IPartAnimated<GunEve
     }
 
     @Override
-    public MutablePair<Vector3f, Vector3f>[] animationSteps() {
+    public Vector3f[] animationSteps() {
         return steps;
     }
 
@@ -45,18 +42,8 @@ public class GunEventAnimation extends Animation implements IPartAnimated<GunEve
     }
 
     @Override
-    public float[] getDefaultRotationAngles() {
-        return defaultRotation;
-    }
-
-    @Override
     public Vector3f getPartMovement() {
         return new Vector3f(x, y, z);
-    }
-
-    @Override
-    public Vector3f getPartRotation() {
-        return new Vector3f(rx, ry, rz);
     }
 
     @Override
@@ -65,7 +52,7 @@ public class GunEventAnimation extends Animation implements IPartAnimated<GunEve
     }
 
     @Override
-    public GunEventAnimation initMovement(MutablePair<Vector3f, Vector3f>[] mutablePairs) {
+    public GunEventAnimation initMovement(Vector3f[] mutablePairs) {
         this.steps = mutablePairs;
         return this;
     }
@@ -80,12 +67,5 @@ public class GunEventAnimation extends Animation implements IPartAnimated<GunEve
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    @Override
-    public void setRotation(float x, float y, float z) {
-        this.rx = x;
-        this.ry = y;
-        this.rz = z;
     }
 }

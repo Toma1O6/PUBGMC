@@ -29,7 +29,7 @@ public class ModelP1911 extends ModelGun {
         initAimAnimation(-0.56f, 0.275f, -0.01f, 2.5F);
         initAimingAnimationStates(0.275f, 0.185f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(2.0F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

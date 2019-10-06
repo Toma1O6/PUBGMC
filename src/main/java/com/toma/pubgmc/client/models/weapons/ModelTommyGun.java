@@ -64,7 +64,7 @@ public class ModelTommyGun extends ModelGun {
         initAimAnimation(-0.56f, 0.39f, 0.15f);
         initAimingAnimationStates(0.39f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine1, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine1, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.2F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

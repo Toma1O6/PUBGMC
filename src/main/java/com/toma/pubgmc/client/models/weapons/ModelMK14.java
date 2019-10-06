@@ -96,7 +96,7 @@ public class ModelMK14 extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.58f, 0.26f, 0.33f);
         initAimingAnimationStates(0.26f, 0.1875f, 0.14f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180).withSpeed(1.3F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

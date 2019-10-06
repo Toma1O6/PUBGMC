@@ -12,15 +12,16 @@ import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.vecmath.Vector3f;
 
 public abstract class ModelGun extends ModelBase {
-    protected static final MutablePair[] DEFAULT_PART_ANIMATION = {
-            new MutablePair(new Vector3f(0.075f, 0f, 0.0f), new Vector3f(0f, 16f, 0f)),
-            new MutablePair(new Vector3f(0.15f, 0f, -0.5f), new Vector3f(0f, 25f, 30f)),
-            new MutablePair(new Vector3f(0.15f, 0f, -0.2f), new Vector3f(0f, 19f, 0f)),
+    public static final Vector3f[] DEFAULT_PART_ANIMATION = {
+            new Vector3f(0f, 15f, 0f),
+            new Vector3f(15f, 30f, 15f),
+            new Vector3f(15f, 30f, 50f),
+            new Vector3f(15f, 20f, 15f),
+            new Vector3f(0f, 0f, 0f)
     };
 
     private static final AttachmentSuppressorPistol pistolSupp = new AttachmentSuppressorPistol();

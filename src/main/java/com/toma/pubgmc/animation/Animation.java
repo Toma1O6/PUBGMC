@@ -1,7 +1,6 @@
 package com.toma.pubgmc.animation;
 
 import net.minecraft.client.Minecraft;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.vecmath.Vector3f;
@@ -10,43 +9,35 @@ public abstract class Animation {
     public static final Vector3f EMPTYVEC = new Vector3f(0f, 0f, 0f);
     public float movementX, movementY, movementZ;
 
-    public static final float calculateMovement(float baseMovement) {
-        float result = baseMovement * 60 / Minecraft.getDebugFPS();
-        return result;
+    public static float calculateMovement(float baseMovement) {
+        return baseMovement * 60 / Minecraft.getDebugFPS();
     }
 
     public static float getPartialMovement(final float movement, final float finalPos, final float modifier) {
-        float f = Math.abs(movement - finalPos) < modifier ? finalPos : movement < finalPos ? movement + calculateMovement(modifier) : movement - calculateMovement(modifier);
-        return f;
+        return Math.abs(movement - finalPos) < modifier ? finalPos : movement < finalPos ? movement + calculateMovement(modifier) : movement - calculateMovement(modifier);
     }
 
     public static float decreasePartialMovement(final float movement, final float finalPos, final float modifier) {
-        float f = movement > finalPos ? movement - calculateMovement(modifier) : finalPos;
-        return f;
+        return movement > finalPos ? movement - calculateMovement(modifier) : finalPos;
     }
 
     public static float increasePartialMovement(final float movement, final float finalPos, final float modifier) {
-        float f = movement < finalPos ? movement + calculateMovement(modifier) : finalPos;
-        return f;
+        return movement < finalPos ? movement + calculateMovement(modifier) : finalPos;
     }
 
     public static boolean isPartMovementFinished(IPartAnimated part) {
-        Vector3f transl = (Vector3f) part.animationSteps()[part.currentStep()].getRight();
-        Vector3f rot = (Vector3f) part.animationSteps()[part.currentStep()].getLeft();
+        Vector3f transl = part.animationSteps()[part.currentStep()];
         Vector3f magTransl = part.getPartMovement();
-        Vector3f magRot = part.getPartRotation();
-        return magTransl.x == transl.x && magTransl.y == transl.y && magTransl.z == transl.z &&
-                magRot.x == rot.x && magRot.y == rot.y && magRot.z == rot.z;
+        boolean b = magTransl.x == transl.x && magTransl.y == transl.y && magTransl.z == transl.z;
+        return b;
     }
 
     public static boolean isPartReturned(IPartAnimated part) {
         Vector3f translation = part.getPartMovement();
-        Vector3f rotation = part.getPartRotation();
-        return translation.x == 0f && translation.y == 0f && translation.z == 0f
-                && rotation.x == part.getDefaultRotationAngles()[0] && rotation.y == part.getDefaultRotationAngles()[1] && rotation.z == part.getDefaultRotationAngles()[2];
+        return translation.x == 0f && translation.y == 0f && translation.z == 0f;
     }
 
-    public static boolean canExecuteNextStep(int current, Pair[] group) {
+    public static boolean canExecuteNextStep(int current, Vector3f[] group) {
         return current + 1 < group.length;
     }
 

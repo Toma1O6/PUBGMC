@@ -439,7 +439,7 @@ public class ModelSLR extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.335f, 0.1f);
         initAimingAnimationStates(0.335f, 0.325f, 0.275f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).withSpeed(1.2F);
     }
 
     @Override

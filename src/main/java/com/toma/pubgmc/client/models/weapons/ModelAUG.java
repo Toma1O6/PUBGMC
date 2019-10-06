@@ -485,7 +485,7 @@ public class ModelAUG extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.2825f, 0.3f, 2f);
         initAimingAnimationStates(0.2825f, 0.25f, 0.22f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION)
+        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180)
                 .withSpeed(0.9f);
     }
 

@@ -65,6 +65,7 @@ public class GameBattleRoyale extends Game {
             p.setHealth(20.0F);
             p.getFoodStats().setFoodLevel(20);
             p.getFoodStats().setFoodSaturationLevel(15000.0F);
+            p.sendMessage(new TextComponentString("Choose one drop location"));
             for(MapLocation location : gameData.getSpawnLocations()) {
                 TextComponentString msg = new TextComponentString("- " + location.name());
                 msg.setStyle(msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "") {

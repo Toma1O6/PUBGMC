@@ -65,8 +65,8 @@ public class ModelAWM extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.557f, 0.255f, 0.2f);
         initAimingAnimationStates(0.255f, 0.17f, 0.119f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION)
-                .withSpeed(0.7f);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, -90)
+                .withSpeed(0.8f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

@@ -84,7 +84,7 @@ public class ModelGroza extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.135f, 0.28f);
         initAimingAnimationStates(0.135f, 0.0575f, 0.03f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).withSpeed(1.2F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
