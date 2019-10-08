@@ -8,6 +8,8 @@ import com.toma.pubgmc.init.GameRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -143,6 +146,19 @@ public abstract class Game {
      */
     public int playerCounterUpdateFrequency() {
         return 100;
+    }
+
+    /**
+     * Allows game instances to initialize additional variables upon command execution
+     * Returns null as default
+     *
+     * @param sender - The ICommandSender who executed this command
+     * @param server - The server this command got executed on
+     * @param additionalArgs - all arguments after the 'start' keyword in command
+     */
+    @Nullable
+    public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
+        return null;
     }
 
     /* ============================================[                   API END                    ]============================================ */

@@ -2,6 +2,7 @@ package com.toma.pubgmc.init;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.games.GameBattleRoyale;
+import com.toma.pubgmc.api.games.GameDeathmatch;
 import com.toma.pubgmc.api.games.GameInactive;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
@@ -445,6 +446,7 @@ public class PMCRegistry {
         public static void registerGameModes(com.toma.pubgmc.init.GameRegistry.GameRegisterEvent e) {
             e.register(new GameInactive(new ResourceLocation(Pubgmc.MOD_ID, "inactive")));
             e.register(new GameBattleRoyale(new ResourceLocation(Pubgmc.MOD_ID, "battleroyale")));
+            e.register(new GameDeathmatch(new ResourceLocation(Pubgmc.MOD_ID, "deathmatch")));
         }
 
         public static void registerItemBlock(Block block) {

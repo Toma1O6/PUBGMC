@@ -75,6 +75,16 @@ public class CommandGame extends CommandBase {
                 if(!game.startGame(sender.getEntityWorld())) {
                     throw new CommandException("Error occured when launching game! Check logs and contact GAME AUTHOR about this issue!");
                 }
+                String[] addtionalArgs = args.length == 1 ? new String[0] : new String[args.length-1];
+                if(addtionalArgs.length > 0) {
+                    for(int i = 1; i < args.length; i++) {
+                        addtionalArgs[i-1] = args[i];
+                    }
+                }
+                CommandException exception = game.onGameStartCommandExecuted(sender, server, addtionalArgs);
+                if(exception != null) {
+                    throw exception;
+                }
                 gameData.setPlaying(true);
                 game.updateDataToClients(sender.getEntityWorld());
                 sendCommandFeedback(sender, "Started game");

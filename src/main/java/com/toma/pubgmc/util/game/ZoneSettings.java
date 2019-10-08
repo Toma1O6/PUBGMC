@@ -97,6 +97,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
 
         @Override
         public ZoneSettings build() {
+            if(keepStatic) speed = 0.1F;
             checkFloat(dmg, 0.1F, 15.0F);
             checkFloat(speed, 0.1F, 1.0F);
             checkBoolean(floats.length == 7);
