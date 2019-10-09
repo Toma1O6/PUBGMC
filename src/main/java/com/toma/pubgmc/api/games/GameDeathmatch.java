@@ -4,6 +4,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -32,9 +33,11 @@ public class GameDeathmatch extends Game {
     private GunBase.GunType spawnWeaponType;
     private int matchDuration;
     private boolean airdrops;
+    private int size;
 
     public GameDeathmatch(String modeName) {
         super(modeName);
+        this.setGameInfo(new GameInfo("Toma", "- Everybody vs Everybody!", "- Respawn on death", "- Players respawn with loot"));
     }
 
     @Override
@@ -45,7 +48,7 @@ public class GameDeathmatch extends Game {
     @Nonnull
     @Override
     public BlueZone initializeZone(World world) {
-        ZoneSettings settings = ZoneSettings.Builder.create().damage(10.0F).size(60).setStatic().build();
+        ZoneSettings settings = ZoneSettings.Builder.create().damage(10.0F).size(size).setStatic().build();
         return new BlueZone(this.getGameData(world), settings);
     }
 
@@ -59,15 +62,21 @@ public class GameDeathmatch extends Game {
         if(airdrops) {
             if(gameTimer % 1200 == 0) this.spawnAirdrop(world);
         }
+        if(gameTimer >= this.matchDuration) {
+            this.stopGame(world);
+        }
     }
 
     @Override
     public void onGameStopped(World world) {
         GameUtils.teleportPlayersIntoLobby(world, this);
+        List<EntityPlayer> players = this.getOnlinePlayers(world);
+        players.forEach(p -> p.inventory.clear());
     }
 
     @Override
     public void onPlayerKilled(EntityPlayer player, @Nullable EntityLivingBase entityLivingBase, ItemStack gun, boolean headshot) {
+        player.inventory.clear();
     }
 
     @Override
@@ -75,6 +84,7 @@ public class GameDeathmatch extends Game {
         IPlayerData playerData = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
         playerData.setBackpackLevel(3);
         playerData.sync(player);
+        addLootIntoInventory(player);
         return true;
     }
 
@@ -91,23 +101,29 @@ public class GameDeathmatch extends Game {
     @Nullable
     @Override
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        if(additionalArgs.length < 3) {
-            return new CommandException("Additional arguments needed! Use /game start <weaponClass> <weaponRarity> <matchDuration[seconds]> <airdrops>");
+        if(additionalArgs.length < 4) {
+            return new CommandException("Additional arguments needed! Use /game start <weaponClass> <weaponRarity> <mapDiameter> <matchDuration[seconds]> <airdrops>");
         }
         GunBase.GunType type = GunBase.GunType.getTypeFromName(additionalArgs[0]);
         if(type == null) return new CommandException("Unknown weapon class!");
         int loot = additionalArgs[1].equalsIgnoreCase("normalWeapons") ? 0 : additionalArgs[1].equalsIgnoreCase("allowDropWeapons") ? 1 : additionalArgs[1].equalsIgnoreCase("onlyDropWeapons") ? 2 : -1;
         if(loot < 0) return new CommandException("Unknown loot style! Valid styles are [normalWeapons, allowDropWeapons, onlyDropWeapons]");
-        boolean airdrops = additionalArgs.length >= 4 && Boolean.parseBoolean(additionalArgs[3]);
+        boolean airdrops = additionalArgs.length > 4 ? Boolean.parseBoolean(additionalArgs[4]) : false;
         int matchDuration;
+        int size;
         try {
-            matchDuration = Integer.parseInt(additionalArgs[2]);
+            size = Integer.parseInt(additionalArgs[2]);
+            matchDuration = Integer.parseInt(additionalArgs[3]);
         } catch (NumberFormatException e) {
             return new CommandException(additionalArgs[2] + " is not a valid number!");
         }
+        if(size < 0) {
+            return new CommandException("Size value must be positive!");
+        }
         this.spawnWeaponType = type;
         this.lootType = loot;
-        this.matchDuration = matchDuration;
+        this.size = size;
+        this.matchDuration = matchDuration * 20;
         this.airdrops = airdrops;
         return null;
     }
@@ -115,10 +131,10 @@ public class GameDeathmatch extends Game {
     @Override
     public String[] getCommandAutoCompletions(int additonalArgIndex, String arg) {
         if(additonalArgIndex == 0) {
-            return new String[] {"pistol", "smg", "shotgun", "ar", "dmr", "sniper"};
+            return new String[] {"pistol", "smg", "shotgun", "ar", "dmr", "sr"};
         } else if(additonalArgIndex == 1) {
             return new String[] {"normalWeapons", "allowDropWeapons", "onlyDropWeapons"};
-        } else if(additonalArgIndex == 3) {
+        } else if(additonalArgIndex == 4) {
             return new String[] {"true", "false"};
         }
         return new String[0];
@@ -128,7 +144,7 @@ public class GameDeathmatch extends Game {
     public void writeDataToNBT(NBTTagCompound compound) {
         compound.setBoolean("airdrops", this.airdrops);
         compound.setInteger("lootRarity", this.lootType);
-        compound.setInteger("lootClass", this.spawnWeaponType.ordinal());
+        if(spawnWeaponType != null) compound.setInteger("lootClass", this.spawnWeaponType.ordinal());
         compound.setInteger("matchDuration", this.matchDuration);
     }
 
@@ -136,7 +152,7 @@ public class GameDeathmatch extends Game {
     public void readDataFromNBT(NBTTagCompound compound) {
         this.airdrops = compound.getBoolean("airdrops");
         this.lootType = compound.getInteger("lootRarity");
-        this.spawnWeaponType = GunBase.GunType.values()[compound.getInteger("lootClass")];
+        this.spawnWeaponType = compound.hasKey("lootClass") ? GunBase.GunType.values()[compound.getInteger("lootClass")] : null;
         this.matchDuration = compound.getInteger("matchDuration");
     }
 
@@ -145,6 +161,7 @@ public class GameDeathmatch extends Game {
         ItemStack stack = new ItemStack(item);
         NBTTagCompound nbt = this.createAttachmentNBT(item, stack);
         stack.setTagCompound(nbt);
+        player.inventory.clear();
         player.addItemStackToInventory(stack);
         for(int i = 0; i < 5; i++) {
             player.addItemStackToInventory(item.getAmmoType().ammoStack(ConfigPMC.items().ammoLimit));
@@ -158,7 +175,10 @@ public class GameDeathmatch extends Game {
         if(player == null) return;
         ZonePos min = this.zone.currentBounds.min();
         int maxDist = (int)Math.abs(this.zone.currentBounds.max().x - min.x);
-        BlockPos pos = new BlockPos(min.x + Pubgmc.rng().nextInt(maxDist), 250, min.z + Pubgmc.rng().nextInt(maxDist));
+        int x = (int)min.x + Pubgmc.rng().nextInt(maxDist);
+        int z = (int)min.z + Pubgmc.rng().nextInt(maxDist);
+        int y = player.world.getHeight(x, z);
+        BlockPos pos = new BlockPos(x, y, z);
         player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
         this.addLootIntoInventory(player);
     }
@@ -166,7 +186,7 @@ public class GameDeathmatch extends Game {
     private NBTTagCompound createAttachmentNBT(GunBase gun, ItemStack stack) {
         NBTTagCompound nbt = new NBTTagCompound();
         int ordinal = gun.getGunType().ordinal();
-        int scopeType = ordinal == 1 || ordinal == 3 ? 1 : ordinal > 3 ? ordinal : 0;
+        int scopeType = gun.getScopeAttachments().length == 0 ? 0 : ordinal == 1 || ordinal == 3 ? 1 : ordinal > 3 ? ordinal - 1 : 0;
         int ammoAmount = gun.getWeaponAmmoLimit(stack);
         nbt.setBoolean("isValidWeapon", true);
         nbt.setInteger("ammo", ammoAmount);

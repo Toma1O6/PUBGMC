@@ -45,8 +45,9 @@ public class CommandGame extends CommandBase {
             } else if(args[0].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, "add", "remove", "list");
             }
-            if(args.length > 2) {
-                return getListOfStringsMatchingLastWord(sender.getEntityWorld().getCapability(GameDataProvider.GAMEDATA, null).getCurrentGame().getCommandAutoCompletions(args.length-1, args[args.length-1]), args);
+            if(args.length >= 2) {
+                String[] arr = sender.getEntityWorld().getCapability(GameDataProvider.GAMEDATA, null).getCurrentGame().getCommandAutoCompletions(args.length - 2, args[args.length-1]);
+                return getListOfStringsMatchingLastWord(args, arr);
             }
         }
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, completions) : Collections.EMPTY_LIST;
@@ -74,9 +75,6 @@ public class CommandGame extends CommandBase {
                 } else if(gameData.isInactiveGame()) {
                     throw new CommandException("Cannot start this type of game!");
                 }
-                if(!game.startGame(sender.getEntityWorld())) {
-                    throw new CommandException("Error occured when launching game! Check logs and contact GAME AUTHOR about this issue!");
-                }
                 String[] addtionalArgs = args.length == 1 ? new String[0] : new String[args.length-1];
                 if(addtionalArgs.length > 0) {
                     for(int i = 1; i < args.length; i++) {
@@ -86,6 +84,9 @@ public class CommandGame extends CommandBase {
                 CommandException exception = game.onGameStartCommandExecuted(sender, server, addtionalArgs);
                 if(exception != null) {
                     throw exception;
+                }
+                if(!game.startGame(sender.getEntityWorld())) {
+                    throw new CommandException("Error occured when launching game! Check logs and contact GAME AUTHOR about this issue!");
                 }
                 gameData.setPlaying(true);
                 game.updateDataToClients(sender.getEntityWorld());
@@ -139,11 +140,10 @@ public class CommandGame extends CommandBase {
                 }
                 sendMessage(player, "Alive players: " + game.onlinePlayers);
                 sendMessage(player, "Time: " + (game.getGameTimer() / 20) + "s");
-                sendMessage(player, "Mode: " + game.registryName);
-                if(gameData.isPlaying()) sendMessage(player, "Zone stage: " + game.zone.currentStage);
+                sendMessage(player, "Mode: " + game.registryName.toUpperCase());
                 String[] data = game.getGameInformation().gameInformation;
                 if(data == null) break;
-                sendMessage(player, "Additional info: ");
+                sendMessage(player, "Game mode author: " + game.getGameInformation().author);
                 for(int i = 0; i < data.length; i++) {
                     sendMessage(player, data[i]);
                 }

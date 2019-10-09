@@ -37,6 +37,7 @@ public class LootHelper {
     }
 
     private static List<GunBase> filterGunsByRarity(List<GunBase> list, int rarity) {
+        if(AIRDROP_WEAPONS.isEmpty()) init();
         if(rarity == 1) return list;
         if(rarity == 0) list.removeAll(AIRDROP_WEAPONS);
         else if(rarity == 2) {

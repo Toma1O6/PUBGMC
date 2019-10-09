@@ -439,10 +439,6 @@ public class GunBase extends PMCItem {
         this.vertical_recoil = recoil;
     }
 
-    //TODO: remove
-    public void canSwitchMode(boolean firemode) {
-    }
-
     public void setGunSoundVolume(float volume) {
         this.gun_volume = volume;
     }

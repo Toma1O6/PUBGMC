@@ -156,14 +156,10 @@ public class GameHandler {
                 game.updateDataToClients(e.player.world);
                 ZonePos startPos = game.zone.currentBounds.min();
                 int max = (int)Math.abs(startPos.x - game.zone.currentBounds.max().x);
-                BlockPos playerPos = new BlockPos(startPos.x + Pubgmc.rng().nextInt(max), 256, startPos.z + Pubgmc.rng().nextInt(max));
-                EntityPlayer player = e.player;
-                player.setPositionAndUpdate(playerPos.getX(), playerPos.getY(), playerPos.getZ());
-                if(!player.world.isRemote) {
-                    EntityParachute chute = new EntityParachute(player.world, player);
-                    player.world.spawnEntity(chute);
-                    player.startRiding(chute);
-                }
+                int x = (int)startPos.x + Pubgmc.rng().nextInt(max);
+                int z = (int)startPos.z + Pubgmc.rng().nextInt(max);
+                int y = e.player.world.getHeight(x, z);
+                e.player.setPositionAndUpdate(x, y, z);
             }
         }
 

@@ -22,7 +22,6 @@ public class FlareGun extends GunBase {
         this.setGunType(GunType.PISTOL);
         this.setReloadTime(70);
         this.setFireRate(110);
-        this.canSwitchMode(false);
         this.setVerticalRecoil(1);
         this.setHorizontalRecoil(0);
 

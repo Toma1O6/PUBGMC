@@ -9,7 +9,7 @@ public final class CFGOtherSettings {
 
     @Config.Name("Game zone color")
     @Config.RangeInt(min = 0x000000, max = 0xFFFFFF)
-    public int zoneColor = 0x00FFFF;
+    public int zoneColor = 0x00BAFF;
 
     @Config.Name("Lootbox content render")
     @Config.RequiresMcRestart

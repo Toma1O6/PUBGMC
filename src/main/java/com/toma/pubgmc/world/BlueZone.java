@@ -36,6 +36,11 @@ public final class BlueZone {
 
     public BlueZone(int mapSize, BlockPos center, ZoneSettings settings) {
         this.settings = settings;
+        boolean flag = settings.customSize > 0;
+        if(flag) {
+            center = new BlockPos(center.getX() - mapSize + settings.customSize + Pubgmc.rng().nextInt(mapSize*2 - settings.customSize*2), 256, center.getZ() - mapSize + settings.customSize + Pubgmc.rng().nextInt(mapSize*2 - settings.customSize*2));
+            mapSize = settings.customSize;
+        }
         this.origin = center;
         this.currentBounds = new ZoneBounds(center.getX() - mapSize, center.getZ() - mapSize, center.getX() + mapSize, center.getZ() + mapSize);
         this.prevBounds = new ZoneBounds(currentBounds);

@@ -44,6 +44,7 @@ public class GameBattleRoyale extends Game {
 
     public GameBattleRoyale(String name) {
         super(name);
+        this.setGameInfo(new GameInfo("Toma", "- Classic BR mode", "- One life per game", "- Shrinking zone"));
     }
 
     @Override

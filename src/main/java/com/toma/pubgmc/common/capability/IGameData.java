@@ -184,7 +184,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             c.setInteger("mapCenterZ", gameZoneCenter.getZ());
             c.setInteger("mapSize", mapSize);
             NBTTagList locationsList = new NBTTagList();
-            // TODO fix position saving
             for (int i = 0; i < locations.size(); i++) {
                 locationsList.appendTag(locations.get(i).serializeNBT());
             }
