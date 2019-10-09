@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.network.server;
 
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import com.toma.pubgmc.util.PacketHelper;
+import com.toma.pubgmc.util.helper.PacketHelper;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;

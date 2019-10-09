@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -43,8 +42,8 @@ public class GameBattleRoyale extends Game {
     private List<BlockPos> scheduledAirdrops = new ArrayList<>();
     private boolean hadRegenActive = false;
 
-    public GameBattleRoyale(ResourceLocation resourceLocation) {
-        super(resourceLocation);
+    public GameBattleRoyale(String name) {
+        super(name);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class GameBattleRoyale extends Game {
     }
 
     @Override
-    public void onGameStopped(World world, Game game) {
+    public void onGameStopped(World world) {
         if(hadRegenActive) {
             world.getGameRules().setOrCreateGameRule("naturalRegeneration", "true");
         }
@@ -177,14 +176,6 @@ public class GameBattleRoyale extends Game {
         NBTTagList list = nbt.getTagList("scheduledAirdrops", Constants.NBT.TAG_COMPOUND);
         list.forEach(tag -> scheduledAirdrops.add(NBTUtil.getPosFromTag((NBTTagCompound) tag)));
         hadRegenActive = nbt.getBoolean("regen");
-    }
-
-    @Nullable
-    @Override
-    public String[] getGameInfo() {
-        return new String[]{
-                "Time to next zone action: " + (zone.currentStage == 0 ? (2400 - zoneTimer) / 20 : (2000 - zoneTimer) / 20)
-        };
     }
 
     private void scheduleAirdrop(World world) {

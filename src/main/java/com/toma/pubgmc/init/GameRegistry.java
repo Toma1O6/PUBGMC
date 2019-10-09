@@ -1,37 +1,29 @@
 package com.toma.pubgmc.init;
 
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 public class GameRegistry {
 
-    // TODO edit for just string names
-    public static final HashMap<ResourceLocation, Game> REGISTRY = new HashMap<>();
+    public static final HashMap<String, Game> REGISTRY = new HashMap<>(3);
 
-    public static void registerGame(ResourceLocation resourceLocation, Game game) {
-        if(REGISTRY.containsKey(resourceLocation)) {
-            throw new IllegalArgumentException("Duplicate game ID: " + resourceLocation + "!");
+    public static void registerGame(String modeName, Game game) {
+        if(REGISTRY.containsKey(modeName)) {
+            throw new IllegalArgumentException("Duplicate game ID: " + modeName + "!");
         }
 
-        REGISTRY.put(resourceLocation, game);
+        REGISTRY.put(modeName, game);
     }
 
-    public static Game findGameInRegistry(String path) {
-        return findGameInRegistry(new ResourceLocation(Pubgmc.MOD_ID, path));
-    }
-
-    public static Game findGameInRegistry(ResourceLocation resourceLocation) {
-        for (ResourceLocation rl : REGISTRY.keySet()) {
-            if(rl.getResourcePath().equals(resourceLocation.getResourcePath())) {
-                return REGISTRY.get(resourceLocation);
+    public static Game findGameInRegistry(String mode) {
+        for (String s : REGISTRY.keySet()) {
+            if(s.equalsIgnoreCase(mode)) {
+                return REGISTRY.get(mode);
             }
         }
         return null;
@@ -42,19 +34,17 @@ public class GameRegistry {
     }
 
     public static List<String> getValuesPaths() {
-        Collection<ResourceLocation> registryNames = REGISTRY.keySet();
-        List<String> paths = new ArrayList<>();
-        registryNames.forEach(resourceLocation -> paths.add(resourceLocation.getResourcePath()));
-        return paths;
+        return new ArrayList<>(REGISTRY.keySet());
     }
 
     public static class GameRegisterEvent extends Event {
 
-        /**
-         * You must create new game instance here!
-         */
         public void register(Game game) {
-            // just for game constructor invocation
+            GameRegistry.registerGame(game.registryName, game);
+        }
+
+        public void registerAll(Game... games) {
+            for(Game game : games) register(game);
         }
     }
 }

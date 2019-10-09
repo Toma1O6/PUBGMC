@@ -1,4 +1,4 @@
-package com.toma.pubgmc.util;
+package com.toma.pubgmc.util.helper;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.math.BlockPos;

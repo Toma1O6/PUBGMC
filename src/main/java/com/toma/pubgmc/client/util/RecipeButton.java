@@ -2,7 +2,7 @@ package com.toma.pubgmc.client.util;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import com.toma.pubgmc.util.recipes.PMCIngredient;
 import com.toma.pubgmc.util.recipes.PMCRecipe;
 import net.minecraft.client.Minecraft;

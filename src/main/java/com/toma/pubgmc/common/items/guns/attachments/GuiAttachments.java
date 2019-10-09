@@ -1,8 +1,7 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.util.ImageUtil;
-import net.minecraft.client.Minecraft;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;

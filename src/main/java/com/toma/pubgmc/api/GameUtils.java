@@ -95,4 +95,12 @@ public final class GameUtils {
     public static void markBlockForRemoval(World world, BlockPos pos, Block block) {
         world.scheduleUpdate(pos, block, 3);
     }
+
+    public static void teleportPlayersIntoLobby(World world, Game game) {
+        Lobby lobby = game.getGameData(world).getLobby();
+        int x = lobby.center.getX();
+        int y = lobby.center.getY() + 1;
+        int z = lobby.center.getZ();
+        game.getOnlinePlayers(world).forEach(player -> player.setPositionAndUpdate(x, y, z));
+    }
 }

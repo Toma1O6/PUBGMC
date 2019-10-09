@@ -4,7 +4,6 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketSyncGameData;
-import com.toma.pubgmc.init.GameRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.gui.ScaledResolution;
@@ -18,7 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -40,16 +38,16 @@ import java.util.UUID;
  */
 public abstract class Game {
 
-    public final ResourceLocation registryName;
+    public final String registryName;
     public BlueZone zone;
     public int onlinePlayers;
+    public GameInfo gameInfo;
     protected int gameTimer;
     private List<UUID> playersInGame;
 
-    public Game(final ResourceLocation registryName) {
+    public Game(final String name) {
         this.playersInGame = new ArrayList<>();
-        this.registryName = registryName;
-        GameRegistry.registerGame(registryName, this);
+        this.registryName = name;
     }
 
     /**
@@ -71,7 +69,7 @@ public abstract class Game {
     /**
      * Called when game is getting stopped
      */
-    public abstract void onGameStopped(final World world, Game game);
+    public abstract void onGameStopped(final World world);
 
     /**
      * Allows you to save additional data to disk
@@ -132,16 +130,6 @@ public abstract class Game {
     }
 
     /**
-     * Additional information which will be displayed upon '/game info' command
-     * execution.
-     * @return null for no additional messages
-     */
-    @Nullable
-    public String[] getGameInfo() {
-        return null;
-    }
-
-    /**
      * At which rate (ticks) will be online player display updated, default 100 (5s)
      */
     public int playerCounterUpdateFrequency() {
@@ -159,6 +147,24 @@ public abstract class Game {
     @Nullable
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
         return null;
+    }
+
+    /**
+     * For autocompletion of additional game arguments
+     * @param additonalArgIndex - the index of current argument
+     * @param arg - actual argument value
+     * @return array of possible values
+     */
+    public String[] getCommandAutoCompletions(int additonalArgIndex, String arg) {
+        return new String[0];
+    }
+
+    /**
+     * Additional information which will be displayed upon '/game info' command
+     * execution.
+     */
+    public void setGameInfo(GameInfo gameInfo) {
+        this.gameInfo = gameInfo;
     }
 
     /* ============================================[                   API END                    ]============================================ */
@@ -229,7 +235,7 @@ public abstract class Game {
             data.setPlaying(false);
             playersInGame = null;
             gameTimer = 0;
-            this.onGameStopped(world, data.getCurrentGame());
+            this.onGameStopped(world);
             updateDataToClients(world);
         }
     }
@@ -247,6 +253,10 @@ public abstract class Game {
         if(playersInGame == null || playersInGame.isEmpty()) return list;
         playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).forEach(uuid -> list.add(world.getPlayerEntityByUUID(uuid)));
         return list;
+    }
+
+    public final GameInfo getGameInformation() {
+        return gameInfo;
     }
 
     public void notifyAllPlayers(World world, String message) {
@@ -300,5 +310,16 @@ public abstract class Game {
         entity.posY = y;
         entity.posZ = z + 0.5;
         entity.setPositionAndUpdate(entity.posX, entity.posY, entity.posZ);
+    }
+
+    public class GameInfo {
+
+        public final String author;
+        public final String[] gameInformation;
+
+        public GameInfo(String author, String... gameInformation) {
+            this.author = author;
+            this.gameInformation = gameInformation;
+        }
     }
 }

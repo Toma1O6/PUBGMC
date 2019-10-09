@@ -2,7 +2,7 @@ package com.toma.pubgmc.client;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

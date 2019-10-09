@@ -6,15 +6,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class GameInactive extends Game {
 
-    public GameInactive(ResourceLocation location) {
-        super(location);
+    public GameInactive(String name) {
+        super(name);
     }
 
     @Override
@@ -27,7 +26,7 @@ public class GameInactive extends Game {
     }
 
     @Override
-    public void onGameStopped(World world, Game game) {
+    public void onGameStopped(World world) {
     }
 
     @Override

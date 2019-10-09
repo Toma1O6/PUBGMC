@@ -1,7 +1,7 @@
 package com.toma.pubgmc.util.recipes;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.item.EntityItem;

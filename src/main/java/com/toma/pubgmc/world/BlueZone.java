@@ -3,6 +3,7 @@ package com.toma.pubgmc.world;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.init.PMCDamageSources;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
@@ -118,6 +119,12 @@ public final class BlueZone {
         return this.getClosestDistance(entity.posX, entity.posZ);
     }
 
+    public boolean isInsideZone(Entity entity) {
+        ZonePos min = this.currentBounds.min();
+        ZonePos max = this.currentBounds.max();
+        return entity.posX >= min.x && entity.posX <= max.x && entity.posZ >= min.z && entity.posZ <= max.z;
+    }
+
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("settings", settings.serializeNBT());
@@ -161,7 +168,8 @@ public final class BlueZone {
     protected void damagePlayersOutsideZone(World world) {
         for (EntityPlayer player : world.playerEntities) {
             boolean inLobby = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getLobby().isInLobby(player);
-            if (inLobby || player.posX >= minX(1.0F) && player.posX <= maxX(1.0F) && player.posZ >= minZ(1.0F) && player.posZ <= maxZ(1.0f)) {
+            boolean inPlane = player.isRiding() && player.getRidingEntity() instanceof EntityPlane;
+            if (inPlane || inLobby || this.isInsideZone(player)) {
                 continue;
             }
             if (!player.getIsInvulnerable()) {

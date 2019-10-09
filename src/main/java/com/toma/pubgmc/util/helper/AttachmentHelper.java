@@ -1,4 +1,4 @@
-package com.toma.pubgmc.util;
+package com.toma.pubgmc.util.helper;
 
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.init.PMCRegistry;

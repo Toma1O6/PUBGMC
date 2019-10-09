@@ -12,7 +12,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
@@ -45,6 +44,9 @@ public class CommandGame extends CommandBase {
                 return GameRegistry.getValuesPaths();
             } else if(args[0].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, "add", "remove", "list");
+            }
+            if(args.length > 2) {
+                return getListOfStringsMatchingLastWord(sender.getEntityWorld().getCapability(GameDataProvider.GAMEDATA, null).getCurrentGame().getCommandAutoCompletions(args.length-1, args[args.length-1]), args);
             }
         }
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, completions) : Collections.EMPTY_LIST;
@@ -115,8 +117,8 @@ public class CommandGame extends CommandBase {
                 sendMessage(player, "lobby [x: int, y: int, z: int, radius: int] -> creates lobby for this world");
                 sendMessage(player, "");
                 sendMessage(player, "Available game modes:");
-                for(ResourceLocation location : GameRegistry.REGISTRY.keySet()) {
-                    sendMessage(player, "- " + location.getResourcePath() + " [" + location.getResourceDomain().toUpperCase() + "]");
+                for(String location : GameRegistry.getValuesPaths()) {
+                    sendMessage(player, "- " + location);
                 }
                 break;
             }
@@ -131,15 +133,15 @@ public class CommandGame extends CommandBase {
                 sendMessage(player, "Map: [" + gameData.getMapCenter().getX() + ", " + gameData.getMapCenter().getZ() + "]; Size: " + gameData.getMapSize() + " blocks");
                 sendMessage(player, "Locations: " + gameData.getSpawnLocations().size());
                 Game game = gameData.getCurrentGame();
-                sendMessage(player, "Game: " + (gameData.isInactiveGame() ? "none" : game.registryName.getResourcePath()));
+                sendMessage(player, "Game: " + (gameData.isInactiveGame() ? "none" : game.registryName));
                 if(gameData.isInactiveGame()) {
                     break;
                 }
                 sendMessage(player, "Alive players: " + game.onlinePlayers);
                 sendMessage(player, "Time: " + (game.getGameTimer() / 20) + "s");
-                sendMessage(player, "Mode: " + game.registryName.getResourcePath());
+                sendMessage(player, "Mode: " + game.registryName);
                 if(gameData.isPlaying()) sendMessage(player, "Zone stage: " + game.zone.currentStage);
-                String[] data = game.getGameInfo();
+                String[] data = game.getGameInformation().gameInformation;
                 if(data == null) break;
                 sendMessage(player, "Additional info: ");
                 for(int i = 0; i < data.length; i++) {
@@ -157,7 +159,7 @@ public class CommandGame extends CommandBase {
                     throw new CommandException("Unknown game!");
                 }
                 gameData.setGame(game);
-                sendCommandFeedback(sender, "Successfully selected game " + game.registryName.getResourcePath());
+                sendCommandFeedback(sender, "Successfully selected game " + game.registryName);
                 break;
             }
 

@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.network.sp;
 
-import com.toma.pubgmc.util.PacketHelper;
+import com.toma.pubgmc.util.helper.PacketHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;

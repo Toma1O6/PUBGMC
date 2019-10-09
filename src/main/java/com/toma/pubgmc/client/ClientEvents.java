@@ -23,7 +23,7 @@ import com.toma.pubgmc.config.client.CFGAimType;
 import com.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

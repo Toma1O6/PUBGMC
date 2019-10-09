@@ -5,9 +5,11 @@ import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -110,10 +112,14 @@ public class GameHandler {
             } else {
                 from = source.getTrueSource() instanceof EntityLivingBase ? (EntityLivingBase)source.getTrueSource() : null;
             }
-            game.onPlayerKilled((EntityPlayer) entity, from, gun, wasHeadshot);
+            EntityPlayer player = (EntityPlayer)entity;
+            game.onPlayerKilled(player, from, gun, wasHeadshot);
             boolean createDeathCrate = game.shouldCreateDeathCrate();
+            for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                ItemStack stack = player.inventory.getStackInSlot(i);
+                if(stack.getItem() == PMCRegistry.PMCItems.IBLOCK) stack.setCount(0);
+            }
             if(createDeathCrate && data.isPlaying()) {
-                EntityPlayer player = (EntityPlayer)entity;
                 World world = player.world;
                 boolean canCreate = !world.getGameRules().getBoolean("keepInventory") && !isEmpty(player.inventory);
                 if(canCreate) {
@@ -148,6 +154,16 @@ public class GameHandler {
             if(canRespawnIntoGame) {
                 game.getJoinedPlayers().add(e.player.getUniqueID());
                 game.updateDataToClients(e.player.world);
+                ZonePos startPos = game.zone.currentBounds.min();
+                int max = (int)Math.abs(startPos.x - game.zone.currentBounds.max().x);
+                BlockPos playerPos = new BlockPos(startPos.x + Pubgmc.rng().nextInt(max), 256, startPos.z + Pubgmc.rng().nextInt(max));
+                EntityPlayer player = e.player;
+                player.setPositionAndUpdate(playerPos.getX(), playerPos.getY(), playerPos.getZ());
+                if(!player.world.isRemote) {
+                    EntityParachute chute = new EntityParachute(player.world, player);
+                    player.world.spawnEntity(chute);
+                    player.startRiding(chute);
+                }
             }
         }
 

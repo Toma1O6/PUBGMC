@@ -57,4 +57,8 @@ public enum AmmoType {
     public ItemStack ammoStack() {
         return new ItemStack(ammo());
     }
+
+    public ItemStack ammoStack(int i) {
+        return new ItemStack(ammo(), i);
+    }
 }

@@ -5,7 +5,7 @@ import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.server.PacketUpdateLootData;
-import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

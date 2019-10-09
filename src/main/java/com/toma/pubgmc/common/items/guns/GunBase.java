@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -690,6 +691,15 @@ public class GunBase extends PMCItem {
 
     public enum GunType {
         LMG, PISTOL, SHOTGUN, SMG, AR, DMR, SR;
+
+        public static GunType getTypeFromName(String name) {
+            for(GunType type : values()) {
+                if(type.name().equalsIgnoreCase(name)) {
+                    return type;
+                }
+            }
+            return null;
+        }
 
         public static List<GunType> toCollection() {
             List<GunType> list = new ArrayList<>(values().length);

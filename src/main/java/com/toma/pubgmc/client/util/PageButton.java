@@ -1,7 +1,7 @@
 package com.toma.pubgmc.client.util;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.util.ImageUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;

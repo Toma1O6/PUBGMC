@@ -167,7 +167,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public boolean isInactiveGame() {
-            return game.registryName.getResourcePath().equals("inactive");
+            return game.registryName.equals("inactive");
         }
 
         @Override
@@ -192,7 +192,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             c.setTag("list", locationsList);
             c.setString("gameID", gameHash);
             c.setTag("lobby", Lobby.toNBT(lobby));
-            c.setString("gameMode", this.getCurrentGame().registryName.getResourcePath());
+            c.setString("gameMode", this.getCurrentGame().registryName);
             c.setTag("game", this.getCurrentGame().writeToNBT());
             return c;
         }

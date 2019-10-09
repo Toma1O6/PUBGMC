@@ -34,7 +34,7 @@ import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGWeapons;
 import com.toma.pubgmc.event.GunModelAttachEvent;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
-import com.toma.pubgmc.util.AttachmentHelper;
+import com.toma.pubgmc.util.helper.AttachmentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -417,7 +417,7 @@ public class PMCRegistry {
             };
 
             event.getRegistry().registerAll(ITEMS);
-            event.getRegistry().registerAll(ITEM_BLOCKS.toArray(new ItemBlock[ITEM_BLOCKS.size()]));
+            event.getRegistry().registerAll(ITEM_BLOCKS.toArray(new ItemBlock[0]));
             event.getRegistry().registerAll(getInitializedGuns());
             ITEM_BLOCKS = null;
         }
@@ -444,9 +444,12 @@ public class PMCRegistry {
 
         @SubscribeEvent
         public static void registerGameModes(com.toma.pubgmc.init.GameRegistry.GameRegisterEvent e) {
-            e.register(new GameInactive(new ResourceLocation(Pubgmc.MOD_ID, "inactive")));
-            e.register(new GameBattleRoyale(new ResourceLocation(Pubgmc.MOD_ID, "battleroyale")));
-            e.register(new GameDeathmatch(new ResourceLocation(Pubgmc.MOD_ID, "deathmatch")));
+            e.registerAll(
+                    new GameInactive("inactive"),
+                    new GameBattleRoyale("battleroayle"),
+                    new GameDeathmatch("deathmatch")
+
+            );
         }
 
         public static void registerItemBlock(Block block) {
