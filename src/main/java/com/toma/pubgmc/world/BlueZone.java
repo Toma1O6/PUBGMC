@@ -205,7 +205,6 @@ public final class BlueZone {
     private void calculateNextZone(World world) {
         float modifier = settings.shrinkModifiers[currentStage];
         int newDiameter = (int)(world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getMapSize() * modifier);
-        System.out.println(newDiameter + " /// " + modifier);
         if(settings.alwaysCentered) {
             ZonePos start = new ZonePos(origin.getX() - newDiameter, origin.getZ() - newDiameter);
             ZonePos end = new ZonePos(origin.getX() + newDiameter, origin.getZ() + newDiameter);

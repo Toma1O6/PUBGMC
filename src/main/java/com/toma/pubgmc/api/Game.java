@@ -209,7 +209,6 @@ public abstract class Game {
                 if (gameTimer % playerCounterUpdateFrequency() == 0) {
                     updatePlayerCounter(world);
                     updateDataToClients(world);
-                    System.out.println(this.getJoinedPlayers());
                 }
             }
         } catch (Exception e) {

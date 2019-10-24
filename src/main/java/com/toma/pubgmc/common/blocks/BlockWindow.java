@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.blocks;
 
-import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketParticle;
 import com.toma.pubgmc.common.tileentity.TileEntityWindow;
@@ -128,11 +127,6 @@ public class BlockWindow extends PMCBlock {
                 EnumWindowPart part = state.getValue(PART);
                 if (part.ordinal() > 1) {
                     worldIn.setBlockToAir(pos.up());
-                    TileEntity te = worldIn.getTileEntity(pos.up());
-                    System.out.println(te);
-                    String hash = te instanceof IGameTileEntity ? ((IGameTileEntity)te).getGameHash() : "unknown";
-                    hash = hash.replace(".", ",");
-                    System.out.println(hash);
                 } else {
                     worldIn.setBlockToAir(pos.down());
                 }
