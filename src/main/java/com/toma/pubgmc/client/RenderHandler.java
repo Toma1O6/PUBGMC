@@ -6,6 +6,7 @@ import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -20,9 +21,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ public class RenderHandler {
         if (data.isAiming()) {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
-                int scope = stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
+                int scope = stack.getItem() == PMCRegistry.PMCItems.VSS ? 4 : stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
                 switch (scope) {
                     case 1:
                     case 2:

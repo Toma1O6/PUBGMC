@@ -69,7 +69,7 @@ public class ModelS1897 extends ModelGun {
         GlStateManager.pushMatrix();
         {
             ModelTransformationHelper.defaultShotgunTransform();
-            ModelHelper.transformAllModifications();
+            GlStateManager.translate(-0.050000004, -2.8250031, -19.0);
             bone.render(1f);
         }
         GlStateManager.popMatrix();
