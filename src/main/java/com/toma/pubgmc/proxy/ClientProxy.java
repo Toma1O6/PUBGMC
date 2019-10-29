@@ -45,6 +45,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicleDacia.class, RenderDacia::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
     }
 
     @SideOnly(Side.CLIENT)

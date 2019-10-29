@@ -436,7 +436,8 @@ public class PMCRegistry {
                             registerEntity("plane", EntityPlane.class, 128, 25, true),
                             registerEntity("dropEntity", EntityAirdrop.class, 256, 4, true),
                             registerVehicle("uaz", EntityVehicleUAZ.class),
-                            registerVehicle("dacia", EntityVehicleDacia.class)
+                            registerVehicle("dacia", EntityVehicleDacia.class),
+                            registerEntity("enemyai", EntityAIPlayer.class, 64, 20, true, 0x000000, 0xFFFFFF)
                     };
 
             e.getRegistry().registerAll(entries);

@@ -2,6 +2,11 @@ package com.toma.pubgmc.common.entity;
 
 import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,16 +18,25 @@ import javax.annotation.Nonnull;
 
 public class EntityAIPlayer extends EntityLiving {
 
-    protected NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
         this.preventEntitySpawning = true;
+        this.enablePersistence();
+        this.setSize(0.6F, 1.95F);
     }
 
     public EntityAIPlayer(World world, BlockPos pos) {
         this(world);
         this.setPosition(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    @Override
+    protected void initEntityAI() {
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F));
+        this.tasks.addTask(8, new EntityAILookIdle(this));
     }
 
     public GunBase getWeapon(boolean primary) {
@@ -42,10 +56,16 @@ public class EntityAIPlayer extends EntityLiving {
         if(!world.isRemote) {
             EntityAIPlayer ai = new EntityAIPlayer(world, from);
             ai.inventory = inventory;
+            world.spawnEntity(ai);
+            if(rideParachute) {
+                EntityParachute parachute = new EntityParachute(world, ai);
+                world.spawnEntity(parachute);
+                ai.startRiding(parachute);
+            }
         }
     }
 
     public static NonNullList<ItemStack> getBasicInventory() {
-        return null;
+        return NonNullList.withSize(9, ItemStack.EMPTY);
     }
 }
