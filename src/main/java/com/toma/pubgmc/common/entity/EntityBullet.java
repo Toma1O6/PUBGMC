@@ -250,69 +250,6 @@ public class EntityBullet extends Entity {
         return entity;
     }
 
-    /*protected void onHit(RayTraceResult raytraceResultIn) {
-        Entity entity = raytraceResultIn.entityHit;
-        if (entity != null) {
-            if(entity instanceof EntityMolotov) {
-                entity.onGround = true;
-                return;
-            }
-
-            if (!world.isRemote) {
-                boolean headshot = canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
-                double offset = 0f;
-                Vec3d vec = raytraceResultIn.hitVec;
-                Block particleBlock = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
-
-                if (headshot) {
-                    damage *= 2.5f;
-                }
-
-                if (entity instanceof EntityLivingBase || entity instanceof EntityVehicle)
-                    PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, particleBlock, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
-
-                onEntityHit(headshot, entity);
-                entity.hurtResistantTime = 0;
-
-                this.setDead();
-            }
-        } else if (raytraceResultIn.getBlockPos() != null && !world.isRemote) {
-            BlockPos pos = raytraceResultIn.getBlockPos();
-            IBlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
-            if(block instanceof BlockWindow) {
-                if(!state.getValue(BlockWindow.BROKEN)) {
-                    ((BlockWindow)block).breakWindow(state, pos, world);
-                }
-                Vec3d vec0 = PUBGMCUtil.getPositionVec(this);
-                Vec3d vec1 = PUBGMCUtil.getMotionVec(this);
-                RayTraceResult trace = world.rayTraceBlocks(vec0, vec1, false, true, false);
-                Entity e = this.findEntityOnPath(vec0, vec1, trace);
-                if(e != null) {
-                    trace = new RayTraceResult(e);
-                    this.onHit(trace);
-                }
-            }
-            if (state.getMaterial() == Material.GLASS) {
-                if (world.getGameRules().getBoolean("weaponGriefing")) {
-                    world.setBlockToAir(pos);
-                    world.playSound(null, posX, posY, posZ, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0f, 1.0f);
-                } else return;
-            } else if (!block.isReplaceable(world, pos)) {
-                Vec3d hitvec = raytraceResultIn.hitVec;
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, hitvec, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
-                world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5f, block.getSoundType().getPitch() * 0.8f);
-                if (block instanceof BlockLandMine) {
-                    ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);
-                } else if (block == PMCRegistry.PMCBlocks.TARGET) {
-                    this.onTargetHit(pos, hitvec, shooter);
-                }
-
-                this.setDead();
-            }
-        }
-    }*/
-
     protected void onEntityHit(boolean isHeadshot, Entity entity) {
         DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();
 
@@ -361,17 +298,15 @@ public class EntityBullet extends Entity {
         if (!shooter.isSprinting()) {
             return 0f;
         }
-        float f = (type.equals(GunType.PISTOL) || type.equals(GunType.SMG) || shooter.getHeldItemMainhand().getItem() == PMCItems.SAWED_OFF)
+        return (type.equals(GunType.PISTOL) || type.equals(GunType.SMG) || shooter.getHeldItemMainhand().getItem() == PMCItems.SAWED_OFF)
                 && shooter.getHeldItemMainhand().getItem() != PMCItems.WIN94 ? -35f : 0f;
-        return f;
     }
 
     private float getYawRotationInaccuracy(EntityLivingBase shooter) {
         if (!shooter.isSprinting()) {
             return 0f;
         }
-        float f = getPitchRotationInaccuracy(shooter) == -35f ? 0f : -60f;
-        return f;
+        return getPitchRotationInaccuracy(shooter) == -35f ? 0f : -60f;
     }
 
     private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, boolean aim) {
