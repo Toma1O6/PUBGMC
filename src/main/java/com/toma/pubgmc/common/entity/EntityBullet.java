@@ -126,16 +126,17 @@ public class EntityBullet extends Entity {
             BlockPos pos = rayTraceResult.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
+            boolean griefingFlag = world.getGameRules().getBoolean("weaponGriefing");
             boolean canBePenetrated = false;
             if(block instanceof BlockWindow) {
                 canBePenetrated = true;
                 ((BlockWindow)block).breakWindow(state, pos, world);
             } else if(state.getMaterial() == Material.GLASS) {
-                if(world.getGameRules().getBoolean("weaponGriefing")) {
+                if(griefingFlag) {
                     world.setBlockToAir(pos);
                     world.playSound(null, posX, posY, posZ, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
                 }
-                canBePenetrated = true;
+                canBePenetrated = griefingFlag;
             } else if(!block.isReplaceable(world, pos)) {
                 Vec3d vec = rayTraceResult.hitVec;
                 PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, vec, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
