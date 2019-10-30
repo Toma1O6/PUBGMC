@@ -33,10 +33,22 @@ public class EntityAIPlayer extends EntityLiving {
     }
 
     @Override
+    public void onLivingUpdate() {
+        super.onLivingUpdate();
+        System.out.println(limbSwing);
+    }
+
+    @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
+    }
+
+    @Override
+    public boolean canPickUpLoot() {
+        // Implement my own loot system
+        return false;
     }
 
     public GunBase getWeapon(boolean primary) {

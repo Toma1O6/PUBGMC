@@ -1,6 +1,7 @@
 package com.toma.pubgmc.client.renderer;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.models.ModelAIPlayer;
 import com.toma.pubgmc.common.entity.EntityAIPlayer;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -15,9 +16,16 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
 
+    private static final ResourceLocation ZOMBIE_TEXTURES = new ResourceLocation("textures/entity/zombie/zombie.png");
+
     public RenderEnemyAIPlayer(RenderManager manager) {
-        super(manager, new ModelBiped(1.0F), 1.0F);
+        super(manager, new ModelAIPlayer(), 1.0F);
         this.addLayer(new LayerGhillieSpecial(this));
+    }
+
+    @Override
+    protected ResourceLocation getEntityTexture(EntityAIPlayer entity) {
+        return ZOMBIE_TEXTURES;
     }
 
     private static class LayerGhillieSpecial implements LayerRenderer<EntityAIPlayer> {
