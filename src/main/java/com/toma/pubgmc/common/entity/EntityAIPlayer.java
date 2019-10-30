@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.entity;
 
 import com.toma.pubgmc.common.items.guns.GunBase;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -10,13 +11,15 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class EntityAIPlayer extends EntityLiving {
+public class EntityAIPlayer extends EntityCreature {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 
@@ -33,22 +36,28 @@ public class EntityAIPlayer extends EntityLiving {
     }
 
     @Override
-    public void onLivingUpdate() {
-        super.onLivingUpdate();
-        System.out.println(limbSwing);
-    }
-
-    @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.001F));
     }
 
     @Override
     public boolean canPickUpLoot() {
-        // Implement my own loot system
+        // TODO Implement custom loot system
         return false;
+    }
+
+    // TODO check is death crate can be spawn
+    @Override
+    public void onDeath(DamageSource cause) {
+        super.onDeath(cause);
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        return this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
     }
 
     public GunBase getWeapon(boolean primary) {
