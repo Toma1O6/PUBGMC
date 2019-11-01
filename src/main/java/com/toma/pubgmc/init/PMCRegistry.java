@@ -125,10 +125,10 @@ public class PMCRegistry {
         public static final GunBase KAR98K = null;
         public static final GunBase M24 = null;
         public static final GunBase AWM = null;
-        public static final Item GRENADE = null;
-        public static final Item SMOKE = null;
-        public static final Item MOLOTOV = null;
-        public static final Item FLASHBANG = null;
+        public static final ItemExplodeable GRENADE = null;
+        public static final ItemExplodeable SMOKE = null;
+        public static final ItemExplodeable MOLOTOV = null;
+        public static final ItemExplodeable FLASHBANG = null;
         public static final Item AMMO_9MM = null;
         public static final Item AMMO_45ACP = null;
         public static final Item AMMO_SHOTGUN = null;
@@ -356,9 +356,10 @@ public class PMCRegistry {
                     new ItemGhillie("ghillie_suit"),
                     new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
                     new FlareGun("flare_gun"),
-                    new ItemGrenade("grenade"),
-                    new ItemSmokeGrenade("smoke"),
-                    new ItemMolotov("molotov"),
+                    new ItemExplodeable("grenade", 110, ItemExplodeable.Helper::onFragRemoved),
+                    new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved),
+                    new ItemExplodeable("molotov", Integer.MAX_VALUE, ItemExplodeable.Helper::onMolotovRemoved),
+                    new ItemExplodeable("flashbang", 60, ItemExplodeable.Helper::onFlashBangRemoved),
                     new ItemAmmo("ammo_9mm", AmmoType.AMMO9MM),
                     new ItemAmmo("ammo_45acp", AmmoType.AMMO45ACP),
                     new ItemAmmo("ammo_shotgun", AmmoType.AMMO12G),
@@ -413,7 +414,6 @@ public class PMCRegistry {
                     new ItemFuelCan().addDescription("Hold right click while driving vehicle", "Vehicle must be stationary!"),
                     new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ),
                     new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
-                    new ItemFlashBang("flashbang")
             };
 
             event.getRegistry().registerAll(ITEMS);
@@ -437,7 +437,7 @@ public class PMCRegistry {
                             registerEntity("dropEntity", EntityAirdrop.class, 256, 4, true),
                             registerVehicle("uaz", EntityVehicleUAZ.class),
                             registerVehicle("dacia", EntityVehicleDacia.class),
-                            registerEntity("enemyai", EntityAIPlayer.class, 64, 20, true, 0x000000, 0xFFFFFF)
+                            registerEntity("enemyai", EntityAIPlayer.class, 64, 3, true, 0x000000, 0xFFFFFF)
                     };
 
             e.getRegistry().registerAll(entries);

@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -19,8 +20,9 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
     private static final ResourceLocation ZOMBIE_TEXTURES = new ResourceLocation("textures/entity/zombie/zombie.png");
 
     public RenderEnemyAIPlayer(RenderManager manager) {
-        super(manager, new ModelAIPlayer(), 1.0F);
+        super(manager, new ModelAIPlayer(), 0.5F);
         this.addLayer(new LayerGhillieSpecial(this));
+        this.addLayer(new LayerBipedArmor(this));
     }
 
     @Override

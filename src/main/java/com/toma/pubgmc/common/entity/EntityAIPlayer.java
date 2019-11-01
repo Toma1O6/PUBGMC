@@ -1,14 +1,12 @@
 package com.toma.pubgmc.common.entity;
 
-import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -28,6 +26,7 @@ public class EntityAIPlayer extends EntityCreature {
         this.preventEntitySpawning = true;
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
+        this.setCanPickUpLoot(true);
     }
 
     public EntityAIPlayer(World world, BlockPos pos) {
@@ -38,18 +37,28 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F));
+        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.0001F));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.001F));
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
+    }
+
+    @Override
+    protected void updateEquipmentIfNeeded(EntityItem itemEntity) {
+        super.updateEquipmentIfNeeded(itemEntity);
     }
 
     @Override
     public boolean canPickUpLoot() {
-        // TODO Implement custom loot system
-        return false;
+        return true;
     }
 
-    // TODO check is death crate can be spawn
+    // TODO check if death crate can be spawn
     @Override
     public void onDeath(DamageSource cause) {
         super.onDeath(cause);
@@ -58,18 +67,6 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public boolean getCanSpawnHere() {
         return this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
-    }
-
-    public GunBase getWeapon(boolean primary) {
-        return this.inventory.get(primary ? 0 : 1).getItem() instanceof GunBase ? (GunBase) this.inventory.get(primary ? 0 : 1).getItem() : null;
-    }
-
-    public boolean hasWeapon(boolean primary) {
-        return this.getWeapon(primary) != null;
-    }
-
-    public boolean hasWeapon() {
-        return this.getWeapon(true) != null || this.getWeapon(false) != null;
     }
 
     public static void spawnEntity(World world, BlockPos from, boolean rideParachute, @Nonnull NonNullList<ItemStack> inventory) {
