@@ -10,6 +10,7 @@ import com.toma.pubgmc.common.BlockBuilder;
 import com.toma.pubgmc.common.HorizontalBlockBuilder;
 import com.toma.pubgmc.common.blocks.*;
 import com.toma.pubgmc.common.entity.*;
+import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.items.*;
@@ -427,17 +428,14 @@ public class PMCRegistry {
             final EntityEntry[] entries =
                     {
                             registerEntity("bullet", EntityBullet.class, 64, 40, true),
-                            registerEntity("grenade", EntityGrenade.class, 64, 20, true),
-                            registerEntity("smoke", EntitySmokeGrenade.class, 64, 20, true),
-                            registerEntity("molotov", EntityMolotov.class, 64, 20, true),
-                            registerEntity("flashbang", EntityFlashbang.class, 64, 10, true),
                             registerEntity("flare", EntityFlare.class, 64, 20, true),
                             registerEntity("parachute", EntityParachute.class, 256, 1, true),
                             registerEntity("plane", EntityPlane.class, 128, 25, true),
                             registerEntity("dropEntity", EntityAirdrop.class, 256, 4, true),
                             registerVehicle("uaz", EntityVehicleUAZ.class),
                             registerVehicle("dacia", EntityVehicleDacia.class),
-                            registerEntity("enemyai", EntityAIPlayer.class, 64, 3, true, 0x000000, 0xFFFFFF)
+                            registerEntity("enemyai", EntityAIPlayer.class, 64, 3, true, 0x000000, 0xFFFFFF),
+                            registerEntity("frag_grenade", EntityFragGrenade.class, 32, 1, true)
                     };
 
             e.getRegistry().registerAll(entries);

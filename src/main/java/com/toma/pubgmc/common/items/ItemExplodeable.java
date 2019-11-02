@@ -1,7 +1,8 @@
 package com.toma.pubgmc.common.items;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.entity.EntityGrenade;
+import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
+import com.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,8 +41,10 @@ public class ItemExplodeable extends PMCItem {
             if(!stack.hasTagCompound()) {
                 this.attachNBT(stack, player);
             }
-            this.explodeableItemAction.onRemoveFromInventory(stack, player.world, player, this.getFuseTime(stack));
-            stack.shrink(1);
+            this.explodeableItemAction.onRemoveFromInventory(stack, player.world, player, this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
+            if(!player.isCreative()) {
+                stack.shrink(1);
+            }
             player.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
         }
         return true;
@@ -53,7 +56,7 @@ public class ItemExplodeable extends PMCItem {
         if(!stack.hasTagCompound()) {
             this.attachNBT(stack, playerIn);
         }
-        this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, playerIn, this.getFuseTime(stack));
+        this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, playerIn, this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.LONG);
         stack.shrink(1);
         playerIn.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
         return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -67,7 +70,7 @@ public class ItemExplodeable extends PMCItem {
             if(this.isCooking(stack)) {
                 int timeLeft = this.maxFuse - this.getFuseTime(stack);
                 if(timeLeft < 0) {
-                    this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, player, timeLeft);
+                    this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, player, timeLeft, EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
                     stack.shrink(1);
                 }
                 stack.getTagCompound().setInteger("currentFuse", this.getFuseTime(stack) + 1);
@@ -94,38 +97,37 @@ public class ItemExplodeable extends PMCItem {
     @FunctionalInterface
     public interface ExplodeableItemAction {
 
-        void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft);
+        void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state);
     }
 
     public static class Helper {
 
-        public static void onFragRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+        public static void onFragRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
             if(failedNBTCheck(stack)) {
                 Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
                 return;
             }
             if(!world.isRemote) {
-                // TODO rework basic entity logic
-                EntityGrenade grenade = new EntityGrenade(world, player, timeLeft);
+                EntityFragGrenade grenade = new EntityFragGrenade(world, player, state, timeLeft);
                 world.spawnEntity(grenade);
             }
         }
 
-        public static void onSmokeRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+        public static void onSmokeRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
             if(failedNBTCheck(stack)) {
                 Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
                 return;
             }
         }
 
-        public static void onMolotovRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+        public static void onMolotovRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
             if(failedNBTCheck(stack)) {
                 Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
                 return;
             }
         }
 
-        public static void onFlashBangRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+        public static void onFlashBangRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
             if(failedNBTCheck(stack)) {
                 Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
                 return;

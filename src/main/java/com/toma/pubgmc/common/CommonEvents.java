@@ -8,9 +8,7 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityVehicle;
-import com.toma.pubgmc.common.items.ItemGrenade;
-import com.toma.pubgmc.common.items.ItemMolotov;
-import com.toma.pubgmc.common.items.ItemSmokeGrenade;
+import com.toma.pubgmc.common.items.ItemExplodeable;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.network.PacketHandler;
 import com.toma.pubgmc.common.network.sp.PacketGetConfigFromServer;
@@ -368,7 +366,7 @@ public class CommonEvents {
         EntityPlayer player = e.getPlayer();
         ItemStack heldStack = player.getHeldItemMainhand();
 
-        if (heldStack.getItem() instanceof GunBase || heldStack.getItem() instanceof ItemGrenade || heldStack.getItem() instanceof ItemSmokeGrenade || heldStack.getItem() instanceof ItemMolotov) {
+        if (heldStack.getItem() instanceof GunBase || heldStack.getItem() instanceof ItemExplodeable) {
             e.setCanceled(true);
         }
     }

@@ -6,10 +6,12 @@ import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.RenderHandler;
 import com.toma.pubgmc.client.gui.GuiGunWorkbench;
 import com.toma.pubgmc.client.renderer.*;
+import com.toma.pubgmc.client.renderer.throwable.RenderThrowable;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.RecipeButton;
 import com.toma.pubgmc.common.entity.*;
+import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
@@ -20,7 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -36,10 +37,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientProxy implements IProxy {
 
     private static void registerEntityRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, RenderSmokeGrenade::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, RenderMolotov::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityFlashbang.class, RenderFlashbang::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFragGrenade.class, manager -> new RenderThrowable(manager, PMCRegistry.PMCItems.GRENADE));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, manager -> new RenderThrowable(manager, PMCRegistry.PMCItems.SMOKE));
+        RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, manager -> new RenderThrowable(manager, PMCRegistry.PMCItems.MOLOTOV));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFlashbang.class, manager -> new RenderThrowable(manager, PMCRegistry.PMCItems.FLASHBANG));
         RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);

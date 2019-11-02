@@ -1,6 +1,6 @@
 package com.toma.pubgmc.client.renderer;
 
-import com.toma.pubgmc.common.entity.EntityGrenade;
+import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,29 +21,26 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RenderGrenade extends Render<EntityGrenade> {
+public class RenderGrenade extends Render<EntityFragGrenade> {
     public RenderGrenade(RenderManager manager) {
         super(manager);
     }
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityGrenade entity) {
+    protected ResourceLocation getEntityTexture(EntityFragGrenade entity) {
         return null;
     }
 
     @Override
-    public void doRender(EntityGrenade entity, double x, double y, double z, float entityYaw, float partialTicks) {
+    public void doRender(EntityFragGrenade entity, double x, double y, double z, float entityYaw, float partialTicks) {
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(x, y, z);
-            GlStateManager.translate(-0.5, 0, -0.5);
+            GlStateManager.translate(-0.3, 0, -0.3);
             GlStateManager.scale(0.6f, 0.6f, 0.6f);
-
-            if (entity.onGround) {
-                GlStateManager.rotate(90, 0, 0, 1);
-                GlStateManager.translate(-0.2, -1.0, 0.4);
-            }
+            float rotationProgress = entity.lastRotation + (entity.rotation - entity.lastRotation) * partialTicks;
+            GlStateManager.rotate(rotationProgress, 1.0F, 0.5F, 1.0F);
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
