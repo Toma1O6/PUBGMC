@@ -1,4 +1,4 @@
-package com.toma.pubgmc.client.renderer;
+package com.toma.pubgmc.client.renderer.entity;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.vehicles.ModelVehicle;

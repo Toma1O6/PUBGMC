@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.items;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
+import com.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import com.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -124,6 +125,9 @@ public class ItemExplodeable extends PMCItem {
             if(failedNBTCheck(stack)) {
                 Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
                 return;
+            }
+            if(!world.isRemote) {
+                world.spawnEntity(new EntityMolotov(world, player, state));
             }
         }
 

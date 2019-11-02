@@ -6,7 +6,6 @@ import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
-import com.toma.pubgmc.common.entity.EntityGrenade;
 import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.items.ItemExplodeable;
 import com.toma.pubgmc.common.items.guns.GunBase;
@@ -245,9 +244,9 @@ public class CommonEvents {
                 //Reset the timer and cooking
                 data.setCookingTime(0);
                 data.setGrenadeCooking(false);
-
+                // TODO clean all this grenade cooking mess
                 //Spawn new grenade entity with 0 fuse so it will explode instantly
-                player.world.spawnEntity(new EntityGrenade(player.world, player, 0));
+                //player.world.spawnEntity(new EntityGrenade(player.world, player, 0));
 
                 //If player is in survival mode
                 if (!player.capabilities.isCreativeMode) {

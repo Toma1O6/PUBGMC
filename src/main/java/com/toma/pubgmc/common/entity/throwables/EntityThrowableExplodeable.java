@@ -4,7 +4,9 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -21,6 +23,9 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
 
     public float rotation;
     public float lastRotation;
+
+    public int timesBounced = 0;
+    public boolean isFrozen = false;
 
     public EntityThrowableExplodeable(World world) {
         this(world, null, EnumEntityThrowState.FORCED);
@@ -74,7 +79,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.motionX *= AIR_DRAG_MODIFIER;
         this.motionY *= AIR_DRAG_MODIFIER;
         this.motionZ *= AIR_DRAG_MODIFIER;
-        if(this.onGround || this.isInWater() || this.isInLava()) {
+        if(this.onGround) {
             this.motionX *= GROUND_DRAG_MODIFIER;
             this.motionY *= GROUND_DRAG_MODIFIER;
             this.motionZ *= GROUND_DRAG_MODIFIER;
@@ -88,22 +93,34 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
                 }
             }
         }
+
+        this.onThrowableTick();
     }
 
-    public void onGrenadeBounce(BounceAxis axis) {
+    public void onThrowableTick() {
 
+    }
+
+    public void bounce() {
+
+    }
+
+    public boolean canBounce() {
+        return true;
+    }
+
+    public final boolean isFirstBounce() {
+        return timesBounced == 1;
     }
 
     @Override
     public void writeSpawnData(ByteBuf buf) {
         buf.writeInt(fuse);
-        buf.writeInt(thrower.getEntityId());
     }
 
     @Override
     public void readSpawnData(ByteBuf buf) {
         this.fuse = buf.readInt();
-        this.thrower = this.world.getEntityByID(buf.readInt());
     }
 
     @Override
@@ -118,18 +135,43 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     protected void readEntityFromNBT(NBTTagCompound compound) {
     }
 
+    protected void onEntityFrozen() {
+
+    }
+
     private void setInitialMotion(EnumEntityThrowState state, EntityLivingBase thrower) {
-        // TODO reduce sprint bonus
         if (thrower == null) {
             return;
         }
         int i = state.ordinal();
+        float sprintModifier = 1.5F;
         float modifier = i == 2 ? 0 : i == 1 ? 0.25F : 1.0F;
-        if(thrower.isSprinting()) modifier *= 2F;
+        if(thrower.isSprinting()) modifier *= sprintModifier;
         Vec3d viewVec = thrower.getLookVec();
         this.motionX = viewVec.x * modifier;
-        this.motionY = viewVec.y * modifier / (thrower.isSprinting() ? 2 : 1);
+        this.motionY = viewVec.y * modifier / sprintModifier;
         this.motionZ = viewVec.z * modifier;
+    }
+
+    private void freezeEntity() {
+        this.motionX = 0;
+        this.motionY = 0;
+        this.motionZ = 0;
+        // to make sure it won't get accidentally called twice
+        if(isFrozen) return;
+        this.isFrozen = true;
+        this.onEntityFrozen();
+    }
+
+    private void onGrenadeBounce(BounceAxis axis) {
+        if(Math.sqrt(motionX*motionX+motionY*motionY+motionZ*motionZ) >= 0.2) {
+            this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_ANVIL_BREAK, SoundCategory.MASTER, 1.0F, 1.8F);
+        }
+        this.timesBounced++;
+        if(!canBounce()) {
+            this.freezeEntity();
+        }
+        this.bounce();
     }
 
     public enum EnumEntityThrowState {
