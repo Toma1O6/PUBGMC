@@ -41,12 +41,16 @@ public class RenderThrowable<E extends EntityThrowableExplodeable, I extends Ite
 
     @Override
     public void doRender(E entity, double x, double y, double z, float entityYaw, float partialTicks) {
+        if(entity.isInvisible()) {
+            return;
+        }
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         if(renderAction != null) {
             renderAction.onRender(entity, item, x, y, z, partialTicks);
         }
         GlStateManager.scale(0.6f, 0.6f, 0.6f);
+        GlStateManager.translate(-0.5f, 0, -0.5f);
         float rotationProgress = entity.lastRotation + (entity.rotation - entity.lastRotation) * partialTicks;
         GlStateManager.rotate(rotationProgress, 1.0F, 0.5F, 1.0F);
         this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);

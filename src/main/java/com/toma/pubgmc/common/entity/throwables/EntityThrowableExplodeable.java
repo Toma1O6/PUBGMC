@@ -1,14 +1,21 @@
 package com.toma.pubgmc.common.entity.throwables;
 
+import com.toma.pubgmc.common.blocks.BlockWindow;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public abstract class EntityThrowableExplodeable extends Entity implements IEntityAdditionalSpawnData {
@@ -17,8 +24,6 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public static final float GROUND_DRAG_MODIFIER = 0.7F;
     public static final float BOUNCE_MODIFIER = 0.8F;
 
-    public EnumEntityThrowState state;
-    public Entity thrower;
     public int fuse;
 
     public float rotation;
@@ -40,8 +45,6 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.setSize(0.2F, 0.2F);
         if(thrower != null) this.setPosition(thrower.posX, thrower.posY + thrower.getEyeHeight(), thrower.posZ);
         this.fuse = time;
-        this.state = state;
-        this.thrower = thrower;
 
         this.setInitialMotion(state, thrower);
     }
@@ -60,6 +63,15 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         double prevMotionX = motionX;
         double prevMotionY = motionY;
         double prevMotionZ = motionZ;
+        // TODO sync to client
+        if(!world.isRemote) {
+            Vec3d from = PUBGMCUtil.getPositionVec(this);
+            Vec3d to = PUBGMCUtil.getMotionVec(this);
+            RayTraceResult rayTraceResult = this.world.rayTraceBlocks(from, to, false, true, false);
+            if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+                this.onCollide(from, to, rayTraceResult);
+            }
+        }
         this.move(MoverType.SELF, motionX, motionY, motionZ);
         if(motionX != prevMotionX) {
             this.motionX = -BOUNCE_MODIFIER * prevMotionX;
@@ -97,6 +109,32 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.onThrowableTick();
     }
 
+    public final void onCollide(Vec3d from, Vec3d to, RayTraceResult result) {
+        BlockPos pos = result.getBlockPos();
+        IBlockState state = this.world.getBlockState(pos);
+        boolean flag = this.world.getGameRules().getBoolean("weaponGriefing");
+        if(flag) {
+            boolean hasBrokenGlass = false;
+            if(state.getBlock() instanceof BlockWindow) {
+                BlockWindow window = (BlockWindow) state.getBlock();
+                boolean isBroken = state.getValue(BlockWindow.BROKEN);
+                if(!isBroken) {
+                    window.breakWindow(state, pos, this.world);
+                    hasBrokenGlass = true;
+                }
+            } else if(state.getMaterial() == Material.GLASS) {
+                world.destroyBlock(pos, false);
+                hasBrokenGlass = true;
+            }
+            if(hasBrokenGlass) {
+                RayTraceResult rayTraceResult = this.world.rayTraceBlocks(from, to, false, true, false);
+                if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+                    this.onCollide(from, to, rayTraceResult);
+                }
+            }
+        }
+    }
+
     public void onThrowableTick() {
 
     }
@@ -115,12 +153,12 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
 
     @Override
     public void writeSpawnData(ByteBuf buf) {
-        buf.writeInt(fuse);
+        ByteBufUtils.writeTag(buf, this.writeToNBT(new NBTTagCompound()));
     }
 
     @Override
     public void readSpawnData(ByteBuf buf) {
-        this.fuse = buf.readInt();
+        this.readEntityFromNBT(ByteBufUtils.readTag(buf));
     }
 
     @Override
@@ -129,10 +167,20 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
+        compound.setInteger("fuse", this.fuse);
+        compound.setBoolean("frozen", this.isFrozen);
+        compound.setInteger("timesBounced", this.timesBounced);
+        compound.setFloat("rotationTick", this.rotation);
+        compound.setFloat("lastRotationTick", this.lastRotation);
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
+        this.fuse = compound.getInteger("fuse");
+        this.isFrozen = compound.getBoolean("frozen");
+        this.timesBounced = compound.getInteger("timesBounced");
+        this.rotation = compound.getFloat("rotationTick");
+        this.lastRotation = compound.getFloat("lastRotationTick");
     }
 
     protected void onEntityFrozen() {
@@ -144,8 +192,8 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
             return;
         }
         int i = state.ordinal();
-        float sprintModifier = 1.5F;
-        float modifier = i == 2 ? 0 : i == 1 ? 0.25F : 1.0F;
+        float sprintModifier = 1.25F;
+        float modifier = i == 2 ? 0 : i == 1 ? 0.6F : 1.2F;
         if(thrower.isSprinting()) modifier *= sprintModifier;
         Vec3d viewVec = thrower.getLookVec();
         this.motionX = viewVec.x * modifier;
