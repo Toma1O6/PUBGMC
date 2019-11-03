@@ -47,6 +47,7 @@ public class EntityMolotov extends EntityThrowableExplodeable {
 
     @Override
     public void onThrowableTick() {
+        this.setInvisible(this.isFrozen);
         if(world.isRemote && !isFrozen) {
             world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY, this.posZ, 0, 0, 0);
         }
@@ -106,7 +107,6 @@ public class EntityMolotov extends EntityThrowableExplodeable {
     @Override
     protected void onEntityFrozen() {
         this.burningBlocks = this.fireSpreader.startSpreading(this);
-        this.setInvisible(true);
         this.hasStartedSpreading = true;
         this.startedSpreadingAt = this.ticksExisted;
         this.world.playSound(null, this.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0F, 1.0F);

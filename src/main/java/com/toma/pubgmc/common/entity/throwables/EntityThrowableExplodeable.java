@@ -1,6 +1,8 @@
 package com.toma.pubgmc.common.entity.throwables;
 
 import com.toma.pubgmc.common.blocks.BlockWindow;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketSyncEntity;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.material.Material;
@@ -63,7 +65,6 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         double prevMotionX = motionX;
         double prevMotionY = motionY;
         double prevMotionZ = motionZ;
-        // TODO sync to client
         if(!world.isRemote) {
             Vec3d from = PUBGMCUtil.getPositionVec(this);
             Vec3d to = PUBGMCUtil.getMotionVec(this);
@@ -114,6 +115,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         IBlockState state = this.world.getBlockState(pos);
         boolean flag = this.world.getGameRules().getBoolean("weaponGriefing");
         if(flag) {
+            PacketHandler.sendToAllTracking(new PacketSyncEntity(this), this);
             boolean hasBrokenGlass = false;
             if(state.getBlock() instanceof BlockWindow) {
                 BlockWindow window = (BlockWindow) state.getBlock();
@@ -158,7 +160,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
 
     @Override
     public void readSpawnData(ByteBuf buf) {
-        this.readEntityFromNBT(ByteBufUtils.readTag(buf));
+        this.readFromNBT(ByteBufUtils.readTag(buf));
     }
 
     @Override
@@ -170,8 +172,6 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         compound.setInteger("fuse", this.fuse);
         compound.setBoolean("frozen", this.isFrozen);
         compound.setInteger("timesBounced", this.timesBounced);
-        compound.setFloat("rotationTick", this.rotation);
-        compound.setFloat("lastRotationTick", this.lastRotation);
     }
 
     @Override
@@ -179,8 +179,6 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.fuse = compound.getInteger("fuse");
         this.isFrozen = compound.getBoolean("frozen");
         this.timesBounced = compound.getInteger("timesBounced");
-        this.rotation = compound.getFloat("rotationTick");
-        this.lastRotation = compound.getFloat("lastRotationTick");
     }
 
     protected void onEntityFrozen() {

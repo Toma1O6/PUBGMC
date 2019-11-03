@@ -1,12 +1,12 @@
 package com.toma.pubgmc.util.handlers;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.entity.EntityFlashbang;
-import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketUpdateFlashStatus;
+import com.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import com.toma.pubgmc.init.PMCSounds;
-import com.toma.pubgmc.util.helper.ImageUtil;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketUpdateFlashStatus;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -33,7 +33,7 @@ public final class FlashHandler {
     public static final Map<UUID, Integer> FLASHED_PLAYERS = new HashMap<>();
     public static final int MAX_FLASH_RANGE = 20;
 
-    public static void flashPlayer(EntityPlayer player, EntityFlashbang from) {
+    public static void flashPlayer(EntityPlayer player, EntityFlashBang from) {
         UUID uuid = player.getUniqueID();
         if (isInRangeToFlash(player, from)) {
             int amount = getFlashAmountFor(player, from);
@@ -48,7 +48,7 @@ public final class FlashHandler {
         }
     }
 
-    public static int getFlashAmountFor(EntityPlayer player, EntityFlashbang flash) {
+    public static int getFlashAmountFor(EntityPlayer player, EntityFlashBang flash) {
         float f0 = (float) PUBGMCUtil.getDistanceToBlockPos3D(player.getPosition(), flash.getPosition());
         int amount = 180;
         if (f0 > MAX_FLASH_RANGE + 5) {
@@ -61,7 +61,7 @@ public final class FlashHandler {
         return amount;
     }
 
-    public static boolean isInRangeToFlash(EntityPlayer player, EntityFlashbang flash) {
+    public static boolean isInRangeToFlash(EntityPlayer player, EntityFlashBang flash) {
         Vec3d playerPos = PUBGMCUtil.getPositionVec(player);
         Vec3d playerLook = player.getLookVec();
         Vec3d playerLookNegativeYaw = playerPos.add(playerLook.rotateYaw(-40f));

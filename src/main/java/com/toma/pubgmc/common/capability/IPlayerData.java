@@ -1,8 +1,8 @@
 package com.toma.pubgmc.common.capability;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketClientCapabilitySync;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketClientCapabilitySync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;

@@ -10,8 +10,10 @@ import com.toma.pubgmc.common.BlockBuilder;
 import com.toma.pubgmc.common.HorizontalBlockBuilder;
 import com.toma.pubgmc.common.blocks.*;
 import com.toma.pubgmc.common.entity.*;
+import com.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import com.toma.pubgmc.common.entity.throwables.EntityMolotov;
+import com.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import com.toma.pubgmc.common.items.*;
@@ -54,6 +56,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -359,8 +362,8 @@ public class PMCRegistry {
                     new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
                     new FlareGun("flare_gun"),
                     new ItemExplodeable("grenade", 110, ItemExplodeable.Helper::onFragRemoved),
-                    new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved),
-                    new ItemExplodeable("molotov", Integer.MAX_VALUE, ItemExplodeable.Helper::onMolotovRemoved),
+                    new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved).addAditionalDescription("Effect duration: 20s", TextFormatting.RED + "Water will cancel the effect!"),
+                    new ItemExplodeable("molotov", Integer.MAX_VALUE, ItemExplodeable.Helper::onMolotovRemoved).addAditionalDescription("Effect duration: 10s", TextFormatting.RED + "Water will cancel the effect!"),
                     new ItemExplodeable("flashbang", 60, ItemExplodeable.Helper::onFlashBangRemoved),
                     new ItemAmmo("ammo_9mm", AmmoType.AMMO9MM),
                     new ItemAmmo("ammo_45acp", AmmoType.AMMO45ACP),
@@ -428,16 +431,18 @@ public class PMCRegistry {
         public static void registerEntities(Register<EntityEntry> e) {
             final EntityEntry[] entries =
                     {
-                            registerEntity("bullet", EntityBullet.class, 64, 40, true),
-                            registerEntity("flare", EntityFlare.class, 64, 20, true),
-                            registerEntity("parachute", EntityParachute.class, 256, 1, true),
-                            registerEntity("plane", EntityPlane.class, 128, 25, true),
-                            registerEntity("dropEntity", EntityAirdrop.class, 256, 4, true),
+                            registerEntity("bullet", EntityBullet.class, 64, 40),
+                            registerEntity("flare", EntityFlare.class, 64, 20),
+                            registerEntity("parachute", EntityParachute.class, 256, 1),
+                            registerEntity("plane", EntityPlane.class, 128, 25),
+                            registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                             registerVehicle("uaz", EntityVehicleUAZ.class),
                             registerVehicle("dacia", EntityVehicleDacia.class),
                             registerEntity("enemyai", EntityAIPlayer.class, 64, 3, true, 0x000000, 0xFFFFFF),
-                            registerEntity("frag_grenade", EntityFragGrenade.class, 32, 1, true),
-                            registerEntity("molotov", EntityMolotov.class, 32, 1, true)
+                            registerEntity("frag_grenade", EntityFragGrenade.class, 32, 1),
+                            registerEntity("molotov", EntityMolotov.class, 32, 1),
+                            registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
+                            registerEntity("flashbang", EntityFlashBang.class, 32, 1)
                     };
 
             e.getRegistry().registerAll(entries);
@@ -463,8 +468,8 @@ public class PMCRegistry {
             }
         }
 
-        private static EntityEntry registerEntity(String name, Class<? extends Entity> cl, int trackRange, int frequency, boolean velocityUpdates) {
-            return createEntityBuilder(name).entity(cl).tracker(trackRange, frequency, velocityUpdates).build();
+        private static EntityEntry registerEntity(String name, Class<? extends Entity> cl, int trackRange, int frequency) {
+            return createEntityBuilder(name).entity(cl).tracker(trackRange, frequency, true).build();
         }
 
         private static EntityEntry registerEntity(String name, Class<? extends Entity> entityClass, int trackingRange, int updateFrequency, boolean sendVelocityUpdates, int eggPrimary, int eggSecondary) {
@@ -472,7 +477,7 @@ public class PMCRegistry {
         }
 
         private static EntityEntry registerVehicle(String name, Class<? extends EntityVehicle> vehicleClass) {
-            return registerEntity(name, vehicleClass, 256, 1, true);
+            return registerEntity(name, vehicleClass, 256, 1);
         }
 
         private static <E extends Entity> EntityEntryBuilder<E> createEntityBuilder(String name) {

@@ -3,7 +3,7 @@ package com.toma.pubgmc.common.commands;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
-import com.toma.pubgmc.common.network.PacketHandler;
+import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

@@ -5,8 +5,8 @@ import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
-import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketUpdatePlayerRotation;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketUpdatePlayerRotation;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
@@ -24,7 +24,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class EntityPlane extends Entity {
     public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap();

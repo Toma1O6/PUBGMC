@@ -2,8 +2,8 @@ package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.common.network.PacketHandler;
-import com.toma.pubgmc.common.network.sp.PacketSyncGameData;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketSyncGameData;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.gui.ScaledResolution;
