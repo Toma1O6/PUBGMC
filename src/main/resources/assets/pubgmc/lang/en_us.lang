@@ -238,3 +238,5 @@ grenade.smoke.warn=Water will cancel the effect!
 
 death.attack.vehicle=%s has been run over by wild vehicle!
 death.attack.zone=%s couldn't outrun the zone.
+death.gun.headshot=%s shot %s's head off using %s!
+death.gun=%s shot %s using %s
