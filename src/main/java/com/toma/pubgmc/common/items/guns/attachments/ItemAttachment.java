@@ -19,7 +19,7 @@ public class ItemAttachment extends PMCItem implements IAttachment {
     public ItemAttachment(String name, Type attachment) {
         super(name);
         setMaxStackSize(1);
-        setCreativeTab(Pubgmc.TAB_ITEMS);
+        setCreativeTab(Pubgmc.TAB_ACCESSORIES);
 
         this.type = attachment;
     }

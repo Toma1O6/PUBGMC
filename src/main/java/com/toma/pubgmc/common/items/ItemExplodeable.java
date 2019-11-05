@@ -28,6 +28,7 @@ public class ItemExplodeable extends PMCItem {
         this.maxFuse = maxFuse;
         this.explodeableItemAction = action;
         this.setMaxStackSize(1);
+        this.setCreativeTab(Pubgmc.TAB_GUNS);
     }
 
     public ItemExplodeable addAditionalDescription(String... description) {

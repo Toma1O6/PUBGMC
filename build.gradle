@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.5.4.7"
+version = "1.6.0-a"
 group = "com.toma.pubgmc" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "PUBGMC"
 

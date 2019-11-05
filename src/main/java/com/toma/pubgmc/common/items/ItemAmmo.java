@@ -20,7 +20,7 @@ public class ItemAmmo extends PMCItem {
         super(name);
         this.setMaxStackSize(ConfigPMC.common.items.ammoLimit);
         this.type = type;
-        setCreativeTab(Pubgmc.TAB_ITEMS);
+        setCreativeTab(Pubgmc.TAB_ACCESSORIES);
     }
 
     public Item getAmmoItem() {

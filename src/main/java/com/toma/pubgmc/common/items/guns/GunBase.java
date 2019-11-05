@@ -81,7 +81,7 @@ public class GunBase extends PMCItem {
 
     protected GunBase(String name) {
         super(name);
-        setCreativeTab(Pubgmc.TAB_ITEMS);
+        setCreativeTab(Pubgmc.TAB_GUNS);
         setMaxStackSize(1);
         GUNS.add(this);
     }

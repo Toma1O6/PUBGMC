@@ -12,6 +12,7 @@ import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.commands.*;
 import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
+import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -54,7 +55,7 @@ public class Pubgmc {
      **/
     public static final String MOD_ID = "pubgmc";
     public static final String NAME = "PUBGMC";
-    public static final String VERSION = "1.5.4.7";
+    public static final String VERSION = "1.6.0-a";
     public static final String ACCEPTED_VERSIONS = "[1.12.2]";
     public static final String CLIENT_PROXY_CLASS = "com.toma.pubgmc.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";
@@ -64,6 +65,18 @@ public class Pubgmc {
      * Creative Tabs
      */
     public static final CreativeTabs TAB_ITEMS = new PMCItemsTab("pmcitemstab");
+    public static final CreativeTabs TAB_GUNS = new PMCItemsTab("pmcgunstab") {
+        @Override
+        public ItemStack getTabIconItem() {
+            return new ItemStack(PMCRegistry.PMCItems.M416);
+        }
+    };
+    public static final CreativeTabs TAB_ACCESSORIES = new PMCItemsTab("pmcaccessoriestab") {
+        @Override
+        public ItemStack getTabIconItem() {
+            return new ItemStack(PMCRegistry.PMCItems.SCOPE4X);
+        }
+    };
     public static final CreativeTabs TAB_BLOCKS = new PMCBlocksTab("pmcblockstab");
 
     private static final Random RANDOM = new Random();
