@@ -97,7 +97,7 @@ public class GunBase extends PMCItem {
             case SCOPE:
                 return DevUtil.containsD(gun.getScopeAttachments(), attachment);
             case STOCK:
-                DevUtil.containsD(gun.getStockAttachments(), attachment);
+                return DevUtil.containsD(gun.getStockAttachments(), attachment);
             default: return false;
         }
     }
