@@ -438,7 +438,7 @@ public class PMCRegistry {
                             registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                             registerVehicle("uaz", EntityVehicleUAZ.class),
                             registerVehicle("dacia", EntityVehicleDacia.class),
-                            registerEntity("enemyai", EntityAIPlayer.class, 64, 3, true, 0x000000, 0xFFFFFF),
+                            registerEntity("enemyai", EntityAIPlayer.class, 128, 3, true, 0x000000, 0xFFFFFF),
                             registerEntity("frag_grenade", EntityFragGrenade.class, 32, 1),
                             registerEntity("molotov", EntityMolotov.class, 32, 1),
                             registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),

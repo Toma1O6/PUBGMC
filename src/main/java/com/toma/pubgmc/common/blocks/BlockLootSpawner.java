@@ -57,7 +57,7 @@ public class BlockLootSpawner extends PMCBlock {
     }
 
     public void updateBlockState(World world, BlockPos pos, IBlockState state) {
-        int i = state.getValue(LOOT).intValue() + 1 < 3 ? state.getValue(LOOT).intValue() + 1 : 0;
+        int i = state.getValue(LOOT) + 1 < 3 ? state.getValue(LOOT) + 1 : 0;
         world.setBlockState(pos, getDefaultState().withProperty(LOOT, i), 3);
     }
 
@@ -83,7 +83,7 @@ public class BlockLootSpawner extends PMCBlock {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return NULL_AABB;
+        return BB;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class BlockLootSpawner extends PMCBlock {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return state.getValue(LOOT).intValue();
+        return state.getValue(LOOT);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class BlockLootSpawner extends PMCBlock {
         }
 
         public static LootType getTypeFromState(IBlockState state) {
-            return values()[state.getValue(BlockLootSpawner.LOOT).intValue()];
+            return values()[state.getValue(BlockLootSpawner.LOOT)];
         }
 
         public Vec3d getRGB() {

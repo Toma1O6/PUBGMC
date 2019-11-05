@@ -11,12 +11,12 @@ import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.commands.*;
-import com.toma.pubgmc.common.entity.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.proxy.IProxy;
 import com.toma.pubgmc.tabs.PMCBlocksTab;
 import com.toma.pubgmc.tabs.PMCItemsTab;
@@ -152,7 +152,7 @@ public class Pubgmc {
 
     @EventHandler
     public void serverInit(FMLServerStartingEvent event) {
-        EntityAIPlayer.GLOBAL_LOOT_CACHE.clear();
+        EntityAISearchLoot.GLOBAL_LOOT_CACHE.clear();
 
         event.registerServerCommand(new CommandLeave());
         event.registerServerCommand(new CommandLootGenerate());

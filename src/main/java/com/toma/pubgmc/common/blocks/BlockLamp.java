@@ -1,11 +1,8 @@
 package com.toma.pubgmc.common.blocks;
 
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.tileentity.TileEntityLamp;
-import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -36,7 +33,7 @@ public class BlockLamp extends PMCBlock {
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, new IProperty[]{ON, FACING});
+        return new BlockStateContainer(this, ON, FACING);
     }
 
     @Override
@@ -47,15 +44,15 @@ public class BlockLamp extends PMCBlock {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(ON, Boolean.valueOf((meta & 4) != 0));
+        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(ON, (meta & 4) != 0);
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
         int i = 0;
-        i = i | ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
+        i = i | state.getValue(FACING).getHorizontalIndex();
 
-        if (((Boolean) state.getValue(ON)).booleanValue()) {
+        if (state.getValue(ON)) {
             i |= 4;
         }
 

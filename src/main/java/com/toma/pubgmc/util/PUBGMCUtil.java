@@ -149,7 +149,7 @@ public class PUBGMCUtil {
      * Position calculated between [xyz] of pos1 and pos2
      **/
     public static double getDistanceToBlockPos3D(BlockPos pos1, BlockPos pos2) {
-        return Math.sqrt(sqr(Math.sqrt(sqr(Math.abs(pos1.getX() - pos2.getX())) + sqr(Math.abs(pos1.getZ() - pos2.getZ())))) + sqr(Math.abs(pos1.getY() - pos2.getY())));
+        return Math.sqrt(sqr(pos1.getX() - pos2.getX()) + sqr(pos1.getY() - pos2.getY()) + sqr(pos1.getZ() - pos2.getZ()));
     }
 
     public static boolean isMapSetupProperly(IGameData data) {

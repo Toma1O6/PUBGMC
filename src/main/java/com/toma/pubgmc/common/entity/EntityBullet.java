@@ -80,10 +80,10 @@ public class EntityBullet extends Entity {
         stack = new ItemStack(gun);
 
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
-
-        IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-        calculateBulletHeading(direct, shooter, data.isAiming());
+        if(shooter instanceof EntityPlayer) {
+            IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            calculateBulletHeading(direct, (EntityPlayer) shooter, data.isAiming());
+        } else this.calculateBulletHeading(direct, shooter, 2 + this.world.getDifficulty().ordinal());
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
 
         updateHeading();
@@ -291,7 +291,8 @@ public class EntityBullet extends Entity {
     }
 
     private boolean canEntityGetHeadshot(Entity e) {
-        return e instanceof EntityZombie || e instanceof EntitySkeleton || e instanceof EntityCreeper || e instanceof EntityWitch || e instanceof EntityPigZombie || e instanceof EntityEnderman || e instanceof EntityWitherSkeleton || e instanceof EntityPlayer || e instanceof EntityVillager || e instanceof EntityEvoker || e instanceof EntityStray || e instanceof EntityVindicator || e instanceof EntityIronGolem || e instanceof EntitySnowman;
+        double ratio = e.height / e.width;
+        return ratio > 1.0F;
     }
 
     private float getPitchRotationInaccuracy(EntityLivingBase shooter) {
@@ -309,7 +310,7 @@ public class EntityBullet extends Entity {
         return getPitchRotationInaccuracy(shooter) == -35f ? 0f : -60f;
     }
 
-    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, boolean aim) {
+    private void calculateBulletHeading(Vec3d rotVec, EntityPlayer shooter, boolean aim) {
         if (aim && type != GunType.SHOTGUN) {
             this.motionX = rotVec.x * velocity;
             this.motionY = rotVec.y * velocity;
@@ -319,6 +320,13 @@ public class EntityBullet extends Entity {
             this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
             this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
         }
+    }
+
+    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, int accuracy) {
+        if(accuracy == 0) accuracy = 1;
+        this.motionX = rotVec.x * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
+        this.motionY = rotVec.y * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
+        this.motionZ = rotVec.z * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
     }
 
     private void updateHeading() {
