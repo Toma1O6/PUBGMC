@@ -69,7 +69,7 @@ public class ModelS12K extends ModelGun {
     public void initAnimations() {
         initAimAnimation(-0.535f, 0.27f, 0.235f);
         initAimingAnimationStates(0.27f, 0.235f, 0.195f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
     }
 
     @Override

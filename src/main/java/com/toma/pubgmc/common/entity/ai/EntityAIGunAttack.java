@@ -49,7 +49,7 @@ public class EntityAIGunAttack extends EntityAIBase {
     @Override
     public void updateTask() {
         if(target == null) return;
-        double distanceToTarget = this.aiPlayer.getDistanceSq(this.target);
+        double distanceToTarget = Math.sqrt(this.aiPlayer.getDistanceSq(this.target));
         boolean flag = this.aiPlayer.getEntitySenses().canSee(this.target);
         if(flag) {
             this.timeWatching++;
@@ -59,7 +59,7 @@ public class EntityAIGunAttack extends EntityAIBase {
         }
         GunBase gun = this.aiPlayer.getGun();
         int tableIndex = gun.getGunType().ordinal();
-        if(distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] && this.timeWatching >= 20) {
+        if(distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] * 1.5 && this.timeWatching >= 20) {
             this.aiPlayer.getNavigator().clearPath();
         } else this.aiPlayer.getNavigator().tryMoveToEntityLiving(this.target, 1.0D);
         this.aiPlayer.getLookHelper().setLookPositionWithEntity(this.target, 30, 30);
@@ -72,6 +72,9 @@ public class EntityAIGunAttack extends EntityAIBase {
     }
 
     private void shoot(GunBase gun, double distanceToTarget) {
+        if(distanceToTarget > MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
+            return;
+        }
         ++this.shotsFired;
         int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 8 : 1;
         boolean isSilenced = this.aiPlayer.getHeldItemMainhand().hasTagCompound() && this.aiPlayer.getHeldItemMainhand().getTagCompound().getInteger("barrel") == 1;
@@ -82,7 +85,8 @@ public class EntityAIGunAttack extends EntityAIBase {
             EntityBullet bullet = new EntityBullet(this.aiPlayer.world, this.aiPlayer, gun);
             bullet.setPosition(bullet.posX, bullet.posY - 0.5, bullet.posZ);
             if(shotAmount > 1) {
-                bullet.motionY *= distanceToTarget / 2;
+                double d0 = distanceToTarget / 150;
+                bullet.motionY += d0;
             }
             this.aiPlayer.world.spawnEntity(bullet);
         }
