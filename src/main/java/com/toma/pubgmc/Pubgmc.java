@@ -11,6 +11,7 @@ import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.commands.*;
+import com.toma.pubgmc.common.entity.EntityAIPlayer;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
@@ -151,6 +152,8 @@ public class Pubgmc {
 
     @EventHandler
     public void serverInit(FMLServerStartingEvent event) {
+        EntityAIPlayer.GLOBAL_LOOT_CACHE.clear();
+
         event.registerServerCommand(new CommandLeave());
         event.registerServerCommand(new CommandLootGenerate());
         event.registerServerCommand(new CommandClearPlayerCrates());

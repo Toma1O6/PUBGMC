@@ -83,14 +83,14 @@ public class EntityFlashBang extends EntityThrowableExplodeable {
     }
 
     private int getPartialChecksAmount(Vec3d from, Vec3d to) {
-        double distX = this.square(from.x - to.x);
-        double distY = this.square(from.y - to.y);
-        double distZ = this.square(from.z - to.z);
+        double distX = this.sqr(from.x - to.x);
+        double distY = this.sqr(from.y - to.y);
+        double distZ = this.sqr(from.z - to.z);
         double distance = Math.sqrt(distX + distY + distZ);
-        return (int)distance * 3;
+        return (int) Math.max(1.0D, distance * 2);
     }
 
-    private double square(double num) {
+    private double sqr(double num) {
         return num * num;
     }
 }

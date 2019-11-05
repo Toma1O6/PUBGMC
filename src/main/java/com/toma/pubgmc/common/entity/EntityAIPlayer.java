@@ -1,5 +1,7 @@
 package com.toma.pubgmc.common.entity;
 
+import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
+import jdk.nashorn.internal.objects.Global;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -16,8 +18,14 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class EntityAIPlayer extends EntityCreature {
+
+    public static final HashMap<UUID, List<BlockPos>> GLOBAL_LOOT_CACHE = new HashMap<>();
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 
@@ -27,6 +35,10 @@ public class EntityAIPlayer extends EntityCreature {
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
         this.setCanPickUpLoot(true);
+        if(!worldIn.isRemote) {
+            UUID uuid = this.getUniqueID();
+            GLOBAL_LOOT_CACHE.put(uuid, new ArrayList<>());
+        }
     }
 
     public EntityAIPlayer(World world, BlockPos pos) {
@@ -37,6 +49,7 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(3, new EntityAISearchLoot(this, 0.01F));
         this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.0001F));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -61,6 +74,8 @@ public class EntityAIPlayer extends EntityCreature {
     // TODO check if death crate can be spawn
     @Override
     public void onDeath(DamageSource cause) {
+        UUID uuid = this.getUniqueID();
+        GLOBAL_LOOT_CACHE.remove(uuid);
         super.onDeath(cause);
     }
 
