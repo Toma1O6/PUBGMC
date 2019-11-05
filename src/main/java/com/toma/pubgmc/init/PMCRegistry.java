@@ -975,7 +975,6 @@ public class PMCRegistry {
                 e.initScopeAttachments(AttachmentHelper.getSmallScopes());
             } else if (gun == PMCItems.MP5K) {
                 e.initBarrelAttachments(AttachmentHelper.getSMGBarrelAttachments());
-                e.initGripAttachments(AttachmentHelper.getGrips());
                 e.initMagazineAttachments(AttachmentHelper.getSMGMagazineAttachments());
                 e.initScopeAttachments(AttachmentHelper.getSmallScopes());
             } else if (gun == PMCItems.TOMMY_GUN) {
