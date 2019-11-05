@@ -67,11 +67,11 @@ public class EntityAIGunAttack extends EntityAIBase {
             if(!flag) {
                 return;
             }
-            this.shoot(gun);
+            this.shoot(gun, distanceToTarget);
         }
     }
 
-    private void shoot(GunBase gun) {
+    private void shoot(GunBase gun, double distanceToTarget) {
         ++this.shotsFired;
         int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 8 : 1;
         boolean isSilenced = this.aiPlayer.getHeldItemMainhand().hasTagCompound() && this.aiPlayer.getHeldItemMainhand().getTagCompound().getInteger("barrel") == 1;
@@ -80,9 +80,14 @@ public class EntityAIGunAttack extends EntityAIBase {
         PacketHandler.sendToDimension(new PacketDelayedSound(event, volume, this.aiPlayer.posX, this.aiPlayer.posY, this.aiPlayer.posZ), this.aiPlayer.dimension);
         for(int i = 0; i < shotAmount; i++) {
             EntityBullet bullet = new EntityBullet(this.aiPlayer.world, this.aiPlayer, gun);
+            bullet.setPosition(bullet.posX, bullet.posY - 0.5, bullet.posZ);
+            if(shotAmount > 1) {
+                bullet.motionY *= distanceToTarget / 2;
+            }
             this.aiPlayer.world.spawnEntity(bullet);
         }
-        this.timeRemaining = gun.getFireRate() + 1;
+        boolean effectiveRange = distanceToTarget < MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()];
+        this.timeRemaining = gun.getFireRate() + (effectiveRange ? 6 : 18);
         if(shotsFired >= gun.getWeaponAmmoLimit(this.aiPlayer.getHeldItemMainhand())) {
             this.shotsFired = 0;
             this.timeRemaining = 80;

@@ -160,8 +160,8 @@ public class EntityAIPlayer extends EntityCreature {
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
 
-        this.targetTasks.addTask(0, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING)));
-        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityAIPlayer.class, true));
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING)));
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityAIPlayer.class, true));
     }
 
     @Override
