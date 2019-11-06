@@ -5,8 +5,6 @@ import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.EntityAIPlayer;
-import com.toma.pubgmc.common.entity.EntityParachute;
-import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -115,10 +113,7 @@ public class GameDeathmatch extends Game {
 
     @Override
     public ILootDistributor getLootDistributor() {
-        if(this.lootDistributor == null) {
-            this.lootDistributor = this::addLootIntoInventory;
-        }
-        return this.lootDistributor;
+        return this::addLootIntoInventory;
     }
 
     @Nullable
