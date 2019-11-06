@@ -38,6 +38,17 @@ public class ZoneBounds {
         return "ZoneBounds[min=" + min.toString() + ",max=" + max.toString() + "]";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        } else if(obj instanceof ZoneBounds) {
+            ZoneBounds bounds = (ZoneBounds) obj;
+            return bounds.min.equals(this.min) && bounds.max.equals(this.max);
+        }
+        return false;
+    }
+
     public static NBTTagCompound toNBT(ZoneBounds zoneBounds) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("min", ZonePos.toNBT(zoneBounds.min));

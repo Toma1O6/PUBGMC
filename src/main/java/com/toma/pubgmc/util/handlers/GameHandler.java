@@ -5,11 +5,13 @@ import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.IGameTileEntity;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.entity.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.math.ZonePos;
+import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,6 +65,27 @@ public class GameHandler {
                 return;
             }
             game.tickGame(e.world);
+            if(game.gameTimer % 200 == 0) {
+                if(game.canSpawnBots()) {
+                    BlueZone zone = game.zone;
+                    if(zone == null) {
+                        return;
+                    }
+                    ZonePos min = zone.currentBounds.min();
+                    ZonePos max = zone.currentBounds.max();
+                    int maxDist = (int) Math.abs(max.x - min.x);
+                    int x = (int)min.x + e.world.rand.nextInt(maxDist);
+                    int z = (int)min.z + e.world.rand.nextInt(maxDist);
+                    int y = e.world.getHeight(x, z);
+                    BlockPos pos = new BlockPos(x, y, z);
+                    if(!e.world.isBlockLoaded(pos)) {
+                        return;
+                    }
+                    EntityAIPlayer aiPlayer = new EntityAIPlayer(e.world, pos);
+                    e.world.spawnEntity(aiPlayer);
+                    game.getLootDistributor().giveLoot(aiPlayer);
+                }
+            }
         }
 
         @SubscribeEvent
@@ -97,7 +120,10 @@ public class GameHandler {
             EntityLivingBase from;
             ItemStack gun = null;
             boolean wasHeadshot = false;
-            if(!(entity instanceof EntityPlayer)) {
+            if(entity instanceof EntityAIPlayer) {
+                if(game.botsInGame > 0) --game.botsInGame;
+                return;
+            } else if(!(entity instanceof EntityPlayer)) {
                 return;
             }
             // to avoid wrong player count when new player instance is created

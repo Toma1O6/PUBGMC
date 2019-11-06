@@ -65,7 +65,7 @@ public final class BlueZone {
         } else {
             // first zone
             if(nextBounds == null) {
-                Pubgmc.logger.error("Cannot shrink zone, since it doesn't know where to shrink! Call 'BlueZone::notifyFirstZoneCreation' first!");
+                Pubgmc.logger.error("Cannot shrink zone, since it doesn't know where to shrink! Call 'BlueZone#notifyFirstZoneCreation' first!");
                 return;
             }
             shrinking = true;

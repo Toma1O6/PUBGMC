@@ -4,7 +4,9 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.entity.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.EntityParachute;
+import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -16,7 +18,10 @@ import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -34,6 +39,8 @@ public class GameDeathmatch extends Game {
     private int matchDuration;
     private boolean airdrops;
     private int size;
+
+    private ILootDistributor lootDistributor;
 
     public GameDeathmatch(String modeName) {
         super(modeName);
@@ -81,6 +88,9 @@ public class GameDeathmatch extends Game {
 
     @Override
     public boolean respawnPlayer(EntityPlayer player) {
+        if(!this.getGameData(player.world).isPlaying()) {
+            return false;
+        }
         IPlayerData playerData = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
         playerData.setBackpackLevel(3);
         playerData.sync(player);
@@ -96,6 +106,19 @@ public class GameDeathmatch extends Game {
     @Override
     public boolean shouldUpdateTileEntities() {
         return true;
+    }
+
+    @Override
+    public boolean canSpawnBots() {
+        return botsInGame < 3;
+    }
+
+    @Override
+    public ILootDistributor getLootDistributor() {
+        if(this.lootDistributor == null) {
+            this.lootDistributor = this::addLootIntoInventory;
+        }
+        return this.lootDistributor;
     }
 
     @Nullable
@@ -154,6 +177,23 @@ public class GameDeathmatch extends Game {
         this.lootType = compound.getInteger("lootRarity");
         this.spawnWeaponType = compound.hasKey("lootClass") ? GunBase.GunType.values()[compound.getInteger("lootClass")] : null;
         this.matchDuration = compound.getInteger("matchDuration");
+    }
+
+    private void addLootIntoInventory(EntityAIPlayer bot) {
+        GunBase item = LootHelper.getRandomWeapon(new GunBase.GunType[] {spawnWeaponType}, lootType);
+        ItemStack gun = new ItemStack(item);
+        bot.inventory.clear();
+        if(!bot.world.isRemote) {
+            EntityItem itemEntity = new EntityItem(bot.world, bot.posX, bot.posY, bot.posZ, gun);
+            itemEntity.setPickupDelay(0);
+            bot.world.spawnEntity(itemEntity);
+        }
+        Item ammo = item.getAmmoType().ammo();
+        bot.inventory.set(0, new ItemStack(PMCRegistry.PMCItems.PAINKILLERS));
+        bot.inventory.set(1, new ItemStack(ammo, 30));
+        bot.inventory.set(2, new ItemStack(ammo, 30));
+        bot.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(PMCRegistry.PMCItems.ARMOR1HELMET));
+        bot.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCRegistry.PMCItems.ARMOR1BODY));
     }
 
     private void addLootIntoInventory(EntityPlayer player) {

@@ -59,4 +59,14 @@ public class GameInactive extends Game {
     public boolean shouldCreateDeathCrate() {
         return false;
     }
+
+    @Override
+    public boolean canSpawnBots() {
+        return false;
+    }
+
+    @Override
+    public ILootDistributor getLootDistributor() {
+        return bot -> {};
+    }
 }

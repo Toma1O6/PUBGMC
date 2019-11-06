@@ -2,6 +2,7 @@ package com.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.entity.ai.EntityAIGunAttack;
+import com.toma.pubgmc.common.entity.ai.EntityAIMoveIntoZone;
 import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.AmmoType;
@@ -152,15 +153,21 @@ public class EntityAIPlayer extends EntityCreature {
     }
 
     @Override
+    protected boolean canDropLoot() {
+        return false;
+    }
+
+    @Override
     protected void initEntityAI() {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, new EntityAIGunAttack(this));
         this.tasks.addTask(3, new EntityAISearchLoot(this, 0.05F));
+        this.tasks.addTask(4, new EntityAIMoveIntoZone(this));
         this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.0001F));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
 
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING)));
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, EntitySelectors.IS_ALIVE));
         this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityAIPlayer.class, true));
     }
 

@@ -24,26 +24,33 @@ public class EntityAIMoveIntoZone extends EntityAIBase {
         this.gameData = this.entity.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         if(this.gameData == null) {
             return false;
-        } else if(this.gameData.isInactiveGame()) {
+        } else if(!this.gameData.isPlaying() || this.gameData.isInactiveGame()) {
             return false;
         }
         Game game = this.gameData.getCurrentGame();
         BlueZone zone = game.zone;
-        if(zone == null || zone.nextBounds == null) {
+        if(zone == null || zone.currentBounds == null) {
             return false;
         }
         if(zone.isInsideZone(this.entity)) {
             return false;
         }
-        // TODO do not use
-        int x = (int)zone.nextBounds.min().x + this.entity.getRNG().nextInt(Math.abs((int)zone.nextBounds.max().x - (int)zone.nextBounds.min().x));
-        int z = (int)zone.nextBounds.min().z + this.entity.getRNG().nextInt(Math.abs((int)zone.nextBounds.max().z - (int)zone.nextBounds.min().z));
+        int x = (int)(zone.currentBounds.min().x + (zone.currentBounds.max().x - zone.currentBounds.min().x) / 2);
+        int z = (int)(zone.currentBounds.min().z + (zone.currentBounds.max().z - zone.currentBounds.min().z) / 2);
         int y = this.entity.world.getHeight(x, z);
-        this.pos = new BlockPos(x, y, z);
-        if(!this.entity.world.isBlockLoaded(this.pos)) {
-            return false;
+        BlockPos pos = new BlockPos(x, y, z);
+        if(!this.entity.world.isBlockLoaded(pos)) {
+            double angle = Math.atan2(entity.posZ - z, entity.posX - x);
+            double xAdd = Math.sin(angle) * 32;
+            double zAdd = Math.cos(angle) * 32;
+            x = (int)(entity.posX + xAdd);
+            z = (int)(entity.posZ + zAdd);
+            pos = new BlockPos(x, this.entity.world.getHeight(x, z), z);
+            if(!this.entity.world.isBlockLoaded(pos)) {
+                return false;
+            }
         }
-        this.entity.getNavigator().tryMoveToXYZ(x, y, z, 1.2D);
+        this.entity.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), 1.2D);
         return false;
     }
 

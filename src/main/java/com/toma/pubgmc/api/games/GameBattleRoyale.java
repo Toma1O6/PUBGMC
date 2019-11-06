@@ -207,4 +207,14 @@ public class GameBattleRoyale extends Game {
             }
         }
     }
+
+    @Override
+    public boolean canSpawnBots() {
+        return botsInGame < 5;
+    }
+
+    @Override
+    public ILootDistributor getLootDistributor() {
+        return ai -> {};
+    }
 }

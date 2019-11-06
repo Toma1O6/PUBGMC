@@ -68,6 +68,17 @@ public class ZonePos {
         return "Zone:[x=" + x + ",z=" + z + "]";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        } else if(obj instanceof ZonePos) {
+            ZonePos pos = (ZonePos) obj;
+            return pos.x == this.x && pos.z == this.z;
+        }
+        return false;
+    }
+
     public static NBTTagCompound toNBT(ZonePos pos) {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setDouble("x", pos.x);

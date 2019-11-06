@@ -1,6 +1,7 @@
 package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.games.ILootDistributor;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketSyncGameData;
@@ -42,8 +43,10 @@ public abstract class Game {
     public BlueZone zone;
     public int onlinePlayers;
     public GameInfo gameInfo;
-    protected int gameTimer;
+    public int gameTimer;
     private List<UUID> playersInGame;
+
+    public int botsInGame;
 
     public Game(final String name) {
         this.playersInGame = new ArrayList<>();
@@ -92,6 +95,17 @@ public abstract class Game {
      */
     @Nonnull
     public abstract BlueZone initializeZone(final World world);
+
+    /**
+     * @return if can spawn another bot
+     */
+    public abstract boolean canSpawnBots();
+
+    /**
+     * Takes care of loot which is provided to bots
+     * @return the ILootDistributor instance
+     */
+    public abstract ILootDistributor getLootDistributor();
 
     /**
      * Decide what to do when player dies and attempts to respawn
