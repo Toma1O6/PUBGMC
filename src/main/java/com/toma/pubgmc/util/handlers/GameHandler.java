@@ -14,6 +14,7 @@ import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.List;
 import java.util.Map;
 
 public class GameHandler {
@@ -79,7 +81,15 @@ public class GameHandler {
                     int y = e.world.getHeight(x, z);
                     BlockPos pos = new BlockPos(x, y, z);
                     if(!e.world.isBlockLoaded(pos)) {
-                        return;
+                        List<EntityPlayer> playerList = game.getOnlinePlayers(e.world);
+                        EntityPlayer player = playerList.get(e.world.rand.nextInt(playerList.size()));
+                        x = (int)player.posX + e.world.rand.nextInt(64) - e.world.rand.nextInt(64);
+                        z = (int)player.posZ + e.world.rand.nextInt(64) - e.world.rand.nextInt(64);
+                        y = e.world.getHeight(x, z);
+                        pos = new BlockPos(x, y, z);
+                        if(!e.world.isBlockLoaded(pos)) {
+                            return;
+                        }
                     }
                     EntityAIPlayer aiPlayer = new EntityAIPlayer(e.world, pos);
                     e.world.spawnEntity(aiPlayer);

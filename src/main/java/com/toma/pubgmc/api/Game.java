@@ -35,22 +35,31 @@ import java.util.UUID;
 /**
  * Game creation API
  *
+ * Version 1.0
  * @author Toma
  */
 public abstract class Game {
 
+    /** Game name, doesn't have to contain mod ID (might change in the future) **/
     public final String registryName;
+    /** The zone for the game, damages players outside of it **/
     public BlueZone zone;
+    /** Amount of players in the game **/
     public int onlinePlayers;
+    /** Contains information about this game **/
     public GameInfo gameInfo;
+    /** Time elapsed since game start **/
     public int gameTimer;
+    /** UUID list of all players who joined the game **/
     private List<UUID> playersInGame;
-
+    /** Amount of AI entities **/
     public int botsInGame;
 
     public Game(final String name) {
         this.playersInGame = new ArrayList<>();
         this.registryName = name;
+        this.onlinePlayers = 0;
+        this.gameTimer = 0;
     }
 
     /**

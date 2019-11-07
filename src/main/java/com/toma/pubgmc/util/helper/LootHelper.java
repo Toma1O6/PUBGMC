@@ -29,7 +29,7 @@ public class LootHelper {
     private static List<GunBase> getWeaponsOfType(GunBase.GunType[] types) {
         List<GunBase> guns = new ArrayList<>();
         for(GunBase gun : GunBase.GUNS) {
-            if(PUBGMCUtil.contains(gun.getGunType(), types)) {
+            if(gun != PMCRegistry.PMCItems.FLARE_GUN && PUBGMCUtil.contains(gun.getGunType(), types)) {
                 guns.add(gun);
             }
         }

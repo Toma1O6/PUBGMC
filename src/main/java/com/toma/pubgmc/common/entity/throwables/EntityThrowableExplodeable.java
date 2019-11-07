@@ -97,13 +97,10 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
             this.motionY *= GROUND_DRAG_MODIFIER;
             this.motionZ *= GROUND_DRAG_MODIFIER;
         }
+        this.lastRotation = this.rotation;
         if(world.isRemote && !this.onGround) {
             if(this.motionX != 0 && this.motionY != 0 && this.motionZ != 0) {
-                int rotationAmount = 90;
-                for(int i = 0; i < rotationAmount; i++) {
-                    this.lastRotation = this.rotation;
-                    this.rotation += 0.5F;
-                }
+                this.rotation += 45F;
             }
         }
 
@@ -191,7 +188,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         }
         int i = state.ordinal();
         float sprintModifier = 1.25F;
-        float modifier = i == 2 ? 0 : i == 1 ? 0.6F : 1.2F;
+        float modifier = i == 2 ? 0 : i == 1 ? 0.6F : 1.4F;
         if(thrower.isSprinting()) modifier *= sprintModifier;
         Vec3d viewVec = thrower.getLookVec();
         this.motionX = viewVec.x * modifier;

@@ -48,11 +48,11 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     void setBoost(float boost);
 
-    int setBackpackLevel(int level);
+    void setBackpackLevel(int level);
 
     int getBackpackLevel();
 
-    boolean hasEquippedNV(boolean nv);
+    void hasEquippedNV(boolean nv);
 
     boolean getEquippedNV();
 
@@ -60,15 +60,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     // proning
     void setProning(boolean proning);
-
-    //grenades
-    boolean setGrenadeCooking(boolean cooking);
-
-    boolean isGrenadeCooking();
-
-    int setCookingTime(int time);
-
-    int getCookingTime();
 
     int getScopeType();
 
@@ -110,8 +101,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
         private int level;
         private boolean eqNV;
-        private boolean cooking;
-        private int cookTime;
 
         private int scopetype;
         private int scopecolor;
@@ -129,28 +118,8 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         }
 
         @Override
-        public int getCookingTime() {
-            return this.cookTime;
-        }
-
-        @Override
-        public boolean isGrenadeCooking() {
-            return this.cooking;
-        }
-
-        @Override
-        public boolean setGrenadeCooking(boolean cooking) {
-            return this.cooking = cooking;
-        }
-
-        @Override
-        public int setCookingTime(int time) {
-            return this.cookTime = time;
-        }
-
-        @Override
-        public int setBackpackLevel(int level) {
-            return this.level = level;
+        public void setBackpackLevel(int level) {
+            this.level = level;
         }
 
         @Override
@@ -159,8 +128,8 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         }
 
         @Override
-        public boolean hasEquippedNV(boolean nv) {
-            return this.eqNV = nv;
+        public void hasEquippedNV(boolean nv) {
+            this.eqNV = nv;
         }
 
         @Override
@@ -289,8 +258,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
             c.setFloat("boost", boost);
             c.setInteger("level", level);
             c.setBoolean("eqnv", eqNV);
-            c.setBoolean("cooking", cooking);
-            c.setInteger("cookTime", cookTime);
             c.setInteger("scopetype", scopetype);
             c.setInteger("scopecolor", scopecolor);
             return c;
@@ -306,8 +273,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
             boost = nbt.getFloat("boost");
             level = nbt.getInteger("level");
             eqNV = nbt.getBoolean("eqnv");
-            cooking = nbt.getBoolean("cooking");
-            cookTime = nbt.getInteger("cookTime");
             scopetype = nbt.getInteger("scopetype");
             scopecolor = nbt.getInteger("scopecolor");
         }
@@ -331,7 +296,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-            return capability == PLAYER_DATA ? PLAYER_DATA.<T>cast(this.instance) : null;
+            return capability == PLAYER_DATA ? PLAYER_DATA.cast(this.instance) : null;
         }
 
         @Override

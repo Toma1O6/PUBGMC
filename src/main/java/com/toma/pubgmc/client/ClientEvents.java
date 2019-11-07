@@ -16,15 +16,15 @@ import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import com.toma.pubgmc.common.items.heal.ItemHealing;
-import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.client.CFGAimType;
 import com.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.server.*;
-import com.toma.pubgmc.util.helper.ImageUtil;
 import com.toma.pubgmc.util.handlers.GuiHandler;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -547,7 +547,7 @@ public class ClientEvents {
                     return;
                 }
                 //Check if the player is able to reload
-                //Ammo checking is being handled in the onReload method from GunBase.class
+                //Ammo checking is being handled in the onReload method from GunBase
                 if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
                     GunBase gun = (GunBase) sp.getHeldItemMainhand().getItem();
 

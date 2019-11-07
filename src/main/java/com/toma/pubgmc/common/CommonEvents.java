@@ -7,6 +7,7 @@ import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import com.toma.pubgmc.common.items.ItemExplodeable;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.network.PacketHandler;
@@ -229,59 +230,6 @@ public class CommonEvents {
                     }
                 }
             }
-
-            /** Grenades **/
-            /**===================================================================================================================**/
-
-            //If the grenade has started the cooking process
-            if (data.isGrenadeCooking()) {
-                //Increase the cooking timer every tick
-                data.setCookingTime(data.getCookingTime() + 1);
-            }
-
-            //If player is cooking the grenade for 4 secs
-            if (data.getCookingTime() >= 80) {
-                //Reset the timer and cooking
-                data.setCookingTime(0);
-                data.setGrenadeCooking(false);
-                // TODO clean all this grenade cooking mess
-                //Spawn new grenade entity with 0 fuse so it will explode instantly
-                //player.world.spawnEntity(new EntityGrenade(player.world, player, 0));
-
-                //If player is in survival mode
-                if (!player.capabilities.isCreativeMode) {
-                    //Get all inventory slots
-                    for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                        //Get itemstacks from all slots
-                        ItemStack stack = player.inventory.getStackInSlot(i);
-
-                        //check all itemstacks if they are the grenade items
-                        if (stack.getItem() == PMCRegistry.PMCItems.GRENADE) {
-                            //clear 1 grenade item
-                            stack.shrink(1);
-                        }
-
-                        //if player has no grenades in inventory it has to mean he dropped it so we have to check it too
-                        else {
-                            //Get all loaded entities
-                            for (int j = 0; j < player.world.loadedEntityList.size(); j++) {
-                                Entity entity = player.world.loadedEntityList.get(j);
-
-                                //Check if the entity is item entity
-                                if (entity instanceof EntityItem) {
-                                    EntityItem item = (EntityItem) entity;
-
-                                    //we get the itemstack from the entity and then the item from the itemstack
-                                    if (item.getItem().getItem() == PMCRegistry.PMCItems.GRENADE) {
-                                        //remove the entity
-                                        item.setDead();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -289,7 +237,7 @@ public class CommonEvents {
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerLoggedInEvent e) {
         if (ConfigPMC.client.other.messagesOnJoin) {
-            if (e.player instanceof EntityPlayer && e.player != null) {
+            if (e.player instanceof EntityPlayer) {
                 ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
                 handleUpdateResults(version, e.player);
             }
@@ -386,9 +334,8 @@ public class CommonEvents {
                 e.setCanceled(true);
             }
         }
-
         //Ammo returning back to inventory
-        if (itemEntity.getItem().getItem() instanceof GunBase) {
+        else if (itemEntity.getItem().getItem() instanceof GunBase) {
             ItemStack stack = itemEntity.getItem();
 
             if (stack.hasTagCompound() && !player.capabilities.isCreativeMode) {
@@ -397,6 +344,13 @@ public class CommonEvents {
 
                 player.addItemStackToInventory(new ItemStack(gun.getAmmoType().ammo(), ammo));
                 stack.getTagCompound().setInteger("ammo", 0);
+            }
+        } else if(itemEntity.getItem().getItem() instanceof ItemExplodeable) {
+            ItemStack stack = itemEntity.getItem();
+            ItemExplodeable explodeable = (ItemExplodeable) stack.getItem();
+            if(explodeable.isCooking(stack)) {
+                e.setCanceled(true);
+                explodeable.getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, explodeable.getMaxFuse() - explodeable.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
             }
         }
     }

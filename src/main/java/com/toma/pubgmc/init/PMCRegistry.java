@@ -363,7 +363,7 @@ public class PMCRegistry {
                     new FlareGun("flare_gun"),
                     new ItemExplodeable("grenade", 110, ItemExplodeable.Helper::onFragRemoved),
                     new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved).addAditionalDescription("Effect duration: 20s", TextFormatting.RED + "Water will cancel the effect!"),
-                    new ItemExplodeable("molotov", Integer.MAX_VALUE, ItemExplodeable.Helper::onMolotovRemoved).addAditionalDescription("Effect duration: 10s", TextFormatting.RED + "Water will cancel the effect!"),
+                    new ItemExplodeable("molotov", -1, ItemExplodeable.Helper::onMolotovRemoved).addAditionalDescription("Effect duration: 10s", TextFormatting.RED + "Water will cancel the effect!"),
                     new ItemExplodeable("flashbang", 60, ItemExplodeable.Helper::onFlashBangRemoved),
                     new ItemAmmo("ammo_9mm", AmmoType.AMMO9MM),
                     new ItemAmmo("ammo_45acp", AmmoType.AMMO45ACP),
@@ -438,11 +438,11 @@ public class PMCRegistry {
                             registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                             registerVehicle("uaz", EntityVehicleUAZ.class),
                             registerVehicle("dacia", EntityVehicleDacia.class),
-                            registerEntity("enemyai", EntityAIPlayer.class, 128, 3, true, 0x000000, 0xFFFFFF),
-                            registerEntity("frag_grenade", EntityFragGrenade.class, 32, 1),
-                            registerEntity("molotov", EntityMolotov.class, 32, 1),
+                            registerEntity("enemyai", EntityAIPlayer.class, 256, 3, true, 0x000000, 0xFFFFFF),
+                            registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
+                            registerEntity("molotov", EntityMolotov.class, 64, 1),
                             registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
-                            registerEntity("flashbang", EntityFlashBang.class, 32, 1)
+                            registerEntity("flashbang", EntityFlashBang.class, 64, 1)
                     };
 
             e.getRegistry().registerAll(entries);

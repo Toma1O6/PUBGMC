@@ -38,8 +38,6 @@ public class GameDeathmatch extends Game {
     private boolean airdrops;
     private int size;
 
-    private ILootDistributor lootDistributor;
-
     public GameDeathmatch(String modeName) {
         super(modeName);
         this.setGameInfo(new GameInfo("Toma", "- Everybody vs Everybody!", "- Respawn on death", "- Players respawn with loot"));

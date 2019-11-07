@@ -36,12 +36,21 @@ public class ItemExplodeable extends PMCItem {
         return this;
     }
 
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return false;
+    }
+
     public void startCooking(ItemStack stack, EntityPlayer player) {
         if (!stack.hasTagCompound()) {
             this.attachNBT(stack, player);
-            stack.getTagCompound().setBoolean("isCooking", true);
-            player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
         }
+        stack.getTagCompound().setBoolean("isCooking", true);
+        boolean cooking = this.isCooking(stack);
+    }
+
+    public boolean isCooking(ItemStack stack) {
+        return stack.hasTagCompound() && stack.getTagCompound().getBoolean("isCooking");
     }
 
     @Override
@@ -51,10 +60,8 @@ public class ItemExplodeable extends PMCItem {
             if (!stack.hasTagCompound()) {
                 this.attachNBT(stack, player);
             }
-            this.explodeableItemAction.onRemoveFromInventory(stack, player.world, player, this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
-            if (!player.isCreative()) {
-                stack.shrink(1);
-            }
+            this.explodeableItemAction.onRemoveFromInventory(stack, player.world, player, this.maxFuse - this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
+            player.inventory.removeStackFromSlot(player.inventory.currentItem);
             player.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
         }
         return true;
@@ -63,54 +70,65 @@ public class ItemExplodeable extends PMCItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        if (!stack.hasTagCompound()) {
-            this.attachNBT(stack, playerIn);
+        if(!worldIn.isRemote) {
+            if (!stack.hasTagCompound()) {
+                this.attachNBT(stack, playerIn);
+            }
+            if(this.maxFuse > 0 && !this.isCooking(stack)) {
+                stack.getTagCompound().setBoolean("isCooking", true);
+                worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+                return super.onItemRightClick(worldIn, playerIn, handIn);
+            }
+            this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, playerIn, this.maxFuse - this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.LONG);
+            playerIn.inventory.removeStackFromSlot(playerIn.inventory.currentItem);
+            worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.MASTER, 1.0F, 1.0F);
         }
-        this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, playerIn, this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.LONG);
-        stack.shrink(1);
-        playerIn.playSound(SoundEvents.ENTITY_SNOWBALL_THROW, 1.0F, 1.0F);
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (!(entityIn instanceof EntityPlayer)) return;
-        EntityPlayer player = (EntityPlayer) entityIn;
-        if (stack.hasTagCompound()) {
-            if (this.isCooking(stack)) {
+        if(!(entityIn instanceof EntityPlayer)) return;
+        if(!worldIn.isRemote) {
+            if(this.isCooking(stack)) {
                 int timeLeft = this.maxFuse - this.getFuseTime(stack);
-                if (timeLeft < 0) {
-                    this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, player, timeLeft, EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
-                    stack.shrink(1);
+                if(timeLeft < 0) {
+                    this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, (EntityPlayer) entityIn, timeLeft, EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
+                    ((EntityPlayer) entityIn).inventory.removeStackFromSlot(itemSlot);
+                    return;
                 }
                 stack.getTagCompound().setInteger("currentFuse", this.getFuseTime(stack) + 1);
             }
-        } else this.attachNBT(stack, player);
+        }
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add("Right-click: Long throw");
         tooltip.add("Left-click: Short throw");
-        tooltip.add("Fuse: " + this.maxFuse);
+        if(maxFuse > 0) tooltip.add("Fuse: " + this.maxFuse);
         if (description != null) {
             Collections.addAll(tooltip, description);
         }
     }
 
+    public ExplodeableItemAction getExplodeableItemAction() {
+        return explodeableItemAction;
+    }
+
+    public int getMaxFuse() {
+        return maxFuse;
+    }
+
     private void attachNBT(ItemStack stack, EntityPlayer player) {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("currentFuse", this.maxFuse);
+        nbt.setInteger("currentFuse", 0);
         nbt.setBoolean("isCooking", false);
         nbt.setString("ownerID", player.getUniqueID().toString());
         stack.setTagCompound(nbt);
     }
 
-    private boolean isCooking(ItemStack stack) {
-        return stack.getTagCompound().getBoolean("isCooking");
-    }
-
-    private int getFuseTime(ItemStack stack) {
+    public int getFuseTime(ItemStack stack) {
         return stack.getTagCompound().getInteger("currentFuse");
     }
 
