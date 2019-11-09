@@ -12,7 +12,7 @@ public class PMCPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {""};
+        return new String[] {"com.toma.pubgmc.core.PMCClassTransformer"};
     }
 
     @Override
