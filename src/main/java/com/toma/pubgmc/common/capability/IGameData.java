@@ -76,7 +76,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         List<String> names = new ArrayList<>();
         BlockPos gameZoneCenter;
         int mapSize;
-        String gameHash;
+        String gameHash = "null";
         Game game;
         Lobby lobby;
 

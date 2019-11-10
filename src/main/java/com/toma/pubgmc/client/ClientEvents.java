@@ -329,7 +329,7 @@ public class ClientEvents {
             GlStateManager.scale(0.2, 0.2, 0.2);
             GlStateManager.rotate(180f, 1f, 0f, 0f);
             GlStateManager.translate(0, -10, 0);
-            ghillieSuit.render(player, player.limbSwing, player.limbSwingAmount, player.ticksExisted, player.rotationYawHead, player.rotationPitch, 0.625f);
+            //ghillieSuit.render(player, player.limbSwing, player.limbSwingAmount, player.ticksExisted, player.rotationYawHead, player.rotationPitch, 0.625f);
             GlStateManager.popMatrix();
         }
     }

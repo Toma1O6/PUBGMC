@@ -1,16 +1,22 @@
 package com.toma.pubgmc.client;
 
+import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.client.layers.LayerGhillie;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
+import com.toma.pubgmc.common.entity.EntityAIPlayer;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.event.client.RenderItemInHandEvent;
+import com.toma.pubgmc.event.client.SetupAnglesEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -19,13 +25,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -38,6 +42,146 @@ public class RenderHandler {
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
+    }
+
+    private void resetModelOffset(ModelBiped modelBiped) {
+        this.resetModelRendererOffset(modelBiped.bipedHead);
+        this.resetModelRendererOffset(modelBiped.bipedHeadwear);
+        this.resetModelRendererOffset(modelBiped.bipedBody);
+        this.resetModelRendererOffset(modelBiped.bipedRightArm);
+        this.resetModelRendererOffset(modelBiped.bipedLeftArm);
+        this.resetModelRendererOffset(modelBiped.bipedRightLeg);
+        this.resetModelRendererOffset(modelBiped.bipedLeftLeg);
+    }
+
+    private void resetModelRendererOffset(ModelRenderer renderer) {
+        renderer.offsetX = 0;
+        renderer.offsetY = 0;
+        renderer.offsetZ = 0;
+    }
+
+    private void setThirdPersonAnimations(ModelBiped model, EntityPlayer player, IPlayerData playerData) {
+        if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
+            boolean smallWeapon = ((GunBase) player.getHeldItemMainhand().getItem()).getWeaponModel().heldAnimation.getHeldStyle() == HeldAnimation.HeldStyle.SMALL;
+            if(smallWeapon) {
+                if(player.isSprinting()) {
+                    model.bipedRightArm.rotateAngleX = (float)Math.toRadians(-110F);
+                } else {
+                    boolean aimFlag = playerData.isAiming();
+                    model.bipedRightArm.rotateAngleX = (float)Math.toRadians(aimFlag ? -95F : -60F);
+                    model.bipedRightArm.rotateAngleY = (float)Math.toRadians(-20F);
+                    if(aimFlag) {
+                        model.bipedRightArm.rotateAngleZ = (float)Math.toRadians(25F);
+                        model.bipedLeftArm.rotateAngleX = (float)Math.toRadians(-90F);
+                        model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(40F);
+                    }
+                }
+                return;
+            }
+            if(player.isSprinting()) {
+                model.bipedRightArm.rotateAngleX = (float)Math.toRadians(-50F);
+                model.bipedRightArm.rotateAngleY = (float)Math.toRadians(-30F);
+                model.bipedRightArm.rotateAngleZ = (float)Math.toRadians(-15F);
+                model.bipedLeftArm.rotateAngleX = (float)Math.toRadians(-50F);
+                model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(40F);
+                return;
+            }
+            if(playerData.isAiming()) {
+                model.bipedRightArm.rotateAngleX = (float)Math.toRadians(-90F);
+                model.bipedRightArm.rotateAngleY = (float)Math.toRadians(-15F);
+                model.bipedRightArm.rotateAngleZ = (float)Math.toRadians(20F);
+                model.bipedLeftArm.rotateAngleX = (float)Math.toRadians(-90F);
+                model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(45F);
+                return;
+            }
+            model.bipedRightArm.rotateAngleX = (float)Math.toRadians(-70F);
+            model.bipedRightArm.rotateAngleY = (float)Math.toRadians(-30F);
+            model.bipedLeftArm.rotateAngleX = model.bipedRightArm.rotateAngleX;
+            model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(45F);
+        }
+    }
+
+    private void setProne(ModelBiped model) {
+        model.bipedHead.offsetY = 1.45F;
+        model.bipedBody.rotateAngleX = (float)Math.toRadians(90F);
+        model.bipedBody.offsetY = 1.35F;
+        float rotationAngleX = model.bipedRightArm.rotateAngleX;
+        model.bipedRightArm.rotateAngleX = -model.bipedBody.rotateAngleX;
+        model.bipedLeftArm.rotateAngleX = model.bipedRightArm.rotateAngleX;
+        model.bipedRightArm.rotateAngleY = rotationAngleX * 0.6F + 0.3F;
+        model.bipedLeftArm.rotateAngleY = -model.bipedRightArm.rotateAngleY;
+        model.bipedRightArm.offsetY = 1.2F;
+        model.bipedLeftArm.offsetY = 1.2F;
+        model.bipedLeftLeg.rotateAngleX = model.bipedBody.rotateAngleX;
+        model.bipedRightLeg.rotateAngleX = model.bipedBody.rotateAngleX;
+        model.bipedLeftLeg.offsetY = 0.6F;
+        model.bipedRightLeg.offsetY = 0.6F;
+        model.bipedRightLeg.offsetZ = 0.7F;
+        model.bipedLeftLeg.offsetZ = 0.7F;
+        model.bipedLeftLeg.rotateAngleY = model.bipedRightArm.rotateAngleY * 0.4F;
+        model.bipedRightLeg.rotateAngleY = -model.bipedRightArm.rotateAngleY * 0.4F;
+    }
+
+    @SubscribeEvent
+    public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
+        if(event.getEntity() instanceof EntityPlayer) {
+            if(IPlayerData.PlayerData.get((EntityPlayer)event.getEntity()).isProning()) {
+                GlStateManager.translate(0, 1, 0);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onSetupAngles(SetupAnglesEvent e) {
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity entity = e.getEntity();
+        ModelBiped model = e.getModel();
+        if(entity instanceof EntityAIPlayer) {
+            if(((EntityAIPlayer) entity).getHeldItemMainhand().getItem() instanceof GunBase) {
+                model.bipedRightArm.rotateAngleX = -1.55F;
+                model.bipedLeftArm.rotateAngleX = -1.55F;
+                model.bipedRightArm.rotateAngleY = -0.35F;
+                model.bipedLeftArm.rotateAngleY = 0.8F;
+            }
+            return;
+        }
+        if(!(entity instanceof EntityPlayer)) return;
+        EntityPlayer player = (EntityPlayer) entity;
+        this.resetModelOffset(model);
+        ItemStack stack = player.getHeldItemMainhand();
+        int perspective = mc.gameSettings.thirdPersonView;
+        IPlayerData playerData = IPlayerData.PlayerData.get(player);
+        boolean isProne = playerData.isProning();
+        switch (perspective) {
+            case 0: {
+                if(player != mc.getRenderViewEntity()) {
+                    if(isProne) {
+                        this.setProne(model);
+                        break;
+                    }
+                    this.setThirdPersonAnimations(model, player, playerData);
+                }
+                break;
+            }
+            case 1: case 2: {
+                if(isProne) {
+                    this.setProne(model);
+                    break;
+                }
+                this.setThirdPersonAnimations(model, player, playerData);
+                break;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderItemInHand(RenderItemInHandEvent e) {
+        if(e.entity instanceof EntityPlayer) {
+            boolean prone = IPlayerData.PlayerData.get((EntityPlayer) e.entity).isProning();
+            if(prone) {
+                GlStateManager.translate(0, -1.15F, 0);
+            }
+        }
     }
 
     @SubscribeEvent

@@ -3,7 +3,10 @@ package com.toma.pubgmc.client.layers;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.init.PMCRegistry;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -46,10 +49,25 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
             float blue = (color & 255) / 255.0F;
             this.renderLivingBase.bindTexture(TEXTURE_MAIN);
             GlStateManager.color(red, green, blue);
+           // this.copyModelAngles();
             this.baseLayer.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             this.renderLivingBase.bindTexture(TEXTURE_OVERLAY);
             this.overlay.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             GlStateManager.color(1f, 1f, 1f);
         }
+    }
+
+    public void copyModelAngles() {
+        ModelBase model = this.renderLivingBase.getMainModel();
+        if(!(model instanceof ModelPlayer)) return;
+        ModelPlayer modelBiped = (ModelPlayer) model;
+        this.copyRotations(baseLayer.bipedRightArm, modelBiped.bipedRightArm);
+        this.copyRotations(baseLayer.bipedLeftArm, modelBiped.bipedLeftArm);
+    }
+
+    public void copyRotations(ModelRenderer model, ModelRenderer from) {
+        model.rotateAngleX = from.rotateAngleX;
+        model.rotateAngleY = from.rotateAngleY;
+        model.rotateAngleZ = from.rotateAngleZ;
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -52,7 +53,7 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
 
         @Override
         public void doRenderLayer(EntityAIPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            ItemStack stack = entitylivingbaseIn.inventory.get(8);
+            ItemStack stack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
             if(!stack.isEmpty() && stack.getItem() == PMCRegistry.PMCItems.GHILLIE_SUIT) {
                 this.baseLayer.setModelAttributes(this.renderLivingBase.getMainModel());
                 this.overlay.setModelAttributes(this.renderLivingBase.getMainModel());

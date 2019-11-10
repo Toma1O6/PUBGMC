@@ -83,8 +83,11 @@ public class EntityBullet extends Entity {
         if(shooter instanceof EntityPlayer) {
             IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             calculateBulletHeading(direct, (EntityPlayer) shooter, data.isAiming());
-        } else this.calculateBulletHeading(direct, shooter, 2 + this.world.getDifficulty().ordinal());
-        this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
+            this.setPosition(shooter.posX, data.isProning() ? shooter.posY + 0.5f : shooter.posY + shooter.getEyeHeight(), shooter.posZ);
+        } else {
+            this.calculateBulletHeading(direct, shooter, 2 + this.world.getDifficulty().ordinal());
+            this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
+        }
 
         updateHeading();
     }

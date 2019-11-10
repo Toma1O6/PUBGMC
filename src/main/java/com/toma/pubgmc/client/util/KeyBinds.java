@@ -23,6 +23,6 @@ public class KeyBinds {
         ClientRegistry.registerKeyBinding(ATTACHMENT);
         ClientRegistry.registerKeyBinding(CHANGE_SCOPETYPE);
         ClientRegistry.registerKeyBinding(CHANGE_SCOPECOLOR);
-        //ClientRegistry.registerKeyBinding(PRONE);
+        ClientRegistry.registerKeyBinding(PRONE);
     }
 }

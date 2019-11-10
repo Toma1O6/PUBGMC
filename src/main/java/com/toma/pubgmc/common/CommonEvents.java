@@ -10,15 +10,17 @@ import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import com.toma.pubgmc.common.items.ItemExplodeable;
 import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.network.PacketHandler;
-import com.toma.pubgmc.network.sp.PacketGetConfigFromServer;
-import com.toma.pubgmc.network.sp.PacketLoadConfig;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.event.LandmineExplodeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketGetConfigFromServer;
+import com.toma.pubgmc.network.sp.PacketLoadConfig;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -133,6 +136,10 @@ public class CommonEvents {
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
         //To prevent the method from being called multiple times at once
+        if(ev.phase == Phase.START && (!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning()) {
+            data.setProning(false);
+            data.sync(player);
+        }
         if (ev.phase == Phase.START && !player.world.isRemote) {
             if (player.getHeldItemOffhand().getItem() instanceof GunBase) {
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getHeldItemOffhand());
@@ -278,8 +285,20 @@ public class CommonEvents {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e.getEntity();
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            boolean flag = data.isProning();
+            // Not working..
+            AxisAlignedBB defaultBB = new AxisAlignedBB(player.posX - 0.3, player.posY, player.posZ - 0.3, player.posX + 0.3, player.posY + 1.8, player.posZ + 0.3);
+            AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
+            player.setEntityBoundingBox(flag ? proneBB : defaultBB);
+            player.height = 1.0F;
+            // TODO find better way to do this
+            AttributeModifier modifier = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Speed", data.isProning() ? -0.07D : 0D, 0);
+            player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(modifier);
+            if(!player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(modifier)) {
+                player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(modifier);
+            }
 
-            if (data.getEquippedNV() && player.getCapability(PlayerDataProvider.PLAYER_DATA, null) != null) {
+            if (data.getEquippedNV()) {
                 //no need to sync anything since it runs server side
                 if (data.isUsingNV() && !data.getEquippedNV()) {
                     data.setNV(false);
