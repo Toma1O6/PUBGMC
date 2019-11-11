@@ -135,10 +135,12 @@ public class CommonEvents {
         EntityPlayer player = ev.player;
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
+        player.eyeHeight = player.getDefaultEyeHeight();
         if(data.isProning()) {
             AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
             player.setEntityBoundingBox(proneBB);
             player.height = 0.9F;
+            player.eyeHeight = 0.6F;
         }
         //To prevent the method from being called multiple times at once
         if(ev.phase == Phase.START && (!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning()) {
@@ -290,12 +292,6 @@ public class CommonEvents {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e.getEntity();
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            boolean flag = data.isProning();
-            // Not working..
-            AxisAlignedBB defaultBB = new AxisAlignedBB(player.posX - 0.3, player.posY, player.posZ - 0.3, player.posX + 0.3, player.posY + 1.8, player.posZ + 0.3);
-            AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
-            player.setEntityBoundingBox(flag ? proneBB : defaultBB);
-            player.height = 1.0F;
             // TODO find better way to do this
             AttributeModifier modifier = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Speed", data.isProning() ? -0.07D : 0D, 0);
             player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(modifier);
