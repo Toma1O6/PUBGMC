@@ -13,27 +13,15 @@ public class PMCClassTransformer implements IClassTransformer {
         // checks if is in obfuscated environment for specific object names
         boolean isObfEnv = !name.equals(transformedName);
         // if found class is the ModelPlayer.class
-        if(transformedName.equals("net.minecraft.client.model.ModelBiped")) {
-            // proceed to patching
-            return this.patchModelBiped(basicClass, isObfEnv);
-        } else if(transformedName.equals("net.minecraft.client.renderer.entity.layers.LayerHeldItem")) {
-            return this.patchLayerHeldItem(basicClass, isObfEnv);
-        } else if(transformedName.equals("net.minecraft.entity.player.EntityPlayer")) {
-            //return this.patchEntityPlayer(basicClass, isObfEnv);
+        switch (transformedName) {
+            case "net.minecraft.client.model.ModelBiped":
+                // proceed to patching
+                return this.patchModelBiped(basicClass, isObfEnv);
+            case "net.minecraft.client.renderer.entity.layers.LayerHeldItem":
+                return this.patchLayerHeldItem(basicClass, isObfEnv);
         }
         // return the class
         return basicClass;
-    }
-
-    public byte[] patchEntityPlayer(byte[] bytes, boolean isObf) {
-        PMCDummyModContainer.log.info("Patching net.minecraft.entity.player.EntityPlayer");
-        ClassNode node = new ClassNode();
-        ClassReader classReader = new ClassReader(bytes);
-        classReader.accept(node, 0);
-        // TODO try to avoid transforming everything
-        ClassWriter classWriter = new ClassWriter(0);
-        node.accept(classWriter);
-        return classWriter.toByteArray();
     }
 
     public byte[] patchModelBiped(byte[] bytes, boolean isObf) {

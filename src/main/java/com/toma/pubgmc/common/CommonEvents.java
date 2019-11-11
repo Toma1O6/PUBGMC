@@ -135,6 +135,11 @@ public class CommonEvents {
         EntityPlayer player = ev.player;
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
+        if(data.isProning()) {
+            AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
+            player.setEntityBoundingBox(proneBB);
+            player.height = 0.9F;
+        }
         //To prevent the method from being called multiple times at once
         if(ev.phase == Phase.START && (!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning()) {
             data.setProning(false);
