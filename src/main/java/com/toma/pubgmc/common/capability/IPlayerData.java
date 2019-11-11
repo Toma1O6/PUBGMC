@@ -5,6 +5,7 @@ import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketClientCapabilitySync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -250,11 +251,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         @Override
         public NBTTagCompound serializeNBT() {
             NBTTagCompound c = new NBTTagCompound();
-            c.setBoolean("reloading", reloading);
             c.setBoolean("aiming", aiming);
-            c.setBoolean("nv", nv);
-            c.setInteger("reloading_time", reloading_time);
-            c.setInteger("timer", timer);
             c.setFloat("boost", boost);
             c.setInteger("level", level);
             c.setBoolean("eqnv", eqNV);
@@ -265,11 +262,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt) {
-            reloading = nbt.getBoolean("reloading");
             aiming = nbt.getBoolean("aiming");
-            nv = nbt.getBoolean("nv");
-            reloading_time = nbt.getInteger("reloading_time");
-            timer = nbt.getInteger("timer");
             boost = nbt.getFloat("boost");
             level = nbt.getInteger("level");
             eqNV = nbt.getBoolean("eqnv");
@@ -338,6 +331,14 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         @SubscribeEvent
         public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent e) {
             getCap(e.player).sync(e.player);
+        }
+
+        @SubscribeEvent
+        public static void onStartTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event) {
+            if(event.getTarget() instanceof EntityPlayerMP) {
+                EntityPlayer player = (EntityPlayer) event.getTarget();
+                PacketHandler.sendToClient(new PacketClientCapabilitySync(player, PlayerData.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
+            }
         }
 
         public static IPlayerData getCap(EntityPlayer p) {
