@@ -122,15 +122,6 @@ public class RenderHandler {
         model.bipedRightLeg.rotateAngleY = -model.bipedRightArm.rotateAngleY * 0.4F;
     }
 
-    /*@SubscribeEvent
-    public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
-        if(event.getEntity() instanceof EntityPlayer) {
-            if(IPlayerData.PlayerData.get((EntityPlayer)event.getEntity()).isProning()) {
-                GlStateManager.translate(0, 1, 0);
-            }
-        }
-    }*/
-
     @SubscribeEvent
     public void onSetupAngles(SetupAnglesEvent e) {
         Minecraft mc = Minecraft.getMinecraft();
@@ -152,6 +143,7 @@ public class RenderHandler {
         int perspective = mc.gameSettings.thirdPersonView;
         IPlayerData playerData = IPlayerData.PlayerData.get(player);
         boolean isProne = playerData.isProning();
+        // TODO why is it even there?
         switch (perspective) {
             case 0: {
                 if(player != mc.getRenderViewEntity()) {
