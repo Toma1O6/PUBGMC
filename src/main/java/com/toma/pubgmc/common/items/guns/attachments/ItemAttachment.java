@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.items.guns.attachments;
 
-import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -13,13 +13,14 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
+@SuppressWarnings("ConditionCoveredByFurtherCondition")
 public class ItemAttachment extends PMCItem implements IAttachment {
     private final Type type;
 
     public ItemAttachment(String name, Type attachment) {
         super(name);
         setMaxStackSize(1);
-        setCreativeTab(Pubgmc.TAB_ACCESSORIES);
+        setCreativeTab(PMCTabs.TAB_ACCESSORIES);
 
         this.type = attachment;
     }

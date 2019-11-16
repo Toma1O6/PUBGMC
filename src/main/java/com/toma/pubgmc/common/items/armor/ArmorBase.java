@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items.armor;
 
+import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.Pubgmc;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -12,7 +13,7 @@ public class ArmorBase extends ItemArmor {
         super(materialIn, renderIndexIn, equipmentSlotIn);
         setUnlocalizedName(name);
         setRegistryName(name);
-        setCreativeTab(Pubgmc.TAB_ITEMS);
+        setCreativeTab(PMCTabs.TAB_ITEMS);
     }
 
     public ArmorBase setArmorLevel(ArmorLevel level) {

@@ -292,7 +292,6 @@ public class CommonEvents {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e.getEntity();
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            // TODO find better way to do this
             AttributeModifier modifier = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Speed", data.isProning() ? -0.07D : 0D, 0);
             player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(modifier);
             if(!player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(modifier)) {

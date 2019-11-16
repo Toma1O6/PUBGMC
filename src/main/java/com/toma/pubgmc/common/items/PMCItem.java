@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.PMCTabs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -18,7 +18,7 @@ public class PMCItem extends Item {
     public PMCItem(String name) {
         setUnlocalizedName(name);
         setRegistryName(name);
-        setCreativeTab(Pubgmc.TAB_ITEMS);
+        setCreativeTab(PMCTabs.TAB_ITEMS);
     }
 
     public Item addDescription(String... strings) {

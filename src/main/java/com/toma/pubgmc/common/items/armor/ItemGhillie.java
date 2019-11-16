@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items.armor;
 
+import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.util.ITooltipFlag;
@@ -7,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -24,7 +24,7 @@ public class ItemGhillie extends ItemArmor {
         setUnlocalizedName(name);
         setRegistryName(name);
         this.setMaxStackSize(1);
-        this.setCreativeTab(Pubgmc.TAB_ITEMS);
+        this.setCreativeTab(PMCTabs.TAB_ITEMS);
     }
 
     @Override

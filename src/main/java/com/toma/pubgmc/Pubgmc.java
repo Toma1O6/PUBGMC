@@ -12,19 +12,15 @@ import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.commands.*;
 import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
-import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.proxy.IProxy;
-import com.toma.pubgmc.tabs.PMCBlocksTab;
-import com.toma.pubgmc.tabs.PMCItemsTab;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 import com.toma.pubgmc.world.OreGen;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -60,27 +56,7 @@ public class Pubgmc {
     public static final String CLIENT_PROXY_CLASS = "com.toma.pubgmc.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
-
-    /**
-     * Creative Tabs
-     */
-    public static final CreativeTabs TAB_ITEMS = new PMCItemsTab("pmcitemstab");
-    public static final CreativeTabs TAB_GUNS = new PMCItemsTab("pmcgunstab") {
-        @Override
-        public ItemStack getTabIconItem() {
-            return new ItemStack(PMCRegistry.PMCItems.M416);
-        }
-    };
-    public static final CreativeTabs TAB_ACCESSORIES = new PMCItemsTab("pmcaccessoriestab") {
-        @Override
-        public ItemStack getTabIconItem() {
-            return new ItemStack(PMCRegistry.PMCItems.SCOPE4X);
-        }
-    };
-    public static final CreativeTabs TAB_BLOCKS = new PMCBlocksTab("pmcblockstab");
-
     private static final Random RANDOM = new Random();
-
     public static Logger logger;
 
     @Instance

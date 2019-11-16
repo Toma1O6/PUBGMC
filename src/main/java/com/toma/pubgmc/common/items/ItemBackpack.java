@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -15,7 +14,6 @@ import net.minecraft.world.World;
 public class ItemBackpack extends PMCItem {
     public ItemBackpack(String name) {
         super(name);
-        this.setCreativeTab(Pubgmc.TAB_ITEMS);
         this.setMaxStackSize(1);
     }
 

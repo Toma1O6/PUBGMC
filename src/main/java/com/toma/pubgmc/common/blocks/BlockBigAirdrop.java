@@ -26,7 +26,6 @@ public class BlockBigAirdrop extends PMCBlock {
         setResistance(15f);
         setHarvestLevel("pickaxe", 1);
         setLightOpacity(0);
-        setCreativeTab(Pubgmc.TAB_BLOCKS);
     }
 
     @Override

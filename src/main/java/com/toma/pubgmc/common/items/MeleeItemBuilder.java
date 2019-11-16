@@ -1,6 +1,6 @@
-package com.toma.pubgmc.common.items.melee;
+package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.util.IBuilder;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemSword;
@@ -40,7 +40,7 @@ public class MeleeItemBuilder implements IBuilder<ItemSword> {
         material = EnumHelper.addToolMaterial(materialName, 0, -1, 0.0F, damage, 0);
         checkNotNull(material);
         ItemSword sword = new ItemSword(material);
-        sword.setUnlocalizedName(registryName).setRegistryName(registryName).setMaxStackSize(1).setCreativeTab(Pubgmc.TAB_ITEMS);
+        sword.setUnlocalizedName(registryName).setRegistryName(registryName).setMaxStackSize(1).setCreativeTab(PMCTabs.TAB_ITEMS);
         return sword;
     }
 }

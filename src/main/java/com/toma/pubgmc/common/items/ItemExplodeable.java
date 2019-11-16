@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.items;
 
+import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.throwables.*;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,7 +29,7 @@ public class ItemExplodeable extends PMCItem {
         this.maxFuse = maxFuse;
         this.explodeableItemAction = action;
         this.setMaxStackSize(1);
-        this.setCreativeTab(Pubgmc.TAB_GUNS);
+        this.setCreativeTab(PMCTabs.TAB_GUNS);
     }
 
     public ItemExplodeable addAditionalDescription(String... description) {

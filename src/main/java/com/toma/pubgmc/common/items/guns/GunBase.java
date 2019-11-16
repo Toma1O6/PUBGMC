@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.items.guns;
 
 import com.toma.pubgmc.DevUtil;
-import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
@@ -9,13 +9,13 @@ import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
+import com.toma.pubgmc.config.ConfigPMC;
+import com.toma.pubgmc.config.common.CFGWeapon;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.server.PacketFiremode;
 import com.toma.pubgmc.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.network.sp.PacketReloadingSP;
-import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.config.common.CFGWeapon;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -81,7 +81,7 @@ public class GunBase extends PMCItem {
 
     protected GunBase(String name) {
         super(name);
-        setCreativeTab(Pubgmc.TAB_GUNS);
+        setCreativeTab(PMCTabs.TAB_GUNS);
         setMaxStackSize(1);
         GUNS.add(this);
     }

@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.items.armor;
 
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.PMCItem;
@@ -16,7 +15,6 @@ public class ItemNVGoggles extends PMCItem {
     public ItemNVGoggles(String name) {
         super(name);
         this.setMaxStackSize(1);
-        this.setCreativeTab(Pubgmc.TAB_ITEMS);
     }
 
     @Override

@@ -187,10 +187,10 @@ tile.box_single.name=Single Box
 tile.box_double.name=Double Box
 
 //Creative Tabs
-itemGroup.pmcitemstab=PUBGMC: Items
-itemGroup.pmcblockstab=PUBGMC: Blocks
-itemGroup.pmcgunstab=PUBGMC: Guns
-itemGroup.pmcaccessoriestab=PUBGMC: Accessories
+itemGroup.tab_items=PUBGMC: Items
+itemGroup.tab_blocks=PUBGMC: Blocks
+itemGroup.tab_guns=PUBGMC: Guns
+itemGroup.tab_accessories=PUBGMC: Accessories
 
 //Block containers
 container.airdrop=Airdrop

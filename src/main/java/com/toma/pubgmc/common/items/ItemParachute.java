@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.items;
 
-import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.init.PMCSounds;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +12,6 @@ import net.minecraft.world.World;
 public class ItemParachute extends PMCItem {
     public ItemParachute(String name) {
         super(name);
-        setCreativeTab(Pubgmc.TAB_ITEMS);
         setMaxStackSize(1);
     }
 

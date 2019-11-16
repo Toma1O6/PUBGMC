@@ -32,7 +32,7 @@ import com.toma.pubgmc.common.items.guns.GunBuilder;
 import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.common.items.heal.*;
-import com.toma.pubgmc.common.items.melee.MeleeItemBuilder;
+import com.toma.pubgmc.common.items.MeleeItemBuilder;
 import com.toma.pubgmc.common.tileentity.*;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGWeapons;
