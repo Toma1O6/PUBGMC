@@ -122,14 +122,15 @@ public class BlockLootSpawner extends PMCBlock {
     }
 
     public enum LootType {
-        COMMON(1, 0, 0, 1f),
-        RARE(0, 1, 0, 1.4f),
-        VERY_RARE(0.2, 1, 0, 2f);
 
+        COMMON(1, 0, 0, 1f, false),
+        RARE(0, 1, 0, 1.4f, false),
+        VERY_RARE(0.2, 1, 0, 2f, false),
+        AIRDROP(0, 0, 0, 1.0F, true);
         private final Vec3d rgb;
         private final float multiplier;
 
-        LootType(final double r, final double g, final double b, final float multiplier) {
+        LootType(final double r, final double g, final double b, final float multiplier, final boolean allowSpecialWeapons) {
             this.rgb = new Vec3d(r, g, b);
             this.multiplier = multiplier;
         }
@@ -147,7 +148,7 @@ public class BlockLootSpawner extends PMCBlock {
         }
 
         public LootType switchMode() {
-            return ordinal() + 1 < values().length ? values()[ordinal() + 1] : values()[0];
+            return ordinal() + 1 < 3 ? values()[ordinal() + 1] : values()[0];
         }
     }
 }
