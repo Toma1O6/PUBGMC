@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items.armor;
 import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -25,6 +27,7 @@ public class ItemGhillie extends ItemArmor {
         setRegistryName(name);
         this.setMaxStackSize(1);
         this.setCreativeTab(PMCTabs.TAB_ITEMS);
+        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 25, true));
     }
 
     @Override

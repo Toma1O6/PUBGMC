@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items.armor;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.PMCItem;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -12,9 +14,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemNVGoggles extends PMCItem {
+
     public ItemNVGoggles(String name) {
         super(name);
         this.setMaxStackSize(1);
+        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 15, false));
     }
 
     @Override
@@ -30,9 +34,9 @@ public class ItemNVGoggles extends PMCItem {
                 stack.shrink(1);
             }
 
-            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+            return new ActionResult(EnumActionResult.SUCCESS, stack);
         }
 
-        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+        return new ActionResult(EnumActionResult.FAIL, stack);
     }
 }

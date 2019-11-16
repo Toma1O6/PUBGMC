@@ -4,6 +4,8 @@ import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.common.items.PMCItem;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,6 +15,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
+// TODO rework completely
 @SuppressWarnings("ConditionCoveredByFurtherCondition")
 public class ItemAttachment extends PMCItem implements IAttachment {
     private final Type type;
@@ -21,7 +24,7 @@ public class ItemAttachment extends PMCItem implements IAttachment {
         super(name);
         setMaxStackSize(1);
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
-
+        LootManager.register(LootType.ATTACHMENT, new LootManager.LootEntry(this, 1, name.equalsIgnoreCase("scope15x")));
         this.type = attachment;
     }
 

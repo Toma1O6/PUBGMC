@@ -1,16 +1,6 @@
 package com.toma.pubgmc.common.tileentity;
 
-import com.toma.pubgmc.api.IGameTileEntity;
-import com.toma.pubgmc.common.capability.IWorldData;
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.blocks.BlockLootSpawner.LootType;
-import com.toma.pubgmc.common.items.guns.AmmoType;
-import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.common.items.guns.GunBase.GunType;
-import com.toma.pubgmc.init.PMCRegistry;
-import com.toma.pubgmc.init.PMCRegistry.PMCItems;
-import com.toma.pubgmc.util.TileEntitySync;
 import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import com.toma.pubgmc.util.game.loot.LootManager;
 import net.minecraft.block.state.IBlockState;
@@ -27,12 +17,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 // TODO stop using IInventory
-public class TileEntityLootSpawner extends TileEntity implements IInventory, IGameTileEntity, ILootSpawner {
+public class TileEntityLootSpawner extends TileEntity implements IInventory, ILootSpawner {
 
     public static LootManager lootManager;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
@@ -73,7 +59,7 @@ public class TileEntityLootSpawner extends TileEntity implements IInventory, IGa
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return (ItemStack) this.inventory.get(index);
+        return this.inventory.get(index);
     }
 
     @Override
@@ -104,7 +90,7 @@ public class TileEntityLootSpawner extends TileEntity implements IInventory, IGa
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        this.inventory = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(compound, this.inventory);
 
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));

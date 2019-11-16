@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class FlareGun extends GunBase {
     public FlareGun(String name) {
-        super(name);
+        super(name, GunType.PISTOL);
         this.setStats(new CFGWeapon(0f, 0f, 0f, 0));
         this.setFiremode(Firemode.SINGLE);
         this.setReloadType(ReloadType.MAGAZINE);

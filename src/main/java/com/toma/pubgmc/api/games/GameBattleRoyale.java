@@ -13,7 +13,8 @@ import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.server.PacketChooseLocation;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
-import com.toma.pubgmc.util.helper.LootHelper;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
 import com.toma.pubgmc.world.MapLocation;
@@ -42,6 +43,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GameBattleRoyale extends Game {
 
@@ -221,7 +223,7 @@ public class GameBattleRoyale extends Game {
     }
 
     @Override
-    public ILootDistributor getLootDistributor() {
+    public Consumer<EntityAIPlayer> getLootDistributor() {
         return this::addLootByZone;
     }
 
@@ -229,7 +231,7 @@ public class GameBattleRoyale extends Game {
         switch (zone.currentStage) {
             case 0: return;
             case 1: {
-                GunBase gun = LootHelper.getRandomWeapon(new GunBase.GunType[] {GunBase.GunType.PISTOL, GunBase.GunType.SHOTGUN, GunBase.GunType.SMG}, 0);
+                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.PISTOL, GunBase.GunType.SHOTGUN, GunBase.GunType.SMG}, (byte) 0);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
                 player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCRegistry.PMCItems.PAINKILLERS : PMCRegistry.PMCItems.ENERGYDRINK));
                 Item ammo = gun.getAmmoType().ammo();
@@ -242,7 +244,7 @@ public class GameBattleRoyale extends Game {
                 break;
             }
             case 2: case 3: {
-                GunBase gun = LootHelper.getRandomWeapon(new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SMG}, 0);
+                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SMG}, (byte) 0);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
                 player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCRegistry.PMCItems.FIRSTAIDKIT : PMCRegistry.PMCItems.BANDAGE));
                 Item ammo = gun.getAmmoType().ammo();
@@ -254,7 +256,7 @@ public class GameBattleRoyale extends Game {
                 break;
             }
             default: {
-                GunBase gun = LootHelper.getRandomWeapon(new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SR}, 1);
+                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SR}, (byte) 1);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
                 player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCRegistry.PMCItems.FIRSTAIDKIT : PMCRegistry.PMCItems.MEDKIT));
                 Item ammo = gun.getAmmoType().ammo();

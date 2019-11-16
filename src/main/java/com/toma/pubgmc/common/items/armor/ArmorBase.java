@@ -2,23 +2,22 @@ package com.toma.pubgmc.common.items.armor;
 
 import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.util.ResourceLocation;
 
 public class ArmorBase extends ItemArmor {
-    private ArmorLevel level = null;
+    private ArmorLevel level;
 
-    public ArmorBase(String name, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
+    public ArmorBase(String name, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn, ArmorLevel armorLevel) {
         super(materialIn, renderIndexIn, equipmentSlotIn);
         setUnlocalizedName(name);
         setRegistryName(name);
         setCreativeTab(PMCTabs.TAB_ITEMS);
-    }
-
-    public ArmorBase setArmorLevel(ArmorLevel level) {
-        this.level = level;
-        return this;
+        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 3 - armorLevel.ordinal() * 30, false));
+        this.level = armorLevel;
     }
 
     public ArmorLevel armorLevel() {

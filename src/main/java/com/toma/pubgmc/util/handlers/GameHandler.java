@@ -93,7 +93,7 @@ public class GameHandler {
                     }
                     EntityAIPlayer aiPlayer = new EntityAIPlayer(e.world, pos);
                     e.world.spawnEntity(aiPlayer);
-                    game.getLootDistributor().giveLoot(aiPlayer);
+                    game.getLootDistributor().accept(aiPlayer);
                 }
             }
         }

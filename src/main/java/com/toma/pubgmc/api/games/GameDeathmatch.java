@@ -10,7 +10,8 @@ import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.ZoneSettings;
-import com.toma.pubgmc.util.helper.LootHelper;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.command.CommandException;
@@ -29,6 +30,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GameDeathmatch extends Game {
 
@@ -110,7 +112,7 @@ public class GameDeathmatch extends Game {
     }
 
     @Override
-    public ILootDistributor getLootDistributor() {
+    public Consumer<EntityAIPlayer> getLootDistributor() {
         return this::addLootIntoInventory;
     }
 
@@ -173,7 +175,7 @@ public class GameDeathmatch extends Game {
     }
 
     private void addLootIntoInventory(EntityAIPlayer bot) {
-        GunBase item = LootHelper.getRandomWeapon(new GunBase.GunType[] {spawnWeaponType}, lootType);
+        GunBase item = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {spawnWeaponType}, (byte) lootType);
         ItemStack gun = new ItemStack(item);
         bot.inventory.clear();
         if(!bot.world.isRemote) {
@@ -190,7 +192,7 @@ public class GameDeathmatch extends Game {
     }
 
     private void addLootIntoInventory(EntityPlayer player) {
-        GunBase item = LootHelper.getRandomWeapon(new GunBase.GunType[] {spawnWeaponType}, lootType);
+        GunBase item = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {spawnWeaponType}, (byte) lootType);
         ItemStack stack = new ItemStack(item);
         NBTTagCompound nbt = this.createAttachmentNBT(item, stack);
         stack.setTagCompound(nbt);

@@ -14,10 +14,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,9 +34,15 @@ public class LootManager {
     }
 
     public <T extends TileEntity & ILootSpawner> void generateLootIn(T spawner) {
-        Random random = new Random();
         NonNullList<ItemStack> inventory = spawner.getInventory();
-        if(spawner.isAirdropContainer()) {
+        fillInventory(inventory, spawner.isAirdropContainer());
+        IBlockState state = world.getBlockState(spawner.getPos());
+        spawner.getWorld().notifyBlockUpdate(spawner.getPos(), state, state, 3);
+    }
+
+    public void fillInventory(NonNullList<ItemStack> inventory, boolean airdropStyle) {
+        Random random = new Random();
+        if(airdropStyle) {
             // TODO handle loot in
             return;
         }
@@ -48,7 +52,8 @@ public class LootManager {
         while (spawnAttempts > 0 && currentIndex < maxIndex) {
             --spawnAttempts;
             LootType type = WeightedRandom.getRandom(MAP.keySet());
-            List<LootEntry> entryList = MAP.get(type);
+            List<LootEntry> entryList = new ArrayList<>();
+            Collections.copy(entryList, MAP.get(type));
             if (!loot.isSpecialLoot) {
                 entryList = entryList.stream().filter(lootEntry -> !lootEntry.isSpecialLoot).collect(Collectors.toList());
             }
@@ -57,7 +62,7 @@ public class LootManager {
                 entryList = entryList.stream().filter(lootEntry -> lootEntry.item instanceof GunBase && PUBGMCUtil.contains(((GunBase) lootEntry.item).getGunType(), loot.validWeaponTypes)).collect(Collectors.toList());
             }
             int amount = type == LootType.AMMO ? ConfigPMC.items().ammoLimit : 1;
-            inventory.set(currentIndex, new ItemStack(WeightedRandom.getRandom(entryList).item));
+            inventory.set(currentIndex, new ItemStack(WeightedRandom.getRandom(entryList, WeightedRandom.getTotalWeight(entryList), loot.chanceModifier).item));
             ++currentIndex;
             if(flag && loot.genAmmo) {
                 AmmoType ammoType = ((GunBase) inventory.get(currentIndex).getItem()).getAmmoType();
@@ -68,8 +73,19 @@ public class LootManager {
                 }
             }
         }
-        IBlockState state = world.getBlockState(spawner.getPos());
-        spawner.getWorld().notifyBlockUpdate(spawner.getPos(), state, state, 3);
+    }
+
+    /**
+     * @param lootCategory - loot category
+     * @param allowedTypes - Array of allowed gun types, CANNOT BE NULL when lootCategory == LootType.GUN!!
+     * @param flag - 0 = Non-airdrop weapons; 1 = Allow airdrop weapons; 2 = Only airdrop weapons
+     * @return - random weapon
+     */
+    public static Item getRandomObject(LootType lootCategory, @Nullable GunBase.GunType[] allowedTypes, byte flag) {
+        List<LootEntry> entries = new ArrayList<>();
+        Collections.copy(entries, MAP.get(lootCategory));
+        entries = entries.stream().filter(e -> flag == 0 ? !e.isSpecialLoot : flag == 2 ? e.isSpecialLoot : e != null).collect(Collectors.toList());
+        return WeightedRandom.getRandom(entries).item;
     }
 
     public static void register(LootType type, LootEntry entry) {

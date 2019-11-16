@@ -6,11 +6,11 @@ import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
+import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketDisplayLootSetupGui;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.util.TileEntityUtil;
+import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -101,15 +101,14 @@ public class CommandLootGenerate extends CommandBase {
 
                 if (world.isBlockLoaded(gen)) {
                     for (TileEntity te : world.loadedTileEntityList) {
-                        if (te instanceof TileEntityLootSpawner) {
+                        if (te instanceof ILootSpawner) {
                             BlockPos lootPos = te.getPos();
                             double totalRange = PUBGMCUtil.getDistanceToBlockPos3D(lootPos, gen);
 
                             if (totalRange <= range) {
                                 count++;
-                                ((TileEntityLootSpawner) te).setGameHash(game.getGameID());
-                                ((TileEntityLootSpawner) te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
-                                TileEntityUtil.syncToClient(te);
+                                ((ILootSpawner) te).setGameHash(game.getGameID());
+                                ((ILootSpawner) te).onLoaded();
                             }
                         }
                     }
@@ -118,9 +117,8 @@ public class CommandLootGenerate extends CommandBase {
                 for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
                     if (te instanceof TileEntityLootSpawner) {
                         count++;
-
-                        ((TileEntityLootSpawner) te).generateLoot(data.hasAirdropWeapons(), data.isAmmoLootEnabled(), data.isRandomAmmoCountEnabled(), data.getLootChanceMultiplier(), data.getWeaponList());
-                        TileEntityUtil.syncToClient(te);
+                        ((ILootSpawner) te).setGameHash(game.getGameID());
+                        ((ILootSpawner) te).onLoaded();
                     }
                 }
             }

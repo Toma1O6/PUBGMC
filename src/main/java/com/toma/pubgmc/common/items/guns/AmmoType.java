@@ -19,7 +19,7 @@ public enum AmmoType {
     private final String name;
     private final int amount;
 
-    private AmmoType(String name, int amount) {
+    AmmoType(String name, int amount) {
         this.name = name;
         this.amount = amount;
     }

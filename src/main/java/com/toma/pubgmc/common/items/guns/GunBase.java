@@ -17,6 +17,8 @@ import com.toma.pubgmc.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -45,7 +47,7 @@ import java.util.stream.Collectors;
  * This is the core class for all guns
  */
 public class GunBase extends PMCItem {
-    public static final List<GunBase> GUNS = new ArrayList<GunBase>();
+    public static final List<GunBase> GUNS = new ArrayList<>();
 
     private CFGWeapon wepStats;
     private float horizontal_recoil = 0f;
@@ -60,6 +62,7 @@ public class GunBase extends PMCItem {
     private GunType gunType;
     private boolean hasTwoRoundBurst = false;
     protected IBoltAction action = null;
+    public boolean airdropWeapon = false;
 
     @SideOnly(Side.CLIENT)
     private ModelGun gunModel;
@@ -79,11 +82,12 @@ public class GunBase extends PMCItem {
     private ItemAmmo ammoItem;
     private int ammoCount = 0;
 
-    protected GunBase(String name) {
+    protected GunBase(String name, GunType gunType) {
         super(name);
         setCreativeTab(PMCTabs.TAB_GUNS);
         setMaxStackSize(1);
         GUNS.add(this);
+        LootManager.register(LootType.GUN, new LootManager.LootEntry(this, gunType.getWeight(), airdropWeapon));
     }
 
     public static boolean canAttachAttachment(GunBase gun, ItemAttachment attachment) {
@@ -685,7 +689,17 @@ public class GunBase extends PMCItem {
     }
 
     public enum GunType {
-        LMG, PISTOL, SHOTGUN, SMG, AR, DMR, SR;
+        LMG(20), PISTOL(50), SHOTGUN(40), SMG(35), AR(25), DMR(15), SR(5);
+
+        private int weight;
+
+        GunType(int weight) {
+            this.weight = weight;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
 
         public static GunType getTypeFromName(String name) {
             for(GunType type : values()) {
