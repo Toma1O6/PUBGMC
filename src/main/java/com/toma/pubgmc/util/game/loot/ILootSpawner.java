@@ -4,6 +4,8 @@ import com.toma.pubgmc.api.IGameTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Random;
+
 public interface ILootSpawner extends IGameTileEntity {
 
     NonNullList<ItemStack> getInventory();

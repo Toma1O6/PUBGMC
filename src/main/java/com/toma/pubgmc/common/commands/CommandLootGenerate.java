@@ -9,6 +9,7 @@ import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketDisplayLootSetupGui;
+import com.toma.pubgmc.network.sp.PacketSyncTileEntity;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import net.minecraft.command.CommandBase;
@@ -18,6 +19,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -115,7 +117,7 @@ public class CommandLootGenerate extends CommandBase {
                 }
             } else {
                 for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
-                    if (te instanceof TileEntityLootSpawner) {
+                    if (te instanceof ILootSpawner) {
                         count++;
                         ((ILootSpawner) te).setGameHash(game.getGameID());
                         ((ILootSpawner) te).onLoaded();
@@ -137,7 +139,7 @@ public class CommandLootGenerate extends CommandBase {
             for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
                 if (te instanceof TileEntityLootSpawner) {
                     ((TileEntityLootSpawner) te).clear();
-                    world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
+                    PacketHandler.sendToAllClients(new PacketSyncTileEntity(te.writeToNBT(new NBTTagCompound()), te.getPos()));
                 }
             }
 
@@ -152,7 +154,7 @@ public class CommandLootGenerate extends CommandBase {
                     int tier = world.getBlockState(te.getPos()).getValue(BlockLootSpawner.LOOT);
                     for (int i = 0; i < ((TileEntityLootSpawner) te).getSizeInventory(); i++) {
                         ((TileEntityLootSpawner) te).setInventorySlotContents(i, stack[tier].copy());
-                        world.notifyBlockUpdate(te.getPos(), world.getBlockState(te.getPos()), world.getBlockState(te.getPos()), 3);
+                        PacketHandler.sendToAllClients(new PacketSyncTileEntity(te.writeToNBT(new NBTTagCompound()), te.getPos()));
                     }
                 }
             }

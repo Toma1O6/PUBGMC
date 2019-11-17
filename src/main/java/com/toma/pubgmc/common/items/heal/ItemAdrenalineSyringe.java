@@ -5,7 +5,7 @@ import net.minecraft.item.EnumAction;
 
 public class ItemAdrenalineSyringe extends ItemHealing {
     public ItemAdrenalineSyringe(String name) {
-        super(name, 1);
+        super(name, 1, 1);
         setMaxStackSize(ConfigPMC.common.items.adrenalineSyringeLimit);
     }
 

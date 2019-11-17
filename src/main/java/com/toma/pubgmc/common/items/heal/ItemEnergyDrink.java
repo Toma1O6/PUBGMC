@@ -5,7 +5,7 @@ import net.minecraft.item.EnumAction;
 
 public class ItemEnergyDrink extends ItemHealing {
     public ItemEnergyDrink(String name) {
-        super(name, 15);
+        super(name, 15, 1);
         setMaxStackSize(ConfigPMC.common.items.energyDrinkLimit);
     }
 

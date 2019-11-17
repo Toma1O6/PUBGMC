@@ -20,10 +20,10 @@ public abstract class ItemHealing extends PMCItem {
     public float health;
     public float boost;
 
-    public ItemHealing(String name, final int weight) {
+    public ItemHealing(String name, final int weight, final int amount) {
         super(name);
         setMaxStackSize(1);
-        LootManager.register(LootType.HEAL, new LootManager.LootEntry(this, weight, false));
+        LootManager.register(LootType.HEAL, new LootManager.LootEntry(this, weight, false, amount));
     }
 
     public abstract Action getAction();

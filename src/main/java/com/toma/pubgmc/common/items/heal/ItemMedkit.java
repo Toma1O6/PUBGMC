@@ -6,7 +6,7 @@ import net.minecraft.item.EnumAction;
 
 public class ItemMedkit extends ItemHealing {
     public ItemMedkit(String name) {
-        super(name, 2);
+        super(name, 2, 1);
         setMaxStackSize(ConfigPMC.common.items.medkitLimit);
     }
 

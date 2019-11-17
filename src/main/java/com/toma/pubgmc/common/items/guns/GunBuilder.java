@@ -5,13 +5,15 @@ import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
 import com.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import com.toma.pubgmc.config.common.CFGWeapon;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.util.SoundEvent;
 
 public class GunBuilder {
     String name;
     int reloadTime, firerate, maxAmmo, exMaxAmmo;
     float vertical, horizontal, volumeNormal, volumeSilenced;
-    boolean twoRoundBurst;
+    boolean twoRoundBurst, airdrop;
     GunType weaponType;
     ReloadType reloadType;
     AmmoType ammoType;
@@ -150,6 +152,11 @@ public class GunBuilder {
         return this;
     }
 
+    public GunBuilder airdropOnly() {
+        this.airdrop = true;
+        return this;
+    }
+
     /**
      * <i><u>In order to successfully build new Gun object you need to call:</u></i>
      * <b>
@@ -194,6 +201,7 @@ public class GunBuilder {
         }
 
         GunBase gun = new GunBase(this.name);
+        LootManager.register(LootType.GUN, new LootManager.LootEntry(gun, weaponType.getWeight(), airdrop));
         gun.setStats(cfgStats);
         gun.setVerticalRecoil(vertical);
         gun.setHorizontalRecoil(horizontal);

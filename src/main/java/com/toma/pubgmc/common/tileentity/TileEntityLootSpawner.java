@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.common.blocks.BlockLootSpawner;
 import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import com.toma.pubgmc.util.game.loot.LootManager;
 import net.minecraft.block.state.IBlockState;
@@ -16,6 +17,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 // TODO stop using IInventory
 public class TileEntityLootSpawner extends TileEntity implements IInventory, ILootSpawner {
@@ -79,6 +82,7 @@ public class TileEntityLootSpawner extends TileEntity implements IInventory, ILo
         this.inventory.set(index, stack);
 
         if (stack.getCount() > this.getInventoryStackLimit()) stack.setCount(this.getInventoryStackLimit());
+        this.markDirty();
     }
 
     //To keep all items when state changes
@@ -152,7 +156,7 @@ public class TileEntityLootSpawner extends TileEntity implements IInventory, ILo
 
     @Override
     public void onLoaded() {
-        this.getLootManager(false).generateLootIn(this);
+        this.getLootManager(false).generateLootIn(this, world.getBlockState(pos).getValue(BlockLootSpawner.LOOT));
     }
 
     @Override

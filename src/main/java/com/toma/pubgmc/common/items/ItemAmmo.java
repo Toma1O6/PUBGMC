@@ -23,7 +23,7 @@ public class ItemAmmo extends PMCItem {
         this.setMaxStackSize(ConfigPMC.common.items.ammoLimit);
         this.type = type;
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
-        LootManager.register(LootType.AMMO, new LootManager.LootEntry(this, type.craftAmount(), type == AmmoType.AMMO300M));
+        LootManager.register(LootType.AMMO, new LootManager.LootEntry(this, type.craftAmount(), type == AmmoType.AMMO300M, type.lootAmount()));
     }
 
     public Item getAmmoItem() {

@@ -5,7 +5,7 @@ import net.minecraft.item.EnumAction;
 
 public class ItemPainkiller extends ItemHealing {
     public ItemPainkiller(String name) {
-        super(name, 12);
+        super(name, 12, 1);
         setMaxStackSize(ConfigPMC.common.items.painkillerLimit);
     }
 
