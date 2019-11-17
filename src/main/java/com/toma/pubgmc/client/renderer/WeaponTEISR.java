@@ -55,11 +55,9 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
 
     @Override
     public void renderByItem(ItemStack stack) {
-        GunBase.GUNS.stream().filter(g -> g == stack.getItem()).forEach(g -> {
-            ModelGun gun = g.getWeaponModel();
-            bindTexture(gun.textureName());
-            gun.render(stack);
-        });
+        ModelGun gun = ((GunBase) stack.getItem()).getWeaponModel();
+        this.bindTexture(gun.textureName());
+        gun.render(stack);
     }
 
     private void bindTexture(String name) {
