@@ -4,12 +4,15 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.models.weapons.*;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public class WeaponTEISR extends TileEntityItemStackRenderer {
     //model
@@ -54,17 +57,34 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
     public final ModelM24 m24 = new ModelM24();
     public final ModelAWM awm = new ModelAWM();
 
+    private boolean updateAnimation;
+    private Vec3d animationOffset;
+
     @Override
     public void renderByItem(ItemStack stack) {
-        boolean flag = stack == Minecraft.getMinecraft().player.getHeldItemMainhand();
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        boolean flag0 = stack == player.getHeldItemMainhand();
         ModelGun gun = ((GunBase) stack.getItem()).getWeaponModel();
         this.bindTexture(gun.textureName());
-        if(flag && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) this.applyRecoilAnimation();
+        if(flag0 && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) this.applyRecoilAnimation(player);
+        this.updateAnimation = ClientEvents.recoilTicks == 0;
         gun.render(stack);
     }
 
-    private void applyRecoilAnimation() {
+    private void applyRecoilAnimation(EntityPlayer player) {
+        if(ClientEvents.recoilTicks > 0 && IPlayerData.PlayerData.get(player).isAiming()) {
+            if(updateAnimation) {
+                animationOffset = new Vec3d(smallRandom(50), smallRandom(50), smallRandom(50));
+            }
+            int i = 11 - ClientEvents.recoilTicks;
+            GlStateManager.translate(animationOffset.x / i, animationOffset.y / i, animationOffset.z / i);
+            return;
+        }
         GlStateManager.rotate(ClientEvents.recoilTicks, 1, 0, 0);
+    }
+
+    private double smallRandom(int i) {
+        return Pubgmc.rng().nextDouble() / i - Pubgmc.rng().nextDouble() / i;
     }
 
     private void bindTexture(String name) {
