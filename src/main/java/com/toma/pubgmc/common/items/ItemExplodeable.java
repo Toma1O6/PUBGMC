@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items;
 import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.entity.throwables.*;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,6 +32,7 @@ public class ItemExplodeable extends PMCItem {
         this.explodeableItemAction = action;
         this.setMaxStackSize(1);
         this.setCreativeTab(PMCTabs.TAB_GUNS);
+        LootManager.register(LootType.AMMO, new LootManager.LootEntry(this, 15, false));
     }
 
     public ItemExplodeable addAditionalDescription(String... description) {

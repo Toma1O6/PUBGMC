@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,6 +17,7 @@ public class ItemBackpack extends PMCItem {
     public ItemBackpack(String name) {
         super(name);
         this.setMaxStackSize(1);
+        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 10, false));
     }
 
     private static void clearIcons(InventoryPlayer inv) {

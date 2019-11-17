@@ -38,7 +38,7 @@ public final class WeightedRandom {
             throw new IllegalArgumentException("Total weight must be > 0!");
         }
         double weight = Pubgmc.rng().nextInt(totalWeight);
-        for(int i = collection.size(); i > 0; i--) {
+        for(int i = collection.size() - 1; i >= 0; i--) {
             T t = collection.get(i);
             weight -= t.getWeight() * modifier;
             if(weight < 0.0D) {

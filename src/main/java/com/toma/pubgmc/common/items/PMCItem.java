@@ -10,10 +10,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PMCItem extends Item {
-    public List<String> desc = new ArrayList<String>();
+    public List<String> desc = null;
 
     public PMCItem(String name) {
         setUnlocalizedName(name);
@@ -22,19 +23,15 @@ public class PMCItem extends Item {
     }
 
     public Item addDescription(String... strings) {
-        for (String s : strings) {
-            desc.add(s);
-        }
-
+        desc = new ArrayList<>();
+        desc.addAll(Arrays.asList(strings));
         return this;
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if (!desc.isEmpty()) {
-            for (int i = 0; i < desc.size(); i++) {
-                tooltip.add(desc.get(i));
-            }
+        if (desc != null) {
+            tooltip.addAll(desc);
         }
     }
 

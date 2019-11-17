@@ -82,12 +82,11 @@ public class GunBase extends PMCItem {
     private ItemAmmo ammoItem;
     private int ammoCount = 0;
 
-    protected GunBase(String name, GunType gunType) {
+    protected GunBase(String name) {
         super(name);
         setCreativeTab(PMCTabs.TAB_GUNS);
         setMaxStackSize(1);
         GUNS.add(this);
-        LootManager.register(LootType.GUN, new LootManager.LootEntry(this, gunType.getWeight(), airdropWeapon));
     }
 
     public static boolean canAttachAttachment(GunBase gun, ItemAttachment attachment) {
@@ -272,7 +271,7 @@ public class GunBase extends PMCItem {
         return player.capabilities.isCreativeMode;
     }
 
-    //Here we add all info which will be displayed on the item
+    //Here we add all info which will be displayed on the stack
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         String barrel = "default";
@@ -689,7 +688,7 @@ public class GunBase extends PMCItem {
     }
 
     public enum GunType {
-        LMG(20), PISTOL(50), SHOTGUN(40), SMG(35), AR(25), DMR(15), SR(5);
+        LMG(40), PISTOL(100), SHOTGUN(80), SMG(70), AR(50), DMR(30), SR(10);
 
         private int weight;
 

@@ -6,7 +6,7 @@ import net.minecraft.item.EnumAction;
 
 public class ItemFirstAidKit extends ItemHealing {
     public ItemFirstAidKit(String name) {
-        super(name);
+        super(name, 7);
         setMaxStackSize(ConfigPMC.common.items.firstAidLimit);
     }
 

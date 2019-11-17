@@ -6,7 +6,7 @@ import net.minecraft.item.EnumAction;
 
 public class ItemBandage extends ItemHealing {
     public ItemBandage(String name) {
-        super(name);
+        super(name, 20);
         setMaxStackSize(ConfigPMC.common.items.bandageLimit);
     }
 

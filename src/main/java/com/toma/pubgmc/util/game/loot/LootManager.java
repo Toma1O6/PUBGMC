@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public class LootManager {
 
-    private static final HashMap<LootType, List<LootEntry>> MAP = null;
+    private static final HashMap<LootType, List<LootEntry>> MAP = new HashMap<>();
     private final World world;
     private final LootOptions loot;
 
@@ -41,6 +41,7 @@ public class LootManager {
     }
 
     public void fillInventory(NonNullList<ItemStack> inventory, boolean airdropStyle) {
+        inventory.clear();
         Random random = new Random();
         if(airdropStyle) {
             // TODO handle loot in
@@ -48,24 +49,23 @@ public class LootManager {
         }
         int maxIndex = inventory.size();
         int currentIndex = 0;
-        int spawnAttempts = (int)loot.chanceModifier + 1;
+        int spawnAttempts = random.nextInt((int)(loot.chanceModifier + 1) * 3);
         while (spawnAttempts > 0 && currentIndex < maxIndex) {
             --spawnAttempts;
             LootType type = WeightedRandom.getRandom(MAP.keySet());
-            List<LootEntry> entryList = new ArrayList<>();
-            Collections.copy(entryList, MAP.get(type));
+            List<LootEntry> entryList = new ArrayList<>(MAP.get(type));
             if (!loot.isSpecialLoot) {
                 entryList = entryList.stream().filter(lootEntry -> !lootEntry.isSpecialLoot).collect(Collectors.toList());
             }
             boolean flag = type == LootType.GUN;
             if(flag) {
-                entryList = entryList.stream().filter(lootEntry -> lootEntry.item instanceof GunBase && PUBGMCUtil.contains(((GunBase) lootEntry.item).getGunType(), loot.validWeaponTypes)).collect(Collectors.toList());
+                entryList = entryList.stream().filter(lootEntry -> lootEntry.stack.getItem() instanceof GunBase && PUBGMCUtil.contains(((GunBase) lootEntry.stack.getItem()).getGunType(), loot.validWeaponTypes)).collect(Collectors.toList());
             }
             int amount = type == LootType.AMMO ? ConfigPMC.items().ammoLimit : 1;
-            inventory.set(currentIndex, new ItemStack(WeightedRandom.getRandom(entryList, WeightedRandom.getTotalWeight(entryList), loot.chanceModifier).item));
+            inventory.set(currentIndex, WeightedRandom.getRandom(entryList, WeightedRandom.getTotalWeight(entryList), loot.chanceModifier).stack.copy());
             ++currentIndex;
             if(flag && loot.genAmmo) {
-                AmmoType ammoType = ((GunBase) inventory.get(currentIndex).getItem()).getAmmoType();
+                AmmoType ammoType = ((GunBase) inventory.get(currentIndex - 1).getItem()).getAmmoType();
                 int ammoSlots = maxIndex - currentIndex < 3 ? maxIndex - currentIndex : 3;
                 for(int i = 0; i < ammoSlots; i++) {
                     inventory.set(currentIndex, new ItemStack(ammoType.ammo(), loot.randomAmmoGen ? random.nextInt(amount) : amount));
@@ -82,10 +82,9 @@ public class LootManager {
      * @return - random weapon
      */
     public static Item getRandomObject(LootType lootCategory, @Nullable GunBase.GunType[] allowedTypes, byte flag) {
-        List<LootEntry> entries = new ArrayList<>();
-        Collections.copy(entries, MAP.get(lootCategory));
+        List<LootEntry> entries = new ArrayList<>(MAP.get(lootCategory));
         entries = entries.stream().filter(e -> flag == 0 ? !e.isSpecialLoot : flag == 2 ? e.isSpecialLoot : e != null).collect(Collectors.toList());
-        return WeightedRandom.getRandom(entries).item;
+        return WeightedRandom.getRandom(entries).stack.getItem();
     }
 
     public static void register(LootType type, LootEntry entry) {
@@ -96,9 +95,13 @@ public class LootManager {
         MAP.get(type).add(new LootEntry(item, weight));
     }
 
+    public static Map<LootType, List<LootEntry>> getEntryMap() {
+        return MAP;
+    }
+
     public static class LootEntry implements IWeight {
 
-        public final Item item;
+        public final ItemStack stack;
         public final int weight;
         public final boolean isSpecialLoot;
 
@@ -107,7 +110,11 @@ public class LootManager {
         }
 
         public LootEntry(final Item item, final int weight, final boolean isSpecialLoot) {
-            this.item = item;
+            this(item, weight, isSpecialLoot, 1);
+        }
+
+        public LootEntry(final Item item, final int weight, final boolean isSpecialLoot, final int amount) {
+            this.stack = new ItemStack(item, amount);
             this.weight = weight;
             this.isSpecialLoot = isSpecialLoot;
         }
@@ -115,6 +122,11 @@ public class LootManager {
         @Override
         public int getWeight() {
             return weight;
+        }
+
+        @Override
+        public String toString() {
+            return "LootEntry:[item=" + stack.toString() + ",weight=" + weight + ",specialLoot=" + isSpecialLoot + "]";
         }
     }
 

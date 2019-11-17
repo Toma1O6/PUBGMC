@@ -16,7 +16,7 @@ public class ArmorBase extends ItemArmor {
         setUnlocalizedName(name);
         setRegistryName(name);
         setCreativeTab(PMCTabs.TAB_ITEMS);
-        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 3 - armorLevel.ordinal() * 30, false));
+        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, (3 - armorLevel.ordinal()) * 30, false));
         this.level = armorLevel;
     }
 

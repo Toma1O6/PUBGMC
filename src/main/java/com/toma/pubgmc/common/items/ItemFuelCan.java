@@ -1,6 +1,8 @@
 package com.toma.pubgmc.common.items;
 
 import com.toma.pubgmc.common.entity.EntityVehicle;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -14,6 +16,7 @@ public class ItemFuelCan extends PMCItem {
     public ItemFuelCan() {
         super("fuelcan");
         setMaxStackSize(1);
+        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 30, false));
     }
 
     @Override
@@ -48,7 +51,7 @@ public class ItemFuelCan extends PMCItem {
         if (playerIn.isRiding() && playerIn.getRidingEntity() instanceof EntityVehicle) {
             if (((EntityVehicle) playerIn.getRidingEntity()).currentSpeed == 0) {
                 playerIn.setActiveHand(handIn);
-                return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+                return new ActionResult<>(EnumActionResult.PASS, stack);
             } else warnPlayer(playerIn, "Vehicle must be stationary!");
         } else warnPlayer(playerIn, "You must sit inside vehicle to refill fuel!");
         return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);

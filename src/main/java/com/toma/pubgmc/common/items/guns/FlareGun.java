@@ -5,6 +5,8 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.entity.EntityFlare;
 import com.toma.pubgmc.config.common.CFGWeapon;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -14,7 +16,7 @@ import net.minecraft.world.World;
 
 public class FlareGun extends GunBase {
     public FlareGun(String name) {
-        super(name, GunType.PISTOL);
+        super(name);
         this.setStats(new CFGWeapon(0f, 0f, 0f, 0));
         this.setFiremode(Firemode.SINGLE);
         this.setReloadType(ReloadType.MAGAZINE);
@@ -27,6 +29,8 @@ public class FlareGun extends GunBase {
 
         this.setGunSound(PMCSounds.gun_flare);
         this.setGunSoundVolume(25f);
+
+        LootManager.register(LootType.GUN, new LootManager.LootEntry(this, 1, false));
     }
 
     @Override

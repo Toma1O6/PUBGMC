@@ -3,6 +3,8 @@ package com.toma.pubgmc.common.items.heal;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.PMCItem;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -18,9 +20,10 @@ public abstract class ItemHealing extends PMCItem {
     public float health;
     public float boost;
 
-    public ItemHealing(String name) {
+    public ItemHealing(String name, final int weight) {
         super(name);
         setMaxStackSize(1);
+        LootManager.register(LootType.HEAL, new LootManager.LootEntry(this, weight, false));
     }
 
     public abstract Action getAction();
@@ -63,7 +66,7 @@ public abstract class ItemHealing extends PMCItem {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         if (canPlayerHeal(playerIn)) playerIn.setActiveHand(handIn);
         else if (!worldIn.isRemote)
-            playerIn.sendMessage(new TextComponentString(TextFormatting.RED + "Conditions to use item not met!"));
+            playerIn.sendMessage(new TextComponentString(TextFormatting.RED + "Conditions to use stack not met!"));
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }
 

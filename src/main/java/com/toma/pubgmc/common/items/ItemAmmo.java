@@ -4,6 +4,8 @@ import com.toma.pubgmc.PMCTabs;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.game.loot.LootManager;
+import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -21,6 +23,7 @@ public class ItemAmmo extends PMCItem {
         this.setMaxStackSize(ConfigPMC.common.items.ammoLimit);
         this.type = type;
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
+        LootManager.register(LootType.AMMO, new LootManager.LootEntry(this, type.craftAmount(), type == AmmoType.AMMO300M));
     }
 
     public Item getAmmoItem() {
