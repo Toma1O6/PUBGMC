@@ -11,6 +11,7 @@ import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketDisplayLootSetupGui;
 import com.toma.pubgmc.network.sp.PacketSyncTileEntity;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import com.toma.pubgmc.util.TileEntityUtil;
 import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -111,6 +112,7 @@ public class CommandLootGenerate extends CommandBase {
                                 count++;
                                 ((ILootSpawner) te).setGameHash(game.getGameID());
                                 ((ILootSpawner) te).onLoaded();
+                                TileEntityUtil.syncToClient(te);
                             }
                         }
                     }
@@ -121,6 +123,7 @@ public class CommandLootGenerate extends CommandBase {
                         count++;
                         ((ILootSpawner) te).setGameHash(game.getGameID());
                         ((ILootSpawner) te).onLoaded();
+                        TileEntityUtil.syncToClient(te);
                     }
                 }
             }
@@ -139,7 +142,7 @@ public class CommandLootGenerate extends CommandBase {
             for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
                 if (te instanceof TileEntityLootGenerator) {
                     ((TileEntityLootGenerator) te).clear();
-                    PacketHandler.sendToAllClients(new PacketSyncTileEntity(te.writeToNBT(new NBTTagCompound()), te.getPos()));
+                    TileEntityUtil.syncToClient(te);
                 }
             }
 
@@ -154,7 +157,7 @@ public class CommandLootGenerate extends CommandBase {
                     int tier = world.getBlockState(te.getPos()).getValue(BlockLootSpawner.LOOT);
                     for (int i = 0; i < ((TileEntityLootGenerator) te).getSizeInventory(); i++) {
                         ((TileEntityLootGenerator) te).setInventorySlotContents(i, stack[tier].copy());
-                        PacketHandler.sendToAllClients(new PacketSyncTileEntity(te.writeToNBT(new NBTTagCompound()), te.getPos()));
+                        TileEntityUtil.syncToClient(te);
                     }
                 }
             }

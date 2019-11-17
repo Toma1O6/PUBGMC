@@ -1,6 +1,7 @@
 package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.common.blocks.BlockLootSpawner;
+import com.toma.pubgmc.util.TileEntitySync;
 import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import com.toma.pubgmc.util.game.loot.LootManager;
 import net.minecraft.block.state.IBlockState;
@@ -16,7 +17,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 // TODO stop using IInventory
-public class TileEntityLootGenerator extends TileEntity implements IInventoryTileEntity, ILootSpawner {
+public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, ILootSpawner {
 
     public static LootManager lootManager;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
@@ -77,7 +78,7 @@ public class TileEntityLootGenerator extends TileEntity implements IInventoryTil
 
     @Override
     public void onLoaded() {
-        this.getLootManager(false).generateLootIn(this, 3 * (world.getBlockState(pos).getValue(BlockLootSpawner.LOOT) + 1));
+        this.getLootManager(false).generateLootIn(this, 2 * (world.getBlockState(pos).getValue(BlockLootSpawner.LOOT) + 1));
     }
 
     @Override
