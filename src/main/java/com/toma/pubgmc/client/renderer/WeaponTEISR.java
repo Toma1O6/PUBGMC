@@ -1,10 +1,12 @@
 package com.toma.pubgmc.client.renderer;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.client.ClientEvents;
 import com.toma.pubgmc.client.models.ModelGun;
 import com.toma.pubgmc.client.models.weapons.*;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -52,12 +54,17 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
     public final ModelM24 m24 = new ModelM24();
     public final ModelAWM awm = new ModelAWM();
 
-
     @Override
     public void renderByItem(ItemStack stack) {
+        boolean flag = stack == Minecraft.getMinecraft().player.getHeldItemMainhand();
         ModelGun gun = ((GunBase) stack.getItem()).getWeaponModel();
         this.bindTexture(gun.textureName());
+        if(flag && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) this.applyRecoilAnimation();
         gun.render(stack);
+    }
+
+    private void applyRecoilAnimation() {
+        GlStateManager.rotate(ClientEvents.recoilTicks, 1, 0, 0);
     }
 
     private void bindTexture(String name) {

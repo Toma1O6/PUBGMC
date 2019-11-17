@@ -71,6 +71,7 @@ public class ClientEvents {
     private static final List<ResourceLocation> SCOPES = new ArrayList<>();
     private static final List<ResourceLocation> HOLOS = new ArrayList<>();
     private static final DecimalFormat DECIMAL = new DecimalFormat("###");
+    public static int recoilTicks = 0;
     /**
      * Time it takes to render red dot / holographic overlay after aiming
      **/
@@ -620,6 +621,7 @@ public class ClientEvents {
                             if (!tracker.hasCooldown(gun) && !data.isReloading()) {
                                 if (gun.hasAmmo(stack)) {
                                     //We send packet to server telling it to spawn new entity
+                                    recoilTicks = 10;
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                     if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                                     //Do the recoil
@@ -695,6 +697,9 @@ public class ClientEvents {
     public void onClientTick(TickEvent.ClientTickEvent ev) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         GameSettings gs = Minecraft.getMinecraft().gameSettings;
+        if(recoilTicks > 0) {
+            recoilTicks--;
+        }
 
         //We have to check this otherwise it would crash in the menu since this event is running as soon as your minecraft client is started
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -716,6 +721,7 @@ public class ClientEvents {
 
                         if (gun.getFiremode() == Firemode.AUTO && !tracker.hasCooldown(gun) && !data.isReloading()) {
                             if (gun.hasAmmo(player.getHeldItemMainhand())) {
+                                recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                 if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                                 this.applyRecoil(player, player.getHeldItemMainhand());
@@ -750,6 +756,7 @@ public class ClientEvents {
 
                         //Set it to 5 for 3 round burst
                         if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
+                            recoilTicks = 10;
                             PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                             if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                             applyRecoil(player, stack);
