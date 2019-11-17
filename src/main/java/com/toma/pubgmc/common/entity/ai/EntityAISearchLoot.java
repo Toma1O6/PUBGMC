@@ -1,8 +1,7 @@
 package com.toma.pubgmc.common.entity.ai;
 
 import com.toma.pubgmc.common.entity.EntityAIPlayer;
-import com.toma.pubgmc.common.items.guns.GunBase;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
@@ -40,10 +39,10 @@ public class EntityAISearchLoot extends EntityAIBase {
             checkedBlocks = GLOBAL_LOOT_CACHE.get(this.aiPlayer.getUniqueID());
         }
         int smallestDist = Integer.MAX_VALUE;
-        TileEntityLootSpawner closest = null;
+        TileEntityLootGenerator closest = null;
         for(TileEntity tileEntity : this.aiPlayer.world.loadedTileEntityList) {
-            if (tileEntity instanceof TileEntityLootSpawner) {
-                TileEntityLootSpawner lootSpawner = (TileEntityLootSpawner) tileEntity;
+            if (tileEntity instanceof TileEntityLootGenerator) {
+                TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
                 if(lootSpawner == null || lootSpawner.getPos() == null) continue;
                 boolean flag = checkedBlocks.contains(lootSpawner.getPos());
                 if(flag) continue;
@@ -94,8 +93,8 @@ public class EntityAISearchLoot extends EntityAIBase {
             return;
         }
         TileEntity tileEntity = this.aiPlayer.world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityLootSpawner) {
-            TileEntityLootSpawner lootSpawner = (TileEntityLootSpawner) tileEntity;
+        if(tileEntity instanceof TileEntityLootGenerator) {
+            TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
             int i = this.aiPlayer.lootFromLootSpawner(lootSpawner);
             this.modifier = i == 0 ? 0 : i < 5 ? this.chance * 0.1F : i >= 10 ? this.chance * 2.5F : modifier;
             GLOBAL_LOOT_CACHE.get(this.aiPlayer.getUniqueID()).add(this.pos);

@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.entity;
 
+import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.config.ConfigPMC;
-import com.toma.pubgmc.common.tileentity.IAirdropTileEntity;
 import com.toma.pubgmc.init.PMCRegistry.PMCBlocks;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
@@ -40,8 +40,8 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
         IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
         world.setBlockState(this.getPosition(), state, 3);
 
-        if (world.getTileEntity(this.getPosition()) instanceof IAirdropTileEntity && ConfigPMC.common.world.airdropLoot.ordinal() > 0) {
-            ((IAirdropTileEntity) world.getTileEntity(getPosition())).generateLoot();
+        if (world.getTileEntity(this.getPosition()) instanceof TileEntityAirdrop && ConfigPMC.common.world.airdropLoot.ordinal() > 0) {
+            ((TileEntityAirdrop) world.getTileEntity(getPosition())).onLanded();
         }
     }
 

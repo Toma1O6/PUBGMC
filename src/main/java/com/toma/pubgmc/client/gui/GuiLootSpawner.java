@@ -2,7 +2,7 @@ package com.toma.pubgmc.client.gui;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.container.ContainerLootSpawner;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,9 +11,9 @@ import net.minecraft.util.ResourceLocation;
 public class GuiLootSpawner extends GuiContainer {
     private static final ResourceLocation TEXTURES = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/loot_spawner.png");
     private final InventoryPlayer player;
-    private final TileEntityLootSpawner tileentity;
+    private final TileEntityLootGenerator tileentity;
 
-    public GuiLootSpawner(InventoryPlayer player, TileEntityLootSpawner tileentity) {
+    public GuiLootSpawner(InventoryPlayer player, TileEntityLootGenerator tileentity) {
         super(new ContainerLootSpawner(player, tileentity));
         this.player = player;
         this.tileentity = tileentity;

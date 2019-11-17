@@ -5,6 +5,7 @@ import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.container.*;
 import com.toma.pubgmc.common.items.guns.attachments.ContainerAttachments;
 import com.toma.pubgmc.common.items.guns.attachments.GuiAttachments;
+import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketSyncTileEntity;
 import com.toma.pubgmc.common.tileentity.*;
@@ -42,7 +43,7 @@ public class GuiHandler implements IGuiHandler {
             return new ContainerAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
 
         if (ID == LOOT_SPAWNER)
-            return new ContainerLootSpawner(player.inventory, (TileEntityLootSpawner) world.getTileEntity(new BlockPos(x, y, z)));
+            return new ContainerLootSpawner(player.inventory, (TileEntityLootGenerator) world.getTileEntity(new BlockPos(x, y, z)));
 
         if (ID == GUI_CRATE)
             return new ContainerPlayerCrate(player.inventory, (TileEntityPlayerCrate) world.getTileEntity(new BlockPos(x, y, z)));
@@ -56,7 +57,7 @@ public class GuiHandler implements IGuiHandler {
         }
 
         if (ID == GUI_BIG_AIRDROP)
-            return new ContainerBigAirdrop(player.inventory, (TileEntityBigAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
+            return new ContainerBigAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
 
         return null;
     }
@@ -67,7 +68,7 @@ public class GuiHandler implements IGuiHandler {
             return new GuiAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
 
         if (ID == LOOT_SPAWNER)
-            return new GuiLootSpawner(player.inventory, (TileEntityLootSpawner) world.getTileEntity(new BlockPos(x, y, z)));
+            return new GuiLootSpawner(player.inventory, (TileEntityLootGenerator) world.getTileEntity(new BlockPos(x, y, z)));
 
         if (ID == GUI_CRATE)
             return new GuiPlayerCrate(player.inventory, (TileEntityPlayerCrate) world.getTileEntity(new BlockPos(x, y, z)));
@@ -78,7 +79,7 @@ public class GuiHandler implements IGuiHandler {
             return new GuiGunWorkbench((TileEntityGunWorkbench) world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
 
         if (ID == GUI_BIG_AIRDROP)
-            return new GuiBigAirdrop(player.inventory, (TileEntityBigAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
+            return new GuiBigAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
 
         if (ID == GUI_LOOT_SETUP) {
             return new GuiLootSetup(world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null));

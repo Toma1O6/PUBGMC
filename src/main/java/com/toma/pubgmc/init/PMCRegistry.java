@@ -33,6 +33,7 @@ import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.common.items.heal.*;
 import com.toma.pubgmc.common.tileentity.*;
+import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGWeapons;
 import com.toma.pubgmc.event.GunModelAttachEvent;
@@ -269,7 +270,7 @@ public class PMCRegistry {
                     BlockBuilder.create("schoolwall", Material.ROCK).soundType(SoundType.STONE).build(),
                     BlockBuilder.create("schoolroof", Material.ROCK).soundType(SoundType.STONE).build(),
                     BlockBuilder.create("schoolwindow", Material.GLASS).soundType(SoundType.GLASS).setGlass().build(),
-                    new BlockAirdrop("airdrop", Material.IRON, SoundType.METAL, MapColor.BLUE),
+                    new BlockAirdrop("airdrop", Material.IRON),
                     BlockBuilder.create("darkwood", Material.WOOD).soundType(SoundType.WOOD).build(),
                     new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE, MapColor.BLACK),
                     new BlockPlayerCrate("player_crate", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
@@ -947,10 +948,9 @@ public class PMCRegistry {
         public static void initTileEntities() {
             registerTileEntity(TileEntityAirdrop.class, "airdrop");
             registerTileEntity(TileEntityLamp.class, "lamp");
-            registerTileEntity(TileEntityLootSpawner.class, "lootspawner");
+            registerTileEntity(TileEntityLootGenerator.class, "lootspawner");
             registerTileEntity(TileEntityPlayerCrate.class, "player_crate");
             registerTileEntity(TileEntityGunWorkbench.class, "gun_workbench");
-            registerTileEntity(TileEntityBigAirdrop.class, "big_airdrop");
             registerTileEntity(TileEntityLandMine.class, "landmine");
             registerTileEntity(TileEntityWindow.class, "window");
         }

@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.blocks;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.SoundType;
@@ -93,7 +93,7 @@ public class BlockLootSpawner extends PMCBlock {
 
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityLootSpawner();
+        return new TileEntityLootGenerator();
     }
 
     //We don't want to save anything since it's just for debug and could cause some weird stuff

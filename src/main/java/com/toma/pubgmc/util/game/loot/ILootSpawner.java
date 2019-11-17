@@ -11,4 +11,8 @@ public interface ILootSpawner extends IGameTileEntity {
     NonNullList<ItemStack> getInventory();
 
     boolean isAirdropContainer();
+
+    default boolean generateLootOnCommand() {
+        return true;
+    }
 }

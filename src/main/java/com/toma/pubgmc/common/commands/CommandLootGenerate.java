@@ -6,7 +6,7 @@ import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataProvider;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketDisplayLootSetupGui;
 import com.toma.pubgmc.network.sp.PacketSyncTileEntity;
@@ -28,8 +28,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class CommandLootGenerate extends CommandBase {
@@ -137,8 +137,8 @@ public class CommandLootGenerate extends CommandBase {
             }
         } else if (args[0].equalsIgnoreCase("clear")) {
             for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
-                if (te instanceof TileEntityLootSpawner) {
-                    ((TileEntityLootSpawner) te).clear();
+                if (te instanceof TileEntityLootGenerator) {
+                    ((TileEntityLootGenerator) te).clear();
                     PacketHandler.sendToAllClients(new PacketSyncTileEntity(te.writeToNBT(new NBTTagCompound()), te.getPos()));
                 }
             }
@@ -149,11 +149,11 @@ public class CommandLootGenerate extends CommandBase {
             int counter = 0;
             ItemStack[] stack = new ItemStack[] {new ItemStack(Items.DYE, 1, 1), new ItemStack(Items.DYE, 1, 11), new ItemStack(Items.DYE, 1, 10)};
             for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
-                if (te instanceof TileEntityLootSpawner) {
+                if (te instanceof TileEntityLootGenerator) {
                     counter++;
                     int tier = world.getBlockState(te.getPos()).getValue(BlockLootSpawner.LOOT);
-                    for (int i = 0; i < ((TileEntityLootSpawner) te).getSizeInventory(); i++) {
-                        ((TileEntityLootSpawner) te).setInventorySlotContents(i, stack[tier].copy());
+                    for (int i = 0; i < ((TileEntityLootGenerator) te).getSizeInventory(); i++) {
+                        ((TileEntityLootGenerator) te).setInventorySlotContents(i, stack[tier].copy());
                         PacketHandler.sendToAllClients(new PacketSyncTileEntity(te.writeToNBT(new NBTTagCompound()), te.getPos()));
                     }
                 }
@@ -168,25 +168,23 @@ public class CommandLootGenerate extends CommandBase {
         } else if (args[0].equalsIgnoreCase("count")) {
             int total = 0;
             for (TileEntity te : world.loadedTileEntityList) {
-                if (te instanceof TileEntityLootSpawner) {
+                if (te instanceof TileEntityLootGenerator) {
                     total++;
                 }
             }
             sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Loaded loot spawners: " + TextFormatting.YELLOW + total + TextFormatting.GREEN + "."));
         } else if (args[0].equalsIgnoreCase("delete")) {
             int count = 0;
-            List<TileEntityLootSpawner> teList = new ArrayList<>();
-
-            for (TileEntity te : world.loadedTileEntityList) {
-                if (te instanceof TileEntityLootSpawner) {
-                    count++;
-                    teList.add((TileEntityLootSpawner) te);
+            Iterator<TileEntity> iterator = world.loadedTileEntityList.iterator();
+            while (iterator.hasNext()) {
+                TileEntity tileEntity = iterator.next();
+                if(tileEntity instanceof ILootSpawner) {
+                    if(((ILootSpawner) tileEntity).generateLootOnCommand()) {
+                        iterator.remove();
+                        world.destroyBlock(tileEntity.getPos(), false);
+                        count++;
+                    }
                 }
-            }
-
-            for (TileEntityLootSpawner te : teList) {
-                te.clear();
-                world.setBlockToAir(te.getPos());
             }
 
             if (shouldSendCommandFeedback(world.getGameRules())) {

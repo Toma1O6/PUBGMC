@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.container;
 
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ContainerLootSpawner extends Container {
-    private final TileEntityLootSpawner tileentity;
+    private final TileEntityLootGenerator tileentity;
 
-    public ContainerLootSpawner(InventoryPlayer player, TileEntityLootSpawner tileentity) {
+    public ContainerLootSpawner(InventoryPlayer player, TileEntityLootGenerator tileentity) {
         this.tileentity = tileentity;
 
         for (int x = 0; x < 9; x++) {

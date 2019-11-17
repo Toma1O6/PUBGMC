@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.blocks;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.common.tileentity.TileEntityBigAirdrop;
+import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -15,22 +15,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.Random;
-
-public class BlockBigAirdrop extends PMCBlock {
+public class BlockBigAirdrop extends BlockAirdrop {
     private static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(-1.4d, 0d, -1.4d, 1.5d, 1.4d, 1.4d);
 
     public BlockBigAirdrop(String name) {
         super(name, Material.IRON);
-        setHardness(0.75f);
-        setResistance(15f);
-        setHarvestLevel("pickaxe", 1);
-        setLightOpacity(0);
-    }
-
-    @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        worldIn.setBlockToAir(pos);
     }
 
     @Override
@@ -54,13 +43,8 @@ public class BlockBigAirdrop extends PMCBlock {
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
-    }
-
-    @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityBigAirdrop();
+        return new TileEntityAirdrop(18);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.toma.pubgmc.common.items.heal.ItemBandage;
 import com.toma.pubgmc.common.items.heal.ItemEnergyDrink;
 import com.toma.pubgmc.common.items.heal.ItemFirstAidKit;
 import com.toma.pubgmc.common.items.heal.ItemPainkiller;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.client.CFGLootRenderStyle;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -18,12 +18,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLootSpawner> {
+public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLootGenerator> {
     private EntityItem entityItem = new EntityItem(null, 0D, 0D, 0D);
     private RenderEntityItem itemRenderer;
 
     @Override
-    public void render(TileEntityLootSpawner te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileEntityLootGenerator te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         if (te == null || te.isInvalid()) {
             return;
         }
@@ -42,7 +42,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         renderItem(te, x, y, z, 8, partialTicks);
     }
 
-    private void renderItem(TileEntityLootSpawner te, double x, double y, double z, int slot, float ticks) {
+    private void renderItem(TileEntityLootGenerator te, double x, double y, double z, int slot, float ticks) {
         boolean is3D = te.getStackInSlot(slot).getItem() instanceof GunBase;
         boolean drinkable = te.getStackInSlot(slot).getItem() instanceof ItemEnergyDrink || te.getStackInSlot(slot).getItem() instanceof ItemPainkiller;
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
@@ -138,7 +138,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         }
     }
 
-    private void medkitRenderer(int slot, TileEntityLootSpawner te, double x, double y, double z) {
+    private void medkitRenderer(int slot, TileEntityLootGenerator te, double x, double y, double z) {
         GlStateManager.pushMatrix();
 
         GlStateManager.disableLighting();
@@ -156,7 +156,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         GlStateManager.popMatrix();
     }
 
-    private void boosterRenderer(int slot, TileEntityLootSpawner te, double x, double y, double z) {
+    private void boosterRenderer(int slot, TileEntityLootGenerator te, double x, double y, double z) {
         GlStateManager.pushMatrix();
 
         GlStateManager.disableLighting();
@@ -177,7 +177,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         GlStateManager.popMatrix();
     }
 
-    private void firstAidKitRenderer(int slot, TileEntityLootSpawner te, double x, double y, double z) {
+    private void firstAidKitRenderer(int slot, TileEntityLootGenerator te, double x, double y, double z) {
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();
 
@@ -193,7 +193,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         GlStateManager.popMatrix();
     }
 
-    private void weaponRenderer(int slot, TileEntityLootSpawner te, double x, double y, double z) {
+    private void weaponRenderer(int slot, TileEntityLootGenerator te, double x, double y, double z) {
         GlStateManager.pushMatrix();
 
         GL11.glPushMatrix();

@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.container;
 
-import com.toma.pubgmc.common.tileentity.TileEntityBigAirdrop;
+import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -9,9 +9,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerBigAirdrop extends Container {
-    private final TileEntityBigAirdrop te;
+    private final TileEntityAirdrop te;
 
-    public ContainerBigAirdrop(InventoryPlayer player, TileEntityBigAirdrop te) {
+    public ContainerBigAirdrop(InventoryPlayer player, TileEntityAirdrop te) {
         this.te = te;
 
         for (int x = 0; x < 9; x++) {

@@ -6,7 +6,7 @@ package com.toma.pubgmc.api;
  * and last tileentity game hash is not equal current game hash.
  * API is still unfinished and custom game creating is not possible (but these methods will be called)!
  *
- * Default implementation can be found at com.toma.pubgmc.common.tileentity.TileEntityLootSpawner
+ * Default implementation can be found at com.toma.pubgmc.common.tileentity.TileEntityLootGenerator
  *
  * Created by Toma
  */

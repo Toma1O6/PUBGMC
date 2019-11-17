@@ -22,7 +22,7 @@ import com.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import com.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import com.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
@@ -72,7 +72,7 @@ public class ClientProxy implements IProxy {
             Pubgmc.logger.info("Initialized model debugger");
         }
         if (ConfigPMC.client.other.lootRenderStyle.ordinal() < 2) {
-            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootSpawner.class, new LootSpawnerRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootGenerator.class, new LootSpawnerRenderer());
         }
         ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
         itemColors.registerItemColorHandler((stack, tintIndex) -> stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : 0x359E35, PMCRegistry.PMCItems.GHILLIE_SUIT);

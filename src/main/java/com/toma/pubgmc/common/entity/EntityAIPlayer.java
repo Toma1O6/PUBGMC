@@ -1,6 +1,5 @@
 package com.toma.pubgmc.common.entity;
 
-import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.entity.ai.EntityAIGunAttack;
 import com.toma.pubgmc.common.entity.ai.EntityAIMoveIntoZone;
 import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
@@ -8,7 +7,7 @@ import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.heal.ItemHealing;
-import com.toma.pubgmc.common.tileentity.TileEntityLootSpawner;
+import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
@@ -84,7 +83,7 @@ public class EntityAIPlayer extends EntityCreature {
     /**
      * Return value if still needs to loot something (Bigger value = Bigger chance to loot more), >= 10 = needs to loot
      **/
-    public int lootFromLootSpawner(TileEntityLootSpawner lootSpawner) {
+    public int lootFromLootSpawner(TileEntityLootGenerator lootSpawner) {
         boolean needsGun = !this.hasGun();
         boolean needsHelmet = this.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
         boolean needsVest = this.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty();

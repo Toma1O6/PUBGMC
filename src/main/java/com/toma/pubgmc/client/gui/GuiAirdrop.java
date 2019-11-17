@@ -21,7 +21,7 @@ public class GuiAirdrop extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String tileName = this.tileentity.getDisplayName().getUnformattedText();
+        String tileName = this.tileentity.getName();
         this.fontRenderer.drawString(tileName, (this.xSize / 2 - this.fontRenderer.getStringWidth(tileName) / 2) + 3, 8, 4210752);
         this.fontRenderer.drawString(this.player.getDisplayName().getUnformattedText(), 115, this.ySize - 127, 4210752);
     }

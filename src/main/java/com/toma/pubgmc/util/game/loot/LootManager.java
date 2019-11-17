@@ -21,9 +21,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * WIP
- */
 public class LootManager {
 
     private static final HashMap<LootType, List<LootEntry>> MAP = new HashMap<>();
