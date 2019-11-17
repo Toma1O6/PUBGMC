@@ -67,7 +67,7 @@ public class CommonEvents {
             case UP_TO_DATE: {
                 sendMessage(player, "You have the newest version of PUBGMC!", TextFormatting.GREEN);
                 TextComponentString discordNotification = new TextComponentString(TextFormatting.GREEN + "Join my official " + TextFormatting.AQUA + "DISCORD" + TextFormatting.GREEN + ". Click HERE");
-                discordNotification.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/njhduKq")));
+                discordNotification.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/WmdUKZz")));
                 player.sendMessage(discordNotification);
                 break;
             }
