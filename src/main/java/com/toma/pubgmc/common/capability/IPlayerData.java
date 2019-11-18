@@ -78,6 +78,10 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     void sync(EntityPlayer player);
 
+    NBTTagCompound serializePacketNBT();
+
+    void deserializePacketNBT(NBTTagCompound nbt);
+
     class PlayerDataStorage implements IStorage<IPlayerData> {
         @Override
         public NBTBase writeNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side) {
@@ -251,7 +255,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         @Override
         public NBTTagCompound serializeNBT() {
             NBTTagCompound c = new NBTTagCompound();
-            c.setBoolean("aiming", aiming);
             c.setFloat("boost", boost);
             c.setInteger("level", level);
             c.setBoolean("eqnv", eqNV);
@@ -262,7 +265,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt) {
-            aiming = nbt.getBoolean("aiming");
             boost = nbt.getFloat("boost");
             level = nbt.getInteger("level");
             eqNV = nbt.getBoolean("eqnv");
@@ -271,8 +273,25 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
         }
 
         @Override
+        public NBTTagCompound serializePacketNBT() {
+            NBTTagCompound nbt = this.serializeNBT();
+            nbt.setBoolean("aim", this.aiming);
+            nbt.setBoolean("reload", this.reloading);
+            nbt.setBoolean("prone", this.isProne);
+            return nbt;
+        }
+
+        @Override
+        public void deserializePacketNBT(NBTTagCompound nbt) {
+            this.deserializeNBT(nbt);
+            this.aiming = nbt.getBoolean("aim");
+            this.reloading = nbt.getBoolean("reload");
+            this.isProne = nbt.getBoolean("prone");
+        }
+
+        @Override
         public void sync(EntityPlayer player) {
-            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
+            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializePacketNBT()));
         }
     }
 

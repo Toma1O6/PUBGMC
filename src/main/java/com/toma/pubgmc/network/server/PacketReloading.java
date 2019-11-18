@@ -2,7 +2,9 @@ package com.toma.pubgmc.network.server;
 
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.network.PacketHandler;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -30,8 +32,12 @@ public class PacketReloading implements IMessage {
     public static class Handler implements IMessageHandler<PacketReloading, IMessage> {
         @Override
         public IMessage onMessage(PacketReloading message, MessageContext ctx) {
-            IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            data.setReloading(message.reload);
+            EntityPlayer player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() -> {
+                IPlayerData data = IPlayerData.PlayerData.get(player);
+                data.setReloading(message.reload);
+                data.sync(player);
+            });
             return null;
         }
     }

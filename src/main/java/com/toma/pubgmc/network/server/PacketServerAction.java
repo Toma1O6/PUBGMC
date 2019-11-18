@@ -40,6 +40,7 @@ public class PacketServerAction implements IMessage {
                     case AIM: {
                         IPlayerData data = ctx.getServerHandler().player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
                         data.setAiming(message.data);
+                        data.sync(ctx.getServerHandler().player);
                         break;
                     }
 

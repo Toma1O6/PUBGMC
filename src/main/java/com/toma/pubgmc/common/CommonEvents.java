@@ -143,7 +143,7 @@ public class CommonEvents {
             player.eyeHeight = 0.6F;
         }
         //To prevent the method from being called multiple times at once
-        if(ev.phase == Phase.START && (!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning()) {
+        if(ev.phase == Phase.START && (!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning() && !player.world.isRemote) {
             data.setProning(false);
             data.sync(player);
         }

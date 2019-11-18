@@ -44,7 +44,8 @@ public class PacketClientCapabilitySync implements IMessage {
         @Override
         public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
             if (ctx.side.isClient()) {
-                Minecraft.getMinecraft().addScheduledTask(() -> IPlayerData.PlayerData.get(m.player).deserializeNBT(m.nbt));
+                if(m.player == null) return null;
+                Minecraft.getMinecraft().addScheduledTask(() -> IPlayerData.PlayerData.get(m.player).deserializePacketNBT(m.nbt));
             }
             return null;
         }

@@ -528,8 +528,8 @@ public class ClientEvents {
             IPlayerData data = IPlayerData.PlayerData.get(sp);
             if (data != null) {
                 data.setProning(!data.isProning());
-                this.setAiming(data, false);
-                this.setReloading(data, false);
+                if(data.isAiming()) this.setAiming(data, false);
+                if(data.isReloading()) this.setReloading(data, false);
                 PacketHandler.sendToServer(new PacketProne(data.isProning()));
             }
         }
