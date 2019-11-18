@@ -13,7 +13,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
 public class ModelMK14 extends ModelGun {
+    private final ModelRenderer bone;
     private final ModelRenderer bone56;
+    private final ModelRenderer bone62;
+    private final ModelRenderer bone42;
     private final ModelRenderer bone57;
     private final ModelRenderer bone58;
     private final ModelRenderer bone55;
@@ -35,6 +38,10 @@ public class ModelMK14 extends ModelGun {
     private final ModelRenderer bone8;
     private final ModelRenderer bone6;
     private final ModelRenderer bone9;
+    private final ModelRenderer bone65;
+    private final ModelRenderer bone66;
+    private final ModelRenderer bone63;
+    private final ModelRenderer bone64;
     private final ModelRenderer bone61;
     private final ModelRenderer bone59;
     private final ModelRenderer bone60;
@@ -46,26 +53,26 @@ public class ModelMK14 extends ModelGun {
     private final ModelRenderer bone32;
     private final ModelRenderer bone30;
     private final ModelRenderer bone31;
-    private final ModelRenderer bone35;
     private final ModelRenderer bone2;
-    private final ModelRenderer bone37;
+    private final ModelRenderer bone35;
     private final ModelRenderer bone3;
-    private final ModelRenderer bone;
+    private final ModelRenderer bone37;
+    private final ModelRenderer rail1;
     private final ModelRenderer bone11;
     private final ModelRenderer bone12;
-    private final ModelRenderer rail1;
+    private final ModelRenderer rail3;
     private final ModelRenderer bone16;
     private final ModelRenderer bone17;
-    private final ModelRenderer rail3;
+    private final ModelRenderer rail4;
     private final ModelRenderer bone18;
     private final ModelRenderer bone19;
-    private final ModelRenderer rail4;
+    private final ModelRenderer rail5;
     private final ModelRenderer bone20;
     private final ModelRenderer bone21;
-    private final ModelRenderer rail5;
+    private final ModelRenderer rail2;
     private final ModelRenderer bone10;
     private final ModelRenderer bone13;
-    private final ModelRenderer rail2;
+    private final ModelRenderer ironsights;
     private final ModelRenderer bone52;
     private final ModelRenderer bone51;
     private final ModelRenderer bone43;
@@ -77,15 +84,8 @@ public class ModelMK14 extends ModelGun {
     private final ModelRenderer bone47;
     private final ModelRenderer bone45;
     private final ModelRenderer bone44;
-    private final ModelRenderer ironsights;
-    private final ModelRenderer bone36;
     private final ModelRenderer magazine;
-    private final ModelRenderer bone42;
-    private final ModelRenderer bone62;
-    private final ModelRenderer bone63;
-    private final ModelRenderer bone64;
-    private final ModelRenderer bone65;
-    private final ModelRenderer bone66;
+    private final ModelRenderer bone36;
 
     @Override
     public String textureName() {
@@ -155,7 +155,6 @@ public class ModelMK14 extends ModelGun {
     }
 
     public ModelMK14() {
-        super();
         textureWidth = 128;
         textureHeight = 128;
 
@@ -302,7 +301,7 @@ public class ModelMK14 extends ModelGun {
         bone.cubeList.add(new ModelBox(bone, 97, 22, -4.4739F, -22.3191F, -52.0313F, 2, 2, 5, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 97, 22, -2.4896F, -22.3191F, -51.0313F, 5, 1, 3, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 97, 22, -3.4896F, -23.3191F, -51.0313F, 7, 1, 3, 0.0F, false));
-        bone.cubeList.add(new ModelBox(bone, 97, 22, -1.9896F, -24.8191F, -64.0313F, 4, 2, 19, 0.0F, false));
+        bone.cubeList.add(new ModelBox(bone, 82, 20, -1.9896F, -24.8191F, -64.0313F, 4, 2, 19, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 47, 47, -5.0261F, -20.8191F, -13.0313F, 1, 1, 1, 0.0F, true));
         bone.cubeList.add(new ModelBox(bone, 47, 47, 4.0261F, -20.8191F, -13.0313F, 1, 1, 1, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 44, 14, -5.5261F, -21.3191F, -21.0313F, 2, 2, 1, 0.0F, true));
@@ -329,70 +328,86 @@ public class ModelMK14 extends ModelGun {
         bone56 = new ModelRenderer(this);
         bone56.setRotationPoint(0.0F, -17.766F, -36.1428F);
         setRotationAngle(bone56, -0.4363F, 0.0F, 0.0F);
-        bone56.cubeList.add(new ModelBox(bone56, 0, 74, -2.5F, -1.3431F, -1.5172F, 5, 1, 1, 0.0F, false));
         bone.addChild(bone56);
+        bone56.cubeList.add(new ModelBox(bone56, 0, 74, -2.5F, -1.3431F, -1.5172F, 5, 1, 1, 0.0F, false));
+
+        bone62 = new ModelRenderer(this);
+        bone62.setRotationPoint(0.0F, -13.0F, -27.3594F);
+        setRotationAngle(bone62, 0.3491F, 0.0F, 0.0F);
+        bone.addChild(bone62);
+        bone62.cubeList.add(new ModelBox(bone62, 55, 50, -1.0F, -1.1719F, -0.1406F, 2, 2, 1, 0.0F, false));
+
+        bone42 = new ModelRenderer(this);
+        bone42.setRotationPoint(0.0F, -10.0F, -24.5F);
+        setRotationAngle(bone42, -0.7854F, 0.0F, 0.0F);
+        bone.addChild(bone42);
+        bone42.cubeList.add(new ModelBox(bone42, 0, 72, -1.5F, -2.1213F, -1.7071F, 3, 2, 1, 0.0F, false));
+
         bone57 = new ModelRenderer(this);
         bone57.setRotationPoint(0.0F, -11.5F, -31.0F);
         setRotationAngle(bone57, -0.3491F, 0.0F, 0.0F);
-
+        bone.addChild(bone57);
         bone57.cubeList.add(new ModelBox(bone57, 0, 74, -2.5F, -3.2746F, -3.5153F, 5, 9, 5, 0.0F, false));
         bone57.cubeList.add(new ModelBox(bone57, 0, 74, -2.0F, -4.2746F, -4.0153F, 4, 10, 6, 0.0F, false));
 
         bone58 = new ModelRenderer(this);
         bone58.setRotationPoint(0.0F, -11.5F, -31.0F);
         setRotationAngle(bone58, -0.0873F, 0.0F, 0.0F);
-
+        bone.addChild(bone58);
 
         bone55 = new ModelRenderer(this);
         bone55.setRotationPoint(0.0F, -14.5F, -36.5F);
         setRotationAngle(bone55, 0.6981F, 0.0F, 0.0F);
-
+        bone.addChild(bone55);
         bone55.cubeList.add(new ModelBox(bone55, 0, 74, -2.5F, -0.9384F, -0.7044F, 5, 1, 1, 0.0F, false));
         bone55.cubeList.add(new ModelBox(bone55, 0, 74, -2.0F, 1.6575F, 1.421F, 4, 1, 1, 0.0F, false));
 
         bone25 = new ModelRenderer(this);
         bone25.setRotationPoint(-0.0F, -18.4754F, 52.6563F);
         setRotationAngle(bone25, 0.0F, 0.0F, 0.5236F);
-
+        bone.addChild(bone25);
         bone25.cubeList.add(new ModelBox(bone25, 52, 14, -1.0F, -1.0F, -0.5F, 2, 2, 1, 0.0F, true));
 
         bone26 = new ModelRenderer(this);
         bone26.setRotationPoint(-0.0F, -18.4754F, 52.6563F);
         setRotationAngle(bone26, 0.0F, 0.0F, 1.0472F);
-
+        bone.addChild(bone26);
         bone26.cubeList.add(new ModelBox(bone26, 52, 14, -1.0F, -1.0F, -0.5F, 2, 2, 1, 0.0F, true));
 
         bone27 = new ModelRenderer(this);
         bone27.setRotationPoint(-0.0F, -18.4754F, 52.6563F);
         setRotationAngle(bone27, 0.0F, 0.0F, 1.309F);
-
+        bone.addChild(bone27);
         bone27.cubeList.add(new ModelBox(bone27, 52, 14, -1.0F, -1.0F, -0.5F, 2, 2, 1, 0.0F, true));
 
         bone28 = new ModelRenderer(this);
         bone28.setRotationPoint(-0.0F, -18.4754F, 52.6563F);
         setRotationAngle(bone28, 0.0F, 0.0F, 1.8326F);
+        bone.addChild(bone28);
         bone28.cubeList.add(new ModelBox(bone28, 52, 14, -1.0F, -1.0F, -0.5F, 2, 2, 1, 0.0F, true));
 
         bone29 = new ModelRenderer(this);
         bone29.setRotationPoint(-0.0F, -18.4754F, 52.6563F);
         setRotationAngle(bone29, 0.0F, 0.0F, 2.3562F);
+        bone.addChild(bone29);
         bone29.cubeList.add(new ModelBox(bone29, 52, 14, -1.0F, -1.0F, -0.5F, 2, 2, 1, 0.0F, true));
 
         bone53 = new ModelRenderer(this);
         bone53.setRotationPoint(-1.0F, -27.7321F, 60.0F);
         setRotationAngle(bone53, 0.0F, 0.0F, -0.3491F);
-
+        bone.addChild(bone53);
         bone53.cubeList.add(new ModelBox(bone53, 42, 40, -0.9829F, -0.2615F, -1.0F, 1, 2, 2, 0.0F, false));
 
         bone54 = new ModelRenderer(this);
         bone54.setRotationPoint(1.0F, -27.7321F, 60.0F);
         setRotationAngle(bone54, 0.0F, 0.0F, 0.3491F);
-
+        bone.addChild(bone54);
         bone54.cubeList.add(new ModelBox(bone54, 42, 40, -0.0171F, -0.2615F, -1.0F, 1, 2, 2, 0.0F, true));
 
         bone22 = new ModelRenderer(this);
         bone22.setRotationPoint(1.0F, -15.5F, 41.5F);
         setRotationAngle(bone22, 0.0F, 0.0F, -0.5236F);
+        bone.addChild(bone22);
         bone22.cubeList.add(new ModelBox(bone22, 0, 1, 2.317F, -6.0131F, -15.5F, 1, 1, 14, 0.0F, false));
         bone22.cubeList.add(new ModelBox(bone22, 0, 1, 0.1217F, -2.2107F, -16.5F, 1, 1, 14, 0.0F, false));
         bone22.cubeList.add(new ModelBox(bone22, 0, 1, 0.1217F, -2.2107F, -2.5F, 1, 1, 14, 0.0F, false));
@@ -425,7 +440,7 @@ public class ModelMK14 extends ModelGun {
         bone23 = new ModelRenderer(this);
         bone23.setRotationPoint(-1.0F, -15.5F, 41.5F);
         setRotationAngle(bone23, 0.0F, 0.0F, 0.5236F);
-
+        bone.addChild(bone23);
         bone23.cubeList.add(new ModelBox(bone23, 0, 1, -3.317F, -6.0131F, -15.5F, 1, 1, 14, 0.0F, true));
         bone23.cubeList.add(new ModelBox(bone23, 0, 1, -1.1217F, -2.2107F, -16.5F, 1, 1, 14, 0.0F, true));
         bone23.cubeList.add(new ModelBox(bone23, 0, 1, -1.1217F, -2.2107F, -2.5F, 1, 1, 14, 0.0F, true));
@@ -437,6 +452,7 @@ public class ModelMK14 extends ModelGun {
         bone24 = new ModelRenderer(this);
         bone24.setRotationPoint(-1.0F, -15.5F, 41.5F);
         setRotationAngle(bone24, 0.0F, 0.0F, 0.5236F);
+        bone.addChild(bone24);
         bone24.cubeList.add(new ModelBox(bone24, 0, 1, -1.951F, -7.3792F, -15.5F, 1, 1, 14, 0.0F, true));
         bone24.cubeList.add(new ModelBox(bone24, 0, 1, 0.2444F, -3.5768F, -16.5F, 1, 1, 14, 0.0F, true));
         bone24.cubeList.add(new ModelBox(bone24, 0, 1, 0.2444F, -3.5768F, -2.5F, 1, 1, 14, 0.0F, true));
@@ -462,18 +478,21 @@ public class ModelMK14 extends ModelGun {
         bone14 = new ModelRenderer(this);
         bone14.setRotationPoint(0.5F, 0.0F, 0.0F);
         setRotationAngle(bone14, 0.0F, 0.0F, -0.4363F);
+        bone.addChild(bone14);
         bone14.cubeList.add(new ModelBox(bone14, 68, 2, 7.6631F, -24.7152F, -2.0F, 2, 2, 16, 0.0F, false));
         bone14.cubeList.add(new ModelBox(bone14, 68, 2, 7.6631F, -24.7152F, 14.0F, 2, 1, 24, 0.0F, false));
 
         bone15 = new ModelRenderer(this);
         bone15.setRotationPoint(-0.5F, 0.0F, 0.0F);
         setRotationAngle(bone15, 0.0F, 0.0F, 0.4363F);
+        bone.addChild(bone15);
         bone15.cubeList.add(new ModelBox(bone15, 68, 2, -9.6631F, -24.7152F, -2.0F, 2, 2, 16, 0.0F, true));
         bone15.cubeList.add(new ModelBox(bone15, 68, 2, -9.6631F, -24.7152F, 14.0F, 2, 1, 24, 0.0F, true));
 
         bone4 = new ModelRenderer(this);
         bone4.setRotationPoint(-4.5313F, -3.1003F, -17.0F);
         setRotationAngle(bone4, 0.0F, 0.0F, -0.6981F);
+        bone.addChild(bone4);
         bone4.cubeList.add(new ModelBox(bone4, 0, 74, 9.6418F, -11.4907F, 34.0F, 1, 1, 4, 0.0F, false));
         bone4.cubeList.add(new ModelBox(bone4, 0, 74, 9.6418F, -11.4907F, 30.0F, 1, 1, 4, 0.0F, false));
         bone4.cubeList.add(new ModelBox(bone4, 0, 74, 9.6418F, -11.4907F, 26.0F, 1, 1, 4, 0.0F, false));
@@ -525,7 +544,7 @@ public class ModelMK14 extends ModelGun {
         bone8.cubeList.add(new ModelBox(bone8, 0, 74, -22.8331F, 0.3335F, 22.0F, 1, 1, 4, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 0, 74, -22.8331F, 0.3335F, 20.0F, 1, 1, 2, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 0, 74, -22.8331F, 0.3335F, 18.0F, 1, 1, 2, 0.0F, true));
-        bone.addChild(bone28);
+
         bone6 = new ModelRenderer(this);
         bone6.setRotationPoint(-4.5313F, -1.1003F, -17.0F);
         setRotationAngle(bone6, 0.0F, 0.0F, -0.7854F);
@@ -548,6 +567,32 @@ public class ModelMK14 extends ModelGun {
         bone9.cubeList.add(new ModelBox(bone9, 0, 74, -11.6066F, -10.6066F, 20.0F, 1, 1, 2, 0.0F, true));
         bone9.cubeList.add(new ModelBox(bone9, 0, 74, -11.6066F, -10.6066F, 18.0F, 1, 1, 2, 0.0F, true));
 
+        bone65 = new ModelRenderer(this);
+        bone65.setRotationPoint(3.7604F, -23.3191F, -12.0F);
+        setRotationAngle(bone65, 0.0F, 0.0F, -0.2618F);
+        bone.addChild(bone65);
+        bone65.cubeList.add(new ModelBox(bone65, 77, 18, -0.9053F, 0.5783F, -7.0F, 1, 1, 14, 0.0F, false));
+        bone65.cubeList.add(new ModelBox(bone65, 77, 18, -8.9123F, 2.2707F, -7.0F, 1, 1, 14, 0.0F, false));
+
+        bone66 = new ModelRenderer(this);
+        bone66.setRotationPoint(3.7604F, -23.3191F, -12.0F);
+        setRotationAngle(bone66, 0.0F, 0.0F, 0.3491F);
+        bone.addChild(bone66);
+        bone66.cubeList.add(new ModelBox(bone66, 77, 18, 1.0089F, 4.0576F, -7.0F, 1, 1, 14, 0.0F, false));
+        bone66.cubeList.add(new ModelBox(bone66, 77, 18, -7.0241F, 3.1528F, -7.0F, 1, 1, 14, 0.0F, false));
+
+        bone63 = new ModelRenderer(this);
+        bone63.setRotationPoint(-3.0F, -12.0378F, -69.5313F);
+        setRotationAngle(bone63, 0.0F, 0.3491F, 0.0F);
+        bone.addChild(bone63);
+        bone63.cubeList.add(new ModelBox(bone63, 85, 28, -1.9226F, -11.5F, 0.8965F, 3, 17, 1, 0.0F, true));
+
+        bone64 = new ModelRenderer(this);
+        bone64.setRotationPoint(3.0F, -12.0378F, -69.5313F);
+        setRotationAngle(bone64, 0.0F, -0.3491F, 0.0F);
+        bone.addChild(bone64);
+        bone64.cubeList.add(new ModelBox(bone64, 80, 15, -1.0774F, -11.5F, 0.8965F, 3, 17, 1, 0.0F, false));
+
         bone61 = new ModelRenderer(this);
         bone61.setRotationPoint(0.0F, -12.0378F, -65.0313F);
         setRotationAngle(bone61, -0.2618F, 0.0F, 0.0F);
@@ -561,13 +606,13 @@ public class ModelMK14 extends ModelGun {
         bone59.setRotationPoint(0.5F, 0.0F, 0.0F);
         setRotationAngle(bone59, 0.0F, 0.0F, -0.3491F);
         bone.addChild(bone59);
-        bone59.cubeList.add(new ModelBox(bone59, 97, 22, 4.1492F, -24.1738F, -64.0313F, 2, 2, 18, 0.0F, false));
+        bone59.cubeList.add(new ModelBox(bone59, 86, 21, 4.1492F, -24.1738F, -64.0313F, 2, 2, 19, 0.0F, false));
 
         bone60 = new ModelRenderer(this);
         bone60.setRotationPoint(-0.5F, 0.0F, 0.0F);
         setRotationAngle(bone60, 0.0F, 0.0F, 0.3491F);
         bone.addChild(bone60);
-        bone60.cubeList.add(new ModelBox(bone60, 97, 22, -6.1795F, -24.1684F, -64.0313F, 2, 2, 19, 0.0F, true));
+        bone60.cubeList.add(new ModelBox(bone60, 86, 20, -6.1795F, -24.1684F, -64.0313F, 2, 2, 19, 0.0F, true));
 
         bone39 = new ModelRenderer(this);
         bone39.setRotationPoint(0.0F, -26.3547F, -27.0F);
@@ -627,11 +672,6 @@ public class ModelMK14 extends ModelGun {
         bone31.cubeList.add(new ModelBox(bone31, 36, 36, -5.0161F, -1.3908F, -7.5F, 1, 1, 8, 0.0F, false));
         bone31.cubeList.add(new ModelBox(bone31, 36, 36, -1.7478F, -0.7625F, -7.5F, 1, 2, 8, 0.0F, false));
 
-        bone35 = new ModelRenderer(this);
-        bone35.setRotationPoint(10.618F, -20.7369F, -15.5F);
-        setRotationAngle(bone35, 0.0F, 0.7854F, 0.0F);
-        bone35.cubeList.add(new ModelBox(bone35, 93, 28, -1.7071F, -0.5F, 0.4142F, 1, 1, 1, 0.0F, false));
-
         bone2 = new ModelRenderer(this);
         bone2.setRotationPoint(0.5F, 0.0F, 0.0F);
         setRotationAngle(bone2, 0.0F, 0.0F, -0.3491F);
@@ -683,12 +723,12 @@ public class ModelMK14 extends ModelGun {
         bone2.cubeList.add(new ModelBox(bone2, 93, 28, 10.118F, -23.2369F, 11.0F, 1, 1, 2, 0.0F, false));
         bone2.cubeList.add(new ModelBox(bone2, 93, 28, 10.118F, -23.2369F, 7.0F, 1, 1, 2, 0.0F, false));
         bone2.cubeList.add(new ModelBox(bone2, 93, 28, 10.118F, -23.2369F, 3.0F, 1, 1, 2, 0.0F, false));
-        bone2.addChild(bone35);
 
-        bone37 = new ModelRenderer(this);
-        bone37.setRotationPoint(-10.618F, -20.7369F, -14.5F);
-        setRotationAngle(bone37, 0.0F, -0.7854F, 0.0F);
-        bone37.cubeList.add(new ModelBox(bone37, 93, 28, -0.0F, -0.5F, -0.2929F, 1, 1, 1, 0.0F, false));
+        bone35 = new ModelRenderer(this);
+        bone35.setRotationPoint(10.618F, -20.7369F, -15.5F);
+        setRotationAngle(bone35, 0.0F, 0.7854F, 0.0F);
+        bone2.addChild(bone35);
+        bone35.cubeList.add(new ModelBox(bone35, 93, 28, -1.7071F, -0.5F, 0.4142F, 1, 1, 1, 0.0F, false));
 
         bone3 = new ModelRenderer(this);
         bone3.setRotationPoint(-0.5F, 0.0F, 0.0F);
@@ -741,41 +781,12 @@ public class ModelMK14 extends ModelGun {
         bone3.cubeList.add(new ModelBox(bone3, 93, 28, -11.118F, -23.2369F, 11.0F, 1, 1, 2, 0.0F, false));
         bone3.cubeList.add(new ModelBox(bone3, 93, 28, -11.118F, -23.2369F, 7.0F, 1, 1, 2, 0.0F, false));
         bone3.cubeList.add(new ModelBox(bone3, 93, 28, -11.118F, -23.2369F, 3.0F, 1, 1, 2, 0.0F, false));
+
+        bone37 = new ModelRenderer(this);
+        bone37.setRotationPoint(-10.618F, -20.7369F, -14.5F);
+        setRotationAngle(bone37, 0.0F, -0.7854F, 0.0F);
         bone3.addChild(bone37);
-
-        bone11 = new ModelRenderer(this);
-        bone11.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
-        setRotationAngle(bone11, 0.0F, 0.0F, 0.5236F);
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 35.5F, 1, 1, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 34.5F, 1, 0, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 32.5F, 1, 0, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 30.5F, 1, 0, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 28.5F, 1, 0, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 26.5F, 1, 0, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 24.5F, 1, 0, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 31.5F, 1, 1, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 27.5F, 1, 1, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 33.5F, 1, 1, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 29.5F, 1, 1, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 25.5F, 1, 1, 1, 0.0F, true));
-        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 23.5F, 1, 1, 1, 0.0F, true));
-
-        bone12 = new ModelRenderer(this);
-        bone12.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
-        setRotationAngle(bone12, 0.0F, 0.0F, -0.5236F);
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 35.5F, 1, 1, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 34.5F, 1, 0, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 32.5F, 1, 0, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 30.5F, 1, 0, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 28.5F, 1, 0, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 26.5F, 1, 0, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 24.5F, 1, 0, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 31.5F, 1, 1, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 27.5F, 1, 1, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 33.5F, 1, 1, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 29.5F, 1, 1, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 25.5F, 1, 1, 1, 0.0F, true));
-        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 23.5F, 1, 1, 1, 0.0F, true));
+        bone37.cubeList.add(new ModelBox(bone37, 93, 28, -0.0F, -0.5F, -0.2929F, 1, 1, 1, 0.0F, false));
 
         rail1 = new ModelRenderer(this);
         rail1.setRotationPoint(-1.3906F, 24.0F, 0.0F);
@@ -799,44 +810,42 @@ public class ModelMK14 extends ModelGun {
         rail1.cubeList.add(new ModelBox(rail1, 0, 78, -4.5261F, -21.3191F, 26.0F, 1, 2, 1, 0.0F, true));
         rail1.cubeList.add(new ModelBox(rail1, 0, 78, -4.5261F, -21.3191F, 24.0F, 1, 2, 1, 0.0F, true));
         rail1.cubeList.add(new ModelBox(rail1, 0, 78, -3.5261F, -21.8191F, 24.0F, 1, 3, 13, 0.0F, true));
+
+        bone11 = new ModelRenderer(this);
+        bone11.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
+        setRotationAngle(bone11, 0.0F, 0.0F, 0.5236F);
         rail1.addChild(bone11);
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 35.5F, 1, 1, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 34.5F, 1, 0, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 32.5F, 1, 0, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 30.5F, 1, 0, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 28.5F, 1, 0, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 26.5F, 1, 0, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 24.5F, 1, 0, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 31.5F, 1, 1, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 27.5F, 1, 1, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 33.5F, 1, 1, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 29.5F, 1, 1, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 25.5F, 1, 1, 1, 0.0F, true));
+        bone11.cubeList.add(new ModelBox(bone11, 0, 78, -7.433F, -12.8744F, 23.5F, 1, 1, 1, 0.0F, true));
+
+        bone12 = new ModelRenderer(this);
+        bone12.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
+        setRotationAngle(bone12, 0.0F, 0.0F, -0.5236F);
         rail1.addChild(bone12);
-
-        bone16 = new ModelRenderer(this);
-        bone16.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
-        setRotationAngle(bone16, 0.0F, 0.0F, 0.5236F);
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 35.0781F, 1, 1, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 34.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 24.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 22.0781F, 1, 0, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 31.0781F, 1, 1, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
-        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 23.0781F, 1, 1, 1, 0.0F, true));
-
-        bone17 = new ModelRenderer(this);
-        bone17.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
-        setRotationAngle(bone17, 0.0F, 0.0F, -0.5236F);
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 35.0781F, 1, 1, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 34.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 24.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 22.0781F, 1, 0, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 31.0781F, 1, 1, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
-        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 23.0781F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 35.5F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 34.5F, 1, 0, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 32.5F, 1, 0, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 30.5F, 1, 0, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 28.5F, 1, 0, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 26.5F, 1, 0, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -13.1064F, 24.5F, 1, 0, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 31.5F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 27.5F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 33.5F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 29.5F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 25.5F, 1, 1, 1, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 0, 78, 7.567F, -14.1064F, 23.5F, 1, 1, 1, 0.0F, true));
 
         rail3 = new ModelRenderer(this);
         rail3.setRotationPoint(-1.3906F, 16.0F, 1.1406F);
@@ -863,44 +872,44 @@ public class ModelMK14 extends ModelGun {
         rail3.cubeList.add(new ModelBox(rail3, 0, 78, -19.9375F, -2.3906F, 25.5781F, 1, 2, 1, 0.0F, true));
         rail3.cubeList.add(new ModelBox(rail3, 0, 78, -19.9375F, -2.3906F, 23.5781F, 1, 2, 1, 0.0F, true));
         rail3.cubeList.add(new ModelBox(rail3, 0, 78, -18.9375F, -2.8906F, 22.5781F, 1, 3, 14, 0.0F, true));
-        rail3.addChild(bone16);
-        rail3.addChild(bone17);
 
-        bone18 = new ModelRenderer(this);
-        bone18.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
-        setRotationAngle(bone18, 0.0F, 0.0F, 0.5236F);
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 35.0781F, 1, 1, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 34.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 24.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 22.0781F, 1, 0, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 31.0781F, 1, 1, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
-        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 23.0781F, 1, 1, 1, 0.0F, true));
-        bone.addChild(bone29);
-        bone19 = new ModelRenderer(this);
-        bone19.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
-        setRotationAngle(bone19, 0.0F, 0.0F, -0.5236F);
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 35.0781F, 1, 1, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 34.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 24.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 22.0781F, 1, 0, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 31.0781F, 1, 1, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
-        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 23.0781F, 1, 1, 1, 0.0F, true));
+        bone16 = new ModelRenderer(this);
+        bone16.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
+        setRotationAngle(bone16, 0.0F, 0.0F, 0.5236F);
+        rail3.addChild(bone16);
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 35.0781F, 1, 1, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 34.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 24.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 22.0781F, 1, 0, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 31.0781F, 1, 1, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
+        bone16.cubeList.add(new ModelBox(bone16, 0, 78, -11.3155F, 11.2239F, 23.0781F, 1, 1, 1, 0.0F, true));
+
+        bone17 = new ModelRenderer(this);
+        bone17.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
+        setRotationAngle(bone17, 0.0F, 0.0F, -0.5236F);
+        rail3.addChild(bone17);
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 35.0781F, 1, 1, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 34.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 24.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -4.4196F, 22.0781F, 1, 0, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 31.0781F, 1, 1, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
+        bone17.cubeList.add(new ModelBox(bone17, 0, 78, -15.2439F, -5.4196F, 23.0781F, 1, 1, 1, 0.0F, true));
 
         rail4 = new ModelRenderer(this);
         rail4.setRotationPoint(-1.3906F, 16.0F, -12.8594F);
@@ -927,59 +936,44 @@ public class ModelMK14 extends ModelGun {
         rail4.cubeList.add(new ModelBox(rail4, 0, 78, -19.9375F, -2.3906F, 25.5781F, 1, 2, 1, 0.0F, true));
         rail4.cubeList.add(new ModelBox(rail4, 0, 78, -19.9375F, -2.3906F, 23.5781F, 1, 2, 1, 0.0F, true));
         rail4.cubeList.add(new ModelBox(rail4, 0, 78, -18.9375F, -2.8906F, 22.5781F, 1, 3, 14, 0.0F, true));
+
+        bone18 = new ModelRenderer(this);
+        bone18.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
+        setRotationAngle(bone18, 0.0F, 0.0F, 0.5236F);
         rail4.addChild(bone18);
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 35.0781F, 1, 1, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 34.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 24.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 22.0781F, 1, 0, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 31.0781F, 1, 1, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
+        bone18.cubeList.add(new ModelBox(bone18, 0, 78, -11.3155F, 11.2239F, 23.0781F, 1, 1, 1, 0.0F, true));
 
-        bone20 = new ModelRenderer(this);
-        bone20.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
-        setRotationAngle(bone20, 0.0F, 0.0F, 0.5236F);
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 35.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 34.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 2.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 4.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 6.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 8.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 10.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 31.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 1.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 3.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 5.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 7.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 9.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 11.0781F, 1, 1, 1, 0.0F, true));
-
-        bone21 = new ModelRenderer(this);
-        bone21.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
-        setRotationAngle(bone21, 0.0F, 0.0F, -0.5236F);
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 35.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 34.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 2.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 4.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 6.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 8.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 10.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 31.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 1.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 3.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 5.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 7.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 9.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 11.0781F, 1, 1, 1, 0.0F, true));
+        bone19 = new ModelRenderer(this);
+        bone19.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
+        setRotationAngle(bone19, 0.0F, 0.0F, -0.5236F);
+        rail4.addChild(bone19);
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 35.0781F, 1, 1, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 34.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 24.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -4.4196F, 22.0781F, 1, 0, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 31.0781F, 1, 1, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
+        bone19.cubeList.add(new ModelBox(bone19, 0, 78, -15.2439F, -5.4196F, 23.0781F, 1, 1, 1, 0.0F, true));
 
         rail5 = new ModelRenderer(this);
         rail5.setRotationPoint(-1.3906F, 16.0F, -26.8594F);
@@ -1018,43 +1012,61 @@ public class ModelMK14 extends ModelGun {
         rail5.cubeList.add(new ModelBox(rail5, 0, 78, -19.9375F, -2.3906F, 11.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 0, 78, -18.9375F, -2.8906F, 25.5781F, 1, 3, 11, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 0, 78, -18.9375F, -2.8906F, 1.5781F, 1, 3, 11, 0.0F, true));
+
+        bone20 = new ModelRenderer(this);
+        bone20.setRotationPoint(-4.0261F, -7.3191F, 0.5F);
+        setRotationAngle(bone20, 0.0F, 0.0F, 0.5236F);
         rail5.addChild(bone20);
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 35.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 34.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 2.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 4.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 6.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 8.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 10.0781F, 1, 0, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 31.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 1.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 3.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 5.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 7.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 9.0781F, 1, 1, 1, 0.0F, true));
+        bone20.cubeList.add(new ModelBox(bone20, 0, 78, -11.3155F, 11.2239F, 11.0781F, 1, 1, 1, 0.0F, true));
+
+        bone21 = new ModelRenderer(this);
+        bone21.setRotationPoint(-4.0261F, -3.3191F, 0.5F);
+        setRotationAngle(bone21, 0.0F, 0.0F, -0.5236F);
         rail5.addChild(bone21);
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 35.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 34.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 2.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 4.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 6.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 8.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -4.4196F, 10.0781F, 1, 0, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 31.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 1.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 3.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 5.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 7.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 9.0781F, 1, 1, 1, 0.0F, true));
+        bone21.cubeList.add(new ModelBox(bone21, 0, 78, -15.2439F, -5.4196F, 11.0781F, 1, 1, 1, 0.0F, true));
 
-        bone10 = new ModelRenderer(this);
-        bone10.setRotationPoint(4.0261F, -7.3191F, 0.5F);
-        setRotationAngle(bone10, 0.0F, 0.0F, -0.5236F);
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 35.5F, 1, 1, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 34.5F, 1, 0, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 32.5F, 1, 0, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 30.5F, 1, 0, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 28.5F, 1, 0, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 26.5F, 1, 0, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 24.5F, 1, 0, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 31.5F, 1, 1, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 27.5F, 1, 1, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 33.5F, 1, 1, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 29.5F, 1, 1, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 25.5F, 1, 1, 1, 0.0F, false));
-        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 23.5F, 1, 1, 1, 0.0F, false));
-
-        bone13 = new ModelRenderer(this);
-        bone13.setRotationPoint(4.0261F, -3.3191F, 0.5F);
-        setRotationAngle(bone13, 0.0F, 0.0F, 0.5236F);
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 35.5F, 1, 1, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 34.5F, 1, 0, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 32.5F, 1, 0, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 30.5F, 1, 0, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 28.5F, 1, 0, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 26.5F, 1, 0, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 24.5F, 1, 0, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 31.5F, 1, 1, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 27.5F, 1, 1, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 33.5F, 1, 1, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 29.5F, 1, 1, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 25.5F, 1, 1, 1, 0.0F, false));
-        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 23.5F, 1, 1, 1, 0.0F, false));
-        bone.addChild(bone27);
         rail2 = new ModelRenderer(this);
         rail2.setRotationPoint(1.3906F, 24.0F, 0.0F);
         rail2.cubeList.add(new ModelBox(rail2, 0, 78, 3.5261F, -21.3191F, 36.0F, 1, 2, 1, 0.0F, false));
@@ -1077,78 +1089,42 @@ public class ModelMK14 extends ModelGun {
         rail2.cubeList.add(new ModelBox(rail2, 0, 78, 3.5261F, -21.3191F, 26.0F, 1, 2, 1, 0.0F, false));
         rail2.cubeList.add(new ModelBox(rail2, 0, 78, 3.5261F, -21.3191F, 24.0F, 1, 2, 1, 0.0F, false));
         rail2.cubeList.add(new ModelBox(rail2, 0, 78, 2.5261F, -21.8191F, 24.0F, 1, 3, 13, 0.0F, false));
+
+        bone10 = new ModelRenderer(this);
+        bone10.setRotationPoint(4.0261F, -7.3191F, 0.5F);
+        setRotationAngle(bone10, 0.0F, 0.0F, -0.5236F);
         rail2.addChild(bone10);
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 35.5F, 1, 1, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 34.5F, 1, 0, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 32.5F, 1, 0, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 30.5F, 1, 0, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 28.5F, 1, 0, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 26.5F, 1, 0, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 24.5F, 1, 0, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 31.5F, 1, 1, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 27.5F, 1, 1, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 33.5F, 1, 1, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 29.5F, 1, 1, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 25.5F, 1, 1, 1, 0.0F, false));
+        bone10.cubeList.add(new ModelBox(bone10, 0, 78, 6.433F, -12.8744F, 23.5F, 1, 1, 1, 0.0F, false));
+
+        bone13 = new ModelRenderer(this);
+        bone13.setRotationPoint(4.0261F, -3.3191F, 0.5F);
+        setRotationAngle(bone13, 0.0F, 0.0F, 0.5236F);
         rail2.addChild(bone13);
-
-        bone52 = new ModelRenderer(this);
-        bone52.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone52, 1.4835F, 0.0F, 0.0F);
-        bone52.cubeList.add(new ModelBox(bone52, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone52.cubeList.add(new ModelBox(bone52, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-
-        bone51 = new ModelRenderer(this);
-        bone51.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone51, 1.309F, 0.0F, 0.0F);
-        bone51.cubeList.add(new ModelBox(bone51, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone51.cubeList.add(new ModelBox(bone51, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-        bone.addChild(bone25);
-        bone43 = new ModelRenderer(this);
-        bone43.setRotationPoint(0.0F, -27.6828F, -27.0F);
-        setRotationAngle(bone43, 0.0F, 0.0F, 0.5236F);
-        bone43.cubeList.add(new ModelBox(bone43, 42, 13, -1.183F, -0.317F, -1.0F, 1, 1, 2, 0.0F, true));
-        bone43.cubeList.add(new ModelBox(bone43, 42, 13, -2.549F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
-        bone43.cubeList.add(new ModelBox(bone43, 42, 13, -1.183F, -3.049F, -1.0F, 1, 1, 2, 0.0F, true));
-        bone43.cubeList.add(new ModelBox(bone43, 42, 13, 0.183F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
-
-        bone41 = new ModelRenderer(this);
-        bone41.setRotationPoint(0.0F, -27.6828F, -27.0F);
-        setRotationAngle(bone41, 0.0F, 0.0F, -0.5236F);
-        bone41.cubeList.add(new ModelBox(bone41, 42, 13, 0.183F, -0.317F, -1.0F, 1, 1, 2, 0.0F, true));
-        bone41.cubeList.add(new ModelBox(bone41, 42, 13, -1.183F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
-        bone41.cubeList.add(new ModelBox(bone41, 42, 13, 0.183F, -3.049F, -1.0F, 1, 1, 2, 0.0F, true));
-        bone41.cubeList.add(new ModelBox(bone41, 42, 13, 1.549F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
-
-        bone46 = new ModelRenderer(this);
-        bone46.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone46, 0.4363F, 0.0F, 0.0F);
-        bone46.cubeList.add(new ModelBox(bone46, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone46.cubeList.add(new ModelBox(bone46, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-
-        bone50 = new ModelRenderer(this);
-        bone50.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone50, 1.1345F, 0.0F, 0.0F);
-        bone50.cubeList.add(new ModelBox(bone50, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone50.cubeList.add(new ModelBox(bone50, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-        bone.addChild(bone26);
-        bone49 = new ModelRenderer(this);
-        bone49.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone49, 0.9599F, 0.0F, 0.0F);
-        bone49.cubeList.add(new ModelBox(bone49, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone49.cubeList.add(new ModelBox(bone49, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-
-        bone48 = new ModelRenderer(this);
-        bone48.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone48, 0.7854F, 0.0F, 0.0F);
-        bone48.cubeList.add(new ModelBox(bone48, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone48.cubeList.add(new ModelBox(bone48, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-
-        bone47 = new ModelRenderer(this);
-        bone47.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone47, 0.6109F, 0.0F, 0.0F);
-        bone47.cubeList.add(new ModelBox(bone47, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone47.cubeList.add(new ModelBox(bone47, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-
-        bone45 = new ModelRenderer(this);
-        bone45.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone45, 0.2618F, 0.0F, 0.0F);
-        bone45.cubeList.add(new ModelBox(bone45, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone45.cubeList.add(new ModelBox(bone45, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
-
-        bone44 = new ModelRenderer(this);
-        bone44.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
-        setRotationAngle(bone44, 0.0873F, 0.0F, 0.0F);
-        bone44.cubeList.add(new ModelBox(bone44, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
-        bone44.cubeList.add(new ModelBox(bone44, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 35.5F, 1, 1, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 34.5F, 1, 0, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 32.5F, 1, 0, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 30.5F, 1, 0, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 28.5F, 1, 0, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 26.5F, 1, 0, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -13.1064F, 24.5F, 1, 0, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 31.5F, 1, 1, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 27.5F, 1, 1, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 33.5F, 1, 1, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 29.5F, 1, 1, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 25.5F, 1, 1, 1, 0.0F, false));
+        bone13.cubeList.add(new ModelBox(bone13, 0, 78, -8.567F, -14.1064F, 23.5F, 1, 1, 1, 0.0F, false));
 
         ironsights = new ModelRenderer(this);
         ironsights.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -1158,22 +1134,87 @@ public class ModelMK14 extends ModelGun {
         ironsights.cubeList.add(new ModelBox(ironsights, 42, 13, -0.5F, -30.9149F, -28.0F, 1, 1, 2, 0.0F, true));
         ironsights.cubeList.add(new ModelBox(ironsights, 42, 13, 0.866F, -29.5489F, -28.0F, 1, 1, 2, 0.0F, false));
         ironsights.cubeList.add(new ModelBox(ironsights, 42, 13, -0.5F, -28.1828F, -28.0F, 1, 1, 2, 0.0F, true));
-        bone.addChild(bone57);
-        bone.addChild(bone58);
-        bone.addChild(bone55);
-        bone36 = new ModelRenderer(this);
-        bone36.setRotationPoint(-0.5F, 7.6406F, -9.5F);
-        setRotationAngle(bone36, 0.2967F, 0.0F, 0.0F);
-        ironsights.addChild(bone52);
-        ironsights.addChild(bone43);
-        ironsights.addChild(bone41);
-        ironsights.addChild(bone44);
-        ironsights.addChild(bone49);
-        ironsights.addChild(bone48);
-        ironsights.addChild(bone47);
-        ironsights.addChild(bone45);
 
-        bone36.cubeList.add(new ModelBox(bone36, 32, 40, -2.5F, -2.0F, 0.0F, 5, 2, 7, 0.0F, false));
+        bone52 = new ModelRenderer(this);
+        bone52.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone52, 1.4835F, 0.0F, 0.0F);
+        ironsights.addChild(bone52);
+        bone52.cubeList.add(new ModelBox(bone52, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone52.cubeList.add(new ModelBox(bone52, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone51 = new ModelRenderer(this);
+        bone51.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone51, 1.309F, 0.0F, 0.0F);
+        ironsights.addChild(bone51);
+        bone51.cubeList.add(new ModelBox(bone51, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone51.cubeList.add(new ModelBox(bone51, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone43 = new ModelRenderer(this);
+        bone43.setRotationPoint(0.0F, -27.6828F, -27.0F);
+        setRotationAngle(bone43, 0.0F, 0.0F, 0.5236F);
+        ironsights.addChild(bone43);
+        bone43.cubeList.add(new ModelBox(bone43, 42, 13, -1.183F, -0.317F, -1.0F, 1, 1, 2, 0.0F, true));
+        bone43.cubeList.add(new ModelBox(bone43, 42, 13, -2.549F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
+        bone43.cubeList.add(new ModelBox(bone43, 42, 13, -1.183F, -3.049F, -1.0F, 1, 1, 2, 0.0F, true));
+        bone43.cubeList.add(new ModelBox(bone43, 42, 13, 0.183F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
+
+        bone41 = new ModelRenderer(this);
+        bone41.setRotationPoint(0.0F, -27.6828F, -27.0F);
+        setRotationAngle(bone41, 0.0F, 0.0F, -0.5236F);
+        ironsights.addChild(bone41);
+        bone41.cubeList.add(new ModelBox(bone41, 42, 13, 0.183F, -0.317F, -1.0F, 1, 1, 2, 0.0F, true));
+        bone41.cubeList.add(new ModelBox(bone41, 42, 13, -1.183F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
+        bone41.cubeList.add(new ModelBox(bone41, 42, 13, 0.183F, -3.049F, -1.0F, 1, 1, 2, 0.0F, true));
+        bone41.cubeList.add(new ModelBox(bone41, 42, 13, 1.549F, -1.683F, -1.0F, 1, 1, 2, 0.0F, true));
+
+        bone46 = new ModelRenderer(this);
+        bone46.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone46, 0.4363F, 0.0F, 0.0F);
+        ironsights.addChild(bone46);
+        bone46.cubeList.add(new ModelBox(bone46, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone46.cubeList.add(new ModelBox(bone46, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone50 = new ModelRenderer(this);
+        bone50.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone50, 1.1345F, 0.0F, 0.0F);
+        ironsights.addChild(bone50);
+        bone50.cubeList.add(new ModelBox(bone50, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone50.cubeList.add(new ModelBox(bone50, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone49 = new ModelRenderer(this);
+        bone49.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone49, 0.9599F, 0.0F, 0.0F);
+        ironsights.addChild(bone49);
+        bone49.cubeList.add(new ModelBox(bone49, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone49.cubeList.add(new ModelBox(bone49, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone48 = new ModelRenderer(this);
+        bone48.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone48, 0.7854F, 0.0F, 0.0F);
+        ironsights.addChild(bone48);
+        bone48.cubeList.add(new ModelBox(bone48, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone48.cubeList.add(new ModelBox(bone48, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone47 = new ModelRenderer(this);
+        bone47.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone47, 0.6109F, 0.0F, 0.0F);
+        ironsights.addChild(bone47);
+        bone47.cubeList.add(new ModelBox(bone47, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone47.cubeList.add(new ModelBox(bone47, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone45 = new ModelRenderer(this);
+        bone45.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone45, 0.2618F, 0.0F, 0.0F);
+        ironsights.addChild(bone45);
+        bone45.cubeList.add(new ModelBox(bone45, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone45.cubeList.add(new ModelBox(bone45, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
+
+        bone44 = new ModelRenderer(this);
+        bone44.setRotationPoint(-2.4219F, -29.0422F, -27.0F);
+        setRotationAngle(bone44, 0.0873F, 0.0F, 0.0F);
+        ironsights.addChild(bone44);
+        bone44.cubeList.add(new ModelBox(bone44, 5, 80, -1.0781F, -1.0F, -1.0F, 1, 2, 2, 0.0F, true));
+        bone44.cubeList.add(new ModelBox(bone44, 5, 80, 4.9219F, -1.0F, -1.0F, 1, 2, 2, 0.0F, false));
 
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.5F, 17.0F, 0.0F);
@@ -1206,57 +1247,12 @@ public class ModelMK14 extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 34, 41, -2.0F, -14.3594F, -3.5F, 3, 1, 1, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 34, 41, -3.0F, -15.3594F, -15.5F, 1, 2, 13, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 34, 41, 1.0F, -15.3594F, -15.5F, 1, 2, 13, 0.0F, false));
+
+        bone36 = new ModelRenderer(this);
+        bone36.setRotationPoint(-0.5F, 7.6406F, -9.5F);
+        setRotationAngle(bone36, 0.2967F, 0.0F, 0.0F);
         magazine.addChild(bone36);
-        bone42 = new ModelRenderer(this);
-        bone42.setRotationPoint(0.0F, -10.0F, -24.5F);
-        setRotationAngle(bone42, -0.7854F, 0.0F, 0.0F);
-        bone.addChild(bone42);
-        bone42.cubeList.add(new ModelBox(bone42, 0, 72, -1.5F, -2.1213F, -1.7071F, 3, 2, 1, 0.0F, false));
-
-        bone62 = new ModelRenderer(this);
-        bone62.setRotationPoint(0.0F, -13.0F, -27.3594F);
-        setRotationAngle(bone62, 0.3491F, 0.0F, 0.0F);
-        bone.addChild(bone62);
-        bone62.cubeList.add(new ModelBox(bone62, 55, 50, -1.0F, -1.1719F, -0.1406F, 2, 2, 1, 0.0F, false));
-
-        bone63 = new ModelRenderer(this);
-        bone63.setRotationPoint(-3.0F, -12.0378F, -69.5313F);
-        setRotationAngle(bone63, 0.0F, 0.3491F, 0.0F);
-        bone.addChild(bone63);
-        bone63.cubeList.add(new ModelBox(bone63, 85, 28, -1.9226F, -11.5F, 0.8965F, 3, 17, 1, 0.0F, true));
-
-        bone64 = new ModelRenderer(this);
-        bone64.setRotationPoint(3.0F, -12.0378F, -69.5313F);
-        setRotationAngle(bone64, 0.0F, -0.3491F, 0.0F);
-        bone.addChild(bone64);
-        bone64.cubeList.add(new ModelBox(bone64, 80, 15, -1.0774F, -11.5F, 0.8965F, 3, 17, 1, 0.0F, false));
-
-        bone65 = new ModelRenderer(this);
-        bone65.setRotationPoint(3.7604F, -23.3191F, -12.0F);
-        setRotationAngle(bone65, 0.0F, 0.0F, -0.2618F);
-        bone.addChild(bone65);
-        bone65.cubeList.add(new ModelBox(bone65, 77, 18, -0.9053F, 0.5783F, -7.0F, 1, 1, 14, 0.0F, false));
-        bone65.cubeList.add(new ModelBox(bone65, 77, 18, -8.9123F, 2.2707F, -7.0F, 1, 1, 14, 0.0F, false));
-
-        bone.addChild(bone53);
-        bone.addChild(bone54);
-        bone.addChild(bone22);
-        bone.addChild(bone23);
-        bone.addChild(bone24);
-        bone.addChild(bone14);
-        bone.addChild(bone15);
-        bone.addChild(bone4);
-        rail4.addChild(bone19);
-        ironsights.addChild(bone51);
-        ironsights.addChild(bone46);
-        ironsights.addChild(bone50);
-
-        bone66 = new ModelRenderer(this);
-        bone66.setRotationPoint(3.7604F, -23.3191F, -12.0F);
-        setRotationAngle(bone66, 0.0F, 0.0F, 0.3491F);
-        bone.addChild(bone66);
-        bone66.cubeList.add(new ModelBox(bone66, 77, 18, 1.0089F, 4.0576F, -7.0F, 1, 1, 14, 0.0F, false));
-        bone66.cubeList.add(new ModelBox(bone66, 77, 18, -7.0241F, 3.1528F, -7.0F, 1, 1, 14, 0.0F, false));
-        initAnimations();
+        bone36.cubeList.add(new ModelBox(bone36, 32, 40, -2.5F, -2.0F, 0.0F, 5, 2, 7, 0.0F, false));
+        this.initAnimations();
     }
 }

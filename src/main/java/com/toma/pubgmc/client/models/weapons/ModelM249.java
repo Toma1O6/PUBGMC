@@ -119,7 +119,7 @@ public class ModelM249 extends ModelGun {
         initAimAnimation(-0.56f, 0.265f, 0.125f);
         initAimingAnimationStates(0.265f, 0.18f, 0.16f);
         // TODO test the animation speed
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(0.4F);
+        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(0.55F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
