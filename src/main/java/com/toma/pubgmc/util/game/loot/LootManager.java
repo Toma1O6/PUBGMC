@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class LootManager {
 
     private static final HashMap<LootType, List<LootEntry>> MAP = new HashMap<>();
+    private static final ArrayList<Item> SPECIAL_ATTACHMENTS = new ArrayList<>();
     private final World world;
     private final LootOptions loot;
 
@@ -86,13 +87,14 @@ public class LootManager {
             inventory.set(i, stack.copy());
             i++;
         }
+        fillSpecialAttachmentList();
         inventory.set(i, new ItemStack(PMCRegistry.PMCItems.ARMOR3HELMET));
         i++;
         inventory.set(i, new ItemStack(PMCRegistry.PMCItems.ARMOR3BODY));
         i++;
         inventory.set(i, new ItemStack(PMCRegistry.PMCItems.BACKPACK3));
         i++;
-        ItemStack stack1 = new ItemStack(getRandomObject(LootType.ATTACHMENT, null, (byte) 1));
+        ItemStack stack1 = new ItemStack(SPECIAL_ATTACHMENTS.get(rand.nextInt(SPECIAL_ATTACHMENTS.size())));
         inventory.set(i, stack1);
         i++;
         if(rand.nextInt(10) < 5) {
@@ -108,7 +110,20 @@ public class LootManager {
         return i;
     }
 
-    // TODO create loot category types
+    private static void fillSpecialAttachmentList() {
+        if(SPECIAL_ATTACHMENTS.isEmpty()) {
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_MAG_AR);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.SCOPE4X);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_MAG_SNIPER);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.COMPENSATOR_AR);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.SCOPE8X);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_AR);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.COMPENSATOR_SNIPER);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER);
+            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.SCOPE15X);
+        }
+    }
+
     /**
      * @param lootCategory - loot category
      * @param allowedTypes - Array of allowed gun types, CANNOT BE NULL when lootCategory == LootType.GUN!!
