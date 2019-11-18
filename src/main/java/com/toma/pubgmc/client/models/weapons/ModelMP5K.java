@@ -247,9 +247,9 @@ public class ModelMP5K extends ModelGun {
         gun.cubeList.add(new ModelBox(gun, 85, 23, -3.0F, -32.2941F, -7.8296F, 1, 3, 1, 0.0F, false));
         gun.cubeList.add(new ModelBox(gun, 85, 23, -3.0F, -33.2941F, -16.8296F, 1, 2, 9, 0.0F, false));
         gun.cubeList.add(new ModelBox(gun, 75, 25, 1.648F, -32.2941F, -3.8296F, 1, 2, 12, 0.0F, true));
-        gun.cubeList.add(new ModelBox(gun, 75, 21, -3.0F, -33.2941F, -7.8296F, 6, 1, 21, 0.0F, false));
-        gun.cubeList.add(new ModelBox(gun, 66, 4, 0.134F, -35.5261F, -16.8296F, 1, 1, 30, 0.0F, false));
-        gun.cubeList.add(new ModelBox(gun, 66, 4, -1.134F, -35.5261F, -16.8296F, 2, 1, 30, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 74, 21, -3.0F, -33.2941F, -7.8296F, 6, 1, 21, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 11, 0.134F, -35.5261F, -16.8296F, 1, 1, 30, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 64, 15, -1.134F, -35.5261F, -16.8296F, 2, 1, 30, 0.0F, true));
         gun.cubeList.add(new ModelBox(gun, 66, 4, -1.0F, -35.4941F, -19.8096F, 2, 2, 1, 0.0F, true));
         gun.cubeList.add(new ModelBox(gun, 66, 4, -0.5F, -34.4941F, -17.8096F, 1, 1, 5, 0.0F, true));
         gun.cubeList.add(new ModelBox(gun, 66, 4, -0.5F, -34.7741F, -18.8096F, 1, 1, 1, 0.0F, true));
