@@ -443,8 +443,7 @@ public class ClientEvents {
         //We don't want to render the crosshair in scopes
         if (e.getType() == ElementType.CROSSHAIRS) {
             if (stack.getItem() instanceof GunBase) {
-                //TODO
-                //e.setCanceled(true);
+                e.setCanceled(true);
             }
         }
 
