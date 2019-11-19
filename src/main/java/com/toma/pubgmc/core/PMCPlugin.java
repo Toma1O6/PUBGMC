@@ -7,7 +7,7 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.TransformerExclusions("com.toma.pubgmc.core")
 @IFMLLoadingPlugin.MCVersion("1.12.2")
-@IFMLLoadingPlugin.SortingIndex(1001)
+@IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE)
 public class PMCPlugin implements IFMLLoadingPlugin {
 
     @Override
@@ -17,7 +17,7 @@ public class PMCPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getModContainerClass() {
-        return PMCDummyModContainer.class.getName();
+        return null;
     }
 
     @Override

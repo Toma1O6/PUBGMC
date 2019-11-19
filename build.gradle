@@ -29,6 +29,13 @@ dependencies {
 
 }
 
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'com.toma.pubgmc.core.PMCPlugin'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version

@@ -40,6 +40,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
@@ -57,7 +58,7 @@ public class Pubgmc {
     public static final String SERVER_PROXY_CLASS = "com.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     private static final Random RANDOM = new Random();
-    public static Logger logger;
+    public static final Logger logger = LogManager.getLogger("pubgmc");
 
     @Instance
     public static Pubgmc instance;
@@ -100,7 +101,6 @@ public class Pubgmc {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        logger = event.getModLog();
         PMCSounds.registerSounds();
         PacketHandler.initialize();
 
