@@ -1067,8 +1067,7 @@ public class ClientEvents {
     private void handleVehicleControls(boolean forward, boolean back, boolean right, boolean left, EntityPlayer player) {
         if (player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-
-            //vehicle.handleInputs(forward, back, right, left, player);
+            vehicle.handleInputs(forward, back, right, left, player);
             PacketHandler.sendToServer(new PacketHandleVehicleInput(forward, back, right, left, vehicle.getEntityId()));
         }
     }
@@ -1076,7 +1075,6 @@ public class ClientEvents {
     private void handleParachuteControls(boolean down, boolean up, boolean right, boolean left, EntityPlayer player) {
         if (player.getRidingEntity() instanceof EntityParachute) {
             EntityParachute chute = (EntityParachute) player.getRidingEntity();
-
             chute.handleInputs(down, up, right, left);
             PacketHandler.INSTANCE.sendToServer(new PacketHandleParachuteInputs(up, down, right, left));
         }

@@ -6,7 +6,7 @@ import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
-import com.toma.pubgmc.common.entity.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.network.PacketHandler;

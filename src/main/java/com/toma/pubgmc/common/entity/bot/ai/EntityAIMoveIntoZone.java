@@ -1,4 +1,4 @@
-package com.toma.pubgmc.common.entity.ai;
+package com.toma.pubgmc.common.entity.bot.ai;
 
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.common.capability.IGameData;

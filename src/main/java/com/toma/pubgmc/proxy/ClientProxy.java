@@ -12,7 +12,7 @@ import com.toma.pubgmc.client.renderer.tileentity.RenderAirdrop;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.RecipeButton;
-import com.toma.pubgmc.common.entity.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntityPlane;

@@ -11,7 +11,7 @@ import com.toma.pubgmc.common.capability.IWorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldData;
 import com.toma.pubgmc.common.capability.IWorldData.WorldDataStorage;
 import com.toma.pubgmc.common.commands.*;
-import com.toma.pubgmc.common.entity.ai.EntityAISearchLoot;
+import com.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;

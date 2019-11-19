@@ -2,7 +2,7 @@ package com.toma.pubgmc.client.renderer.entity;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.client.models.ModelAIPlayer;
-import com.toma.pubgmc.common.entity.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.model.ModelBiped;

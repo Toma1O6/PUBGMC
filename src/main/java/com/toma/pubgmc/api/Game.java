@@ -2,7 +2,7 @@ package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.common.entity.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketSyncGameData;
 import com.toma.pubgmc.util.PUBGMCUtil;
@@ -115,7 +115,7 @@ public abstract class Game {
      * Takes care of loot which is provided to bots
      * @return consumer which is supposed to fill the AI player's inventory
      */
-    public abstract Consumer<EntityAIPlayer> getLootDistributor();
+    public abstract <T extends EntityAIPlayer> Consumer<T> getLootDistributor();
 
     /**
      * Decide what to do when player dies and attempts to respawn

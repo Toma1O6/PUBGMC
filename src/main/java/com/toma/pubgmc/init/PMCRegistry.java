@@ -10,6 +10,7 @@ import com.toma.pubgmc.common.BlockBuilder;
 import com.toma.pubgmc.common.HorizontalBlockBuilder;
 import com.toma.pubgmc.common.blocks.*;
 import com.toma.pubgmc.common.entity.*;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import com.toma.pubgmc.common.entity.throwables.EntityMolotov;

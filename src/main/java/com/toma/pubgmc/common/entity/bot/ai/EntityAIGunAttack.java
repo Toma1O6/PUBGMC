@@ -1,6 +1,6 @@
-package com.toma.pubgmc.common.entity.ai;
+package com.toma.pubgmc.common.entity.bot.ai;
 
-import com.toma.pubgmc.common.entity.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.EntityBullet;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.network.PacketHandler;
