@@ -57,8 +57,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
     public final ModelM24 m24 = new ModelM24();
     public final ModelAWM awm = new ModelAWM();
 
-    private boolean updateAnimation;
-    private Vec3d animationOffset;
+    private final Vec3d animationOffset = new Vec3d(0, 0.01, 0.015);
 
     @Override
     public void renderByItem(ItemStack stack) {
@@ -67,15 +66,11 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
         ModelGun gun = ((GunBase) stack.getItem()).getWeaponModel();
         this.bindTexture(gun.textureName());
         if(flag0 && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) this.applyRecoilAnimation(player);
-        this.updateAnimation = ClientEvents.recoilTicks == 0;
         gun.render(stack);
     }
 
     private void applyRecoilAnimation(EntityPlayer player) {
         if(ClientEvents.recoilTicks > 0 && IPlayerData.PlayerData.get(player).isAiming()) {
-            if(updateAnimation) {
-                animationOffset = new Vec3d(smallRandom(50), smallRandom(50), smallRandom(50));
-            }
             int i = 11 - ClientEvents.recoilTicks;
             GlStateManager.translate(animationOffset.x / i, animationOffset.y / i, animationOffset.z / i);
             return;
