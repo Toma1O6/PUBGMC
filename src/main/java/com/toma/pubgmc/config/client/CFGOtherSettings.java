@@ -14,4 +14,8 @@ public final class CFGOtherSettings {
     @Config.Name("Lootbox content render")
     @Config.RequiresMcRestart
     public CFGLootRenderStyle lootRenderStyle = CFGLootRenderStyle.FANCY;
+
+    @Config.Name("Dynamic bobbing animation")
+    @Config.Comment({"This will automatically toggle bobbing animations on when sprinting with gun"})
+    public boolean useDynamicBobbing = true;
 }

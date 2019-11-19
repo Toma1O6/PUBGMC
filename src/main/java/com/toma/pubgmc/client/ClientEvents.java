@@ -711,6 +711,12 @@ public class ClientEvents {
                 handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
             }
 
+            if(ConfigPMC.other().useDynamicBobbing) {
+                if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
+                    Minecraft.getMinecraft().gameSettings.viewBobbing = player.isSprinting();
+                }
+            }
+
             //Automatic fire is handled here because Mouse input event is acting weirdly
             if (gs.keyBindAttack.isKeyDown() && ev.phase == Phase.END) {
                 if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
