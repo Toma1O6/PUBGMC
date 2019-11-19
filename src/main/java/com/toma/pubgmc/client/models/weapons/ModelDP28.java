@@ -1,7 +1,6 @@
 package com.toma.pubgmc.client.models.weapons;
 
 import com.toma.pubgmc.client.models.ModelGun;
-import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
