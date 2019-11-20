@@ -1,9 +1,7 @@
 {
-    "variants":
-     {
-        "normal":
-         {
+    "variants": {
+        "normal": {
             "model": "pubgmc:big_airdrop"
-         }
-     }
+        }
+    }
 }

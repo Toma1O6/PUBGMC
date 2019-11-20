@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BlockBuilder implements IBuilder<PMCBlock> {
@@ -153,9 +154,7 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
             @Override
             public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
                 if (description != null) {
-                    for (String s : description) {
-                        tooltip.add(s);
-                    }
+                    tooltip.addAll(Arrays.asList(description));
                 }
             }
         };

@@ -248,7 +248,9 @@ public class PMCRegistry {
         public static final PMCBlockHorizontal SCREEN = null;
         public static final PMCBlockHorizontal BOX_SINGLE = null;
         public static final PMCBlockHorizontal BOX_DOUBLE = null;
-
+        public static final PMCBlock SANDBAG = null;
+        public static final PMCBlock WOODEN_CRATE = null;
+        public static final PMCBlockHorizontal VENT = null;
     }
 
     public static final class ToolMaterials {
@@ -340,7 +342,10 @@ public class PMCRegistry {
                             .build(),
                     HorizontalBlockBuilder.create("box_double", Material.IRON)
                             .soundType(SoundType.METAL).transparency(false, false)
-                            .build()
+                            .build(),
+                    BlockBuilder.create("sandbag", Material.SAND).soundType(SoundType.SAND).setTransparent().renderType(BlockRenderLayer.CUTOUT).build(),
+                    BlockBuilder.create("wooden_crate", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
+                    HorizontalBlockBuilder.create("vent", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB).build()
             };
 
             event.getRegistry().registerAll(BLOCKS);
