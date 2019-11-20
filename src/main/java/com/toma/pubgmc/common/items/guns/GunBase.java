@@ -17,8 +17,6 @@ import com.toma.pubgmc.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.network.sp.PacketReloadingSP;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import com.toma.pubgmc.util.game.loot.LootManager;
-import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -40,6 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +60,7 @@ public class GunBase extends PMCItem {
     private ReloadType reloadType;
     private GunType gunType;
     private boolean hasTwoRoundBurst = false;
-    protected IBoltAction action = null;
+    protected Supplier<SoundEvent> action = null;
     public boolean airdropWeapon = false;
 
     @SideOnly(Side.CLIENT)
@@ -338,7 +337,7 @@ public class GunBase extends PMCItem {
 // Setters and getters
 //-------------------------------------------------
 
-    public IBoltAction getAction() {
+    public Supplier<SoundEvent> getAction() {
         return action;
     }
 

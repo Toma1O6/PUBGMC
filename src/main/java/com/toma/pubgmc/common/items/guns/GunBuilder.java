@@ -9,6 +9,8 @@ import com.toma.pubgmc.util.game.loot.LootManager;
 import com.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.util.SoundEvent;
 
+import java.util.function.Supplier;
+
 public class GunBuilder {
     String name;
     int reloadTime, firerate, maxAmmo, exMaxAmmo;
@@ -21,7 +23,7 @@ public class GunBuilder {
     Firemode[] validFiremodes;
     SoundEvent reloadSound, shootNormal, shootSilenced;
     CFGWeapon cfgStats;
-    IBoltAction action;
+    Supplier<SoundEvent> action;
 
     private GunBuilder() {
     }
@@ -44,7 +46,7 @@ public class GunBuilder {
             Object o = arr[i];
             if (obj.equals(o)) {
                 return true;
-            } else continue;
+            }
         }
         return false;
     }
@@ -147,7 +149,7 @@ public class GunBuilder {
         return this;
     }
 
-    public GunBuilder addBoltAction(IBoltAction action) {
+    public GunBuilder addBoltAction(Supplier<SoundEvent> action) {
         this.action = action;
         return this;
     }
@@ -191,7 +193,7 @@ public class GunBuilder {
         reloadSound = checkNotNull(reloadSound);
 
         if(action != null) {
-            Preconditions.checkNotNull(action.getSoundEvent(), "Cannot add IBoltAction with null soundevent");
+            Preconditions.checkNotNull(action.get(), "Cannot add IBoltAction with null soundevent");
         }
 
         if (twoRoundBurst) {
