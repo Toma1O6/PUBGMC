@@ -29,6 +29,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private boolean opaque, fullCube;
     private int lightValue;
     private AxisAlignedBB[] boxes;
+    private AxisAlignedBB[] coll_boxes;
     private BlockFaceShape faceShape;
     private String[] desc;
 
@@ -74,12 +75,14 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     }
 
     public HorizontalBlockBuilder aabb(AxisAlignedBB aabb) {
-        this.boxes = new AxisAlignedBB[]{aabb, aabb};
+        this.boxes = new AxisAlignedBB[] {aabb};
+        this.coll_boxes = new AxisAlignedBB[] {aabb};
         return this;
     }
 
     public HorizontalBlockBuilder aabb(AxisAlignedBB bounding, AxisAlignedBB collision) {
-        this.boxes = new AxisAlignedBB[]{bounding, collision};
+        this.boxes = new AxisAlignedBB[] {bounding};
+        this.coll_boxes = new AxisAlignedBB[] {collision};
         return this;
     }
 
@@ -88,6 +91,12 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
      */
     public HorizontalBlockBuilder aabb(AxisAlignedBB... horizontalBoxes) {
         this.boxes = horizontalBoxes;
+        this.coll_boxes = horizontalBoxes;
+        return this;
+    }
+
+    public HorizontalBlockBuilder nullAABB() {
+        this.coll_boxes = new AxisAlignedBB[] {Block.NULL_AABB};
         return this;
     }
 
@@ -159,7 +168,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
 
             @Override
             public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-                return boxes.length == 4 ? boxes[getBoundingBoxFromRotation(state)] : boxes[1];
+                return coll_boxes.length == 4 ? coll_boxes[getBoundingBoxFromRotation(state)] : coll_boxes[0];
             }
 
             @Override

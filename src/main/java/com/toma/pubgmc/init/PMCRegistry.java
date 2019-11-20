@@ -345,7 +345,9 @@ public class PMCRegistry {
                             .build(),
                     BlockBuilder.create("sandbag", Material.SAND).soundType(SoundType.SAND).setTransparent().renderType(BlockRenderLayer.CUTOUT).build(),
                     BlockBuilder.create("wooden_crate", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
-                    HorizontalBlockBuilder.create("vent", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB).build()
+                    HorizontalBlockBuilder.create("vent", Material.IRON).soundType(SoundType.METAL).setTransparent()
+                            .aabb(new AxisAlignedBB(0, 0, 0.8, 1, 1, 1), new AxisAlignedBB(0, 0, 0, 0.2, 1, 1), new AxisAlignedBB(0, 0, 0, 1, 1, 0.2), new AxisAlignedBB(0.8, 0, 0, 1, 1, 1))
+                            .nullAABB().build()
             };
 
             event.getRegistry().registerAll(BLOCKS);
