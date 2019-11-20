@@ -143,27 +143,11 @@ public class RenderHandler {
         int perspective = mc.gameSettings.thirdPersonView;
         IPlayerData playerData = IPlayerData.PlayerData.get(player);
         boolean isProne = playerData.isProning();
-        // TODO why is it even there?
-        switch (perspective) {
-            case 0: {
-                if(player != mc.getRenderViewEntity()) {
-                    if(isProne) {
-                        this.setProne(model);
-                        break;
-                    }
-                    this.setThirdPersonAnimations(model, player, playerData);
-                }
-                break;
-            }
-            case 1: case 2: {
-                if(isProne) {
-                    this.setProne(model);
-                    break;
-                }
-                this.setThirdPersonAnimations(model, player, playerData);
-                break;
-            }
+        if(isProne) {
+            this.setProne(model);
+            return;
         }
+        this.setThirdPersonAnimations(model, player, playerData);
     }
 
     @SubscribeEvent
