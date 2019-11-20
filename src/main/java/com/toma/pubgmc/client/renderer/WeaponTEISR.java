@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 
 public class WeaponTEISR extends TileEntityItemStackRenderer {
     //model
@@ -57,8 +56,6 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
     public final ModelM24 m24 = new ModelM24();
     public final ModelAWM awm = new ModelAWM();
 
-    private final Vec3d animationOffset = new Vec3d(0, 0.01, 0.02);
-
     @Override
     public void renderByItem(ItemStack stack) {
         EntityPlayer player = Minecraft.getMinecraft().player;
@@ -72,11 +69,12 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
     private void applyRecoilAnimation(EntityPlayer player) {
         if(ClientEvents.recoilTicks > 0 && IPlayerData.PlayerData.get(player).isAiming()) {
             int i = 11 - ClientEvents.recoilTicks;
-            GlStateManager.rotate(ClientEvents.recoilTicks / 4, 1f, 0f, 0f);
-            GlStateManager.translate(animationOffset.x / i, animationOffset.y / i, animationOffset.z / i);
+            GlStateManager.rotate(ClientEvents.recoilTicks / 5, 1f, 0f, 0f);
+            GlStateManager.translate(0, 0.01 / i, 0.02 / i);
             return;
         }
-        GlStateManager.rotate(ClientEvents.recoilTicks, 1, 0, 0);
+        GlStateManager.rotate(ClientEvents.recoilTicks / 1.5F, 1, 0, 0);
+        GlStateManager.translate(0, 0, 0.05 / (11 - ClientEvents.recoilTicks));
     }
 
     private double smallRandom(int i) {
