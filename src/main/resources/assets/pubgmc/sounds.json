@@ -110,7 +110,12 @@
     "reload.kar98k.single": { "category": "player", "sounds": [{ "name": "pubgmc:reload_kar98k_single", "stream": "true" }]},
     "reload.m24": { "category": "player", "sounds": [{ "name": "pubgmc:reload_m24", "stream": "true" }]},
     "reload.awm": { "category": "player", "sounds": [{ "name": "pubgmc:reload_awm", "stream": "true" }]},
-    
+
+    "bolt.win94": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_win94", "stream": "true" }]},
+    "bolt.kar98k": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_kar98k", "stream": "true" }]},
+    "bolt.m24": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_m24", "stream": "true" }]},
+    "bolt.awm": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_awm", "stream": "true" }]},
+
     "gun.noammo": { "category": "player", "sounds": [{ "name": "pubgmc:gun_noammo", "stream": "true" }]},
     "bullet.whizz": { "category": "player", "sounds": [{ "name": "pubgmc:bullet_whizz", "stream": "true" }]},
     "plane.fly_by": { "category": "master", "sounds": [{ "name": "pubgmc:airplane", "stream": "true" }]},

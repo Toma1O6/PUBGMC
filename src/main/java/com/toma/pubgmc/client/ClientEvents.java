@@ -622,7 +622,7 @@ public class ClientEvents {
                                     //We send packet to server telling it to spawn new entity
                                     recoilTicks = 10;
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                    if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
+                                    if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 20);
                                     //Do the recoil
                                     applyRecoil(player, stack);
                                 } else {
@@ -728,7 +728,6 @@ public class ClientEvents {
                             if (gun.hasAmmo(player.getHeldItemMainhand())) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                                 this.applyRecoil(player, player.getHeldItemMainhand());
                             } else {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
@@ -763,7 +762,6 @@ public class ClientEvents {
                         if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
                             recoilTicks = 10;
                             PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                            if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().getSoundEvent(), player.posX, player.posY, player.posZ, 1.0F, 3);
                             applyRecoil(player, stack);
                             shotsFired++;
                             shootingTimer = 0;
