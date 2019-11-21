@@ -285,11 +285,6 @@ public class PMCRegistry {
                     BlockBuilder.create("ruinswall", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.WHITE_STAINED_HARDENED_CLAY).build(),
                     BlockBuilder.create("blueglass", Material.GLASS).setGlass().soundType(SoundType.GLASS).build(),
                     new BlockTarget("target"),
-                    BlockBuilder.create("lampbottom", Material.IRON).soundType(SoundType.METAL)
-                            .aabb(new AxisAlignedBB(0.05, 0, 0.05, 0.95, 1, 0.95)).setTransparent().build(),
-                    BlockBuilder.create("lamppost", Material.IRON).soundType(SoundType.METAL)
-                            .aabb(new AxisAlignedBB(0.2, 0, 0.2, 0.8, 1, 0.8)).setTransparent().build(),
-                    new BlockLamp("lamptop", Material.IRON),
                     BlockBuilder.create("light", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1f)
                             .aabb(new AxisAlignedBB(0.1, 0.75, 0.1, 0.9, 1.0, 0.9), Block.NULL_AABB).build(),
                     BlockBuilder.create("crate", Material.WOOD).soundType(SoundType.WOOD).transparency(false, true).build(),
@@ -363,7 +358,12 @@ public class PMCRegistry {
                     new BlockTireStack(),
                     BlockBuilder.create("metal_table", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                     BlockBuilder.create("road_blocker", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.4, 0, 0.4, 0.6, 1, 0.6)).build(),
-                    BlockBuilder.create("modern_lamp", Material.ROCK).soundType(SoundType.GLASS).light(1.0F).build()
+                    BlockBuilder.create("modern_lamp", Material.ROCK).soundType(SoundType.GLASS).light(1.0F).build(),
+                    BlockBuilder.create("lamp_base", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                    BlockBuilder.create("lamp_post", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                    HorizontalBlockBuilder.create("lamp_top", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).build(),
+                    HorizontalBlockBuilder.create("radiator", Material.IRON).soundType(SoundType.METAL).setTransparent().nullAABB().build(),
+                    new BlockSmallChest()
             };
 
             event.getRegistry().registerAll(BLOCKS);
@@ -971,7 +971,6 @@ public class PMCRegistry {
 
         public static void initTileEntities() {
             registerTileEntity(TileEntityAirdrop.class, "airdrop");
-            registerTileEntity(TileEntityLamp.class, "lamp");
             registerTileEntity(TileEntityLootGenerator.class, "lootspawner");
             registerTileEntity(TileEntityPlayerCrate.class, "player_crate");
             registerTileEntity(TileEntityGunWorkbench.class, "gun_workbench");

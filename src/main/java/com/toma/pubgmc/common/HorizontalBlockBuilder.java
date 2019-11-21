@@ -27,7 +27,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private BlockRenderLayer renderLayer;
     private MapColor mapColor;
     private boolean opaque, fullCube;
-    private int lightValue;
+    private float lightValue;
     private AxisAlignedBB[] boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
     private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
     private BlockFaceShape faceShape;
@@ -69,7 +69,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
         return this;
     }
 
-    public HorizontalBlockBuilder light(int light) {
+    public HorizontalBlockBuilder light(float light) {
         this.lightValue = light;
         return this;
     }
@@ -137,7 +137,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     @Override
     public PMCBlockHorizontal build() {
         checkNotNull(material);
-        checkInt(lightValue, 0, 15);
+        checkFloat(lightValue, 0, 1.0F);
         checkNotNull(soundType);
 
         PMCBlockHorizontal builtBlock = new PMCBlockHorizontal(name, material) {
@@ -190,7 +190,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
                 }
             }
         };
-
+        builtBlock.setLightLevel(lightValue);
         return builtBlock;
     }
 }

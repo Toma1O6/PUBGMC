@@ -1,0 +1,20 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "pubgmc:radiator",
+            "y": 180
+        },
+        "facing=east": {
+            "model": "pubgmc:radiator",
+            "y": 270
+        },
+        "facing=south": {
+            "model": "pubgmc:radiator",
+            "y": 0
+        },
+        "facing=west": {
+            "model": "pubgmc:radiator",
+            "y": 90
+        }
+    }
+}
