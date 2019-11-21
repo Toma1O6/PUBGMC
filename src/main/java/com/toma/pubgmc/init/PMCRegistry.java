@@ -354,7 +354,11 @@ public class PMCRegistry {
                     new BlockLootCrate("big_crate_empty", BlockLootCrate.EnumCrateType.EMPTY),
                     new BlockLootCrate("big_crate_ammo", BlockLootCrate.EnumCrateType.AMMO),
                     new BlockLootCrate("big_crate_gun", BlockLootCrate.EnumCrateType.WEAPON),
-                    new BlockSimpleStairs("wood_stairs", Material.WOOD)
+                    new BlockSimpleStairs("wood_stairs", Material.WOOD),
+                    BlockBuilder.create("clean_metal", Material.IRON).soundType(SoundType.METAL).build(),
+                    BlockBuilder.create("dark_wood", Material.WOOD).soundType(SoundType.WOOD).build(),
+                    BlockBuilder.create("wood_tile", Material.WOOD).soundType(SoundType.WOOD).build(),
+                    BlockBuilder.create("sandbag_sand", Material.SAND).soundType(SoundType.SAND).build()
             };
 
             event.getRegistry().registerAll(BLOCKS);
