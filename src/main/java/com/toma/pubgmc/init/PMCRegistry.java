@@ -353,7 +353,8 @@ public class PMCRegistry {
                             .nullAABB().build(),
                     new BlockLootCrate("big_crate_empty", BlockLootCrate.EnumCrateType.EMPTY),
                     new BlockLootCrate("big_crate_ammo", BlockLootCrate.EnumCrateType.AMMO),
-                    new BlockLootCrate("big_crate_gun", BlockLootCrate.EnumCrateType.WEAPON)
+                    new BlockLootCrate("big_crate_gun", BlockLootCrate.EnumCrateType.WEAPON),
+                    new BlockSimpleStairs("wood_stairs", Material.WOOD)
             };
 
             event.getRegistry().registerAll(BLOCKS);
