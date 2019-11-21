@@ -358,7 +358,12 @@ public class PMCRegistry {
                     BlockBuilder.create("clean_metal", Material.IRON).soundType(SoundType.METAL).build(),
                     BlockBuilder.create("dark_wood", Material.WOOD).soundType(SoundType.WOOD).build(),
                     BlockBuilder.create("wood_tile", Material.WOOD).soundType(SoundType.WOOD).build(),
-                    BlockBuilder.create("sandbag_sand", Material.SAND).soundType(SoundType.SAND).build()
+                    BlockBuilder.create("sandbag_sand", Material.SAND).soundType(SoundType.SAND).build(),
+                    new BlockTire(),
+                    new BlockTireStack(),
+                    BlockBuilder.create("metal_table", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                    BlockBuilder.create("road_blocker", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.4, 0, 0.4, 0.6, 1, 0.6)).build(),
+                    BlockBuilder.create("modern_lamp", Material.ROCK).soundType(SoundType.GLASS).light(1.0F).build()
             };
 
             event.getRegistry().registerAll(BLOCKS);

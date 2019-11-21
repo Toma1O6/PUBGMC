@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "variant=0": {"model": "pubgmc:tire_stack_1"},
+        "variant=1": {"model": "pubgmc:tire_stack_2"},
+        "variant=2": {"model": "pubgmc:tire_stack_3"},
+        "variant=3": {"model": "pubgmc:tire_stack_4"},
+        "variant=4": {"model": "pubgmc:tire_stack_5"}
+    }
+}

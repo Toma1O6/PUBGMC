@@ -143,7 +143,7 @@ public class RenderHandler {
         int perspective = mc.gameSettings.thirdPersonView;
         IPlayerData playerData = IPlayerData.PlayerData.get(player);
         boolean isProne = playerData.isProning();
-        if(isProne) {
+        if(isProne && mc.getRenderViewEntity() != player) {
             this.setProne(model);
             return;
         }

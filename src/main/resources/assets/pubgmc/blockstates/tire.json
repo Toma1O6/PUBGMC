@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=up": {"model": "pubgmc:tire", "x": 180},
+        "facing=down": {"model": "pubgmc:tire", "x": 0},
+        "facing=north": {"model": "pubgmc:tire", "x": 90, "y": 180},
+        "facing=east": {"model": "pubgmc:tire", "x": 90, "y": 270},
+        "facing=south": {"model": "pubgmc:tire", "x": 90},
+        "facing=west": {"model": "pubgmc:tire", "x": 90, "y": 90}
+    }
+}
