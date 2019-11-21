@@ -1,9 +1,9 @@
 {
     "variants":
     {
-        "facing=north": { "model": "pubgmc:storage_top" },
-        "facing=east": { "model": "pubgmc:storage_top", "y": 90 },
-        "facing=south": { "model": "pubgmc:storage_top", "y": 180 },
-        "facing=west": { "model": "pubgmc:storage_top", "y": 270 }
+        "facing=north": { "model": "pubgmc:storage_top", "y": 180 },
+        "facing=east": { "model": "pubgmc:storage_top", "y": 270 },
+        "facing=south": { "model": "pubgmc:storage_top", "y": 0 },
+        "facing=west": { "model": "pubgmc:storage_top", "y": 90 }
     }
 }

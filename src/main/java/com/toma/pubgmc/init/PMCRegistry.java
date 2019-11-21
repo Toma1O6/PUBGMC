@@ -251,6 +251,9 @@ public class PMCRegistry {
         public static final PMCBlock SANDBAG = null;
         public static final PMCBlock WOODEN_CRATE = null;
         public static final PMCBlockHorizontal VENT = null;
+        public static final BlockLootCrate BIG_CRATE_EMPTY = null;
+        public static final BlockLootCrate BIG_CRATE_AMMO = null;
+        public static final BlockLootCrate BIG_CRATE_GUN = null;
     }
 
     public static final class ToolMaterials {
@@ -347,7 +350,10 @@ public class PMCRegistry {
                     BlockBuilder.create("wooden_crate", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
                     HorizontalBlockBuilder.create("vent", Material.IRON).soundType(SoundType.METAL).setTransparent()
                             .aabb(new AxisAlignedBB(0, 0, 0.8, 1, 1, 1), new AxisAlignedBB(0, 0, 0, 0.2, 1, 1), new AxisAlignedBB(0, 0, 0, 1, 1, 0.2), new AxisAlignedBB(0.8, 0, 0, 1, 1, 1))
-                            .nullAABB().build()
+                            .nullAABB().build(),
+                    new BlockLootCrate("big_crate_empty", BlockLootCrate.EnumCrateType.EMPTY),
+                    new BlockLootCrate("big_crate_ammo", BlockLootCrate.EnumCrateType.AMMO),
+                    new BlockLootCrate("big_crate_gun", BlockLootCrate.EnumCrateType.WEAPON)
             };
 
             event.getRegistry().registerAll(BLOCKS);

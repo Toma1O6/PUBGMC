@@ -28,8 +28,8 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private MapColor mapColor;
     private boolean opaque, fullCube;
     private int lightValue;
-    private AxisAlignedBB[] boxes;
-    private AxisAlignedBB[] coll_boxes;
+    private AxisAlignedBB[] boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
+    private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
     private BlockFaceShape faceShape;
     private String[] desc;
 
