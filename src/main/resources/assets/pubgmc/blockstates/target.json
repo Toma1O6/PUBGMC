@@ -1,7 +1,20 @@
 {
     "variants": {
-        "normal": {
-            "model": "pubgmc:target"
-                  }
-                }
+        "facing=north,feedback=false,upper=false": {"model": "pubgmc:target", "y": 0},
+        "facing=east,feedback=false,upper=false": {"model": "pubgmc:target", "y": 90},
+        "facing=south,feedback=false,upper=false": {"model": "pubgmc:target", "y": 180},
+        "facing=west,feedback=false,upper=false": {"model": "pubgmc:target", "y": 270},
+        "facing=north,feedback=false,upper=true": {"model": "pubgmc:empty_model", "y": 0},
+        "facing=east,feedback=false,upper=true": {"model": "pubgmc:empty_model", "y": 90},
+        "facing=south,feedback=false,upper=true": {"model": "pubgmc:empty_model", "y": 180},
+        "facing=west,feedback=false,upper=true": {"model": "pubgmc:empty_model", "y": 270},
+        "facing=north,feedback=true,upper=false": {"model": "pubgmc:target", "y": 0},
+        "facing=east,feedback=true,upper=false": {"model": "pubgmc:target", "y": 90},
+        "facing=south,feedback=true,upper=false": {"model": "pubgmc:target", "y": 180},
+        "facing=west,feedback=true,upper=false": {"model": "pubgmc:target", "y": 270},
+        "facing=north,feedback=true,upper=true": {"model": "pubgmc:empty_model", "y": 0},
+        "facing=east,feedback=true,upper=true": {"model": "pubgmc:empty_model", "y": 90},
+        "facing=south,feedback=true,upper=true": {"model": "pubgmc:empty_model", "y": 180},
+        "facing=west,feedback=true,upper=true": {"model": "pubgmc:empty_model", "y": 270}
+    }
 }

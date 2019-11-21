@@ -284,7 +284,7 @@ public class PMCRegistry {
                     HorizontalBlockBuilder.create("table", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
                     BlockBuilder.create("ruinswall", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.WHITE_STAINED_HARDENED_CLAY).build(),
                     BlockBuilder.create("blueglass", Material.GLASS).setGlass().soundType(SoundType.GLASS).build(),
-                    BlockBuilder.create("target", Material.ROCK).soundType(SoundType.STONE).build(),
+                    new BlockTarget("target"),
                     BlockBuilder.create("lampbottom", Material.IRON).soundType(SoundType.METAL)
                             .aabb(new AxisAlignedBB(0.05, 0, 0.05, 0.95, 1, 0.95)).setTransparent().build(),
                     BlockBuilder.create("lamppost", Material.IRON).soundType(SoundType.METAL)

@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.toma.pubgmc.common.blocks.BlockLandMine;
 import com.toma.pubgmc.common.blocks.BlockWindow;
+import com.toma.pubgmc.common.blocks.IBulletReaction;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
@@ -129,6 +130,9 @@ public class EntityBullet extends Entity {
             BlockPos pos = rayTraceResult.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
+            if(block instanceof IBulletReaction && ((IBulletReaction) block).canReceiveFeedBack(world, rayTraceResult.getBlockPos(), state)) {
+                ((IBulletReaction) block).onHit(this, rayTraceResult.hitVec);
+            }
             boolean griefingFlag = world.getGameRules().getBoolean("weaponGriefing");
             boolean canBePenetrated = false;
             if(block instanceof BlockWindow) {
@@ -386,5 +390,9 @@ public class EntityBullet extends Entity {
                 body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), entity);
             }
         }
+    }
+
+    public float getDamage() {
+        return damage;
     }
 }
