@@ -44,7 +44,7 @@ public class BlockBigAirdrop extends BlockAirdrop {
 
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityAirdrop(18);
+        return new TileEntityAirdrop().withInventory(18);
     }
 
     @Override

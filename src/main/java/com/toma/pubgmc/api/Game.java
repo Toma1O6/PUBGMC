@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+// TODO death notifications
 /**
  * Game creation API
  *

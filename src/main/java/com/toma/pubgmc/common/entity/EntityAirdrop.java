@@ -50,6 +50,11 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
+    public boolean isInRangeToRenderDist(double distance) {
+        return true;
+    }
+
+    @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
         PUBGMCUtil.readBasicEntityNBT(compound, this);
         isBigDrop = compound.getBoolean("dropType");

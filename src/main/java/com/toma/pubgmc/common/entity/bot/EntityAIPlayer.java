@@ -53,12 +53,17 @@ public class EntityAIPlayer extends EntityCreature {
         return true;
     }
 
-    // TODO check if death crate can be spawn
+    // TODO check if death crate can be spawned
     @Override
     public void onDeath(DamageSource cause) {
         UUID uuid = this.getUniqueID();
         EntityAISearchLoot.GLOBAL_LOOT_CACHE.remove(uuid);
         super.onDeath(cause);
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double distance) {
+        return true;
     }
 
     @Override

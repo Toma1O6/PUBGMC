@@ -94,7 +94,7 @@ public class GameBattleRoyale extends Game {
         });
         hadRegenActive = world.getGameRules().getBoolean("naturalRegeneration");
         world.getGameRules().setOrCreateGameRule("naturalRegeneration", "false");
-        this.botsLeft = 60 - this.onlinePlayers;
+        this.botsLeft = 50 - this.onlinePlayers;
     }
 
     @Override
@@ -115,6 +115,10 @@ public class GameBattleRoyale extends Game {
     public void onBotDeath(EntityAIPlayer bot) {
         super.onBotDeath(bot);
         this.botsLeft--;
+        if(onlinePlayers <= 1 && botsLeft <= 0) {
+            notifyAllPlayers(bot.world, "Game has ended");
+            this.stopGame(bot.world);
+        }
     }
 
     @Override
@@ -229,7 +233,7 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public boolean canSpawnBots() {
-        return botsLeft > 0 && botsInGame < 5;
+        return botsLeft > 0 && botsLeft - botsInGame > 0 && botsInGame < 5;
     }
 
     @Override

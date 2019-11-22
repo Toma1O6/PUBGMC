@@ -46,6 +46,6 @@ public class BlockAirdrop extends PMCBlock {
 
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityAirdrop(9);
+        return new TileEntityAirdrop();
     }
 }

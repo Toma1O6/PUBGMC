@@ -112,7 +112,6 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         IBlockState state = this.world.getBlockState(pos);
         boolean flag = this.world.getGameRules().getBoolean("weaponGriefing");
         if(flag) {
-            PacketHandler.sendToAllTracking(new PacketSyncEntity(this), this);
             boolean hasBrokenGlass = false;
             if(state.getBlock() instanceof BlockWindow) {
                 BlockWindow window = (BlockWindow) state.getBlock();
@@ -132,6 +131,11 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double distance) {
+        return true;
     }
 
     public void onThrowableTick() {
@@ -179,7 +183,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     }
 
     protected void onEntityFrozen() {
-
+        PacketHandler.sendToAllTracking(new PacketSyncEntity(this), this);
     }
 
     private void setInitialMotion(EnumEntityThrowState state, EntityLivingBase thrower) {

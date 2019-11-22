@@ -1,20 +1,27 @@
 package com.toma.pubgmc.common.tileentity;
 
+import com.toma.pubgmc.util.TileEntitySync;
 import com.toma.pubgmc.util.game.loot.ILootSpawner;
 import com.toma.pubgmc.util.game.loot.LootManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 
-public class TileEntityAirdrop extends TileEntity implements IInventoryTileEntity, ILootSpawner, ITickable {
+public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ILootSpawner, ITickable {
 
     private String hash = "empty";
-    private final NonNullList<ItemStack> inventory;
+    private NonNullList<ItemStack> inventory;
     private static LootManager manager;
 
-    public TileEntityAirdrop(final int size) {
+    public TileEntityAirdrop() {
+        this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    }
+
+    public TileEntityAirdrop withInventory(int size) {
         this.inventory = NonNullList.withSize(size, ItemStack.EMPTY);
+        return this;
     }
 
     public void onLanded() {
@@ -58,7 +65,11 @@ public class TileEntityAirdrop extends TileEntity implements IInventoryTileEntit
 
     @Override
     public void update() {
-
+        if(world.isRemote && !this.isEmpty()) {
+            if(world.getWorldTime() % 3 == 0) {
+                world.spawnParticle(EnumParticleTypes.CLOUD, this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 0, 0.2, 0);
+            }
+        }
     }
 
     public LootManager getManager(boolean needsUpdate) {
