@@ -10,14 +10,14 @@ import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
-import com.toma.pubgmc.network.PacketHandler;
-import com.toma.pubgmc.network.sp.PacketParticle;
 import com.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import com.toma.pubgmc.config.common.CFGWeapon;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import com.toma.pubgmc.init.PMCSounds;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketParticle;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -25,8 +25,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -38,8 +36,6 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -110,7 +106,7 @@ public class EntityBullet extends Entity {
                 damage *= 2.5;
             }
             if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle) {
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);
             }
             this.onEntityHit(isHeadshot, entity);
             entity.hurtResistantTime = 0;
@@ -135,7 +131,7 @@ public class EntityBullet extends Entity {
                 canBePenetrated = griefingFlag;
             } else if(!block.isReplaceable(world, pos)) {
                 Vec3d vec = rayTraceResult.hitVec;
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, vec, block, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
                 if(block instanceof BlockLandMine) {
                     ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);
