@@ -93,17 +93,6 @@ public class EntityBullet extends Entity {
         updateHeading();
     }
 
-    public static void onTargetHit(BlockPos pos, Vec3d hit, EntityLivingBase shooter) {
-        if (shooter.world.getGameRules().getBoolean("notifyTargetHits")) {
-            Vec3d vec = new Vec3d(Math.abs(hit.x - (int) hit.x), Math.abs(hit.y - (int) hit.y), Math.abs(hit.z - (int) hit.z));
-
-            // Hitting the center
-            if (((vec.x > 0.4 && vec.x < 0.6) || (vec.z > 0.4 && vec.z < 0.6)) && (vec.y > 0.4 && vec.y < 0.6)) {
-                shooter.sendMessage(new TextComponentString(TextFormatting.YELLOW + "HIT!"));
-            }
-        }
-    }
-
     public EntityLivingBase getShooter() {
         return shooter;
     }

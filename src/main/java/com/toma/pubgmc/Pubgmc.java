@@ -86,10 +86,6 @@ public class Pubgmc {
             gr.addGameRule("weaponGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
         }
 
-        if (!gr.hasRule("notifyTargetHits")) {
-            gr.addGameRule("notifyTargetHits", "true", GameRules.ValueType.BOOLEAN_VALUE);
-        }
-
         logger.log(Level.INFO, "Registered gamerules");
     }
 

@@ -69,8 +69,8 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
     private void applyRecoilAnimation(EntityPlayer player) {
         if(ClientEvents.recoilTicks > 0 && IPlayerData.PlayerData.get(player).isAiming()) {
             int i = 11 - ClientEvents.recoilTicks;
-            GlStateManager.rotate(ClientEvents.recoilTicks / 5, 1f, 0f, 0f);
-            GlStateManager.translate(0, 0.01 / i, 0.02 / i);
+            GlStateManager.rotate(ClientEvents.recoilTicks / 9, 1f, 0f, 0f);
+            GlStateManager.translate(0, 0.015 / i, 0.025 / i);
             return;
         }
         GlStateManager.rotate(ClientEvents.recoilTicks / 1.5F, 1, 0, 0);
