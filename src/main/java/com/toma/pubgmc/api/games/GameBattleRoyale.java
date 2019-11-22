@@ -50,6 +50,7 @@ public class GameBattleRoyale extends Game {
     private int zoneTimer;
     private List<BlockPos> scheduledAirdrops = new ArrayList<>();
     private boolean hadRegenActive = false;
+    private int botsLeft = 0;
 
     public GameBattleRoyale(String name) {
         super(name);
@@ -93,6 +94,7 @@ public class GameBattleRoyale extends Game {
         });
         hadRegenActive = world.getGameRules().getBoolean("naturalRegeneration");
         world.getGameRules().setOrCreateGameRule("naturalRegeneration", "false");
+        this.botsLeft = 60 - this.onlinePlayers;
     }
 
     @Override
@@ -107,6 +109,12 @@ public class GameBattleRoyale extends Game {
                     " using " + gun.getDisplayName() + "!" + (headshot ? "(headshot)" : "" ) : "!"));
             getOnlinePlayers(player.world).stream().filter(p -> p.equals(player) || p.equals(entityLivingBase)).forEach(p -> p.sendMessage(msgForOthers));
         }
+    }
+
+    @Override
+    public void onBotDeath(EntityAIPlayer bot) {
+        super.onBotDeath(bot);
+        this.botsLeft--;
     }
 
     @Override
@@ -162,7 +170,7 @@ public class GameBattleRoyale extends Game {
     @Override
     public void renderGameInfo(ScaledResolution res) {
         Minecraft mc = Minecraft.getMinecraft();
-        mc.fontRenderer.drawStringWithShadow("Players left: " + onlinePlayers, res.getScaledWidth() - 85, 10, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow("Players left: " + (onlinePlayers + botsLeft), res.getScaledWidth() - 85, 10, 0xFFFFFF);
         boolean shrink = zone.isShrinking();
         int ticksLeft = zone.currentStage == 0 ? 2400 : 2000;
         int secs = (ticksLeft-zoneTimer)/20;
@@ -177,6 +185,7 @@ public class GameBattleRoyale extends Game {
         scheduledAirdrops.forEach(p -> scheduledDrops.appendTag(NBTUtil.createPosTag(p)));
         nbt.setTag("scheduledAirdrops", scheduledDrops);
         nbt.setBoolean("regen", hadRegenActive);
+        nbt.setInteger("botsLeft", this.botsLeft);
     }
 
     @Override
@@ -186,6 +195,7 @@ public class GameBattleRoyale extends Game {
         NBTTagList list = nbt.getTagList("scheduledAirdrops", Constants.NBT.TAG_COMPOUND);
         list.forEach(tag -> scheduledAirdrops.add(NBTUtil.getPosFromTag((NBTTagCompound) tag)));
         hadRegenActive = nbt.getBoolean("regen");
+        this.botsLeft = nbt.getInteger("botsLeft");
     }
 
     private void scheduleAirdrop(World world) {
@@ -219,7 +229,7 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public boolean canSpawnBots() {
-        return botsInGame < 5;
+        return botsLeft > 0 && botsInGame < 5;
     }
 
     @Override

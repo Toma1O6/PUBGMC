@@ -64,7 +64,9 @@ public class CommandGame extends CommandBase {
         }
         switch(args[0]) {
             case "start": {
-                if(gameData.getLobby() == null) {
+                if(gameData.getMapSize() <= 0) {
+                    throw new CommandException("You must setup your map first! Use /game map [centerX] [centerZ] [size]");
+                } else if(gameData.getLobby() == null) {
                     throw new CommandException("You must create lobby first! Add it using the '/game lobby' command");
                 } else if(gameData.isPlaying()) {
                     throw new CommandException("There is already one active game!");
@@ -73,7 +75,7 @@ public class CommandGame extends CommandBase {
                 if(game == null) {
                     throw new CommandException("Unknown game mode! Select one - /game mode [game]");
                 } else if(gameData.isInactiveGame()) {
-                    throw new CommandException("Cannot start this type of game!");
+                    throw new CommandException("Cannot start this type of game! Select new mode: /game mode [mode]");
                 }
                 String[] addtionalArgs = args.length == 1 ? new String[0] : new String[args.length-1];
                 if(addtionalArgs.length > 0) {
@@ -113,7 +115,7 @@ public class CommandGame extends CommandBase {
                 sendMessage(player, "start -> starts game");
                 sendMessage(player, "stop -> stops game");
                 sendMessage(player, "info -> information about current game settings");
-                sendMessage(player, "game [name: String] -> binds the game mode to this world");
+                sendMessage(player, "mode [name: String] -> binds the game mode to this world");
                 sendMessage(player, "map [x: int, z: int, size: int] -> creates map border");
                 sendMessage(player, "lobby [x: int, y: int, z: int, radius: int] -> creates lobby for this world");
                 sendMessage(player, "");

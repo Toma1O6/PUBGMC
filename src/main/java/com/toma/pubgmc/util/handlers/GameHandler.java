@@ -89,6 +89,7 @@ public class GameHandler {
                             return;
                         }
                     }
+                    game.botsInGame++;
                     EntityAIPlayer aiPlayer = new EntityAIPlayer(e.world, pos);
                     e.world.spawnEntity(aiPlayer);
                     game.getLootDistributor().accept(aiPlayer);
@@ -128,8 +129,8 @@ public class GameHandler {
             EntityLivingBase from;
             ItemStack gun = null;
             boolean wasHeadshot = false;
-            if(entity instanceof EntityAIPlayer) {
-                if(game.botsInGame > 0) --game.botsInGame;
+            if(!entity.world.isRemote && entity instanceof EntityAIPlayer) {
+                game.onBotDeath((EntityAIPlayer) entity);
                 return;
             } else if(!(entity instanceof EntityPlayer)) {
                 return;

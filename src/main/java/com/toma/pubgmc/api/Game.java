@@ -191,6 +191,13 @@ public abstract class Game {
         this.gameInfo = gameInfo;
     }
 
+    /**
+     * @param bot - the entity which got killed
+     */
+    public void onBotDeath(EntityAIPlayer bot) {
+        if(this.botsInGame > 0) this.botsInGame--;
+    }
+
     /* ============================================[                   API END                    ]============================================ */
     /* ============================================[ SOME MAIN FUNCTIONALITY, NOTHING INTERESTING ]============================================ */
 
