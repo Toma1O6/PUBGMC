@@ -185,6 +185,27 @@ tile.locker.name=Locker
 tile.screen.name=Screen
 tile.box_single.name=Single Box
 tile.box_double.name=Double Box
+tile.sandbag.name=Sandbag
+tile.wooden_crate.name=Wooden Crate
+tile.vent.name=Vent
+tile.big_crate_empty.name=Empty Crate
+tile.big_crate_ammo.name=Ammo Crate
+tile.big_crate_gun.name=Gun Crate
+tile.wood_stairs.name=Wooden Stairs
+tile.clean_metal.name=Clean Metal
+tile.dark_wood.name=Dark Wood
+tile.sandbag_sand=Sandbag Sand
+tile.tire.name=Tire
+tile.tire_stack.name=Tire Stack
+tile.metal_table.name=Metal Table
+tile.road_blocker.name=Road Blocker
+tile.modern_lamp.name=Modern Lamp
+tile.lamp_base.name=Lamp Base
+tile.lamp_post.name=Lamp Post
+tile.lamp_top.name=Lamp Top
+tile.radiator.name=Radiator
+tile.wooden_chest.name=Wooden Chest
+tile.wood_tile.name=Wood Tile
 
 //Creative Tabs
 itemGroup.tab_items=PUBGMC: Items
