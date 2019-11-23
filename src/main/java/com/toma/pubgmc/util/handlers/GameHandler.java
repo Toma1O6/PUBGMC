@@ -135,6 +135,7 @@ public class GameHandler {
             } else if(!(entity instanceof EntityPlayer)) {
                 return;
             }
+            Pubgmc.proxy.resetMouseSens();
             // to avoid wrong player count when new player instance is created
             if(game.getJoinedPlayers().contains(entity.getUniqueID())) {
                 game.getJoinedPlayers().remove(entity.getUniqueID());

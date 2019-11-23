@@ -12,10 +12,10 @@ import com.toma.pubgmc.client.renderer.tileentity.RenderAirdrop;
 import com.toma.pubgmc.client.util.KeyBinds;
 import com.toma.pubgmc.client.util.ModelHelper;
 import com.toma.pubgmc.client.util.RecipeButton;
-import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.EntityAirdrop;
 import com.toma.pubgmc.common.entity.EntityParachute;
 import com.toma.pubgmc.common.entity.EntityPlane;
+import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import com.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import com.toma.pubgmc.common.entity.throwables.EntityMolotov;
@@ -42,7 +42,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ClientProxy implements IProxy {
+public class ClientProxy extends Proxy {
 
     private static void registerEntityRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityFragGrenade.class, manager -> new RenderThrowable(manager, PMCRegistry.PMCItems.GRENADE));
@@ -105,5 +105,10 @@ public class ClientProxy implements IProxy {
         double distance = PUBGMCUtil.getDistanceToBlockPos3D(new BlockPos(x, y, z), mc.getRenderViewEntity().getPosition());
         int ticks = (int) ((distance / 34) * 5);
         mc.getSoundHandler().playDelayedSound(sound, ticks);
+    }
+
+    @Override
+    public void resetMouseSens() {
+        Minecraft.getMinecraft().gameSettings.mouseSensitivity = ClientEvents.mouseSens;
     }
 }

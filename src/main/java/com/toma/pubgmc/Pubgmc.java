@@ -17,7 +17,7 @@ import com.toma.pubgmc.event.GunPostInitializeEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.network.PacketHandler;
-import com.toma.pubgmc.proxy.IProxy;
+import com.toma.pubgmc.proxy.Proxy;
 import com.toma.pubgmc.util.handlers.GuiHandler;
 import com.toma.pubgmc.util.recipes.RecipeRegistry;
 import com.toma.pubgmc.world.OreGen;
@@ -64,7 +64,7 @@ public class Pubgmc {
     public static Pubgmc instance;
 
     @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
-    public static IProxy proxy;
+    public static Proxy proxy;
 
     public static Random rng() {
         return RANDOM;

@@ -118,7 +118,7 @@ public class ClientEvents {
     /**
      * Mouse sensitivity player had before he started aiming
      **/
-    private float mouseSens;
+    public static float mouseSens;
 
     /**
      * Used for reloading to tell the game to play the sound or not. Simple workaround to prevent multiple reload sound playing
