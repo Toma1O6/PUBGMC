@@ -476,7 +476,7 @@ public class PMCRegistry {
         public static void registerGameModes(com.toma.pubgmc.init.GameRegistry.GameRegisterEvent e) {
             e.registerAll(
                     new GameInactive("inactive"),
-                    new GameBattleRoyale("battleroayle"),
+                    new GameBattleRoyale("battleroyale"),
                     new GameDeathmatch("deathmatch")
 
             );
