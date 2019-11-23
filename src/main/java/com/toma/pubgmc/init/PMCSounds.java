@@ -82,7 +82,6 @@ public class PMCSounds {
      * ========================================[UTIL]==========================================================
      **/
 
-    // TODO move into Forge controlled registry event
     public static void registerSounds() {
         gun_p92 = registerSound("gun.p92");
         gun_p92_silenced = registerSound("gun.p92.silenced");

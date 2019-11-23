@@ -149,7 +149,7 @@ public class ModelDeagle extends ModelGun {
         deagle.cubeList.add(new ModelBox(deagle, 81, 24, -2.5F, -15.8679F, -7.0F, 5, 1, 3, 0.0F, false));
         deagle.cubeList.add(new ModelBox(deagle, 81, 24, -1.5F, -14.8679F, -7.0F, 3, 4, 1, 0.0F, false));
         deagle.cubeList.add(new ModelBox(deagle, 81, 24, -1.0F, -10.8419F, -4.1809F, 2, 1, 6, 0.0F, false));
-        deagle.cubeList.add(new ModelBox(deagle, 105, 25, 1.7321F, -17.6F, -16.0F, 2, 1, 12, 0.0F, false));
+        deagle.cubeList.add(new ModelBox(deagle, 80, 25, 1.7321F, -17.6F, -16.0F, 2, 1, 12, 0.0F, false));
         deagle.cubeList.add(new ModelBox(deagle, 81, 24, -0.768F, -20.0F, 2.0F, 4, 2, 9, 0.0F, false));
         deagle.cubeList.add(new ModelBox(deagle, 81, 27, -3.232F, -20.0F, 2.0F, 4, 2, 9, 0.0F, true));
         deagle.cubeList.add(new ModelBox(deagle, 0, 0, -4.0F, -20.0F, -7.0F, 8, 2, 11, 0.0F, false));
@@ -227,8 +227,8 @@ public class ModelDeagle extends ModelGun {
         deagle.addChild(bone6);
         bone6.cubeList.add(new ModelBox(bone6, 0, 0, 0.9395F, -0.0528F, -6.0F, 2, 2, 24, 0.0F, false));
         bone6.cubeList.add(new ModelBox(bone6, 0, 0, 4.0255F, 2.7565F, -6.0F, 2, 2, 24, 0.0F, false));
-        bone6.cubeList.add(new ModelBox(bone6, 105, 25, 5.4935F, 5.835F, 4.0F, 2, 2, 12, 0.0F, false));
-        bone6.cubeList.add(new ModelBox(bone6, 105, 25, 2.7614F, 8.567F, 4.0F, 2, 2, 9, 0.0F, false));
+        bone6.cubeList.add(new ModelBox(bone6, 81, 22, 5.4935F, 5.835F, 4.0F, 2, 2, 12, 0.0F, false));
+        bone6.cubeList.add(new ModelBox(bone6, 100, 23, 2.7614F, 8.567F, 4.0F, 2, 2, 9, 0.0F, false));
 
         bone5 = new ModelRenderer(this);
         bone5.setRotationPoint(-0.16F, -25.4F, -20.0F);
@@ -315,7 +315,7 @@ public class ModelDeagle extends ModelGun {
         bone7.setRotationPoint(-1.2679F, 0.0F, 0.0F);
         setRotationAngle(bone7, 0.2618F, 0.0F, 0.0F);
         deagle.addChild(bone7);
-        bone7.cubeList.add(new ModelBox(bone7, 99, 38, -1.7321F, -14.0732F, 4.4856F, 6, 14, 9, 0.0F, true));
+        bone7.cubeList.add(new ModelBox(bone7, 93, 32, -1.7321F, -14.0732F, 4.4856F, 6, 14, 9, 0.0F, true));
 
         bone10 = new ModelRenderer(this);
         bone10.setRotationPoint(0.0F, -17.408F, 8.168F);
@@ -382,9 +382,9 @@ public class ModelDeagle extends ModelGun {
         rail.cubeList.add(new ModelBox(rail, 0, 68, 0.8669F, -27.9155F, -17.4F, 2, 0, 1, 0.0F, true));
         rail.cubeList.add(new ModelBox(rail, 0, 68, -0.5F, -27.704F, -28.4F, 3, 1, 10, 0.0F, false));
         rail.cubeList.add(new ModelBox(rail, 0, 68, -0.5F, -27.704F, -18.4F, 3, 1, 9, 0.0F, false));
-        rail.cubeList.add(new ModelBox(rail, 99, 40, -0.5F, -26.704F, -23.2F, 3, 1, 5, 0.0F, false));
-        rail.cubeList.add(new ModelBox(rail, 99, 40, -1.0F, -26.428F, -24.2F, 4, 1, 7, 0.0F, false));
-        rail.cubeList.add(new ModelBox(rail, 99, 40, -1.0F, -26.028F, -24.2F, 4, 1, 7, 0.0F, false));
+        rail.cubeList.add(new ModelBox(rail, 67, 105, -0.5F, -26.704F, -23.2F, 3, 1, 5, 0.0F, false));
+        rail.cubeList.add(new ModelBox(rail, 67, 105, -1.0F, -26.428F, -24.2F, 4, 1, 7, 0.0F, false));
+        rail.cubeList.add(new ModelBox(rail, 68, 108, -1.0F, -26.028F, -24.2F, 4, 1, 7, 0.0F, false));
         rail.cubeList.add(new ModelBox(rail, 0, 68, -2.0F, -26.228F, -24.0F, 6, 1, 1, 0.0F, false));
         rail.cubeList.add(new ModelBox(rail, 0, 68, -2.0F, -26.228F, -18.4F, 6, 1, 1, 0.0F, false));
         rail.cubeList.add(new ModelBox(rail, 0, 68, 5.1213F, -24.1067F, -18.4F, 1, 2, 1, 0.0F, true));

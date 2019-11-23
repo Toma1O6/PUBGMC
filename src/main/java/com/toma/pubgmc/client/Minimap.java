@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-// TODO 1.7.0 Version
+// TODO 1.7.0-1.8.0 (idk) Version
 @SideOnly(Side.CLIENT)
 public class Minimap {
 
