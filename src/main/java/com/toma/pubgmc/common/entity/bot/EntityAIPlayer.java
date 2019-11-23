@@ -33,7 +33,7 @@ public class EntityAIPlayer extends EntityCreature {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String hash;
-    protected int variant;
+    private int variant;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -126,6 +126,10 @@ public class EntityAIPlayer extends EntityCreature {
         super.readEntityFromNBT(compound);
         this.hash = compound.hasKey("hash") ? compound.getString("hash") : "empty";
         this.variant = compound.getInteger("variant");
+    }
+
+    public int getVariant() {
+        return variant;
     }
 
     /**

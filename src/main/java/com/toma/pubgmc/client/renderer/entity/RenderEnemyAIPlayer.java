@@ -18,7 +18,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
 
-    private static final ResourceLocation ZOMBIE_TEXTURES = new ResourceLocation("textures/entity/zombie/zombie.png");
+    private static final ResourceLocation[] BOT_TEXTURES = {
+            new ResourceLocation(Pubgmc.MOD_ID, "textures/entity/bot_0.png"),
+            new ResourceLocation(Pubgmc.MOD_ID, "textures/entity/bot_1.png"),
+            new ResourceLocation(Pubgmc.MOD_ID, "textures/entity/bot_2.png"),
+            new ResourceLocation(Pubgmc.MOD_ID, "textures/entity/bot_3.png")
+    };
 
     public RenderEnemyAIPlayer(RenderManager manager) {
         super(manager, new ModelAIPlayer(), 0.5F);
@@ -28,7 +33,7 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityAIPlayer entity) {
-        return ZOMBIE_TEXTURES;
+        return BOT_TEXTURES[entity.getVariant()];
     }
 
     private static class LayerGhillieSpecial implements LayerRenderer<EntityAIPlayer> {
