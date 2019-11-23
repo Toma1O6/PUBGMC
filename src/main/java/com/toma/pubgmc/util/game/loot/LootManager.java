@@ -132,6 +132,9 @@ public class LootManager {
      */
     public static Item getRandomObject(LootType lootCategory, @Nullable GunBase.GunType[] allowedTypes, byte flag) {
         List<LootEntry> entries = new ArrayList<>(MAP.get(lootCategory));
+        if(allowedTypes != null) {
+            entries = entries.stream().filter(e -> e.stack.getItem() instanceof GunBase && PUBGMCUtil.contains(((GunBase) e.stack.getItem()).getGunType(), allowedTypes)).collect(Collectors.toList());
+        }
         entries = entries.stream().filter(e -> flag == 0 ? !e.isSpecialLoot : flag == 2 ? e.isSpecialLoot : e != null).collect(Collectors.toList());
         return WeightedRandom.getRandom(entries).stack.getItem();
     }

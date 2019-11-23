@@ -570,7 +570,7 @@ public class ClientEvents {
                             if (data.isAiming()) {
                                 data.setAiming(false);
                                 PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
-                                Minecraft.getMinecraft().gameSettings.mouseSensitivity = this.mouseSens;
+                                Minecraft.getMinecraft().gameSettings.mouseSensitivity = mouseSens;
                             }
                         }
                     }
@@ -683,7 +683,7 @@ public class ClientEvents {
                     } else {
                         data.setAiming(false);
                         PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
-                        gs.mouseSensitivity = this.mouseSens;
+                        gs.mouseSensitivity = mouseSens;
                     }
                 }
             }
@@ -820,10 +820,10 @@ public class ClientEvents {
 
             //Reset the mouse sensitivity after aiming
             if (!data.isAiming()) {
-                this.mouseSens = gs.mouseSensitivity;
+                mouseSens = gs.mouseSensitivity;
 
-                if (gs.mouseSensitivity != this.mouseSens) {
-                    gs.mouseSensitivity = this.mouseSens;
+                if (gs.mouseSensitivity != mouseSens) {
+                    gs.mouseSensitivity = mouseSens;
                 }
             }
 

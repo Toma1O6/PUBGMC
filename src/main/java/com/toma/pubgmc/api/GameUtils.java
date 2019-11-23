@@ -12,9 +12,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 
 public final class GameUtils {
+
+    public static final DecimalFormat FORMATTER = new DecimalFormat("##00");
 
     public static void updateLoadedTileEntities(World world, Game game, boolean forcedUpdate) {
         IGameData gameData = game.getGameData(world);
@@ -102,5 +105,21 @@ public final class GameUtils {
         int y = lobby.center.getY() + 1;
         int z = lobby.center.getZ();
         game.getOnlinePlayers(world).forEach(player -> player.setPositionAndUpdate(x, y, z));
+    }
+
+    public static String getFormattedTime(int amount, final boolean isInTicks) {
+        if(isInTicks) {
+            amount = amount / 20;
+        }
+        int left = amount;
+        int hours = left / 3600;
+        left = left % 3600;
+        int minutes = left / 60;
+        int seconds = left % 60;
+        StringBuilder builder = new StringBuilder(8);
+        if(hours > 0) builder.append(FORMATTER.format(hours)).append(":");
+        builder.append(FORMATTER.format(minutes)).append(":");
+        builder.append(FORMATTER.format(seconds));
+        return builder.toString();
     }
 }

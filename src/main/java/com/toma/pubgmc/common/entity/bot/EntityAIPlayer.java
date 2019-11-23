@@ -18,6 +18,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.NonNullList;
@@ -32,6 +33,7 @@ public class EntityAIPlayer extends EntityCreature {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String hash;
+    protected int variant;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -41,6 +43,7 @@ public class EntityAIPlayer extends EntityCreature {
         this.setCanPickUpLoot(true);
         IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         this.hash = gameData == null ? "empty" : gameData.getGameID();
+        this.variant = worldIn.rand.nextInt(4);
     }
 
     public EntityAIPlayer(World world, BlockPos pos) {
@@ -83,6 +86,46 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public boolean getCanSpawnHere() {
         return this.world.getDifficulty() != EnumDifficulty.PEACEFUL;
+    }
+
+    @Override
+    protected boolean canDropLoot() {
+        return false;
+    }
+
+    @Override
+    protected void initEntityAI() {
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(2, new EntityAIGunAttack(this));
+        this.tasks.addTask(3, new EntityAISearchLoot(this, 0.05F));
+        this.tasks.addTask(4, new EntityAIMoveIntoZone(this));
+        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.0001F));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(8, new EntityAILookIdle(this));
+
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, EntitySelectors.IS_ALIVE));
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityAIPlayer.class, true));
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(128.0D);
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound compound) {
+        super.writeEntityToNBT(compound);
+        compound.setString("hash", this.hash);
+        compound.setInteger("variant", this.variant);
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
+        this.hash = compound.hasKey("hash") ? compound.getString("hash") : "empty";
+        this.variant = compound.getInteger("variant");
     }
 
     /**
@@ -154,37 +197,6 @@ public class EntityAIPlayer extends EntityCreature {
         this.world.notifyBlockUpdate(lootSpawner.getPos(), state, state, 3);
         needToLoot = needToLoot + (needsGun ? 10 : 0) + (needsAmmo() ? 10 : 0) + (needsHelmet ? 5 : 0) + (needsVest ? 5 : 0) + (needsMeds ? 3 : 0);
         return needToLoot;
-    }
-
-    @Override
-    protected boolean canDropLoot() {
-        return false;
-    }
-
-    @Override
-    protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(2, new EntityAIGunAttack(this));
-        this.tasks.addTask(3, new EntityAISearchLoot(this, 0.05F));
-        this.tasks.addTask(4, new EntityAIMoveIntoZone(this));
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.0001F));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
-
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, EntitySelectors.IS_ALIVE));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityAIPlayer.class, true));
-    }
-
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(128.0D);
-    }
-
-    @Override
-    protected void updateEquipmentIfNeeded(EntityItem itemEntity) {
-        super.updateEquipmentIfNeeded(itemEntity);
     }
 
     protected boolean needsAmmo() {

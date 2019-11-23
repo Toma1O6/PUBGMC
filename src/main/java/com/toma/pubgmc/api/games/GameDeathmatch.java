@@ -14,6 +14,8 @@ import com.toma.pubgmc.util.game.loot.LootManager;
 import com.toma.pubgmc.util.game.loot.LootType;
 import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +28,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +47,12 @@ public class GameDeathmatch extends Game {
     public GameDeathmatch(String modeName) {
         super(modeName);
         this.setGameInfo(new GameInfo("Toma", "- Everybody vs Everybody!", "- Respawn on death", "- Players respawn with loot"));
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void renderGameInfo(ScaledResolution res) {
+        Minecraft.getMinecraft().fontRenderer.drawString("Time left: " + GameUtils.getFormattedTime(this.matchDuration - this.gameTimer, true), 10, 10, 0xFFFFFF);
     }
 
     @Override

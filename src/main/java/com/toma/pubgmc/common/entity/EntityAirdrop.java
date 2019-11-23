@@ -66,12 +66,14 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
     protected void readEntityFromNBT(NBTTagCompound compound) {
         PUBGMCUtil.readBasicEntityNBT(compound, this);
         isBigDrop = compound.getBoolean("dropType");
+        hash = compound.hasKey("hash") ? compound.getString("hash") : "empty";
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         PUBGMCUtil.writeBasicEntityNBT(compound, this);
         compound.setBoolean("dropType", isBigDrop);
+        compound.setString("hash", this.hash);
     }
 
     @Override
