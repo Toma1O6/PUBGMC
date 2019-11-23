@@ -791,24 +791,25 @@ public class ClientEvents {
 
                 if (aimSlot != player.inventory.currentItem) {
                     setAiming(data, false);
-                    gs.mouseSensitivity = this.mouseSens;
+                    gs.mouseSensitivity = mouseSens;
                 }
 
                 if (ConfigPMC.client.aimType == CFGAimType.HOLD) {
                     if (!gs.keyBindUseItem.isKeyDown()) {
                         setAiming(data, false);
+                        gs.mouseSensitivity = mouseSens;
                     }
                 }
             }
 
             if (player.isSprinting() && data.isAiming()) {
                 setAiming(data, false);
-                gs.mouseSensitivity = this.mouseSens;
+                gs.mouseSensitivity = mouseSens;
             }
 
             if (!(player.getHeldItemMainhand().getItem() instanceof GunBase) && data.isAiming()) {
                 setAiming(data, false);
-                gs.mouseSensitivity = this.mouseSens;
+                gs.mouseSensitivity = mouseSens;
             }
 
             //If the boost is above the max value reset it and sync with server

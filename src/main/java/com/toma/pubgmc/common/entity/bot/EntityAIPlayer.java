@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.entity.bot;
 
+import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
@@ -30,6 +31,7 @@ import java.util.UUID;
 public class EntityAIPlayer extends EntityCreature {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    private String hash;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -37,6 +39,8 @@ public class EntityAIPlayer extends EntityCreature {
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
         this.setCanPickUpLoot(true);
+        IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
+        this.hash = gameData == null ? "empty" : gameData.getGameID();
     }
 
     public EntityAIPlayer(World world, BlockPos pos) {
@@ -46,6 +50,16 @@ public class EntityAIPlayer extends EntityCreature {
 
     public static NonNullList<ItemStack> getBasicInventory() {
         return NonNullList.withSize(9, ItemStack.EMPTY);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        if(!world.isRemote) {
+            if(ticksExisted % 20 == 0 && !world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getGameID().equals(hash)) {
+                this.setDead();
+            }
+        }
     }
 
     @Override

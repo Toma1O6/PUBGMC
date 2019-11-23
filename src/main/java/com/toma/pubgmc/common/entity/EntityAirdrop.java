@@ -1,5 +1,6 @@
 package com.toma.pubgmc.common.entity;
 
+import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry.PMCBlocks;
@@ -15,16 +16,18 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData {
     private boolean isBigDrop;
+    private String hash;
 
     public EntityAirdrop(World world) {
         super(world);
         this.setSize(1f, 1f);
         this.isBigDrop = false;
+        IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
+        this.hash = gameData == null ? "empty" : gameData.getGameID();
     }
 
     public EntityAirdrop(World world, BlockPos pos, boolean type) {
-        super(world);
-        this.setSize(1f, 1f);
+        this(world);
         this.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         this.isBigDrop = type;
     }
@@ -34,6 +37,11 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
         super.onUpdate();
         this.handleMotion(0.15);
         this.move(MoverType.SELF, motionX, motionY, motionZ);
+        if(!world.isRemote && ticksExisted % 20 == 0) {
+            if(!world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getGameID().equals(hash)) {
+                this.setDead();
+            }
+        }
     }
 
     public void onEntityLanded() {
