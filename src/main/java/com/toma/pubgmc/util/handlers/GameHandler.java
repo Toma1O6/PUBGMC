@@ -2,7 +2,8 @@ package com.toma.pubgmc.util.handlers;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.api.interfaces.IGameTileEntity;
+import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
@@ -10,7 +11,6 @@ import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.math.ZonePos;
-import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +29,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.List;
 import java.util.Map;
 
 public class GameHandler {
@@ -66,33 +65,14 @@ public class GameHandler {
             }
             game.tickGame(e.world);
             if(game.gameTimer % 200 == 0) {
-                if(game.canSpawnBots()) {
-                    BlueZone zone = game.zone;
-                    if(zone == null) {
-                        return;
-                    }
-                    ZonePos min = zone.currentBounds.min();
-                    ZonePos max = zone.currentBounds.max();
-                    int maxDist = (int) Math.abs(max.x - min.x);
-                    int x = (int)min.x + e.world.rand.nextInt(maxDist);
-                    int z = (int)min.z + e.world.rand.nextInt(maxDist);
-                    int y = e.world.getHeight(x, z);
-                    BlockPos pos = new BlockPos(x, y, z);
-                    if(!e.world.isBlockLoaded(pos)) {
-                        List<EntityPlayer> playerList = game.getOnlinePlayers(e.world);
-                        EntityPlayer player = playerList.get(e.world.rand.nextInt(playerList.size()));
-                        x = (int)player.posX + e.world.rand.nextInt(64) - e.world.rand.nextInt(64);
-                        z = (int)player.posZ + e.world.rand.nextInt(64) - e.world.rand.nextInt(64);
-                        y = e.world.getHeight(x, z);
-                        pos = new BlockPos(x, y, z);
-                        if(!e.world.isBlockLoaded(pos)) {
-                            return;
-                        }
-                    }
+                GameBotManager botManager = game.getBotManager();
+                if(botManager.areBotsEnabled() && botManager.currentBotCount < botManager.maxBotAmount() && botManager.getBotSpawnVerification().test(game)) {
+                    BlockPos pos = botManager.getBotSpawner().getSpawnPosition(e.world, game);
+                    if(pos == null) return;
                     game.botsInGame++;
                     EntityAIPlayer aiPlayer = new EntityAIPlayer(e.world, pos);
                     e.world.spawnEntity(aiPlayer);
-                    game.getLootDistributor().accept(aiPlayer);
+                    botManager.getLootFactory().accept(aiPlayer);
                 }
             }
         }

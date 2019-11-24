@@ -4,9 +4,12 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.api.Lobby;
+import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
+import com.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.network.PacketHandler;
@@ -43,10 +46,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class GameBattleRoyale extends Game {
 
+    public final GameBotManager botManager = GameBotManager.Builder.create().maxBotAmount(7).lootFactory(this::addLootByZone).addBotLogic((normalTasks, targetTasks, bot) -> {
+        GameUtils.addBaseTasks(normalTasks, targetTasks, bot);
+        normalTasks.addTask(5, new EntityAISearchLoot(bot, 0.05F));
+        normalTasks.addTask(4, new EntityAIMoveIntoZone(bot));
+    }).spawnValidator(g -> ((GameBattleRoyale)g).botsLeft > 0 && ((GameBattleRoyale)g).botsLeft - g.botsInGame > 0).allowBotDeathCrates().build();
     private int zoneTimer;
     private List<BlockPos> scheduledAirdrops = new ArrayList<>();
     private boolean hadRegenActive = false;
@@ -202,6 +209,11 @@ public class GameBattleRoyale extends Game {
         this.botsLeft = nbt.getInteger("botsLeft");
     }
 
+    @Override
+    public GameBotManager getBotManager() {
+        return botManager;
+    }
+
     private void scheduleAirdrop(World world) {
         ZonePos min = zone.nextBounds.min();
         ZonePos max = zone.nextBounds.max();
@@ -229,16 +241,6 @@ public class GameBattleRoyale extends Game {
                 it.remove();
             }
         }
-    }
-
-    @Override
-    public boolean canSpawnBots() {
-        return botsLeft > 0 && botsLeft - botsInGame > 0 && botsInGame < 5;
-    }
-
-    @Override
-    public Consumer<EntityAIPlayer> getLootDistributor() {
-        return this::addLootByZone;
     }
 
     private void addLootByZone(EntityAIPlayer player) {

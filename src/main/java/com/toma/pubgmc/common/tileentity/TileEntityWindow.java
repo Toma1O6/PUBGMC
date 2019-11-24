@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.tileentity;
 
-import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import com.toma.pubgmc.common.blocks.BlockWindow;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;

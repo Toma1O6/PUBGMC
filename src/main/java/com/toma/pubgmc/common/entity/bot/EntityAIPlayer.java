@@ -1,8 +1,8 @@
 package com.toma.pubgmc.common.entity.bot;
 
+import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
-import com.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.AmmoType;
@@ -13,27 +13,26 @@ import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
-// TODO implement task types
 public class EntityAIPlayer extends EntityCreature {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String hash;
     private int variant;
+    @Nullable
+    private Game game;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -44,6 +43,8 @@ public class EntityAIPlayer extends EntityCreature {
         IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         this.hash = gameData == null ? "empty" : gameData.getGameID();
         this.variant = worldIn.rand.nextInt(4);
+        this.game = gameData.isPlaying() && !gameData.isInactiveGame() ? gameData.getCurrentGame() : null;
+        this.initEntityAI();
     }
 
     public EntityAIPlayer(World world, BlockPos pos) {
@@ -95,16 +96,11 @@ public class EntityAIPlayer extends EntityCreature {
 
     @Override
     protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(2, new EntityAIGunAttack(this));
-        this.tasks.addTask(3, new EntityAISearchLoot(this, 0.05F));
-        this.tasks.addTask(4, new EntityAIMoveIntoZone(this));
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D, 0.0001F));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
-
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 10, true, false, EntitySelectors.IS_ALIVE));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityAIPlayer.class, true));
+        if(game == null) {
+            GameUtils.addBaseTasks(this.tasks, this.targetTasks, this);
+        } else {
+            game.getBotManager().getBotLogic().apply(this.tasks, this.targetTasks, this);
+        }
     }
 
     @Override

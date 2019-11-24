@@ -1,7 +1,8 @@
 package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,12 +11,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class GameInactive extends Game {
 
+    public final GameBotManager botManager = GameBotManager.Builder.create().disableBots().lootFactory(ai -> {}).botSpawner((world, game) -> null).addBotLogic(GameUtils::addBaseTasks).build();
+
     public GameInactive(String name) {
         super(name);
+    }
+
+    @Override
+    public GameBotManager getBotManager() {
+        return null;
     }
 
     @Override
@@ -60,15 +67,5 @@ public class GameInactive extends Game {
     @Override
     public boolean shouldCreateDeathCrate() {
         return false;
-    }
-
-    @Override
-    public boolean canSpawnBots() {
-        return false;
-    }
-
-    @Override
-    public Consumer<EntityAIPlayer> getLootDistributor() {
-        return bot -> {};
     }
 }

@@ -3,8 +3,11 @@ package com.toma.pubgmc.api.games;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.api.interfaces.BotAIGetter;
+import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import com.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
@@ -34,10 +37,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class GameDeathmatch extends Game {
 
+    public final GameBotManager botManager = GameBotManager.Builder.create().maxBotAmount(5).lootFactory(this::addLootIntoInventory).addBotLogic(this.getBotTasks()).build();
     private int lootType = 0;
     private GunBase.GunType spawnWeaponType;
     private int matchDuration;
@@ -47,6 +50,11 @@ public class GameDeathmatch extends Game {
     public GameDeathmatch(String modeName) {
         super(modeName);
         this.setGameInfo(new GameInfo("Toma", "- Everybody vs Everybody!", "- Respawn on death", "- Players respawn with loot"));
+    }
+
+    @Override
+    public GameBotManager getBotManager() {
+        return botManager;
     }
 
     @SideOnly(Side.CLIENT)
@@ -116,16 +124,6 @@ public class GameDeathmatch extends Game {
         return true;
     }
 
-    @Override
-    public boolean canSpawnBots() {
-        return botsInGame < 3;
-    }
-
-    @Override
-    public Consumer<EntityAIPlayer> getLootDistributor() {
-        return this::addLootIntoInventory;
-    }
-
     @Nullable
     @Override
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
@@ -182,6 +180,13 @@ public class GameDeathmatch extends Game {
         this.lootType = compound.getInteger("lootRarity");
         this.spawnWeaponType = compound.hasKey("lootClass") ? GunBase.GunType.values()[compound.getInteger("lootClass")] : null;
         this.matchDuration = compound.getInteger("matchDuration");
+    }
+
+    public BotAIGetter getBotTasks() {
+        return (normalTasks, targetTasks, bot1) -> {
+            GameUtils.addBaseTasks(normalTasks, targetTasks, bot1);
+            normalTasks.addTask(4, new EntityAIMoveIntoZone(bot1));
+        };
     }
 
     private void addLootIntoInventory(EntityAIPlayer bot) {

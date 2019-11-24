@@ -1,4 +1,4 @@
-package com.toma.pubgmc.api;
+package com.toma.pubgmc.api.interfaces;
 
 /**
  * Interface for executing game related tasks once tileentity gets loaded in

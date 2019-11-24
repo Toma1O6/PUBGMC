@@ -2,7 +2,7 @@ package com.toma.pubgmc.common.tileentity;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.GameUtils;
-import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import com.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

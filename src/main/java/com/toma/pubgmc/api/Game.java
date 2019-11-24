@@ -1,6 +1,7 @@
 package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.network.PacketHandler;
@@ -28,34 +29,48 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 // TODO death notifications
+
 /**
  * Game creation API
+ * <p>
+ * Version 1.0.0
  *
- * Version 1.0
  * @author Toma
  */
 public abstract class Game {
 
-    /** Game name, doesn't have to contain mod ID (might change in the future) **/
+    /**
+     * Game name, doesn't have to contain mod ID (might change in the future)
+     **/
     public final String registryName;
-    /** The zone for the game, damages players outside of it **/
+    /**
+     * The zone for the game, damages players outside of it
+     **/
     public BlueZone zone;
-    /** Amount of players in the game **/
-    public int onlinePlayers;
-    /** Contains information about this game **/
+    /**
+     * Contains information about this game
+     **/
     public GameInfo gameInfo;
-    /** Time elapsed since game start **/
+    /**
+     * Time elapsed since game start
+     **/
     public int gameTimer;
-    /** UUID list of all players who joined the game **/
-    private List<UUID> playersInGame;
-    /** Amount of AI entities **/
+    /**
+     * Amount of players in the game
+     **/
+    public int onlinePlayers;
+    /**
+     * Amount of AI entities
+     **/
     public int botsInGame;
+    /**
+     * UUID list of all players who joined the game
+     **/
+    private List<UUID> playersInGame;
 
     public Game(final String name) {
         this.playersInGame = new ArrayList<>();
@@ -108,15 +123,9 @@ public abstract class Game {
     public abstract BlueZone initializeZone(final World world);
 
     /**
-     * @return if can spawn another bot
+     * Handles all bot related stuff
      */
-    public abstract boolean canSpawnBots();
-
-    /**
-     * Takes care of loot which is provided to bots
-     * @return consumer which is supposed to fill the AI player's inventory
-     */
-    public abstract <T extends EntityAIPlayer> Consumer<T> getLootDistributor();
+    public abstract GameBotManager getBotManager();
 
     /**
      * Decide what to do when player dies and attempts to respawn
@@ -127,7 +136,9 @@ public abstract class Game {
         return false;
     }
 
-    /** If player death crate will be created on player death **/
+    /**
+     * If player death crate will be created on player death
+     **/
     public boolean shouldCreateDeathCrate() {
         return true;
     }
@@ -165,8 +176,8 @@ public abstract class Game {
      * Allows game instances to initialize additional variables upon command execution
      * Returns null as default
      *
-     * @param sender - The ICommandSender who executed this command
-     * @param server - The server this command got executed on
+     * @param sender         - The ICommandSender who executed this command
+     * @param server         - The server this command got executed on
      * @param additionalArgs - all arguments after the 'start' keyword in command
      */
     @Nullable
@@ -176,8 +187,9 @@ public abstract class Game {
 
     /**
      * For autocompletion of additional game arguments
+     *
      * @param additonalArgIndex - the index of current argument
-     * @param arg - actual argument value
+     * @param arg               - actual argument value
      * @return array of possible values
      */
     public String[] getCommandAutoCompletions(int additonalArgIndex, String arg) {
@@ -196,7 +208,7 @@ public abstract class Game {
      * @param bot - the entity which got killed
      */
     public void onBotDeath(EntityAIPlayer bot) {
-        if(this.botsInGame > 0) this.botsInGame--;
+        if (this.botsInGame > 0) this.botsInGame--;
     }
 
     /* ============================================[                   API END                    ]============================================ */
@@ -255,9 +267,7 @@ public abstract class Game {
         IGameData data = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         if (data != null && data.getLobby() != null && data.getLobby().center.getY() > 0) {
             BlockPos pos = data.getLobby().center;
-            Iterator<UUID> it = playersInGame.iterator();
-            while (it.hasNext()) {
-                UUID uuid = it.next();
+            for (UUID uuid : playersInGame) {
                 EntityPlayer player = world.getPlayerEntityByUUID(uuid);
                 if (player != null) {
                     teleportEntityTo(player, pos.getX(), pos.getY() + 1, pos.getZ());
@@ -281,7 +291,7 @@ public abstract class Game {
 
     public final List<EntityPlayer> getOnlinePlayers(World world) {
         List<EntityPlayer> list = new ArrayList<>();
-        if(playersInGame == null || playersInGame.isEmpty()) return list;
+        if (playersInGame == null || playersInGame.isEmpty()) return list;
         playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).forEach(uuid -> list.add(world.getPlayerEntityByUUID(uuid)));
         return list;
     }

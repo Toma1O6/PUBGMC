@@ -1,10 +1,8 @@
 package com.toma.pubgmc.util.game.loot;
 
-import com.toma.pubgmc.api.IGameTileEntity;
+import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import java.util.Random;
 
 public interface ILootSpawner extends IGameTileEntity {
 
