@@ -2,6 +2,8 @@ package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.settings.TeamManager;
+import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.network.PacketHandler;
@@ -72,6 +74,11 @@ public abstract class Game {
      **/
     private List<UUID> playersInGame;
 
+    /**
+     * List of all teams
+     */
+    protected List<Team> teamList = new ArrayList<>();
+
     public Game(final String name) {
         this.playersInGame = new ArrayList<>();
         this.registryName = name;
@@ -126,6 +133,11 @@ public abstract class Game {
      * Handles all bot related stuff
      */
     public abstract GameBotManager getBotManager();
+
+    /**
+     * Handles team creation and functionality
+     */
+    public abstract TeamManager getTeamManager();
 
     /**
      * Decide what to do when player dies and attempts to respawn
@@ -221,6 +233,8 @@ public abstract class Game {
             this.zone = this.initializeZone(world);
             this.populatePlayerList(world);
             this.onlinePlayers = playersInGame.size();
+            this.teamList = this.getTeamManager().teamCreator.apply(this);
+            this.getTeamManager().teamFillFactory.fill(this.getJoinedPlayers().iterator(), this.getTeamList().iterator());
             if (playersInGame.size() < 1) {
                 throw new IllegalStateException("Cannot start game because there are no valid players");
             }
@@ -328,6 +342,10 @@ public abstract class Game {
         this.writeDataToNBT(nbt);
 
         return nbt;
+    }
+
+    public final List<Team> getTeamList() {
+        return teamList;
     }
 
     public final void readFromNBT(NBTTagCompound nbt) {
