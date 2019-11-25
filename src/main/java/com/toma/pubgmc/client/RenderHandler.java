@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -42,6 +43,12 @@ public class RenderHandler {
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
+    }
+
+    private void copyModelOffset(ModelRenderer from, ModelRenderer to) {
+        to.offsetX = from.offsetX;
+        to.offsetY = from.offsetY;
+        to.offsetZ = from.offsetZ;
     }
 
     private void resetModelOffset(ModelBiped modelBiped) {
@@ -76,6 +83,15 @@ public class RenderHandler {
                         model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(40F);
                     }
                 }
+                if(model instanceof ModelPlayer) {
+                    ModelPlayer m = (ModelPlayer) model;
+                    this.copyModelOffset(m.bipedHead, m.bipedHeadwear);
+                    this.copyModelOffset(m.bipedBody, m.bipedBodyWear);
+                    this.copyModelOffset(m.bipedRightArm, m.bipedRightArmwear);
+                    this.copyModelOffset(m.bipedLeftArm, m.bipedLeftArmwear);
+                    this.copyModelOffset(m.bipedRightLeg, m.bipedRightLegwear);
+                    this.copyModelOffset(m.bipedLeftLeg, m.bipedLeftLegwear);
+                }
                 return;
             }
             if(player.isSprinting()) {
@@ -84,6 +100,15 @@ public class RenderHandler {
                 model.bipedRightArm.rotateAngleZ = (float)Math.toRadians(-15F);
                 model.bipedLeftArm.rotateAngleX = (float)Math.toRadians(-50F);
                 model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(40F);
+                if(model instanceof ModelPlayer) {
+                    ModelPlayer m = (ModelPlayer) model;
+                    this.copyModelOffset(m.bipedHead, m.bipedHeadwear);
+                    this.copyModelOffset(m.bipedBody, m.bipedBodyWear);
+                    this.copyModelOffset(m.bipedRightArm, m.bipedRightArmwear);
+                    this.copyModelOffset(m.bipedLeftArm, m.bipedLeftArmwear);
+                    this.copyModelOffset(m.bipedRightLeg, m.bipedRightLegwear);
+                    this.copyModelOffset(m.bipedLeftLeg, m.bipedLeftLegwear);
+                }
                 return;
             }
             if(playerData.isAiming()) {
@@ -92,12 +117,30 @@ public class RenderHandler {
                 model.bipedRightArm.rotateAngleZ = (float)Math.toRadians(20F);
                 model.bipedLeftArm.rotateAngleX = (float)Math.toRadians(-90F);
                 model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(45F);
+                if(model instanceof ModelPlayer) {
+                    ModelPlayer m = (ModelPlayer) model;
+                    this.copyModelOffset(m.bipedHead, m.bipedHeadwear);
+                    this.copyModelOffset(m.bipedBody, m.bipedBodyWear);
+                    this.copyModelOffset(m.bipedRightArm, m.bipedRightArmwear);
+                    this.copyModelOffset(m.bipedLeftArm, m.bipedLeftArmwear);
+                    this.copyModelOffset(m.bipedRightLeg, m.bipedRightLegwear);
+                    this.copyModelOffset(m.bipedLeftLeg, m.bipedLeftLegwear);
+                }
                 return;
             }
             model.bipedRightArm.rotateAngleX = (float)Math.toRadians(-70F);
             model.bipedRightArm.rotateAngleY = (float)Math.toRadians(-30F);
             model.bipedLeftArm.rotateAngleX = model.bipedRightArm.rotateAngleX;
             model.bipedLeftArm.rotateAngleY = (float)Math.toRadians(45F);
+        }
+        if(model instanceof ModelPlayer) {
+            ModelPlayer m = (ModelPlayer) model;
+            this.copyModelOffset(m.bipedHead, m.bipedHeadwear);
+            this.copyModelOffset(m.bipedBody, m.bipedBodyWear);
+            this.copyModelOffset(m.bipedRightArm, m.bipedRightArmwear);
+            this.copyModelOffset(m.bipedLeftArm, m.bipedLeftArmwear);
+            this.copyModelOffset(m.bipedRightLeg, m.bipedRightLegwear);
+            this.copyModelOffset(m.bipedLeftLeg, m.bipedLeftLegwear);
         }
     }
 
@@ -120,6 +163,15 @@ public class RenderHandler {
         model.bipedLeftLeg.offsetZ = 0.7F;
         model.bipedLeftLeg.rotateAngleY = model.bipedRightArm.rotateAngleY * 0.4F;
         model.bipedRightLeg.rotateAngleY = -model.bipedRightArm.rotateAngleY * 0.4F;
+        if(model instanceof ModelPlayer) {
+            ModelPlayer m = (ModelPlayer) model;
+            this.copyModelOffset(m.bipedHead, m.bipedHeadwear);
+            this.copyModelOffset(m.bipedBody, m.bipedBodyWear);
+            this.copyModelOffset(m.bipedRightArm, m.bipedRightArmwear);
+            this.copyModelOffset(m.bipedLeftArm, m.bipedLeftArmwear);
+            this.copyModelOffset(m.bipedRightLeg, m.bipedRightLegwear);
+            this.copyModelOffset(m.bipedLeftLeg, m.bipedLeftLegwear);
+        }
     }
 
     @SubscribeEvent
