@@ -1,7 +1,7 @@
 package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.entity.EntityLivingBase;

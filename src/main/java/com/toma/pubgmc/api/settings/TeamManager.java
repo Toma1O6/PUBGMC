@@ -11,16 +11,28 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-public class TeamManager {
+public final class TeamManager {
 
-    public final TeamSettings gameTeamSettings;
-    public final TeamFillFactory teamFillFactory;
-    public final Function<Game, List<Team>> teamCreator;
+    private final TeamSettings gameTeamSettings;
+    private final TeamFillFactory teamFillFactory;
+    private final Function<Game, List<Team>> teamCreator;
 
     private TeamManager(final Builder builder) {
         this.gameTeamSettings = builder.settings;
         this.teamFillFactory = builder.factory;
         this.teamCreator = builder.creator;
+    }
+
+    public TeamSettings getTeamSettings() {
+        return gameTeamSettings;
+    }
+
+    public TeamFillFactory getTeamFillFactory() {
+        return teamFillFactory;
+    }
+
+    public Function<Game, List<Team>> getTeamCreator() {
+        return teamCreator;
     }
 
     public static void getDefaultFillFactory(Iterator<UUID> players, Iterator<Team> teams) {

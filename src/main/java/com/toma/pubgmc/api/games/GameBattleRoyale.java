@@ -2,9 +2,13 @@ package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.api.Lobby;
+import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.settings.TeamManager;
+import com.toma.pubgmc.api.teams.Team;
+import com.toma.pubgmc.api.teams.TeamSettings;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
@@ -49,19 +53,66 @@ import java.util.List;
 
 public class GameBattleRoyale extends Game {
 
-    public final GameBotManager botManager = GameBotManager.Builder.create().maxBotAmount(7).lootFactory(this::addLootByZone).addBotLogic((normalTasks, targetTasks, bot) -> {
-        GameUtils.addBaseTasks(normalTasks, targetTasks, bot);
-        normalTasks.addTask(5, new EntityAISearchLoot(bot, 0.05F));
-        normalTasks.addTask(4, new EntityAIMoveIntoZone(bot));
-    }).spawnValidator(g -> ((GameBattleRoyale)g).botsLeft > 0 && ((GameBattleRoyale)g).botsLeft - g.botsInGame > 0).allowBotDeathCrates().build();
+    public final GameBotManager botManager;
+    public final TeamManager teamManager;
+    public final EntityDeathManager deathManager;
+
     private int zoneTimer;
     private List<BlockPos> scheduledAirdrops = new ArrayList<>();
     private boolean hadRegenActive = false;
     private int botsLeft = 0;
 
-    public GameBattleRoyale(String name) {
+    public GameBattleRoyale(String name, int teamSize) {
         super(name);
         this.setGameInfo(new GameInfo("Toma", "- Classic BR mode", "- One life per game", "- Shrinking zone"));
+        this.botManager = GameBotManager.Builder.create()
+                .maxBotAmount(7)
+                .allowBotDeathCrates()
+                .lootFactory(this::addLootByZone)
+                .addBotLogic((n, t, b) -> {
+                    GameUtils.addBaseTasks(n, t, b);
+                    n.addTask(5, new EntityAISearchLoot(b, 0.05F));
+                    n.addTask(4, new EntityAIMoveIntoZone(b));
+                })
+                .spawnValidator(this, g -> g.botsLeft > 0 && g.botsLeft - g.botsInGame > 0)
+                .build();
+        this.teamManager = TeamManager.Builder.create()
+                .settings(new TeamSettings(teamSize, true, true))
+                .creator(this::getTeamCreator)
+                .fillFactory(TeamManager::getDefaultFillFactory)
+                .build();
+        this.deathManager = EntityDeathManager.Builder.create()
+                .othersNotification(ctx -> ctx.hasSource() ? ctx.getSource().getName() + " killed " + ctx.getDeadEntity().getName() + "!" : ctx.getDeadEntity().getName() + " has died!")
+                .sourceNotification(ctx -> "You have killed " + ctx.getDeadEntity().getName() + "! [" + ctx.getDistanceFromSource() + "m]")
+                .victimNotification(ctx -> ctx.hasSource() ? "You have been killed by " + ctx.getSource().getName() + "!" : "You have died!")
+                // TODO
+                .onDeath(ctx -> {})
+                .build();
+    }
+
+    @Override
+    public GameBotManager getBotManager() {
+        return botManager;
+    }
+
+    @Override
+    public TeamManager getTeamManager() {
+        return teamManager;
+    }
+
+    @Override
+    public EntityDeathManager getEntityDeathManager() {
+        return deathManager;
+    }
+
+    public List<Team> getTeamCreator(Game game) {
+        // TODO customizable team size
+        int size = this.getTeamManager().getTeamSettings().maxSize;
+        List<Team> teamList = new ArrayList<>();
+        for(int i = 0; i < this.onlinePlayers; i++) {
+            teamList.add(new Team(size, 0xFFFFFF));
+        }
+        return teamList;
     }
 
     @Override
@@ -207,11 +258,6 @@ public class GameBattleRoyale extends Game {
         list.forEach(tag -> scheduledAirdrops.add(NBTUtil.getPosFromTag((NBTTagCompound) tag)));
         hadRegenActive = nbt.getBoolean("regen");
         this.botsLeft = nbt.getInteger("botsLeft");
-    }
-
-    @Override
-    public GameBotManager getBotManager() {
-        return botManager;
     }
 
     private void scheduleAirdrop(World world) {

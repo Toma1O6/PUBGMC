@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.entity.bot;
 
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameUtils;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.armor.ArmorBase;

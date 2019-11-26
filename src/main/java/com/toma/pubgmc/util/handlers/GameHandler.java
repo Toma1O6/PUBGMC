@@ -4,6 +4,7 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.util.EntityDeathContex;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
@@ -104,6 +105,9 @@ public class GameHandler {
         public static void onPlayerKilled(LivingDeathEvent e) {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
+
+            game.getEntityDeathManager().getDeathAction().accept(EntityDeathContex.getDeathContex(e));
+
             DamageSource source = e.getSource();
             EntityLivingBase entity = e.getEntityLiving();
             EntityLivingBase from;

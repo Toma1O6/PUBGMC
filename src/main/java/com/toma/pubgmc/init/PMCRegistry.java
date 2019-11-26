@@ -2,7 +2,6 @@ package com.toma.pubgmc.init;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.games.GameBattleRoyale;
-import com.toma.pubgmc.api.games.GameDeathmatch;
 import com.toma.pubgmc.api.games.GameInactive;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;

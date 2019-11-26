@@ -2,17 +2,16 @@ package com.toma.pubgmc.api.settings;
 
 import com.google.common.base.Preconditions;
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameUtils;
 import com.toma.pubgmc.api.interfaces.BotAIGetter;
 import com.toma.pubgmc.api.interfaces.BotSpawner;
+import com.toma.pubgmc.api.util.EntityDeathContex;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class GameBotManager {
+public final class GameBotManager {
 
     public int currentBotCount;
     private final boolean botsEnabled;
@@ -21,7 +20,8 @@ public class GameBotManager {
     private final Consumer<EntityAIPlayer> lootFactory;
     private final BotAIGetter botLogic;
     private final BotSpawner botSpawner;
-    private final Predicate<? super Game> botSpawnValidator;
+    private final Predicate<? extends Game> botSpawnValidator;
+    private final Consumer<EntityDeathContex> botDeathAction;
 
     private GameBotManager(Builder builder) {
         this.botsEnabled = builder.botsEnabled;
@@ -31,14 +31,7 @@ public class GameBotManager {
         this.botLogic = builder.botLogic;
         this.botSpawner = builder.spawner;
         this.botSpawnValidator = builder.spawnValidator;
-    }
-
-    public void spawnBot(World world, Game game) {
-
-    }
-
-    public void onBotDeath(EntityAIPlayer bot, EntityLivingBase source) {
-
+        this.botDeathAction = builder.botDeath;
     }
 
     public boolean areBotsEnabled() {
@@ -61,7 +54,7 @@ public class GameBotManager {
         return botSpawner;
     }
 
-    public Predicate<? super Game> getBotSpawnVerification() {
+    public Predicate<? extends Game> getBotSpawnVerification() {
         return botSpawnValidator;
     }
 
@@ -73,7 +66,8 @@ public class GameBotManager {
         private Consumer<EntityAIPlayer> lootFactory;
         private BotAIGetter botLogic;
         private BotSpawner spawner = GameUtils.getDefaultSpawner();
-        private Predicate<? super Game> spawnValidator = (game -> true);
+        private Predicate<? extends Game> spawnValidator = game -> true;
+        private Consumer<EntityDeathContex> botDeath = ctx -> {};
 
         private Builder() {
         }
@@ -112,8 +106,13 @@ public class GameBotManager {
             return this;
         }
 
-        public Builder spawnValidator(final Predicate<? super Game> validator) {
+        public <T extends Game> Builder spawnValidator(T game, final Predicate<T> validator) {
             this.spawnValidator = validator;
+            return this;
+        }
+
+        public Builder botDeath(final Consumer<EntityDeathContex> botDeath) {
+            this.botDeath = botDeath;
             return this;
         }
 
@@ -123,6 +122,7 @@ public class GameBotManager {
             Preconditions.checkNotNull(botLogic, "Bot task array cannot be null!");
             Preconditions.checkNotNull(spawner, "Bot spawner cannot be null!");
             Preconditions.checkNotNull(spawnValidator, "Spawn validator cannot be null!");
+            Preconditions.checkNotNull(botDeath, "Bot death handler cannot be null!");
             return new GameBotManager(this);
         }
     }

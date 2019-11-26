@@ -1,9 +1,11 @@
 package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.teams.Team;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.network.PacketHandler;
@@ -138,6 +140,11 @@ public abstract class Game {
      * Handles team creation and functionality
      */
     public abstract TeamManager getTeamManager();
+
+    /**
+     * Handles all death related events
+     */
+    public abstract EntityDeathManager getEntityDeathManager();
 
     /**
      * Decide what to do when player dies and attempts to respawn
@@ -364,7 +371,7 @@ public abstract class Game {
         return world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
     }
 
-    protected final void teleportEntityTo(EntityLivingBase entity, int x, int y, int z) {
+    public final void teleportEntityTo(EntityLivingBase entity, int x, int y, int z) {
         entity.posX = x + 0.5;
         entity.posY = y;
         entity.posZ = z + 0.5;
