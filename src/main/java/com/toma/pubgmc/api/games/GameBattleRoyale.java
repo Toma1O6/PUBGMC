@@ -74,7 +74,7 @@ public class GameBattleRoyale extends Game {
                     n.addTask(5, new EntityAISearchLoot(b, 0.05F));
                     n.addTask(4, new EntityAIMoveIntoZone(b));
                 })
-                .spawnValidator(this, g -> g.botsLeft > 0 && g.botsLeft - g.botsInGame > 0)
+                .spawnValidator((GameBattleRoyale g) -> g.botsLeft > 0 && g.botsLeft - g.botsInGame > 0)
                 .build();
         this.teamManager = TeamManager.Builder.create()
                 .settings(new TeamSettings(teamSize, true, true))

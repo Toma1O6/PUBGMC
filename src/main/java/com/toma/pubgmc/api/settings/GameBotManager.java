@@ -106,7 +106,7 @@ public final class GameBotManager {
             return this;
         }
 
-        public <T extends Game> Builder spawnValidator(T game, final Predicate<T> validator) {
+        public <T extends Game> Builder spawnValidator(final Predicate<T> validator) {
             this.spawnValidator = validator;
             return this;
         }
