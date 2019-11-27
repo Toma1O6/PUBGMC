@@ -20,7 +20,7 @@ public final class GameBotManager {
     private final Consumer<EntityAIPlayer> lootFactory;
     private final BotAIGetter botLogic;
     private final BotSpawner botSpawner;
-    private final Predicate<? extends Game> botSpawnValidator;
+    private final Predicate<? super Game> botSpawnValidator;
     private final Consumer<EntityDeathContex> botDeathAction;
 
     private GameBotManager(Builder builder) {
@@ -54,7 +54,7 @@ public final class GameBotManager {
         return botSpawner;
     }
 
-    public Predicate<? extends Game> getBotSpawnVerification() {
+    public Predicate<? super Game> getBotSpawnVerification() {
         return botSpawnValidator;
     }
 
@@ -66,7 +66,7 @@ public final class GameBotManager {
         private Consumer<EntityAIPlayer> lootFactory;
         private BotAIGetter botLogic;
         private BotSpawner spawner = GameUtils.getDefaultSpawner();
-        private Predicate<? extends Game> spawnValidator = game -> true;
+        private Predicate<? super Game> spawnValidator = game -> true;
         private Consumer<EntityDeathContex> botDeath = ctx -> {};
 
         private Builder() {
@@ -106,7 +106,7 @@ public final class GameBotManager {
             return this;
         }
 
-        public <T extends Game> Builder spawnValidator(final Predicate<T> validator) {
+        public Builder spawnValidator(final Predicate<? super Game> validator) {
             this.spawnValidator = validator;
             return this;
         }

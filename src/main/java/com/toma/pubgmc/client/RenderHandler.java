@@ -251,7 +251,7 @@ public class RenderHandler {
         World world = mc.world;
         IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         Game game = gameData.getCurrentGame();
-        if (!gameData.isPlaying() || gameData.isInactiveGame()) {
+        if (!gameData.getCurrentGame().isRunning() || gameData.isInactiveGame()) {
             return;
         }
         BlueZone zone = game.zone;

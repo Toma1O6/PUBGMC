@@ -25,9 +25,6 @@ import java.util.List;
  * Preparation for customizable map zone etc
  */
 public interface IGameData extends INBTSerializable<NBTTagCompound> {
-    boolean isPlaying();
-
-    void setPlaying(boolean play);
 
     void addSpawnLocation(MapLocation location);
 
@@ -71,7 +68,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
     }
 
     class GameData implements IGameData {
-        boolean isPlaying;
+
         List<MapLocation> locations = new ArrayList<>();
         List<String> names = new ArrayList<>();
         BlockPos gameZoneCenter;
@@ -79,16 +76,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         String gameHash = "null";
         Game game;
         Lobby lobby;
-
-        @Override
-        public boolean isPlaying() {
-            return isPlaying;
-        }
-
-        @Override
-        public void setPlaying(boolean play) {
-            this.isPlaying = play;
-        }
 
         @Override
         public void addSpawnLocation(MapLocation location) {
@@ -179,7 +166,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
                 this.setMapCenter(0, 0, 0);
             }
 
-            c.setBoolean("isPlaying", isPlaying);
             c.setInteger("mapCenterX", gameZoneCenter.getX());
             c.setInteger("mapCenterZ", gameZoneCenter.getZ());
             c.setInteger("mapSize", mapSize);
@@ -198,7 +184,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt) {
-            isPlaying = nbt.getBoolean("isPlaying");
             gameZoneCenter = new BlockPos(nbt.getInteger("mapCenterX"), 0, nbt.getInteger("mapCenterZ"));
             mapSize = nbt.getInteger("mapSize");
             NBTTagList locList = nbt.getTagList("list", Constants.NBT.TAG_COMPOUND);

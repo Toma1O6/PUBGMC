@@ -1,6 +1,9 @@
 package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.settings.EntityDeathManager;
+import com.toma.pubgmc.api.settings.GameManager;
+import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.world.BlueZone;
@@ -21,7 +24,22 @@ public class GameInactive extends Game {
     }
 
     @Override
+    public GameManager getGameManager() {
+        return null;
+    }
+
+    @Override
     public GameBotManager getBotManager() {
+        return null;
+    }
+
+    @Override
+    public TeamManager getTeamManager() {
+        return null;
+    }
+
+    @Override
+    public EntityDeathManager getEntityDeathManager() {
         return null;
     }
 
@@ -40,10 +58,6 @@ public class GameInactive extends Game {
 
     @Override
     public void onGameTick(World world) {
-    }
-
-    @Override
-    public void onPlayerKilled(EntityPlayer player, @Nullable EntityLivingBase entityLivingBase, ItemStack gun, boolean headshot) {
     }
 
     @Override

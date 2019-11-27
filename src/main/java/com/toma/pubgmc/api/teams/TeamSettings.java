@@ -3,7 +3,7 @@ package com.toma.pubgmc.api.teams;
 public class TeamSettings {
 
     public final boolean isSizeLimited;
-    public final int maxSize;
+    public int maxSize;
     public final boolean eliminateOnDeath;
 
     public TeamSettings(final int size, final boolean isSizeLimited, final boolean eliminateOnDeath) {

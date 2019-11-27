@@ -68,7 +68,7 @@ public class CommandGame extends CommandBase {
                     throw new CommandException("You must setup your map first! Use /game map [centerX] [centerZ] [size]");
                 } else if(gameData.getLobby() == null) {
                     throw new CommandException("You must create lobby first! Add it using the '/game lobby' command");
-                } else if(gameData.isPlaying()) {
+                } else if(gameData.getCurrentGame().isRunning()) {
                     throw new CommandException("There is already one active game!");
                 }
                 Game game = gameData.getCurrentGame();
@@ -87,17 +87,16 @@ public class CommandGame extends CommandBase {
                 if(exception != null) {
                     throw exception;
                 }
-                if(!game.startGame(sender.getEntityWorld())) {
+                if(!game.prepareStart(sender.getEntityWorld())) {
                     throw new CommandException("Error occured when launching game! Check logs and contact GAME AUTHOR about this issue!");
                 }
-                gameData.setPlaying(true);
                 game.updateDataToClients(sender.getEntityWorld());
                 sendCommandFeedback(sender, "Started game");
                 break;
             }
 
             case "stop": {
-                if(!gameData.isPlaying() || gameData.isInactiveGame() || gameData.getLobby() == null) {
+                if(!gameData.getCurrentGame().isRunning() || gameData.isInactiveGame() || gameData.getLobby() == null) {
                     throw new CommandException("There is no active game!");
                 }
                 gameData.getCurrentGame().stopGame(sender.getEntityWorld());
@@ -132,7 +131,7 @@ public class CommandGame extends CommandBase {
                 }
                 EntityPlayer player = (EntityPlayer)sender;
                 sendMessage(player, "=====[ Game information ]=====");
-                sendMessage(player, "Active: " + (gameData.isPlaying() ? "yes" : "no"));
+                sendMessage(player, "Active: " + (gameData.getCurrentGame().isRunning() ? "yes" : "no"));
                 sendMessage(player, "Map: [" + gameData.getMapCenter().getX() + ", " + gameData.getMapCenter().getZ() + "]; Size: " + gameData.getMapSize() + " blocks");
                 sendMessage(player, "Locations: " + gameData.getSpawnLocations().size());
                 Game game = gameData.getCurrentGame();

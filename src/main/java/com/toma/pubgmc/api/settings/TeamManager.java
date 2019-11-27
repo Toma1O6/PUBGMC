@@ -35,6 +35,11 @@ public final class TeamManager {
         return teamCreator;
     }
 
+    // TODO implementation
+    public void updateSize(int teamSize) {
+        this.getTeamSettings().maxSize = teamSize;
+    }
+
     public static void getDefaultFillFactory(Iterator<UUID> players, Iterator<Team> teams) {
         while(players.hasNext()) {
             boolean foundTeam = false;

@@ -43,7 +43,7 @@ public class EntityAIPlayer extends EntityCreature {
         IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         this.hash = gameData == null ? "empty" : gameData.getGameID();
         this.variant = worldIn.rand.nextInt(4);
-        this.game = gameData.isPlaying() && !gameData.isInactiveGame() ? gameData.getCurrentGame() : null;
+        this.game = gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame() ? gameData.getCurrentGame() : null;
         this.initEntityAI();
     }
 

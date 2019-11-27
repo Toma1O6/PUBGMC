@@ -24,7 +24,7 @@ public class EntityAIMoveIntoZone extends EntityAIBase {
         this.gameData = this.entity.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         if(this.gameData == null) {
             return false;
-        } else if(!this.gameData.isPlaying() || this.gameData.isInactiveGame()) {
+        } else if(!this.gameData.getCurrentGame().isRunning() || this.gameData.isInactiveGame()) {
             return false;
         }
         Game game = this.gameData.getCurrentGame();

@@ -3,6 +3,7 @@ package com.toma.pubgmc.api;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.settings.GameManager;
 import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.api.util.GameUtils;
@@ -76,6 +77,8 @@ public abstract class Game {
      **/
     private List<UUID> playersInGame;
 
+    private GamePhase gamePhase;
+
     /**
      * List of all teams
      */
@@ -117,19 +120,12 @@ public abstract class Game {
     public abstract void readDataFromNBT(NBTTagCompound compound);
 
     /**
-     * Called when player gets killed
-     *
-     * @param player           - the player who died
-     * @param entityLivingBase - source of death, may be null
-     * @param gun              - the weapon itemstack used to kill this player, may be EMPTY
-     */
-    public abstract void onPlayerKilled(EntityPlayer player, @Nullable EntityLivingBase entityLivingBase, ItemStack gun, boolean headshot);
-
-    /**
      * @return - new Bluezone instance
      */
     @Nonnull
     public abstract BlueZone initializeZone(final World world);
+
+    public abstract GameManager getGameManager();
 
     /**
      * Handles all bot related stuff
@@ -233,21 +229,38 @@ public abstract class Game {
     /* ============================================[                   API END                    ]============================================ */
     /* ============================================[ SOME MAIN FUNCTIONALITY, NOTHING INTERESTING ]============================================ */
 
-    public final boolean startGame(World world) {
+    public final boolean prepareStart(World world) {
         try {
-            playersInGame = new ArrayList<>();
-            IGameData gameData = this.getGameData(world);
+            this.playersInGame = new ArrayList<>();
             this.zone = this.initializeZone(world);
             this.populatePlayerList(world);
             this.onlinePlayers = playersInGame.size();
-            this.teamList = this.getTeamManager().teamCreator.apply(this);
-            this.getTeamManager().teamFillFactory.fill(this.getJoinedPlayers().iterator(), this.getTeamList().iterator());
+            this.teamList = this.getTeamManager().getTeamCreator().apply(this);
+            this.getTeamManager().getTeamFillFactory().fill(this.getJoinedPlayers().iterator(), this.getTeamList().iterator());
             if (playersInGame.size() < 1) {
                 throw new IllegalStateException("Cannot start game because there are no valid players");
             }
-            this.onGameStart(world);
+            GameManager gameManager = this.getGameManager();
+            boolean hasPrepStage = gameManager.getStartPhaseLength() > 0;
+            IGameData gameData = this.getGameData(world);
             gameData.setGame(this);
             gameData.setGameID(PUBGMCUtil.generateID(7));
+            if(hasPrepStage) {
+                this.gameTimer = 0;
+                this.setGamePhase(GamePhase.PREPARATION);
+            }
+            this.startGame(world);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Pubgmc.logger.fatal("Exception occurred in game preparation phase, stopping!");
+            return false;
+        }
+        return true;
+    }
+
+    public final void startGame(World world) {
+        try {
+            this.onGameStart(world);
             gameTimer = 0;
             if (shouldUpdateTileEntities()) {
                 GameUtils.updateLoadedTileEntities(world, this, true);
@@ -255,9 +268,9 @@ public abstract class Game {
         } catch (Exception e) {
             e.printStackTrace();
             Pubgmc.logger.fatal(e.getMessage() + " => aborting game start!");
-            return false;
+            this.setGamePhase(GamePhase.OFFLINE);
+            this.onGameStopped(world);
         }
-        return true;
     }
 
     public final void updatePlayerCounter(World world) {
@@ -267,7 +280,7 @@ public abstract class Game {
     public final void tickGame(World world) {
         try {
             IGameData gameData = this.getGameData(world);
-            if (gameData.isPlaying()) {
+            if (gameData.getCurrentGame().isRunning()) {
                 ++gameTimer;
                 this.onGameTick(world);
                 this.zone.bluezoneTick(world);
@@ -278,7 +291,7 @@ public abstract class Game {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            getGameData(world).setPlaying(false);
+            getGameData(world).getCurrentGame().setGamePhase(GamePhase.OFFLINE);
             Pubgmc.logger.fatal("Exception occured during game tick! Stopping game!");
             updateDataToClients(world);
         }
@@ -294,7 +307,7 @@ public abstract class Game {
                     teleportEntityTo(player, pos.getX(), pos.getY() + 1, pos.getZ());
                 }
             }
-            data.setPlaying(false);
+            data.getCurrentGame().setGamePhase(GamePhase.OFFLINE);
             this.onGameStopped(world);
             playersInGame = null;
             gameTimer = 0;
@@ -376,6 +389,18 @@ public abstract class Game {
         entity.posY = y;
         entity.posZ = z + 0.5;
         entity.setPositionAndUpdate(entity.posX, entity.posY, entity.posZ);
+    }
+
+    public final boolean isRunning() {
+        return this.gamePhase != GamePhase.OFFLINE;
+    }
+
+    public GamePhase getGamePhase() {
+        return gamePhase;
+    }
+
+    public void setGamePhase(GamePhase gamePhase) {
+        this.gamePhase = gamePhase;
     }
 
     public class GameInfo {

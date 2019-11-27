@@ -9,16 +9,13 @@ import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
-import com.toma.pubgmc.init.DamageSourceGun;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -41,7 +38,7 @@ public class GameHandler {
         public static void onRenderOverlay(RenderGameOverlayEvent.Post e) {
             if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
                 IGameData gameData = Minecraft.getMinecraft().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-                if(gameData.isPlaying() && !gameData.isInactiveGame()) {
+                if(gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame()) {
                     gameData.getCurrentGame().renderGameInfo(e.getResolution());
                 }
             }
@@ -57,7 +54,7 @@ public class GameHandler {
                 return;
             }
             IGameData gameData = e.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-            if(!gameData.isPlaying()) {
+            if(!gameData.getCurrentGame().isRunning()) {
                 return;
             }
             Game game = gameData.getCurrentGame();
@@ -106,64 +103,8 @@ public class GameHandler {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
 
+            // TODO
             game.getEntityDeathManager().getDeathAction().accept(EntityDeathContex.getDeathContex(e));
-
-            DamageSource source = e.getSource();
-            EntityLivingBase entity = e.getEntityLiving();
-            EntityLivingBase from;
-            ItemStack gun = null;
-            boolean wasHeadshot = false;
-            if(!entity.world.isRemote && entity instanceof EntityAIPlayer) {
-                game.onBotDeath((EntityAIPlayer) entity);
-                return;
-            } else if(!(entity instanceof EntityPlayer)) {
-                return;
-            }
-            Pubgmc.proxy.resetMouseSens();
-            // to avoid wrong player count when new player instance is created
-            if(game.getJoinedPlayers().contains(entity.getUniqueID())) {
-                game.getJoinedPlayers().remove(entity.getUniqueID());
-                game.updateDataToClients(entity.getEntityWorld());
-            }
-            if(source instanceof DamageSourceGun) {
-                from = (EntityLivingBase) source.getTrueSource();
-                gun = ((DamageSourceGun)source).getGun();
-                wasHeadshot = ((DamageSourceGun)source).wasHeadshot();
-            } else {
-                from = source.getTrueSource() instanceof EntityLivingBase ? (EntityLivingBase)source.getTrueSource() : null;
-            }
-            EntityPlayer player = (EntityPlayer)entity;
-            game.onPlayerKilled(player, from, gun, wasHeadshot);
-            boolean createDeathCrate = game.shouldCreateDeathCrate();
-            for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                ItemStack stack = player.inventory.getStackInSlot(i);
-                if(stack.getItem() == PMCRegistry.PMCItems.IBLOCK) stack.setCount(0);
-            }
-            if(createDeathCrate && data.isPlaying()) {
-                World world = player.world;
-                boolean canCreate = !world.getGameRules().getBoolean("keepInventory") && !isEmpty(player.inventory);
-                if(canCreate) {
-                    BlockPos pos = null;
-                    if(world.isAirBlock(player.getPosition())) {
-                        pos = player.getPosition();
-                    } else {
-                        for(int y = 0; y <= 2; y++) {
-                            if(pos != null) break;
-                            for(int x = -2; x <= 2; x++) {
-                                if(pos != null) break;
-                                for(int z = -2; z <= 2; z++) {
-                                    BlockPos p = new BlockPos(x, y, z);
-                                    if(world.isAirBlock(p)) {
-                                        pos = p;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    createAndFillDeathCrate(world, pos, player);
-                }
-            }
         }
 
         @SubscribeEvent

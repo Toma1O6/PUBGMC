@@ -5,9 +5,9 @@ import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IGameData.GameDataProvider;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketUpdatePlayerRotation;
-import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -150,7 +150,6 @@ public class EntityPlane extends Entity {
         for (EntityPlayer player : world.playerEntities) {
             if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
                 player.getCapability(PlayerDataProvider.PLAYER_DATA, null).setDistance(Double.MAX_VALUE);
-                ;
             }
         }
 
@@ -185,7 +184,7 @@ public class EntityPlane extends Entity {
                     }
                 }
 
-                if (!gameData.isPlaying()) setDead();
+                if (!gameData.getCurrentGame().isRunning()) setDead();
 
                 if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.world.planeDelay * 20 + 15) {
                     setDead();

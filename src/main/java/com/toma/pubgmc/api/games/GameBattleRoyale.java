@@ -3,8 +3,10 @@ package com.toma.pubgmc.api.games;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.Lobby;
+import com.toma.pubgmc.api.objectives.ObjectiveLastTeamStanding;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.settings.GameManager;
 import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.api.teams.TeamSettings;
@@ -27,7 +29,6 @@ import com.toma.pubgmc.world.BlueZone;
 import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -46,13 +47,13 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class GameBattleRoyale extends Game {
 
+    public final GameManager gameManager;
     public final GameBotManager botManager;
     public final TeamManager teamManager;
     public final EntityDeathManager deathManager;
@@ -65,6 +66,10 @@ public class GameBattleRoyale extends Game {
     public GameBattleRoyale(String name, int teamSize) {
         super(name);
         this.setGameInfo(new GameInfo("Toma", "- Classic BR mode", "- One life per game", "- Shrinking zone"));
+        this.gameManager = GameManager.Builder.create()
+                .waitTime(10)
+                .objective(() -> new ObjectiveLastTeamStanding(this))
+                .build();
         this.botManager = GameBotManager.Builder.create()
                 .maxBotAmount(7)
                 .allowBotDeathCrates()
@@ -74,7 +79,7 @@ public class GameBattleRoyale extends Game {
                     n.addTask(5, new EntityAISearchLoot(b, 0.05F));
                     n.addTask(4, new EntityAIMoveIntoZone(b));
                 })
-                .spawnValidator((GameBattleRoyale g) -> g.botsLeft > 0 && g.botsLeft - g.botsInGame > 0)
+                .spawnValidator(g -> ((GameBattleRoyale)g).botsLeft > 0 && ((GameBattleRoyale)g).botsLeft - g.botsInGame > 0)
                 .build();
         this.teamManager = TeamManager.Builder.create()
                 .settings(new TeamSettings(teamSize, true, true))
@@ -88,6 +93,11 @@ public class GameBattleRoyale extends Game {
                 // TODO
                 .onDeath(ctx -> {})
                 .build();
+    }
+
+    @Override
+    public GameManager getGameManager() {
+        return gameManager;
     }
 
     @Override
@@ -153,20 +163,6 @@ public class GameBattleRoyale extends Game {
         hadRegenActive = world.getGameRules().getBoolean("naturalRegeneration");
         world.getGameRules().setOrCreateGameRule("naturalRegeneration", "false");
         this.botsLeft = 50 - this.onlinePlayers;
-    }
-
-    @Override
-    public void onPlayerKilled(EntityPlayer player, @Nullable EntityLivingBase entityLivingBase, ItemStack gun, boolean headshot) {
-        TextComponentString deathMessage = new TextComponentString(entityLivingBase == null ? "You have been killed!" : "You have been killed by " + entityLivingBase.getDisplayName() + (gun != null ?
-                " using " + gun.getDisplayName() + "!" + (headshot ? "(headshot)" : "" ) : "!"));
-        player.sendMessage(deathMessage);
-        if(entityLivingBase != null) {
-            int range = (int)PUBGMCUtil.getDistanceToBlockPos(player.getPosition(), entityLivingBase.getPosition());
-            TextComponentString killerMSG = new TextComponentString("You have killed " + player.getDisplayName() + " [" + range + "m]");
-            TextComponentString msgForOthers = new TextComponentString(player.getDisplayName() + (entityLivingBase == null ? "has been killed!" : "has been killed by ") + entityLivingBase.getDisplayName() + (gun != null ?
-                    " using " + gun.getDisplayName() + "!" + (headshot ? "(headshot)" : "" ) : "!"));
-            getOnlinePlayers(player.world).stream().filter(p -> p.equals(player) || p.equals(entityLivingBase)).forEach(p -> p.sendMessage(msgForOthers));
-        }
     }
 
     @Override
