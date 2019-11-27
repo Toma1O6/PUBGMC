@@ -29,6 +29,8 @@ import com.toma.pubgmc.world.BlueZone;
 import com.toma.pubgmc.world.MapLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -37,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -47,6 +50,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +71,7 @@ public class GameBattleRoyale extends Game {
         super(name);
         this.setGameInfo(new GameInfo("Toma", "- Classic BR mode", "- One life per game", "- Shrinking zone"));
         this.gameManager = GameManager.Builder.create()
-                .waitTime(10)
+                .waitTime(200)
                 .objective(() -> new ObjectiveLastTeamStanding(this))
                 .build();
         this.botManager = GameBotManager.Builder.create()
@@ -95,6 +99,12 @@ public class GameBattleRoyale extends Game {
                 .build();
     }
 
+    @Nullable
+    @Override
+    public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
+        return null;
+    }
+
     @Override
     public GameManager getGameManager() {
         return gameManager;
@@ -116,7 +126,6 @@ public class GameBattleRoyale extends Game {
     }
 
     public List<Team> getTeamCreator(Game game) {
-        // TODO customizable team size
         int size = this.getTeamManager().getTeamSettings().maxSize;
         List<Team> teamList = new ArrayList<>();
         for(int i = 0; i < this.onlinePlayers; i++) {

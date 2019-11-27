@@ -475,10 +475,7 @@ public class PMCRegistry {
         public static void registerGameModes(com.toma.pubgmc.init.GameRegistry.GameRegisterEvent e) {
             e.registerAll(
                     new GameInactive("inactive"),
-                    // TODO improve
-                    new GameBattleRoyale("soloBR", 1),
-                    new GameBattleRoyale("duoBR", 2),
-                    new GameBattleRoyale("squadBR", 4)
+                    new GameBattleRoyale("battleroyale", 1)
             );
         }
 

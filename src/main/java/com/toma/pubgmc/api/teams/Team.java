@@ -12,6 +12,7 @@ public class Team {
     public Team(int maxSize, int color) {
         this.maxSize = maxSize;
         this.color = color;
+        this.players = new UUID[maxSize];
     }
 
     public boolean add(@Nonnull UUID uuid) {

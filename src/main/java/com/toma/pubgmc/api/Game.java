@@ -19,7 +19,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -248,6 +247,7 @@ public abstract class Game {
             if(hasPrepStage) {
                 this.gameTimer = 0;
                 this.setGamePhase(GamePhase.PREPARATION);
+                return true;
             }
             this.startGame(world);
         } catch (Exception e) {
@@ -260,6 +260,7 @@ public abstract class Game {
 
     public final void startGame(World world) {
         try {
+            this.setGamePhase(GamePhase.RUNNING);
             this.onGameStart(world);
             gameTimer = 0;
             if (shouldUpdateTileEntities()) {
@@ -281,6 +282,11 @@ public abstract class Game {
         try {
             IGameData gameData = this.getGameData(world);
             if (gameData.getCurrentGame().isRunning()) {
+                if(this.getGamePhase() == GamePhase.PREPARATION) {
+                    if(this.gameTimer >= this.getGameManager().getStartPhaseLength()) {
+                        this.startGame(world);
+                    }
+                }
                 ++gameTimer;
                 this.onGameTick(world);
                 this.zone.bluezoneTick(world);
