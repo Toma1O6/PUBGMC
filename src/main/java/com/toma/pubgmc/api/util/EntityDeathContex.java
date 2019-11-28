@@ -1,5 +1,7 @@
 package com.toma.pubgmc.api.util;
 
+import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.text.TextComponentString;
@@ -21,19 +23,25 @@ public class EntityDeathContex {
         this.isBot = deadEntity instanceof EntityAIPlayer;
     }
 
-    public void sendToSource(String message) {
+    public void sendDeathMessages(EntityDeathManager manager) {
+        this.sendToSource(manager.getSourceNotification().apply(this));
+        this.sendToVictim(manager.getVictimNotification().apply(this));
+        this.sendToOthers(manager.getOthersNotification().apply(this));
+    }
+
+    protected void sendToSource(String message) {
         if(this.hasSource()) {
             this.source.sendMessage(new TextComponentString(message));
         }
     }
 
-    public void sendToVictim(String message) {
+    protected void sendToVictim(String message) {
         this.deadEntity.sendMessage(new TextComponentString(message));
     }
 
-    public void sendToOthers(String message) {
+    protected void sendToOthers(String message) {
         TextComponentString component = new TextComponentString(message);
-        this.deadEntity.getEntityWorld().playerEntities.stream().filter(player -> player != source).forEach(player -> player.sendMessage(component));
+        this.deadEntity.getEntityWorld().playerEntities.stream().filter(player -> !player.getUniqueID().equals(source.getUniqueID())).forEach(player -> player.sendMessage(component));
     }
 
     public boolean hasSource() {

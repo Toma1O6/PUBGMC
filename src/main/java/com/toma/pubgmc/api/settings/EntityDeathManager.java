@@ -53,12 +53,12 @@ public final class EntityDeathManager {
         }
 
         public Builder sourceNotification(final Function<EntityDeathContex, String> function) {
-            this.victim = function;
+            this.source = function;
             return this;
         }
 
         public Builder othersNotification(final Function<EntityDeathContex, String> function) {
-            this.victim = function;
+            this.others = function;
             return this;
         }
 

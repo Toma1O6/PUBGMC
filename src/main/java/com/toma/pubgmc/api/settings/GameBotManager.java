@@ -58,6 +58,10 @@ public final class GameBotManager {
         return botSpawnValidator;
     }
 
+    public boolean allowBotCrates() {
+        return botDeathCrates;
+    }
+
     public static class Builder {
 
         private boolean botsEnabled = true;

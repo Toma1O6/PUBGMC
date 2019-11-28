@@ -6,15 +6,18 @@ import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.api.interfaces.BotSpawner;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import com.toma.pubgmc.common.capability.IGameData;
+import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.EntityPlane;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
 import com.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
+import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.math.ZonePos;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -160,6 +163,44 @@ public final class GameUtils {
             }
             return pos;
         };
+    }
+
+    public static void createDeathCrate(EntityPlayer player) {
+        BlockPos pos = getPosForCrate(player);
+        if(pos == null) return;
+        player.world.setBlockState(pos, PMCRegistry.PMCBlocks.PLAYER_CRATE.getDefaultState());
+        TileEntityPlayerCrate te = (TileEntityPlayerCrate) player.world.getTileEntity(pos);
+        for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if(!stack.isEmpty()) {
+                te.setInventorySlotContents(i, stack.copy());
+            }
+        }
+        IPlayerData data = IPlayerData.PlayerData.get(player);
+        // TODO add backpack and night vision
+    }
+
+    public static void createDeathCrate(EntityAIPlayer bot) {
+        BlockPos pos = getPosForCrate(bot);
+        if(pos == null) return;
+    }
+
+    public static BlockPos getPosForCrate(EntityLivingBase entity) {
+        World world = entity.getEntityWorld();
+        if(world.isAirBlock(entity.getPosition())) {
+            return world.getHeight(entity.getPosition());
+        }
+        for(int y = 0; y < 2; y++) {
+            for(int x = -1; x < 2; x++) {
+                for(int z = -1; z < 2; z++) {
+                    BlockPos pos = new BlockPos(entity.posX + x, entity.posY + y, entity.posZ + z);
+                    if(world.isAirBlock(pos)) {
+                        return world.getHeight(pos);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public static void addBaseTasks(EntityAITasks n, EntityAITasks t, EntityAIPlayer b) {

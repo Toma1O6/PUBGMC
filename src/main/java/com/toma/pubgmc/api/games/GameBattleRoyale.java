@@ -92,7 +92,7 @@ public class GameBattleRoyale extends Game {
                 .build();
         this.deathManager = EntityDeathManager.Builder.create()
                 .othersNotification(ctx -> ctx.hasSource() ? ctx.getSource().getName() + " killed " + ctx.getDeadEntity().getName() + "!" : ctx.getDeadEntity().getName() + " has died!")
-                .sourceNotification(ctx -> "You have killed " + ctx.getDeadEntity().getName() + "! [" + ctx.getDistanceFromSource() + "m]")
+                .sourceNotification(ctx -> "You have killed " + ctx.getDeadEntity().getName() + "! [" + (int)ctx.getDistanceFromSource() + "m]")
                 .victimNotification(ctx -> ctx.hasSource() ? "You have been killed by " + ctx.getSource().getName() + "!" : "You have died!")
                 // TODO
                 .onDeath(ctx -> {})

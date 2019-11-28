@@ -3,8 +3,10 @@ package com.toma.pubgmc.util.handlers;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;
+import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.util.EntityDeathContex;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
@@ -102,9 +104,17 @@ public class GameHandler {
         public static void onPlayerKilled(LivingDeathEvent e) {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
-
-            // TODO
-            game.getEntityDeathManager().getDeathAction().accept(EntityDeathContex.getDeathContex(e));
+            EntityDeathContex ctx = EntityDeathContex.getDeathContex(e);
+            EntityDeathManager manager = game.getEntityDeathManager();
+            manager.getDeathAction().accept(ctx);
+            ctx.sendDeathMessages(manager);
+            if(game.shouldCreateDeathCrate()) {
+                if(e.getEntity() instanceof EntityPlayer) {
+                    GameUtils.createDeathCrate((EntityPlayer) e.getEntity());
+                } else if(e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
+                    GameUtils.createDeathCrate((EntityAIPlayer) e.getEntity());
+                }
+            }
         }
 
         @SubscribeEvent
