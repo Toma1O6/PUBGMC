@@ -3,13 +3,13 @@ package com.toma.pubgmc.common.entity.bot;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
-import com.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.heal.ItemHealing;
 import com.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.TileEntityUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -17,14 +17,12 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class EntityAIPlayer extends EntityCreature {
 
@@ -69,14 +67,6 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public boolean canPickUpLoot() {
         return true;
-    }
-
-    // TODO check if death crate can be spawned
-    @Override
-    public void onDeath(DamageSource cause) {
-        UUID uuid = this.getUniqueID();
-        EntityAISearchLoot.GLOBAL_LOOT_CACHE.remove(uuid);
-        super.onDeath(cause);
     }
 
     @Override
@@ -194,7 +184,7 @@ public class EntityAIPlayer extends EntityCreature {
             }
         }
         IBlockState state = this.world.getBlockState(lootSpawner.getPos());
-        this.world.notifyBlockUpdate(lootSpawner.getPos(), state, state, 3);
+        TileEntityUtil.syncToClient(lootSpawner);
         needToLoot = needToLoot + (needsGun ? 10 : 0) + (needsAmmo() ? 10 : 0) + (needsHelmet ? 5 : 0) + (needsVest ? 5 : 0) + (needsMeds ? 3 : 0);
         return needToLoot;
     }

@@ -20,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EntitySelectors;
@@ -183,6 +184,20 @@ public final class GameUtils {
     public static void createDeathCrate(EntityAIPlayer bot) {
         BlockPos pos = getPosForCrate(bot);
         if(pos == null) return;
+        bot.world.setBlockState(pos, PMCRegistry.PMCBlocks.PLAYER_CRATE.getDefaultState());
+        TileEntityPlayerCrate playerCrate = (TileEntityPlayerCrate) bot.world.getTileEntity(pos);
+        for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            ItemStack stack = bot.getItemStackFromSlot(slot);
+            if(!stack.isEmpty()) {
+                playerCrate.setInventorySlotContents(slot.ordinal(), stack.copy());
+            }
+        }
+        for(int i = 0; i < bot.inventory.size(); i++) {
+            ItemStack stack = bot.inventory.get(i);
+            if(!stack.isEmpty()) {
+                playerCrate.setInventorySlotContents(i + 6, stack.copy());
+            }
+        }
     }
 
     public static BlockPos getPosForCrate(EntityLivingBase entity) {

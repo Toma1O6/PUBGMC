@@ -24,8 +24,25 @@ public class Team {
         return true;
     }
 
+    public boolean remove(@Nonnull UUID uuid) {
+        int index = -1;
+        for(int i = 0; i < players.length; i++) {
+            if(players[i].equals(uuid)) {
+                index = i;
+                break;
+            }
+        }
+        if(index < 0) return false;
+        this.players[index] = null;
+        return true;
+    }
+
     public boolean isFull() {
         return this.getEntityCount() == maxSize;
+    }
+
+    public boolean isEmpty() {
+        return this.getEntityCount() == 0;
     }
 
     public int getEntityCount() {

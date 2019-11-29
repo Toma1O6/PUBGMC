@@ -9,17 +9,14 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class EntityAISearchLoot extends EntityAIBase {
-
-    public static final HashMap<UUID, List<BlockPos>> GLOBAL_LOOT_CACHE = new HashMap<>();
 
     private EntityAIPlayer aiPlayer;
     private final float chance;
     private float modifier;
+    private final List<BlockPos> checkedLootSpawners = new ArrayList<>();
 
     @Nullable
     private BlockPos pos;
@@ -29,22 +26,16 @@ public class EntityAISearchLoot extends EntityAIBase {
         this.chance = chance;
         this.modifier = chance;
         this.setMutexBits(1);
-        GLOBAL_LOOT_CACHE.put(entityAIPlayer.getUniqueID(), new ArrayList<>());
     }
 
     public BlockPos findNearestUncheckedSpawner() {
-        List<BlockPos> checkedBlocks = GLOBAL_LOOT_CACHE.get(this.aiPlayer.getUniqueID());
-        if(checkedBlocks == null) {
-            GLOBAL_LOOT_CACHE.put(this.aiPlayer.getUniqueID(), new ArrayList<>());
-            checkedBlocks = GLOBAL_LOOT_CACHE.get(this.aiPlayer.getUniqueID());
-        }
         int smallestDist = Integer.MAX_VALUE;
         TileEntityLootGenerator closest = null;
         for(TileEntity tileEntity : this.aiPlayer.world.loadedTileEntityList) {
             if (tileEntity instanceof TileEntityLootGenerator) {
                 TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
                 if(lootSpawner == null || lootSpawner.getPos() == null) continue;
-                boolean flag = checkedBlocks.contains(lootSpawner.getPos());
+                boolean flag = checkedLootSpawners.contains(lootSpawner.getPos());
                 if(flag) continue;
                 int distance = (int)PUBGMCUtil.getDistanceToBlockPos3D(this.aiPlayer.getPosition(), lootSpawner.getPos());
                 if(distance < smallestDist) {
@@ -97,7 +88,7 @@ public class EntityAISearchLoot extends EntityAIBase {
             TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
             int i = this.aiPlayer.lootFromLootSpawner(lootSpawner);
             this.modifier = i == 0 ? 0 : i < 5 ? this.chance * 0.1F : i >= 10 ? this.chance * 2.5F : modifier;
-            GLOBAL_LOOT_CACHE.get(this.aiPlayer.getUniqueID()).add(this.pos);
+            this.checkedLootSpawners.add(this.pos);
             this.pos = null;
         }
     }

@@ -19,7 +19,7 @@ public class ObjectiveLastTeamStanding<T extends Game> implements GameObjective<
 
     @Override
     public boolean isObjectiveReached(Team team, T game) {
-        return game.getTeamList().size() <= 1;
+        return game.getTeamList().size() <= 1 && !game.getGameManager().isSinglePlayerGame;
     }
 
     @Override

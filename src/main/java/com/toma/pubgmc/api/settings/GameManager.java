@@ -1,53 +1,88 @@
 package com.toma.pubgmc.api.settings;
 
 import com.google.common.base.Preconditions;
+import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.interfaces.GameObjective;
+import com.toma.pubgmc.api.teams.Team;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class GameManager {
+public class GameManager<T extends Game> {
 
     private final int startPhaseLength;
-    private final Supplier<GameObjective<?>> gameObjective;
+    private final Supplier<GameObjective<T>> gameObjective;
+    public boolean isSinglePlayerGame;
+    public final Predicate<T> gameStopVerification;
 
-    private GameManager(Builder builder) {
+    private GameManager(Builder<T> builder) {
         this.startPhaseLength = builder.wait;
         this.gameObjective = builder.objective;
+        this.gameStopVerification = builder.verification;
     }
 
     public int getStartPhaseLength() {
         return startPhaseLength;
     }
 
-    public Supplier<GameObjective<?>> getGameObjective() {
+    public Supplier<GameObjective<T>> gameObjective() {
         return gameObjective;
     }
 
-    public static class Builder {
+    public Predicate<T> getVerification() {
+        return gameStopVerification;
+    }
+
+    public boolean shouldStopGame(T game) {
+        GameObjective<T> objective = this.gameObjective().get();
+        boolean checkAll = objective.checkAllTeams();
+        if(checkAll) {
+            boolean endGame = false;
+            for(Team team : game.getTeamList()) {
+                if(objective.isObjectiveReached(team, game)) {
+                    endGame = true;
+                    break;
+                }
+            }
+            return endGame;
+        } else {
+            Team team = game.getTeamList().get(Pubgmc.rng().nextInt(game.getTeamList().size()));
+            return objective.isObjectiveReached(team, game);
+        }
+    }
+
+    public static class Builder<T extends Game> {
 
         private int wait;
-        private Supplier<GameObjective<?>> objective;
+        private Supplier<GameObjective<T>> objective;
+        private Predicate<T> verification;
 
-        private Builder() {
+        public Builder() {
         }
 
-        public static Builder create() {
-            return new Builder();
+        public static <E extends Game> Builder<E> create(E game) {
+            return new Builder<>();
         }
 
-        public Builder waitTime(final int waitTime) {
+        public Builder<T> waitTime(final int waitTime) {
             this.wait = waitTime;
             return this;
         }
 
-        public Builder objective(final Supplier<GameObjective<?>> objective) {
+        public Builder<T> objective(final Supplier<GameObjective<T>> objective) {
             this.objective = objective;
             return this;
         }
 
-        public GameManager build() {
+        public Builder<T> verification(final Predicate<T> predicate) {
+            this.verification = predicate;
+            return this;
+        }
+
+        public GameManager<T> build() {
             Preconditions.checkNotNull(objective, "Objective cannot be null!");
-            return new GameManager(this);
+            return new GameManager<>(this);
         }
     }
 }

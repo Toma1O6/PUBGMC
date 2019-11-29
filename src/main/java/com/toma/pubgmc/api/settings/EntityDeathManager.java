@@ -38,7 +38,7 @@ public final class EntityDeathManager {
     public static class Builder {
 
         private Function<EntityDeathContex, String> victim, source, others;
-        private Consumer<EntityDeathContex> deathAction;
+        private Consumer<EntityDeathContex> deathAction = a -> {};
 
         private Builder() {
         }

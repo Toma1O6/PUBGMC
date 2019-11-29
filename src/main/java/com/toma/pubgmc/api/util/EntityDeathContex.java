@@ -2,31 +2,47 @@ package com.toma.pubgmc.api.util;
 
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
+import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class EntityDeathContex {
 
     private final boolean isBot;
-    private final Entity deadEntity;
+    private final EntityLivingBase deadEntity;
     @Nullable
-    private final Entity source;
+    private final EntityLivingBase source;
+    private final boolean isTeamKill;
+    private final ItemStack stack;
 
-    public EntityDeathContex(final @Nonnull Entity deadEntity, final @Nullable Entity source) {
+    public EntityDeathContex(final @Nonnull EntityLivingBase deadEntity, final @Nullable EntityLivingBase source, final Game game) {
         this.deadEntity = deadEntity;
         this.source = source;
         this.isBot = deadEntity instanceof EntityAIPlayer;
+        this.isTeamKill = source != null && source instanceof EntityPlayer && deadEntity instanceof EntityPlayer ? this.checkSameTeams((EntityPlayer) deadEntity, (EntityPlayer) source, game) : false;
+        this.stack = source != null ? source.getHeldItemMainhand() : ItemStack.EMPTY;
     }
 
     public void sendDeathMessages(EntityDeathManager manager) {
-        this.sendToSource(manager.getSourceNotification().apply(this));
-        this.sendToVictim(manager.getVictimNotification().apply(this));
-        this.sendToOthers(manager.getOthersNotification().apply(this));
+        try {
+            this.sendToSource(manager.getSourceNotification().apply(this));
+            this.sendToVictim(manager.getVictimNotification().apply(this));
+            this.sendToOthers(manager.getOthersNotification().apply(this));
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     protected void sendToSource(String message) {
@@ -41,7 +57,11 @@ public class EntityDeathContex {
 
     protected void sendToOthers(String message) {
         TextComponentString component = new TextComponentString(message);
-        this.deadEntity.getEntityWorld().playerEntities.stream().filter(player -> !player.getUniqueID().equals(source.getUniqueID())).forEach(player -> player.sendMessage(component));
+        for(EntityPlayer player : this.deadEntity.world.playerEntities) {
+            if(!player.getUniqueID().equals(this.deadEntity.getUniqueID()) && (source == null || !player.getUniqueID().equals(this.source.getUniqueID()))) {
+                player.sendMessage(component);
+            }
+        }
     }
 
     public boolean hasSource() {
@@ -49,6 +69,9 @@ public class EntityDeathContex {
     }
 
     public double getDistanceFromSource() {
+        if(source == null) {
+            return -1;
+        }
         double x = deadEntity.posX - source.posX;
         double y = deadEntity.posY - source.posY;
         double z = deadEntity.posZ - source.posZ;
@@ -68,7 +91,25 @@ public class EntityDeathContex {
         return source;
     }
 
-    public static EntityDeathContex getDeathContex(LivingDeathEvent event) {
-        return new EntityDeathContex(event.getEntity(), event.getSource().getTrueSource());
+    private boolean checkSameTeams(EntityPlayer player0, EntityPlayer player1, Game game) {
+        Team team0 = this.getTeamFor(player0, game);
+        Team team1 = this.getTeamFor(player1, game);
+        return team0 != null && team1 != null && team0 == team1;
+    }
+
+    private Team getTeamFor(EntityPlayer player, Game game) {
+        for(Team team : game.getTeamList()) {
+            if(PUBGMCUtil.contains(player.getUniqueID(), team.players)) {
+                return team;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Not safe to call directly, you need to check for LivingBase entities!
+     */
+    public static EntityDeathContex getDeathContex(LivingDeathEvent event, Game game) {
+        return new EntityDeathContex((EntityLivingBase) event.getEntity(), (EntityLivingBase) event.getSource().getTrueSource(), game);
     }
 }

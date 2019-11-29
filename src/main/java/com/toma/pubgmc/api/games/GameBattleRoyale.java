@@ -2,6 +2,7 @@ package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.GamePhase;
 import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.api.objectives.ObjectiveLastTeamStanding;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
@@ -69,12 +70,13 @@ public class GameBattleRoyale extends Game {
 
     public GameBattleRoyale(String name, int teamSize) {
         super(name);
-        this.setGameInfo(new GameInfo("Toma", "- Classic BR mode", "- One life per game", "- Shrinking zone"));
-        this.gameManager = GameManager.Builder.create()
+        this.setGameInfo(new GameInfo("Toma", new String[] {"size: int - Team size"}, "- Classic BR mode", "- One life per game", "- Shrinking zone"));
+        this.gameManager = GameManager.Builder.create(this)
                 .waitTime(200)
                 .objective(() -> new ObjectiveLastTeamStanding(this))
+                .verification(g -> botsLeft > 0)
                 .build();
-        this.botManager = GameBotManager.Builder.create()
+        this.botManager = GameBotManager.Builder.create(this)
                 .maxBotAmount(7)
                 .allowBotDeathCrates()
                 .lootFactory(this::addLootByZone)
@@ -83,9 +85,9 @@ public class GameBattleRoyale extends Game {
                     n.addTask(5, new EntityAISearchLoot(b, 0.05F));
                     n.addTask(4, new EntityAIMoveIntoZone(b));
                 })
-                .spawnValidator(g -> ((GameBattleRoyale)g).botsLeft > 0 && ((GameBattleRoyale)g).botsLeft - g.botsInGame > 0)
+                .spawnValidator(g -> g.botsLeft > 0 && g.botsLeft - g.botsInGame > 0)
                 .build();
-        this.teamManager = TeamManager.Builder.create()
+        this.teamManager = TeamManager.Builder.create(this)
                 .settings(new TeamSettings(teamSize, true, true))
                 .creator(this::getTeamCreator)
                 .fillFactory(TeamManager::getDefaultFillFactory)
@@ -94,14 +96,21 @@ public class GameBattleRoyale extends Game {
                 .othersNotification(ctx -> ctx.hasSource() ? ctx.getSource().getName() + " killed " + ctx.getDeadEntity().getName() + "!" : ctx.getDeadEntity().getName() + " has died!")
                 .sourceNotification(ctx -> "You have killed " + ctx.getDeadEntity().getName() + "! [" + (int)ctx.getDistanceFromSource() + "m]")
                 .victimNotification(ctx -> ctx.hasSource() ? "You have been killed by " + ctx.getSource().getName() + "!" : "You have died!")
-                // TODO
-                .onDeath(ctx -> {})
                 .build();
     }
 
     @Nullable
     @Override
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
+        if(additionalArgs.length > 0)
+        try {
+            int x = Integer.parseInt(additionalArgs[0]);
+            x = Math.abs(x);
+            x = x > 10 ? 10 : x;
+            this.getTeamManager().updateSize(x);
+        } catch (NumberFormatException e) {
+            return new CommandException("Invalid number! (" + additionalArgs[0] + ")");
+        }
         return null;
     }
 
@@ -148,6 +157,7 @@ public class GameBattleRoyale extends Game {
         zoneTimer = 0;
         scheduledAirdrops.clear();
         List<EntityPlayer> joinedPlayers = this.getOnlinePlayers(world);
+        this.getGameManager().isSinglePlayerGame = joinedPlayers.size() == 1;
         joinedPlayers.forEach(p -> {
             p.setHealth(20.0F);
             p.getFoodStats().setFoodLevel(20);
@@ -237,6 +247,10 @@ public class GameBattleRoyale extends Game {
     @Override
     public void renderGameInfo(ScaledResolution res) {
         Minecraft mc = Minecraft.getMinecraft();
+        if(this.getGamePhase() == GamePhase.PREPARATION) {
+            mc.fontRenderer.drawString("Game is starting in " + (this.getGameManager().getStartPhaseLength() - this.gameTimer) / 20, 10, 10, 0xFFFFFF);
+            return;
+        }
         mc.fontRenderer.drawStringWithShadow("Players left: " + (onlinePlayers + botsLeft), res.getScaledWidth() - 85, 10, 0xFFFFFF);
         boolean shrink = zone.isShrinking();
         int ticksLeft = zone.currentStage == 0 ? 2400 : 2000;

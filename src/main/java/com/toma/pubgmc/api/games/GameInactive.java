@@ -17,10 +17,16 @@ import javax.annotation.Nullable;
 
 public class GameInactive extends Game {
 
-    public final GameBotManager botManager = GameBotManager.Builder.create().disableBots().lootFactory(ai -> {}).botSpawner((world, game) -> null).addBotLogic(GameUtils::addBaseTasks).build();
+    public final GameBotManager botManager;
 
     public GameInactive(String name) {
         super(name);
+        this.botManager = GameBotManager.Builder.create(this)
+                .disableBots()
+                .lootFactory(ai -> {})
+                .botSpawner((world, game) -> null)
+                .addBotLogic(GameUtils::addBaseTasks)
+                .build();
     }
 
     @Override

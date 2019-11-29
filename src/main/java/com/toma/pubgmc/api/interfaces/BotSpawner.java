@@ -4,7 +4,7 @@ import com.toma.pubgmc.api.Game;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public interface BotSpawner {
+public interface BotSpawner<T extends Game> {
 
-    BlockPos getSpawnPosition(World world, Game game);
+    BlockPos getSpawnPosition(World world, T game);
 }

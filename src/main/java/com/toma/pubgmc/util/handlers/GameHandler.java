@@ -5,6 +5,8 @@ import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.settings.TeamManager;
+import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.api.util.EntityDeathContex;
 import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
@@ -12,8 +14,10 @@ import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import com.toma.pubgmc.init.PMCRegistry;
+import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,6 +34,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class GameHandler {
 
@@ -104,15 +109,26 @@ public class GameHandler {
         public static void onPlayerKilled(LivingDeathEvent e) {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
-            EntityDeathContex ctx = EntityDeathContex.getDeathContex(e);
-            EntityDeathManager manager = game.getEntityDeathManager();
-            manager.getDeathAction().accept(ctx);
-            ctx.sendDeathMessages(manager);
-            if(game.shouldCreateDeathCrate()) {
-                if(e.getEntity() instanceof EntityPlayer) {
-                    GameUtils.createDeathCrate((EntityPlayer) e.getEntity());
-                } else if(e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
-                    GameUtils.createDeathCrate((EntityAIPlayer) e.getEntity());
+            if(e.getEntity() instanceof EntityLivingBase) {
+                EntityDeathContex ctx = EntityDeathContex.getDeathContex(e, game);
+                EntityDeathManager manager = game.getEntityDeathManager();
+                manager.getDeathAction().accept(ctx);
+                if(!e.getEntity().world.isRemote) {
+                    ctx.sendDeathMessages(manager);
+                    TeamManager teamManager = game.getTeamManager();
+                    if(teamManager.getTeamSettings().eliminateOnDeath) {
+                        if(e.getEntity() instanceof EntityPlayer || e.getEntity() instanceof EntityAIPlayer) {
+                            eliminatePlayerAndTeam(game, e.getEntity().getUniqueID());
+                        }
+                    }
+                    if(game.shouldCreateDeathCrate()) {
+                        if(e.getEntity() instanceof EntityPlayer) {
+                            GameUtils.createDeathCrate((EntityPlayer) e.getEntity());
+                        } else if(e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
+                            GameUtils.createDeathCrate((EntityAIPlayer) e.getEntity());
+                            game.onBotDeath((EntityAIPlayer) e.getEntity());
+                        }
+                    }
                 }
             }
         }
@@ -168,6 +184,27 @@ public class GameHandler {
                 }
             }
             return true;
+        }
+
+        private static void eliminatePlayerAndTeam(Game game, UUID uuid) {
+                Team team = null;
+            // TODO remove
+            try {
+                for(Team t : game.getTeamList()) {
+                    if(PUBGMCUtil.contains(uuid, t.players)) {
+                        team = t;
+                        break;
+                    }
+                }
+                if(team != null) {
+                    team.remove(uuid);
+                    if(team.isEmpty()) {
+                        game.getTeamList().remove(team);
+                    }
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

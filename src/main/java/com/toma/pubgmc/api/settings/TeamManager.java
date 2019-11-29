@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-public final class TeamManager {
+public final class TeamManager<T extends Game> {
 
     private final TeamSettings gameTeamSettings;
     private final TeamFillFactory teamFillFactory;
-    private final Function<Game, List<Team>> teamCreator;
+    private final Function<T, List<Team>> teamCreator;
 
-    private TeamManager(final Builder builder) {
+    private TeamManager(final Builder<T> builder) {
         this.gameTeamSettings = builder.settings;
         this.teamFillFactory = builder.factory;
         this.teamCreator = builder.creator;
@@ -31,11 +31,10 @@ public final class TeamManager {
         return teamFillFactory;
     }
 
-    public Function<Game, List<Team>> getTeamCreator() {
+    public Function<T, List<Team>> getTeamCreator() {
         return teamCreator;
     }
 
-    // TODO implementation
     public void updateSize(int teamSize) {
         this.getTeamSettings().maxSize = teamSize;
     }
@@ -54,39 +53,39 @@ public final class TeamManager {
         }
     }
 
-    public static class Builder {
+    public static class Builder<T extends Game> {
 
         private TeamSettings settings;
         private TeamFillFactory factory = TeamManager::getDefaultFillFactory;
-        private Function<Game, List<Team>> creator;
+        private Function<T, List<Team>> creator;
 
         private Builder() {
         }
 
-        public static Builder create() {
-            return new Builder();
+        public static <T extends Game> Builder<T> create(T game) {
+            return new Builder<>();
         }
 
-        public Builder settings(final TeamSettings settings) {
+        public Builder<T> settings(final TeamSettings settings) {
             this.settings = settings;
             return this;
         }
 
-        public Builder fillFactory(final TeamFillFactory factory) {
+        public Builder<T> fillFactory(final TeamFillFactory factory) {
             this.factory = factory;
             return this;
         }
 
-        public Builder creator(final Function<Game, List<Team>> function) {
+        public Builder<T> creator(final Function<T, List<Team>> function) {
             this.creator = function;
             return this;
         }
 
-        public TeamManager build() {
+        public TeamManager<T> build() {
             Preconditions.checkNotNull(settings, "Team settings cannot be null!");
             Preconditions.checkNotNull(factory, "Team fill factory cannot be null!");
             Preconditions.checkNotNull(creator, "Team creator cannot be null!");
-            return new TeamManager(this);
+            return new TeamManager<>(this);
         }
     }
 }

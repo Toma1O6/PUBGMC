@@ -45,10 +45,6 @@ public class CommandGame extends CommandBase {
             } else if(args[0].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, "add", "remove", "list");
             }
-            if(args.length >= 2) {
-                String[] arr = sender.getEntityWorld().getCapability(GameDataProvider.GAMEDATA, null).getCurrentGame().getCommandAutoCompletions(args.length - 2, args[args.length-1]);
-                return getListOfStringsMatchingLastWord(args, arr);
-            }
         }
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, completions) : Collections.EMPTY_LIST;
     }
@@ -147,6 +143,12 @@ public class CommandGame extends CommandBase {
                 sendMessage(player, "Game mode author: " + game.getGameInformation().author);
                 for(int i = 0; i < data.length; i++) {
                     sendMessage(player, data[i]);
+                }
+                String[] arguments = game.getGameInformation().commandArguments;
+                if(arguments == null) break;
+                sendMessage(player, "Optional launch arguments:");
+                for(int i = 0; i < arguments.length; i++) {
+                    sendMessage(player, (i + 1) + ": " + arguments[i]);
                 }
                 break;
             }

@@ -36,12 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// TODO death notifications
-
 /**
  * Game creation API
  * <p>
- * Version 1.0.0
+ * Version 1.1.0
  *
  * @author Toma
  */
@@ -124,17 +122,17 @@ public abstract class Game {
     @Nonnull
     public abstract BlueZone initializeZone(final World world);
 
-    public abstract GameManager getGameManager();
+    public abstract <T extends Game> GameManager<T> getGameManager();
 
     /**
      * Handles all bot related stuff
      */
-    public abstract GameBotManager getBotManager();
+    public abstract <T extends Game> GameBotManager<T> getBotManager();
 
     /**
      * Handles team creation and functionality
      */
-    public abstract TeamManager getTeamManager();
+    public abstract <T extends Game> TeamManager<T> getTeamManager();
 
     /**
      * Handles all death related events
@@ -200,17 +198,6 @@ public abstract class Game {
     }
 
     /**
-     * For autocompletion of additional game arguments
-     *
-     * @param additonalArgIndex - the index of current argument
-     * @param arg               - actual argument value
-     * @return array of possible values
-     */
-    public String[] getCommandAutoCompletions(int additonalArgIndex, String arg) {
-        return new String[0];
-    }
-
-    /**
      * Additional information which will be displayed upon '/game info' command
      * execution.
      */
@@ -230,6 +217,7 @@ public abstract class Game {
 
     public final boolean prepareStart(World world) {
         try {
+            this.botsInGame = 0;
             this.playersInGame = new ArrayList<>();
             this.zone = this.initializeZone(world);
             this.populatePlayerList(world);
@@ -413,9 +401,11 @@ public abstract class Game {
 
         public final String author;
         public final String[] gameInformation;
+        public final String[] commandArguments;
 
-        public GameInfo(String author, String... gameInformation) {
+        public GameInfo(String author, @Nullable String[] commandArguments, String... gameInformation) {
             this.author = author;
+            this.commandArguments = commandArguments;
             this.gameInformation = gameInformation;
         }
     }

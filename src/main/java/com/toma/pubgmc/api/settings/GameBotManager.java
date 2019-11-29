@@ -11,7 +11,7 @@ import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public final class GameBotManager {
+public final class GameBotManager<T extends Game> {
 
     public int currentBotCount;
     private final boolean botsEnabled;
@@ -20,10 +20,10 @@ public final class GameBotManager {
     private final Consumer<EntityAIPlayer> lootFactory;
     private final BotAIGetter botLogic;
     private final BotSpawner botSpawner;
-    private final Predicate<? super Game> botSpawnValidator;
+    private final Predicate<T> botSpawnValidator;
     private final Consumer<EntityDeathContex> botDeathAction;
 
-    private GameBotManager(Builder builder) {
+    private GameBotManager(Builder<T> builder) {
         this.botsEnabled = builder.botsEnabled;
         this.botDeathCrates = builder.botDeathCrates;
         this.maxBotAmount = builder.maxAmount;
@@ -54,7 +54,7 @@ public final class GameBotManager {
         return botSpawner;
     }
 
-    public Predicate<? super Game> getBotSpawnVerification() {
+    public Predicate<T> getBotSpawnVerification() {
         return botSpawnValidator;
     }
 
@@ -62,7 +62,7 @@ public final class GameBotManager {
         return botDeathCrates;
     }
 
-    public static class Builder {
+    public static class Builder<T extends Game> {
 
         private boolean botsEnabled = true;
         private boolean botDeathCrates = false;
@@ -70,64 +70,64 @@ public final class GameBotManager {
         private Consumer<EntityAIPlayer> lootFactory;
         private BotAIGetter botLogic;
         private BotSpawner spawner = GameUtils.getDefaultSpawner();
-        private Predicate<? super Game> spawnValidator = game -> true;
+        private Predicate<T> spawnValidator = game -> true;
         private Consumer<EntityDeathContex> botDeath = ctx -> {};
 
         private Builder() {
         }
 
-        public static Builder create() {
-            return new Builder();
+        public static <E extends Game> Builder<E> create(E game) {
+            return new Builder<>();
         }
 
-        public Builder disableBots() {
+        public Builder<T> disableBots() {
             this.botsEnabled = false;
             return this;
         }
 
-        public Builder allowBotDeathCrates() {
+        public Builder<T> allowBotDeathCrates() {
             this.botDeathCrates = true;
             return this;
         }
 
-        public Builder maxBotAmount(final int amount) {
+        public Builder<T> maxBotAmount(final int amount) {
             this.maxAmount = amount;
             return this;
         }
 
-        public Builder lootFactory(final Consumer<EntityAIPlayer> lootFactory) {
+        public Builder<T> lootFactory(final Consumer<EntityAIPlayer> lootFactory) {
             this.lootFactory = lootFactory;
             return this;
         }
 
-        public Builder addBotLogic(final BotAIGetter botLogic) {
+        public Builder<T> addBotLogic(final BotAIGetter botLogic) {
             this.botLogic = botLogic;
             return this;
         }
 
-        public Builder botSpawner(final BotSpawner spawner) {
+        public Builder<T> botSpawner(final BotSpawner<T> spawner) {
             this.spawner = spawner;
             return this;
         }
 
-        public Builder spawnValidator(final Predicate<? super Game> validator) {
+        public Builder<T> spawnValidator(final Predicate<T> validator) {
             this.spawnValidator = validator;
             return this;
         }
 
-        public Builder botDeath(final Consumer<EntityDeathContex> botDeath) {
+        public Builder<T> botDeath(final Consumer<EntityDeathContex> botDeath) {
             this.botDeath = botDeath;
             return this;
         }
 
-        public GameBotManager build() {
+        public GameBotManager<T> build() {
             Preconditions.checkState(maxAmount > 0, "Max bot amount cannot be <1!");
             Preconditions.checkNotNull(lootFactory, "Loot factory cannot be null!");
             Preconditions.checkNotNull(botLogic, "Bot task array cannot be null!");
             Preconditions.checkNotNull(spawner, "Bot spawner cannot be null!");
             Preconditions.checkNotNull(spawnValidator, "Spawn validator cannot be null!");
             Preconditions.checkNotNull(botDeath, "Bot death handler cannot be null!");
-            return new GameBotManager(this);
+            return new GameBotManager<>(this);
         }
     }
 }
