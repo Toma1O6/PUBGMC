@@ -96,6 +96,11 @@ public class GameBattleRoyale extends Game {
                 .othersNotification(ctx -> ctx.hasSource() ? ctx.getSource().getName() + " killed " + ctx.getDeadEntity().getName() + "!" : ctx.getDeadEntity().getName() + " has died!")
                 .sourceNotification(ctx -> "You have killed " + ctx.getDeadEntity().getName() + "! [" + (int)ctx.getDistanceFromSource() + "m]")
                 .victimNotification(ctx -> ctx.hasSource() ? "You have been killed by " + ctx.getSource().getName() + "!" : "You have died!")
+                .onDeath(ctx -> {
+                    if(ctx.hasSource() && ctx.getSource() instanceof EntityPlayer) {
+                        this.getPlayerData().get(ctx.getSource().getUniqueID()).addKill();
+                    }
+                })
                 .build();
     }
 

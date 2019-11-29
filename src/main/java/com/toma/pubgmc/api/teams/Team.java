@@ -1,5 +1,7 @@
 package com.toma.pubgmc.api.teams;
 
+import scala.actors.threadpool.Arrays;
+
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
@@ -51,5 +53,40 @@ public class Team {
             if(uuid != null) ++count;
         }
         return count;
+    }
+
+    @Override
+    public int hashCode() {
+        int i = 0;
+        for(UUID uuid : this.players) {
+            if(uuid == null) continue;
+            i += uuid.hashCode();
+        }
+        return i;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        } else {
+            if(obj instanceof Team) {
+                Team team = (Team) obj;
+                if(this.getEntityCount() != team.getEntityCount()) {
+                    return false;
+                }
+                for(int i = 0; i < team.players.length; i++) {
+                    UUID uuid0 = this.players[i];
+                    UUID uuid1 = team.players[i];
+                    if(uuid0 != null && uuid1 != null) {
+                        if(!uuid0.equals(uuid1)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }

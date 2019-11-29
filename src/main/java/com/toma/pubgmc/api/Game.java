@@ -33,6 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,6 +76,8 @@ public abstract class Game {
     private List<UUID> playersInGame;
 
     private GamePhase gamePhase;
+
+    private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
 
     /**
      * List of all teams
@@ -224,13 +227,14 @@ public abstract class Game {
 
     public final boolean prepareStart(World world) {
         try {
+            this.playerDataMap = new HashMap<>(1);
             this.botsInGame = 0;
             this.playersInGame = new ArrayList<>();
             this.zone = this.initializeZone(world);
             this.populatePlayerList(world);
             this.onlinePlayers = playersInGame.size();
             this.teamList = this.getTeamManager().getTeamCreator().apply(this);
-            this.getTeamManager().getTeamFillFactory().fill(this.getJoinedPlayers().iterator(), this.getTeamList().iterator());
+            this.getTeamManager().getTeamFillFactory().fill(this.getJoinedPlayers().iterator(), this.getTeamList().iterator(), this);
             if (playersInGame.size() < 1) {
                 throw new IllegalStateException("Cannot start game because there are no valid players");
             }
@@ -293,10 +297,11 @@ public abstract class Game {
                     updatePlayerCount(world);
                     updateDataToClients(world);
                 }
-                if(this.getGameManager().shouldStopGame(this)) {
+                GameManager<? super Game> manager = this.getGameManager();
+                if(manager.shouldStopGame(this) && manager.gameStopVerification.test(this)) {
                     this.onGameObjectiveReached(world, this.getGameManager().getWinningTeam(this));
-                    this.setGamePhase(GamePhase.POST);
                     this.gameTimer = 0;
+                    this.setGamePhase(GamePhase.POST);
                 }
             }
         } catch (Exception e) {
@@ -327,6 +332,10 @@ public abstract class Game {
 
     public final List<UUID> getJoinedPlayers() {
         return playersInGame;
+    }
+
+    public final HashMap<UUID, GamePlayerData> getPlayerData() {
+        return this.playerDataMap;
     }
 
     public final int getGameTimer() {

@@ -2,6 +2,7 @@ package com.toma.pubgmc.api.settings;
 
 import com.google.common.base.Preconditions;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.interfaces.TeamFillFactory;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.api.teams.TeamSettings;
@@ -39,7 +40,7 @@ public final class TeamManager<T extends Game> {
         this.getTeamSettings().maxSize = teamSize;
     }
 
-    public static void getDefaultFillFactory(Iterator<UUID> players, Iterator<Team> teams) {
+    public static <T extends Game> void getDefaultFillFactory(Iterator<UUID> players, Iterator<Team> teams, T game) {
         while(players.hasNext()) {
             boolean foundTeam = false;
             UUID uuid = players.next();
@@ -48,6 +49,8 @@ public final class TeamManager<T extends Game> {
                 foundTeam = team.add(uuid);
                 if(!foundTeam) {
                     teams.remove();
+                } else {
+                    game.getPlayerData().put(uuid, new GamePlayerData(team));
                 }
             }
         }

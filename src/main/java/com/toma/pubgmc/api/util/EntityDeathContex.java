@@ -5,7 +5,6 @@ import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.util.PUBGMCUtil;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,9 +13,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class EntityDeathContex {
 
@@ -35,19 +31,22 @@ public class EntityDeathContex {
         this.stack = source != null ? source.getHeldItemMainhand() : ItemStack.EMPTY;
     }
 
+    /**
+     * Not safe to call directly, you need to check for LivingBase entities!
+     */
+    public static EntityDeathContex getDeathContex(LivingDeathEvent event, Game game) {
+        return new EntityDeathContex((EntityLivingBase) event.getEntity(), (EntityLivingBase) event.getSource().getTrueSource(), game);
+    }
+
     public void sendDeathMessages(EntityDeathManager manager) {
-        try {
-            this.sendToSource(manager.getSourceNotification().apply(this));
-            this.sendToVictim(manager.getVictimNotification().apply(this));
-            this.sendToOthers(manager.getOthersNotification().apply(this));
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        this.sendToSource(manager.getSourceNotification().apply(this));
+        this.sendToVictim(manager.getVictimNotification().apply(this));
+        this.sendToOthers(manager.getOthersNotification().apply(this));
     }
 
     protected void sendToSource(String message) {
-        if(this.hasSource()) {
-            this.source.sendMessage(new TextComponentString(message));
+        if (this.hasSource() && this.source instanceof EntityPlayer) {
+            ((EntityPlayer) this.source).sendStatusMessage(new TextComponentString(message), true);
         }
     }
 
@@ -57,8 +56,8 @@ public class EntityDeathContex {
 
     protected void sendToOthers(String message) {
         TextComponentString component = new TextComponentString(message);
-        for(EntityPlayer player : this.deadEntity.world.playerEntities) {
-            if(!player.getUniqueID().equals(this.deadEntity.getUniqueID()) && (source == null || !player.getUniqueID().equals(this.source.getUniqueID()))) {
+        for (EntityPlayer player : this.deadEntity.world.playerEntities) {
+            if (!player.getUniqueID().equals(this.deadEntity.getUniqueID()) && (source == null || !player.getUniqueID().equals(this.source.getUniqueID()))) {
                 player.sendMessage(component);
             }
         }
@@ -69,7 +68,7 @@ public class EntityDeathContex {
     }
 
     public double getDistanceFromSource() {
-        if(source == null) {
+        if (source == null) {
             return -1;
         }
         double x = deadEntity.posX - source.posX;
@@ -82,12 +81,12 @@ public class EntityDeathContex {
         return isBot;
     }
 
-    public Entity getDeadEntity() {
+    public EntityLivingBase getDeadEntity() {
         return deadEntity;
     }
 
     @Nullable
-    public Entity getSource() {
+    public EntityLivingBase getSource() {
         return source;
     }
 
@@ -98,18 +97,11 @@ public class EntityDeathContex {
     }
 
     private Team getTeamFor(EntityPlayer player, Game game) {
-        for(Team team : game.getTeamList()) {
-            if(PUBGMCUtil.contains(player.getUniqueID(), team.players)) {
+        for (Team team : game.getTeamList()) {
+            if (PUBGMCUtil.contains(player.getUniqueID(), team.players)) {
                 return team;
             }
         }
         return null;
-    }
-
-    /**
-     * Not safe to call directly, you need to check for LivingBase entities!
-     */
-    public static EntityDeathContex getDeathContex(LivingDeathEvent event, Game game) {
-        return new EntityDeathContex((EntityLivingBase) event.getEntity(), (EntityLivingBase) event.getSource().getTrueSource(), game);
     }
 }
