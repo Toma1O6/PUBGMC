@@ -2,14 +2,11 @@ package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
+import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.GameManager;
 import com.toma.pubgmc.api.settings.TeamManager;
-import com.toma.pubgmc.api.util.GameUtils;
-import com.toma.pubgmc.api.settings.GameBotManager;
+import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.world.BlueZone;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -17,16 +14,8 @@ import javax.annotation.Nullable;
 
 public class GameInactive extends Game {
 
-    public final GameBotManager botManager;
-
     public GameInactive(String name) {
         super(name);
-        this.botManager = GameBotManager.Builder.create(this)
-                .disableBots()
-                .lootFactory(ai -> {})
-                .botSpawner((world, game) -> null)
-                .addBotLogic(GameUtils::addBaseTasks)
-                .build();
     }
 
     @Override
@@ -87,5 +76,10 @@ public class GameInactive extends Game {
     @Override
     public boolean shouldCreateDeathCrate() {
         return false;
+    }
+
+    @Override
+    public void onGameObjectiveReached(World world, @Nullable Team team) {
+
     }
 }

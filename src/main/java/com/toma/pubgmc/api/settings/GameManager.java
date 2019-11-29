@@ -6,6 +6,7 @@ import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.interfaces.GameObjective;
 import com.toma.pubgmc.api.teams.Team;
 
+import javax.annotation.Nullable;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -49,6 +50,24 @@ public class GameManager<T extends Game> {
         } else {
             Team team = game.getTeamList().get(Pubgmc.rng().nextInt(game.getTeamList().size()));
             return objective.isObjectiveReached(team, game);
+        }
+    }
+
+    @Nullable
+    public Team getWinningTeam(T game) {
+        switch (this.gameObjective().get().getType()) {
+            case LAST_TEAM_STANDING: {
+                return game.getTeamList().get(0);
+            }
+            case SCORE: {
+                for (Team t : game.getTeamList()) {
+                    if (this.gameObjective().get().isObjectiveReached(t, game)) {
+                        return t;
+                    }
+                }
+                return null;
+            }
+            default: return null;
         }
     }
 

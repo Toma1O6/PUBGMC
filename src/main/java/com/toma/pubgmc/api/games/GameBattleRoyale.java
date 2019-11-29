@@ -68,7 +68,7 @@ public class GameBattleRoyale extends Game {
     private boolean hadRegenActive = false;
     private int botsLeft = 0;
 
-    public GameBattleRoyale(String name, int teamSize) {
+    public GameBattleRoyale(String name) {
         super(name);
         this.setGameInfo(new GameInfo("Toma", new String[] {"size: int - Team size"}, "- Classic BR mode", "- One life per game", "- Shrinking zone"));
         this.gameManager = GameManager.Builder.create(this)
@@ -88,7 +88,7 @@ public class GameBattleRoyale extends Game {
                 .spawnValidator(g -> g.botsLeft > 0 && g.botsLeft - g.botsInGame > 0)
                 .build();
         this.teamManager = TeamManager.Builder.create(this)
-                .settings(new TeamSettings(teamSize, true, true))
+                .settings(new TeamSettings(1, true, true))
                 .creator(this::getTeamCreator)
                 .fillFactory(TeamManager::getDefaultFillFactory)
                 .build();
@@ -112,6 +112,11 @@ public class GameBattleRoyale extends Game {
             return new CommandException("Invalid number! (" + additionalArgs[0] + ")");
         }
         return null;
+    }
+
+    @Override
+    public void onGameObjectiveReached(World world, @Nullable Team team) {
+
     }
 
     @Override

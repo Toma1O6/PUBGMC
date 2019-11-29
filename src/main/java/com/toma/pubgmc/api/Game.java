@@ -110,6 +110,13 @@ public abstract class Game {
     public abstract void onGameStopped(final World world);
 
     /**
+     * Called when game objective is reached
+     *
+     * @param team - the team which won
+     */
+    public abstract void onGameObjectiveReached(final World world, @Nullable final Team team);
+
+    /**
      * Allows you to save additional data to disk
      */
     public abstract void writeDataToNBT(NBTTagCompound compound);
@@ -262,7 +269,7 @@ public abstract class Game {
         }
     }
 
-    public final void updatePlayerCounter(World world) {
+    public final void updatePlayerCount(World world) {
         this.onlinePlayers = (int) playersInGame.stream().filter(uuid -> world.getPlayerEntityByUUID(uuid) != null).count();
     }
 
@@ -274,24 +281,34 @@ public abstract class Game {
                     if(this.gameTimer >= this.getGameManager().getStartPhaseLength()) {
                         this.startGame(world);
                     }
+                } else if(this.getGamePhase() == GamePhase.POST) {
+                    if(this.gameTimer >= 160) {
+                        this.stopGame(world);
+                    }
                 }
                 ++gameTimer;
                 this.onGameTick(world);
                 this.zone.bluezoneTick(world);
                 if (gameTimer % playerCounterUpdateFrequency() == 0) {
-                    updatePlayerCounter(world);
+                    updatePlayerCount(world);
                     updateDataToClients(world);
+                }
+                if(this.getGameManager().shouldStopGame(this)) {
+                    this.onGameObjectiveReached(world, this.getGameManager().getWinningTeam(this));
+                    this.setGamePhase(GamePhase.POST);
+                    this.gameTimer = 0;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            getGameData(world).getCurrentGame().setGamePhase(GamePhase.OFFLINE);
+            this.setGamePhase(GamePhase.OFFLINE);
             Pubgmc.logger.fatal("Exception occured during game tick! Stopping game!");
             updateDataToClients(world);
         }
     }
 
     public final void stopGame(World world) {
+        this.setGamePhase(GamePhase.OFFLINE);
         IGameData data = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         if (data != null && data.getLobby() != null && data.getLobby().center.getY() > 0) {
             BlockPos pos = data.getLobby().center;
@@ -301,7 +318,6 @@ public abstract class Game {
                     teleportEntityTo(player, pos.getX(), pos.getY() + 1, pos.getZ());
                 }
             }
-            data.getCurrentGame().setGamePhase(GamePhase.OFFLINE);
             this.onGameStopped(world);
             playersInGame = null;
             gameTimer = 0;
