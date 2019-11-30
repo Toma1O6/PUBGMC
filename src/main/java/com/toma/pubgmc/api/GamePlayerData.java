@@ -28,6 +28,10 @@ public class GamePlayerData {
         return data;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(obj == this) {

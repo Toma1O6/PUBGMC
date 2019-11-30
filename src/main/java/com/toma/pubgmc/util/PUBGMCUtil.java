@@ -57,7 +57,7 @@ public class PUBGMCUtil {
     /**
      * Validates stack as a weapon
      *
-     * @param stack
+     * @param stack -
      * @param maxAmmo - the ammo the weapon will get
      * @return new NBT tag
      */
@@ -98,6 +98,20 @@ public class PUBGMCUtil {
             }
         }
         return false;
+    }
+
+    public static int findFirstNull(Object[] array) {
+        for(int i = 0; i < array.length; i++) {
+            if(array[i] == null) return i;
+        }
+        return -1;
+    }
+
+    public static void shiftElementsInArray(Object[] array) {
+        for(int i = array.length - 2; i >= 0; i--) {
+            array[i+1] = array[i];
+        }
+        array[0] = null;
     }
 
     public static boolean isValidNumber(String text) {

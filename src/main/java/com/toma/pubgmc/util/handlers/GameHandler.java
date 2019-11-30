@@ -46,7 +46,7 @@ public class GameHandler {
             if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
                 IGameData gameData = Minecraft.getMinecraft().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
                 if(gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame()) {
-                    gameData.getCurrentGame().renderGameInfo(e.getResolution());
+                    gameData.getCurrentGame().renderGameOverlay(Minecraft.getMinecraft(), e.getResolution());
                 }
             }
         }
@@ -114,7 +114,7 @@ public class GameHandler {
                 EntityDeathManager manager = game.getEntityDeathManager();
                 manager.getDeathAction().accept(ctx);
                 if(!e.getEntity().world.isRemote) {
-                    ctx.sendDeathMessages(manager);
+                    game.addDeathMessage(ctx);
                     TeamManager teamManager = game.getTeamManager();
                     if(teamManager.getTeamSettings().eliminateOnDeath) {
                         if(e.getEntity() instanceof EntityPlayer || e.getEntity() instanceof EntityAIPlayer) {

@@ -6,6 +6,8 @@ import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.GameManager;
 import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.teams.Team;
+import com.toma.pubgmc.api.util.DeathMessage;
+import com.toma.pubgmc.api.util.EntityDeathContex;
 import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
@@ -13,6 +15,7 @@ import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketSyncGameData;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.world.BlueZone;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -78,6 +81,8 @@ public abstract class Game {
     private GamePhase gamePhase;
 
     private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
+
+    public DeathMessage[] displayedDeathMessages;
 
     /**
      * List of all teams
@@ -184,7 +189,7 @@ public abstract class Game {
      * For rendering whatever game information you might want onto player's screen
      */
     @SideOnly(Side.CLIENT)
-    public void renderGameInfo(ScaledResolution res) {
+    public void renderGameInfo(Minecraft mc, ScaledResolution res) {
     }
 
     /**
@@ -235,6 +240,7 @@ public abstract class Game {
             this.onlinePlayers = playersInGame.size();
             this.teamList = this.getTeamManager().getTeamCreator().apply(this);
             this.getTeamManager().getTeamFillFactory().fill(this.getJoinedPlayers().iterator(), this.getTeamList().iterator(), this);
+            this.displayedDeathMessages = new DeathMessage[this.getEntityDeathManager().getDeathMessagesCount()];
             if (playersInGame.size() < 1) {
                 throw new IllegalStateException("Cannot start game because there are no valid players");
             }
@@ -303,6 +309,7 @@ public abstract class Game {
                     this.gameTimer = 0;
                     this.setGamePhase(GamePhase.POST);
                 }
+                this.tickDeathMessages();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -310,6 +317,11 @@ public abstract class Game {
             Pubgmc.logger.fatal("Exception occured during game tick! Stopping game!");
             updateDataToClients(world);
         }
+    }
+
+    public final void addDeathMessage(EntityDeathContex contex) {
+        PUBGMCUtil.shiftElementsInArray(this.displayedDeathMessages);
+        this.displayedDeathMessages[0] = new DeathMessage(this.getEntityDeathManager(), contex);
     }
 
     public final void stopGame(World world) {
@@ -328,6 +340,12 @@ public abstract class Game {
             gameTimer = 0;
             updateDataToClients(world);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public final void renderGameOverlay(Minecraft mc, ScaledResolution resolution) {
+        this.renderGameInfo(mc, resolution);
+        this.renderDeathMessages(mc, resolution);
     }
 
     public final List<UUID> getJoinedPlayers() {
@@ -389,6 +407,10 @@ public abstract class Game {
 
     public final void readFromNBT(NBTTagCompound nbt) {
         playersInGame = new ArrayList<>();
+        if(this.displayedDeathMessages == null) {
+            EntityDeathManager manager = this.getEntityDeathManager();
+            this.displayedDeathMessages = new DeathMessage[manager == null ? 0 : manager.getDeathMessagesCount()];
+        }
         gameTimer = nbt.getInteger("timer");
         NBTTagList uuids = nbt.getTagList("players", Constants.NBT.TAG_STRING);
         uuids.forEach(tag -> playersInGame.add(UUID.fromString(((NBTTagString) tag).getString())));
@@ -420,6 +442,23 @@ public abstract class Game {
 
     public void setGamePhase(GamePhase gamePhase) {
         this.gamePhase = gamePhase;
+    }
+
+    private void tickDeathMessages() {
+        for(int i = 0; i < this.displayedDeathMessages.length; i++) {
+            DeathMessage msg = this.displayedDeathMessages[i];
+            if(msg == null) return;
+            msg.tick(i, this);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderDeathMessages(Minecraft mc, ScaledResolution resolution) {
+        for(int i = 0; i < displayedDeathMessages.length; i++) {
+            DeathMessage deathMessage = displayedDeathMessages[i];
+            if(deathMessage == null) return;
+            deathMessage.draw(this, mc, resolution, 15, 40 + i * 12);
+        }
     }
 
     public class GameInfo {

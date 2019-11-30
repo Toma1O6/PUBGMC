@@ -93,14 +93,12 @@ public class GameBattleRoyale extends Game {
                 .fillFactory(TeamManager::getDefaultFillFactory)
                 .build();
         this.deathManager = EntityDeathManager.Builder.create()
-                .othersNotification(ctx -> ctx.hasSource() ? ctx.getSource().getName() + " killed " + ctx.getDeadEntity().getName() + "!" : ctx.getDeadEntity().getName() + " has died!")
-                .sourceNotification(ctx -> "You have killed " + ctx.getDeadEntity().getName() + "! [" + (int)ctx.getDistanceFromSource() + "m]")
-                .victimNotification(ctx -> ctx.hasSource() ? "You have been killed by " + ctx.getSource().getName() + "!" : "You have died!")
                 .onDeath(ctx -> {
                     if(ctx.hasSource() && ctx.getSource() instanceof EntityPlayer) {
                         this.getPlayerData().get(ctx.getSource().getUniqueID()).addKill();
                     }
                 })
+                .deathIcons(5, 200)
                 .build();
     }
 
@@ -191,7 +189,7 @@ public class GameBattleRoyale extends Game {
         });
         hadRegenActive = world.getGameRules().getBoolean("naturalRegeneration");
         world.getGameRules().setOrCreateGameRule("naturalRegeneration", "false");
-        this.botsLeft = 50 - this.onlinePlayers;
+        this.botsLeft = 5 - this.onlinePlayers;
     }
 
     @Override
@@ -200,7 +198,8 @@ public class GameBattleRoyale extends Game {
         this.botsLeft--;
         if(onlinePlayers <= 1 && botsLeft <= 0) {
             notifyAllPlayers(bot.world, "Game has ended");
-            this.stopGame(bot.world);
+            this.gameTimer = 0;
+            this.setGamePhase(GamePhase.POST);
         }
     }
 
@@ -255,10 +254,23 @@ public class GameBattleRoyale extends Game {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderGameInfo(ScaledResolution res) {
-        Minecraft mc = Minecraft.getMinecraft();
+    public void renderGameInfo(Minecraft mc, ScaledResolution res) {
         if(this.getGamePhase() == GamePhase.PREPARATION) {
             mc.fontRenderer.drawString("Game is starting in " + (this.getGameManager().getStartPhaseLength() - this.gameTimer) / 20, 10, 10, 0xFFFFFF);
+            return;
+        } else if(this.getGamePhase() == GamePhase.POST) {
+            Team team = this.getGameManager().getWinningTeam(this);
+            mc.fontRenderer.drawString("Game is ending! " + ((160 - this.gameTimer)/20) + "s left!", 10, 10, 0xFFFFFF);
+            if(team != null) {
+                mc.fontRenderer.drawString("Winners:", 10, 22, 0xFFFFFF);
+                int idx = 0;
+                for(int i = 0; i < team.players.length; i++) {
+                    EntityPlayer player = mc.world.getPlayerEntityByUUID(team.players[i]);
+                    if(player == null) continue;
+                    mc.fontRenderer.drawString("    " + player.getName(), 10, 34 + idx * 12, 0xFFFFFF);
+                    ++idx;
+                }
+            }
             return;
         }
         mc.fontRenderer.drawStringWithShadow("Players left: " + (onlinePlayers + botsLeft), res.getScaledWidth() - 85, 10, 0xFFFFFF);

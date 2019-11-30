@@ -1,15 +1,17 @@
 package com.toma.pubgmc.api.util;
 
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.settings.EntityDeathManager;
+import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import com.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,31 +40,6 @@ public class EntityDeathContex {
         return new EntityDeathContex((EntityLivingBase) event.getEntity(), (EntityLivingBase) event.getSource().getTrueSource(), game);
     }
 
-    public void sendDeathMessages(EntityDeathManager manager) {
-        this.sendToSource(manager.getSourceNotification().apply(this));
-        this.sendToVictim(manager.getVictimNotification().apply(this));
-        this.sendToOthers(manager.getOthersNotification().apply(this));
-    }
-
-    protected void sendToSource(String message) {
-        if (this.hasSource() && this.source instanceof EntityPlayer) {
-            ((EntityPlayer) this.source).sendStatusMessage(new TextComponentString(message), true);
-        }
-    }
-
-    protected void sendToVictim(String message) {
-        this.deadEntity.sendMessage(new TextComponentString(message));
-    }
-
-    protected void sendToOthers(String message) {
-        TextComponentString component = new TextComponentString(message);
-        for (EntityPlayer player : this.deadEntity.world.playerEntities) {
-            if (!player.getUniqueID().equals(this.deadEntity.getUniqueID()) && (source == null || !player.getUniqueID().equals(this.source.getUniqueID()))) {
-                player.sendMessage(component);
-            }
-        }
-    }
-
     public boolean hasSource() {
         return this.source != null;
     }
@@ -81,6 +58,10 @@ public class EntityDeathContex {
         return isBot;
     }
 
+    public ItemStack getStack() {
+        return stack;
+    }
+
     public EntityLivingBase getDeadEntity() {
         return deadEntity;
     }
@@ -88,6 +69,30 @@ public class EntityDeathContex {
     @Nullable
     public EntityLivingBase getSource() {
         return source;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static int getIDFor(EntityLivingBase source, EntityLivingBase victim, Game game) {
+        if(!(source instanceof EntityPlayer)) {
+            return 0;
+        }
+        GamePlayerData srcData = game.getPlayerData().get(source.getUniqueID());
+        if(srcData == null) return 0;
+        GamePlayerData vcData = game.getPlayerData().get(victim.getUniqueID());
+        if(vcData == null) {
+            Minecraft mc = Minecraft.getMinecraft();
+            if(mc.player.getName().equals(source.getName())) {
+                return 1;
+            }
+            return 0;
+        }
+        if(victim instanceof EntityPlayer) {
+            if(victim == Minecraft.getMinecraft().player) {
+                return 2;
+            }
+            return 0;
+        }
+        return 0;
     }
 
     private boolean checkSameTeams(EntityPlayer player0, EntityPlayer player1, Game game) {
