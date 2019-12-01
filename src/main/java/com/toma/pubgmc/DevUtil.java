@@ -15,7 +15,7 @@ public class DevUtil {
     }
 
     public static boolean isDev() {
-        return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return Pubgmc.isDevEnvironment;
     }
 
     /**

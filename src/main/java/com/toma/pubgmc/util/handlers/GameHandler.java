@@ -2,7 +2,9 @@ package com.toma.pubgmc.util.handlers;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.GameObjectiveBased;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;
+import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.TeamManager;
@@ -25,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +36,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,6 +51,21 @@ public class GameHandler {
                 IGameData gameData = Minecraft.getMinecraft().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
                 if(gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame()) {
                     gameData.getCurrentGame().renderGameOverlay(Minecraft.getMinecraft(), e.getResolution());
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void renderGameObjects(RenderWorldLastEvent e) {
+            World world = Minecraft.getMinecraft().world;
+            Game g = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getCurrentGame();
+            if(g.isRunning() && g instanceof GameObjectiveBased) {
+                GameObjectiveBased game = (GameObjectiveBased) g;
+                Collection<GameArea> areas = game.getObjectives().values();
+                for(GameArea area : areas) {
+                    if(area.isLoaded(world)) {
+                        area.renderGameArea();
+                    }
                 }
             }
         }

@@ -23,6 +23,7 @@ import com.toma.pubgmc.world.OreGen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,6 +56,7 @@ public class Pubgmc {
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");
+    public static boolean isDevEnvironment;
 
     @Instance
     public static Pubgmc instance;
@@ -93,6 +95,7 @@ public class Pubgmc {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        isDevEnvironment = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
         PMCSounds.registerSounds();
         PacketHandler.initialize();
 
