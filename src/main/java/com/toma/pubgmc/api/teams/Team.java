@@ -1,20 +1,24 @@
 package com.toma.pubgmc.api.teams;
 
-import scala.actors.threadpool.Arrays;
-
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class Team {
 
+    public final String name;
     public final int maxSize;
     public UUID[] players;
     public final int color;
 
     public Team(int maxSize, int color) {
+        this(maxSize, color, "");
+    }
+
+    public Team(int maxSize, int color, String name) {
         this.maxSize = maxSize;
         this.color = color;
         this.players = new UUID[maxSize];
+        this.name = name;
     }
 
     public boolean add(@Nonnull UUID uuid) {

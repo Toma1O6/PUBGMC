@@ -18,8 +18,9 @@ public class ObjectiveReachScore<T extends Game> implements GameObjective<T> {
         this.winningScore = 10;
     }
 
-    public void setRequiredScore(final int score) {
+    public ObjectiveReachScore<T> setRequiredScore(final int score) {
         this.winningScore = score;
+        return this;
     }
 
     public int getWinningScore() {

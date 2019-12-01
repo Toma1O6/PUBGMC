@@ -2,11 +2,8 @@ package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.api.objectives.types.GameArea;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +16,6 @@ public abstract class GameObjectiveBased extends Game {
     public GameObjectiveBased(String name) {
         super(name);
     }
-
-    public abstract GameArea createNewObjective(World world, BlockPos pos);
-
-    public abstract void onObjectiveTypeChange(BlockPos pos);
 
     @Override
     public void onGameTick(World world) {
