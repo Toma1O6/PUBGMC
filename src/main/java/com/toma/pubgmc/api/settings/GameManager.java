@@ -49,7 +49,7 @@ public class GameManager<T extends Game> {
             return endGame;
         } else {
             if(game.getTeamList().isEmpty()) {
-                return false;
+                return true;
             }
             Team team = game.getTeamList().get(Pubgmc.rng().nextInt(game.getTeamList().size()));
             return objective.isObjectiveReached(team, game);

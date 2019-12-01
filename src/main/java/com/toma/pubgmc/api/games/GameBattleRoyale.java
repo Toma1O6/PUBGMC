@@ -74,7 +74,7 @@ public class GameBattleRoyale extends Game {
         this.gameManager = GameManager.Builder.create(this)
                 .waitTime(200)
                 .objective(() -> new ObjectiveLastTeamStanding(this))
-                .verification(g -> botsLeft > 0)
+                .verification(g -> botsLeft >= 0)
                 .build();
         this.botManager = GameBotManager.Builder.create(this)
                 .maxBotAmount(7)
@@ -189,7 +189,7 @@ public class GameBattleRoyale extends Game {
         });
         hadRegenActive = world.getGameRules().getBoolean("naturalRegeneration");
         world.getGameRules().setOrCreateGameRule("naturalRegeneration", "false");
-        this.botsLeft = 5 - this.onlinePlayers;
+        this.botsLeft = 50 - this.onlinePlayers;
     }
 
     @Override
@@ -260,14 +260,14 @@ public class GameBattleRoyale extends Game {
             return;
         } else if(this.getGamePhase() == GamePhase.POST) {
             Team team = this.getGameManager().getWinningTeam(this);
-            mc.fontRenderer.drawString("Game is ending! " + ((160 - this.gameTimer)/20) + "s left!", 10, 10, 0xFFFFFF);
+            mc.fontRenderer.drawStringWithShadow("Game is ending! " + ((160 - this.gameTimer)/20) + "s left!", 10, 10, 0xFFFFFF);
             if(team != null) {
-                mc.fontRenderer.drawString("Winners:", 10, 22, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("Winners:", 10, 22, 0xFFFFFF);
                 int idx = 0;
                 for(int i = 0; i < team.players.length; i++) {
                     EntityPlayer player = mc.world.getPlayerEntityByUUID(team.players[i]);
                     if(player == null) continue;
-                    mc.fontRenderer.drawString("    " + player.getName(), 10, 34 + idx * 12, 0xFFFFFF);
+                    mc.fontRenderer.drawStringWithShadow("    " + player.getName(), 10, 34 + idx * 12, 0xFFFFFF);
                     ++idx;
                 }
             }

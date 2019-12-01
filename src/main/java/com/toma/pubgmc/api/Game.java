@@ -304,7 +304,7 @@ public abstract class Game {
                     updateDataToClients(world);
                 }
                 GameManager<? super Game> manager = this.getGameManager();
-                if(manager.shouldStopGame(this) && manager.gameStopVerification.test(this)) {
+                if(manager.shouldStopGame(this) && manager.gameStopVerification.test(this) && this.getGamePhase() == GamePhase.RUNNING) {
                     this.onGameObjectiveReached(world, this.getGameManager().getWinningTeam(this));
                     this.gameTimer = 0;
                     this.setGamePhase(GamePhase.POST);
@@ -406,6 +406,9 @@ public abstract class Game {
     }
 
     public final void readFromNBT(NBTTagCompound nbt) {
+        if(playersInGame == null) {
+            this.setGamePhase(GamePhase.OFFLINE);
+        }
         playersInGame = new ArrayList<>();
         if(this.displayedDeathMessages == null) {
             EntityDeathManager manager = this.getEntityDeathManager();
