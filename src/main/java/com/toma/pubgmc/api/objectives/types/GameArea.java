@@ -14,7 +14,7 @@ import java.util.List;
 public class GameArea {
 
     private BlockPos center;
-    private final int radius;
+    private int radius;
     private AxisAlignedBB box;
     private String name;
 
@@ -60,6 +60,11 @@ public class GameArea {
 
     public void updateCenter(final BlockPos center) {
         this.center = center;
+        this.box = this.getBox();
+    }
+
+    public void updateSize(final int size) {
+        this.radius = size;
         this.box = this.getBox();
     }
 

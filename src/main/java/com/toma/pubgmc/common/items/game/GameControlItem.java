@@ -24,6 +24,8 @@ public final class GameControlItem extends PMCItem {
     public GameControlItem(String name, RClickAction action) {
         super(name);
         this.action = action;
+        this.addDescription("Used for game objectives");
+        this.setMaxStackSize(1);
     }
 
     @Override
@@ -73,6 +75,14 @@ public final class GameControlItem extends PMCItem {
                         return;
                     }
                     g.getObjectives().remove(pos);
+                }
+            }
+        });
+        public static final RClickAction OBJECTIVE_EDIT = ((world, pos, player, ctx) -> {
+            if(ctx.onGround() && !world.isRemote) {
+                Game g = getGame(world);
+                if(g instanceof GameObjectiveBased) {
+                    ((GameObjectiveBased)g).onObjectiveTypeChange(pos);
                 }
             }
         });

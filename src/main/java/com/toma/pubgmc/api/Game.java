@@ -1,6 +1,7 @@
 package com.toma.pubgmc.api;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.GameManager;
@@ -25,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -35,10 +37,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Game creation API
@@ -54,6 +53,11 @@ public abstract class Game {
      */
     @SideOnly(Side.CLIENT)
     public static boolean isDebugMode = false;
+
+    /**
+     * Makes sure your objectives are not removed when you change mode
+     */
+    public static Map<String, Map<BlockPos, GameArea>> cachedObjectives = new HashMap<>();
 
     /**
      * Game name, doesn't have to contain mod ID (might change in the future)
@@ -79,27 +83,74 @@ public abstract class Game {
      * Amount of AI entities
      **/
     public int botsInGame;
-    /**
-     * UUID list of all players who joined the game
-     **/
-    private List<UUID> playersInGame;
-
-    private GamePhase gamePhase;
-
-    private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
-
     public DeathMessage[] displayedDeathMessages;
-
     /**
      * List of all teams
      */
     protected List<Team> teamList = new ArrayList<>();
+    /**
+     * UUID list of all players who joined the game
+     **/
+    private List<UUID> playersInGame;
+    private GamePhase gamePhase;
+    private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
 
     public Game(final String name) {
         this.playersInGame = new ArrayList<>();
         this.registryName = name;
         this.onlinePlayers = 0;
         this.gameTimer = 0;
+    }
+
+    protected static NBTTagCompound saveObjectivesToNBT(Map<BlockPos, GameArea> map) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        NBTTagList keyList = new NBTTagList();
+        NBTTagList dataList = new NBTTagList();
+        for (Map.Entry<BlockPos, GameArea> entry : map.entrySet()) {
+            keyList.appendTag(NBTUtil.createPosTag(entry.getKey()));
+            dataList.appendTag(GameArea.createNBT(entry.getValue()));
+        }
+        nbt.setTag("keys", keyList);
+        nbt.setTag("data", dataList);
+        return nbt;
+    }
+
+    protected static Map<BlockPos, GameArea> readObjectivesFromNBT(NBTTagCompound nbt) {
+        Map<BlockPos, GameArea> map = new HashMap<>();
+        if (!nbt.hasKey("keys") || !nbt.hasKey("data")) {
+            return map;
+        }
+        NBTTagList keys = nbt.getTagList("keys", Constants.NBT.TAG_COMPOUND);
+        NBTTagList data = nbt.getTagList("data", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < keys.tagCount(); i++) {
+            map.put(NBTUtil.getPosFromTag(keys.getCompoundTagAt(i)), GameArea.getFromNBT(data.getCompoundTagAt(i)));
+        }
+        return map;
+    }
+
+    public static NBTTagCompound writeCachedObjectivesToNBT() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        NBTTagList keyList = new NBTTagList();
+        NBTTagList dataList = new NBTTagList();
+        for (Map.Entry<String, Map<BlockPos, GameArea>> entry : cachedObjectives.entrySet()) {
+            keyList.appendTag(new NBTTagString(entry.getKey()));
+            dataList.appendTag(saveObjectivesToNBT(entry.getValue()));
+        }
+        nbt.setTag("keys", keyList);
+        nbt.setTag("mappedObj", dataList);
+        return nbt;
+    }
+
+    public static void readCachedObjectivesFromNBT(NBTTagCompound nbt) {
+        cachedObjectives = new HashMap<>();
+        if (!nbt.hasKey("keys") || !nbt.hasKey("mappedObj")) {
+            return;
+        }
+        NBTTagList list = nbt.getTagList("keys", Constants.NBT.TAG_STRING);
+        NBTTagList data = nbt.getTagList("mappedObj", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < list.tagCount(); i++) {
+            cachedObjectives.put(list.getStringTagAt(i), readObjectivesFromNBT(data.getCompoundTagAt(i)));
+        }
     }
 
     /**
@@ -198,6 +249,9 @@ public abstract class Game {
     public void renderGameInfo(Minecraft mc, ScaledResolution res) {
     }
 
+    /* ============================================[                   API END                    ]============================================ */
+    /* ============================================[ SOME MAIN FUNCTIONALITY, NOTHING INTERESTING ]============================================ */
+
     /**
      * At which rate (ticks) will be online player display updated, default 100 (5s)
      */
@@ -233,9 +287,6 @@ public abstract class Game {
         if (this.botsInGame > 0) this.botsInGame--;
     }
 
-    /* ============================================[                   API END                    ]============================================ */
-    /* ============================================[ SOME MAIN FUNCTIONALITY, NOTHING INTERESTING ]============================================ */
-
     public final boolean prepareStart(World world) {
         try {
             this.playerDataMap = new HashMap<>(1);
@@ -255,7 +306,7 @@ public abstract class Game {
             IGameData gameData = this.getGameData(world);
             gameData.setGame(this);
             gameData.setGameID(PUBGMCUtil.generateID(7));
-            if(hasPrepStage) {
+            if (hasPrepStage) {
                 this.gameTimer = 0;
                 this.setGamePhase(GamePhase.PREPARATION);
                 return true;
@@ -293,12 +344,12 @@ public abstract class Game {
         try {
             IGameData gameData = this.getGameData(world);
             if (gameData.getCurrentGame().isRunning()) {
-                if(this.getGamePhase() == GamePhase.PREPARATION) {
-                    if(this.gameTimer >= this.getGameManager().getStartPhaseLength()) {
+                if (this.getGamePhase() == GamePhase.PREPARATION) {
+                    if (this.gameTimer >= this.getGameManager().getStartPhaseLength()) {
                         this.startGame(world);
                     }
-                } else if(this.getGamePhase() == GamePhase.POST) {
-                    if(this.gameTimer >= 160) {
+                } else if (this.getGamePhase() == GamePhase.POST) {
+                    if (this.gameTimer >= 160) {
                         this.stopGame(world);
                     }
                 }
@@ -310,7 +361,7 @@ public abstract class Game {
                     updateDataToClients(world);
                 }
                 GameManager<? super Game> manager = this.getGameManager();
-                if(manager.shouldStopGame(this) && manager.gameStopVerification.test(this) && this.getGamePhase() == GamePhase.RUNNING) {
+                if (manager.shouldStopGame(this) && manager.gameStopVerification.test(this) && this.getGamePhase() == GamePhase.RUNNING) {
                     this.onGameObjectiveReached(world, this.getGameManager().getWinningTeam(this));
                     this.gameTimer = 0;
                     this.setGamePhase(GamePhase.POST);
@@ -412,11 +463,11 @@ public abstract class Game {
     }
 
     public final void readFromNBT(NBTTagCompound nbt) {
-        if(playersInGame == null) {
+        if (playersInGame == null) {
             this.setGamePhase(GamePhase.OFFLINE);
         }
         playersInGame = new ArrayList<>();
-        if(this.displayedDeathMessages == null) {
+        if (this.displayedDeathMessages == null) {
             EntityDeathManager manager = this.getEntityDeathManager();
             this.displayedDeathMessages = new DeathMessage[manager == null ? 0 : manager.getDeathMessagesCount()];
         }
@@ -454,18 +505,18 @@ public abstract class Game {
     }
 
     private void tickDeathMessages() {
-        for(int i = 0; i < this.displayedDeathMessages.length; i++) {
+        for (int i = 0; i < this.displayedDeathMessages.length; i++) {
             DeathMessage msg = this.displayedDeathMessages[i];
-            if(msg == null) return;
+            if (msg == null) return;
             msg.tick(i, this);
         }
     }
 
     @SideOnly(Side.CLIENT)
     private void renderDeathMessages(Minecraft mc, ScaledResolution resolution) {
-        for(int i = 0; i < displayedDeathMessages.length; i++) {
+        for (int i = 0; i < displayedDeathMessages.length; i++) {
             DeathMessage deathMessage = displayedDeathMessages[i];
-            if(deathMessage == null) return;
+            if (deathMessage == null) return;
             deathMessage.draw(this, mc, resolution, 15, 40 + i * 12);
         }
     }

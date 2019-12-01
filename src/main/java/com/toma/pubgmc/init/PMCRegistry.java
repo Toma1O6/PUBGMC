@@ -22,6 +22,7 @@ import com.toma.pubgmc.common.items.armor.ArmorBase;
 import com.toma.pubgmc.common.items.armor.ArmorBase.ArmorLevel;
 import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.armor.ItemNVGoggles;
+import com.toma.pubgmc.common.items.game.GameControlItem;
 import com.toma.pubgmc.common.items.guns.AmmoType;
 import com.toma.pubgmc.common.items.guns.FlareGun;
 import com.toma.pubgmc.common.items.guns.GunBase;
@@ -442,6 +443,10 @@ public class PMCRegistry {
                     new ItemFuelCan().addDescription("Hold right click while driving vehicle", "Vehicle must be stationary!"),
                     new ItemVehicleSpawner("vehicle_uaz", Vehicles.UAZ),
                     new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
+                    new GameControlItem("debug_switch", GameControlItem.Actions.DEBUG),
+                    new GameControlItem("objective_add", GameControlItem.Actions.OBJECTIVE_ADD),
+                    new GameControlItem("objective_remove", GameControlItem.Actions.OBJECTIVE_REMOVE),
+                    new GameControlItem("objective_edit", GameControlItem.Actions.OBJECTIVE_EDIT)
             };
 
             event.getRegistry().registerAll(ITEMS);
