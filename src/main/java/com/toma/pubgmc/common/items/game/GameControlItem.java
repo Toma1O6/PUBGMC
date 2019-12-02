@@ -2,14 +2,16 @@ package com.toma.pubgmc.common.items.game;
 
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameObjectiveBased;
+import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.items.PMCItem;
+import com.toma.pubgmc.network.PacketHandler;
+import com.toma.pubgmc.network.sp.PacketOpenObjectiveGui;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -24,48 +26,63 @@ public final class GameControlItem extends PMCItem {
     public GameControlItem(String name, RClickAction action) {
         super(name);
         this.action = action;
-        this.addDescription("Used for game objectives");
+        this.addDescription("Used for game objectives", "Right click on ground in order to use", "Crouch for secondary function");
         this.setMaxStackSize(1);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        this.action.click(worldIn, null, playerIn, ClickContex.AIR);
-        return ActionResult.newResult(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
-    }
-
-    @Override
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        this.action.click(worldIn, pos, player, ClickContex.GROUND);
+        ItemStack stack = player.getHeldItem(hand);
+        this.fixNBT(stack);
+        this.action.click(worldIn, pos, stack, player, player.isSneaking() ? ClickContex.SNEAK : ClickContex.NORMAL);
         return super.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
-    public interface RClickAction {
-        void click(World world, @Nullable BlockPos pos, EntityPlayer player, ClickContex ctx);
+    private void fixNBT(ItemStack stack) {
+        if(!stack.hasTagCompound()) {
+            NBTTagCompound nbt = new NBTTagCompound();
+            GameArea.AreaType areaType = GameArea.Types.BOMBSITE;
+            nbt.setString("areaID", "pubgmc:bombsite");
+            stack.setTagCompound(nbt);
+        } else if(!stack.getTagCompound().hasKey("areaID")) {
+            stack.getTagCompound().setString("areaID", "pubgmc:bombsite");
+        }
     }
 
-    private enum ClickContex {
-        AIR, GROUND;
+    public interface RClickAction {
+        void click(World world, @Nullable BlockPos pos, ItemStack stack, EntityPlayer player, ClickContex ctx);
+    }
 
-        public boolean onGround() {
-            return this == GROUND;
+    public enum ClickContex {
+        NORMAL, SNEAK;
+
+        public boolean isNormal() {
+            return this == SNEAK;
         }
     }
 
     public static final class Actions {
-        public static final RClickAction DEBUG = ((world, pos, player, ctx) -> Game.isDebugMode = !Game.isDebugMode);
-        public static final RClickAction OBJECTIVE_ADD = ((world, pos, player, ctx) -> {
-            if(ctx.onGround() && !world.isRemote) {
-                Game g = getGame(world);
-                if(g instanceof GameObjectiveBased) {
-                    GameObjectiveBased game = (GameObjectiveBased) g;
-                    game.addObjective(pos, game.createNewObjective(world, pos));
-                    player.sendStatusMessage(new TextComponentString("Added new objective to " + pos.toString()), true);
+        public static final RClickAction DEBUG = ((world, pos, stack, player, ctx) -> {
+            if(!ctx.isNormal() || !world.isRemote) {
+                return;
+            }
+            Game.isDebugMode = !Game.isDebugMode;
+        });
+        public static final RClickAction OBJECTIVE_ADD = ((world, pos, stack, player, ctx) -> {
+            if(!world.isRemote) {
+                if(ctx.isNormal()) {
+                    Game g = getGame(world);
+                    if(g instanceof GameObjectiveBased) {
+                        GameObjectiveBased game = (GameObjectiveBased) g;
+                        game.addObjective(pos, new GameArea(GameArea.Types.TYPE_MAP.get(new ResourceLocation(stack.getTagCompound().getString("areaID"))), pos, 5));
+                    }
+                } else {
+                    PacketHandler.sendToClient(new PacketOpenObjectiveGui(stack), (EntityPlayerMP) player);
                 }
             }
         });
-        public static final RClickAction OBJECTIVE_REMOVE = ((world, pos, player, ctx) -> {
-            if(ctx.onGround() && !world.isRemote) {
+        public static final RClickAction OBJECTIVE_REMOVE = ((world, pos, stack, player, ctx) -> {
+            if(ctx.isNormal() && !world.isRemote) {
                 Game game = getGame(world);
                 if(game instanceof GameObjectiveBased) {
                     GameObjectiveBased g = (GameObjectiveBased) game;
@@ -75,14 +92,6 @@ public final class GameControlItem extends PMCItem {
                         return;
                     }
                     g.getObjectives().remove(pos);
-                }
-            }
-        });
-        public static final RClickAction OBJECTIVE_EDIT = ((world, pos, player, ctx) -> {
-            if(ctx.onGround() && !world.isRemote) {
-                Game g = getGame(world);
-                if(g instanceof GameObjectiveBased) {
-                    ((GameObjectiveBased)g).onObjectiveTypeChange(pos);
                 }
             }
         });

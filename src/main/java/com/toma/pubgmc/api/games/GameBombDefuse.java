@@ -1,23 +1,30 @@
 package com.toma.pubgmc.api.games;
 
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GameObjectiveBased;
+import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.objectives.ObjectiveReachScore;
+import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.GameManager;
 import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.teams.Team;
+import com.toma.pubgmc.api.teams.TeamSettings;
+import com.toma.pubgmc.api.util.GameUtils;
 import com.toma.pubgmc.util.game.ZoneSettings;
 import com.toma.pubgmc.world.BlueZone;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class GameBombDefuse extends GameObjectiveBased {
 
@@ -28,10 +35,12 @@ public class GameBombDefuse extends GameObjectiveBased {
     private final TeamManager teamManager;
     private final EntityDeathManager deathManager;
 
-    private Map<UUID, Integer> playerMoneyMap = new HashMap<>();
+    // TODO
     private TeamStats teamStats = new TeamStats();
     private int roundsLeft = 30;
     private BombStats bombStats;
+    private GameArea ctSpawn, tSpawn;
+    private GameArea bombsiteA, bombsiteB;
 
     public GameBombDefuse(String name) {
         super(name);
@@ -41,25 +50,31 @@ public class GameBombDefuse extends GameObjectiveBased {
                 .verification(game -> game.roundsLeft <= 0 || game.teamStats.getHighestScore() >= 16)
                 .build();
         this.gameBotManager = GameBotManager.Builder.create(this)
+                .lootFactory(entityAIPlayer -> {})
+                .spawnValidator(game -> true)
+                .addBotLogic(GameUtils::addBaseTasks)
                 .build();
         this.teamManager = TeamManager.Builder.create(this)
+                .settings(new TeamSettings(5, true, false))
+                .creator(this::createTeams)
+                .fillFactory(this::getTeamFillFactory)
                 .build();
         this.deathManager = EntityDeathManager.Builder.create()
                 .build();
     }
 
     @Override
-    public <T extends Game> GameManager<T> getGameManager() {
+    public GameManager<Game> getGameManager() {
         return gameManager;
     }
 
     @Override
-    public <T extends Game> GameBotManager<T> getBotManager() {
+    public GameBotManager<Game> getBotManager() {
         return gameBotManager;
     }
 
     @Override
-    public <T extends Game> TeamManager<T> getTeamManager() {
+    public TeamManager<Game> getTeamManager() {
         return teamManager;
     }
 
@@ -70,11 +85,12 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     @Override
     public void populatePlayerList(World world) {
-        world.playerEntities.forEach(player -> {
-            UUID uuid = player.getUniqueID();
-            this.getJoinedPlayers().add(uuid);
-            this.playerMoneyMap.put(uuid, 800);
-        });
+        world.playerEntities.forEach(player -> this.getJoinedPlayers().add(player.getUniqueID()));
+    }
+
+    @Override
+    public boolean canAddObjective(BlockPos pos, GameArea objective) {
+        return ((bombsiteA == null || bombsiteB == null) && objective.getAreaType() == GameArea.Types.BOMBSITE) || ((ctSpawn == null || tSpawn == null) && objective.getAreaType() == GameArea.Types.BD_SPAWN);
     }
 
     @Nonnull
@@ -84,8 +100,20 @@ public class GameBombDefuse extends GameObjectiveBased {
     }
 
     @Override
-    public void onGameStart(World world) {
+    public void onGameTick(World world) {
+        super.onGameTick(world);
+    }
 
+    @Override
+    public void onGameStart(World world) {
+        for(EntityPlayer player : this.getOnlinePlayers(world)) {
+            GamePlayerData data = this.getPlayerData().get(player.getUniqueID());
+            if(data == null) continue;
+            boolean t = data.getTeam().name.equals("t");
+            GameArea area = t ? tSpawn : ctSpawn;
+            BlockPos pos = area.getRandomPos(world);
+            player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
+        }
     }
 
     @Override
@@ -98,7 +126,63 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     }
 
+    @Nullable
+    @Override
+    public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
+        boolean[] objectives = new boolean[4];
+        for(Map.Entry<BlockPos, GameArea> entry : this.getObjectives().entrySet()) {
+            if(entry.getValue().getAreaType() == GameArea.Types.BOMBSITE) {
+                if(!objectives[0]) {
+                    objectives[0] = true;
+                    this.bombsiteA = entry.getValue();
+                } else if(!objectives[1]) {
+                    objectives[1] = true;
+                    this.bombsiteB = entry.getValue();
+                } else {
+                    return new CommandException("You cannot have more than 2 bombsites!");
+                }
+            } else if(entry.getValue().getAreaType() == GameArea.Types.BD_SPAWN) {
+                if(!objectives[2]) {
+                    objectives[2] = true;
+                    this.ctSpawn = entry.getValue();
+                } else if(!objectives[3]) {
+                    objectives[3] = true;
+                    this.tSpawn = entry.getValue();
+                } else {
+                    return new CommandException("You cannot have more than 2 spawn areas!");
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean respawnPlayer(EntityPlayer player) {
+        return true;
+    }
+
+    private List<Team> createTeams(GameBombDefuse game) {
+        List<Team> teams = new ArrayList<>(2);
+        teams.add(new Team(5, 0x008888, "ct"));
+        teams.add(new Team(5, 0xAAAA00, "t"));
+        return teams;
+    }
+
+    private void getTeamFillFactory(Iterator<UUID> players, Iterator<Team> teams, GameBombDefuse game) {
+        boolean t = Pubgmc.rng().nextBoolean();
+        while(players.hasNext()) {
+            UUID uuid = players.next();
+            Team team = this.getTeamList().get(t ? 1 : 0);
+            if(!team.add(uuid)) {
+                Pubgmc.logger.fatal("Couldn't add player with UUID {}, team is full!", uuid);
+                return;
+            }
+            this.getPlayerData().put(uuid, new PlayerStats(team));
+        }
+    }
+
     private class TeamStats {
+
         public Team terroristTeam;
         public Team counterTerroristTeam;
         public int tWins;
@@ -125,5 +209,58 @@ public class GameBombDefuse extends GameObjectiveBased {
         private boolean isPlanted;
         private int ticksLeft = 800;
         private BlockPos plantPos;
+
+        public void plantBomb(final BlockPos pos) {
+            this.plantPos = pos;
+            this.isPlanted = true;
+        }
+
+        public BlockPos getPlantPos() {
+            return plantPos;
+        }
+
+        public void tickBomb() {
+            --this.ticksLeft;
+        }
+
+        public int getTicksLeft() {
+            return ticksLeft;
+        }
+
+        public boolean isPlanted() {
+            return isPlanted;
+        }
+    }
+
+    private class PlayerStats extends GamePlayerData {
+
+        private int deaths = 0;
+        private int mvps = 0;
+
+        public PlayerStats(final Team team) {
+            super(team);
+            this.setData(800);
+        }
+
+        public boolean canBuy(int price) {
+            return this.getData() >= price;
+        }
+
+        public void addMoney(int amount) {
+            this.addData(amount);
+            if(this.getData() > 16000) this.setData(16000);
+        }
+
+        public void removeMoney(int amount) {
+            this.addMoney(-amount);
+        }
+
+        public int getDeaths() {
+            return deaths;
+        }
+
+        public int getMvps() {
+            return mvps;
+        }
     }
 }

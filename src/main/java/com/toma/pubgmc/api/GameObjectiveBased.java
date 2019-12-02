@@ -7,7 +7,6 @@ import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public abstract class GameObjectiveBased extends Game {
 
@@ -17,14 +16,17 @@ public abstract class GameObjectiveBased extends Game {
         super(name);
     }
 
+    public abstract boolean canAddObjective(BlockPos pos, GameArea objective);
+
     @Override
     public void onGameTick(World world) {
 
     }
 
     public final void addObjective(BlockPos pos, GameArea objective) {
-        UUID objectiveID = UUID.randomUUID();
-        this.objectives.put(pos, objective);
+        if(this.canAddObjective(pos, objective)) {
+            this.objectives.put(pos, objective);
+        }
     }
 
     public final Map<BlockPos, GameArea> getObjectives() {

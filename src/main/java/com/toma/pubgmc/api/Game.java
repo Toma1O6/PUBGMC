@@ -194,17 +194,17 @@ public abstract class Game {
     @Nonnull
     public abstract BlueZone initializeZone(final World world);
 
-    public abstract <T extends Game> GameManager<T> getGameManager();
+    public abstract GameManager<Game> getGameManager();
 
     /**
      * Handles all bot related stuff
      */
-    public abstract <T extends Game> GameBotManager<T> getBotManager();
+    public abstract GameBotManager<Game> getBotManager();
 
     /**
      * Handles team creation and functionality
      */
-    public abstract <T extends Game> TeamManager<T> getTeamManager();
+    public abstract TeamManager<Game> getTeamManager();
 
     /**
      * Handles all death related events

@@ -59,12 +59,12 @@ public class GameHandler {
         public static void renderGameObjects(RenderWorldLastEvent e) {
             World world = Minecraft.getMinecraft().world;
             Game g = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getCurrentGame();
-            if(g.isRunning() && g instanceof GameObjectiveBased) {
+            if(g instanceof GameObjectiveBased) {
                 GameObjectiveBased game = (GameObjectiveBased) g;
                 Collection<GameArea> areas = game.getObjectives().values();
                 for(GameArea area : areas) {
                     if(area.isLoaded(world)) {
-                        area.renderGameArea();
+                        area.renderGameArea(e.getPartialTicks());
                     }
                 }
             }

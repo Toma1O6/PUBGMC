@@ -52,6 +52,7 @@ public class PacketHandler {
         registerClientPacket(PacketDisplayLootSetupGui.Handler.class, PacketDisplayLootSetupGui.class);
         registerClientPacket(PacketSyncGameData.Handler.class, PacketSyncGameData.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
+        registerClientPacket(PacketOpenObjectiveGui.Handler.class, PacketOpenObjectiveGui.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

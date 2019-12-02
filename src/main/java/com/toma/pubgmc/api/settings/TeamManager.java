@@ -74,7 +74,7 @@ public final class TeamManager<T extends Game> {
             return this;
         }
 
-        public Builder<T> fillFactory(final TeamFillFactory factory) {
+        public Builder<T> fillFactory(final TeamFillFactory<T> factory) {
             this.factory = factory;
             return this;
         }

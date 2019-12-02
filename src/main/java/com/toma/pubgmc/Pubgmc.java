@@ -105,6 +105,8 @@ public class Pubgmc {
         CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
         CapabilityManager.INSTANCE.register(IGameData.class, new GameDataStorage(), GameData::new);
 
+        com.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
+
         proxy.preInit(event);
     }
 
@@ -117,7 +119,6 @@ public class Pubgmc {
 
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
-        com.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
     }
 
     @EventHandler

@@ -20,6 +20,10 @@ public class GamePlayerData {
         this.data += data;
     }
 
+    public void setData(int data) {
+        this.data = data;
+    }
+
     public int getKillCount() {
         return killCount;
     }

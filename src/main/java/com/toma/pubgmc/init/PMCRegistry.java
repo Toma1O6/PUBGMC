@@ -2,6 +2,7 @@ package com.toma.pubgmc.init;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.games.GameBattleRoyale;
+import com.toma.pubgmc.api.games.GameBombDefuse;
 import com.toma.pubgmc.api.games.GameInactive;
 import com.toma.pubgmc.client.models.BakedModelGun;
 import com.toma.pubgmc.client.renderer.WeaponTEISR;
@@ -34,7 +35,6 @@ import com.toma.pubgmc.common.items.guns.attachments.IAttachment.Type;
 import com.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import com.toma.pubgmc.common.items.heal.*;
 import com.toma.pubgmc.common.tileentity.*;
-import com.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.common.CFGWeapons;
 import com.toma.pubgmc.event.GunModelAttachEvent;
@@ -445,8 +445,7 @@ public class PMCRegistry {
                     new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
                     new GameControlItem("debug_switch", GameControlItem.Actions.DEBUG),
                     new GameControlItem("objective_add", GameControlItem.Actions.OBJECTIVE_ADD),
-                    new GameControlItem("objective_remove", GameControlItem.Actions.OBJECTIVE_REMOVE),
-                    new GameControlItem("objective_edit", GameControlItem.Actions.OBJECTIVE_EDIT)
+                    new GameControlItem("objective_remove", GameControlItem.Actions.OBJECTIVE_REMOVE)
             };
 
             event.getRegistry().registerAll(ITEMS);
@@ -480,7 +479,8 @@ public class PMCRegistry {
         public static void registerGameModes(com.toma.pubgmc.init.GameRegistry.GameRegisterEvent e) {
             e.registerAll(
                     new GameInactive("inactive"),
-                    new GameBattleRoyale("battleroyale")
+                    new GameBattleRoyale("battleroyale"),
+                    new GameBombDefuse("bombDefuse")
             );
         }
 

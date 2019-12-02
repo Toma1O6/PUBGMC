@@ -123,17 +123,17 @@ public class GameBattleRoyale extends Game {
     }
 
     @Override
-    public GameManager getGameManager() {
+    public GameManager<Game> getGameManager() {
         return gameManager;
     }
 
     @Override
-    public GameBotManager getBotManager() {
+    public GameBotManager<Game> getBotManager() {
         return botManager;
     }
 
     @Override
-    public TeamManager getTeamManager() {
+    public TeamManager<Game> getTeamManager() {
         return teamManager;
     }
 
