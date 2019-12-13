@@ -57,7 +57,7 @@ public final class GameControlItem extends PMCItem {
         NORMAL, SNEAK;
 
         public boolean isNormal() {
-            return this == SNEAK;
+            return this == NORMAL;
         }
     }
 
@@ -67,6 +67,7 @@ public final class GameControlItem extends PMCItem {
                 return;
             }
             Game.isDebugMode = !Game.isDebugMode;
+            player.sendStatusMessage(new TextComponentString("Debug mode: " + (Game.isDebugMode ? "ON" : "OFF")), true);
         });
         public static final RClickAction OBJECTIVE_ADD = ((world, pos, stack, player, ctx) -> {
             if(!world.isRemote) {
@@ -75,6 +76,7 @@ public final class GameControlItem extends PMCItem {
                     if(g instanceof GameObjectiveBased) {
                         GameObjectiveBased game = (GameObjectiveBased) g;
                         game.addObjective(pos, new GameArea(GameArea.Types.TYPE_MAP.get(new ResourceLocation(stack.getTagCompound().getString("areaID"))), pos, 5));
+                        player.sendStatusMessage(new TextComponentString("Added new area!"), true);
                     }
                 } else {
                     PacketHandler.sendToClient(new PacketOpenObjectiveGui(stack), (EntityPlayerMP) player);
@@ -92,6 +94,20 @@ public final class GameControlItem extends PMCItem {
                         return;
                     }
                     g.getObjectives().remove(pos);
+                    player.sendStatusMessage(new TextComponentString("Area has been removed!"), true);
+                }
+            }
+        });
+        public static final RClickAction OBJECTIVE_CHANGE_SIZE = ((world, pos, stack, player, ctx) -> {
+            if(!world.isRemote) {
+                int i = ctx.isNormal() ? 1 : -1;
+                Game game = getGame(world);
+                if(game instanceof GameObjectiveBased) {
+                    GameObjectiveBased gameObjectiveBased = (GameObjectiveBased) game;
+                    GameArea area = gameObjectiveBased.getObjectives().get(pos);
+                    if(area == null) return;
+                    area.updateSize(area.getRadius() + i);
+                    player.sendStatusMessage(new TextComponentString("Area size updated to " + area.getRadius()), true);
                 }
             }
         });

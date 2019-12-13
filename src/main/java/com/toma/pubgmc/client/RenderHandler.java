@@ -2,10 +2,13 @@ package com.toma.pubgmc.client;
 
 import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.GameObjectiveBased;
+import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.client.layers.LayerGhillie;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.capability.IPlayerData;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import com.toma.pubgmc.common.items.game.GameControlItem;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.event.client.RenderItemInHandEvent;
@@ -13,7 +16,6 @@ import com.toma.pubgmc.event.client.SetupAnglesEvent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -21,16 +23,16 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -251,6 +253,52 @@ public class RenderHandler {
         World world = mc.world;
         IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
         Game game = gameData.getCurrentGame();
+        EntityPlayerSP player = mc.player;
+        double partialTicks = e.getPartialTicks();
+        double interpolatedPlayerX = interpolate(player.posX, player.lastTickPosX, partialTicks);
+        double interpolatedPlayerY = interpolate(player.posY, player.lastTickPosY, partialTicks);
+        double interpolatedPlayerZ = interpolate(player.posZ, player.lastTickPosZ, partialTicks);
+        if(Game.isDebugMode && player.getHeldItemMainhand().getItem() instanceof GameControlItem) {
+            if(game instanceof GameObjectiveBased) {
+                for(GameArea area : ((GameObjectiveBased) game).getObjectives().values()) {
+                    if(area.isLoaded(world)) {
+                        BlockPos pos = area.getCenter();
+                        Tessellator tessellator = Tessellator.getInstance();
+                        BufferBuilder bb = tessellator.getBuffer();
+                        GlStateManager.disableCull();
+                        GlStateManager.disableTexture2D();
+                        bb.setTranslation(-interpolatedPlayerX, -interpolatedPlayerY, -interpolatedPlayerZ);
+                        bb.begin(7, DefaultVertexFormats.POSITION_COLOR);
+                        float a = 1.0F;
+                        bb.pos(pos.getX(), pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 1, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 1, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 1, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 1, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 1, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 1, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.pos(pos.getX(), pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
+                        bb.sortVertexData(-(float)player.posX, -(float)player.posY, -(float)player.posZ);
+                        tessellator.draw();
+                        bb.setTranslation(0, 0, 0);
+                        GlStateManager.enableTexture2D();
+                        GlStateManager.enableCull();
+                    }
+                }
+            }
+        }
         if (!gameData.getCurrentGame().isRunning() || gameData.isInactiveGame()) {
             return;
         }
@@ -258,13 +306,8 @@ public class RenderHandler {
         if (zone == null) {
             return;
         }
-        EntityPlayerSP player = mc.player;
         double maxClientRenderDist = mc.gameSettings.renderDistanceChunks * 16;
         if (isCloseToBorder(player, zone, maxClientRenderDist)) {
-            double partialTicks = e.getPartialTicks();
-            double interpolatedPlayerX = interpolate(player.posX, player.lastTickPosX, partialTicks);
-            double interpolatedPlayerY = interpolate(player.posY, player.lastTickPosY, partialTicks);
-            double interpolatedPlayerZ = interpolate(player.posZ, player.lastTickPosZ, partialTicks);
             int clientZoneColor = ConfigPMC.client.other.zoneColor;
             float a = 0.25F;
             float r = ((clientZoneColor >> 16) & 255) / 255.0F;
@@ -305,7 +348,7 @@ public class RenderHandler {
                 bufferBuilder.pos(maxRenderPosX, 0D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
                 bufferBuilder.pos(minRenderPosX, 0D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
             }
-
+            bufferBuilder.sortVertexData((float)player.posX, (float)player.posY, (float)player.posZ);
             tessellator.draw();
             bufferBuilder.setTranslation(0, 0, 0);
             GlStateManager.enableTexture2D();
@@ -322,51 +365,6 @@ public class RenderHandler {
         }
         playersWithAddedRenderLayer.add(player.getUniqueID());
         e.getRenderer().addLayer(new LayerGhillie(e.getRenderer()));
-    }
-
-    //@SubscribeEvent
-    public void renderHand(RenderHandEvent e) {
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.player;
-        ItemStack stack = player.getHeldItemMainhand();
-        if (!(stack.getItem() instanceof GunBase)) {
-            IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-            boolean aim = data.isAiming();
-            //boolean oneHand = ((GunBase)stack.getItem()).getWeaponModel().heldAnimation.getHeldStyle() == HeldAnimation.HeldStyle.SMALL;
-            RenderManager manager = mc.getRenderManager();
-            Render<AbstractClientPlayer> abstractClientPlayerRender = manager.getEntityRenderObject(player);
-            RenderPlayer renderPlayer = (RenderPlayer) abstractClientPlayerRender;
-            GlStateManager.pushMatrix();
-            GlStateManager.disableCull();
-
-            GlStateManager.rotate(90F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(92.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate(45.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(41.0F, 0.0F, 0.0F, 1.0F);
-            GlStateManager.translate(-0.3F, -1.1F, 0.45F);
-            renderPlayer.renderLeftArm(mc.player);
-            GlStateManager.enableCull();
-            GlStateManager.popMatrix();
-        }
-    }
-
-    public void renderHand() {
-
-    }
-
-    public float prepareScale(EntityPlayer player, float partial) {
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-        GlStateManager.scale(1.9F, 1.9F, 1.9F);
-        GlStateManager.translate(0.0F, -1.5F, 0.0F);
-        return 0.0625F;
-    }
-
-    public float normalizeAndInterpolateRotation(float prev, float current, float partial) {
-        float f = current - prev;
-        while (f < -180F) f += 360F;
-        while (f >= 180.0F) f -= 360.0F;
-        return prev + partial * f;
     }
 
     public boolean isCloseToBorder(EntityPlayerSP player, BlueZone zone, double maxDist) {

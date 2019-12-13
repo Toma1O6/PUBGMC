@@ -42,7 +42,7 @@ public class PMCClassTransformer implements IClassTransformer {
                 AbstractInsnNode target = null;
                 // iterate through all instructions
                 for(AbstractInsnNode abstractInsnNode : methodNode.instructions.toArray()) {
-                    if(abstractInsnNode.getOpcode() == Opcodes.INVOKESTATIC && abstractInsnNode.getNext() instanceof LabelNode) {
+                    if(abstractInsnNode instanceof LineNumberNode && ((LineNumberNode) abstractInsnNode).line == 281) {
                         // we found the last static method call inside the method
                         target = abstractInsnNode;
                         break;
@@ -67,6 +67,7 @@ public class PMCClassTransformer implements IClassTransformer {
                     // execute the event on the EventBus
                     eventInsns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
                     eventInsns.add(new InsnNode(Opcodes.POP));
+                    eventInsns.add(new LineNumberNode(282, new LabelNode()));
                     // insert set of instructions before the targetNode
                     methodNode.instructions.insertBefore(target, eventInsns);
                     Pubgmc.logger.info("Successfully patched net.minecraft.client.model.ModelBiped class. Took {} ms", System.currentTimeMillis() - l);

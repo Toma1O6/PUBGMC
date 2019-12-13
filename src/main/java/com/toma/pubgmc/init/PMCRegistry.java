@@ -445,7 +445,8 @@ public class PMCRegistry {
                     new ItemVehicleSpawner("vehicle_dacia", Vehicles.DACIA),
                     new GameControlItem("debug_switch", GameControlItem.Actions.DEBUG),
                     new GameControlItem("objective_add", GameControlItem.Actions.OBJECTIVE_ADD),
-                    new GameControlItem("objective_remove", GameControlItem.Actions.OBJECTIVE_REMOVE)
+                    new GameControlItem("objective_remove", GameControlItem.Actions.OBJECTIVE_REMOVE),
+                    new GameControlItem("objective_change_size", GameControlItem.Actions.OBJECTIVE_CHANGE_SIZE)
             };
 
             event.getRegistry().registerAll(ITEMS);

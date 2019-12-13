@@ -19,6 +19,7 @@ import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -64,7 +65,11 @@ public class GameHandler {
                 Collection<GameArea> areas = game.getObjectives().values();
                 for(GameArea area : areas) {
                     if(area.isLoaded(world)) {
-                        area.renderGameArea(e.getPartialTicks());
+                        Entity player = Minecraft.getMinecraft().getRenderViewEntity();
+                        double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)e.getPartialTicks();
+                        double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)e.getPartialTicks();
+                        double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)e.getPartialTicks();
+                        area.renderGameArea(x, y, z);
                     }
                 }
             }

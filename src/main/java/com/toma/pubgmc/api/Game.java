@@ -51,7 +51,6 @@ public abstract class Game {
     /**
      * Used to render some extra stuff, like objectives etc
      */
-    @SideOnly(Side.CLIENT)
     public static boolean isDebugMode = false;
 
     /**

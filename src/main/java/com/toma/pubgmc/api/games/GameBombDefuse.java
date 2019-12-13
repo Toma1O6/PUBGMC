@@ -90,13 +90,13 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     @Override
     public boolean canAddObjective(BlockPos pos, GameArea objective) {
-        return ((bombsiteA == null || bombsiteB == null) && objective.getAreaType() == GameArea.Types.BOMBSITE) || ((ctSpawn == null || tSpawn == null) && objective.getAreaType() == GameArea.Types.BD_SPAWN);
+        return true;
     }
 
     @Nonnull
     @Override
     public BlueZone initializeZone(World world) {
-        return new BlueZone(this.getGameData(world), ZoneSettings.Builder.create().setStatic().damage(20).setAlwaysCentered().build());
+        return new BlueZone(this.getGameData(world), ZoneSettings.Builder.create().setStatic().damage(15).setAlwaysCentered().build());
     }
 
     @Override

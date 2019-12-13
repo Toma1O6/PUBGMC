@@ -196,9 +196,9 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             gameHash = nbt.getString("gameID");
             lobby = Lobby.fromNBT(nbt.getCompoundTag("lobby"));
             this.setGame(GameRegistry.findGameInRegistry(nbt.getString("gameMode")));
-            this.getCurrentGame().readFromNBT(nbt.getCompoundTag("game"));
             NBTTagCompound cachedData = nbt.getCompoundTag("gameObjectiveCache");
             Game.readCachedObjectivesFromNBT(cachedData != null ? cachedData : new NBTTagCompound());
+            this.getCurrentGame().readFromNBT(nbt.getCompoundTag("game"));
         }
 
         private MapLocation findLocationByName(String name) {

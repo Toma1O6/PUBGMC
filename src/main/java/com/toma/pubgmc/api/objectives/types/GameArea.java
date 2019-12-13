@@ -2,15 +2,14 @@ package com.toma.pubgmc.api.objectives.types;
 
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
@@ -27,6 +26,7 @@ import java.util.Random;
 
 public class GameArea {
 
+    public static final ResourceLocation GRADIENT = new ResourceLocation(Pubgmc.MOD_ID, "textures/world/white_gradient.png");
     public final AreaType areaType;
     private BlockPos center;
     private int radius;
@@ -45,14 +45,21 @@ public class GameArea {
         nbt.setInteger("radius", area.radius);
         nbt.setTag("center", NBTUtil.createPosTag(area.center));
         nbt.setString("type", area.areaType.toString());
+        if(area.hasName()) nbt.setString("name", area.getName());
         return nbt;
     }
 
     public static GameArea getFromNBT(NBTTagCompound nbt) {
-        BlockPos pos = NBTUtil.getPosFromTag(nbt);
+        BlockPos pos = NBTUtil.getPosFromTag(nbt.getCompoundTag("center"));
         int radius = nbt.getInteger("radius");
         AreaType areaType = Types.TYPE_MAP.get(new ResourceLocation(nbt.getString("type")));
-        return new GameArea(areaType, pos, radius);
+        GameArea area = new GameArea(areaType, pos, radius);
+        if(nbt.hasKey("name")) area.setName(nbt.getString("name"));
+        return area;
+    }
+
+    public boolean hasName() {
+        return name != null;
     }
 
     public BlockPos getRandomPos(World world) {
@@ -76,44 +83,60 @@ public class GameArea {
     }
 
     @SideOnly(Side.CLIENT)
-    public void renderGameArea(float partialTicks) {
-        this.getAreaType().render(this, partialTicks);
+    public void renderGameArea(double x, double y, double z) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        this.getAreaType().render(x, y, z, this, bufferBuilder);
     }
 
     @SideOnly(Side.CLIENT)
-    public void renderAABB(float r, float g, float b, float a, float partialTicks) {
-        Entity player = Minecraft.getMinecraft().getRenderViewEntity();
-        double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)partialTicks;
-        double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)partialTicks;
-        double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)partialTicks;
-        GlStateManager.disableTexture2D();
+    public void renderAABB(float r, float g, float b, float a, BufferBuilder bb) {
         GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.disableCull();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bb = tessellator.getBuffer();
-        bb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bb.setTranslation(-x, -y, -z);
-        bb.pos(box.minX, box.maxY - 2.5, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.maxY - 2.5, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.minY, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.minY, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.maxY - 2.5, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.maxY - 2.5, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.minY, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.minY, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.maxY - 2.5, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.maxY - 2.5, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.minY, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.minX, box.minY, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.maxY - 2.5, box.minZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.maxY - 2.5, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.minY, box.maxZ).color(r, g, b, a).endVertex();
-        bb.pos(box.maxX, box.minY, box.minZ).color(r, g, b, a).endVertex();
-        tessellator.draw();
+        Minecraft.getMinecraft().getTextureManager().bindTexture(GRADIENT);
+        bb.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        bb.pos(box.minX, box.minY + 0.75, box.minZ).tex(1, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.75, box.minZ).tex(0, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.0, box.minZ).tex(0, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.0, box.minZ).tex(1, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.75, box.maxZ).tex(1, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.75, box.maxZ).tex(0, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.0, box.maxZ).tex(0, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.0, box.maxZ).tex(1, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.75, box.minZ).tex(1, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.75, box.maxZ).tex(0, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.0, box.maxZ).tex(0, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.minX, box.minY + 0.0, box.minZ).tex(1, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.75, box.minZ).tex(1, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.75, box.maxZ).tex(0, 0).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.0, box.maxZ).tex(0, 1).color(r, g, b, a).endVertex();
+        bb.pos(box.maxX, box.minY + 0.0, box.minZ).tex(1, 1).color(r, g, b, a).endVertex();
+        Entity player = Minecraft.getMinecraft().getRenderViewEntity();
+        bb.sortVertexData((float)player.posX, (float)player.posY, (float)player.posZ);
+        Tessellator.getInstance().draw();
         GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void renderAreaName(double x, double y, double z, int height, int aarrggbb) {
+        if(!this.hasName()) {
+            return;
+        }
+        Entity player = Minecraft.getMinecraft().getRenderViewEntity();
+        GlStateManager.pushMatrix();
+        GlStateManager.disableCull();
+        GlStateManager.translate(-x, -y, -z);
+        GlStateManager.translate(this.center.getX() + 0.5, this.center.getY() + 2.5, this.center.getZ() + 0.5);
+        GlStateManager.scale(0.1, 0.1, 0.1);
+        GlStateManager.rotate(180, 1, 0, 0);
+        GlStateManager.rotate(180, 0, 1, 0);
+        GlStateManager.rotate(player.rotationYaw, 0, 1.0F, 0);
+        GlStateManager.rotate(-player.rotationPitch, 1, 0, 0);
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        fontRenderer.drawString(this.name, -fontRenderer.getStringWidth(this.name) / 2, -height, aarrggbb);
         GlStateManager.enableCull();
-        bb.setTranslation(0, 0, 0);
+        GlStateManager.popMatrix();
     }
 
     public List<EntityLivingBase> getEntitiesInArea(World world) {
@@ -138,12 +161,14 @@ public class GameArea {
     }
 
     public void updateSize(final int size) {
-        this.radius = size;
-        this.box = this.getBox();
+        if(size > 0 && size < 32) {
+            this.radius = size;
+            this.box = this.getBox();
+        }
     }
 
     public AxisAlignedBB getBox() {
-        return new AxisAlignedBB(this.center.getX() - this.radius, this.center.getY(), this.center.getZ() - this.radius, this.center.getX() + this.radius, this.center.getY() + 4, this.center.getZ() + this.radius);
+        return new AxisAlignedBB(this.center.getX() + 0.5 - this.radius, this.center.getY() + 1, this.center.getZ() + 0.5 - this.radius, this.center.getX() + 0.5 + this.radius, this.center.getY() + 5, this.center.getZ() + 0.5 + this.radius);
     }
 
     public void setName(String name) {
@@ -164,20 +189,26 @@ public class GameArea {
 
     public static class AreaType {
 
+        private final ResourceLocation location;
         private String name;
 
         public AreaType(ResourceLocation registryName, String name) {
+            this.location = registryName;
             this.name = name;
             Types.TYPE_MAP.put(registryName, this);
         }
 
         @SideOnly(Side.CLIENT)
-        public void render(GameArea area, float partialTicks) {
-
+        public void render(double x, double y, double z, GameArea area, BufferBuilder bufferBuilder) {
         }
 
         public String getDisplayName() {
             return name;
+        }
+
+        @Override
+        public String toString() {
+            return location.toString();
         }
     }
 
@@ -186,23 +217,13 @@ public class GameArea {
         public static final AreaType BOMBSITE = new AreaType(new ResourceLocation(Pubgmc.MOD_ID, "bombsite"), "[BD]Bombsite") {
             @SideOnly(Side.CLIENT)
             @Override
-            public void render(GameArea area, float partialTicks) {
+            public void render(double x, double y, double z, GameArea area, BufferBuilder bufferBuilder) {
+                area.renderAreaName(x, y, z, 50, 0xFFFFFFFF);
                 if(Game.isDebugMode) {
-                    area.renderAABB(1f, 0f, 0f, 0.5F, partialTicks);
-                    EntityPlayer player = Minecraft.getMinecraft().player;
-                    double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)partialTicks;
-                    double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)partialTicks;
-                    double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)partialTicks;
-                    GlStateManager.pushMatrix();
-                    GlStateManager.disableCull();
-                    GlStateManager.rotate(180, 1, 0, 0);
-                    GlStateManager.translate(-x, -y, -z);
-                    GlStateManager.scale(0.25, 0.25, 0.25);
-                    BlockPos pos = area.center;
-                    GlStateManager.translate(pos.getX() + 0.5, pos.getY() + 3, pos.getZ() + 0.5);
-                    Minecraft.getMinecraft().fontRenderer.drawString("Bombsite A", -3, 1, 0xFFFFFF);
-                    GlStateManager.enableCull();
-                    GlStateManager.popMatrix();
+                    bufferBuilder.setTranslation(-x, -y, -z);
+                    area.renderAABB(1f, 0f, 0f, 1.0F, bufferBuilder);
+                    bufferBuilder.setTranslation(0, 0, 0);
+
                 }
             }
         };
