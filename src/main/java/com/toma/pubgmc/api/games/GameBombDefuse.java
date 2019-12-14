@@ -18,6 +18,8 @@ import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -64,6 +66,26 @@ public class GameBombDefuse extends GameObjectiveBased {
     }
 
     @Override
+    public boolean addObjective(World world, BlockPos pos, GameArea area) {
+        if(area.getAreaType() == GameArea.Types.BOMBSITE) {
+            if(bombsiteA == null) {
+                bombsiteA = area;
+                return true;
+            } else if(bombsiteB == null) {
+                bombsiteB = area;
+                return true;
+            }
+        } else if(area.getAreaType() == GameArea.Types.CT_SPAWN && ctSpawn == null) {
+            this.ctSpawn = area;
+            return true;
+        } else if(area.getAreaType() == GameArea.Types.T_SPAWN && tSpawn == null) {
+            this.tSpawn = area;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public GameManager<Game> getGameManager() {
         return gameManager;
     }
@@ -86,11 +108,6 @@ public class GameBombDefuse extends GameObjectiveBased {
     @Override
     public void populatePlayerList(World world) {
         world.playerEntities.forEach(player -> this.getJoinedPlayers().add(player.getUniqueID()));
-    }
-
-    @Override
-    public boolean canAddObjective(BlockPos pos, GameArea objective) {
-        return true;
     }
 
     @Nonnull
@@ -123,36 +140,15 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     @Override
     public void onGameObjectiveReached(World world, @Nullable Team team) {
-
+        // TODO
     }
 
     @Nullable
     @Override
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        boolean[] objectives = new boolean[4];
-        for(Map.Entry<BlockPos, GameArea> entry : this.getObjectives().entrySet()) {
-            if(entry.getValue().getAreaType() == GameArea.Types.BOMBSITE) {
-                if(!objectives[0]) {
-                    objectives[0] = true;
-                    this.bombsiteA = entry.getValue();
-                } else if(!objectives[1]) {
-                    objectives[1] = true;
-                    this.bombsiteB = entry.getValue();
-                } else {
-                    return new CommandException("You cannot have more than 2 bombsites!");
-                }
-            } else if(entry.getValue().getAreaType() == GameArea.Types.BD_SPAWN) {
-                if(!objectives[2]) {
-                    objectives[2] = true;
-                    this.ctSpawn = entry.getValue();
-                } else if(!objectives[3]) {
-                    objectives[3] = true;
-                    this.tSpawn = entry.getValue();
-                } else {
-                    return new CommandException("You cannot have more than 2 spawn areas!");
-                }
-            }
-        }
+        if(this.bombsiteA == null || this.bombsiteB == null) return new CommandException("You have to add bomsite!");
+        if(this.ctSpawn == null) return new CommandException("You have to add CT Spawn");
+        if(this.tSpawn == null) return new CommandException("You have to add T Spawn");
         return null;
     }
 
@@ -179,6 +175,24 @@ public class GameBombDefuse extends GameObjectiveBased {
             }
             this.getPlayerData().put(uuid, new PlayerStats(team));
         }
+    }
+
+    @Override
+    public void writeDataToNBT(NBTTagCompound compound) {
+        super.writeDataToNBT(compound);
+        if(this.ctSpawn != null) compound.setTag("ctSpawn", NBTUtil.createPosTag(this.ctSpawn.getCenter()));
+        if(this.tSpawn != null) compound.setTag("tSpawn", NBTUtil.createPosTag(this.tSpawn.getCenter()));
+        if(this.bombsiteA != null) compound.setTag("bombsiteA", NBTUtil.createPosTag(this.bombsiteA.getCenter()));
+        if(this.bombsiteB != null) compound.setTag("bombsiteB", NBTUtil.createPosTag(this.bombsiteB.getCenter()));
+    }
+
+    @Override
+    public void readDataFromNBT(NBTTagCompound compound) {
+        super.readDataFromNBT(compound);
+        this.ctSpawn = compound.hasKey("ctSpawn") ? this.getObjectives().get(NBTUtil.getPosFromTag(compound.getCompoundTag("ctSpawn"))) : null;
+        this.tSpawn = compound.hasKey("tSpawn") ? this.getObjectives().get(NBTUtil.getPosFromTag(compound.getCompoundTag("tSpawn"))) : null;
+        this.bombsiteA = compound.hasKey("bombsiteA") ? this.getObjectives().get(NBTUtil.getPosFromTag(compound.getCompoundTag("bombsiteA"))) : null;
+        this.bombsiteB = compound.hasKey("bombsiteB") ? this.getObjectives().get(NBTUtil.getPosFromTag(compound.getCompoundTag("bombsiteB"))) : null;
     }
 
     private class TeamStats {

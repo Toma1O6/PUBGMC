@@ -27,7 +27,7 @@ public class PMCClassTransformer implements IClassTransformer {
 
     public byte[] patchModelBiped(byte[] bytes, boolean isObf) {
         long l = System.currentTimeMillis();
-        Pubgmc.logger.info("Patching net.minecraft.client.model.ModelBiped");
+        Pubgmc.logger.info("Transforming net.minecraft.client.model.ModelBiped");
 
         ClassNode classNode = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);
@@ -49,7 +49,7 @@ public class PMCClassTransformer implements IClassTransformer {
                     }
                 }
                 if(target != null) {
-                    Pubgmc.logger.info("Found the required method");
+                    Pubgmc.logger.info("Patching #setRotationAngles method");
                     // new instruction list
                     InsnList eventInsns = new InsnList();
                     eventInsns.add(new LabelNode());
@@ -70,7 +70,7 @@ public class PMCClassTransformer implements IClassTransformer {
                     eventInsns.add(new LineNumberNode(282, new LabelNode()));
                     // insert set of instructions before the targetNode
                     methodNode.instructions.insertBefore(target, eventInsns);
-                    Pubgmc.logger.info("Successfully patched net.minecraft.client.model.ModelBiped class. Took {} ms", System.currentTimeMillis() - l);
+                    Pubgmc.logger.info("Patching successful. Took {} ms", System.currentTimeMillis() - l);
                 } else Pubgmc.logger.fatal("Patching failed, things are not going to work!");
                 break;
             }
@@ -83,7 +83,7 @@ public class PMCClassTransformer implements IClassTransformer {
 
     public byte[] patchLayerHeldItem(byte[] bytes, boolean isObf) {
         long l = System.currentTimeMillis();
-        Pubgmc.logger.info("Patching net.minecraft.client.renderer.entity.layers.LayerHeldItem");
+        Pubgmc.logger.info("Transforming net.minecraft.client.renderer.entity.layers.LayerHeldItem");
         ClassNode node = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
         reader.accept(node, 0);
@@ -99,7 +99,7 @@ public class PMCClassTransformer implements IClassTransformer {
                     }
                 }
                 if(target != null) {
-                    Pubgmc.logger.info("Found the required method");
+                    Pubgmc.logger.info("Patching #renderHeldItem method");
                     InsnList list = new InsnList();
                     list.add(new LabelNode());
                     list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
@@ -112,7 +112,7 @@ public class PMCClassTransformer implements IClassTransformer {
                     list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
                     list.add(new InsnNode(Opcodes.POP));
                     methodNode.instructions.insert(target, list);
-                    Pubgmc.logger.info("Successfully patched net.minecraft.client.renderer.entity.layers.LayerHeldItem class. Took {} ms", System.currentTimeMillis() - l);
+                    Pubgmc.logger.info("Patching successful. Took {} ms", System.currentTimeMillis() - l);
                 } else Pubgmc.logger.fatal("Patching failed, things are not going to work!");
                 break;
             }

@@ -75,7 +75,7 @@ public final class GameControlItem extends PMCItem {
                     Game g = getGame(world);
                     if(g instanceof GameObjectiveBased) {
                         GameObjectiveBased game = (GameObjectiveBased) g;
-                        game.addObjective(pos, new GameArea(GameArea.Types.TYPE_MAP.get(new ResourceLocation(stack.getTagCompound().getString("areaID"))), pos, 5));
+                        game.createObjective(world, pos, new GameArea(GameArea.Types.TYPE_MAP.get(new ResourceLocation(stack.getTagCompound().getString("areaID"))), pos, 5));
                         player.sendStatusMessage(new TextComponentString("Added new area!"), true);
                     }
                 } else {

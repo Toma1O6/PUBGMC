@@ -137,8 +137,7 @@ public class CommandGame extends CommandBase {
                 }
                 sendMessage(player, "Alive players: " + game.onlinePlayers);
                 sendMessage(player, "Time: " + (game.getGameTimer() / 20) + "s");
-                sendMessage(player, "Mode: " + game.registryName.toUpperCase());
-                String[] data = game.getGameInformation().gameInformation;
+                String[] data = game.getGameInformation() != null ? game.getGameInformation().gameInformation : null;
                 if(data == null) break;
                 sendMessage(player, "Game mode author: " + game.getGameInformation().author);
                 for(int i = 0; i < data.length; i++) {

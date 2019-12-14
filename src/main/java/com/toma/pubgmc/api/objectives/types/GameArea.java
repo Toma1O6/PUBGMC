@@ -214,7 +214,7 @@ public class GameArea {
 
     public static final class Types {
         public static final Map<ResourceLocation, AreaType> TYPE_MAP = new HashMap<>();
-        public static final AreaType BOMBSITE = new AreaType(new ResourceLocation(Pubgmc.MOD_ID, "bombsite"), "[BD]Bombsite") {
+        public static final AreaType BOMBSITE = new AreaType(new ResourceLocation(Pubgmc.MOD_ID, "bombsite"), "[BD] Bombsite") {
             @SideOnly(Side.CLIENT)
             @Override
             public void render(double x, double y, double z, GameArea area, BufferBuilder bufferBuilder) {
@@ -227,7 +227,7 @@ public class GameArea {
                 }
             }
         };
-        public static final AreaType BD_SPAWN = new AreaType(new ResourceLocation(Pubgmc.MOD_ID, "bd_spawn"), "[BD]Spawn Point");
-
+        public static final AreaType CT_SPAWN = new AreaType(new ResourceLocation(Pubgmc.MOD_ID, "ct_spawn"), "[BD] CT spawn");
+        public static final AreaType T_SPAWN = new AreaType(new ResourceLocation(Pubgmc.MOD_ID, "t_spawn"), "[BD] T spawn");
     }
 }

@@ -16,16 +16,16 @@ public abstract class GameObjectiveBased extends Game {
         super(name);
     }
 
-    public abstract boolean canAddObjective(BlockPos pos, GameArea objective);
+    public abstract boolean addObjective(World world, BlockPos pos, GameArea area);
 
     @Override
     public void onGameTick(World world) {
 
     }
 
-    public final void addObjective(BlockPos pos, GameArea objective) {
-        if(this.canAddObjective(pos, objective)) {
-            this.objectives.put(pos, objective);
+    public final void createObjective(World world, BlockPos pos, GameArea area) {
+        if(this.addObjective(world, pos, area)) {
+            this.getObjectives().put(pos, area);
         }
     }
 
