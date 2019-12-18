@@ -19,6 +19,7 @@ import com.toma.pubgmc.common.items.heal.ItemHealing;
 import com.toma.pubgmc.config.ConfigPMC;
 import com.toma.pubgmc.config.client.CFGAimType;
 import com.toma.pubgmc.config.client.CFGEnumOverlayStyle;
+import com.toma.pubgmc.content.GuiLoadCommunityContent;
 import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.init.PMCSounds;
 import com.toma.pubgmc.network.PacketHandler;
@@ -28,6 +29,7 @@ import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
@@ -39,6 +41,7 @@ import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -135,6 +138,8 @@ public class ClientEvents {
      **/
     private int currentColor = 0;
     private int currentType = 0;
+
+    private boolean loadedCommunityContent = false;
 
     /**
      * Function for rendering the textured boost overlays
@@ -306,10 +311,6 @@ public class ClientEvents {
         HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_blue.png"));
     }
 
-// ========================================================================================================
-// -----------------------------------[ HELPER FUNCTIONS ]-------------------------------------------------
-// ========================================================================================================
-
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
         final DecimalFormat f = new DecimalFormat("#,#0.0");
         final float useTime = (float) player.getItemInUseCount();
@@ -321,37 +322,12 @@ public class ClientEvents {
         font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
     }
 
-    //@SubscribeEvent
-    public void renderPlayerPost(RenderPlayerEvent.Post e) {
-        EntityPlayer player = e.getEntityPlayer();
-        ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
-        if (stack.getItem() instanceof ItemGhillie) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.2, 0.2, 0.2);
-            GlStateManager.rotate(180f, 1f, 0f, 0f);
-            GlStateManager.translate(0, -10, 0);
-            //ghillieSuit.render(player, player.limbSwing, player.limbSwingAmount, player.ticksExisted, player.rotationYawHead, player.rotationPitch, 0.625f);
-            GlStateManager.popMatrix();
+    @SubscribeEvent
+    public void onOpenGui(GuiOpenEvent event) {
+        if(!this.loadedCommunityContent && event.getGui() instanceof GuiMainMenu) {
+            event.setGui(new GuiLoadCommunityContent());
         }
     }
-
-    /*//@SubscribeEvent
-    public void renderPlayerPre(RenderPlayerEvent.Pre e) {
-        EntityPlayer player = e.getEntityPlayer();
-        if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if (data.isProning()) {
-				*//*e.setCanceled(true);
-				ModelPlayer model = e.getRenderer().getMainModel();
-				Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
-				GlStateManager.pushMatrix();
-				GlStateManager.rotate(180, 1f, 0, 0);
-				GlStateManager.translate(0, -2, 0);
-				model.render(player, player.limbSwing, player.limbSwingAmount, 0, player.rotationYaw, player.rotationPitch, 0.625f);
-				GlStateManager.popMatrix();*//*
-            }
-        }
-    }*/
 
     @SubscribeEvent
     public void drawNameTags(RenderLivingEvent.Specials.Pre e) {

@@ -8,6 +8,7 @@ public class MapData {
 
     public String fileName;
     public String displayName;
+    public String downloadLink;
     public boolean isDownloaded;
     @Nullable
     public ResourceLocation icon;
