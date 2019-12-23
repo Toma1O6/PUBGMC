@@ -28,10 +28,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -56,12 +58,12 @@ public abstract class Game {
     /**
      * Makes sure your objectives are not removed when you change mode
      */
-    public static Map<String, Map<BlockPos, GameArea>> cachedObjectives = new HashMap<>();
+    public static Map<ResourceLocation, Map<BlockPos, GameArea>> cachedObjectives = new HashMap<>();
 
     /**
      * Game name, doesn't have to contain mod ID (might change in the future)
      **/
-    public final String registryName;
+    public final ResourceLocation registryName;
     /**
      * The zone for the game, damages players outside of it
      **/
@@ -95,6 +97,14 @@ public abstract class Game {
     private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
 
     public Game(final String name) {
+        this(Loader.instance().activeModContainer().getModId(), name);
+    }
+
+    public Game(final String modid, final String name) {
+        this(new ResourceLocation(modid, name));
+    }
+
+    public Game(final ResourceLocation name) {
         this.playersInGame = new ArrayList<>();
         this.registryName = name;
         this.onlinePlayers = 0;
@@ -131,8 +141,8 @@ public abstract class Game {
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagList keyList = new NBTTagList();
         NBTTagList dataList = new NBTTagList();
-        for (Map.Entry<String, Map<BlockPos, GameArea>> entry : cachedObjectives.entrySet()) {
-            keyList.appendTag(new NBTTagString(entry.getKey()));
+        for (Map.Entry<ResourceLocation, Map<BlockPos, GameArea>> entry : cachedObjectives.entrySet()) {
+            keyList.appendTag(new NBTTagString(entry.getKey().toString()));
             dataList.appendTag(saveObjectivesToNBT(entry.getValue()));
         }
         nbt.setTag("keys", keyList);
@@ -148,7 +158,7 @@ public abstract class Game {
         NBTTagList list = nbt.getTagList("keys", Constants.NBT.TAG_STRING);
         NBTTagList data = nbt.getTagList("mappedObj", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < list.tagCount(); i++) {
-            cachedObjectives.put(list.getStringTagAt(i), readObjectivesFromNBT(data.getCompoundTagAt(i)));
+            cachedObjectives.put(new ResourceLocation(list.getStringTagAt(i)), readObjectivesFromNBT(data.getCompoundTagAt(i)));
         }
     }
 

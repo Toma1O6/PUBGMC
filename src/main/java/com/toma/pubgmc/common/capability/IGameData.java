@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
@@ -154,7 +155,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public boolean isInactiveGame() {
-            return game.registryName.equals("inactive");
+            return game.registryName.toString().equals("pubgmc:inactive");
         }
 
         @Override
@@ -177,7 +178,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             c.setTag("list", locationsList);
             c.setString("gameID", gameHash);
             c.setTag("lobby", Lobby.toNBT(lobby));
-            c.setString("gameMode", this.getCurrentGame().registryName);
+            c.setString("gameMode", this.getCurrentGame().registryName.toString());
             c.setTag("game", this.getCurrentGame().writeToNBT());
             c.setTag("gameObjectiveCache", Game.writeCachedObjectivesToNBT());
             return c;
@@ -195,7 +196,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             }
             gameHash = nbt.getString("gameID");
             lobby = Lobby.fromNBT(nbt.getCompoundTag("lobby"));
-            this.setGame(GameRegistry.findGameInRegistry(nbt.getString("gameMode")));
+            this.setGame(GameRegistry.getGame(new ResourceLocation(nbt.getString("gameMode"))));
             NBTTagCompound cachedData = nbt.getCompoundTag("gameObjectiveCache");
             Game.readCachedObjectivesFromNBT(cachedData != null ? cachedData : new NBTTagCompound());
             this.getCurrentGame().readFromNBT(nbt.getCompoundTag("game"));

@@ -10,7 +10,6 @@ import com.toma.pubgmc.common.entity.EntityVehicle;
 import com.toma.pubgmc.common.items.ItemAmmo;
 import com.toma.pubgmc.common.items.ItemFuelCan;
 import com.toma.pubgmc.common.items.armor.ArmorBase;
-import com.toma.pubgmc.common.items.armor.ItemGhillie;
 import com.toma.pubgmc.common.items.guns.GunBase;
 import com.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import com.toma.pubgmc.common.items.guns.GunBase.GunType;
@@ -31,10 +30,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -45,7 +42,6 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -324,8 +320,13 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onOpenGui(GuiOpenEvent event) {
-        if(!this.loadedCommunityContent && event.getGui() instanceof GuiMainMenu) {
-            event.setGui(new GuiLoadCommunityContent());
+        if(event.getGui() instanceof GuiMainMenu) {
+            if(!this.loadedCommunityContent) {
+                event.setGui(new GuiLoadCommunityContent());
+                this.loadedCommunityContent = true;
+            } else if(!GuiLoadCommunityContent.compatMode) {
+                event.setGui(new com.toma.pubgmc.content.GuiMainMenu());
+            }
         }
     }
 

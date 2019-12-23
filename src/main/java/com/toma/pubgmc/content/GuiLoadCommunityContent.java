@@ -1,8 +1,13 @@
 package com.toma.pubgmc.content;
 
 import com.google.common.io.ByteStreams;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.init.GameRegistry;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,9 +21,14 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GuiLoadCommunityContent extends GuiScreen {
 
+    public static boolean compatMode = false;
     private boolean hasCheckedData = false;
     private URL dataURL;
     private static final ResourceLocation TEXTURE = new ResourceLocation("");
@@ -37,14 +47,15 @@ public class GuiLoadCommunityContent extends GuiScreen {
 
     @Override
     public void initGui() {
+        this.addButton(new GuiButton(0, 10, 10, 100, 20, "Exit"));
         if(!hasCheckedData) {
             this.hasCheckedData = true;
             this.updateStatus(ProgressStatus.INITIALIZING);
-            File file = new File(mc.mcDataDir, "pubgmc content");
+            File file = new File(mc.mcDataDir, "pubgmc-content");
             boolean flag = true;
             if(!file.exists()) {
                 try {
-                    flag = file.createNewFile();
+                    flag = file.mkdirs();
                 } catch (Exception e) {
                     flag = false;
                 }
@@ -80,16 +91,44 @@ public class GuiLoadCommunityContent extends GuiScreen {
             }
 
             private void process(String data) {
-                this.parse(data);
-
+                JsonObject object = this.parse(data);
+                JsonArray maps = object.getAsJsonArray("maps");
+                Map<ResourceLocation, List<MapData>> map = new HashMap<>();
+                for(int i = 0; i < maps.size(); i++) {
+                    JsonObject mapObj = (JsonObject) maps.get(i);
+                    MapData mapData = MapData.get(mapObj, mapFiles);
+                    if(mapData == null) {
+                        Pubgmc.logger.warn("Invalid map entry, ignoring...");
+                        continue;
+                    }
+                    ResourceLocation[] gamemodes = this.getGamemodes(mapData.modes);
+                    for(ResourceLocation rl : gamemodes) {
+                        map.computeIfAbsent(rl, k -> new ArrayList<>());
+                        map.get(rl).add(mapData);
+                    }
+                }
+                com.toma.pubgmc.content.GuiMainMenu.createData(map);
             }
 
-            private void parse(String data) {
-
+            private JsonObject parse(String data) {
+                JsonParser parser = new JsonParser();
+                return (JsonObject) parser.parse(data);
             }
 
             private InputStream openStream(URL url) throws IOException {
                 return url.openConnection().getInputStream();
+            }
+
+            private ResourceLocation[] getGamemodes(String[] array) {
+                List<ResourceLocation> list = new ArrayList<>(GameRegistry.REGISTRY.keySet());
+                List<ResourceLocation> valid = new ArrayList<>();
+                for(String s : array) {
+                    ResourceLocation rl = new ResourceLocation(s);
+                    if(list.contains(rl)) {
+                        valid.add(rl);
+                    } else Pubgmc.logger.error("Couldn't find game: {}", rl.toString());
+                }
+                return valid.toArray(new ResourceLocation[0]);
             }
         }.start();
     }
@@ -97,7 +136,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
-            case 0: break;
+            case 0: this.mc.displayGuiScreen(compatMode ? new GuiMainMenu() : new com.toma.pubgmc.content.GuiMainMenu()); break;
         }
     }
 
@@ -129,6 +168,12 @@ public class GuiLoadCommunityContent extends GuiScreen {
         builder.pos(x + w, y, 0).color(0.8F, 0.0F, 0.0F, 1.0F).endVertex();
         builder.pos(x, y, 0).color(0.2F, 0.8F, 0.0F, 1.0F).endVertex();
         tessellator.draw();
+
+        builder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+        builder.pos(0, 0, 0).color(0F, 0F, 0F, 1F).endVertex();
+        builder.pos(mc.displayWidth, mc.displayHeight, 0).color(1F, 1F, 1F, 1F).endVertex();
+        tessellator.draw();
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     public synchronized void updateStatus(ProgressStatus status) {
@@ -137,6 +182,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
     }
 
     public void safeLaunch() {
+        compatMode = true;
         Pubgmc.logger.fatal("Exception occurred in custom menu!");
         this.updateStatus(ProgressStatus.FAILED);
     }

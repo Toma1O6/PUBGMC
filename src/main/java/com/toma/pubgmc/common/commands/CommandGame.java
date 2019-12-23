@@ -12,9 +12,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +43,10 @@ public class CommandGame extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if(args.length > 1) {
             if(args[0].equalsIgnoreCase("mode")) {
-                return GameRegistry.getValuesPaths();
+                List<ResourceLocation> list = GameRegistry.getValuesPaths();
+                List<String> paths = new ArrayList<>();
+                list.forEach(rl -> paths.add(rl.getResourceDomain()));
+                return paths;
             } else if(args[0].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, "add", "remove", "list");
             }
@@ -115,8 +120,8 @@ public class CommandGame extends CommandBase {
                 sendMessage(player, "lobby [x: int, y: int, z: int, radius: int] -> creates lobby for this world");
                 sendMessage(player, "");
                 sendMessage(player, "Available game modes:");
-                for(String location : GameRegistry.getValuesPaths()) {
-                    sendMessage(player, "- " + location);
+                for(ResourceLocation location : GameRegistry.getValuesPaths()) {
+                    sendMessage(player, "- " + location.getResourcePath());
                 }
                 break;
             }
