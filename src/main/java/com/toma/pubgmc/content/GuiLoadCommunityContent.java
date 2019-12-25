@@ -6,14 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.init.GameRegistry;
+import com.toma.pubgmc.util.DynamicArray;
+import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,20 +21,17 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GuiLoadCommunityContent extends GuiScreen {
 
     public static boolean compatMode = false;
     private boolean hasCheckedData = false;
+    private DynamicArray<Message> messages = new DynamicArray<>(10);
     private URL dataURL;
     private static final ResourceLocation TEXTURE = new ResourceLocation("");
     private String jsonData;
     private File[] mapFiles;
-    private ProgressStatus status;
 
     public GuiLoadCommunityContent() {
         try {
@@ -46,11 +43,16 @@ public class GuiLoadCommunityContent extends GuiScreen {
     }
 
     @Override
+    protected void keyTyped(char typedChar, int keyCode) {
+    }
+
+    @Override
     public void initGui() {
-        this.addButton(new GuiButton(0, 10, 10, 100, 20, "Exit"));
+        GuiButton btn = new GuiButton(0, this.width - 110, this.height - 30, 100, 20, "Continue");
+        btn.enabled = com.toma.pubgmc.content.GuiMainMenu.DATA != null || compatMode;
+        this.addButton(btn);
         if(!hasCheckedData) {
             this.hasCheckedData = true;
-            this.updateStatus(ProgressStatus.INITIALIZING);
             File file = new File(mc.mcDataDir, "pubgmc-content");
             boolean flag = true;
             if(!file.exists()) {
@@ -70,29 +72,33 @@ public class GuiLoadCommunityContent extends GuiScreen {
     }
 
     public void loadCommunityMaps() {
-        // TODO - improve
         new Thread("Community content") {
             @SuppressWarnings("UnstableApiUsage")
             @Override
             public void run() {
                 try {
+                    sendStatusUpdate("Initializing");
                     Pubgmc.logger.info("Checking {} for community map data", dataURL);
-                    updateStatus(ProgressStatus.CONNETING);
+                    sendStatusUpdate("Connecting");
                     InputStream stream = this.openStream(dataURL);
+                    sendStatusUpdate("Connected");
                     String commData = new String(ByteStreams.toByteArray(stream), StandardCharsets.UTF_8);
                     stream.close();
-                    updateStatus(ProgressStatus.PROCESSING);
                     this.process(commData);
-                    updateStatus(ProgressStatus.READY);
                 } catch (Exception e) {
-                    updateStatus(ProgressStatus.FAILED);
+                    sendStatusUpdate("Failed");
                     e.printStackTrace();
+                    GuiLoadCommunityContent gui = GuiLoadCommunityContent.this;
+                    gui.buttonList.get(0).enabled = true;
+                    gui.addButton(new GuiButton(1, gui.width - 220, gui.height - 30, 100, 20, "Retry"));
                 }
             }
 
             private void process(String data) {
+                sendStatusUpdate("Parsing");
                 JsonObject object = this.parse(data);
                 JsonArray maps = object.getAsJsonArray("maps");
+                sendStatusUpdate("Processing");
                 Map<ResourceLocation, List<MapData>> map = new HashMap<>();
                 for(int i = 0; i < maps.size(); i++) {
                     JsonObject mapObj = (JsonObject) maps.get(i);
@@ -105,9 +111,16 @@ public class GuiLoadCommunityContent extends GuiScreen {
                     for(ResourceLocation rl : gamemodes) {
                         map.computeIfAbsent(rl, k -> new ArrayList<>());
                         map.get(rl).add(mapData);
+                        addScreenMessage(new Message()
+                                .addMessageComponent(new MessageComponent("Loaded map"))
+                                .addMessageComponent(new MessageComponent(mapData.displayName, TextFormatting.AQUA))
+                                .addMessageComponent(new MessageComponent("for mode", TextFormatting.WHITE))
+                                .addMessageComponent(new MessageComponent(rl.toString(), TextFormatting.YELLOW)));
                     }
                 }
                 com.toma.pubgmc.content.GuiMainMenu.createData(map);
+                sendStatusUpdate("Finished");
+                GuiLoadCommunityContent.this.buttonList.get(0).enabled = true;
             }
 
             private JsonObject parse(String data) {
@@ -135,85 +148,94 @@ public class GuiLoadCommunityContent extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        switch (button.id) {
-            case 0: this.mc.displayGuiScreen(compatMode ? new GuiMainMenu() : new com.toma.pubgmc.content.GuiMainMenu()); break;
+        if(button.id == 0) {
+            this.mc.displayGuiScreen(compatMode ? new GuiMainMenu() : new com.toma.pubgmc.content.GuiMainMenu());
+        } else if(button.id == 1) {
+            this.loadCommunityMaps();
+            this.buttonList.remove(1);
+            this.buttonList.get(0).visible = false;
+            this.addScreenMessage(new Message().addMessageComponent(new MessageComponent("Retrying connection...", TextFormatting.WHITE)));
         }
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.getBuffer();
         float c = 0.25f;
-        builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        builder.pos(0, mc.displayHeight, 0).color(c, c, c, 1.0F).endVertex();
-        builder.pos(mc.displayWidth, mc.displayHeight, 0).color(c, c, c, 1.0F).endVertex();
-        builder.pos(mc.displayWidth, 0, 0).color(c, c, c, 1.0F).endVertex();
-        builder.pos(0, 0, 0).color(c, c, c, 1.0F).endVertex();
-        tessellator.draw();
-        int w = (int)(this.width / 1.25F);
-        int h = 20;
-        int x = this.width / 2 - w / 2;
-        int y = this.height - 50;
-        builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        builder.pos(x - 1, y + h + 1, 0).color(0F, 0F, 0F, 1).endVertex();
-        builder.pos(x + w + 1, y + h + 1, 0).color(0F, 0F, 0F, 1).endVertex();
-        builder.pos(x + w + 1, y - 1, 0).color(0F, 0F, 0F, 1).endVertex();
-        builder.pos(x - 1, y - 1, 0).color(0F, 0F, 0F, 1).endVertex();
-        tessellator.draw();
-        builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        builder.pos(x, y + h, 0).color(0.2F, 0.8F, 0.0F, 1.0F).endVertex();
-        builder.pos(x + w, y + h, 0).color(0.8F, 0.0F, 0.0F, 1.0F).endVertex();
-        builder.pos(x + w, y, 0).color(0.8F, 0.0F, 0.0F, 1.0F).endVertex();
-        builder.pos(x, y, 0).color(0.2F, 0.8F, 0.0F, 1.0F).endVertex();
-        tessellator.draw();
-
-        builder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-        builder.pos(0, 0, 0).color(0F, 0F, 0F, 1F).endVertex();
-        builder.pos(mc.displayWidth, mc.displayHeight, 0).color(1F, 1F, 1F, 1F).endVertex();
-        tessellator.draw();
+        ImageUtil.drawShape(0, 0, this.width, this.height, c, c, c);
+        for(int i = messages.size() - 1; i >= 0; i--) {
+            Message message = messages.get(i);
+            if(message == null) continue;
+            mc.fontRenderer.drawString(message.toString(), 10, this.height - 20 - i * 12, 0xFFFFFFFF);
+        }
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(1.5, 1.5, 1.5);
+        mc.fontRenderer.drawStringWithShadow("PUBGMC Content Loader", 10, 10, 0xFFFFFFFF);
+        GlStateManager.popMatrix();
+        mc.fontRenderer.drawStringWithShadow("Version: 1.0", 15, 30, 0xFFFFFFFF);
         super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    public synchronized void updateStatus(ProgressStatus status) {
-        this.status = status;
-        // TODO - update button
     }
 
     public void safeLaunch() {
         compatMode = true;
         Pubgmc.logger.fatal("Exception occurred in custom menu!");
-        this.updateStatus(ProgressStatus.FAILED);
+        GuiLoadCommunityContent.this.buttonList.get(0).enabled = true;
     }
 
-    private enum ProgressStatus {
-        INITIALIZING("Initializing"),
-        CONNETING("Connecting"),
-        PROCESSING("Processing"),
-        READY("Ready", 0x33FF33, true),
-        FAILED("Failed", 0xFF0000, true);
+    private synchronized void addScreenMessage(final Message message) {
+        this.messages.add(message);
+    }
 
-        private final String displayName;
-        private final int color;
-        private boolean flag;
+    private void sendStatusUpdate(String status) {
+        this.addScreenMessage(new Message().addMessageComponent(new MessageComponent("Status: ", TextFormatting.WHITE)).addMessageComponent(new MessageComponent(status, TextFormatting.WHITE, TextFormatting.BOLD)));
+    }
 
-        ProgressStatus(String displayName) {
-            this(displayName, 0, false);
+    private class Message {
+
+        private List<MessageComponent> list = new ArrayList<>();
+        private String converted;
+
+        public Message addMessageComponent(final MessageComponent component) {
+            this.list.add(component);
+            return this;
         }
 
-        ProgressStatus(String displayName, int color, boolean flag) {
-            this.displayName = displayName;
-            this.color = color;
-            this.flag = flag;
+        @Override
+        public String toString() {
+            if(this.converted == null) {
+                this.convertMsg();
+            }
+            return converted;
         }
 
-        public String getDisplayName() {
-            return displayName;
+        private void convertMsg() {
+            StringBuilder builder = new StringBuilder();
+            Iterator<MessageComponent> iterator = this.list.iterator();
+            while (iterator.hasNext()) {
+                MessageComponent component = iterator.next();
+                boolean flag = iterator.hasNext();
+                builder.append(component.getAsString()).append(flag ? " " : "");
+            }
+            this.converted = builder.toString();
+        }
+    }
+
+    private class MessageComponent {
+
+        private String msg;
+        private TextFormatting[] formats;
+
+        public MessageComponent(String message, TextFormatting... formats) {
+            this.msg = message;
+            this.formats = formats;
         }
 
-        public int getColor() {
-            return color;
+        public String getAsString() {
+            StringBuilder builder = new StringBuilder();
+            for(TextFormatting formatting : formats) {
+                builder.append(formatting.toString());
+            }
+            builder.append(msg);
+            return builder.toString();
         }
     }
 }

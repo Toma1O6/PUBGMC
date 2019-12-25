@@ -97,4 +97,18 @@ public class ImageUtil {
             GlStateManager.disableAlpha();
         } else tessellator.draw();
     }
+
+    public static void drawShape(int startX, int startY, int endX, int endY, float r, float g, float b) {
+        GlStateManager.color(1f, 1f, 1f);
+        GlStateManager.disableTexture2D();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+        builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        builder.pos(startX, endY, 0).color(r, g, b, 1.0F).endVertex();
+        builder.pos(endX, endY, 0).color(r, g, b, 1.0F).endVertex();
+        builder.pos(endX, startY, 0).color(r, g, b, 1.0F).endVertex();
+        builder.pos(startX, startY, 0).color(r, g, b, 1.0F).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+    }
 }

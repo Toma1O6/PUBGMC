@@ -29,10 +29,10 @@ public class MapData {
 
     public static MapData get(JsonObject object, File[] mapFiles) {
         return new Builder(mapFiles)
-                .name(object.has("name") ? object.get("name").toString() : null)
-                .url(object.has("url") ? object.get("url").toString() : null)
-                .version(object.has("version") ? object.get("version").toString() : "Unknown")
-                .credits(object.has("credits") ? object.get("credits").toString() : "")
+                .name(object.has("name") ? object.get("name").getAsString() : null)
+                .url(object.has("url") ? object.get("url").getAsString() : null)
+                .version(object.has("version") ? object.get("version").getAsString() : "Unknown")
+                .credits(object.has("credits") ? object.get("credits").getAsString() : "")
                 .authorList(object.has("author") ? convertToStringArray(object.getAsJsonArray("author")) : new String[]{"Unknown"})
                 .description(object.has("description") ? convertToStringArray(object.getAsJsonArray("description")) : new String[]{"No description provided", "Ask game author to provide more info"})
                 .modes(object.has("modes") ? convertToStringArray(object.getAsJsonArray("modes")) : null)
@@ -42,14 +42,14 @@ public class MapData {
     private static String[] convertToStringArray(JsonArray array) {
         String[] arr = new String[array.size()];
         for (int i = 0; i < array.size(); i++) {
-            arr[i] = array.get(i).toString();
+            arr[i] = array.get(i).getAsString();
         }
         return arr;
     }
 
     private boolean isDownloaded(File[] mapFiles) {
         for (File file : mapFiles) {
-            if(file.getName().equalsIgnoreCase(this.displayName)) {
+            if(file.isDirectory() && file.getName().equalsIgnoreCase(this.displayName)) {
                 return true;
             }
         }
