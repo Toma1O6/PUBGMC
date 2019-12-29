@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.capability;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.init.GameRegistry;
 import com.toma.pubgmc.util.PUBGMCUtil;

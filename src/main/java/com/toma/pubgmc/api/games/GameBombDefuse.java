@@ -1,8 +1,6 @@
 package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameObjectiveBased;
 import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.objectives.ObjectiveReachScore;
 import com.toma.pubgmc.api.objectives.types.GameArea;
@@ -21,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -30,6 +29,7 @@ import java.util.*;
 
 public class GameBombDefuse extends GameObjectiveBased {
 
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID, "textures/gui/game.png");
     private static final int ROUND_TIME = 2600;
 
     private final GameManager gameManager;
@@ -45,7 +45,7 @@ public class GameBombDefuse extends GameObjectiveBased {
     private GameArea bombsiteA, bombsiteB;
 
     public GameBombDefuse(String name) {
-        super(name);
+        super(name, TEXTURE);
         this.gameManager = GameManager.Builder.create(this)
                 .waitTime(5)
                 .objective(() -> new ObjectiveReachScore<>(this, team -> teamStats.getScore(team)).setRequiredScore(16))

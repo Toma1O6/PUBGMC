@@ -2,7 +2,7 @@ package com.toma.pubgmc.api.settings;
 
 import com.google.common.base.Preconditions;
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.interfaces.GameObjective;
 import com.toma.pubgmc.api.teams.Team;
 

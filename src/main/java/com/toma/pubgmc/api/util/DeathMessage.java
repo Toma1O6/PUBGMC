@@ -1,11 +1,10 @@
 package com.toma.pubgmc.api.util;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

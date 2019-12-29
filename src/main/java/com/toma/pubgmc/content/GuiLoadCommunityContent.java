@@ -80,6 +80,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
                     sendStatusUpdate("Initializing");
                     Pubgmc.logger.info("Checking {} for community map data", dataURL);
                     sendStatusUpdate("Connecting");
+                    Thread.sleep(500);
                     InputStream stream = this.openStream(dataURL);
                     sendStatusUpdate("Connected");
                     String commData = new String(ByteStreams.toByteArray(stream), StandardCharsets.UTF_8);
@@ -92,6 +93,15 @@ public class GuiLoadCommunityContent extends GuiScreen {
                     gui.buttonList.get(0).enabled = true;
                     gui.addButton(new GuiButton(1, gui.width - 220, gui.height - 30, 100, 20, "Retry"));
                 }
+            }
+
+            private JsonObject parse(String data) {
+                JsonParser parser = new JsonParser();
+                return (JsonObject) parser.parse(data);
+            }
+
+            private InputStream openStream(URL url) throws IOException {
+                return url.openConnection().getInputStream();
             }
 
             private void process(String data) {
@@ -121,15 +131,6 @@ public class GuiLoadCommunityContent extends GuiScreen {
                 com.toma.pubgmc.content.GuiMainMenu.createData(map);
                 sendStatusUpdate("Finished");
                 GuiLoadCommunityContent.this.buttonList.get(0).enabled = true;
-            }
-
-            private JsonObject parse(String data) {
-                JsonParser parser = new JsonParser();
-                return (JsonObject) parser.parse(data);
-            }
-
-            private InputStream openStream(URL url) throws IOException {
-                return url.openConnection().getInputStream();
             }
 
             private ResourceLocation[] getGamemodes(String[] array) {

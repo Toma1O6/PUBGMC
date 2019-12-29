@@ -1,6 +1,6 @@
 package com.toma.pubgmc.common.entity.bot.ai;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.entity.EntityLiving;

@@ -1,8 +1,8 @@
 package com.toma.pubgmc.util.handlers;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameObjectiveBased;
+import com.toma.pubgmc.api.games.Game;
+import com.toma.pubgmc.api.games.GameObjectiveBased;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;
 import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.api.settings.EntityDeathManager;

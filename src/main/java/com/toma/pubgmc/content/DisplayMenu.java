@@ -12,4 +12,8 @@ public interface DisplayMenu {
     void draw(GuiMainMenu gui, Minecraft mc, int mx, int my, float partialTicks);
 
     void onButtonClicked(GuiMainMenu menu, GuiButton button) throws IOException;
+
+    default void onMouseScroll() throws IOException {
+
+    }
 }

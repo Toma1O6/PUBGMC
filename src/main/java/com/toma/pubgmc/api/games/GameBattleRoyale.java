@@ -1,7 +1,6 @@
 package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
 import com.toma.pubgmc.api.GamePhase;
 import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.api.objectives.ObjectiveLastTeamStanding;
@@ -41,6 +40,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -58,6 +58,8 @@ import java.util.List;
 
 public class GameBattleRoyale extends Game {
 
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID, "textures/gui/game.png");
+
     public final GameManager gameManager;
     public final GameBotManager botManager;
     public final TeamManager teamManager;
@@ -69,7 +71,7 @@ public class GameBattleRoyale extends Game {
     private int botsLeft = 0;
 
     public GameBattleRoyale(String name) {
-        super(name);
+        super(name, TEXTURE);
         this.setGameInfo(new GameInfo("Toma", new String[] {"size: int - Team size"}, "- Classic BR mode", "- One life per game", "- Shrinking zone"));
         this.gameManager = GameManager.Builder.create(this)
                 .waitTime(200)

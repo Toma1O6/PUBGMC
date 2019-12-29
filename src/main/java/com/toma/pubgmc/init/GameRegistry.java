@@ -1,6 +1,6 @@
 package com.toma.pubgmc.init;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;

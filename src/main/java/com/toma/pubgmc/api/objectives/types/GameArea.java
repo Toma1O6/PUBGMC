@@ -1,7 +1,7 @@
 package com.toma.pubgmc.api.objectives.types;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;

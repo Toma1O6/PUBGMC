@@ -1,7 +1,7 @@
 package com.toma.pubgmc.api.settings;
 
 import com.google.common.base.Preconditions;
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.interfaces.TeamFillFactory;
 import com.toma.pubgmc.api.teams.Team;

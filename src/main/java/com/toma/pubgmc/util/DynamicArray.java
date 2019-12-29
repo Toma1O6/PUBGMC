@@ -8,12 +8,20 @@ public class DynamicArray<E> {
         this.array = (E[]) new Object[size];
     }
 
+    public DynamicArray(E[] array) {
+        this.array = array;
+    }
+
     public void add(E e) {
         this.add(e, 0);
     }
 
     public void add(E e, int index) {
         this.insertElementAt(e, index);
+    }
+
+    public void addLast(E e) {
+        this.moveDown(e);
     }
 
     public E get(int index) {
@@ -42,5 +50,12 @@ public class DynamicArray<E> {
             this.array[i + 1] = this.array[i];
         }
         this.array[idx] = e;
+    }
+
+    private void moveDown(E e) {
+        for(int i = 1; i < this.size(); i++) {
+            this.array[i - 1] = this.array[i];
+        }
+        this.array[this.size()-1] = e;
     }
 }

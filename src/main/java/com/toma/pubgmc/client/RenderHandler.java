@@ -1,8 +1,8 @@
 package com.toma.pubgmc.client;
 
 import com.toma.pubgmc.animation.HeldAnimation;
-import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameObjectiveBased;
+import com.toma.pubgmc.api.games.Game;
+import com.toma.pubgmc.api.games.GameObjectiveBased;
 import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.client.layers.LayerGhillie;
 import com.toma.pubgmc.common.capability.IGameData;

@@ -1,7 +1,7 @@
 package com.toma.pubgmc.api.util;
 
 import com.toma.pubgmc.Pubgmc;
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.Lobby;
 import com.toma.pubgmc.api.interfaces.BotSpawner;
 import com.toma.pubgmc.api.interfaces.IGameTileEntity;

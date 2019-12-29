@@ -1,6 +1,6 @@
 package com.toma.pubgmc.api.interfaces;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

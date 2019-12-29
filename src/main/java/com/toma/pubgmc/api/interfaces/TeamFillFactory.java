@@ -1,6 +1,6 @@
 package com.toma.pubgmc.api.interfaces;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.teams.Team;
 
 import java.util.Iterator;

@@ -1,7 +1,7 @@
 package com.toma.pubgmc.common.items.game;
 
-import com.toma.pubgmc.api.Game;
-import com.toma.pubgmc.api.GameObjectiveBased;
+import com.toma.pubgmc.api.games.Game;
+import com.toma.pubgmc.api.games.GameObjectiveBased;
 import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.common.capability.IGameData;
 import com.toma.pubgmc.common.items.PMCItem;

@@ -1,6 +1,6 @@
 package com.toma.pubgmc.api.games;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
 import com.toma.pubgmc.api.settings.GameManager;
@@ -8,14 +8,17 @@ import com.toma.pubgmc.api.settings.TeamManager;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.world.BlueZone;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class GameInactive extends Game {
 
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID, "textures/gui/game.png");
+
     public GameInactive(String name) {
-        super(name);
+        super(name, TEXTURE);
     }
 
     @Override

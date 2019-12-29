@@ -1,6 +1,9 @@
-package com.toma.pubgmc.api;
+package com.toma.pubgmc.api.games;
 
+import com.sun.istack.internal.NotNull;
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.api.GamePhase;
+import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.objectives.types.GameArea;
 import com.toma.pubgmc.api.settings.EntityDeathManager;
 import com.toma.pubgmc.api.settings.GameBotManager;
@@ -61,28 +64,34 @@ public abstract class Game {
     public static Map<ResourceLocation, Map<BlockPos, GameArea>> cachedObjectives = new HashMap<>();
 
     /**
-     * Game name, doesn't have to contain mod ID (might change in the future)
-     **/
+     * Game registry name
+     */
     public final ResourceLocation registryName;
+
+    /**
+     * Image in custom main menu
+     */
+    public final ResourceLocation guiImage;
+
     /**
      * The zone for the game, damages players outside of it
-     **/
+     */
     public BlueZone zone;
     /**
      * Contains information about this game
-     **/
+     */
     public GameInfo gameInfo;
     /**
      * Time elapsed since game start
-     **/
+     */
     public int gameTimer;
     /**
      * Amount of players in the game
-     **/
+     */
     public int onlinePlayers;
     /**
      * Amount of AI entities
-     **/
+     */
     public int botsInGame;
     public DeathMessage[] displayedDeathMessages;
     /**
@@ -91,24 +100,25 @@ public abstract class Game {
     protected List<Team> teamList = new ArrayList<>();
     /**
      * UUID list of all players who joined the game
-     **/
+     */
     private List<UUID> playersInGame;
     private GamePhase gamePhase;
     private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
 
-    public Game(final String name) {
-        this(Loader.instance().activeModContainer().getModId(), name);
+    public Game(final String name, final ResourceLocation texture) {
+        this(Loader.instance().activeModContainer().getModId(), name, texture);
     }
 
-    public Game(final String modid, final String name) {
-        this(new ResourceLocation(modid, name));
+    public Game(final String modid, final String name, final ResourceLocation texture) {
+        this(new ResourceLocation(modid, name), texture);
     }
 
-    public Game(final ResourceLocation name) {
+    public Game(final ResourceLocation name, final ResourceLocation texture) {
         this.playersInGame = new ArrayList<>();
         this.registryName = name;
         this.onlinePlayers = 0;
         this.gameTimer = 0;
+        this.guiImage = texture;
     }
 
     protected static NBTTagCompound saveObjectivesToNBT(Map<BlockPos, GameArea> map) {

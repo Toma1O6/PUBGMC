@@ -1,7 +1,8 @@
-package com.toma.pubgmc.api;
+package com.toma.pubgmc.api.games;
 
 import com.toma.pubgmc.api.objectives.types.GameArea;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -12,8 +13,8 @@ public abstract class GameObjectiveBased extends Game {
 
     private Map<BlockPos, GameArea> objectives = new HashMap<>();
 
-    public GameObjectiveBased(String name) {
-        super(name);
+    public GameObjectiveBased(String name, ResourceLocation texture) {
+        super(name, texture);
     }
 
     public abstract boolean addObjective(World world, BlockPos pos, GameArea area);

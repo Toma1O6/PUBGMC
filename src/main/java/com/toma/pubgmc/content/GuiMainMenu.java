@@ -1,12 +1,10 @@
 package com.toma.pubgmc.content;
 
 import com.toma.pubgmc.Pubgmc;
+import com.toma.pubgmc.init.GameRegistry;
 import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.GuiOptions;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.GuiModList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ public class GuiMainMenu extends GuiScreen {
     public static Map<ResourceLocation, MapData[]> DATA;
     private DisplayMenu previous;
     private DisplayMenu displayMenu;
+    private long time = System.currentTimeMillis();
 
     public GuiMainMenu() {
         this.setDisplayMenu(DisplayMenuTypes.MAIN_MENU);
@@ -59,7 +59,25 @@ public class GuiMainMenu extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
+        if(System.currentTimeMillis() - time < 300) {
+            return;
+        }
         this.displayMenu.onButtonClicked(this, button);
+        this.time = System.currentTimeMillis();
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        this.displayMenu.onMouseScroll();
+    }
+
+    public boolean hasSelectedButton() {
+        return this.selectedButton != null;
+    }
+
+    public List<GuiButton> getButtonList() {
+        return this.buttonList;
     }
 
     private void setDisplayMenu(DisplayMenu menu) {
@@ -124,6 +142,7 @@ public class GuiMainMenu extends GuiScreen {
 
             @Override
             public void draw(GuiMainMenu gui, Minecraft mc, int mx, int my, float partialTicks) {
+                ImageUtil.drawShape(0, 0, gui.width, gui.height, 0.2F, 0.2F, 0.2F);
                 gui.buttonList.forEach(btn -> btn.drawButton(mc, mx, my, partialTicks));
             }
         };
@@ -131,39 +150,109 @@ public class GuiMainMenu extends GuiScreen {
         static final DisplayMenu SINGLEPLAYER = new DisplayMenu() {
             @Override
             public void init(GuiMainMenu menu) {
-
+                int x = menu.width / 3;
+                int w = x - 10;
+                int height = (int)(menu.height / 1.5);
+                menu.buttonList.add(menu.new MenuButtonImage(0, x - w / 2, 10, w, height, "Normal", SP));
+                menu.buttonList.add(menu.new MenuButtonImage(1, 2*x - w / 2, 10, w, height, "Gamemodes", SP));
+                menu.buttonList.add(menu.new MenuButton(2, (int)(1.5*x) - w / 2, height + 20, w, 40, "Back", true));
             }
 
             @Override
             public void onButtonClicked(GuiMainMenu menu, GuiButton button) {
-
+                switch (button.id) {
+                    case 0: {
+                        menu.mc.displayGuiScreen(new GuiWorldSelection(menu));
+                        break;
+                    }
+                    case 1: {
+                        menu.setDisplayMenu(GAMEMODES);
+                        break;
+                    }
+                    case 2: {
+                        menu.setDisplayMenu(MAIN_MENU);
+                        break;
+                    }
+                }
             }
 
             @Override
             public void draw(GuiMainMenu gui, Minecraft mc, int mx, int my, float partialTicks) {
-
+                ImageUtil.drawShape(0, 0, gui.width, gui.height, 0.2F, 0.2F, 0.2F);
+                gui.buttonList.forEach(btn -> btn.drawButton(mc, mx, my, partialTicks));
             }
         };
 
         static final DisplayMenu GAMEMODES = new DisplayMenu() {
+
+            private static final int PER_PAGE = 0x4;
+            private List<ResourceLocation> modeList;
+            private int page = 0;
+
             @Override
             public void init(GuiMainMenu menu) {
-
+                menu.buttonList.clear();
+                this.modeList = new ArrayList<>(DATA.keySet());
+                this.fill(menu);
             }
 
             @Override
             public void onButtonClicked(GuiMainMenu menu, GuiButton button) {
-
+                int id = button.id;
+                if(id >= 0 && id < PER_PAGE) {
+                    // TODO
+                    // never should be anything else, so safe to cast
+                    MenuButtonMode btn = (MenuButtonMode) button;
+                    menu.setDisplayMenu(new DisplayMenuMaps(btn.modeName, DATA.get(btn.modeName), menu));
+                } else if(id == PER_PAGE) {
+                    // descrease page num
+                    if(this.page == 0) {
+                        this.init(menu);
+                        return;
+                    }
+                    this.page--;
+                    this.init(menu);
+                } else if(id == PER_PAGE + 1) {
+                    if(this.page == this.modeList.size() - PER_PAGE) {
+                        this.init(menu);
+                        return;
+                    }
+                    this.page++;
+                    this.init(menu);
+                }
             }
 
             @Override
             public void draw(GuiMainMenu gui, Minecraft mc, int mx, int my, float partialTicks) {
+                ImageUtil.drawShape(0, 0, gui.width, gui.height, 0.2f, 0.2f, 0.2f);
+                gui.buttonList.forEach(btn -> btn.drawButton(mc, mx, my, partialTicks));
+            }
 
+            private void fill(GuiMainMenu instance) {
+                int x = instance.width / (PER_PAGE);
+                int w = x - 5;
+                int h = (int)(instance.height / 1.2);
+                for(int i = this.page; i < this.page + PER_PAGE; i++) {
+                    if(this.modeList.size() > i) {
+                        ResourceLocation rl = this.modeList.get(i);
+                        try {
+                            instance.buttonList.add(instance.new MenuButtonMode(i % PER_PAGE, (1 + i % PER_PAGE)*x, 10, w, h, rl));
+                        } catch (NullPointerException e) {
+                            Pubgmc.logger.fatal("No gamemode exists under {} id! Report this error!", rl);
+                        }
+                    } else break;
+                }
+                MenuButtonArrow left = instance.new MenuButtonArrow(PER_PAGE, 10, 10 + h / 2 - 15, 30, 30, ArrowDirection.LEFT);
+                MenuButtonArrow right = instance.new MenuButtonArrow(PER_PAGE + 1, 10, 40, 20, 20, ArrowDirection.RIGHT);
+                left.visible = this.page > 0;
+                right.visible = this.page < this.modeList.size() - (PER_PAGE + 1);
+                instance.buttonList.add(left);
+                instance.buttonList.add(right);
             }
         };
     }
 
-    private class MenuButton extends GuiButton {
+    public class MenuButton extends GuiButton {
 
         private final boolean centeredText;
 
@@ -172,14 +261,14 @@ public class GuiMainMenu extends GuiScreen {
             this.centeredText = centered;
         }
 
-        protected void postRender(Minecraft mc) {
+        protected void render(Minecraft mc) {
 
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        public final void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             ImageUtil.drawImageWithUV(mc, MENU_ICONS, this.x, this.y, this.width, this.height, 0, this.centeredText ? 64/256D : 0, 64/256D, this.centeredText ? 96/256D : 64/256D, false);
-            this.postRender(mc);
+            this.render(mc);
             boolean flag = mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height;
             if(flag) {
                 Tessellator tessellator = Tessellator.getInstance();
@@ -204,7 +293,7 @@ public class GuiMainMenu extends GuiScreen {
         }
     }
 
-    private class MenuButtonImage extends MenuButton {
+    public class MenuButtonImage extends MenuButton {
 
         private final ResourceLocation texture;
 
@@ -214,8 +303,54 @@ public class GuiMainMenu extends GuiScreen {
         }
 
         @Override
-        protected void postRender(Minecraft mc) {
+        protected void render(Minecraft mc) {
             ImageUtil.drawCustomSizedImage(mc, this.texture, this.x + 2, this.y + 2, this.width - 4, this.height - 4, false);
+        }
+    }
+
+    public class MenuButtonArrow extends MenuButton {
+        private final ArrowDirection arrowDirection;
+
+        public MenuButtonArrow(int idx, int x, int y, int w, int h, ArrowDirection direction) {
+            super(idx, x, y, w, h, "", false);
+            this.arrowDirection = direction;
+        }
+
+        @Override
+        protected void render(Minecraft mc) {
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder builder = tessellator.getBuffer();
+            GlStateManager.disableTexture2D();
+            builder.begin(4, DefaultVertexFormats.POSITION_COLOR);
+            float x = this.width / 4F;
+            float y = this.height / 4F;
+            this.arrowDirection.getConsumer().apply(this.x + x, this.y + y, this.x + x * 3, this.y + y * 3, builder);
+            tessellator.draw();
+            GlStateManager.enableTexture2D();
+        }
+    }
+
+    public class MenuButtonMode extends MenuButtonImage {
+
+        private final ResourceLocation modeName;
+
+        /**
+         * @param idx - button ID
+         * @param x - X coord
+         * @param y - Y coord
+         * @param w - Width
+         * @param h - Height
+         * @param mode - Full game registry name
+         * @throws NullPointerException - when no gamemode exists under specified ResourceLocation
+         */
+        public MenuButtonMode(int idx, int x, int y, int w, int h, ResourceLocation mode) throws NullPointerException {
+            super(idx, x, y, w, h, mode.getResourcePath().toUpperCase(), GameRegistry.getGame(mode).guiImage);
+            this.modeName = mode;
+        }
+
+        @Override
+        protected void render(Minecraft mc) {
+
         }
     }
 }

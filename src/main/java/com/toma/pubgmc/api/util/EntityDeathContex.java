@@ -1,6 +1,6 @@
 package com.toma.pubgmc.api.util;
 
-import com.toma.pubgmc.api.Game;
+import com.toma.pubgmc.api.games.Game;
 import com.toma.pubgmc.api.GamePlayerData;
 import com.toma.pubgmc.api.teams.Team;
 import com.toma.pubgmc.common.entity.bot.EntityAIPlayer;
