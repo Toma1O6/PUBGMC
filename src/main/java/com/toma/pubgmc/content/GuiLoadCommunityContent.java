@@ -67,6 +67,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
                 return;
             }
             this.mapFiles = file.listFiles();
+            sendStatusUpdate("Initializing");
             this.loadCommunityMaps();
         }
     }
@@ -77,16 +78,15 @@ public class GuiLoadCommunityContent extends GuiScreen {
             @Override
             public void run() {
                 try {
-                    sendStatusUpdate("Initializing");
                     Pubgmc.logger.info("Checking {} for community map data", dataURL);
                     sendStatusUpdate("Connecting");
-                    Thread.sleep(500);
                     InputStream stream = this.openStream(dataURL);
                     sendStatusUpdate("Connected");
                     String commData = new String(ByteStreams.toByteArray(stream), StandardCharsets.UTF_8);
                     stream.close();
                     this.process(commData);
                 } catch (Exception e) {
+                    compatMode = true;
                     sendStatusUpdate("Failed");
                     e.printStackTrace();
                     GuiLoadCommunityContent gui = GuiLoadCommunityContent.this;
@@ -131,6 +131,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
                 com.toma.pubgmc.content.GuiMainMenu.createData(map);
                 sendStatusUpdate("Finished");
                 GuiLoadCommunityContent.this.buttonList.get(0).enabled = true;
+                compatMode = false;
             }
 
             private ResourceLocation[] getGamemodes(String[] array) {
@@ -154,7 +155,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
         } else if(button.id == 1) {
             this.loadCommunityMaps();
             this.buttonList.remove(1);
-            this.buttonList.get(0).visible = false;
+            this.buttonList.get(0).enabled = false;
             this.addScreenMessage(new Message().addMessageComponent(new MessageComponent("Retrying connection...", TextFormatting.WHITE)));
         }
     }

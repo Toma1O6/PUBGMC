@@ -237,4 +237,15 @@ public class PUBGMCUtil {
     public static Vec3d multiply(Vec3d vec, double amount) {
         return new Vec3d(vec.x * amount, vec.y * amount, vec.z * amount);
     }
+
+    public static String convertStringArray(String[] array) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for(int i = 0; i < array.length; i++) {
+            boolean hasNext = i < array.length - 1;
+            builder.append(array[i]).append(hasNext ? ", " : "");
+        }
+        builder.append("]");
+        return builder.toString();
+    }
 }

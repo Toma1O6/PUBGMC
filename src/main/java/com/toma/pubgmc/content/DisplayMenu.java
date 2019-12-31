@@ -16,4 +16,8 @@ public interface DisplayMenu {
     default void onMouseScroll() throws IOException {
 
     }
+
+    default void mouseClick() {
+        
+    }
 }

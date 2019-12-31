@@ -11,8 +11,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
-import java.io.IOException;
-
 /* design idea
 mode name
 ---------
@@ -42,7 +40,7 @@ public class DisplayMenuMaps implements DisplayMenu {
     }
 
     @Override
-    public void onMouseScroll() throws IOException {
+    public void onMouseScroll() {
         int i = -Integer.signum(Mouse.getEventDWheel());
         if(i > 0 && this.scrollIdx < this.modeMaps.length - this.displayMapListSize) {
             this.scrollIdx++;
@@ -50,6 +48,21 @@ public class DisplayMenuMaps implements DisplayMenu {
         } else if(i < 0 && this.scrollIdx > 0) {
             this.scrollIdx--;
             this.init(this.menu);
+        }
+    }
+
+    @Override
+    public void mouseClick() {
+        if(this.menu.getButtonList().isEmpty()) return;
+        boolean b = this.menu.hasSelectedButton() && this.menu.getClickedButton() instanceof GuiMainMenu.MenuButtonMap;
+        GuiButton button = this.menu.getButtonList().get(this.displayMapListSize);
+        button.displayString = "Play";
+        button.enabled = b;
+        if(b) {
+            MapData data = this.modeMaps[this.scrollIdx + this.menu.getButtonList().indexOf(this.menu.getClickedButton())];
+            if(!data.isDownloaded) {
+                button.displayString = "Download";
+            }
         }
     }
 
@@ -65,26 +78,37 @@ public class DisplayMenuMaps implements DisplayMenu {
             if(i >= this.modeMaps.length) break;
             int idx = i - this.scrollIdx;
             MapData data = this.modeMaps[i];
-            // add map buttons
-            menu.getButtonList().add(new GuiButton(idx, 20, 40 + idx * 45, menu.width - 40, 40, data.displayName));
+            menu.getButtonList().add(menu.new MenuButtonMap(idx, 20, 40 + idx * 45, menu.width - 40, 40, data));
         }
         int x = 10;
         int y = menu.height - 25;
         int w = (menu.width - 20) / 3;
         GuiButton playButton = new GuiButton(this.displayMapListSize, x, y, w - 10, 20, "Play");
-        playButton.enabled = menu.hasSelectedButton();
+        playButton.enabled = false;
         menu.getButtonList().add(playButton);
         menu.getButtonList().add(new GuiButton(this.displayMapListSize + 1, x + w, y, w - 10, 20, "Add your map"));
         menu.getButtonList().add(new GuiButton(this.displayMapListSize + 2, x + 2 * w, y, w, 20, "Back"));
     }
 
     @Override
-    public void onButtonClicked(GuiMainMenu menu, GuiButton button) throws IOException {
+    public void onButtonClicked(GuiMainMenu menu, GuiButton button) {
         boolean b = false;
         if(button.id < this.displayMapListSize) {
             b = true;
         }
         menu.getButtonList().get(this.displayMapListSize).enabled = b;
+        if(button.id == this.displayMapListSize) {
+            boolean isDownloaded = this.checkDownloaded();
+            if(isDownloaded) {
+                // TODO play selected map associated with the button
+            } else {
+                // TODO download and extract the map
+            }
+        } else if(button.id == this.displayMapListSize + 1) {
+            menu.setDisplayMenu(GuiMainMenu.DisplayMenuTypes.MAP_ADD);
+        } else if(button.id == this.displayMapListSize + 2) {
+            menu.setDisplayMenu(GuiMainMenu.DisplayMenuTypes.GAMEMODES);
+        }
     }
 
     @Override
@@ -129,5 +153,13 @@ public class DisplayMenuMaps implements DisplayMenu {
         int i = mc.fontRenderer.getStringWidth(this.name);
         mc.fontRenderer.drawStringWithShadow(this.name, (float)hx - (i / 2.0F), 12, 0xFFFFFFFF);
         gui.getButtonList().forEach(btn -> btn.drawButton(mc, mx, my, partialTicks));
+    }
+
+    private boolean checkDownloaded() {
+        if(this.menu.getClickedButton() instanceof GuiMainMenu.MenuButtonMap) {
+            GuiMainMenu.MenuButtonMap btn = (GuiMainMenu.MenuButtonMap) this.menu.getClickedButton();
+            return btn.getData().isDownloaded;
+        }
+        return false;
     }
 }
