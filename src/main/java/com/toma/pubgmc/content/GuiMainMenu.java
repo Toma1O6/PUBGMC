@@ -32,7 +32,7 @@ public class GuiMainMenu extends GuiScreen {
     private DisplayMenu previous;
     private DisplayMenu displayMenu;
     private long time = System.currentTimeMillis();
-    private GuiButton clickedButton;
+    private MenuButtonMap clickedButton;
 
     public GuiMainMenu() {
         this.setDisplayMenu(DisplayMenuTypes.MAIN_MENU);
@@ -54,7 +54,9 @@ public class GuiMainMenu extends GuiScreen {
                     if(MinecraftForge.EVENT_BUS.post(event)) break;
                     button = event.getButton();
                     this.selectedButton = button;
-                    this.clickedButton = button;
+                    if(this.selectedButton instanceof MenuButtonMap) {
+                        this.clickedButton = (MenuButtonMap) button;
+                    }
                     button.playPressSound(this.mc.getSoundHandler());
                     this.actionPerformed(button);
                     if(this == this.mc.currentScreen) {
@@ -107,7 +109,7 @@ public class GuiMainMenu extends GuiScreen {
         return this.buttonList;
     }
 
-    public GuiButton getClickedButton() {
+    public MenuButtonMap getClickedButton() {
         return clickedButton;
     }
 
@@ -405,10 +407,15 @@ public class GuiMainMenu extends GuiScreen {
     public class MenuButtonMap extends MenuButton {
 
         private final MapData data;
+        private MapButtonState state = MapButtonState.NORMAL;
 
         public MenuButtonMap(int idx, int x, int y, int w, int h, MapData data) {
             super(idx, x, y, w, h, "", false);
             this.data = data;
+        }
+
+        public synchronized void updateState(MapButtonState state) {
+            this.state = state;
         }
 
         @Override
@@ -426,6 +433,7 @@ public class GuiMainMenu extends GuiScreen {
             mc.fontRenderer.drawStringWithShadow(this.data.displayName, this.x + 40, this.y + 5, 0xFFFFFFFF);
             mc.fontRenderer.drawStringWithShadow("Version: " + this.data.version, this.x + 40, this.y + 16, 0xFFFFFFFF);
             mc.fontRenderer.drawStringWithShadow("Author" + (this.data.authors.length > 1 ? "s: " : ": ") + PUBGMCUtil.convertStringArray(this.data.authors), this.x + 40, this.y + 27, 0xFFFFFFFF);
+            this.state.drawButtonOverlay(this.x, this.y, this.width, this.height, mc);
             if(this.hovered) {
                 if(!selected) {
                     GlStateManager.disableTexture2D();

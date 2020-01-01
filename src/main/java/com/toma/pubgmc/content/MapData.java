@@ -9,7 +9,7 @@ public class MapData {
 
     public final String displayName;
     public final String downloadLink;
-    public final boolean isDownloaded;
+    public boolean isDownloaded;
     public final boolean isNew;
     public final String version;
     public final String[] authors;
@@ -34,6 +34,10 @@ public class MapData {
                 .modes(object.has("modes") ? convertToStringArray(object.getAsJsonArray("modes")) : null)
                 .state(object.has("effect") ? object.get("effect").getAsBoolean() : false)
                 .build();
+    }
+
+    public void finishDownload() {
+        this.isDownloaded = true;
     }
 
     private static String[] convertToStringArray(JsonArray array) {

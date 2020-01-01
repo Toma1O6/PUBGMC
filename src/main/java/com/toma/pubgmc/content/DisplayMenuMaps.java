@@ -54,7 +54,7 @@ public class DisplayMenuMaps implements DisplayMenu {
     @Override
     public void mouseClick() {
         if(this.menu.getButtonList().isEmpty()) return;
-        boolean b = this.menu.hasSelectedButton() && this.menu.getClickedButton() instanceof GuiMainMenu.MenuButtonMap;
+        boolean b = this.menu.hasSelectedButton();
         GuiButton button = this.menu.getButtonList().get(this.displayMapListSize);
         button.displayString = "Play";
         button.enabled = b;
@@ -102,7 +102,7 @@ public class DisplayMenuMaps implements DisplayMenu {
             if(isDownloaded) {
                 // TODO play selected map associated with the button
             } else {
-                // TODO download and extract the map
+                new MapDownloader(menu.getClickedButton().getData(), menu.getClickedButton());
             }
         } else if(button.id == this.displayMapListSize + 1) {
             menu.setDisplayMenu(GuiMainMenu.DisplayMenuTypes.MAP_ADD);
@@ -156,10 +156,6 @@ public class DisplayMenuMaps implements DisplayMenu {
     }
 
     private boolean checkDownloaded() {
-        if(this.menu.getClickedButton() instanceof GuiMainMenu.MenuButtonMap) {
-            GuiMainMenu.MenuButtonMap btn = (GuiMainMenu.MenuButtonMap) this.menu.getClickedButton();
-            return btn.getData().isDownloaded;
-        }
-        return false;
+        return this.menu.getClickedButton() == null ? false : this.menu.getClickedButton().getData().isDownloaded;
     }
 }

@@ -26,6 +26,8 @@ import java.util.*;
 public class GuiLoadCommunityContent extends GuiScreen {
 
     public static boolean compatMode = false;
+    public static File contentFolder;
+
     private boolean hasCheckedData = false;
     private DynamicArray<Message> messages = new DynamicArray<>(10);
     private URL dataURL;
@@ -53,11 +55,11 @@ public class GuiLoadCommunityContent extends GuiScreen {
         this.addButton(btn);
         if(!hasCheckedData) {
             this.hasCheckedData = true;
-            File file = new File(mc.mcDataDir, "pubgmc-content");
+            contentFolder = new File(mc.mcDataDir, "pubgmc-content");
             boolean flag = true;
-            if(!file.exists()) {
+            if(!contentFolder.exists()) {
                 try {
-                    flag = file.mkdirs();
+                    flag = contentFolder.mkdirs();
                 } catch (Exception e) {
                     flag = false;
                 }
@@ -66,7 +68,7 @@ public class GuiLoadCommunityContent extends GuiScreen {
                 this.safeLaunch();
                 return;
             }
-            this.mapFiles = file.listFiles();
+            this.mapFiles = contentFolder.listFiles();
             sendStatusUpdate("Initializing");
             this.loadCommunityMaps();
         }
