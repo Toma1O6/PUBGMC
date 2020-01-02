@@ -1140,12 +1140,13 @@ public class PMCRegistry {
             }
         }
 
+        static final WeaponTEISR TEISR = new WeaponTEISR();
+
         private static void registerModel(Item item) {
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 
-            WeaponTEISR teisr = new WeaponTEISR();
             if (item instanceof GunBase) {
-                item.setTileEntityItemStackRenderer(teisr);
+                item.setTileEntityItemStackRenderer(TEISR);
                 MinecraftForge.EVENT_BUS.post(new GunModelAttachEvent((GunBase) item, item.getRegistryName()));
             }
         }

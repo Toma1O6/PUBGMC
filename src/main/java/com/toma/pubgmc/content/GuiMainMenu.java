@@ -121,9 +121,17 @@ public class GuiMainMenu extends GuiScreen {
 
     public static void createData(final Map<ResourceLocation, List<MapData>> data) {
         DATA = new HashMap<>();
+        MapData[] data1 = null;
         for(Map.Entry<ResourceLocation, List<MapData>> entry : data.entrySet()) {
             DATA.put(entry.getKey(), entry.getValue().toArray(new MapData[0]));
+            // TODO delete
+            if(data1 == null) {
+                data1 = entry.getValue().toArray(new MapData[0]);
+            }
         }
+        DATA.put(new ResourceLocation("pubgmc:domination"), data1);
+        DATA.put(new ResourceLocation("pubgmc:push"), data1);
+        DATA.put(new ResourceLocation("pubgmc:dm"), data1);
     }
 
     public static final class DisplayMenuTypes {
@@ -252,6 +260,8 @@ public class GuiMainMenu extends GuiScreen {
                     }
                     this.page++;
                     this.init(menu);
+                } else if(id == PER_PAGE + 2) {
+                    menu.setDisplayMenu(SINGLEPLAYER);
                 }
             }
 
@@ -275,12 +285,13 @@ public class GuiMainMenu extends GuiScreen {
                         }
                     } else break;
                 }
-                MenuButtonArrow left = instance.new MenuButtonArrow(PER_PAGE, 10, 10 + h / 2 - 15, 30, 30, ArrowDirection.LEFT);
-                MenuButtonArrow right = instance.new MenuButtonArrow(PER_PAGE + 1, 10, 40, 20, 20, ArrowDirection.RIGHT);
+                MenuButtonArrow left = instance.new MenuButtonArrow(PER_PAGE, 10, h - 55, 30, 30, ArrowDirection.LEFT);
+                MenuButtonArrow right = instance.new MenuButtonArrow(PER_PAGE + 1, 10, h - 20, 30, 30, ArrowDirection.RIGHT);
                 left.visible = this.page > 0;
                 right.visible = this.page < this.modeList.size() - (PER_PAGE + 1);
                 instance.buttonList.add(left);
                 instance.buttonList.add(right);
+                instance.buttonList.add(instance.new MenuButton(PER_PAGE + 2, 10, h + 15, 60, 20, "Back", true));
             }
         };
 
