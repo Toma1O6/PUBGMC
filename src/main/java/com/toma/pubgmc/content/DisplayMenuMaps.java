@@ -54,16 +54,10 @@ public class DisplayMenuMaps implements DisplayMenu {
     @Override
     public void mouseClick() {
         if(this.menu.getButtonList().isEmpty()) return;
-        boolean b = this.menu.hasSelectedButton();
+        boolean b = this.menu.hasSelectedButton() && this.modeMaps[this.scrollIdx + this.menu.getButtonList().indexOf(this.menu.getClickedButton())].isDownloaded;
         GuiButton button = this.menu.getButtonList().get(this.displayMapListSize);
         button.displayString = "Play";
         button.enabled = b;
-        if(b) {
-            MapData data = this.modeMaps[this.scrollIdx + this.menu.getButtonList().indexOf(this.menu.getClickedButton())];
-            if(!data.isDownloaded) {
-                button.displayString = "Download";
-            }
-        }
     }
 
     @Override

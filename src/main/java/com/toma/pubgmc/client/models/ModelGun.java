@@ -6,7 +6,6 @@ import com.toma.pubgmc.animation.HeldAnimation;
 import com.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import com.toma.pubgmc.animation.ReloadAnimation;
 import com.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import com.toma.pubgmc.client.models.atachments.*;
 import com.toma.pubgmc.client.util.ModelTransformationHelper;
 import com.toma.pubgmc.init.PMCRegistry.PMCItems;
 import net.minecraft.client.model.ModelBase;
@@ -23,19 +22,6 @@ public abstract class ModelGun extends ModelBase {
             new Vector3f(15f, 20f, 15f),
             new Vector3f(0f, 0f, 0f)
     };
-
-    private static final AttachmentSuppressorPistol pistolSupp = new AttachmentSuppressorPistol();
-    private static final AttachmentSuppressorSMG smgSupp = new AttachmentSuppressorSMG();
-    private static final AttachmentSuppressorAR arSupp = new AttachmentSuppressorAR();
-    private static final AttachmentSuppressorSR srSupp = new AttachmentSuppressorSR();
-    private static final AttachmentGripVertical grip_vertical = new AttachmentGripVertical();
-    private static final AttachmentGripAngled grip_angled = new AttachmentGripAngled();
-    private static final AttachmentScopeRDS red_dot = new AttachmentScopeRDS();
-    private static final AttachmentScopeHolo holo = new AttachmentScopeHolo();
-    private static final AttachmentScope2x scope2x = new AttachmentScope2x();
-    private static final AttachmentScope4x scope4x = new AttachmentScope4x();
-    private static final AttachmentScope8x scope8x = new AttachmentScope8x();
-    private static final AttachmentScope15x scope15x = new AttachmentScope15x();
 
     public AimingAnimation aimAnimation;
     public HeldAnimation heldAnimation;
@@ -135,7 +121,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.defaultPistolRedDotTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            red_dot.render();
+            AttachmentModels.RED_DOT.render();
             GlStateManager.popMatrix();
         }
     }
@@ -146,7 +132,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.defaultHoloTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            holo.render();
+            AttachmentModels.HOLOGRAPHIC.render();
             GlStateManager.popMatrix();
         }
     }
@@ -157,7 +143,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.default2XTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            scope2x.render();
+            AttachmentModels.SCOPE_2X.render();
             GlStateManager.popMatrix();
         }
     }
@@ -168,7 +154,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.default4XTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            scope4x.render();
+            AttachmentModels.SCOPE_4X.render();
             GlStateManager.popMatrix();
         }
     }
@@ -179,7 +165,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.default8XTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            scope8x.render();
+            AttachmentModels.SCOPE_8X.render();
             GlStateManager.popMatrix();
         }
     }
@@ -190,7 +176,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.default15XTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            scope15x.render();
+            AttachmentModels.SCOPE_15X.render();
             GlStateManager.popMatrix();
         }
     }
@@ -201,7 +187,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.defaultPistolSilencerTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            pistolSupp.render();
+            AttachmentModels.SUPPRESSOR_PISTOL.render();
             GlStateManager.popMatrix();
         }
     }
@@ -212,7 +198,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.silencerSMGTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            smgSupp.render();
+            AttachmentModels.SUPPRESSOR_SMG.render();
             GlStateManager.popMatrix();
         }
     }
@@ -223,7 +209,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.silencerARTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            arSupp.render();
+            AttachmentModels.SUPPRESSOR_AR.render();
             GlStateManager.popMatrix();
         }
     }
@@ -234,7 +220,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.silencerSRTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            srSupp.render();
+            AttachmentModels.SUPPRESSOR_SR.render();
             GlStateManager.popMatrix();
         }
     }
@@ -245,7 +231,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.verticalGripTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            grip_vertical.render();
+            AttachmentModels.GRIP_VERTICAL.render();
             GlStateManager.popMatrix();
         }
     }
@@ -256,7 +242,7 @@ public abstract class ModelGun extends ModelBase {
             ModelTransformationHelper.angledGripTransform();
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(x, y, z);
-            grip_angled.render();
+            AttachmentModels.GRIP_ANGLED.render();
             GlStateManager.popMatrix();
         }
     }

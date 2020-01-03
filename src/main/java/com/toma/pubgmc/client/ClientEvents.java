@@ -34,7 +34,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -569,7 +568,7 @@ public class ClientEvents {
                     GunBase item = (GunBase) sp.getHeldItemMainhand().getItem();
 
                     if (item.getCanSwitchFiremode()) {
-                        item.getNextFiremode(sp);
+                        item.switchFiremode(sp);
                     }
                 }
             }
@@ -580,7 +579,6 @@ public class ClientEvents {
     public void onMouseInput(InputEvent.MouseInputEvent e) {
         GameSettings gs = Minecraft.getMinecraft().gameSettings;
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        CooldownTracker tracker = player.getCooldownTracker();
         //To prevent crash on startup
         if (player != null && !player.isSpectator()) {
             ItemStack stack = player.getHeldItemMainhand();
@@ -594,7 +592,7 @@ public class ClientEvents {
                         //Shoot only once if the firemode is single
                         if (gun.getFiremode() == Firemode.SINGLE) {
                             //If the gun has no cooldown
-                            if (!tracker.hasCooldown(gun) && !data.isReloading()) {
+                            if (!data.isReloading()) {
                                 if (gun.hasAmmo(stack)) {
                                     //We send packet to server telling it to spawn new entity
                                     recoilTicks = 10;
@@ -613,7 +611,7 @@ public class ClientEvents {
                     //This is being handled in ClientTickEvent so we just prepare some stuff here
                     if (gun.getFiremode() == Firemode.BURST) {
                         if (ConfigPMC.common.world.gunsEnabled) {
-                            if (!tracker.hasCooldown(gun) && !shooting && !data.isReloading()) {
+                            if (!shooting && !data.isReloading()) {
                                 if (gun.hasAmmo(stack)) {
                                     shooting = true;
                                     shotsFired = 0;
@@ -699,9 +697,8 @@ public class ClientEvents {
                 if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
                     if (ConfigPMC.common.world.gunsEnabled) {
                         GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                        CooldownTracker tracker = player.getCooldownTracker();
 
-                        if (gun.getFiremode() == Firemode.AUTO && !tracker.hasCooldown(gun) && !data.isReloading()) {
+                        if (gun.getFiremode() == Firemode.AUTO && !data.isReloading()) {
                             if (gun.hasAmmo(player.getHeldItemMainhand())) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
@@ -720,17 +717,7 @@ public class ClientEvents {
             if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
                 ItemStack stack = player.getHeldItemMainhand();
                 GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                CooldownTracker tracker = player.getCooldownTracker();
-                int maxRounds;
-
-                if (gun.isHasTwoRoundBurst()) {
-                    maxRounds = 3;
-                } else {
-                    //Workaround for 3 round burst since we are now having small delay on bullets because shooting
-                    //code is being executed from minecraft thread
-                    maxRounds = 6;
-                }
-
+                int maxRounds = gun.isHasTwoRoundBurst() ? 3 : 6;
                 if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
                     if (shooting && gun.getFiremode() == Firemode.BURST && ConfigPMC.common.world.gunsEnabled) {
                         shootingTimer++;

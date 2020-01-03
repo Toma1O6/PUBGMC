@@ -133,7 +133,7 @@ public class GameHandler {
         public static void onPlayerKilled(LivingDeathEvent e) {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
-            if(e.getEntity() instanceof EntityLivingBase) {
+            if(!data.isInactiveGame() && e.getEntity() instanceof EntityLivingBase) {
                 EntityDeathContex ctx = EntityDeathContex.getDeathContex(e, game);
                 EntityDeathManager manager = game.getEntityDeathManager();
                 manager.getDeathAction().accept(ctx);

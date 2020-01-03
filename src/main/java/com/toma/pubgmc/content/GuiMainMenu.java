@@ -121,17 +121,9 @@ public class GuiMainMenu extends GuiScreen {
 
     public static void createData(final Map<ResourceLocation, List<MapData>> data) {
         DATA = new HashMap<>();
-        MapData[] data1 = null;
         for(Map.Entry<ResourceLocation, List<MapData>> entry : data.entrySet()) {
             DATA.put(entry.getKey(), entry.getValue().toArray(new MapData[0]));
-            // TODO delete
-            if(data1 == null) {
-                data1 = entry.getValue().toArray(new MapData[0]);
-            }
         }
-        DATA.put(new ResourceLocation("pubgmc:domination"), data1);
-        DATA.put(new ResourceLocation("pubgmc:push"), data1);
-        DATA.put(new ResourceLocation("pubgmc:dm"), data1);
     }
 
     public static final class DisplayMenuTypes {
@@ -418,11 +410,32 @@ public class GuiMainMenu extends GuiScreen {
     public class MenuButtonMap extends MenuButton {
 
         private final MapData data;
+        private MapDownloader downloader;
         private MapButtonState state = MapButtonState.NORMAL;
+        private GuiButton download;
 
         public MenuButtonMap(int idx, int x, int y, int w, int h, MapData data) {
             super(idx, x, y, w, h, "", false);
             this.data = data;
+            if(!data.isDownloaded) {
+                this.downloader = new MapDownloader(data, this);
+                this.downloader.initThread();
+            }
+            this.download = new GuiButton(-1, this.x + this.width - 90, this.y + (this.height - 20) / 2, 50, 20, "Download");
+        }
+
+        @Override
+        public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+            if(this.download.mousePressed(mc, mouseX, mouseY) && this.download.visible) {
+                this.downloader.download();
+                this.download.playPressSound(mc.getSoundHandler());
+                return false;
+            }
+            return super.mousePressed(mc, mouseX, mouseY);
+        }
+
+        public void onDownloadFinished() {
+            this.downloader = null;
         }
 
         public synchronized void updateState(MapButtonState state) {
@@ -460,6 +473,11 @@ public class GuiMainMenu extends GuiScreen {
                     GlStateManager.disableBlend();
                     GlStateManager.enableTexture2D();
                 }
+            }
+            this.download.visible = false;
+            if(this.downloader != null && !this.downloader.isDownloading()) {
+                this.download.visible = true;
+                this.download.drawButton(mc, mouseX, mouseY, partialTicks);
             }
         }
 

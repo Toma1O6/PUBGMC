@@ -27,7 +27,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -47,7 +46,8 @@ import java.util.stream.Collectors;
  */
 public class GunBase extends PMCItem {
     public static final List<GunBase> GUNS = new ArrayList<>();
-
+    public boolean airdropWeapon = false;
+    protected Supplier<SoundEvent> action = null;
     private CFGWeapon wepStats;
     private float horizontal_recoil = 0f;
     private float vertical_recoil = 0f;
@@ -60,9 +60,6 @@ public class GunBase extends PMCItem {
     private ReloadType reloadType;
     private GunType gunType;
     private boolean hasTwoRoundBurst = false;
-    protected Supplier<SoundEvent> action = null;
-    public boolean airdropWeapon = false;
-
     @SideOnly(Side.CLIENT)
     private ModelGun gunModel;
 
@@ -89,7 +86,7 @@ public class GunBase extends PMCItem {
     }
 
     public static boolean canAttachAttachment(GunBase gun, ItemAttachment attachment) {
-        switch(attachment.getType()) {
+        switch (attachment.getType()) {
             case BARREL:
                 return DevUtil.containsD(gun.getBarrelAttachments(), attachment);
             case GRIP:
@@ -100,7 +97,8 @@ public class GunBase extends PMCItem {
                 return DevUtil.containsD(gun.getScopeAttachments(), attachment);
             case STOCK:
                 return DevUtil.containsD(gun.getStockAttachments(), attachment);
-            default: return false;
+            default:
+                return false;
         }
     }
 
@@ -120,35 +118,25 @@ public class GunBase extends PMCItem {
 
     /**
      * Used to spawn bullet entity, called from packet
-     *
-     * @param world
-     * @param player
-     * @param stack
      */
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        if (this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading()) {
-            CooldownTracker tracker = player.getCooldownTracker();
-            if (!tracker.hasCooldown(stack.getItem())) {
-                if (!world.isRemote) {
-                    if (!gunType.equals(GunType.SHOTGUN)) {
+        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading()) {
+            if (!world.isRemote) {
+                if (!gunType.equals(GunType.SHOTGUN)) {
+                    EntityBullet bullet = new EntityBullet(world, player, this);
+                    world.spawnEntity(bullet);
+                } else {
+                    for (int i = 0; i < 8; i++) {
                         EntityBullet bullet = new EntityBullet(world, player, this);
                         world.spawnEntity(bullet);
-                    } else {
-                        for (int i = 0; i < 8; i++) {
-                            EntityBullet bullet = new EntityBullet(world, player, this);
-                            world.spawnEntity(bullet);
-                        }
                     }
-
-                    if (!player.capabilities.isCreativeMode) {
-                        stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
-                    }
-
-                    PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 150));
                 }
 
-                tracker.setCooldown(stack.getItem(), getFireRate());
+                if (!player.capabilities.isCreativeMode) {
+                    stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
+                }
+                PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 150));
             }
         }
     }
@@ -201,7 +189,7 @@ public class GunBase extends PMCItem {
     }
 
     //Set the firemode on both client and server
-    public Firemode getNextFiremode(EntityPlayer player) {
+    public void switchFiremode(EntityPlayer player) {
         switch (this.getFiremode()) {
             case SINGLE: {
                 if (canGunBurstFire()) {
@@ -229,7 +217,6 @@ public class GunBase extends PMCItem {
             }
         }
         PacketHandler.INSTANCE.sendToServer(new PacketFiremode(firemode));
-        return firemode;
     }
 
     @Override
@@ -695,13 +682,9 @@ public class GunBase extends PMCItem {
             this.weight = weight;
         }
 
-        public int getWeight() {
-            return weight;
-        }
-
         public static GunType getTypeFromName(String name) {
-            for(GunType type : values()) {
-                if(type.name().equalsIgnoreCase(name)) {
+            for (GunType type : values()) {
+                if (type.name().equalsIgnoreCase(name)) {
                     return type;
                 }
             }
@@ -715,6 +698,10 @@ public class GunBase extends PMCItem {
             }
             list = list.stream().filter(type -> type != LMG).collect(Collectors.toList());
             return list;
+        }
+
+        public int getWeight() {
+            return weight;
         }
     }
 }
