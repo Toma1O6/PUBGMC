@@ -16,6 +16,7 @@ import com.toma.pubgmc.network.server.PacketFiremode;
 import com.toma.pubgmc.network.sp.PacketCreateNBT;
 import com.toma.pubgmc.network.sp.PacketDelayedSound;
 import com.toma.pubgmc.network.sp.PacketReloadingSP;
+import com.toma.pubgmc.util.FirerateCooldownTracker;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -121,7 +122,8 @@ public class GunBase extends PMCItem {
      */
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading()) {
+        int cooldown = FirerateCooldownTracker.getValue(player.getUniqueID());
+        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading() && cooldown <= 0) {
             if (!world.isRemote) {
                 if (!gunType.equals(GunType.SHOTGUN)) {
                     EntityBullet bullet = new EntityBullet(world, player, this);
@@ -136,6 +138,7 @@ public class GunBase extends PMCItem {
                 if (!player.capabilities.isCreativeMode) {
                     stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                 }
+                FirerateCooldownTracker.set(player.getUniqueID(), this.getFireRate());
                 PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 150));
             }
         }

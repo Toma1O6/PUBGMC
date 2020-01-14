@@ -12,10 +12,16 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.world.storage.SaveFormatOld;
+import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.WorldSummary;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.GuiModList;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +34,10 @@ public class GuiMainMenu extends GuiScreen {
     protected static final ResourceLocation SP = new ResourceLocation(Pubgmc.MOD_ID + ":img");
     protected static final ResourceLocation MULTIPLAYER = new ResourceLocation(Pubgmc.MOD_ID + ":img");
     protected static final ResourceLocation SETTINGS = new ResourceLocation(Pubgmc.MOD_ID + ":img");
+
     public static Map<ResourceLocation, MapData[]> DATA;
+    public Map<String, WorldSummary> MAPS = new HashMap<>();
+
     private DisplayMenu previous;
     private DisplayMenu displayMenu;
     private long time = System.currentTimeMillis();
@@ -42,6 +51,7 @@ public class GuiMainMenu extends GuiScreen {
     public void initGui() {
         this.buttonList.clear();
         this.displayMenu.init(this);
+        this.remapFiles();
     }
 
     @Override
@@ -123,6 +133,44 @@ public class GuiMainMenu extends GuiScreen {
         DATA = new HashMap<>();
         for(Map.Entry<ResourceLocation, List<MapData>> entry : data.entrySet()) {
             DATA.put(entry.getKey(), entry.getValue().toArray(new MapData[0]));
+        }
+    }
+
+    public void remapFiles() {
+        MAPS = new HashMap<>();
+        File file = new File(mc.mcDataDir, "pubgmc-content");
+        File[] files = file.listFiles();
+        for(File f : files) {
+            if(f.isDirectory()) {
+                String s = f.getName();
+                WorldInfo worldInfo = this.getWorldInfo(s, file.getAbsolutePath());
+                if(worldInfo != null && (worldInfo.getSaveVersion() == 19132 || worldInfo.getSaveVersion() == 19133)) {
+                    boolean flag = worldInfo.getSaveVersion() != 19133;
+                    String name = worldInfo.getWorldName();
+                    if(StringUtils.isEmpty(name)) {
+                        name = s;
+                    }
+                    MAPS.put(name, new WorldSummary(worldInfo, s, name, 0L, flag));
+                }
+            }
+        }
+    }
+
+    private WorldInfo getWorldInfo(String mapDir, String contentDir) {
+        File file = new File(contentDir, mapDir);
+        DataFixer dataFixer = mc.getDataFixer();
+        if(!file.exists()) {
+            return null;
+        } else {
+            File map = new File(file, "level.dat");
+            if(map.exists()) {
+                WorldInfo worldInfo = SaveFormatOld.getWorldData(map, dataFixer);
+                if(worldInfo != null) {
+                    return worldInfo;
+                }
+            }
+            map = new File(file, "level.dat_old");
+            return map.exists() ? SaveFormatOld.getWorldData(map, dataFixer) : null;
         }
     }
 
@@ -436,6 +484,7 @@ public class GuiMainMenu extends GuiScreen {
 
         public void onDownloadFinished() {
             this.downloader = null;
+            GuiMainMenu.this.remapFiles();
         }
 
         public synchronized void updateState(MapButtonState state) {

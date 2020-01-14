@@ -4,11 +4,13 @@ import com.toma.pubgmc.Pubgmc;
 import com.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiWorldSelection;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Mouse;
 
 /* design idea
@@ -94,7 +96,10 @@ public class DisplayMenuMaps implements DisplayMenu {
         if(button.id == this.displayMapListSize) {
             boolean isDownloaded = this.checkDownloaded();
             if(isDownloaded) {
-                // TODO play selected map associated with the button
+                String mapFile = menu.getClickedButton().getData().displayName;
+                if(menu.mc.getSaveLoader().canLoadWorld(mapFile)) {
+                    FMLClientHandler.instance().tryLoadExistingWorld(new GuiWorldSelection(menu), menu.MAPS.get(mapFile));
+                }
             } else {
                 new MapDownloader(menu.getClickedButton().getData(), menu.getClickedButton());
             }

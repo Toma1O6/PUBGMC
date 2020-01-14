@@ -16,6 +16,7 @@ import com.toma.pubgmc.init.PMCRegistry;
 import com.toma.pubgmc.network.PacketHandler;
 import com.toma.pubgmc.network.sp.PacketGetConfigFromServer;
 import com.toma.pubgmc.network.sp.PacketLoadConfig;
+import com.toma.pubgmc.util.FirerateCooldownTracker;
 import com.toma.pubgmc.util.PUBGMCUtil;
 import com.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
@@ -244,6 +245,7 @@ public class CommonEvents {
                     }
                 }
             }
+            FirerateCooldownTracker.tick(player.getUniqueID());
         }
     }
 
