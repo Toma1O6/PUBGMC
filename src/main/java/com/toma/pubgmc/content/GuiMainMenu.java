@@ -138,7 +138,7 @@ public class GuiMainMenu extends GuiScreen {
 
     public void remapFiles() {
         MAPS = new HashMap<>();
-        File file = new File(mc.mcDataDir, "pubgmc-content");
+        File file = new File(Minecraft.getMinecraft().mcDataDir, "pubgmc-content");
         File[] files = file.listFiles();
         for(File f : files) {
             if(f.isDirectory()) {
@@ -158,7 +158,8 @@ public class GuiMainMenu extends GuiScreen {
 
     private WorldInfo getWorldInfo(String mapDir, String contentDir) {
         File file = new File(contentDir, mapDir);
-        DataFixer dataFixer = mc.getDataFixer();
+        DataFixer dataFixer = Minecraft.getMinecraft().getDataFixer();
+        if(dataFixer == null) return null;
         if(!file.exists()) {
             return null;
         } else {

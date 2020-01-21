@@ -13,6 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Mouse;
 
+import java.io.File;
+
 /* design idea
 mode name
 ---------
@@ -97,7 +99,8 @@ public class DisplayMenuMaps implements DisplayMenu {
             boolean isDownloaded = this.checkDownloaded();
             if(isDownloaded) {
                 String mapFile = menu.getClickedButton().getData().displayName;
-                if(menu.mc.getSaveLoader().canLoadWorld(mapFile)) {
+                boolean canLoad = menu.mc.getSaveLoader().canLoadWorld(mapFile);
+                if(canLoad(menu, mapFile)) {
                     FMLClientHandler.instance().tryLoadExistingWorld(new GuiWorldSelection(menu), menu.MAPS.get(mapFile));
                 }
             } else {
@@ -156,5 +159,10 @@ public class DisplayMenuMaps implements DisplayMenu {
 
     private boolean checkDownloaded() {
         return this.menu.getClickedButton() == null ? false : this.menu.getClickedButton().getData().isDownloaded;
+    }
+
+    private boolean canLoad(GuiMainMenu menu, String mapFile) {
+        File f = new File(GuiLoadCommunityContent.contentFolder.getAbsolutePath() + File.separator + mapFile);
+        return f.isDirectory();
     }
 }
