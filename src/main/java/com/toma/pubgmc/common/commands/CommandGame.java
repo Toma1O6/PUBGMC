@@ -45,7 +45,7 @@ public class CommandGame extends CommandBase {
             if(args[0].equalsIgnoreCase("mode")) {
                 List<ResourceLocation> list = GameRegistry.getValuesPaths();
                 List<String> paths = new ArrayList<>();
-                list.forEach(rl -> paths.add(rl.getResourceDomain()));
+                list.forEach(rl -> paths.add(rl.getResourcePath()));
                 return paths;
             } else if(args[0].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, "add", "remove", "list");

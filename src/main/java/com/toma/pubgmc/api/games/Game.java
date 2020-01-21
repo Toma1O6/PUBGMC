@@ -102,7 +102,10 @@ public abstract class Game {
      * UUID list of all players who joined the game
      */
     private List<UUID> playersInGame;
-    private GamePhase gamePhase;
+
+    @Nonnull
+    private GamePhase gamePhase = GamePhase.OFFLINE;
+
     private HashMap<UUID, GamePlayerData> playerDataMap = new HashMap<>();
 
     public Game(final String name, final ResourceLocation texture) {
@@ -512,7 +515,7 @@ public abstract class Game {
     }
 
     public final boolean isRunning() {
-        return this.gamePhase != GamePhase.OFFLINE;
+        return gamePhase != null && this.gamePhase != GamePhase.OFFLINE;
     }
 
     public GamePhase getGamePhase() {
