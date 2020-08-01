@@ -1,8 +1,8 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/pubgmc-mod",
     "promos": {
-        "1.12.2-latest": "1.6.1",
-        "1.12.2-recommended": "1.6.1"
+        "1.12.2-latest": "1.6.2",
+        "1.12.2-recommended": "1.6.2"
     },
     "1.12.2": {
         "1.5.1": "New animation system, weapon rebalance",
@@ -10,6 +10,7 @@
         "1.5.3": "MP5K and a lot of bugfixes",
         "1.5.4": "-",
         "1.6.0": "TP Animations, weapon model changes, game API, bots, zone, much more",
-        "1.6.1": "Just few fixes"
+        "1.6.1": "Just few fixes",
+        "1.6.2": "RAM cycling solved, incorrect death message in BR mode"
     }
 }
