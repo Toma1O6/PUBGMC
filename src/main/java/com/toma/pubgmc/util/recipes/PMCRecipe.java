@@ -73,7 +73,9 @@ public class PMCRecipe {
     public void onCraft(World world, BlockPos pos) {
         if (!returnStack.isEmpty() && !world.isRemote) {
             EntityItem item = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, new ItemStack(returnStack.getItem()));
-            item.setVelocity(Pubgmc.rng().nextDouble() * 0.15, Pubgmc.rng().nextDouble() * 0.15, Pubgmc.rng().nextDouble() * 0.15);
+            item.motionX = Pubgmc.rng().nextDouble() * 0.15;
+            item.motionY = Pubgmc.rng().nextDouble() * 0.15;
+            item.motionZ = Pubgmc.rng().nextDouble() * 0.15;
             item.setPickupDelay(30);
             world.spawnEntity(item);
         }

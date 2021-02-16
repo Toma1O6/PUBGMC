@@ -152,7 +152,9 @@ public class CommonEvents {
             if (player.getHeldItemOffhand().getItem() instanceof GunBase) {
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getHeldItemOffhand());
                 Vec3d vec = player.getLookVec();
-                item.setVelocity(vec.x * 0.3, vec.y * 0.3, vec.z * 0.3);
+                item.motionX = vec.x * 0.3;
+                item.motionY = vec.y * 0.3;
+                item.motionZ = vec.z * 0.3;
                 item.setPickupDelay(30);
                 player.world.spawnEntity(item);
                 player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
