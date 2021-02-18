@@ -1,0 +1,31 @@
+package dev.toma.pubgmc.common.items.heal;
+
+import dev.toma.pubgmc.config.ConfigPMC;
+import net.minecraft.item.EnumAction;
+
+public class ItemPainkiller extends ItemHealing {
+    public ItemPainkiller(String name) {
+        super(name, 12, 1);
+        setMaxStackSize(ConfigPMC.common.items.painkillerLimit);
+    }
+
+    @Override
+    public Action getAction() {
+        return Action.BOOST;
+    }
+
+    @Override
+    public EnumAction getUseAction() {
+        return EnumAction.EAT;
+    }
+
+    @Override
+    public int getUseTime() {
+        return 120;
+    }
+
+    @Override
+    public float getBoostAmount() {
+        return 60f;
+    }
+}
