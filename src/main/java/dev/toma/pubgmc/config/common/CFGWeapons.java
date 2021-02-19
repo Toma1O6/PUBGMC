@@ -1,127 +1,101 @@
 package dev.toma.pubgmc.config.common;
 
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.ConfigPlugin;
+import dev.toma.configuration.api.type.ObjectType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public final class CFGWeapons implements INBTSerializable<NBTTagCompound> {
+public final class CFGWeapons extends ObjectType implements INBTSerializable<NBTTagCompound> {
 
-    @Config.Name("P92")
-    public CFGWeapon p92 = new CFGWeapon(4f, 7, 0.015f, 4);
+    final ConfigPlugin plugin;
+    public CFGWeapon p92;
+    public CFGWeapon p1911;
+    public CFGWeapon p18c;
+    public CFGWeapon r1895;
+    public CFGWeapon r45;
+    public CFGWeapon scorpion;
+    public CFGWeapon deagle;
+    public CFGWeapon win94;
+    public CFGWeapon sawedoff;
+    public CFGWeapon s1897;
+    public CFGWeapon s686;
+    public CFGWeapon s12k;
+    public CFGWeapon microuzi;
+    public CFGWeapon ump45;
+    public CFGWeapon bizon;
+    public CFGWeapon mp5k;
+    public CFGWeapon vector;
+    public CFGWeapon tommygun;
+    public CFGWeapon m16a4;
+    public CFGWeapon m416;
+    public CFGWeapon scarl;
+    public CFGWeapon qbz;
+    public CFGWeapon g36c;
+    public CFGWeapon aug;
+    public CFGWeapon akm;
+    public CFGWeapon m762;
+    public CFGWeapon mk47;
+    public CFGWeapon groza;
+    public CFGWeapon m249;
+    public CFGWeapon dp28;
+    public CFGWeapon vss;
+    public CFGWeapon mini14;
+    public CFGWeapon qbu;
+    public CFGWeapon sks;
+    public CFGWeapon slr;
+    public CFGWeapon mk14;
+    public CFGWeapon kar98k;
+    public CFGWeapon m24;
+    public CFGWeapon awm;
 
-    @Config.Name("P1911")
-    public CFGWeapon p1911 = new CFGWeapon(5f, 7.25f, 0.01f, 5);
+    public CFGWeapons(ConfigPlugin plugin) {
+        super("Weapons");
+        this.plugin = plugin;
+    }
 
-    @Config.Name("P18C")
-    public CFGWeapon p18c = new CFGWeapon(4f, 7, 0.015f, 4);
-
-    @Config.Name("R1895")
-    public CFGWeapon r1895 = new CFGWeapon(8f, 7.5f, 0.01f, 5);
-
-    @Config.Name("R45")
-    public CFGWeapon r45 = new CFGWeapon(6f, 7.25f, 0.01f, 5);
-
-    @Config.Name("Scorpion")
-    public CFGWeapon scorpion = new CFGWeapon(4f, 7f, 0.015f, 4);
-
-    @Config.Name("Deagle")
-    public CFGWeapon deagle = new CFGWeapon(12.5f, 9f, 0.015f, 4);
-
-    @Config.Name("Winchester-94")
-    public CFGWeapon win94 = new CFGWeapon(10f, 12f, 0.008f, 7);
-
-    @Config.Name("Sawed-off")
-    public CFGWeapon sawedoff = new CFGWeapon(3f, 5f, 0.175f, 0);
-
-    @Config.Name("S1897")
-    public CFGWeapon s1897 = new CFGWeapon(4f, 5.5f, 0.175f, 0);
-
-    @Config.Name("S686")
-    public CFGWeapon s686 = new CFGWeapon(4f, 5.5f, 0.175f, 0);
-
-    @Config.Name("S12K")
-    public CFGWeapon s12k = new CFGWeapon(3.5f, 5.5f, 0.175f, 0);
-
-    @Config.Name("Micro uzi")
-    public CFGWeapon microuzi = new CFGWeapon(4f, 8f, 0.02f, 4);
-
-    @Config.Name("UMP-45")
-    public CFGWeapon ump45 = new CFGWeapon(5f, 8.5f, 0.02f, 5);
-
-    @Config.Name("PP-19 Bizon")
-    public CFGWeapon bizon = new CFGWeapon(4f, 8f, 0.035f, 4);
-
-    @Config.Name("MP5K")
-    public CFGWeapon mp5k = new CFGWeapon(4.0f, 8f, 0.035f, 4);
-
-    @Config.Name("Vector")
-    public CFGWeapon vector = new CFGWeapon(4f, 8f, 0.035f, 4);
-
-    @Config.Name("Tommy-gun")
-    public CFGWeapon tommygun = new CFGWeapon(5f, 8.5f, 0.02f, 5);
-
-    @Config.Name("M16A4")
-    public CFGWeapon m16a4 = new CFGWeapon(8f, 12f, 0.005f, 8);
-
-    @Config.Name("M416")
-    public CFGWeapon m416 = new CFGWeapon(8f, 12f, 0.0065f, 7);
-
-    @Config.Name("SCAR-L")
-    public CFGWeapon scarl = new CFGWeapon(8f, 11f, 0.007f, 7);
-
-    @Config.Name("QBZ-95")
-    public CFGWeapon qbz = new CFGWeapon(8f, 11f, 0.007f, 7);
-
-    @Config.Name("G36C")
-    public CFGWeapon g36c = new CFGWeapon(8f, 11f, 0.0065f, 7);
-
-    @Config.Name("AUG")
-    public CFGWeapon aug = new CFGWeapon(8f, 12f, 0.0065f, 7);
-
-    @Config.Name("AKM")
-    public CFGWeapon akm = new CFGWeapon(9.5f, 9f, 0.025f, 7);
-
-    @Config.Name("Beryl M-762")
-    public CFGWeapon m762 = new CFGWeapon(9f, 9.5f, 0.025f, 7);
-
-    @Config.Name("MK-47 Mutant")
-    public CFGWeapon mk47 = new CFGWeapon(9.5f, 9f, 0.025f, 7);
-
-    @Config.Name("Groza")
-    public CFGWeapon groza = new CFGWeapon(9.5f, 9f, 0.025f, 7);
-
-    @Config.Name("M249")
-    public CFGWeapon m249 = new CFGWeapon(8f, 11f, 0.0065f, 6);
-
-    @Config.Name("DP-28")
-    public CFGWeapon dp28 = new CFGWeapon(9.5f, 9f, 0.03f, 6);
-
-    @Config.Name("VSS")
-    public CFGWeapon vss = new CFGWeapon(6f, 7f, 0.035f, 2);
-
-    @Config.Name("Mini-14")
-    public CFGWeapon mini14 = new CFGWeapon(9f, 14f, 0.015f, 8);
-
-    @Config.Name("QBU")
-    public CFGWeapon qbu = new CFGWeapon(9f, 14f, 0.015f, 8);
-
-    @Config.Name("SKS")
-    public CFGWeapon sks = new CFGWeapon(10f, 10f, 0.035f, 7);
-
-    @Config.Name("SLR")
-    public CFGWeapon slr = new CFGWeapon(11f, 10f, 0.035f, 7);
-
-    @Config.Name("MK-14 EBR")
-    public CFGWeapon mk14 = new CFGWeapon(12.5f, 11f, 0.025f, 7);
-
-    @Config.Name("Kar98k")
-    public CFGWeapon kar98k = new CFGWeapon(18f, 11f, 0.04f, 8);
-
-    @Config.Name("M24")
-    public CFGWeapon m24 = new CFGWeapon(19f, 11.5f, 0.03f, 7);
-
-    @Config.Name("AWM")
-    public CFGWeapon awm = new CFGWeapon(24f, 17f, 0.005f, 10);
+    @Override
+    public void buildStructure(ConfigCreator configCreator) {
+        p92 = configCreator.createObject(new CFGWeapon("P92", 4f, 7, 0.015f, 4), plugin);
+        p1911 = configCreator.createObject(new CFGWeapon("P1911", 5f, 7.25f, 0.01f, 5), plugin);
+        p18c = configCreator.createObject(new CFGWeapon("P18C", 4f, 7, 0.015f, 4), plugin);
+        r1895 = configCreator.createObject(new CFGWeapon("R1895", 8f, 7.5f, 0.01f, 5), plugin);
+        r45 = configCreator.createObject(new CFGWeapon("R45", 6f, 7.25f, 0.01f, 5), plugin);
+        scorpion = configCreator.createObject(new CFGWeapon("Scorpion", 4f, 7f, 0.015f, 4), plugin);
+        deagle = configCreator.createObject(new CFGWeapon("Deagle", 12.5f, 9f, 0.015f, 4), plugin);
+        win94 = configCreator.createObject(new CFGWeapon("Wincherster-94", 10f, 12f, 0.008f, 7), plugin);
+        sawedoff = configCreator.createObject(new CFGWeapon("Sawed-off", 3f, 5f, 0.175f, 0), plugin);
+        s1897 = configCreator.createObject(new CFGWeapon("S1897", 4f, 5.5f, 0.175f, 0), plugin);
+        s686 = configCreator.createObject(new CFGWeapon("S686", 4f, 5.5f, 0.175f, 0), plugin);
+        s12k = configCreator.createObject(new CFGWeapon("S12K", 3.5f, 5.5f, 0.175f, 0), plugin);
+        microuzi = configCreator.createObject(new CFGWeapon("Micro-uzi", 4f, 8f, 0.02f, 4), plugin);
+        ump45 = configCreator.createObject(new CFGWeapon("UMP-45", 5f, 8.5f, 0.02f, 5), plugin);
+        bizon = configCreator.createObject(new CFGWeapon("PP-19 Bizon", 4f, 8f, 0.035f, 4), plugin);
+        mp5k = configCreator.createObject(new CFGWeapon("MP5-k", 4.0f, 8f, 0.035f, 4), plugin);
+        vector = configCreator.createObject(new CFGWeapon("Vector 9mm", 4f, 8f, 0.035f, 4), plugin);
+        tommygun = configCreator.createObject(new CFGWeapon("Tommy gun", 5f, 8.5f, 0.02f, 5), plugin);
+        m16a4 = configCreator.createObject(new CFGWeapon("M16A4", 8f, 12f, 0.005f, 8), plugin);
+        m416 = configCreator.createObject(new CFGWeapon("M416", 8f, 12f, 0.0065f, 7), plugin);
+        scarl = configCreator.createObject(new CFGWeapon("Scar-L", 8f, 11f, 0.007f, 7), plugin);
+        qbz = configCreator.createObject(new CFGWeapon("QBZ", 8f, 11f, 0.007f, 7), plugin);
+        g36c = configCreator.createObject(new CFGWeapon("G36C", 8f, 11f, 0.0065f, 7), plugin);
+        aug = configCreator.createObject(new CFGWeapon("AUG A3", 8f, 12f, 0.0065f, 7), plugin);
+        akm = configCreator.createObject(new CFGWeapon("AKM", 9.5f, 9f, 0.025f, 7), plugin);
+        m762 = configCreator.createObject(new CFGWeapon("Beryl M762", 9f, 9.5f, 0.025f, 7), plugin);
+        mk47 = configCreator.createObject(new CFGWeapon("MK-47 Mutant", 9.5f, 9f, 0.025f, 7), plugin);
+        groza = configCreator.createObject(new CFGWeapon("Groza", 9.5f, 9f, 0.025f, 7), plugin);
+        m249 = configCreator.createObject(new CFGWeapon("M249", 8f, 11f, 0.0065f, 6), plugin);
+        dp28 = configCreator.createObject(new CFGWeapon("DP-28", 9.5f, 9f, 0.03f, 6), plugin);
+        vss = configCreator.createObject(new CFGWeapon("VSS", 6f, 7f, 0.035f, 2), plugin);
+        mini14 = configCreator.createObject(new CFGWeapon("Mini-14", 9f, 14f, 0.015f, 8), plugin);
+        qbu = configCreator.createObject(new CFGWeapon("QBU", 9f, 14f, 0.015f, 8), plugin);
+        sks = configCreator.createObject(new CFGWeapon("SKS", 10f, 10f, 0.035f, 7), plugin);
+        slr = configCreator.createObject(new CFGWeapon("SLR", 11f, 10f, 0.035f, 7), plugin);
+        mk14 = configCreator.createObject(new CFGWeapon("MK-14 EBR", 12.5f, 11f, 0.025f, 7), plugin);
+        kar98k = configCreator.createObject(new CFGWeapon("Kar98k", 18f, 11f, 0.04f, 8), plugin);
+        m24 = configCreator.createObject(new CFGWeapon("M24", 19f, 11.5f, 0.03f, 7), plugin);
+        awm = configCreator.createObject(new CFGWeapon("AWM", 24f, 17f, 0.005f, 10), plugin);
+    }
 
     @Override
     public NBTTagCompound serializeNBT() {

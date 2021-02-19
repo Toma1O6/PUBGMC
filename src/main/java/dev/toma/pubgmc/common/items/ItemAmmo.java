@@ -2,7 +2,6 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
-import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.PMCRegistry;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
@@ -20,7 +19,6 @@ public class ItemAmmo extends PMCItem {
 
     public ItemAmmo(String name, AmmoType type) {
         super(name);
-        this.setMaxStackSize(ConfigPMC.common.items.ammoLimit);
         this.type = type;
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         LootManager.register(LootType.AMMO, new LootManager.LootEntry(this, type.craftAmount(), type == AmmoType.AMMO300M, type.lootAmount()));

@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
-import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.PMCSounds;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -18,12 +18,12 @@ public class EntityVehicleUAZ extends EntityVehicle {
     public EntityVehicleUAZ(World world, double x, double y, double z) {
         this(world);
         setPosition(x, y, z);
-        maxHealth = ConfigPMC.common.vehicles.uaz.maxHealth;
-        health = ConfigPMC.common.vehicles.uaz.maxHealth;
-        maxSpeed = ConfigPMC.common.vehicles.uaz.maxSpeed;
-        acceleration = ConfigPMC.common.vehicles.uaz.acceleration;
-        maximalTurningModifier = ConfigPMC.common.vehicles.uaz.maxTurningAngle;
-        turnSpeed = ConfigPMC.common.vehicles.uaz.turningSpeed;
+        maxHealth = ConfigPMC.common.vehicles.uaz.maxHealth.getAsFloat();
+        health = ConfigPMC.common.vehicles.uaz.maxHealth.getAsFloat();
+        maxSpeed = ConfigPMC.common.vehicles.uaz.maxSpeed.getAsFloat();
+        acceleration = ConfigPMC.common.vehicles.uaz.acceleration.getAsFloat();
+        maximalTurningModifier = ConfigPMC.common.vehicles.uaz.maxTurningAngle.getAsFloat();
+        turnSpeed = ConfigPMC.common.vehicles.uaz.turningSpeed.getAsFloat();
         fuel = this.generateFuel();
     }
 

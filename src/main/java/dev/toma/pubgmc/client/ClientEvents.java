@@ -14,17 +14,15 @@ import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFGAimType;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
-import dev.toma.pubgmc.content.GuiLoadCommunityContent;
 import dev.toma.pubgmc.init.PMCRegistry;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.server.*;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import dev.toma.pubgmc.util.helper.ImageUtil;
-import dev.toma.pubgmc.network.server.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,10 +31,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -141,22 +137,22 @@ public class ClientEvents {
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
 
-        if (ConfigPMC.client.overlays.imageBoostOverlay == CFGEnumOverlayStyle.IMAGE) {
+        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             int left = width / 2 - 91;
             int top = height - 32 + 3;
             short barWidth = 182;
 
             //Actual drawing code
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.x, top + ConfigPMC.client.overlays.imgBoostOverlayPos.y, barWidth, 5, false);
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
 
             if (data.getBoost() > 0) {
                 int boost = (int) data.getBoost();
                 double sizeX = ((182D / 100D) * boost);
-                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.x, top + ConfigPMC.client.overlays.imgBoostOverlayPos.y, sizeX, 5, false);
+                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
             }
 
             //This will render after these 2 above to make sure this will always be on the top
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.x, top + ConfigPMC.client.overlays.imgBoostOverlayPos.y, barWidth, 5, true);
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
         }
     }
 
@@ -314,27 +310,6 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void onOpenGui(GuiOpenEvent event) {
-        if(event.getGui() instanceof GuiMainMenu) {
-            if(!this.loadedCommunityContent) {
-                event.setGui(new GuiLoadCommunityContent());
-                this.loadedCommunityContent = true;
-            } else if(!GuiLoadCommunityContent.compatMode) {
-                event.setGui(new dev.toma.pubgmc.content.GuiMainMenu());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void drawNameTags(RenderLivingEvent.Specials.Pre e) {
-        if (e.getEntity() instanceof EntityPlayer && e.isCancelable()) {
-            if (!ConfigPMC.common.player.renderNames) {
-                e.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void renderOverlayPost(RenderGameOverlayEvent.Post e) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP sp = mc.player;
@@ -344,7 +319,7 @@ public class ClientEvents {
         IPlayerData data = sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
 
         //e.getType() == ElementType.TEXT - this is very important otherwise it will mess all fonts used in mc
-        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && ConfigPMC.client.overlays.imageBoostOverlay == CFGEnumOverlayStyle.TEXT && data.getBoost() > 0) {
+        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.TEXT && data.getBoost() > 0) {
             mc.entityRenderer.setupOverlayRendering();
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
@@ -368,7 +343,7 @@ public class ClientEvents {
             //There is the rendering
             //Users can edit the position using their configs
             //Position by default: Above hunger bar
-            mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.client.overlays.textBoostOverlayPos.x, top + ConfigPMC.client.overlays.textBoostOverlayPos.y, color);
+            mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.client.overlays.textBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.textBoostOverlayPos.getY(), color);
         }
 
         //Ammo and Firemode info rendering
@@ -419,10 +394,10 @@ public class ClientEvents {
             }
         }
 
-        if (ConfigPMC.client.overlays.imageBoostOverlay == CFGEnumOverlayStyle.IMAGE) {
+        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             //We cancel the xp bar, but just only if the boost bar position is different than by default
             if (e.getType() == ElementType.EXPERIENCE) {
-                if (ConfigPMC.client.overlays.imgBoostOverlayPos.x == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.y == 0 && data.getBoost() > 0) {
+                if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && data.getBoost() > 0) {
                     e.setCanceled(true);
                 }
             }
@@ -471,7 +446,7 @@ public class ClientEvents {
                 }
             }
 
-            if (ConfigPMC.client.overlays.renderArmorIcons && !sp.isSpectator())
+            if (ConfigPMC.client.overlays.renderArmorIcons.get() && !sp.isSpectator())
                 renderArmorIcons(e, sp, res, mc, data);
 
             if (stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan) {
@@ -505,67 +480,65 @@ public class ClientEvents {
             }
         }
 
-        if (ConfigPMC.common.world.gunsEnabled) {
-            IPlayerData data = sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
 
-            if (KeyBinds.ATTACHMENT.isPressed()) {
-                if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
-                } else {
-                    sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
-                }
+        if (KeyBinds.ATTACHMENT.isPressed()) {
+            if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
+            } else {
+                sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
             }
+        }
 
-            if (KeyBinds.RELOAD.isPressed()) {
-                if (data.isReloading()) {
-                    return;
-                }
-                //Check if the player is able to reload
-                //Ammo checking is being handled in the onReload method from GunBase
-                if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    GunBase gun = (GunBase) sp.getHeldItemMainhand().getItem();
+        if (KeyBinds.RELOAD.isPressed()) {
+            if (data.isReloading()) {
+                return;
+            }
+            //Check if the player is able to reload
+            //Ammo checking is being handled in the onReload method from GunBase
+            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                GunBase gun = (GunBase) sp.getHeldItemMainhand().getItem();
 
-                    if (sp.getHeldItemMainhand().hasTagCompound()) {
-                        int ammo = sp.getHeldItemMainhand().getTagCompound().getInteger("ammo");
+                if (sp.getHeldItemMainhand().hasTagCompound()) {
+                    int ammo = sp.getHeldItemMainhand().getTagCompound().getInteger("ammo");
 
-                        if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(sp.getHeldItemMainhand())) {
-                            data.setReloading(true);
-                            data.setReloadingTime(0);
+                    if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(sp.getHeldItemMainhand())) {
+                        data.setReloading(true);
+                        data.setReloadingTime(0);
 
-                            //Sync with server
-                            PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
+                        //Sync with server
+                        PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
 
-                            //Get the slot with gun which is being reloaded
-                            reloadingSlot = sp.inventory.currentItem;
+                        //Get the slot with gun which is being reloaded
+                        reloadingSlot = sp.inventory.currentItem;
 
-                            //You can't aim while you're reloading
-                            if (data.isAiming()) {
-                                data.setAiming(false);
-                                PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
-                                Minecraft.getMinecraft().gameSettings.mouseSensitivity = mouseSens;
-                            }
+                        //You can't aim while you're reloading
+                        if (data.isAiming()) {
+                            data.setAiming(false);
+                            PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
+                            Minecraft.getMinecraft().gameSettings.mouseSensitivity = mouseSens;
                         }
                     }
                 }
             }
+        }
 
-            //Same as above, we just send packet to server and everything else will be done in the rendering method above
-            if (KeyBinds.NV.isPressed()) {
-                if (data.getEquippedNV()) {
-                    data.setNV(!data.isUsingNV());
-                    PacketHandler.sendToServer(new PacketServerAction(data.isUsingNV(), PacketServerAction.ServerAction.NIGHT_VISION));
-                }
+        //Same as above, we just send packet to server and everything else will be done in the rendering method above
+        if (KeyBinds.NV.isPressed()) {
+            if (data.getEquippedNV()) {
+                data.setNV(!data.isUsingNV());
+                PacketHandler.sendToServer(new PacketServerAction(data.isUsingNV(), PacketServerAction.ServerAction.NIGHT_VISION));
             }
+        }
 
-            //Switch firemode
-            //Syncing happens from the GunBase.class
-            if (KeyBinds.FIREMODE.isPressed()) {
-                if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    GunBase item = (GunBase) sp.getHeldItemMainhand().getItem();
+        //Switch firemode
+        //Syncing happens from the GunBase.class
+        if (KeyBinds.FIREMODE.isPressed()) {
+            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+                GunBase item = (GunBase) sp.getHeldItemMainhand().getItem();
 
-                    if (item.getCanSwitchFiremode()) {
-                        item.switchFiremode(sp);
-                    }
+                if (item.getCanSwitchFiremode()) {
+                    item.switchFiremode(sp);
                 }
             }
         }
@@ -584,39 +557,28 @@ public class ClientEvents {
 
                 //Check if the LMB has been pressed
                 if (gs.keyBindAttack.isPressed()) {
-                    if (ConfigPMC.common.world.gunsEnabled) {
-                        //Shoot only once if the firemode is single
-                        if (gun.getFiremode() == GunBase.Firemode.SINGLE) {
-                            //If the gun has no cooldown
-                            if (!data.isReloading()) {
-                                if (gun.hasAmmo(stack)) {
-                                    //We send packet to server telling it to spawn new entity
-                                    recoilTicks = 10;
-                                    PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                    if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                    //Do the recoil
-                                    applyRecoil(player, stack);
-                                } else {
-                                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-                                }
+                    if (gun.getFiremode() == GunBase.Firemode.SINGLE) {
+                        //If the gun has no cooldown
+                        if (!data.isReloading()) {
+                            if (gun.hasAmmo(stack)) {
+                                //We send packet to server telling it to spawn new entity
+                                recoilTicks = 10;
+                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
+                                //Do the recoil
+                                applyRecoil(player, stack);
+                            } else {
+                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
                         }
-                    } else {
-                        sendWarningToPlayer(player, "Guns are disabled!");
-                    }
-                    //This is being handled in ClientTickEvent so we just prepare some stuff here
-                    if (gun.getFiremode() == GunBase.Firemode.BURST) {
-                        if (ConfigPMC.common.world.gunsEnabled) {
-                            if (!shooting && !data.isReloading()) {
-                                if (gun.hasAmmo(stack)) {
-                                    shooting = true;
-                                    shotsFired = 0;
-                                } else {
-                                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-                                }
+                    } else if (gun.getFiremode() == GunBase.Firemode.BURST) {
+                        if (!shooting && !data.isReloading()) {
+                            if (gun.hasAmmo(stack)) {
+                                shooting = true;
+                                shotsFired = 0;
+                            } else {
+                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
-                        } else {
-                            sendWarningToPlayer(player, "Guns are disabled!");
                         }
                     }
                 }
@@ -682,29 +644,18 @@ public class ClientEvents {
                 handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
             }
 
-            if(ConfigPMC.other().useDynamicBobbing) {
-                if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    Minecraft.getMinecraft().gameSettings.viewBobbing = player.isSprinting();
-                }
-            }
-
             //Automatic fire is handled here because Mouse input event is acting weirdly
             if (gs.keyBindAttack.isKeyDown() && ev.phase == Phase.END) {
                 if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    if (ConfigPMC.common.world.gunsEnabled) {
-                        GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-
-                        if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading()) {
-                            if (gun.hasAmmo(player.getHeldItemMainhand())) {
-                                recoilTicks = 10;
-                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                this.applyRecoil(player, player.getHeldItemMainhand());
-                            } else {
-                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-                            }
+                    GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+                    if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading()) {
+                        if (gun.hasAmmo(player.getHeldItemMainhand())) {
+                            recoilTicks = 10;
+                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                            this.applyRecoil(player, player.getHeldItemMainhand());
+                        } else {
+                            player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                         }
-                    } else {
-                        sendWarningToPlayer(player, "Guns are disabled!");
                     }
                 }
             }
@@ -715,7 +666,7 @@ public class ClientEvents {
                 GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
                 int maxRounds = gun.isHasTwoRoundBurst() ? 3 : 6;
                 if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
-                    if (shooting && gun.getFiremode() == GunBase.Firemode.BURST && ConfigPMC.common.world.gunsEnabled) {
+                    if (shooting && gun.getFiremode() == GunBase.Firemode.BURST) {
                         shootingTimer++;
 
                         //Set it to 5 for 3 round burst
@@ -754,7 +705,7 @@ public class ClientEvents {
                     gs.mouseSensitivity = mouseSens;
                 }
 
-                if (ConfigPMC.client.aimType == CFGAimType.HOLD) {
+                if (ConfigPMC.client.aimType.get() == CFGAimType.HOLD) {
                     if (!gs.keyBindUseItem.isKeyDown()) {
                         setAiming(data, false);
                         gs.mouseSensitivity = mouseSens;
@@ -800,37 +751,10 @@ public class ClientEvents {
                 }
             }
         }
-
-        //Disabling the third person view to make true first person experience
         if (ev.phase == Phase.END && player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
             ItemStack itemstack = player.getHeldItemMainhand();
             Item item = itemstack.getItem();
-            //Get the player capability
             IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-
-            if (player.getRidingEntity() instanceof EntityParachute && !player.capabilities.isCreativeMode) {
-                if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 1) {
-                    Minecraft.getMinecraft().gameSettings.thirdPersonView = 1;
-                }
-            }
-
-            if (!ConfigPMC.player().tppAllowed) {
-                if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0 && !player.capabilities.isCreativeMode && !(player.getRidingEntity() instanceof EntityParachute)) {
-                    Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
-                }
-            }
-
-            //For better experience with NV googles
-            if (ConfigPMC.player().brightnessForced) {
-                float bright = Minecraft.getMinecraft().gameSettings.gammaSetting;
-
-                if (bright != ConfigPMC.player().brightnessValue) {
-                    Minecraft.getMinecraft().gameSettings.gammaSetting = ConfigPMC.player().brightnessValue;
-                }
-            }
-
-            /* =========================================[RELOADING]=========================================== */
-
             if (data.isReloading()) {
                 if (player.getHeldItemMainhand().getItem() instanceof GunBase && player.getHeldItemMainhand().getTagCompound().getBoolean("isValidWeapon")) {
                     GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
@@ -961,33 +885,33 @@ public class ClientEvents {
             if (player.isSneaking()) {
                 if (gun.hasTagCompound()) {
                     if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationPitch = player.rotationPitch - ((((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().recoilVerticalMultiplier) * 0.8f * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f) * 0.9f);
+                        player.rotationPitch = player.rotationPitch - ((((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * 0.8f * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f) * 0.9f);
                     } else
-                        player.rotationPitch = player.rotationPitch - ((((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().recoilVerticalMultiplier) * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f) * 0.9f);
+                        player.rotationPitch = player.rotationPitch - ((((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f) * 0.9f);
                 }
             } else {
                 if (gun.hasTagCompound()) {
                     if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationPitch = player.rotationPitch - (((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().recoilVerticalMultiplier) * 0.8f * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f);
+                        player.rotationPitch = player.rotationPitch - (((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * 0.8f * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f);
                     } else
-                        player.rotationPitch = player.rotationPitch - (((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().recoilVerticalMultiplier) * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f);
+                        player.rotationPitch = player.rotationPitch - (((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f);
                 }
             }
 
             //set horizontal recoil (50% to go right and 50% to go left)
-            if (Math.random() * 100 <= 50) {
+            if (Pubgmc.rng().nextBoolean()) {
                 if (gun.hasTagCompound()) {
                     if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationYaw = player.rotationYaw - (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().recoilHorizontalMultiplier) * 0.8f * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
+                        player.rotationYaw = player.rotationYaw - (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * 0.8f * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
                     } else
-                        player.rotationYaw = player.rotationYaw - (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().recoilHorizontalMultiplier) * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
+                        player.rotationYaw = player.rotationYaw - (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
                 }
             } else {
                 if (gun.hasTagCompound()) {
                     if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().recoilHorizontalMultiplier) * 0.8f * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
+                        player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * 0.8f * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
                     } else
-                        player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().recoilHorizontalMultiplier) * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
+                        player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
                 }
             }
         }

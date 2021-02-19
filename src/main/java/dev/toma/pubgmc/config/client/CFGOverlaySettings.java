@@ -1,19 +1,29 @@
 package dev.toma.pubgmc.config.client;
 
-import net.minecraftforge.common.config.Config;
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.ConfigPlugin;
+import dev.toma.configuration.api.type.BooleanType;
+import dev.toma.configuration.api.type.EnumType;
+import dev.toma.configuration.api.type.ObjectType;
 
-public final class CFGOverlaySettings {
+public final class CFGOverlaySettings extends ObjectType {
 
-    @Config.Name("Use image overlay for boost rendering")
-    @Config.Comment("Your boost overlay will be rendered instead of the XP bar. If this == TEXT, you'll be able to see numbers above hunger bar which will indicate your boost value")
-    public CFGEnumOverlayStyle imageBoostOverlay = CFGEnumOverlayStyle.IMAGE;
+    final ConfigPlugin plugin;
+    public EnumType<CFGEnumOverlayStyle> imageBoostOverlay;
+    public CFG2DCoords textBoostOverlayPos;
+    public CFG2DCoords imgBoostOverlayPos;
+    public BooleanType renderArmorIcons;
 
-    @Config.Name("Boost (text) position")
-    public CFG2DCoords textBoostOverlayPos = new CFG2DCoords(0, 0);
+    public CFGOverlaySettings(ConfigPlugin plugin) {
+        super("Overlays", "Overlay rendering options");
+        this.plugin = plugin;
+    }
 
-    @Config.Name("Boost (image) position")
-    public CFG2DCoords imgBoostOverlayPos = new CFG2DCoords(0, 0);
-
-    @Config.Name("Armor icons render")
-    public boolean renderArmorIcons = true;
+    @Override
+    public void buildStructure(ConfigCreator configCreator) {
+        imageBoostOverlay = configCreator.createEnum("Boost Overlay", CFGEnumOverlayStyle.IMAGE, "Changes boost overlay render style");
+        textBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Text Overlay Coords"), plugin);
+        imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Image Overlay Coords"), plugin);
+        renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
+    }
 }

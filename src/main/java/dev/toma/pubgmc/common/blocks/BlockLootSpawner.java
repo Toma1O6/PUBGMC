@@ -2,7 +2,6 @@ package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
-import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -73,7 +72,7 @@ public class BlockLootSpawner extends PMCBlock {
 
     @Override
     public BlockRenderLayer getBlockLayer() {
-        return ConfigPMC.client.other.lootRenderStyle.ordinal() < 2 ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID;
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

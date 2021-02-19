@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.IWorldData;
 import dev.toma.pubgmc.common.entity.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
@@ -16,7 +17,6 @@ import dev.toma.pubgmc.network.sp.PacketLoadConfig;
 import dev.toma.pubgmc.util.FirerateCooldownTracker;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
-import dev.toma.pubgmc.common.capability.IWorldData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -40,7 +40,6 @@ import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -114,15 +113,6 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public void onKnockback(LivingKnockBackEvent e) {
-        // yes, it's named badly, I don't care :p
-        if(ConfigPMC.common.player.knockbackEnabled)
-            return;
-
-        e.setCanceled(true);
-    }
-
-    @SubscribeEvent
     public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new IWorldData.WorldDataProvider());
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new IGameData.GameDataProvider());
@@ -157,61 +147,6 @@ public class CommonEvents {
                 player.world.spawnEntity(item);
                 player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
             }
-
-            //Inventory limit
-            if (ConfigPMC.common.player.inventoryLimit) {
-                for (int i = 9; i < 36; i++) {
-                    ItemStack stack = player.inventory.getStackInSlot(i);
-
-                    if (data.getBackpackLevel() == 0 && !player.capabilities.isCreativeMode) {
-                        if (stack.getItem() != PMCRegistry.PMCItems.IBLOCK) {
-                            player.inventory.setInventorySlotContents(i, new ItemStack(PMCRegistry.PMCItems.IBLOCK));
-                        }
-                    }
-                }
-
-                for (int i = 9; i < 27; i++) {
-                    ItemStack stack = player.inventory.getStackInSlot(i);
-
-                    if (data.getBackpackLevel() == 1 && !player.capabilities.isCreativeMode) {
-                        if (stack.getItem() != PMCRegistry.PMCItems.IBLOCK) {
-                            if (!player.world.isRemote && !stack.isEmpty()) {
-                                EntityItem ent = new EntityItem(player.world, player.posX, player.posY, player.posZ, stack);
-                                ent.setPickupDelay(50);
-                                player.world.spawnEntity(ent);
-                            }
-
-                            player.inventory.setInventorySlotContents(i, new ItemStack(PMCRegistry.PMCItems.IBLOCK));
-                        }
-                    }
-                }
-
-                for (int i = 9; i < 18; i++) {
-                    ItemStack stack = player.inventory.getStackInSlot(i);
-
-                    if (data.getBackpackLevel() == 2 && !player.capabilities.isCreativeMode) {
-                        if (stack.getItem() != PMCRegistry.PMCItems.IBLOCK) {
-                            if (!player.world.isRemote && !stack.isEmpty()) {
-                                EntityItem ent = new EntityItem(player.world, player.posX, player.posY, player.posZ, stack);
-                                ent.setPickupDelay(50);
-                                player.world.spawnEntity(ent);
-                            }
-
-                            player.inventory.setInventorySlotContents(i, new ItemStack(PMCRegistry.PMCItems.IBLOCK));
-                        }
-                    }
-                }
-
-                for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                    ItemStack stack = player.inventory.getStackInSlot(i);
-                    if (stack.getItem() == PMCRegistry.PMCItems.IBLOCK && data.getBackpackLevel() == 3) {
-                        player.inventory.clearMatchingItems(PMCRegistry.PMCItems.IBLOCK, 0, player.inventory.getSizeInventory() * 64, null);
-                    }
-                }
-            }
-
-            /** BOOST **/
-            /**===================================================================================================================**/
 
             //If player's boost value is above 50% he gets speed bonus
             if (player != null && player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null) != null) {
@@ -252,7 +187,7 @@ public class CommonEvents {
     //Once player logs in
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerLoggedInEvent e) {
-        if (ConfigPMC.client.other.messagesOnJoin) {
+        if (ConfigPMC.client.other.messagesOnJoin.get()) {
             if (e.player instanceof EntityPlayer) {
                 ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
                 handleUpdateResults(version, e.player);

@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.api.util;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.Lobby;
+import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.interfaces.BotSpawner;
 import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
 import dev.toma.pubgmc.common.capability.IGameData;
@@ -80,7 +80,7 @@ public final class GameUtils {
             plane.pendingPlayers.add(player);
             if (!flag) {
                 BlockPos start = plane.getStartingPosition();
-                plane.pendingPlayers.forEach(p -> game.teleportEntityTo(p, start.getX(), ConfigPMC.common.world.planeHeight, start.getZ()));
+                plane.pendingPlayers.forEach(p -> game.teleportEntityTo(p, start.getX(), ConfigPMC.common.world.planeHeight.get(), start.getZ()));
                 if (!world.isRemote) {
                     world.spawnEntity(plane);
                 }
@@ -92,7 +92,7 @@ public final class GameUtils {
                 plane.pendingPlayers = null;
             } else if (joined >= 31) {
                 BlockPos start = plane.getStartingPosition();
-                plane.pendingPlayers.forEach(p -> game.teleportEntityTo(p, start.getX(), ConfigPMC.common.world.planeHeight, start.getZ()));
+                plane.pendingPlayers.forEach(p -> game.teleportEntityTo(p, start.getX(), ConfigPMC.common.world.planeHeight.get(), start.getZ()));
                 if (!world.isRemote) {
                     world.spawnEntity(plane);
                 }

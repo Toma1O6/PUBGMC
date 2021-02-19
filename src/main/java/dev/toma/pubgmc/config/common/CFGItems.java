@@ -4,10 +4,6 @@ import net.minecraftforge.common.config.Config;
 
 public final class CFGItems {
 
-    @Config.Name("Ammo limit")
-    @Config.RangeInt(min = 1, max = 64)
-    public int ammoLimit = 30;
-
     @Config.Name("Bandage limit")
     @Config.RangeInt(min = 1, max = 64)
     public int bandageLimit = 5;

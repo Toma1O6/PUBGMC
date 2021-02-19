@@ -1,6 +1,18 @@
 package dev.toma.pubgmc.config.client;
 
-public enum CFGEnumOverlayStyle {
+import dev.toma.configuration.api.util.Nameable;
 
-    TEXT, IMAGE
+public enum CFGEnumOverlayStyle implements Nameable {
+
+    TEXT, IMAGE;
+
+    @Override
+    public String getUnformattedName() {
+        return name();
+    }
+
+    @Override
+    public String getFormattedName() {
+        return name();
+    }
 }

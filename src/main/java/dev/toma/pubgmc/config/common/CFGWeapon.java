@@ -1,65 +1,57 @@
 package dev.toma.pubgmc.config.common;
 
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.type.DoubleType;
+import dev.toma.configuration.api.type.IntType;
+import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.configuration.api.util.NumberDisplayType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public final class CFGWeapon implements INBTSerializable<NBTTagCompound> {
+import java.text.DecimalFormat;
 
-    @Config.Name("Damage")
-    @Config.Comment("Weapon damage")
-    @Config.RangeDouble(min = 1, max = 100)
-    public float damage;
+public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTTagCompound> {
 
-    @Config.Name("Bullet velocity")
-    @Config.Comment("Bullet movement per tick")
-    @Config.RangeDouble(min = 0.1, max = 50)
-    public float velocity;
+    public DoubleType damage;
+    public DoubleType velocity;
+    public DoubleType gravityModifier;
+    public IntType gravityEffectStart;
+    public DoubleType horizontalRecoilMultiplier;
+    public DoubleType verticalRecoilMultiplier;
 
-    @Config.Name("Gravity modifier")
-    @Config.Comment("Amount of -Y movement per tick")
-    public float gravityModifier;
+    float dmg, vel, grav;
+    int t;
 
-    @Config.Name("Gravity apply time")
-    @Config.Comment("Amount of ticks to start applying gravity effect")
-    public int gravityEffectStart;
+    public CFGWeapon(String name, float damage, float velocity, float gravity, int time) {
+        super(name);
+        this.dmg = damage;
+        this.vel = velocity;
+        this.grav = gravity;
+        this.t = time;
+    }
 
-    @Config.Name("Horizontal recoil scale")
-    @Config.Comment("Multiplier which is applied to current weapon's recoil")
-    public float recoilHorizontalMultiplier;
-
-    @Config.Name("Vertical recoil scale")
-    @Config.Comment("Multiplier which is applied to current weapon's recoil")
-    public float recoilVerticalMultiplier;
-
-    public CFGWeapon(float damage, float velocity, float gravity, int time) {
-        this.damage = damage;
-        this.velocity = velocity;
-        this.gravityModifier = gravity;
-        this.gravityEffectStart = time;
-        this.recoilHorizontalMultiplier = 1f;
-        this.recoilVerticalMultiplier = 1f;
+    @Override
+    public void buildStructure(ConfigCreator configCreator) {
+        DecimalFormat format = new DecimalFormat("#.###");
+        damage = configCreator.createDouble("Damage", dmg, 1, 100).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(format);
+        velocity = configCreator.createDouble("Velocity", vel, 0.1, 50.0, "Velocity applied to bullet each tick").setFormatting(format);
+        gravityModifier = configCreator.createDouble("Gravity modifier", grav, 0, 0.2).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(format);
+        gravityEffectStart = configCreator.createInt("Gravity effect delay", t, 0, Integer.MAX_VALUE, "Ticks before gravity effect is applied on bullet");
+        horizontalRecoilMultiplier = configCreator.createDouble("Horizontal recoil multiplier", 1.0, 0.0, 5.0).setFormatting(format);
+        verticalRecoilMultiplier = configCreator.createDouble("Vertical recoil multiplier", 1.0, 0.0, 5.0).setFormatting(format);
     }
 
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = new NBTTagCompound();
-        c.setFloat("damage", damage);
-        c.setFloat("velocity", velocity);
-        c.setFloat("gravity", gravityModifier);
-        c.setInteger("gravityStart", gravityEffectStart);
-        c.setFloat("horizontal", recoilHorizontalMultiplier);
-        c.setFloat("vertical", recoilVerticalMultiplier);
+        c.setFloat("horizontal", horizontalRecoilMultiplier.getAsFloat());
+        c.setFloat("vertical", verticalRecoilMultiplier.getAsFloat());
         return c;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        damage = nbt.getFloat("damage");
-        velocity = nbt.getFloat("velocity");
-        gravityModifier = nbt.getFloat("gravity");
-        gravityEffectStart = nbt.getInteger("gravityStart");
-        recoilHorizontalMultiplier = nbt.getFloat("horizontal");
-        recoilVerticalMultiplier = nbt.getFloat("vertical");
+        horizontalRecoilMultiplier.set((double) nbt.getFloat("horizontal"));
+        verticalRecoilMultiplier.set((double) nbt.getFloat("vertical"));
     }
 }

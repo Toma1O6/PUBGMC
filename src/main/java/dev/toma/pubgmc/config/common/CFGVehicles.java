@@ -1,28 +1,23 @@
 package dev.toma.pubgmc.config.common;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.util.INBTSerializable;
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.ConfigPlugin;
+import dev.toma.configuration.api.type.ObjectType;
 
-public final class CFGVehicles implements INBTSerializable<NBTTagCompound> {
+public final class CFGVehicles extends ObjectType {
 
-    @Config.Name("UAZ")
-    public CFGVehicle uaz = new CFGVehicle(250F, 1.6F, 3.0F, 0.015F, 0.3F);
+    final ConfigPlugin plugin;
+    public CFGVehicle uaz;
+    public CFGVehicle dacia;
 
-    @Config.Name("Dacia")
-    public CFGVehicle dacia = new CFGVehicle(200F, 2.35F, 3.3F, 0.01F, 0.3f);
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound c = new NBTTagCompound();
-        c.setTag("uaz", uaz.serializeNBT());
-        c.setTag("dacia", dacia.serializeNBT());
-        return c;
+    public CFGVehicles(ConfigPlugin plugin) {
+        super("Vehicles");
+        this.plugin = plugin;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        uaz.deserializeNBT(nbt.getCompoundTag("uaz"));
-        dacia.deserializeNBT(nbt.getCompoundTag("dacia"));
+    public void buildStructure(ConfigCreator configCreator) {
+        uaz = configCreator.createObject(new CFGVehicle("UAZ", 250.0F, 1.6F, 3.0F, 0.015F, 0.25F), plugin);
+        dacia = configCreator.createObject(new CFGVehicle("Dacia", 200.0F, 2.35F, 3.3F, 0.01F, 0.3F), plugin);
     }
 }

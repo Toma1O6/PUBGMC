@@ -1,21 +1,21 @@
 package dev.toma.pubgmc.config.client;
 
-import net.minecraftforge.common.config.Config;
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.type.BooleanType;
+import dev.toma.configuration.api.type.ColorType;
+import dev.toma.configuration.api.type.ObjectType;
 
-public final class CFGOtherSettings {
+public final class CFGOtherSettings extends ObjectType {
+    public BooleanType messagesOnJoin;
+    public ColorType zoneColor;
 
-    @Config.Name("On-join world notifications")
-    public boolean messagesOnJoin = true;
+    public CFGOtherSettings() {
+        super("Other");
+    }
 
-    @Config.Name("Game zone color")
-    @Config.RangeInt(min = 0x000000, max = 0xFFFFFF)
-    public int zoneColor = 0x00BAFF;
-
-    @Config.Name("Lootbox content render")
-    @Config.RequiresMcRestart
-    public CFGLootRenderStyle lootRenderStyle = CFGLootRenderStyle.FANCY;
-
-    @Config.Name("Dynamic bobbing animation")
-    @Config.Comment({"This will automatically toggle bobbing animations on when sprinting with gun"})
-    public boolean useDynamicBobbing = true;
+    @Override
+    public void buildStructure(ConfigCreator configCreator) {
+        messagesOnJoin = configCreator.createBoolean("Log-In Messages", true, "Toggle info messages about updates on log-in");
+        zoneColor = configCreator.createColorRGB("Zone color", "#00BAFF");
+    }
 }

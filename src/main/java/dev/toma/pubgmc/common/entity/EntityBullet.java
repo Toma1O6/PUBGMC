@@ -66,10 +66,10 @@ public class EntityBullet extends Entity {
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
         CFGWeapon cfg = gun.getConfigurableStats();
-        gravitystart = cfg.gravityEffectStart;
-        gravity = cfg.gravityModifier;
-        velocity = cfg.velocity;
-        damage = cfg.damage;
+        gravitystart = cfg.gravityEffectStart.get();
+        gravity = cfg.gravityModifier.getAsFloat();
+        velocity = cfg.velocity.getAsFloat();
+        damage = cfg.damage.getAsFloat();
         type = gun.getGunType();
         survivalTime = (int) velocity + 3;
         stack = new ItemStack(gun);

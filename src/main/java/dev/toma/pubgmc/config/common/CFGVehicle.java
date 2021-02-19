@@ -1,61 +1,42 @@
 package dev.toma.pubgmc.config.common;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.util.INBTSerializable;
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.type.DoubleType;
+import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.configuration.api.util.NumberDisplayType;
 
-public final class CFGVehicle implements INBTSerializable<NBTTagCompound> {
+import java.text.DecimalFormat;
 
-    @Config.Name("Max Health")
-    @Config.Comment("Vehicle maximum health")
-    @Config.RangeDouble(min = 1.0D, max = 1500.0D)
-    public float maxHealth;
+public final class CFGVehicle extends ObjectType {
 
-    @Config.Name("Max Speed")
-    @Config.Comment("Vehicle max speed")
-    @Config.RangeDouble(min = 0.5D, max = 3.0D)
-    public float maxSpeed;
+    public DoubleType maxHealth;
+    public DoubleType maxSpeed;
+    public DoubleType acceleration;
+    public DoubleType turningSpeed;
+    public DoubleType maxTurningAngle;
 
-    @Config.Name("Acceleration")
-    @Config.Comment({"Vehicle speed acceleration", "This also applies for braking, which is Acceleration*2"})
-    @Config.RangeDouble(min = 0.001D, max = 1.0D)
-    public float acceleration;
+    float mh;
+    float ms;
+    float ac;
+    float ts;
+    float mt;
 
-    @Config.Name("Turning Speed")
-    @Config.Comment("Turning angle increase per tick")
-    @Config.RangeDouble(min = 0.1D, max = 1.0D)
-    public float turningSpeed;
-
-    @Config.Name("Max Turning Angle")
-    @Config.Comment("Maximal angle at which can vehicle turn")
-    @Config.RangeDouble(min = 1.0D, max = 10.0D)
-    public float maxTurningAngle;
-
-    public CFGVehicle(float health, float speed, float angle, float acceleration, float turningAcceleration) {
-        this.maxHealth = health;
-        this.maxSpeed = speed;
-        this.maxTurningAngle = angle;
-        this.acceleration = acceleration;
-        this.turningSpeed = turningAcceleration;
+    public CFGVehicle(String name, float health, float speed, float angle, float acceleration, float turningAcceleration) {
+        super(name);
+        this.mh = health;
+        this.ms = speed;
+        this.ac = acceleration;
+        this.ts = turningAcceleration;
+        this.mt = angle;
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound c = new NBTTagCompound();
-        c.setFloat("health", maxHealth);
-        c.setFloat("speed", maxSpeed);
-        c.setFloat("acceleration", acceleration);
-        c.setFloat("turningSpeed", turningSpeed);
-        c.setFloat("maxAngle", maxTurningAngle);
-        return c;
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        maxHealth = nbt.getFloat("health");
-        maxSpeed = nbt.getFloat("speed");
-        acceleration = nbt.getFloat("acceleration");
-        turningSpeed = nbt.getFloat("turningSpeed");
-        maxTurningAngle = nbt.getFloat("maxAngle");
+    public void buildStructure(ConfigCreator configCreator) {
+        DecimalFormat format = new DecimalFormat("#.####");
+        maxHealth = configCreator.createDouble("Health", mh, 1.0, 1000.0, "Set max health").setFormatting(format);
+        maxSpeed = configCreator.createDouble("Speed", ms, 0.5, 3.0, "Set max speed").setFormatting(format).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
+        acceleration = configCreator.createDouble("Acceleration", ac, 0.001, 1.0, "Set acceleration").setFormatting(format).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
+        turningSpeed = configCreator.createDouble("Turn speed", ts, 0.1, 1.0, "Set turning speed").setFormatting(format).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
+        maxTurningAngle = configCreator.createDouble("Max turning angle", mt, 1.0, 5.0, "Set max turning angle").setFormatting(format).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
     }
 }

@@ -48,7 +48,8 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         boolean firstAid = te.getStackInSlot(slot).getItem() instanceof ItemFirstAidKit || te.getStackInSlot(slot).getItem() instanceof ItemBandage;
         boolean medkit = te.getStackInSlot(slot).getItem() == PMCRegistry.PMCItems.MEDKIT;
 
-        if (ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FANCY) {
+        // TODO clean up this mess
+        if (true/*ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FANCY*/) {
             if (te.isInvalid() || te == null) {
                 return;
             }
@@ -96,7 +97,7 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
                 GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glPopMatrix();
             }
-        } else if (ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FAST) {
+        } else if (false/*ConfigPMC.client.other.lootRenderStyle == CFGLootRenderStyle.FAST*/) {
             if (te.isInvalid() || te == null || te.getStackInSlot(slot).isEmpty()) {
                 return;
             }

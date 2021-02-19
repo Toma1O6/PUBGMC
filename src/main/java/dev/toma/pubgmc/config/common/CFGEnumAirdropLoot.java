@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.config.common;
 
+@Deprecated
 public enum CFGEnumAirdropLoot {
 
     NOTHING,

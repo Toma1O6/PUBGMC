@@ -139,9 +139,9 @@ public class EntityPlane extends Entity {
             }
         }
 
-        endPos = new BlockPos(endX, ConfigPMC.common.world.planeHeight, endZ);
-        setPosition(startX, ConfigPMC.common.world.planeHeight, startZ);
-        startPos = new BlockPos(startX, ConfigPMC.common.world.planeHeight, startZ);
+        endPos = new BlockPos(endX, ConfigPMC.common.world.planeHeight.get(), endZ);
+        setPosition(startX, ConfigPMC.common.world.planeHeight.get(), startZ);
+        startPos = new BlockPos(startX, ConfigPMC.common.world.planeHeight.get(), startZ);
         rotationYaw = 180f;
         updateHeading(startX, startZ, endPos);
 
@@ -159,7 +159,7 @@ public class EntityPlane extends Entity {
     public void onUpdate() {
         super.onUpdate();
 
-        canFly = this.ticksExisted >= (ConfigPMC.common.world.planeDelay * 20);
+        canFly = this.ticksExisted >= (ConfigPMC.common.world.planeDelay.get() * 20);
 
         if (gameData == null) {
             Pubgmc.logger.debug("Couldn't load gamedata for plane, getting new instance...");
@@ -184,7 +184,7 @@ public class EntityPlane extends Entity {
 
                 if (!gameData.getCurrentGame().isRunning()) setDead();
 
-                if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.world.planeDelay * 20 + 15) {
+                if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.world.planeDelay.get() * 20 + 15) {
                     setDead();
                     Pubgmc.logger.error("Plane is in invalid position, despawning...");
                 }
@@ -259,7 +259,7 @@ public class EntityPlane extends Entity {
         motionY = compound.getDouble("motY");
         motionZ = compound.getDouble("motZ");
         rotationYaw = compound.getFloat("rotYaw");
-        endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.common.world.planeHeight, compound.getDouble("endZ"));
+        endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.common.world.planeHeight.get(), compound.getDouble("endZ"));
         hasReachedDestination = compound.getBoolean("reachedDest");
         timeSinceDestination = compound.getShort("timeSinceDest");
         setUniqueId(compound.getUniqueId("UUID"));

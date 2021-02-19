@@ -1,17 +1,29 @@
 package dev.toma.pubgmc.config.client;
 
-import net.minecraftforge.common.config.Config;
+import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.type.IntType;
+import dev.toma.configuration.api.type.ObjectType;
 
-public class CFG2DCoords {
+public class CFG2DCoords extends ObjectType {
 
-    @Config.Name("The X position of object")
-    public int x;
+    private IntType x;
+    private IntType y;
 
-    @Config.Name("The Y position of object")
-    public int y;
+    public CFG2DCoords(String name) {
+        super(name);
+    }
 
-    public CFG2DCoords(final int x, final int y) {
-        this.x = x;
-        this.y = y;
+    @Override
+    public void buildStructure(ConfigCreator configCreator) {
+        x = configCreator.createInt("X", 0);
+        y = configCreator.createInt("Y", 0);
+    }
+
+    public int getX() {
+        return x.get();
+    }
+
+    public int getY() {
+        return y.get();
     }
 }

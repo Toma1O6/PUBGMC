@@ -9,7 +9,6 @@ import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
-import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.server.PacketFiremode;
@@ -298,8 +297,8 @@ public class GunBase extends PMCItem {
 
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.damage") + ": " + TextFormatting.RESET + "" + TextFormatting.DARK_RED + this.wepStats.damage);
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.reloadtime") + ": " + TextFormatting.RESET + "" + TextFormatting.GREEN + g.format(getReloadTime(stack) / 20) + " " + I18n.format("gun.reloadtime.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.velocity * 5.5) + " " + I18n.format("gun.velocity.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.gravityModifier * 20) + " " + I18n.format("gun.gravity.info"));
+            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.velocity.get() * 5.5) + " " + I18n.format("gun.velocity.info"));
+            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.gravityModifier.get() * 20) + " " + I18n.format("gun.gravity.info"));
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firerate") + ": " + TextFormatting.RESET + "" + TextFormatting.AQUA + g.format(20.00 / this.getFireRate()) + " " + I18n.format("gun.firerate.info"));
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + ammotype.translatedName());
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.maxammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getWeaponAmmoLimit(stack));
@@ -594,71 +593,58 @@ public class GunBase extends PMCItem {
         // TODO: clean
         public void handleReload(EntityPlayer player) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if (ConfigPMC.common.world.gunsEnabled) {
-                ItemStack heldItem = player.getHeldItemMainhand();
+            ItemStack heldItem = player.getHeldItemMainhand();
 
-                if (heldItem.getItem() instanceof GunBase) {
-                    data.setAiming(false);
-                    GunBase gun = (GunBase) heldItem.getItem();
+            if (heldItem.getItem() instanceof GunBase) {
+                data.setAiming(false);
+                GunBase gun = (GunBase) heldItem.getItem();
 
-                    if ((heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem) || !gun.hasPlayerAmmoForGun(player, gun)) && data.isReloading()) {
+                if ((heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem) || !gun.hasPlayerAmmoForGun(player, gun)) && data.isReloading()) {
+                    data.setReloading(false);
+                    PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
+                }
+
+                if (heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
+                    if (gun.getReloadType() == ReloadType.MAGAZINE) {
+                        while ((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
+                            int ammoInGun = heldItem.getTagCompound().getInteger("ammo");
+                            int ammoToFill = gun.getWeaponAmmoLimit(heldItem) - ammoInGun;
+                            int ammoInInventory = gun.ammoCount;
+
+                            if (ammoToFill > ammoInInventory) ammoToFill = ammoInInventory;
+
+                            if (!player.capabilities.isCreativeMode) {
+                                ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
+                                player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, ammoToFill, null);
+                            }
+
+                            heldItem.getTagCompound().setInteger("ammo", ammoInGun + ammoToFill);
+                        }
+
                         data.setReloading(false);
                         PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                    }
-
-                    if (heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                        if (gun.getReloadType() == ReloadType.MAGAZINE) {
-                            while ((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                                int ammoInGun = heldItem.getTagCompound().getInteger("ammo");
-                                int ammoToFill = gun.getWeaponAmmoLimit(heldItem) - ammoInGun;
-                                int ammoInInventory = gun.ammoCount;
-
-                                if (ammoToFill > ammoInInventory) ammoToFill = ammoInInventory;
-
-                                if (!player.capabilities.isCreativeMode) {
-                                    ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-                                    player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, ammoToFill, null);
-                                }
-
-                                heldItem.getTagCompound().setInteger("ammo", ammoInGun + ammoToFill);
-                            }
-
-                            data.setReloading(false);
-                            PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                        } else if (gun.getReloadType() == ReloadType.SINGLE) {
-                            if (gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) {
-                                //If the gun is already full and player still atempts to reload, cancel it
-                                if (heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem)) {
-                                    data.setReloading(false);
-                                    PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                                }
-
-                                if (heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                                    ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-
-                                    if (!player.capabilities.isCreativeMode) {
-                                        player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-                                    }
-
-                                    //Increase ammo count by 1
-                                    heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-                                }
-                            }
-                        } else if (gun.getReloadType() == ReloadType.KAR98K) {
-                            if (!gun.hasAmmo(heldItem)) {
-                                while ((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                                    ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-
-                                    if (!player.capabilities.isCreativeMode) {
-                                        player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-                                    }
-
-                                    heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-                                }
-
+                    } else if (gun.getReloadType() == ReloadType.SINGLE) {
+                        if (gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) {
+                            //If the gun is already full and player still atempts to reload, cancel it
+                            if (heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem)) {
                                 data.setReloading(false);
                                 PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                            } else if (heldItem.getTagCompound().getInteger("ammo") > 0 && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
+                            }
+
+                            if (heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
+                                ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
+
+                                if (!player.capabilities.isCreativeMode) {
+                                    player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
+                                }
+
+                                //Increase ammo count by 1
+                                heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
+                            }
+                        }
+                    } else if (gun.getReloadType() == ReloadType.KAR98K) {
+                        if (!gun.hasAmmo(heldItem)) {
+                            while ((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
                                 ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
 
                                 if (!player.capabilities.isCreativeMode) {
@@ -667,9 +653,20 @@ public class GunBase extends PMCItem {
 
                                 heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
                             }
-                        } else {
-                            throw new IllegalArgumentException("Unknown reload type. Report this to mod author!");
+
+                            data.setReloading(false);
+                            PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
+                        } else if (heldItem.getTagCompound().getInteger("ammo") > 0 && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
+                            ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
+
+                            if (!player.capabilities.isCreativeMode) {
+                                player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
+                            }
+
+                            heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
                         }
+                    } else {
+                        throw new IllegalArgumentException("Unknown reload type. Report this to mod author!");
                     }
                 }
             }

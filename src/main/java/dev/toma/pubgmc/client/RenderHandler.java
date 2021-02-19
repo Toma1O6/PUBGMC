@@ -300,7 +300,7 @@ public class RenderHandler {
         }
         double maxClientRenderDist = mc.gameSettings.renderDistanceChunks * 16;
         if (isCloseToBorder(player, zone, maxClientRenderDist)) {
-            int clientZoneColor = ConfigPMC.client.other.zoneColor;
+            int clientZoneColor = ConfigPMC.client.other.zoneColor.getColor();
             float a = 0.25F;
             float r = ((clientZoneColor >> 16) & 255) / 255.0F;
             float g = ((clientZoneColor >> 8) & 255) / 255.0F;

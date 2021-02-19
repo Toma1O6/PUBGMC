@@ -1,13 +1,12 @@
 package dev.toma.pubgmc.common.items.heal;
 
-import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 
 public class ItemBandage extends ItemHealing {
     public ItemBandage(String name) {
         super(name, 20, 5);
-        setMaxStackSize(ConfigPMC.common.items.bandageLimit);
+        setMaxStackSize(5);
     }
 
     @Override

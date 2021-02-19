@@ -19,12 +19,12 @@ public class EntityVehicleDacia extends EntityVehicle {
     public EntityVehicleDacia(World world, double x, double y, double z) {
         this(world);
         setPosition(x, y, z);
-        maxHealth = ConfigPMC.common.vehicles.dacia.maxHealth;
-        health = ConfigPMC.common.vehicles.dacia.maxHealth;
-        maxSpeed = ConfigPMC.common.vehicles.dacia.maxSpeed;
-        acceleration = ConfigPMC.common.vehicles.dacia.acceleration;
-        turnSpeed = ConfigPMC.common.vehicles.dacia.turningSpeed;
-        maximalTurningModifier = ConfigPMC.common.vehicles.dacia.maxTurningAngle;
+        maxHealth = ConfigPMC.common.vehicles.dacia.maxHealth.getAsFloat();
+        health = ConfigPMC.common.vehicles.dacia.maxHealth.getAsFloat();
+        maxSpeed = ConfigPMC.common.vehicles.dacia.maxSpeed.getAsFloat();
+        acceleration = ConfigPMC.common.vehicles.dacia.acceleration.getAsFloat();
+        turnSpeed = ConfigPMC.common.vehicles.dacia.turningSpeed.getAsFloat();
+        maximalTurningModifier = ConfigPMC.common.vehicles.dacia.maxTurningAngle.getAsFloat();
     }
 
     @Override

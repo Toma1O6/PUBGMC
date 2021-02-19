@@ -26,7 +26,7 @@ minecraft {
 }
 
 dependencies {
-
+    compile files('libs/configuration-1.12.2-1.0.2.3.jar')
 }
 
 jar {

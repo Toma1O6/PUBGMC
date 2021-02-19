@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.common.capability;
 
-import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -69,13 +68,10 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
         private boolean airdropWep = false, ammoLoot = true, randomAmmoCount = false;
         private double chance = 1;
         private List<GunBase.GunType> weaponTypes = new ArrayList<GunBase.GunType>(GunBase.GunType.toCollection());
-        private List<Integer> ghillieColors;
+        List<Integer> ghillieColors = new ArrayList<>(1);
 
         public WorldData() {
-            ghillieColors = new ArrayList<>();
-            for(int i : ConfigPMC.world().defaultGhillieColors) {
-                ghillieColors.add(i);
-            }
+            ghillieColors.add(0x00FF00);
         }
 
         @Override
@@ -167,11 +163,6 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public List<Integer> getGhillieSuitsColorVariants() {
-            if(ghillieColors.isEmpty() && ConfigPMC.world().defaultGhillieColors.length > 0) {
-                for(int i = 0; i < ConfigPMC.world().defaultGhillieColors.length; i++) {
-                    ghillieColors.add(ConfigPMC.world().defaultGhillieColors[i]);
-                }
-            }
             return ghillieColors;
         }
 
