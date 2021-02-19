@@ -16,7 +16,7 @@ public class PMCClassTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         boolean isObfEnv = !name.equals(transformedName);
         switch (transformedName) {
-            case "net.minecraft.client.model.ModelPlayer":
+            case "net.minecraft.client.model.ModelBiped":
                 return this.injectPlayerSetupAngles(basicClass, isObfEnv);
             case "net.minecraft.client.renderer.entity.RenderPlayer":
                 return this.injectRenderPlayer(basicClass, isObfEnv);
@@ -37,7 +37,7 @@ public class PMCClassTransformer implements IClassTransformer {
     MAXLOCALS = 8
      */
     byte[] injectPlayerSetupAngles(byte[] bytes, boolean isObf) {
-        log.info("Preparing injection into 'net.minecraft.client.model.ModelPlayer'");
+        log.info("Preparing injection into 'net.minecraft.client.model.ModelBiped'");
         ClassNode node = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
         reader.accept(node, 0);
@@ -63,8 +63,8 @@ public class PMCClassTransformer implements IClassTransformer {
                         list.add(new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
                                 "dev/toma/pubgmc/ClientHooks",
-                                "player_setupModelAngles",
-                                "(Lnet/minecraft/client/model/ModelPlayer;FFFFFFLnet/minecraft/entity/Entity;)V",
+                                "model_setupModelAngles",
+                                "(Lnet/minecraft/client/model/ModelBiped;FFFFFFLnet/minecraft/entity/Entity;)V",
                                 false
                         ));
                         insnList.insertBefore(insnNode, list);
@@ -79,7 +79,7 @@ public class PMCClassTransformer implements IClassTransformer {
                 break;
             }
         }
-        ClassWriter writer = new ClassWriter(0);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         node.accept(writer);
         return writer.toByteArray();
     }
@@ -156,7 +156,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         list.add(new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
                                 "dev/toma/pubgmc/ClientHooks",
-                                "playerConstructRender",
+                                "player_constructRender",
                                 "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/client/renderer/entity/RenderManager;Z)V",
                                 false
                         ));

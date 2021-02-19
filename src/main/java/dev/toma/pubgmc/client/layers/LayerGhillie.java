@@ -49,7 +49,7 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
             float blue = (color & 255) / 255.0F;
             this.renderLivingBase.bindTexture(TEXTURE_MAIN);
             GlStateManager.color(red, green, blue);
-           // this.copyModelAngles();
+            //this.copyModelAngles();
             this.baseLayer.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             this.renderLivingBase.bindTexture(TEXTURE_OVERLAY);
             this.overlay.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -63,6 +63,8 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
         ModelPlayer modelBiped = (ModelPlayer) model;
         this.copyRotations(baseLayer.bipedRightArm, modelBiped.bipedRightArm);
         this.copyRotations(baseLayer.bipedLeftArm, modelBiped.bipedLeftArm);
+        this.copyRotations(baseLayer.bipedRightLeg, modelBiped.bipedRightLeg);
+        this.copyRotations(baseLayer.bipedLeftLeg, modelBiped.bipedLeftLeg);
     }
 
     public void copyRotations(ModelRenderer model, ModelRenderer from) {

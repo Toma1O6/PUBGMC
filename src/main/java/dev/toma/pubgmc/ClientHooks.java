@@ -6,6 +6,7 @@ import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -15,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ClientHooks {
 
-    public static void player_setupModelAngles(ModelPlayer model, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity) {
+    public static void model_setupModelAngles(ModelBiped model, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();
         Entity entity1 = mc.getRenderViewEntity();
         if(entity == entity1 && mc.gameSettings.thirdPersonView == 0) {
@@ -27,17 +28,24 @@ public class ClientHooks {
             return;
         boolean isHoldingWeapon = player.getHeldItemMainhand().getItem() instanceof GunBase;
         boolean isProne = data.isProning();
+        boolean playerModel = model instanceof ModelPlayer;
         if(isProne) {
             float f0 = (float) Math.toRadians(180.0F);
             float f1 = (float) Math.toRadians(10.0F);
+            float f2 = (float) Math.toRadians(-45.0F);
             model.bipedRightArm.rotateAngleX = f0;
             model.bipedLeftArm.rotateAngleX = f0;
             model.bipedRightArm.rotateAngleZ = -f1;
             model.bipedLeftArm.rotateAngleZ = f1;
             model.bipedRightLeg.rotateAngleZ = f1;
             model.bipedLeftLeg.rotateAngleZ = -f1;
-            ModelBase.copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
-            ModelBase.copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
+            model.bipedHead.rotateAngleX = model.bipedHead.rotateAngleX + f2;
+            model.bipedHeadwear.rotateAngleX = model.bipedHead.rotateAngleX;
+            if(playerModel) {
+                ModelPlayer mp = (ModelPlayer) model;
+                ModelBase.copyModelAngles(model.bipedRightArm, mp.bipedRightArmwear);
+                ModelBase.copyModelAngles(model.bipedLeftArm, mp.bipedLeftArmwear);
+            }
             player.limbSwing = 0.0F;
             player.limbSwingAmount = 0.0F;
         } else if(isHoldingWeapon) {
@@ -62,8 +70,11 @@ public class ClientHooks {
                 model.bipedRightArm.rotateAngleY = f1;
             }
             model.bipedLeftArm.rotateAngleY = f2;
-            ModelBase.copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
-            ModelBase.copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
+            if(playerModel) {
+                ModelPlayer mp = (ModelPlayer) model;
+                ModelBase.copyModelAngles(model.bipedRightArm, mp.bipedRightArmwear);
+                ModelBase.copyModelAngles(model.bipedLeftArm, mp.bipedLeftArmwear);
+            }
         }
     }
 
