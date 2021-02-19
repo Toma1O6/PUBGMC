@@ -1,13 +1,12 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
 
-/**
- * Parts of wheels are missing, exhaust is partially white, and some decorations parts too
- */
-public class ModelUAZ extends ModelVehicle {
+public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
+
     private final ModelRenderer bone;
     private final ModelRenderer a1;
     private final ModelRenderer engineC;
@@ -302,7 +301,7 @@ public class ModelUAZ extends ModelVehicle {
     }
 
     @Override
-    public void render(float turnModifier) {
+    public void render(EntityVehicleUAZ vehicle) {
         bone.render(1f);
         wheelBR.render(1f);
         wheelBL2.render(1f);
@@ -310,9 +309,9 @@ public class ModelUAZ extends ModelVehicle {
         mirror.render(1f);
         mirror2.render(1f);
         interior.render(1f);
-        renderSteeringWheel(steering_wheel, turnModifier);
-        renderFrontWheel(wheelFR, turnModifier);
-        renderFrontWheel(wheelFL, turnModifier);
+        renderSteeringWheel(steering_wheel, vehicle.turnModifier);
+        renderFrontWheel(wheelFR, vehicle.turnModifier);
+        renderFrontWheel(wheelFL, vehicle.turnModifier);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

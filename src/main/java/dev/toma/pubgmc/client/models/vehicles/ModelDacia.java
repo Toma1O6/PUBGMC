@@ -1,9 +1,10 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
-public class ModelDacia extends ModelVehicle {
+public class ModelDacia extends ModelVehicle<EntityVehicleDacia> {
     private final ModelRenderer dacia;
     private final ModelRenderer core;
     private final ModelRenderer sh;
@@ -370,9 +371,9 @@ public class ModelDacia extends ModelVehicle {
     }
 
     @Override
-    public void render(float turnModifier) {
+    public void render(EntityVehicleDacia vehicle) {
         dacia.render(0.625f);
-        setupRotatingParts(steeringWheel, wheel_fl, wheel_fr, turnModifier);
+        setupRotatingParts(steeringWheel, wheel_fl, wheel_fr, vehicle.turnModifier);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

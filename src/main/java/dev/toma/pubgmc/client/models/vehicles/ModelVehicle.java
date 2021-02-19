@@ -1,9 +1,11 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
-public abstract class ModelVehicle extends ModelBase {
+public abstract class ModelVehicle<V extends EntityVehicle> extends ModelBase {
+
     public static void setupRotatingParts(ModelRenderer steeringWheel, ModelRenderer wheel0, ModelRenderer wheel1, float modifier) {
         setRendererRotation(steeringWheel, 0f, 0f, -modifier / 4.5F);
         setRendererRotation(wheel0, 0f, modifier / 5F, 0f);
@@ -16,7 +18,7 @@ public abstract class ModelVehicle extends ModelBase {
         renderer.rotateAngleZ = z;
     }
 
-    public abstract void render(float turnModifier);
+    public abstract void render(V v);
 
     public void renderSteeringWheel(ModelRenderer steeringWheel, float turnModifier) {
         setRendererRotation(steeringWheel, 0f, 0f, -turnModifier / 4.5f);

@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.IPlayerData;
 import dev.toma.pubgmc.common.capability.IWorldData;
-import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
 import dev.toma.pubgmc.common.items.guns.GunBase;

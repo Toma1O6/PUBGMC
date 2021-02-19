@@ -6,6 +6,7 @@ import dev.toma.pubgmc.common.blocks.BlockLandMine;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
 import dev.toma.pubgmc.common.blocks.IBulletReaction;
 import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;

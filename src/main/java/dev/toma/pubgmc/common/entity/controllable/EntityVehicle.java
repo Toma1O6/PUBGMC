@@ -1,12 +1,13 @@
-package dev.toma.pubgmc.common.entity;
+package dev.toma.pubgmc.common.entity.controllable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketVehicleData;
+import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.init.PMCSounds;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.sp.PacketVehicleData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -21,124 +22,91 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class EntityVehicle extends Entity implements IEntityAdditionalSpawnData//, IEntityMultiPart
+public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData
 {
     private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
     private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
-    /**
-     * The max damage vehicle can take before it explodes
-     **/
-    public float maxHealth = 100f;
-    /**
-     * Current health state
-     **/
-    public float health = 100f;
-    /**
-     * Acceleration speed
-     **/
-    public float acceleration = 0.08f;
-    /**
-     * Speed at which will vehicle turn
-     **/
-    public float turnSpeed = 0.45f;
-    /**
-     * The max speed vehicle will be able to do
-     **/
-    public float maxSpeed = 1.2f;
-    public float currentSpeed = 0;
-    /**
-     * How well will the vehicle drive on different surfaces
-     **/
+
+    public float health;
+    public float currentSpeed;
     public float turnModifier;
-    public float maximalTurningModifier = 3F;
-    /**
-     * Decides if vehicle can drive
-     **/
-    public float fuel = 100f;
-    /**
-     * If the vehicle is broken or not
-     **/
+    public float fuel;
     public boolean isBroken = false;
-    private boolean isWaterVehicle;
-    /**
-     * Ticks underWater
-     **/
     private short timeInInvalidState;
-
-    /**
-     * Handles inputs from player who is driving the vehicle
-     **/
-    private boolean inputForward, inputBack, inputRight, inputLeft, inputBoost;
-
-    /**
-     * For different colors
-     **/
-    private byte variantType = 0;
 
     public EntityVehicle(World world) {
         super(world);
-        setSize(1f, 1f);
         stepHeight = 1f;
         preventEntitySpawning = true;
-        maxSpeed = 1.0f;
-        createColorVariant();
+        health = getVehicleConfiguration().maxHealth.getAsFloat();
+        fuel = 60 + world.rand.nextInt(40);
     }
 
     public EntityVehicle(World world, int x, int y, int z) {
         this(world);
         setPosition(x, y, z);
-        //this.initWheels();
     }
 
-    @Nonnull
     public abstract int getMaximumCapacity();
 
-    @Nonnull
     public abstract Vec3d getEnginePosition();
 
-    @Nonnull
     public abstract Vec3d getExhaustPosition();
 
-    @Nonnull
     public abstract SoundEvent vehicleSound();
 
-    @Nullable
-    public abstract String[] getTextureVariants();
-
-    //public abstract void initWheels();
+    public abstract CFGVehicle getVehicleConfiguration();
 
     @Override
-    public void onUpdate() {
-        if (!this.isBeingRidden() && (!noAccerationInput() || !noTurningInput() || !hasFuel())) {
-            inputForward = false;
-            inputBack = false;
-            inputRight = false;
-            inputLeft = false;
+    public void updatePre() {
+        this.handleEmptyInputs();
+        Vec3d look = this.getLookVec();
+        motionX = look.x * currentSpeed;
+        motionZ = look.z * currentSpeed;
+        if(currentSpeed != 0) {
+            rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
         }
-
-        updateMotion();
-        handleEntityCollisions();
-        checkState();
-
+        if(!isBeingRidden() && (!hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken)) {
+            reset();
+        }
+        this.handleEntityCollisions();
+        this.checkState();
         if (collidedHorizontally) {
             currentSpeed *= 0.6;
         }
+    }
 
-        applyTerrainMotionMultiplier();
-
-        super.onUpdate();
-
-        if (!world.isRemote) {
-            PacketHandler.sendToClientsAround(new PacketVehicleData(this), dimension, posX, posY, posZ, 256);
-        }
-
+    @Override
+    public void updatePost() {
+        move(MoverType.SELF, motionX, motionY, motionZ);
         playSoundAtVehicle();
         spawnParticles();
-        move(MoverType.SELF, motionX, motionY, motionZ);
+    }
+
+    protected void handleEmptyInputs() {
+        CFGVehicle stats = this.getVehicleConfiguration();
+        if(!hasMovementInput() || !hasFuel()) {
+            if (Math.abs(currentSpeed) < 0.01)
+                currentSpeed = 0f;
+
+            if (currentSpeed != 0) {
+                currentSpeed = currentSpeed > 0 ? currentSpeed - stats.acceleration.getAsFloat() * 0.1F : currentSpeed + stats.acceleration.getAsFloat() * 0.1F;
+            }
+        }
+        if (!hasTurnInput()) {
+            if (Math.abs(turnModifier) <= 0.5f)
+                turnModifier = 0f;
+
+            if (turnModifier != 0) {
+                turnModifier = turnModifier > 0 ? turnModifier - 0.5f : turnModifier + 0.5f;
+            }
+        }
+        if(!onGround) {
+            motionY -= 0.1;
+        }
     }
 
     public void handleEntityCollisions() {
@@ -154,59 +122,50 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         }
     }
 
-    /**
-     * Call before {@code prev parameters} are updated by calling {@code onUpdate()}
-     */
-    public void applyTerrainMotionMultiplier() {
-        currentSpeed = (float) (prevPosY < posY ? currentSpeed * 0.95 : currentSpeed);
+    @Override
+    public void handleForward() {
+        if(!isBroken) {
+            CFGVehicle cfg = getVehicleConfiguration();
+            float max = cfg.maxSpeed.getAsFloat();
+            if(hasFuel() || currentSpeed < 0) {
+                burnFuel();
+                currentSpeed = currentSpeed < max ? currentSpeed + cfg.acceleration.getAsFloat() : max;
+            }
+        }
     }
 
-    public void updateMotion() {
-        Vec3d lookVec = getLookVec();
-
-        if (!isBroken && hasFuel()) {
-            if (inputForward && !inputBack) {
+    @Override
+    public void handleBackward() {
+        if(!isBroken) {
+            CFGVehicle cfg = getVehicleConfiguration();
+            if(currentSpeed > 0) {
+                currentSpeed -= cfg.acceleration.getAsFloat();
+            } else if(hasFuel()) {
                 burnFuel();
-                currentSpeed = currentSpeed < maxSpeed ? currentSpeed + acceleration : maxSpeed;
-            }
-
-            if (inputBack && !inputForward) {
-                burnFuel();
-                currentSpeed = currentSpeed > 0 ? currentSpeed - acceleration * 2f : currentSpeed > (-maxSpeed * 0.3f) ? currentSpeed - 0.02f : -maxSpeed * 0.3f;
+                float reverseMax = -cfg.maxSpeed.getAsFloat() * 0.3F;
+                currentSpeed = currentSpeed > reverseMax ? currentSpeed - 0.02F : reverseMax;
             }
         }
+    }
 
-        if (inputRight && !inputLeft) {
-            turnModifier = turnModifier < maximalTurningModifier ? turnModifier + turnSpeed : maximalTurningModifier;
+    @Override
+    public void handleRight() {
+        if(!isBroken) {
+            CFGVehicle cfg = getVehicleConfiguration();
+            float max = cfg.maxTurningAngle.getAsFloat();
+            float partial = cfg.turningSpeed.getAsFloat();
+            turnModifier = turnModifier < max ? turnModifier + partial : max;
         }
+    }
 
-        if (inputLeft && !inputRight) {
-            turnModifier = turnModifier > -maximalTurningModifier ? turnModifier - turnSpeed : -maximalTurningModifier;
+    @Override
+    public void handleLeft() {
+        if(!isBroken) {
+            CFGVehicle cfg = getVehicleConfiguration();
+            float max = cfg.maxTurningAngle.getAsFloat();
+            float partial = cfg.turningSpeed.getAsFloat();
+            turnModifier = turnModifier > -max ? turnModifier - partial : -max;
         }
-
-        if (noAccerationInput() || isBroken) {
-            if (Math.abs(currentSpeed) < 0.009f) currentSpeed = 0f;
-
-            if (currentSpeed != 0) {
-                currentSpeed = currentSpeed > 0 ? currentSpeed - 0.008f : currentSpeed + 0.008f;
-            }
-        }
-
-        if (noTurningInput()) {
-            if (Math.abs(turnModifier) < 0.1f) turnModifier = 0f;
-
-            if (turnModifier != 0) {
-                turnModifier = turnModifier > 0 ? turnModifier - 0.3f : turnModifier + 0.3f;
-            }
-        }
-
-        motionX = lookVec.x * currentSpeed;
-        motionZ = lookVec.z * currentSpeed;
-        if (currentSpeed != 0) {
-            rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
-        }
-
-        if (!onGround) motionY -= 0.1d;
     }
 
     @Nullable
@@ -273,12 +232,13 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     }
 
     protected void spawnParticles() {
+        float max = getVehicleConfiguration().maxHealth.getAsFloat();
         if (world.isRemote) {
-            if (health / maxHealth <= 0.35f) {
+            if (health / max <= 0.35f) {
                 Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
                 world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
 
-                if (health / maxHealth <= 0.15f) {
+                if (health / max <= 0.15f) {
                     double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
                     double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
                     world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
@@ -335,18 +295,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         return this.getPassengers().size() < getMaximumCapacity();
     }
 
-    public void handleInputs(boolean forward, boolean back, boolean right, boolean left, EntityPlayer player) {
-        if (isPlayerDriver(player)) {
-            if (hasFuel()) {
-                this.inputForward = forward;
-                this.inputBack = back;
-            }
-
-            this.inputLeft = left;
-            this.inputRight = right;
-        }
-    }
-
     @Override
     public boolean isInRangeToRenderDist(double distance) {
         return true;
@@ -382,40 +330,18 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
-        posX = compound.getDouble("posX");
-        posY = compound.getDouble("posY");
-        posZ = compound.getDouble("posZ");
-        motionX = compound.getDouble("motionX");
-        motionY = compound.getDouble("motionY");
-        motionZ = compound.getDouble("motionZ");
-        maxHealth = compound.getFloat("maxHealth");
         health = compound.getFloat("health");
         fuel = compound.getFloat("fuel");
         currentSpeed = compound.getFloat("speed");
-        maxSpeed = compound.getFloat("maxSpeed");
-        acceleration = compound.getFloat("acceleration");
-        turnSpeed = compound.getFloat("turnSpeed");
         isBroken = compound.getBoolean("isBroken");
-        variantType = compound.getByte("colorVariant");
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setDouble("posX", this.posX);
-        compound.setDouble("posY", this.posY);
-        compound.setDouble("posZ", this.posZ);
-        compound.setDouble("motionX", this.motionX);
-        compound.setDouble("motionY", this.motionY);
-        compound.setDouble("motionZ", this.motionZ);
-        compound.setFloat("maxHealth", this.maxHealth);
         compound.setFloat("health", this.health);
         compound.setFloat("fuel", this.fuel);
         compound.setFloat("speed", this.currentSpeed);
-        compound.setFloat("maxSpeed", this.maxSpeed);
-        compound.setFloat("acceleration", this.acceleration);
-        compound.setFloat("turnSpeed", this.turnSpeed);
         compound.setBoolean("isBroken", this.isBroken);
-        compound.setByte("colorVariant", this.variantType);
     }
 
     @Override
@@ -440,29 +366,10 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
     }
 
-    public boolean noAccerationInput() {
-        return !inputForward && !inputBack;
-    }
-
-    public boolean noTurningInput() {
-        return !inputRight && !inputLeft;
-    }
-
-    public void setAllRequiredValues(float maxHealth, float health, float maxSpeed, float acceleration, float turnSpeed) {
-        this.maxHealth = maxHealth;
-        this.health = health;
-        this.maxSpeed = maxSpeed;
-        this.acceleration = acceleration;
-        this.turnSpeed = turnSpeed;
-    }
-
     public boolean hasFuel() {
         return fuel > 0;
     }
 
-    /**
-     * Call with Fuel can
-     **/
     public void refill(EntityPlayer source) {
         if (this.getPassengers().contains(source))
             fuel = fuel + 30f < 100f ? fuel + 30f : 100f;
@@ -470,47 +377,23 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             Pubgmc.logger.warn("{} has attempted to refuel vehicle with ID {}, but he wasn't inside the vehicle!", source, this.getEntityId());
     }
 
-    /**
-     * Decrement each tick
-     **/
     public void burnFuel() {
         fuel = hasFuel() ? fuel - 0.01f : 0f;
     }
 
-    public byte getColorVariantIndex() {
-        return variantType;
-    }
-
-    /**
-     * Call when car is spawned
-     **/
-    private void createColorVariant() {
-        variantType = (byte) (getTextureVariants() != null ? rand.nextInt(getTextureVariants().length) : 0);
-    }
-
     protected float generateFuel() {
-        return 60F + rand.nextInt(40) + rand.nextFloat();
+        return 60F + rand.nextInt(40);
     }
 
     @Override
     public void writeSpawnData(ByteBuf buf) {
-        buf.writeFloat(maxHealth);
         buf.writeFloat(health);
-        buf.writeFloat(maxSpeed);
-        buf.writeFloat(acceleration);
-        buf.writeFloat(turnSpeed);
         buf.writeFloat(fuel);
-        buf.writeByte(variantType);
     }
 
     @Override
     public void readSpawnData(ByteBuf buf) {
-        maxHealth = buf.readFloat();
         health = buf.readFloat();
-        maxSpeed = buf.readFloat();
-        acceleration = buf.readFloat();
-        turnSpeed = buf.readFloat();
         fuel = buf.readFloat();
-        variantType = buf.readByte();
     }
 }

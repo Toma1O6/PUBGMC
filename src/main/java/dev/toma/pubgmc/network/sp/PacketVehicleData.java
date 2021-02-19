@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.network.sp;
 
-import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;

@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.items;
 
-import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.EntityLivingBase;

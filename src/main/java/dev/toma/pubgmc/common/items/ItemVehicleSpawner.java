@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.items;
 
-import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import net.minecraft.entity.player.EntityPlayer;

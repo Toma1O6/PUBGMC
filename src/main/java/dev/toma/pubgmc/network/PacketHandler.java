@@ -25,7 +25,6 @@ public class PacketHandler {
         registerServerPacket(PacketUpdateBoostValue.Handler.class, PacketUpdateBoostValue.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
-        registerServerPacket(PacketHandleVehicleInput.Handler.class, PacketHandleVehicleInput.class);
         registerServerPacket(PacketSetScopeVariants.Handler.class, PacketSetScopeVariants.class);
         registerServerPacket(PacketChooseLocation.Handler.class, PacketChooseLocation.class);
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);

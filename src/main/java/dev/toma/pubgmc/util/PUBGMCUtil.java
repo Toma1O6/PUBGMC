@@ -3,7 +3,7 @@ package dev.toma.pubgmc.util;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
-import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketDelayedSound;
 import net.minecraft.client.model.ModelRenderer;

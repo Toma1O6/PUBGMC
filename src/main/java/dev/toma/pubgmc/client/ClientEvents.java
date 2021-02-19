@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.ModelGhillie;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
@@ -264,7 +264,7 @@ public class ClientEvents {
             mc.fontRenderer.drawStringWithShadow("Speed: " + DECIMAL.format(Math.abs(car.currentSpeed) * 48.5) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
         } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double health = car.health / car.maxHealth * 100;
+            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
