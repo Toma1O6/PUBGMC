@@ -10,6 +10,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemParachute extends PMCItem {
+
     public ItemParachute(String name) {
         super(name);
         setMaxStackSize(1);
@@ -27,8 +28,7 @@ public class ItemParachute extends PMCItem {
                     stack.shrink(1);
                 }
             } else playerIn.playSound(PMCSounds.chute_open, 1f, 1f);
-            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-        return new ActionResult<>(EnumActionResult.FAIL, stack);
+        return ActionResult.newResult(EnumActionResult.PASS, stack);
     }
 }

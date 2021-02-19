@@ -1,150 +1,103 @@
 package dev.toma.pubgmc.common.entity;
 
-import dev.toma.pubgmc.init.PMCSounds;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.Entity;
+import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.common.entity.controllable.EntityControllable;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityParachute extends Entity implements IEntityAdditionalSpawnData {
-    public static final float MAX_TURN_MODIFIER = 2.5f;
-    private Entity user;
-    private int color = 0;
-    private float turnModifier = 0f;
-    private boolean inputDown, inputUp, inputRight, inputLeft = false;
+public class EntityParachute extends EntityControllable {
+
+    float turningSpeed;
+    int emptyTicks;
 
     public EntityParachute(World world) {
         super(world);
-        preventEntitySpawning = true;
     }
 
-    public EntityParachute(World world, Entity user) {
+    public EntityParachute(World world, EntityLivingBase user) {
         this(world);
-        setPosition(user.posX, user.posY, user.posZ);
-        setSilent(true);
-        setSize(1f, 1f);
-        this.user = user;
-        rotationYaw = user.rotationYaw;
-
-        prevPosX = user.posX;
-        prevPosY = user.posY;
-        prevPosZ = user.posZ;
-
-        handleColorState();
+        this.setPosition(user.posX, user.posY, user.posZ);
+        this.setRotation(user.rotationYaw, 0.0F);
+        this.motionX = user.motionX;
+        this.motionY = user.motionY;
+        this.motionZ = user.motionZ;
     }
 
     @Override
-    public void onUpdate() {
-        if (this.isBeingRidden()) {
-            if (this.getControllingPassenger() != null) {
-                Entity entity = this.getControllingPassenger();
-                BlockPos pos = entity.getPosition();
-                motionY = -0.2d;
+    public double getMountedYOffset() {
+        return 0.5D;
+    }
 
-                if (onGround || isInWater() || isInLava()) {
-                    onParachuteLand();
-                }
-
-                if (entity instanceof EntityPlayer) {
-                    EntityPlayer player = (EntityPlayer) entity;
-                    handleMovement(player);
-                }
-
-                if (!world.isAirBlock(new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ())) ||
-                        !world.isAirBlock(new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ())) ||
-                        !world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ() + 1)) ||
-                        !world.isAirBlock(new BlockPos(pos.getX(), pos.getY(), pos.getZ() - 1)))
-                    onParachuteLand();
+    @Override
+    public void updatePre() {
+        if(!this.hasTurnInput()) {
+            float rotationSpeedDrop = 1.0F;
+            turningSpeed = Math.abs(turningSpeed - rotationSpeedDrop) <= rotationSpeedDrop ? 0.0F : turningSpeed > 0 ? turningSpeed - rotationSpeedDrop : turningSpeed < 0 ? turningSpeed + rotationSpeedDrop : 0.0F;
+        }
+        if(!this.hasMovementInput()) {
+            rotationPitch = Math.abs(rotationPitch - 1.0F) <= 1.0F ? 0.0F : rotationPitch > 0 ? rotationPitch - 1.0F : rotationPitch < 0 ? rotationPitch + 1.0F : 0.0F;
+        }
+        if(!this.isBeingRidden()) {
+            if(++emptyTicks >= 100) {
+                setDead();
             }
-        } else setDead();
+        }
+        this.rotationYaw += turningSpeed;
+        if(isBeingRidden()) {
+            if(onGround || collided) {
+                removePassengers();
+                return;
+            }
+            if(!isDeployed())
+                return;
+            this.fallDistance = 0.0F;
+            Vec3d look = this.getLookVec();
+            double x = look.x / 2;
+            double z = look.z / 2;
+            double speed = 1 + rotationPitch / 30.0F;
+            this.motionX = x;
+            this.motionY = -0.25 * speed;
+            this.motionZ = z;
+        } else {
+            motionX = 0;
+            motionY = 0;
+            motionZ = 0;
+        }
+    }
+
+    @Override
+    public void updatePost() {
         move(MoverType.SELF, motionX, motionY, motionZ);
-        super.onUpdate();
-    }
-
-    protected void handleMovement(EntityPlayer user) {
-        if (inputUp && !inputDown) {
-            if (this.rotationPitch < 35f) {
-                rotationPitch += 2f;
-            }
+        if(!isBeingRidden()) {
+            reset();
         }
-
-        if (inputDown && !inputUp) {
-            if (this.rotationPitch > 0) {
-                rotationPitch -= 2f;
-                if (rotationPitch < 0) rotationPitch = 0f;
-            }
-        }
-
-        if (inputRight && !inputLeft) {
-            if (turnModifier < MAX_TURN_MODIFIER) {
-                turnModifier += 0.4f;
-            }
-        }
-
-        if (inputLeft && !inputRight) {
-            if (turnModifier > -MAX_TURN_MODIFIER) {
-                turnModifier -= 0.4f;
-            }
-        }
-
-        this.rotationYaw += turnModifier;
-
-        if (noHorizontalMovementInput() && turnModifier != 0) {
-            if (turnModifier > 0 && turnModifier - 0.25f < 0) turnModifier = 0f;
-            if (turnModifier < 0 && turnModifier + 0.25f > 0) turnModifier = 0f;
-            if (turnModifier > 0) turnModifier -= 0.25f;
-            if (turnModifier < 0) turnModifier += 0.25f;
-        }
-
-        if (noVerticalMovementInput() && rotationPitch != 0) {
-            if (rotationPitch > 0) rotationPitch -= 0.5f;
-            if (rotationPitch < 0) rotationPitch = 0f;
-        }
-
-        float speedModifier = 1f;
-        Vec3d lookVec = this.getLookVec();
-        if (rotationPitch > 0) speedModifier = 1 - (rotationPitch / 100) * 1.75f;
-
-        motionX = lookVec.x * speedModifier * 0.7d;
-        motionZ = lookVec.z * speedModifier * 0.7d;
     }
 
     @Override
-    public void applyOrientationToEntity(Entity entityToUpdate) {
-        entityToUpdate.rotationYaw = this.rotationYaw;
-        entityToUpdate.rotationPitch = this.rotationPitch;
+    public void handleForward() {
+        if(isDeployed()) rotationPitch = DevUtil.wrap(rotationPitch + 1.5F, -15.0F, 30.0F);
     }
 
     @Override
-    public Entity getControllingPassenger() {
-        return this.isBeingRidden() ? this.getPassengers().get(0) : null;
-    }
-
-    private void handleColorState() {
-        color = rand.nextInt(EnumDyeColor.values().length);
+    public void handleBackward() {
+        if(isDeployed())  rotationPitch = DevUtil.wrap(rotationPitch - 1F, -15.0F, 30.0F);
     }
 
     @Override
-    public void fall(float distance, float damageMultiplier) {
+    public void handleRight() {
+        if(isDeployed()) turningSpeed = DevUtil.wrap(turningSpeed + 1F, -5F, 5F);
+    }
+
+    @Override
+    public void handleLeft() {
+        if(isDeployed()) turningSpeed = DevUtil.wrap(turningSpeed - 1F, -5F, +5F);
     }
 
     @Override
     public boolean isInRangeToRenderDist(double distance) {
-        return true;
-    }
-
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float f) {
-        setDead();
-        return true;
+        return distance < 256.0D;
     }
 
     @Override
@@ -152,74 +105,11 @@ public class EntityParachute extends Entity implements IEntityAdditionalSpawnDat
         return false;
     }
 
-    @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
-        posX = compound.getDouble("posX");
-        posY = compound.getDouble("posY");
-        posZ = compound.getDouble("posZ");
-        motionX = compound.getDouble("motionX");
-        motionY = compound.getDouble("motionY");
-        motionZ = compound.getDouble("motionZ");
+    boolean isDeployed() {
+        return ticksExisted > 20;
     }
 
-    @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setDouble("posX", posX);
-        compound.setDouble("posY", posY);
-        compound.setDouble("posZ", posZ);
-        compound.setDouble("motionX", motionX);
-        compound.setDouble("motionY", motionY);
-        compound.setDouble("motionZ", motionZ);
-    }
-
-    @Override
-    protected void entityInit() {
-    }
-
-    private void onParachuteLand() {
-        world.playSound(null, getPosition(), PMCSounds.chute_land, SoundCategory.MASTER, 3f, 1f);
-        this.removePassengers();
-        setDead();
-    }
-
-    private boolean noInput() {
-        return !this.inputDown && !this.inputUp && !this.inputRight && !this.inputRight;
-    }
-
-    private boolean noHorizontalMovementInput() {
-        return !this.inputRight && !this.inputLeft;
-    }
-
-    private boolean noVerticalMovementInput() {
-        return !this.inputDown && !this.inputUp;
-    }
-
-    public void handleInputs(boolean down, boolean up, boolean right, boolean left) {
-        this.inputDown = up;
-        this.inputUp = down;
-        this.inputRight = right;
-        this.inputLeft = left;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int colorID) {
-        this.color = colorID;
-    }
-
-    public Entity getUser() {
-        return user;
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf buf) {
-        color = buf.readInt();
-    }
-
-    @Override
-    public void writeSpawnData(ByteBuf buf) {
-        buf.writeInt(color);
+    public int getEmptyTicks() {
+        return emptyTicks;
     }
 }

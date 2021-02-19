@@ -66,22 +66,15 @@ public class Pubgmc {
         return RANDOM;
     }
 
-    /**
-     * Gamerule registry
-     *
-     * @param e - the event
-     */
+    // TODO move to LoadWorldEvent
     private static void registerGamerules(FMLServerStartingEvent e) {
         GameRules gr = e.getServer().getWorld(0).getGameRules();
-
         if (!gr.hasRule("weaponCrafting")) {
             gr.addGameRule("weaponCrafting", "true", GameRules.ValueType.BOOLEAN_VALUE);
         }
-
         if (!gr.hasRule("weaponGriefing")) {
             gr.addGameRule("weaponGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
         }
-
         logger.log(Level.INFO, "Registered gamerules");
     }
 
@@ -146,5 +139,9 @@ public class Pubgmc {
         registerGamerules(event);
 
         logger.log(Level.INFO, "Registered commands");
+    }
+
+    public static ResourceLocation getResource(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

@@ -4,8 +4,8 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.ModelGhillie;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.entity.EntityParachute;
 import dev.toma.pubgmc.common.entity.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
@@ -25,6 +25,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -628,8 +629,12 @@ public class ClientEvents {
         if (player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
             if (ev.phase == Phase.END) {
-                handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
-                handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
+                if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
+                    IControllable controllable = (IControllable) player.getRidingEntity();
+                    int inputs = controllable.encode(gs);
+                    controllable.handle((byte) inputs);
+                    PacketHandler.sendToServer(new SPacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
+                }
 
                 if (gs.keyBindAttack.isKeyDown()) {
                     if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
@@ -932,21 +937,5 @@ public class ClientEvents {
 
     private boolean canSwitchType(ItemStack heldStack) {
         return heldStack.hasTagCompound() && heldStack.getTagCompound().getInteger("scope") == 1;
-    }
-
-    private void handleVehicleControls(boolean forward, boolean back, boolean right, boolean left, EntityPlayer player) {
-        if (player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-            vehicle.handleInputs(forward, back, right, left, player);
-            PacketHandler.sendToServer(new PacketHandleVehicleInput(forward, back, right, left, vehicle.getEntityId()));
-        }
-    }
-
-    private void handleParachuteControls(boolean down, boolean up, boolean right, boolean left, EntityPlayer player) {
-        if (player.getRidingEntity() instanceof EntityParachute) {
-            EntityParachute chute = (EntityParachute) player.getRidingEntity();
-            chute.handleInputs(down, up, right, left);
-            PacketHandler.INSTANCE.sendToServer(new PacketHandleParachuteInputs(up, down, right, left));
-        }
     }
 }

@@ -16,11 +16,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler {
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Pubgmc.MOD_ID);
-    private static int ID = -1;
+    private static int ID = 0;
 
-    /**
-     * Register packets here
-     */
     public static void initialize() {
         registerServerPacket(PacketServerAction.Handler.class, PacketServerAction.class);
         registerServerPacket(PacketFiremode.Handler.class, PacketFiremode.class);
@@ -28,7 +25,6 @@ public class PacketHandler {
         registerServerPacket(PacketUpdateBoostValue.Handler.class, PacketUpdateBoostValue.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
-        registerServerPacket(PacketHandleParachuteInputs.Handler.class, PacketHandleParachuteInputs.class);
         registerServerPacket(PacketHandleVehicleInput.Handler.class, PacketHandleVehicleInput.class);
         registerServerPacket(PacketSetScopeVariants.Handler.class, PacketSetScopeVariants.class);
         registerServerPacket(PacketChooseLocation.Handler.class, PacketChooseLocation.class);
@@ -37,6 +33,7 @@ public class PacketHandler {
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
         registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
         registerServerPacket(PacketUpdateLootData.Handler.class, PacketUpdateLootData.class);
+        registerServerPacket(SPacketControllableInput.Handler.class, SPacketControllableInput.class);
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
