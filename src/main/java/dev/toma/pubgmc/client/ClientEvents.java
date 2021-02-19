@@ -126,8 +126,6 @@ public class ClientEvents {
     private int currentColor = 0;
     private int currentType = 0;
 
-    private boolean loadedCommunityContent = false;
-
     /**
      * Function for rendering the textured boost overlays
      * Used to make rendering actual rendering code shorter and easier to read
@@ -154,10 +152,6 @@ public class ClientEvents {
             //This will render after these 2 above to make sure this will always be on the top
             ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
         }
-    }
-
-    private static void sendWarningToPlayer(EntityPlayer player, String textToSend) {
-        player.sendMessage(new TextComponentString(TextFormatting.RED + textToSend));
     }
 
     private static int getScopeTypeID(int scope, int color) {
@@ -278,8 +272,6 @@ public class ClientEvents {
     }
 
     static {
-        SCOPES.clear();
-        HOLOS.clear();
         SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_red.png"));
         SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_green.png"));
         SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_yellow.png"));
@@ -633,66 +625,60 @@ public class ClientEvents {
             recoilTicks--;
         }
 
-        //We have to check this otherwise it would crash in the menu since this event is running as soon as your minecraft client is started
         if (player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-            //Get the player capability
             IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-
-            //This takes care of vehicle controls
             if (ev.phase == Phase.END) {
                 handleVehicleControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
                 handleParachuteControls(gs.keyBindForward.isKeyDown(), gs.keyBindBack.isKeyDown(), gs.keyBindRight.isKeyDown(), gs.keyBindLeft.isKeyDown(), player);
-            }
 
-            //Automatic fire is handled here because Mouse input event is acting weirdly
-            if (gs.keyBindAttack.isKeyDown() && ev.phase == Phase.END) {
-                if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                    GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                    if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading()) {
-                        if (gun.hasAmmo(player.getHeldItemMainhand())) {
-                            recoilTicks = 10;
-                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                            this.applyRecoil(player, player.getHeldItemMainhand());
-                        } else {
-                            player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                if (gs.keyBindAttack.isKeyDown()) {
+                    if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
+                        GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+                        if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading()) {
+                            if (gun.hasAmmo(player.getHeldItemMainhand())) {
+                                recoilTicks = 10;
+                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                this.applyRecoil(player, player.getHeldItemMainhand());
+                            } else {
+                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                            }
                         }
                     }
                 }
-            }
 
-            //Burst fire is handled here
-            if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
-                ItemStack stack = player.getHeldItemMainhand();
-                GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                int maxRounds = gun.isHasTwoRoundBurst() ? 3 : 6;
-                if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
-                    if (shooting && gun.getFiremode() == GunBase.Firemode.BURST) {
-                        shootingTimer++;
+                if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
+                    ItemStack stack = player.getHeldItemMainhand();
+                    GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+                    int maxRounds = gun.isHasTwoRoundBurst() ? 3 : 6;
+                    if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
+                        if (shooting && gun.getFiremode() == GunBase.Firemode.BURST) {
+                            shootingTimer++;
 
-                        //Set it to 5 for 3 round burst
-                        if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
-                            recoilTicks = 10;
-                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                            applyRecoil(player, stack);
-                            shotsFired++;
-                            shootingTimer = 0;
-                        }
+                            //Set it to 5 for 3 round burst
+                            if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
+                                recoilTicks = 10;
+                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                applyRecoil(player, stack);
+                                shotsFired++;
+                                shootingTimer = 0;
+                            }
 
-                        if (shotsFired >= maxRounds || !gun.hasAmmo(stack)) {
+                            if (shotsFired >= maxRounds || !gun.hasAmmo(stack)) {
+                                shooting = false;
+                                shootingTimer = 0;
+                                shotsFired = 0;
+                            }
+                        } else {
                             shooting = false;
                             shootingTimer = 0;
                             shotsFired = 0;
                         }
                     } else {
-                        shooting = false;
-                        shootingTimer = 0;
-                        shotsFired = 0;
-                    }
-                } else {
-                    if (shooting) {
-                        shooting = false;
-                        shootingTimer = 0;
-                        shotsFired = 0;
+                        if (shooting) {
+                            shooting = false;
+                            shootingTimer = 0;
+                            shotsFired = 0;
+                        }
                     }
                 }
             }
@@ -739,6 +725,7 @@ public class ClientEvents {
             }
 
             //After 4 seconds decrease the boost by 1 and send the new boost value to server
+            // TODO this is big trash - client -> server control?
             if (timer++ >= 80 && data.getBoost() > 0) {
                 timer = 0;
                 data.removeBoost(1);

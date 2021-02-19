@@ -1,5 +1,6 @@
 package dev.toma.pubgmc;
 
+import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.common.capability.IPlayerData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
@@ -7,6 +8,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,5 +73,9 @@ public class ClientHooks {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 0.9F, 0.12F);
         }
+    }
+
+    public static void player_constructRender(RenderPlayer renderPlayer, RenderManager manager, boolean useSmallArms) {
+        renderPlayer.addLayer(new LayerGhillie(renderPlayer));
     }
 }
