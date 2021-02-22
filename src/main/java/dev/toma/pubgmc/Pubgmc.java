@@ -1,5 +1,6 @@
 package dev.toma.pubgmc;
 
+import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.IPlayerData;
@@ -20,11 +21,14 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -55,12 +59,11 @@ public class Pubgmc {
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");
     public static boolean isDevEnvironment;
-
     @Instance
     public static Pubgmc instance;
-
     @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
     public static Proxy proxy;
+    private static final ContentManager contentManager = new ContentManager();
 
     public static Random rng() {
         return RANDOM;
@@ -141,7 +144,20 @@ public class Pubgmc {
         logger.log(Level.INFO, "Registered commands");
     }
 
+    public static boolean isOutdated() {
+        ModContainer container = Loader.instance().activeModContainer();
+        if(container == null)
+            return false;
+        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
+        ForgeVersion.Status status = result.status;
+        return status == ForgeVersion.Status.OUTDATED || status == ForgeVersion.Status.BETA_OUTDATED;
+    }
+
     public static ResourceLocation getResource(String path) {
         return new ResourceLocation(MOD_ID, path);
+    }
+
+    public static ContentManager getContentManager() {
+        return contentManager;
     }
 }

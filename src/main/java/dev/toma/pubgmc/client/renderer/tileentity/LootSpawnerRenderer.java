@@ -6,8 +6,6 @@ import dev.toma.pubgmc.common.items.heal.ItemEnergyDrink;
 import dev.toma.pubgmc.common.items.heal.ItemFirstAidKit;
 import dev.toma.pubgmc.common.items.heal.ItemPainkiller;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
-import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.client.CFGLootRenderStyle;
 import dev.toma.pubgmc.init.PMCRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

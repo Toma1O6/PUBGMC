@@ -29,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -620,10 +621,15 @@ public class ClientEvents {
     //All tick related stuff from client will be handled here
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClientTick(TickEvent.ClientTickEvent ev) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        GameSettings gs = Minecraft.getMinecraft().gameSettings;
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.player;
+        GameSettings gs = mc.gameSettings;
         if(recoilTicks > 0) {
             recoilTicks--;
+        }
+
+        if(ev.phase == Phase.START && mc.currentScreen instanceof ITickable) {
+            ((ITickable) mc.currentScreen).update();
         }
 
         if (player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {

@@ -61,6 +61,7 @@ public class ClientProxy extends Proxy {
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new RenderHandler());
         registerEntityRenderers();
+        Pubgmc.getContentManager().initialize();
     }
 
     @SideOnly(Side.CLIENT)

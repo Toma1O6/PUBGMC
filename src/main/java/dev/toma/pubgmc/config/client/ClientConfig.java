@@ -11,6 +11,7 @@ public final class ClientConfig extends ObjectType {
     public EnumType<CFGAimType> aimType;
     public CFGOverlaySettings overlays;
     public CFGOtherSettings other;
+    public CFGContentSettings content;
 
     public ClientConfig(ConfigPlugin plugin) {
         super("Client", "All client-side related stuff is here");
@@ -22,5 +23,6 @@ public final class ClientConfig extends ObjectType {
         aimType = configCreator.createEnum("Aim type", CFGAimType.TOGGLE);
         overlays = configCreator.createObject(new CFGOverlaySettings(plugin), plugin);
         other = configCreator.createObject(new CFGOtherSettings(), plugin);
+        content = configCreator.createObject(new CFGContentSettings(), plugin);
     }
 }
