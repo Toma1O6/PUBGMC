@@ -31,7 +31,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
     static final ResourceLocation PATREON_ICON = Pubgmc.getResource("textures/gui/menu/patreon.png");
     static final ResourceLocation TITLE = Pubgmc.getResource("textures/gui/menu/title.png");
     static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
-    protected String clickedUrl;
+    public String clickedUrl;
 
     @Override
     public void onRefresh() {
@@ -45,7 +45,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         boolean splitModsAndQuitButtons = height < 280;
         int initialHeight = !splitModsAndQuitButtons ? 80 : 0;
         // anouncements
-        addWidget(new EventPanelComponent(15, initialHeight + 20, w, 68));
+        addWidget(new EventPanelComponent(this, 15, initialHeight + 20, w, 68));
         // singleplayer
         int hw = w / 2;
         // TODO
@@ -82,11 +82,11 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             }
         });
         // discord server ad
-        addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, "https://discord.gg/WmdUKZz", this).withInfo("Official discord server"));
+        addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, "https://discord.gg/WmdUKZz", this, true).withInfo("Official discord server"));
         // official mod host site
-        addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
+        addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this, true).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
         // patreon
-        addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this).withInfo("Become a patron"));
+        addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this, true).withInfo("Become a patron"));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         }
     }
 
-    void openWebLink(String link) {
+    public void openWebLink(String link) {
         try {
             URI url = new URI(link);
             Class<?> oclass = Class.forName("java.awt.Desktop");
@@ -213,20 +213,22 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
     public static class EventPanelComponent extends Widget implements ITickable {
 
+        final GuiMenu parent;
         final int count;
         short timer = 100;
         int currentMsg = 0;
         private final List<Widget> msgComponents = new ArrayList<>();
         private final List<Widget> children = new ArrayList<>();
 
-        public EventPanelComponent(int x, int y, int width, int height) {
+        public EventPanelComponent(GuiMenu parent, int x, int y, int width, int height) {
             super(x, y, width, height);
+            this.parent = parent;
             this.count = getMessageCount();
             if (count > 0) {
                 Optional<MenuDisplayContent[]> optional = allContent();
                 optional.ifPresent(arr -> {
                     for (MenuDisplayContent mdc : arr) {
-                        msgComponents.add(mdc.createWidget(x + 4, y + 15, width - 8, 40));
+                        msgComponents.add(mdc.createWidget(parent, x + 4, y + 15, width - 8, 40));
                     }
                 });
             }
@@ -345,14 +347,16 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         final GuiMenu parent;
         final String link;
         final ResourceLocation texture;
+        final boolean trusted;
         String info;
         boolean notify;
 
-        LinkImageComponent(int x, int y, int width, int height, ResourceLocation texture, String link, GuiMenu parent) {
+        LinkImageComponent(int x, int y, int width, int height, ResourceLocation texture, String link, GuiMenu parent, boolean trusted) {
             super(x, y, width, height, texture, null);
             this.parent = parent;
             this.link = link;
             this.texture = texture;
+            this.trusted = trusted;
         }
 
         LinkImageComponent notificationOn(boolean notify) {
@@ -385,9 +389,13 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
-            Minecraft mc = Minecraft.getMinecraft();
-            parent.clickedUrl = link;
-            mc.displayGuiScreen(new GuiConfirmOpenLink(parent, link, 31102009, false));
+            if(trusted) {
+                parent.openWebLink(link);
+            } else {
+                Minecraft mc = Minecraft.getMinecraft();
+                parent.clickedUrl = link;
+                mc.displayGuiScreen(new GuiConfirmOpenLink(parent, link, 31102009, false));
+            }
         }
     }
 }

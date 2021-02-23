@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,7 +51,7 @@ public class CommunityEvent extends MenuDisplayContent {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Widget createWidget(int x, int y, int width, int height) {
+    public Widget createWidget(GuiMenu parent, int x, int y, int width, int height) {
         return new EventWidget(x, y, width, height, this);
     }
 

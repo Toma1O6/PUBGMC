@@ -30,7 +30,7 @@ public class EventWidget extends Widget {
 
     @Override
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        ImageUtil.drawShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
+        ImageUtil.drawShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.25F);
         FontRenderer renderer = mc.fontRenderer;
         renderer.drawString(TextFormatting.YELLOW.toString() + TextFormatting.UNDERLINE + event.getName(), x + 3, y + 4, 0xffffff);
         renderer.drawString(stringCache != null ? stringCache : event.isLive() ? "Live" : "Ended", x + 3, y + 16, 0xffffff);
@@ -48,7 +48,7 @@ public class EventWidget extends Widget {
             int color = red | 0xff00;
             renderer.drawString("LIVE! Click to join!", x + 3, y + 28, color);
         } else {
-            renderer.drawString("Event host: " + event.getHost(), x + 3, y + 28, 0xffffff);
+            renderer.drawString("Host: " + event.getHost(), x + 3, y + 28, 0xffffff);
         }
     }
 }

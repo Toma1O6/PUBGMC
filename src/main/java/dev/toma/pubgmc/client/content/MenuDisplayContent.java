@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.content;
 
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,14 +17,11 @@ public class MenuDisplayContent {
 
     public static void registerDeserializers() {
         addDeserializer("event", CommunityEvent::deserialize);
-    }
-
-    public void onClicked() {
-
+        addDeserializer("announcement", Announcement::deserialize);
     }
 
     @SideOnly(Side.CLIENT)
-    public Widget createWidget(int x, int y, int width, int height) {
+    public Widget createWidget(GuiMenu parent, int x, int y, int width, int height) {
         return null;
     }
 
