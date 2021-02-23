@@ -28,7 +28,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
     static final ResourceLocation DISCORD_ICON = Pubgmc.getResource("textures/gui/menu/discord.png");
     static final ResourceLocation CF_ICON = Pubgmc.getResource("textures/gui/menu/curseforge.png");
-    static final ResourceLocation PAYPAL_ICON = Pubgmc.getResource("textures/gui/menu/paypal.png");
+    static final ResourceLocation PATREON_ICON = Pubgmc.getResource("textures/gui/menu/patreon.png");
     static final ResourceLocation TITLE = Pubgmc.getResource("textures/gui/menu/title.png");
     static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
     protected String clickedUrl;
@@ -85,8 +85,8 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, "https://discord.gg/WmdUKZz", this).withInfo("Official discord server"));
         // official mod host site
         addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
-        // paypal donation
-        addWidget(new LinkImageComponent(40, height - 20, 20, 20, PAYPAL_ICON, "https://www.paypal.com/cgi-bin/webscr?return=https://www.curseforge.com/projects/297074&cn=Add+special+instructions+to+the+addon+author()&business=novotny.tom96%40gmail.com&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted&cancel_return=https://www.curseforge.com/projects/297074&lc=US&item_name=Support+PUBGMC+project+development&cmd=_donations&rm=1&no_shipping=1&currency_code=USD", this).withInfo("Donations"));
+        // patreon
+        addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this).withInfo("Become a patron"));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             Object object = oclass.getMethod("getDesktop").invoke(null);
             oclass.getMethod("browse", URI.class).invoke(object, url);
         } catch (Throwable throwable1) {
-            Pubgmc.logger.error("Couldn't open link: {}", String.valueOf(link));
+            Pubgmc.logger.error("Couldn't open link: {}", link);
         }
     }
 
