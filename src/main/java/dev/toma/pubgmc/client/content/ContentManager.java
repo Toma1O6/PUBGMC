@@ -67,6 +67,10 @@ public class ContentManager {
             if(cache == null) {
                 cacheResult(result);
                 log.info("Content loaded");
+                if(!updatePeriodically) {
+                    executorService.shutdown();
+                    log.info("Shutting down Content Thread because periodic updates are disabled");
+                }
             } else {
                 cache.updateModifiable(result);
             }
