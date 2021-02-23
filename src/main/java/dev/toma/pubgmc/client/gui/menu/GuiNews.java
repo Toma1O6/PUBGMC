@@ -101,7 +101,7 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
         if(list.size() > lineCount) {
             drawScrollbar(quarter + w);
         }
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        drawWidgets(mc, mouseX, mouseY, partialTicks);
         Widget.drawColorShape(quarter, height - 31, quarter + w, height - 29, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 

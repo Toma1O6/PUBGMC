@@ -40,10 +40,11 @@ public class ContentManager {
     public void initialize() {
         log.info("Initializing content manager");
         try {
-            url = new URL("path");
+            url = new URL("https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/content.json");
         } catch (MalformedURLException ex) {
             throw new ReportedException(CrashReport.makeCrashReport(ex, "Invalid content URL. Contact mod author"));
         }
+        MenuDisplayContent.registerDeserializers();
         start();
     }
 
@@ -55,7 +56,7 @@ public class ContentManager {
         if(updatePeriodically = ConfigPMC.client.content.periodicUpdates.get()) {
             this.schedulePeriodicUpdates();
         } else {
-            executorService.submit(this::loadContent);
+            task = executorService.submit(this::loadContent);
         }
     }
 
@@ -112,10 +113,8 @@ public class ContentManager {
         return builder.toString();
     }
 
-    void cacheResult(ContentResult result) {
-        synchronized (cache) {
-            cache = result;
-        }
+    synchronized void cacheResult(ContentResult result) {
+        cache = result;
     }
 
     void schedulePeriodicUpdates() {

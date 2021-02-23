@@ -19,17 +19,19 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.client.GuiModList;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class GuiMenu extends GuiWidgets implements RefreshListener {
 
-    static final ResourceLocation DISCORD_ICON = Pubgmc.getResource("textures/icons/discord.png");
-    static final ResourceLocation CF_ICON = Pubgmc.getResource("textures/icons/curseforge.png");
-    static final ResourceLocation PAYPAL_ICON = Pubgmc.getResource("textures/icons/paypal.png");
-    static final ResourceLocation TITLE = Pubgmc.getResource("textures/screen/title.png");
-    static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/screen/main_menu.png");
+    static final ResourceLocation DISCORD_ICON = Pubgmc.getResource("textures/gui/menu/discord.png");
+    static final ResourceLocation CF_ICON = Pubgmc.getResource("textures/gui/menu/curseforge.png");
+    static final ResourceLocation PAYPAL_ICON = Pubgmc.getResource("textures/gui/menu/paypal.png");
+    static final ResourceLocation TITLE = Pubgmc.getResource("textures/gui/menu/title.png");
+    static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
+    protected String clickedUrl;
 
     @Override
     public void onRefresh() {
@@ -59,7 +61,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         addWidget(new ButtonWidget(15, initialHeight + 150, w, 20, "Settings", (c, x, y, b) -> mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings))));
         int lowestPoint;
         // mods & quit buttons
-        if(splitModsAndQuitButtons) {
+        if (splitModsAndQuitButtons) {
             int half = w / 2;
             addWidget(new ButtonWidget(15, 175, half - 5, 20, "Mods", (c, x, y, b) -> mc.displayGuiScreen(new GuiModList(this))));
             addWidget(new ButtonWidget(15 + half + 5, 175, half - 5, 20, "Quit", (c, x, y, b) -> mc.shutdown()));
@@ -72,7 +74,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         // news panel
         addWidget(new InfoPanelComponent(15 + 2 * wd4, 20, 2 * wd4 - 30, lowestPoint - 20 + initialHeight, this));
         // title
-        if(!splitModsAndQuitButtons) addWidget(new Widget(40, 25, w - 50, 50) {
+        if (!splitModsAndQuitButtons) addWidget(new Widget(40, 25, w - 50, 50) {
             @Override
             public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
                 mc.getTextureManager().bindTexture(TITLE);
@@ -82,9 +84,32 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         // discord server ad
         addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, "https://discord.gg/WmdUKZz", this).withInfo("Official discord server"));
         // official mod host site
-        addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this).withInfo("Mod info website").notificationOn(Pubgmc.isOutdated()));
+        addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
         // paypal donation
         addWidget(new LinkImageComponent(40, height - 20, 20, 20, PAYPAL_ICON, "https://www.paypal.com/cgi-bin/webscr?return=https://www.curseforge.com/projects/297074&cn=Add+special+instructions+to+the+addon+author()&business=novotny.tom96%40gmail.com&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted&cancel_return=https://www.curseforge.com/projects/297074&lc=US&item_name=Support+PUBGMC+project+development&cmd=_donations&rm=1&no_shipping=1&currency_code=USD", this).withInfo("Donations"));
+    }
+
+    @Override
+    public void confirmClicked(boolean result, int id) {
+        if (id == 31102009) {
+            if (result) {
+                this.openWebLink(clickedUrl);
+            }
+
+            this.clickedUrl = null;
+            this.mc.displayGuiScreen(this);
+        }
+    }
+
+    void openWebLink(String link) {
+        try {
+            URI url = new URI(link);
+            Class<?> oclass = Class.forName("java.awt.Desktop");
+            Object object = oclass.getMethod("getDesktop").invoke(null);
+            oclass.getMethod("browse", URI.class).invoke(object, url);
+        } catch (Throwable throwable1) {
+            Pubgmc.logger.error("Couldn't open link: {}", String.valueOf(link));
+        }
     }
 
     @Override
@@ -92,7 +117,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         FontRenderer renderer = mc.fontRenderer;
         mc.getTextureManager().bindTexture(BACKGROUND_TEXTURE);
         Widget.drawTexturedShape(0, 0, width, height);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        drawWidgets(mc, mouseX, mouseY, partialTicks);
         renderer.drawString("Copyright Mojang AB. Do not distribute!", width - 200, height - 10, 0xffffff);
     }
 
@@ -109,12 +134,12 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         @Override
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             boolean hovered = isMouseOver(mouseX, mouseY);
-            if(hovered) {
+            if (hovered) {
                 b1.render(mc, mouseX, mouseY, partialTicks);
                 b2.render(mc, mouseX, mouseY, partialTicks);
             } else {
                 drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
-                if(hovered) {
+                if (hovered) {
                     drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.5F);
                 }
                 int w = mc.fontRenderer.getStringWidth(text);
@@ -141,39 +166,40 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             super(x, y, width, height);
             ContentResult result = Pubgmc.getContentManager().getCachedResult();
             String[] strings = new String[0];
-            if(result != null) {
+            if (result != null) {
                 strings = result.getNews();
             }
             int max = width - 20;
             FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
-            for(String string : strings) {
+            for (String string : strings) {
                 ITextComponent component = ForgeHooks.newChatWithLinks(string, false);
-                if(max >= 0) {
+                if (max >= 0) {
                     textComponents.addAll(GuiUtilRenderComponents.splitText(component, max, renderer, true, true));
                 }
             }
-            if(textComponents.isEmpty()) {
+            if (textComponents.isEmpty()) {
                 TextComponentString stc = new TextComponentString(TextFormatting.RED + "Unable to receive latest news, check your internet connection");
                 textComponents.addAll(GuiUtilRenderComponents.splitText(stc, max, renderer, true, true));
             }
             int lineLimit = height / (renderer.FONT_HEIGHT + 1) - 1;
             boolean flag = false;
-            if(textComponents.size() > lineLimit) {
+            if (textComponents.size() > lineLimit) {
                 lineLimit -= 1;
                 flag = true;
             }
             while (textComponents.size() > lineLimit) {
                 textComponents.remove(textComponents.size() - 1);
             }
-            if(flag) textComponents.add(new TextComponentString(TextFormatting.YELLOW.toString() + TextFormatting.ITALIC + "Click to read more..."));
+            if (flag)
+                textComponents.add(new TextComponentString(TextFormatting.YELLOW.toString() + TextFormatting.ITALIC + "Click to read more..."));
             this.parent = screen;
         }
 
         @Override
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, isMouseOver(mouseX, mouseY) ? 0.7F : 0.5F);
-            for(int i = 0; i < textComponents.size(); i++) {
-                if(i >= textComponents.size()) break;
+            for (int i = 0; i < textComponents.size(); i++) {
+                if (i >= textComponents.size()) break;
                 ITextComponent component = textComponents.get(i);
                 mc.fontRenderer.drawString(component.getFormattedText(), x + 8, y + 5 + i * 10, 0xffffff);
             }
@@ -196,10 +222,10 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         public EventPanelComponent(int x, int y, int width, int height) {
             super(x, y, width, height);
             this.count = getMessageCount();
-            if(count > 0) {
+            if (count > 0) {
                 Optional<MenuDisplayContent[]> optional = allContent();
                 optional.ifPresent(arr -> {
-                    for(MenuDisplayContent mdc : arr) {
+                    for (MenuDisplayContent mdc : arr) {
                         msgComponents.add(mdc.createWidget(x + 4, y + 15, width - 8, 40));
                     }
                 });
@@ -210,7 +236,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int mouseButton) {
             for (Widget component : children) {
-                if(component.handleClicked(mouseX, mouseY, mouseButton)) {
+                if (component.handleClicked(mouseX, mouseY, mouseButton)) {
                     return true;
                 }
             }
@@ -219,11 +245,11 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         public void updateChilds() {
             children.clear();
-            if(count > 1) {
+            if (count > 1) {
                 children.add(msgComponents.get(currentMsg));
             }
             boolean canFitAll = (width - 8) / 10 > count;
-            if(canFitAll) {
+            if (canFitAll) {
                 for (int i = 0; i < count; i++) {
                     int px = x + 4 + i * 10;
                     int py = y + height - 9;
@@ -234,8 +260,8 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public void update() {
-            if(count > 1) {
-                if(--timer <= 0) {
+            if (count > 1) {
+                if (--timer <= 0) {
                     timer = 100;
                     int nm = currentMsg + 1;
                     currentMsg = nm >= count ? 0 : nm;
@@ -249,7 +275,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             Widget.drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
             FontRenderer renderer = mc.fontRenderer;
             renderer.drawString(TextFormatting.BOLD + "Events & Announcements", x + 4, y + 4, 0xffffff);
-            if(count > 0) {
+            if (count > 0) {
                 msgComponents.get(currentMsg).render(mc, mouseX, mouseY, partialTicks);
             } else {
                 String text = TextFormatting.BOLD + "No events";
@@ -262,7 +288,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         int getMessageCount() {
             ContentResult cr = Pubgmc.getContentManager().getCachedResult();
-            if(cr != null) {
+            if (cr != null) {
                 return cr.getMenuDisplayContents().length;
             }
             return 0;
@@ -271,7 +297,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         Optional<MenuDisplayContent[]> allContent() {
             ContentManager contentManager = Pubgmc.getContentManager();
             ContentResult result = contentManager.getCachedResult();
-            if(result == null) {
+            if (result == null) {
                 return Optional.empty();
             } else return Optional.ofNullable(result.getMenuDisplayContents());
         }
@@ -307,7 +333,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             @Override
             public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 1.0F);
-                if(!selected) {
+                if (!selected) {
                     drawColorShape(x + 1, y + 1, x + width - 1, y + height - 1, 0.0F, 0.0F, 0.0F, 1.0F);
                 }
             }
@@ -316,13 +342,13 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
     static class LinkImageComponent extends ImageButtonWidget {
 
-        final GuiScreen parent;
+        final GuiMenu parent;
         final String link;
         final ResourceLocation texture;
         String info;
         boolean notify;
 
-        LinkImageComponent(int x, int y, int width, int height, ResourceLocation texture, String link, GuiScreen parent) {
+        LinkImageComponent(int x, int y, int width, int height, ResourceLocation texture, String link, GuiMenu parent) {
             super(x, y, width, height, texture, null);
             this.parent = parent;
             this.link = link;
@@ -342,14 +368,14 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         @Override
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             super.render(mc, mouseX, mouseY, partialTicks);
-            if(notify) {
+            if (notify) {
                 long time = System.currentTimeMillis() % 2000L;
                 boolean flag = time >= 1000L;
                 float f = flag ? 1.0F : 0.0F;
                 ImageUtil.drawShape(x + width - 4, y, x + width, y + 4, f, f, f, 1.0F);
                 ImageUtil.drawShape(x + width - 3, y + 1, x + width - 1, y + 3, 1.0F, 1.0F, 0.0F, 1.0F);
             }
-            if(info != null && isMouseOver(mouseX, mouseY)) {
+            if (info != null && isMouseOver(mouseX, mouseY)) {
                 String astring = notify ? info + " - Update available" : info;
                 int tw = mc.fontRenderer.getStringWidth(astring);
                 drawColorShape(x + 10, y - 11, x + 16 + tw, y, 0.0F, 0.0F, 0.0F, 1.0F);
@@ -360,19 +386,8 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
             Minecraft mc = Minecraft.getMinecraft();
-            mc.displayGuiScreen(new GuiConfirmOpenLink(parent, link, 0, false));
+            parent.clickedUrl = link;
+            mc.displayGuiScreen(new GuiConfirmOpenLink(parent, link, 31102009, false));
         }
-
-        /*@Override
-        public void handleClicked(double mouseX, double mouseY, int mouseButton) {
-            if(mouseButton == 0 && isEnabled()) {
-                playPressSound();
-                Minecraft mc = Minecraft.getInstance();
-                mc.displayGuiScreen(new ConfirmOpenLinkScreen(f -> {
-                    if(f) Util.getOSType().openURI(link);
-                    mc.displayGuiScreen(parent);
-                }, link, true));
-            }
-        }*/
     }
 }

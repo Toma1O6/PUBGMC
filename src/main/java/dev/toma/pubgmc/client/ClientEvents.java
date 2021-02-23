@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.models.ModelGhillie;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.IPlayerData;
@@ -23,6 +24,7 @@ import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
@@ -33,6 +35,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -301,6 +304,13 @@ public class ClientEvents {
         int left = width / 2;
         int top = height / 2;
         font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
+    }
+
+    @SubscribeEvent
+    public void openGui(GuiOpenEvent event) {
+        if(event.getGui() instanceof GuiMainMenu) {
+            event.setGui(new GuiMenu());
+        }
     }
 
     @SubscribeEvent
