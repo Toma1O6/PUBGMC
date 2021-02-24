@@ -13,11 +13,13 @@ public class ContentResult {
 
     private MenuDisplayContent[] menuDisplayContents;
     private String[] news;
+    private String[] vipPatrons;
     private boolean changed;
 
-    public ContentResult(MenuDisplayContent[] menuDisplayContents, String[] news) {
+    public ContentResult(MenuDisplayContent[] menuDisplayContents, String[] news, String[] vipPatrons) {
         this.menuDisplayContents = menuDisplayContents;
         this.news = news;
+        this.vipPatrons = vipPatrons;
     }
 
     public void updateModifiable(ContentResult other) {
@@ -44,6 +46,10 @@ public class ContentResult {
         return news;
     }
 
+    public String[] getVipPatrons() {
+        return vipPatrons;
+    }
+
     public static class Deserializer implements JsonDeserializer<ContentResult> {
 
         @Override
@@ -53,6 +59,7 @@ public class ContentResult {
             JsonArray displayArray = JsonUtils.getJsonArray(object, "display");
             JsonArray newsArray = JsonUtils.getJsonArray(object, "mainMenuText");
             JsonArray mapDataArray = JsonUtils.getJsonArray(object, "map");
+            JsonArray vipPatronArray = JsonUtils.getJsonArray(object, "vips");
             List<MenuDisplayContent> menuDisplayContentList = new ArrayList<>();
             for (JsonElement element : displayArray) {
                 menuDisplayContentList.add(context.deserialize(element, MenuDisplayContent.class));
@@ -65,7 +72,11 @@ public class ContentResult {
             for (JsonElement element : mapDataArray) {
                 mapDataList.add(context.deserialize(element, MapData.class));
             }*/
-            return new ContentResult(menuDisplayContentList.toArray(new MenuDisplayContent[0]), stringList.toArray(new String[0]));
+            String[] vips = new String[vipPatronArray.size()];
+            for (int i = 0; i < vipPatronArray.size(); i++) {
+                vips[i] = vipPatronArray.get(i).getAsString();
+            }
+            return new ContentResult(menuDisplayContentList.toArray(new MenuDisplayContent[0]), stringList.toArray(new String[0]), vips);
         }
     }
 }

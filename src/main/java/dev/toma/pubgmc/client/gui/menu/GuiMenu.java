@@ -29,6 +29,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
     static final ResourceLocation DISCORD_ICON = Pubgmc.getResource("textures/gui/menu/discord.png");
     static final ResourceLocation CF_ICON = Pubgmc.getResource("textures/gui/menu/curseforge.png");
     static final ResourceLocation PATREON_ICON = Pubgmc.getResource("textures/gui/menu/patreon.png");
+    static final ResourceLocation VIP_ICON = Pubgmc.getResource("textures/gui/menu/vip.png");
     static final ResourceLocation TITLE = Pubgmc.getResource("textures/gui/menu/title.png");
     static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
     public String clickedUrl;
@@ -48,6 +49,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         addWidget(new EventPanelComponent(this, 15, initialHeight + 20, w, 68));
         // singleplayer
         int hw = w / 2;
+        /*
         // TODO
         ButtonWidget community = new ButtonWidget(15, initialHeight + 100, hw, 20, "Community maps", (c, x, y, b) -> mc.displayGuiScreen(new GuiWIP(this)));
         ButtonWidget myWorlds = new ButtonWidget(15 + hw, initialHeight + 100, hw, 20, "My Worlds", (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this)));
@@ -57,6 +59,11 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         ButtonWidget official = new ButtonWidget(15, initialHeight + 125, hw, 20, "Official servers", (c, x, y, b) -> mc.displayGuiScreen(new GuiWIP(this)));
         ButtonWidget myServers = new ButtonWidget(15 + hw, initialHeight + 125, hw, 20, "Server list", (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this)));
         addWidget(new HoverSplitButton(15, initialHeight + 125, w, 20, "Multiplayer", official, myServers));
+        */
+        // Before map explorer and server list UI is made
+        addWidget(new ButtonWidget(15, initialHeight + 100, w, 20, "Singleplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this))));
+        addWidget(new ButtonWidget(15, initialHeight + 125, w, 20, "Multiplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this))));
+
         // settings
         addWidget(new ButtonWidget(15, initialHeight + 150, w, 20, "Settings", (c, x, y, b) -> mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings))));
         int lowestPoint;
@@ -81,12 +88,10 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
                 Widget.drawTexturedShape(x, y, x + width, y + height);
             }
         });
-        // discord server ad
         addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, "https://discord.gg/WmdUKZz", this, true).withInfo("Official discord server"));
-        // official mod host site
         addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this, true).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
-        // patreon
         addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this, true).withInfo("Become a patron"));
+        addWidget(new VipListWidget(60, height - 20, 20, 20, this));
     }
 
     @Override
@@ -396,6 +401,32 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
                 parent.clickedUrl = link;
                 mc.displayGuiScreen(new GuiConfirmOpenLink(parent, link, 31102009, false));
             }
+        }
+    }
+
+    static class VipListWidget extends ImageButtonWidget {
+
+        final GuiScreen parent;
+
+        public VipListWidget(int x, int y, int width, int height, GuiScreen parent) {
+            super(x, y, width, height, VIP_ICON, null);
+            this.parent = parent;
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            super.render(mc, mouseX, mouseY, partialTicks);
+            if (isMouseOver(mouseX, mouseY)) {
+                String astring = "Enter hall of fame";
+                int tw = mc.fontRenderer.getStringWidth(astring);
+                drawColorShape(x + 10, y - 11, x + 16 + tw, y, 0.0F, 0.0F, 0.0F, 1.0F);
+                mc.fontRenderer.drawString(astring, x + 13, y - 9, 0xffffff);
+            }
+        }
+
+        @Override
+        public void onClick(int mouseX, int mouseY, int button) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiHallOfFame(parent));
         }
     }
 }

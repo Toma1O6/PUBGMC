@@ -24,7 +24,7 @@ public class EventWidget extends Widget {
     @Override
     public void onClick(int mouseX, int mouseY, int button) {
         if(event.isLive()) {
-            // connect
+            // TODO connect
         }
     }
 
