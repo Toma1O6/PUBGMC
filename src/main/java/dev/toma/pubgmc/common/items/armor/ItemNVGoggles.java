@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.armor;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;

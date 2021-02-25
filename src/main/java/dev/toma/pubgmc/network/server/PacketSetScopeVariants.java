@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.network.server;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

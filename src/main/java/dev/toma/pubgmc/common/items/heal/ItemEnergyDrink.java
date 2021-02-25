@@ -24,7 +24,7 @@ public class ItemEnergyDrink extends ItemHealing {
     }
 
     @Override
-    public float getBoostAmount() {
-        return 40f;
+    public int getBoostAmount() {
+        return 8;
     }
 }

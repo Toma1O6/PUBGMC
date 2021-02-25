@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.items;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.init.PMCRegistry;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
@@ -26,7 +27,7 @@ public class ItemBackpack extends PMCItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        IPlayerData data = playerIn.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
         if (stack.getItem() == PMCRegistry.PMCItems.BACKPACK1 && data.getBackpackLevel() == 0) {
             if (!playerIn.capabilities.isCreativeMode) {

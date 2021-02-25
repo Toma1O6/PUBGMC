@@ -4,7 +4,8 @@ import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.games.GameObjectiveBased;
 import dev.toma.pubgmc.api.objectives.types.GameArea;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.game.GameControlItem;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -34,7 +35,7 @@ public class RenderHandler {
     @SubscribeEvent
     public void onFOVChanged(FOVUpdateEvent e) {
         EntityPlayer player = e.getEntity();
-        IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         GameSettings settings = Minecraft.getMinecraft().gameSettings;
         if (data.isAiming()) {
             ItemStack stack = player.getHeldItemMainhand();

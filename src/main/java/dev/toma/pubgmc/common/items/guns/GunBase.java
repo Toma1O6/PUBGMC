@@ -3,8 +3,8 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.client.models.ModelGun;
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.PMCItem;
@@ -120,7 +120,7 @@ public class GunBase extends PMCItem {
      * Used to spawn bullet entity, called from packet
      */
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
-        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = PlayerData.get(player);
         int cooldown = FirerateCooldownTracker.getValue(player.getUniqueID());
         if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading() && cooldown <= 0) {
             if (!world.isRemote) {
@@ -267,7 +267,7 @@ public class GunBase extends PMCItem {
         String magazine = "default";
         String stock = "default";
         String scope = "ironsight";
-
+        
         if (stack.hasTagCompound()) {
             NBTTagCompound c = stack.getTagCompound();
 
@@ -592,7 +592,7 @@ public class GunBase extends PMCItem {
 
         // TODO: clean
         public void handleReload(EntityPlayer player) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            IPlayerData data = PlayerData.get(player);
             ItemStack heldItem = player.getHeldItemMainhand();
 
             if (heldItem.getItem() instanceof GunBase) {

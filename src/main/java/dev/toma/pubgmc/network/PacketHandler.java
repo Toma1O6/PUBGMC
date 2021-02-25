@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.network;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.network.server.*;
 import dev.toma.pubgmc.network.sp.*;
 import net.minecraft.entity.Entity;
@@ -22,7 +22,6 @@ public class PacketHandler {
         registerServerPacket(PacketServerAction.Handler.class, PacketServerAction.class);
         registerServerPacket(PacketFiremode.Handler.class, PacketFiremode.class);
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
-        registerServerPacket(PacketUpdateBoostValue.Handler.class, PacketUpdateBoostValue.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
         registerServerPacket(PacketSetScopeVariants.Handler.class, PacketSetScopeVariants.class);

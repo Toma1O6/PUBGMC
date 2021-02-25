@@ -3,7 +3,8 @@ package dev.toma.pubgmc.client.models.weapons;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
@@ -83,7 +84,7 @@ public class ModelAKM extends ModelGun {
     @Override
     public void render(ItemStack stack) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if(player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
+        if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             renderAKM(stack);
         }
     }

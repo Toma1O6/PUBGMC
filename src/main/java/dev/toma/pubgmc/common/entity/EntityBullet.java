@@ -5,7 +5,8 @@ import com.google.common.base.Predicates;
 import dev.toma.pubgmc.common.blocks.BlockLandMine;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
 import dev.toma.pubgmc.common.blocks.IBulletReaction;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -77,7 +78,7 @@ public class EntityBullet extends Entity {
 
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
         if(shooter instanceof EntityPlayer) {
-            IPlayerData data = shooter.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+            IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             calculateBulletHeading(direct, (EntityPlayer) shooter, data.isAiming());
             this.setPosition(shooter.posX, data.isProning() ? shooter.posY + 0.5f : shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         } else {

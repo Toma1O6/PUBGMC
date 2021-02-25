@@ -4,7 +4,10 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.models.ModelGhillie;
 import dev.toma.pubgmc.client.util.KeyBinds;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.BoostStats;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
@@ -132,10 +135,9 @@ public class ClientEvents {
     private int currentType = 0;
 
     /**
-     * Function for rendering the textured boost overlays
-     * Used to make rendering actual rendering code shorter and easier to read
+     * Method for rendering the textured boost overlays
      */
-    private static void renderBoost(IPlayerData data) {
+    private static void renderBoost(BoostStats stats) {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
@@ -147,10 +149,9 @@ public class ClientEvents {
 
             //Actual drawing code
             ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
-
-            if (data.getBoost() > 0) {
-                int boost = (int) data.getBoost();
-                double sizeX = ((182D / 100D) * boost);
+            int boost = stats.getLevel();
+            if (boost > 0) {
+                double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
                 ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
             }
 
@@ -320,34 +321,31 @@ public class ClientEvents {
         ScaledResolution res = new ScaledResolution(mc);
 
         //Get the player capability to use the stored data
-        IPlayerData data = sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
         //e.getType() == ElementType.TEXT - this is very important otherwise it will mess all fonts used in mc
-        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.TEXT && data.getBoost() > 0) {
+        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.TEXT && !data.getBoostStats().isEmpty()) {
             mc.entityRenderer.setupOverlayRendering();
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
             int left = width / 2 + 45;
             int top = height - 49;
 
-            int color = 0;
-
-            if (data.getBoost() >= 50) {
+            int color;
+            int boostLevel = data.getBoostStats().getLevel();
+            if (boostLevel >= 10) {
                 color = 14651904;
-            }
-
-            if (data.getBoost() < 50) {
+            } else {
                 color = 14664960;
             }
-
-            if (data.getBoost() > 9) {
+            if (boostLevel > 9) {
                 left -= 5;
             }
 
             //There is the rendering
             //Users can edit the position using their configs
             //Position by default: Above hunger bar
-            mc.fontRenderer.drawStringWithShadow(data.getBoost() + " / 100", left + ConfigPMC.client.overlays.textBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.textBoostOverlayPos.getY(), color);
+            mc.fontRenderer.drawStringWithShadow(boostLevel + " / 20", left + ConfigPMC.client.overlays.textBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.textBoostOverlayPos.getY(), color);
         }
 
         //Ammo and Firemode info rendering
@@ -386,7 +384,7 @@ public class ClientEvents {
         ItemStack stack = sp.getHeldItemMainhand();
 
         //Get the player capability to use the stored data
-        IPlayerData data = sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
@@ -401,7 +399,7 @@ public class ClientEvents {
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             //We cancel the xp bar, but just only if the boost bar position is different than by default
             if (e.getType() == ElementType.EXPERIENCE) {
-                if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && data.getBoost() > 0) {
+                if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty()) {
                     e.setCanceled(true);
                 }
             }
@@ -414,8 +412,8 @@ public class ClientEvents {
             }
 
             //BOOST
-            if (!sp.capabilities.isCreativeMode && !sp.isSpectator() && data.getBoost() > 0) {
-                renderBoost(data);
+            if (!sp.capabilities.isCreativeMode && !sp.isSpectator() && !data.getBoostStats().isEmpty()) {
+                renderBoost(data.getBoostStats());
             }
 
             //Scopes
@@ -467,15 +465,15 @@ public class ClientEvents {
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
         /* Scope Variants */
-        if (KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null))) {
-            switchScopeType(sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null));
+        if (KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null))) {
+            switchScopeType(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
         }
-        if (KeyBinds.CHANGE_SCOPECOLOR.isPressed() && sp.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-            switchScopeColor(sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null));
+        if (KeyBinds.CHANGE_SCOPECOLOR.isPressed() && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+            switchScopeColor(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
         }
 
         if (KeyBinds.PRONE.isPressed()) {
-            IPlayerData data = IPlayerData.PlayerData.get(sp);
+            IPlayerData data = PlayerData.get(sp);
             if (data != null) {
                 data.setProning(!data.isProning());
                 if(data.isAiming()) this.setAiming(data, false);
@@ -484,7 +482,7 @@ public class ClientEvents {
             }
         }
 
-        IPlayerData data = sp.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
         if (KeyBinds.ATTACHMENT.isPressed()) {
             if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
@@ -557,7 +555,7 @@ public class ClientEvents {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
                 //Check if the LMB has been pressed
                 if (gs.keyBindAttack.isPressed()) {
@@ -642,8 +640,8 @@ public class ClientEvents {
             ((ITickable) mc.currentScreen).update();
         }
 
-        if (player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if (ev.phase == Phase.END) {
                 if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
                     IControllable controllable = (IControllable) player.getRidingEntity();
@@ -730,12 +728,6 @@ public class ClientEvents {
                 gs.mouseSensitivity = mouseSens;
             }
 
-            //If the boost is above the max value reset it and sync with server
-            if (data.getBoost() > 100f) {
-                data.setBoost(100f);
-                PacketHandler.INSTANCE.sendToServer(new PacketUpdateBoostValue(100f));
-            }
-
             //Reset the mouse sensitivity after aiming
             if (!data.isAiming()) {
                 mouseSens = gs.mouseSensitivity;
@@ -745,24 +737,16 @@ public class ClientEvents {
                 }
             }
 
-            //After 4 seconds decrease the boost by 1 and send the new boost value to server
-            // TODO this is big trash - client -> server control?
-            if (timer++ >= 80 && data.getBoost() > 0) {
-                timer = 0;
-                data.removeBoost(1);
-                PacketHandler.INSTANCE.sendToServer(new PacketUpdateBoostValue(data.getBoost()));
-            }
-
             if (data.isReloading()) {
                 if (reloadingSlot != player.inventory.currentItem) {
                     setReloading(data, true);
                 }
             }
         }
-        if (ev.phase == Phase.END && player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
+        if (ev.phase == Phase.END && player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             ItemStack itemstack = player.getHeldItemMainhand();
             Item item = itemstack.getItem();
-            IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if (data.isReloading()) {
                 if (player.getHeldItemMainhand().getItem() instanceof GunBase && player.getHeldItemMainhand().getTagCompound().getBoolean("isValidWeapon")) {
                     GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();

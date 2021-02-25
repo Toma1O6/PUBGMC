@@ -2,8 +2,9 @@ package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IPlayerData;
 import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
@@ -52,8 +53,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class CommonEvents {
+
     private double prevDiameter = 0;
     public static final HashMap<UUID, NBTTagCompound> CONFIGS = new HashMap<>();
+    public static final AttributeModifier PRONE_MODIFIER = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Prone modifier", -0.7, 2);
 
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
         switch (result.status) {
@@ -118,12 +121,13 @@ public class CommonEvents {
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new IGameData.GameDataProvider());
     }
 
-    //Tick event function which fires on all players
     @SubscribeEvent
     public void onTick(PlayerTickEvent ev) {
+        if(ev.phase == Phase.END)
+            return;
         EntityPlayer player = ev.player;
-        IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        data.tick();
         player.eyeHeight = player.getDefaultEyeHeight();
         if(data.isProning()) {
             AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
@@ -131,12 +135,11 @@ public class CommonEvents {
             player.height = 0.9F;
             player.eyeHeight = 0.6F;
         }
-        //To prevent the method from being called multiple times at once
-        if(ev.phase == Phase.START && (!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning() && !player.world.isRemote) {
+        if((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning() && !player.world.isRemote) {
             data.setProning(false);
-            data.sync(player);
+            data.sync();
         }
-        if (ev.phase == Phase.START && !player.world.isRemote) {
+        if (!player.world.isRemote) {
             if (player.getHeldItemOffhand().getItem() instanceof GunBase) {
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getHeldItemOffhand());
                 Vec3d vec = player.getLookVec();
@@ -146,39 +149,6 @@ public class CommonEvents {
                 item.setPickupDelay(30);
                 player.world.spawnEntity(item);
                 player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
-            }
-
-            //If player's boost value is above 50% he gets speed bonus
-            if (player != null && player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null) != null) {
-                if (data.getBoost() >= 50) {
-                    player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 10, 0, false, false));
-                }
-
-                //Healing the player based on boost value
-                if (data.getBoost() > 0) {
-                    //Check if the timer has run to 0
-                    if (data.getTimer() <= 0) {
-                        //Do the healing
-                        if (data.getBoost() >= 50) {
-                            player.heal(2f);
-                        } else {
-                            player.heal(1f);
-                        }
-
-                        //reset the timer
-                        data.setTimer(400);
-                    }
-
-                    //decrease the timer
-                    data.setTimer(data.getTimer() - 1);
-                }
-
-                //if player is not boosted his boost timer gets reset to 0 to enable quick first heal after he applies the boost
-                else {
-                    if (data.getTimer() > 0) {
-                        data.setTimer(0);
-                    }
-                }
             }
             FirerateCooldownTracker.tick(player.getUniqueID());
         }
@@ -201,8 +171,8 @@ public class CommonEvents {
                 PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
 
                 //We get the last player data and later sync it to client
-                player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-                IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
                 //Sync some data from capability to client for overlay rendering
                 PacketHandler.syncPlayerDataToClient(data, player);
@@ -228,27 +198,23 @@ public class CommonEvents {
         Entity entity = e.getEntity();
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) e.getEntity();
-            IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
-            AttributeModifier modifier = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Speed", data.isProning() ? -0.07D : 0D, 0);
-            player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(modifier);
-            if(!player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(modifier)) {
-                player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(modifier);
+            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(PRONE_MODIFIER);
+            if(data.isProning()) {
+                player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(PRONE_MODIFIER);
             }
 
             if (data.getEquippedNV()) {
-                //no need to sync anything since it runs server side
                 if (data.isUsingNV() && !data.getEquippedNV()) {
                     data.setNV(false);
                 }
 
-                //NV stuff
                 if (data.isUsingNV()) {
                     if (!player.world.isRemote) {
                         player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 220, 0, false, false));
                     }
                 } else {
                     if (!player.world.isRemote) {
-                        //Remove potion effect when player turns off night vision
                         if (player.isPotionActive(MobEffects.NIGHT_VISION)) {
                             player.removePotionEffect(MobEffects.NIGHT_VISION);
                         }

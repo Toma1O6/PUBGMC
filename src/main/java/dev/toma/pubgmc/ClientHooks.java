@@ -1,7 +1,8 @@
 package dev.toma.pubgmc;
 
 import dev.toma.pubgmc.client.layers.LayerGhillie;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -23,7 +24,7 @@ public class ClientHooks {
             return;
         }
         EntityPlayer player = (EntityPlayer) entity;
-        IPlayerData data = IPlayerData.PlayerData.get(player);
+        IPlayerData data = PlayerData.get(player);
         if(data == null)
             return;
         boolean isHoldingWeapon = player.getHeldItemMainhand().getItem() instanceof GunBase;
@@ -79,7 +80,7 @@ public class ClientHooks {
     }
 
     public static void player_preRenderCallback(RenderPlayer render, AbstractClientPlayer abstractClientPlayer, float partialTicks) {
-        IPlayerData data = IPlayerData.PlayerData.get(abstractClientPlayer);
+        IPlayerData data = PlayerData.get(abstractClientPlayer);
         if(data != null && data.isProning()) {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 0.9F, 0.12F);

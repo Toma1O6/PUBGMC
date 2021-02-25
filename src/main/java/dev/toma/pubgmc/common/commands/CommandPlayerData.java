@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.common.commands;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.BoostStats;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.command.CommandBase;
@@ -45,33 +47,33 @@ public class CommandPlayerData extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0)
-            throw new WrongUsageException("Unknown operation, use /playerdata [player] <data> <value>", new Object[0]);
+            throw new WrongUsageException("Unknown operation, use /playerdata [player] <data> <value>");
 
         else if (args.length > 1) {
             if (args[0].equalsIgnoreCase("me")) {
                 if (sender instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) sender;
 
-                    if (player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-                        IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                    if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+                        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                         updateData(server, args, player, data, sender, true);
                     } else Pubgmc.logger.warn("Couldn't modify data of {}, no data found!", player.getName());
                 }
             } else if (args[0].equalsIgnoreCase("all")) {
                 for (EntityPlayer player : sender.getEntityWorld().playerEntities) {
-                    if (player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-                        IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                    if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+                        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                         updateData(server, args, player, data, sender, false);
                     } else Pubgmc.logger.warn("Couldn't modify data of {}, no data found!", player.getName());
                 }
             } else if (server.getPlayerList().getPlayerByUsername(args[0]) != null) {
                 EntityPlayer player = server.getPlayerList().getPlayerByUsername(args[0]);
 
-                if (player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-                    IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+                    IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                     updateData(server, args, player, data, sender, true);
                 } else Pubgmc.logger.warn("Couldn't modify data of {}, no data found!", player.getName());
-            } else throw new WrongUsageException("Unknown target, try /playerdata <me,all,playerName>", new Object[0]);
+            } else throw new WrongUsageException("Unknown target, try /playerdata <me,all,playerName>");
         }
 		
 		/*for(String s : args)
@@ -82,7 +84,7 @@ public class CommandPlayerData extends CommandBase {
 
     private void updateData(MinecraftServer server, String[] args, EntityPlayer player, IPlayerData data, ICommandSender sender, boolean feedback) throws CommandException {
         switch (args[1]) {
-            case "backpackLevel": {
+            case "backpackLevel":
                 if (args.length > 1) {
                     if (args.length > 2 && PUBGMCUtil.isValidNumber(args[2])) {
                         final int num = Integer.parseInt(args[2]);
@@ -98,25 +100,23 @@ public class CommandPlayerData extends CommandBase {
                 } else if (feedback)
                     sendFeedback(sender, player.getName() + " has backpack level = " + data.getBackpackLevel());
                 break;
-            }
 
-            case "boost": {
+            case "boost":
+                BoostStats stats = data.getBoostStats();
                 if (args.length > 1) {
                     if (args.length > 2 && PUBGMCUtil.isValidNumber(args[2])) {
                         final int num = Integer.parseInt(args[2]);
-
-                        if (num >= 0 && num <= 100) {
-                            data.setBoost(num);
+                        if (num >= 0 && num <= 20) {
+                            stats.setLevel(num);
                             if (feedback) sendFeedback(sender, "Updated boost level of " + player.getName());
                         } else if (feedback)
-                            sendFeedback(sender, TextFormatting.RED + "Number must be in range 0-100!");
+                            sendFeedback(sender, TextFormatting.RED + "Number must be in range 0-20!");
                     } else if (feedback)
-                        sendFeedback(sender, player.getName() + " has boost level = " + data.getBoost());
-                } else if (feedback) sendFeedback(sender, player.getName() + " has boost level = " + data.getBoost());
+                        sendFeedback(sender, player.getName() + " has boost level = " + stats.getLevel());
+                } else if (feedback) sendFeedback(sender, player.getName() + " has boost level = " + stats.getLevel());
                 break;
-            }
 
-            case "nightVision": {
+            case "nightVision":
                 if (args.length > 1) {
                     if (args.length > 2 && (args[2].equalsIgnoreCase("false") || args[2].equalsIgnoreCase("true"))) {
                         boolean b = Boolean.parseBoolean(args[2]);
@@ -127,15 +127,14 @@ public class CommandPlayerData extends CommandBase {
                     } else if (feedback) sendFeedback(sender, "Equipped NV: " + data.getEquippedNV());
                 } else if (feedback) sendFeedback(sender, "Equipped NV: " + data.getEquippedNV());
                 break;
-            }
 
-            case "resetAll": {
+            case "resetAll":
                 data.setBackpackLevel(0);
-                data.setBoost(0f);
+                data.getBoostStats().reset();
                 data.hasEquippedNV(false);
 
                 if (feedback) sendFeedback(sender, "Data of " + player.getName() + " has been reset");
-            }
+                break;
         }
 
         //sync everything
@@ -162,6 +161,6 @@ public class CommandPlayerData extends CommandBase {
             return getListOfStringsMatchingLastWord(args, "true", "false");
         }
 
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }

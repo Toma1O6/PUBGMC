@@ -4,8 +4,8 @@ import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
@@ -498,8 +498,8 @@ public class ModelAUG extends ModelGun {
     @Override
     public void render(ItemStack stack) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = PlayerData.get(player);
+        if (data != null) {
             GlStateManager.pushMatrix();
             {
                 renderAUG(data.isAiming(), stack);

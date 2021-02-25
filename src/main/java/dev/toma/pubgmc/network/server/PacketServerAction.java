@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.network.server;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,9 +39,9 @@ public class PacketServerAction implements IMessage {
             ctx.getServerHandler().player.getServer().addScheduledTask(() -> {
                 switch (message.action) {
                     case AIM: {
-                        IPlayerData data = ctx.getServerHandler().player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                        IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                         data.setAiming(message.data);
-                        data.sync(ctx.getServerHandler().player);
+                        data.sync();
                         break;
                     }
 
@@ -54,7 +55,7 @@ public class PacketServerAction implements IMessage {
                     }
 
                     case NIGHT_VISION: {
-                        IPlayerData data = ctx.getServerHandler().player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                        IPlayerData data = ctx.getServerHandler().player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                         data.setNV(message.data);
                         break;
                     }

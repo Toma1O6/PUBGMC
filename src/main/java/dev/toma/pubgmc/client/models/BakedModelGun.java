@@ -2,7 +2,8 @@ package dev.toma.pubgmc.client.models;
 
 import dev.toma.pubgmc.animation.Animation;
 import dev.toma.pubgmc.client.util.ModelHelper;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCRegistry.PMCItems;
 import net.minecraft.block.state.IBlockState;
@@ -70,8 +71,8 @@ public class BakedModelGun implements IBakedModel {
         IPlayerData data = null;
         ItemStack held;
 
-        if (player != null && player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-            data = data == null ? player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null) : data;
+        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+            data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
             if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
                 held = player.getHeldItemMainhand();
                 if (((GunBase) held.getItem()).getWeaponModel().aimAnimation.getFinalState().equals(Animation.EMPTYVEC) && held.getItem() != PMCItems.VSS) {

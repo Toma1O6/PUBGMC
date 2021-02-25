@@ -2,7 +2,8 @@ package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketUpdatePlayerRotation;
@@ -146,8 +147,8 @@ public class EntityPlane extends Entity {
         updateHeading(startX, startZ, endPos);
 
         for (EntityPlayer player : world.playerEntities) {
-            if (player.hasCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null)) {
-                player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null).setDistance(Double.MAX_VALUE);
+            if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+                player.getCapability(PlayerDataProvider.PLAYER_DATA, null).setDistance(Double.MAX_VALUE);
             }
         }
 
@@ -196,7 +197,7 @@ public class EntityPlane extends Entity {
 
                             if (dropLoc.containsKey(player)) {
                                 BlockPos pos = dropLoc.get(player);
-                                IPlayerData data = player.getCapability(IPlayerData.PlayerDataProvider.PLAYER_DATA, null);
+                                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 
                                 if (PUBGMCUtil.getDistanceToBlockPos(getPosition(), pos) < data.getDistance()) {
                                     data.setDistance(PUBGMCUtil.getDistanceToBlockPos(getPosition(), pos));

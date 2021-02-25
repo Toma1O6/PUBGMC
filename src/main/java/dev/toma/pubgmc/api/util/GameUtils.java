@@ -6,7 +6,8 @@ import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.interfaces.BotSpawner;
 import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
@@ -177,7 +178,7 @@ public final class GameUtils {
                 te.setInventorySlotContents(i, stack.copy());
             }
         }
-        IPlayerData data = IPlayerData.PlayerData.get(player);
+        IPlayerData data = PlayerData.get(player);
         // TODO add backpack and night vision
     }
 

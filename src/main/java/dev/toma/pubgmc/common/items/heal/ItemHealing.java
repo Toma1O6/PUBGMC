@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.heal;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
@@ -17,8 +17,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public abstract class ItemHealing extends PMCItem {
-    public float health;
-    public float boost;
 
     public ItemHealing(String name, final int weight, final int amount) {
         super(name);
@@ -53,7 +51,7 @@ public abstract class ItemHealing extends PMCItem {
                 health = player.getHealth() + health > 20 ? 20 - player.getHealth() : health;
                 player.heal(health);
             } else if (getAction() == Action.BOOST) {
-                data.addBoost(getBoostAmount());
+                data.getBoostStats().add(this.getBoostAmount());
             }
 
             if (!player.capabilities.isCreativeMode)
@@ -71,11 +69,11 @@ public abstract class ItemHealing extends PMCItem {
     }
 
     public float getHealAmount(EntityPlayer player) {
-        return health;
+        return 0;
     }
 
-    public float getBoostAmount() {
-        return boost;
+    public int getBoostAmount() {
+        return 0;
     }
 
     public boolean canPlayerHeal(EntityPlayer player) {

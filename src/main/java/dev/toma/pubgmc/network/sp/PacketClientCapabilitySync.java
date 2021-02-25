@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.network.sp;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,7 +45,7 @@ public class PacketClientCapabilitySync implements IMessage {
         public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
             if (ctx.side.isClient()) {
                 if(m.player == null) return null;
-                Minecraft.getMinecraft().addScheduledTask(() -> IPlayerData.PlayerData.get(m.player).deserializePacketNBT(m.nbt));
+                Minecraft.getMinecraft().addScheduledTask(() -> PlayerData.get(m.player).deserializeNBT(m.nbt));
             }
             return null;
         }

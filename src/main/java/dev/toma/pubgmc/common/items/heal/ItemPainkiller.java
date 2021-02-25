@@ -24,7 +24,7 @@ public class ItemPainkiller extends ItemHealing {
     }
 
     @Override
-    public float getBoostAmount() {
-        return 60f;
+    public int getBoostAmount() {
+        return 12;
     }
 }

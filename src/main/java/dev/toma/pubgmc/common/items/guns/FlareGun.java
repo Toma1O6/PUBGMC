@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.guns;
 
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.EntityFlare;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.init.PMCSounds;

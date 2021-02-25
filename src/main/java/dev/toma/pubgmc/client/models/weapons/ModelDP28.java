@@ -2,8 +2,8 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.IPlayerData;
-import dev.toma.pubgmc.common.capability.IPlayerData.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;

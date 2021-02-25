@@ -12,7 +12,8 @@ import dev.toma.pubgmc.api.teams.Team;
 import dev.toma.pubgmc.api.util.EntityDeathContex;
 import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.PMCRegistry;
@@ -189,7 +190,7 @@ public class GameHandler {
                 ItemStack stack = player.inventory.getStackInSlot(i);
                 te.setInventorySlotContents(i, stack.copy());
             }
-            IPlayerData data = IPlayerData.PlayerData.get(player);
+            IPlayerData data = PlayerData.get(player);
             int backpack = data.getBackpackLevel();
             if(backpack > 0) {
                 te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCRegistry.PMCItems.BACKPACK1 : backpack == 2 ? PMCRegistry.PMCItems.BACKPACK2 : PMCRegistry.PMCItems.BACKPACK3));

@@ -3,8 +3,9 @@ package dev.toma.pubgmc;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.*;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.event.GunPostInitializeEvent;
@@ -96,7 +97,7 @@ public class Pubgmc {
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
         CapabilityManager.INSTANCE.register(IWorldData.class, new IWorldData.WorldDataStorage(), IWorldData.WorldData::new);
-        CapabilityManager.INSTANCE.register(IPlayerData.class, new IPlayerData.PlayerDataStorage(), IPlayerData.PlayerData::new);
+        CapabilityManager.INSTANCE.register(IPlayerData.class, new IPlayerData.PlayerDataStorage(), PlayerData::new);
         CapabilityManager.INSTANCE.register(IGameData.class, new IGameData.GameDataStorage(), IGameData.GameData::new);
 
         dev.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
