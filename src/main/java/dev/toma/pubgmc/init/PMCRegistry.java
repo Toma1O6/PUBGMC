@@ -185,7 +185,6 @@ public class PMCRegistry {
         public static final Item FUELCAN = null;
         public static final Item VEHICLE_UAZ = null;
         public static final Item VEHICLE_DACIA = null;
-        public static PMCRegistry.PMCItems instance;
     }
 
     @ObjectHolder(Pubgmc.MOD_ID)
@@ -438,11 +437,11 @@ public class PMCRegistry {
                     new PMCItem("copper_ingot"),
                     new ItemFuelCan().addDescription("Hold right click while driving vehicle", "Vehicle must be stationary!"),
                     new ItemVehicleSpawner("vehicle_uaz", ItemVehicleSpawner.Vehicles.UAZ),
-                    new ItemVehicleSpawner("vehicle_dacia", ItemVehicleSpawner.Vehicles.DACIA),
-                    new GameControlItem("debug_switch", GameControlItem.Actions.DEBUG),
+                    new ItemVehicleSpawner("vehicle_dacia", ItemVehicleSpawner.Vehicles.DACIA)
+                    /*new GameControlItem("debug_switch", GameControlItem.Actions.DEBUG),
                     new GameControlItem("objective_add", GameControlItem.Actions.OBJECTIVE_ADD),
                     new GameControlItem("objective_remove", GameControlItem.Actions.OBJECTIVE_REMOVE),
-                    new GameControlItem("objective_change_size", GameControlItem.Actions.OBJECTIVE_CHANGE_SIZE)
+                    new GameControlItem("objective_change_size", GameControlItem.Actions.OBJECTIVE_CHANGE_SIZE)*/
             };
 
             event.getRegistry().registerAll(ITEMS);
