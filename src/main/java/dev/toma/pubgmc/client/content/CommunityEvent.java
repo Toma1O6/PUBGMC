@@ -52,7 +52,7 @@ public class CommunityEvent extends MenuDisplayContent {
     @SideOnly(Side.CLIENT)
     @Override
     public Widget createWidget(GuiMenu parent, int x, int y, int width, int height) {
-        return new EventWidget(x, y, width, height, this);
+        return new EventWidget(parent, x, y, width, height, this);
     }
 
     public String getName() {

@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.6.2"
+version = "1.6.3"
 group = "dev.toma.pubgmc" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "PUBGMC"
 
@@ -31,7 +31,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'dev.toma.pubgmc.core.PMCPlugin'
+        attributes 'FMLCorePlugin': 'dev.toma.pubgmc.asm.PMCPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 }

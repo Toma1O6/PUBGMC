@@ -11,7 +11,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-@SideOnly(Side.CLIENT)
 public abstract class MenuDisplayContent {
 
     private static final Map<String, EventTypeDeserializer<?>> DESERIALIZERS = Maps.newHashMap();
@@ -21,6 +20,7 @@ public abstract class MenuDisplayContent {
         addDeserializer("announcement", Announcement::deserialize);
     }
 
+    @SideOnly(Side.CLIENT)
     public abstract Widget createWidget(GuiMenu parent, int x, int y, int width, int height);
 
     public static class Deserializer implements JsonDeserializer<MenuDisplayContent> {

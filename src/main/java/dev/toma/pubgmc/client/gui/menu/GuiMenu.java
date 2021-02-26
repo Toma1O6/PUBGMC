@@ -242,7 +242,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int mouseButton) {
-            for (Widget component : children) {
+            for (Widget component : msgComponents) {
                 if (component.handleClicked(mouseX, mouseY, mouseButton)) {
                     return true;
                 }
