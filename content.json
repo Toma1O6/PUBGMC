@@ -19,7 +19,8 @@
         "- Custom main menu (as you can propably see)",
         "- Reworked boost system",
         "- Fixed prone animation",
-        "- Fixed laggy vehicle movement"
+        "- Fixed laggy vehicle movement",
+        "- Fixed unstable burst fire"
     ],
     "vips": [
     

@@ -15,7 +15,6 @@ import dev.toma.pubgmc.network.server.PacketFiremode;
 import dev.toma.pubgmc.network.sp.PacketCreateNBT;
 import dev.toma.pubgmc.network.sp.PacketDelayedSound;
 import dev.toma.pubgmc.network.sp.PacketReloadingSP;
-import dev.toma.pubgmc.util.FirerateCooldownTracker;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -27,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -121,8 +121,8 @@ public class GunBase extends PMCItem {
      */
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
         IPlayerData data = PlayerData.get(player);
-        int cooldown = FirerateCooldownTracker.getValue(player.getUniqueID());
-        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading() && cooldown <= 0) {
+        CooldownTracker tracker = player.getCooldownTracker();
+        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading() && !tracker.hasCooldown(stack.getItem())) {
             if (!world.isRemote) {
                 if (!gunType.equals(GunType.SHOTGUN)) {
                     EntityBullet bullet = new EntityBullet(world, player, this);
@@ -137,7 +137,7 @@ public class GunBase extends PMCItem {
                 if (!player.capabilities.isCreativeMode) {
                     stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                 }
-                FirerateCooldownTracker.set(player.getUniqueID(), this.getFireRate());
+                tracker.setCooldown(stack.getItem(), getFireRate());
                 PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 150));
             }
         }

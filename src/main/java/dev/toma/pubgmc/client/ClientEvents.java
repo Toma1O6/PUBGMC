@@ -34,6 +34,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -550,18 +551,16 @@ public class ClientEvents {
     public void onMouseInput(InputEvent.MouseInputEvent e) {
         GameSettings gs = Minecraft.getMinecraft().gameSettings;
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        //To prevent crash on startup
         if (player != null && !player.isSpectator()) {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-                //Check if the LMB has been pressed
                 if (gs.keyBindAttack.isPressed()) {
+                    CooldownTracker tracker = player.getCooldownTracker();
                     if (gun.getFiremode() == GunBase.Firemode.SINGLE) {
                         //If the gun has no cooldown
-                        if (!data.isReloading()) {
+                        if (!data.isReloading() && !tracker.hasCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 //We send packet to server telling it to spawn new entity
                                 recoilTicks = 10;
@@ -574,7 +573,7 @@ public class ClientEvents {
                             }
                         }
                     } else if (gun.getFiremode() == GunBase.Firemode.BURST) {
-                        if (!shooting && !data.isReloading()) {
+                        if (!shooting && !data.isReloading() && !tracker.hasCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 shooting = true;
                                 shotsFired = 0;
@@ -651,9 +650,10 @@ public class ClientEvents {
                 }
 
                 if (gs.keyBindAttack.isKeyDown()) {
+                    CooldownTracker tracker = player.getCooldownTracker();
                     if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
                         GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                        if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading()) {
+                        if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.hasCooldown(gun)) {
                             if (gun.hasAmmo(player.getHeldItemMainhand())) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
@@ -668,12 +668,11 @@ public class ClientEvents {
                 if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
                     ItemStack stack = player.getHeldItemMainhand();
                     GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                    int maxRounds = gun.isHasTwoRoundBurst() ? 3 : 6;
+                    int maxRounds = gun.isHasTwoRoundBurst() ? 2 : 3;
                     if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
                         if (shooting && gun.getFiremode() == GunBase.Firemode.BURST) {
                             shootingTimer++;
 
-                            //Set it to 5 for 3 round burst
                             if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());

@@ -15,7 +15,6 @@ import dev.toma.pubgmc.init.PMCRegistry;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketGetConfigFromServer;
 import dev.toma.pubgmc.network.sp.PacketLoadConfig;
-import dev.toma.pubgmc.util.FirerateCooldownTracker;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
@@ -150,7 +149,6 @@ public class CommonEvents {
                 player.world.spawnEntity(item);
                 player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
             }
-            FirerateCooldownTracker.tick(player.getUniqueID());
         }
     }
 
