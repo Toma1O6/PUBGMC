@@ -1,71 +1,27 @@
 {
     "display": [
         {
-            "type": "event",
-            "name": "Test Event #0",
-            "date": "2020-09-26T18:00",
-            "description": ["Very first event made just as a test", "Enjoy"],
-            "host": "Toma",
-            "ip": ""
-        },
-        {
-            "type": "event",
-            "name": "Test Event #1",
-            "date": "2020-11-26T20:00",
-            "host": "Unknown",
-            "description": [],
-            "ip": ""
-        },
-        {
-            "type": "event",
-            "name": "Test Event #2",
-            "date": "2020-12-26T20:00",
-            "host": "Unknown",
-            "description": [],
-            "ip": ""
-        },
-        {
-            "type": "event",
-            "name": "Test Event #3",
-            "date": "2020-09-30T20:00",
-            "host": "Unknown",
-            "description": [],
-            "ip": ""
-        },
-        {
-            "type": "event",
-            "name": "Test Event #4",
-            "date": "2020-09-25T16:00",
-            "host": "Me",
-            "description": [],
-            "ip": ""
+            "type": "announcement",
+            "title": "PUBGMC is now on Patreon!",
+            "text": "You can show some love by supporting me. Just one click",
+            "url": "https://www.patreon.com/pubgmc"
         }
     ],
     "map": [
-        {
-            "mode": ["pubgmc:battleroyale"],
-            "name": "Karakin",
-            "size": "2048x2048",
-            "url": "undefined"
-        }
+    
     ],
     "mainMenuText": [
-        "§lLatest mod news!",
-        "This mod just has been completely rewritten for 1.14.4 version! Yay. What does that mean?",
-        "",
-        "Well since it was complete rewrite, I tried to polish all systems as much as possible. There's completely new animation system, new loot generation system and more...",
-        "",
-        "§nKey mod features:",
-        "- Modifieable guns",
-        "    - Each gun has different attributes and can accept different attachments",
-        "- Vehicles",
-        " - Air vehicles (glider)",
-        " - Land vehicles (UAZ)",
-        " - Water vehicles (Boat) - coming",
-        " - Land and water vehicles (BRDM-2) - coming",
-        "- Game system",
-        "   Allows creation and running of many different gamemodes ranging from battleroyale to classic team deatchmatch. Play against your friends or AI",
-        "- Loot generator",
-        "   No more manual chest placing. Just place down loot generator, run command or start a game and the loot will be generated when needed! Also it's customizable with datapacks"
+        "§nUpdate 1.6.3 [§e§nBUGFIX UPDATE§r§n]",
+        "§lChangelog",
+        "- Various optimizations",
+        "- New config system. Requires Configuration library",
+        "- Improved parachute and vehicle controls",
+        "- Custom main menu (as you can propably see)",
+        "- Reworked boost system",
+        "- Fixed prone animation",
+        "- Fixed laggy vehicle movement"
+    ],
+    "vips": [
+    
     ]
 }
