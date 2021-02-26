@@ -11,8 +11,8 @@
     
     ],
     "mainMenuText": [
-        "§nUpdate 1.6.3 [§e§nBUGFIX UPDATE§r§n]",
-        "§lChangelog",
+        "Update 1.6.3 [BUGFIX UPDATE]",
+        "Changelog",
         "- Various optimizations",
         "- New config system. Requires Configuration library",
         "- Improved parachute and vehicle controls",
