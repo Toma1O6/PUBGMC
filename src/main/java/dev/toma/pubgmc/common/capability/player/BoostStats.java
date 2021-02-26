@@ -20,7 +20,7 @@ public class BoostStats implements INBTSerializable<NBTTagCompound> {
 
     public void onTick(EntityPlayer player) {
         World world = player.world;
-        if(!world.isRemote) {
+        if(!world.isRemote && level > 10) {
             player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 20, 0, false, false));
         }
         if((saturation = Math.max(0.0F, saturation - 0.002F)) <= 0.0F && level > 0) {
