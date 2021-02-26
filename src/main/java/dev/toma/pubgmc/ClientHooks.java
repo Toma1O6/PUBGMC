@@ -17,13 +17,15 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ClientHooks {
 
-    public static void model_setupModelAngles(ModelBiped model) {
+    public static void model_setupModelAngles(ModelBiped model, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.player;
         Entity entity1 = mc.getRenderViewEntity();
-        if(player == entity1 && mc.gameSettings.thirdPersonView == 0) {
+        if(entity == entity1 && mc.gameSettings.thirdPersonView == 0) {
             return;
         }
+        if(!(entity instanceof EntityPlayer))
+            return;
+        EntityPlayer player = (EntityPlayer) entity;
         IPlayerData data = PlayerData.get(player);
         if(data == null)
             return;

@@ -53,11 +53,12 @@ public class PMCClassTransformer implements IClassTransformer {
                         log.info("Injecting hook into {} method", m_setRotationAngles.getName(isObf));
                         InsnList list = new InsnList();
                         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                        list.add(new VarInsnNode(Opcodes.ALOAD, 7));
                         list.add(new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
                                 "dev/toma/pubgmc/ClientHooks",
                                 "model_setupModelAngles",
-                                "(Lnet/minecraft/client/model/ModelBiped;)V",
+                                "(Lnet/minecraft/client/model/ModelBiped;Lnet/minecraft/entity/Entity;)V",
                                 false
                         ));
                         insnList.insertBefore(insnNode, list);
@@ -72,7 +73,7 @@ public class PMCClassTransformer implements IClassTransformer {
                 break;
             }
         }
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
     }

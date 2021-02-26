@@ -123,11 +123,8 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void onTick(PlayerTickEvent ev) {
-        if(ev.phase == Phase.END)
-            return;
         EntityPlayer player = ev.player;
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        data.tick();
         player.eyeHeight = player.getDefaultEyeHeight();
         if(data.isProning()) {
             AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
@@ -135,6 +132,9 @@ public class CommonEvents {
             player.height = 0.9F;
             player.eyeHeight = 0.6F;
         }
+        if(ev.phase == Phase.END)
+            return;
+        data.tick();
         if((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning() && !player.world.isRemote) {
             data.setProning(false);
             data.sync();
