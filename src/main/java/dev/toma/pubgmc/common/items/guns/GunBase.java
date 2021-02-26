@@ -294,8 +294,10 @@ public class GunBase extends PMCItem {
         if (GuiScreen.isShiftKeyDown() && stack.hasTagCompound()) {
             DecimalFormat f = new DecimalFormat("###.##");
             DecimalFormat g = new DecimalFormat("###.###");
-
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.damage") + ": " + TextFormatting.RESET + "" + TextFormatting.DARK_RED + this.wepStats.damage);
+            // TODO this is just temp fix, this needs to be rewritten completely
+            if(wepStats.damage == null)
+                return;
+            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.damage") + ": " + TextFormatting.RESET + "" + TextFormatting.DARK_RED + this.wepStats.damage.get());
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.reloadtime") + ": " + TextFormatting.RESET + "" + TextFormatting.GREEN + g.format(getReloadTime(stack) / 20) + " " + I18n.format("gun.reloadtime.info"));
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.velocity.get() * 5.5) + " " + I18n.format("gun.velocity.info"));
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.gravityModifier.get() * 20) + " " + I18n.format("gun.gravity.info"));
