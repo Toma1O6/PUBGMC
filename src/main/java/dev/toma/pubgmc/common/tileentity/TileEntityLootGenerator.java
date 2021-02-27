@@ -51,6 +51,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
+        clear();
         ItemStackHelper.loadAllItems(compound, this.inventory);
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
         gameID = compound.hasKey("gameID") ? compound.getString("gameID") : "";

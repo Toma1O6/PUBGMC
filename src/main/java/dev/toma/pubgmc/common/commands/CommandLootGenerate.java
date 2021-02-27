@@ -10,6 +10,7 @@ import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.game.loot.ILootSpawner;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

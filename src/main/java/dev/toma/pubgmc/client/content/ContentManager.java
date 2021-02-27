@@ -7,8 +7,6 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -98,7 +96,7 @@ public class ContentManager {
     }
 
     String getRawContent() throws Exception {
-        boolean forceUrlParse = false;
+        boolean forceUrlParse = true;
         BufferedReader reader;
         if(Pubgmc.isDevEnvironment && !forceUrlParse) {
             String path = "./content.json";
