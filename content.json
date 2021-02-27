@@ -2,6 +2,12 @@
     "display": [
         {
             "type": "announcement",
+            "title": "Looking for Mod Testers",
+            "text": "Do you want to test early versions? Click here",
+            "url": "https://discord.gg/WmdUKZz"
+        },
+        {
+            "type": "announcement",
             "title": "PUBGMC is now on Patreon!",
             "text": "You can show some love by supporting me. Just one click",
             "url": "https://www.patreon.com/pubgmc"

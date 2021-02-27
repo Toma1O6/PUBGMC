@@ -42,19 +42,19 @@ public class GuiLootSetup extends GuiScreenCentered {
     @Override
     public void initGui() {
         this.setDimension(176, 221).calculateGuiPosition();
-        this.buttonList.add(this.new BTNLootBool(0, guiLeft + 90, guiTop + 10, 75, 20, data.hasAirdropWeapons()));
-        this.buttonList.add(this.new BTNLootBool(1, guiLeft + 90, guiTop + 35, 75, 20, data.isAmmoLootEnabled()));
-        this.buttonList.add(this.new BTNLootBool(2, guiLeft + 90, guiTop + 60, 75, 20, data.isRandomAmmoCountEnabled()));
-        this.buttonList.add(this.new ChanceModifierButton(data, 3, true, guiLeft + 90, guiTop + 85));
-        this.buttonList.add(this.new ChanceModifierButton(data, 4, false, guiLeft + 145, guiTop + 85));
-        label = this.new ChanceLabel(this, guiLeft + 110, guiTop + 85, 35, 20);
+        this.buttonList.add(new BTNLootBool(0, guiLeft + 90, guiTop + 10, 75, 20, data.hasAirdropWeapons()));
+        this.buttonList.add(new BTNLootBool(1, guiLeft + 90, guiTop + 35, 75, 20, data.isAmmoLootEnabled()));
+        this.buttonList.add(new BTNLootBool(2, guiLeft + 90, guiTop + 60, 75, 20, data.isRandomAmmoCountEnabled()));
+        this.buttonList.add(new ChanceModifierButton(data, 3, true, guiLeft + 90, guiTop + 85));
+        this.buttonList.add(new ChanceModifierButton(data, 4, false, guiLeft + 145, guiTop + 85));
+        label = new ChanceLabel(this, guiLeft + 110, guiTop + 85, 35, 20);
         int j = 0;
         for(int i = 0; i < GunBase.GunType.values().length; i++) {
             GunBase.GunType type = GunBase.GunType.values()[i];
             if(type == GunBase.GunType.LMG) {
                 continue;
             }
-            this.buttonList.add(this.new BTNWeaponType(this, type, j % 2 == 0 ? guiLeft + 10 : guiLeft + 90, guiTop + 125 + ((j / 2) * 25) + 10));
+            this.buttonList.add(new BTNWeaponType(this, type, j % 2 == 0 ? guiLeft + 10 : guiLeft + 90, guiTop + 125 + ((j / 2) * 25) + 10));
             j++;
         }
     }
@@ -105,16 +105,16 @@ public class GuiLootSetup extends GuiScreenCentered {
         PacketHandler.sendToServer(new PacketUpdateLootData(data.serializeNBT()));
     }
 
-    private class ChanceLabel {
+    private static class ChanceLabel {
 
-        private int x;
-        private int y;
-        private int width;
-        private int height;
+        private final int x;
+        private final int y;
+        private final int width;
+        private final int height;
         private boolean hovered;
         private int hoverTime;
         private int fpsCounter;
-        private GuiLootSetup parent;
+        private final GuiLootSetup parent;
 
         public ChanceLabel(GuiLootSetup parent, int x, int y, int width, int height) {
             this.parent = parent;
@@ -154,9 +154,9 @@ public class GuiLootSetup extends GuiScreenCentered {
 
         private String getGunDescSpawnChanceString(String className, double baseAmount) {
             double d = parent.data.getLootChanceMultiplier();
-            return className + ": " + TextFormatting.RED + decFormat.format(baseAmount*d) + "%" + TextFormatting.WHITE + "/"
-                    + TextFormatting.YELLOW + decFormat.format(baseAmount*1.4F*d) + "%" + TextFormatting.WHITE + "/"
-                    + TextFormatting.GREEN + decFormat.format(baseAmount*2.0F*d) + "%";
+            return className + ": " + TextFormatting.RED + parent.decFormat.format(baseAmount*d) + "%" + TextFormatting.WHITE + "/"
+                    + TextFormatting.YELLOW + parent.decFormat.format(baseAmount*1.4F*d) + "%" + TextFormatting.WHITE + "/"
+                    + TextFormatting.GREEN + parent.decFormat.format(baseAmount*2.0F*d) + "%";
         }
 
         private void updateCounters() {
@@ -173,7 +173,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         }
     }
 
-    private class ChanceModifierButton extends GuiButton implements BTNClickable {
+    private static class ChanceModifierButton extends GuiButton implements BTNClickable {
 
         private final boolean isLeft;
         private final IWorldData ins;
@@ -213,14 +213,11 @@ public class GuiLootSetup extends GuiScreenCentered {
         }
 
         private double increase(double amount) {
-            if(ins.getLootChanceMultiplier() + amount > 99.99D) {
-                return 99.99D;
-            }
-            return ins.getLootChanceMultiplier() + amount;
+            return Math.min(ins.getLootChanceMultiplier() + amount, 99.99D);
         }
     }
 
-    private class BTNLootBool extends GuiButton implements BTNClickable {
+    private static class BTNLootBool extends GuiButton implements BTNClickable {
 
         protected boolean buttonState;
 
@@ -270,7 +267,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         }
     }
 
-    private class BTNWeaponType extends BTNLootBool {
+    private static class BTNWeaponType extends BTNLootBool {
 
         private final GunBase.GunType weaponType;
         private final GuiLootSetup parent;
