@@ -5,6 +5,7 @@ import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -39,9 +40,7 @@ public class GuiAttachments extends GuiContainer {
         GlStateManager.color(1f, 1f, 1f);
         mc.renderEngine.bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-        GlStateManager.pushMatrix();
-        renderItem(stack, 15, -5);
-        GlStateManager.popMatrix();
+        renderItem(stack, guiLeft + 100, guiTop + 30);
         for(Slot slot : this.inventorySlots.inventorySlots) {
             if(!(slot instanceof ContainerAttachments.AttachmentSlot) || !((ContainerAttachments.AttachmentSlot)slot).isSlotAvailable()) {
                 continue;
@@ -61,23 +60,19 @@ public class GuiAttachments extends GuiContainer {
     }
 
     public void renderItem(ItemStack stack, int x, int y) {
-        IBakedModel bakedmodel = mc.getRenderItem().getItemModelWithOverrides(stack, null, null);
         GlStateManager.pushMatrix();
+        IBakedModel bakedModel = mc.getRenderItem().getItemModelWithOverrides(stack, null, null);
         mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-        Vector2d translate = this.applyScaleFactor();
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.setupGuiTransform(x, y, bakedmodel.isGui3d());
-        GlStateManager.translate(x + translate.x, y + translate.y, 0);
-        GlStateManager.scale(2.5, 2.5, 2.5);
-        GlStateManager.rotate(70, 0, 1, 0);
-        GlStateManager.rotate(20, 1, 0, 0);
-        mc.getRenderItem().renderItem(stack, bakedmodel);
+        this.setupGuiTransform(x, y, bakedModel.isGui3d());
+        bakedModel = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(bakedModel, ItemCameraTransforms.TransformType.GUI, false);
+        mc.getRenderItem().renderItem(stack, bakedModel);
         GlStateManager.disableAlpha();
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableLighting();
@@ -90,24 +85,11 @@ public class GuiAttachments extends GuiContainer {
         GlStateManager.translate((float)xPosition, (float)yPosition, 100.0F + this.zLevel);
         GlStateManager.translate(8.0F, 8.0F, 0.0F);
         GlStateManager.scale(1.0F, -1.0F, 1.0F);
-        GlStateManager.scale(16.0F, 16.0F, 16.0F);
-
+        GlStateManager.scale(80.0F, 80.0F, 80.0F);
         if (isGui3d) {
             GlStateManager.enableLighting();
         } else {
             GlStateManager.disableLighting();
-        }
-    }
-
-    private Vector2d applyScaleFactor() {
-        int scale = mc.gameSettings.guiScale;
-        switch (scale) {
-            // AUTO
-            case 0: return new Vector2d(-0.25, -0.5);
-            case 1: return new Vector2d(44, -24);
-            case 2: return new Vector2d(14, -8.5);
-            case 3: return new Vector2d(3.5, -3);
-            default: return new Vector2d();
         }
     }
 }
