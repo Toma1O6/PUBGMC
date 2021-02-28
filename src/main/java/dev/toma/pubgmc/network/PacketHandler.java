@@ -19,7 +19,7 @@ public class PacketHandler {
     private static int ID = 0;
 
     public static void initialize() {
-        registerServerPacket(PacketServerAction.Handler.class, PacketServerAction.class);
+        registerServerPacket(SPacketSetProperty.Handler.class, SPacketSetProperty.class);
         registerServerPacket(PacketFiremode.Handler.class, PacketFiremode.class);
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);

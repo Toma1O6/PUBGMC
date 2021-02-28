@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.capability.player;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -11,15 +12,18 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     BoostStats getBoostStats();
 
+    AimInfo getAimInfo();
+
     void tick();
+
+    EntityPlayer getPlayer();
+
+    @Deprecated
+    boolean isAiming();
 
     boolean isReloading();
 
     void setReloading(boolean reloading);
-
-    boolean isAiming();
-
-    void setAiming(boolean aiming);
 
     void setNV(boolean nv);
 

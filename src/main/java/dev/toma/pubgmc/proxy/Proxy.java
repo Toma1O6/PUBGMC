@@ -24,8 +24,4 @@ public abstract class Proxy {
     public void playDelayedSound(SoundEvent event, double x, double y, double z, float volume) {
 
     }
-
-    public void resetMouseSens() {
-
-    }
 }

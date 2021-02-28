@@ -84,7 +84,7 @@ public class ModelDP28 extends ModelGun {
 
             GlStateManager.pushMatrix();
             {
-                renderDP28(data.isAiming(), stack);
+                renderDP28(data.getAimInfo().isAiming(), stack);
             }
             GlStateManager.popMatrix();
         }

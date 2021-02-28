@@ -19,8 +19,9 @@ public class PlayerData implements IPlayerData {
 
     final EntityPlayer player;
     final BoostStats boostStats;
+    final AimInfo aimInfo;
+
     private boolean reloading;
-    private boolean aiming;
     private boolean nv;
     private int reloading_time;
 
@@ -41,6 +42,7 @@ public class PlayerData implements IPlayerData {
     public PlayerData(EntityPlayer owner) {
         this.player = owner;
         this.boostStats = new BoostStats(this);
+        this.aimInfo = new AimInfo(this);
     }
 
     public static IPlayerData get(EntityPlayer player) {
@@ -55,6 +57,21 @@ public class PlayerData implements IPlayerData {
     @Override
     public BoostStats getBoostStats() {
         return boostStats;
+    }
+
+    @Override
+    public AimInfo getAimInfo() {
+        return aimInfo;
+    }
+
+    @Override
+    public EntityPlayer getPlayer() {
+        return player;
+    }
+
+    @Override
+    public boolean isAiming() {
+        return aimInfo.isAiming();
     }
 
     @Override
@@ -85,16 +102,6 @@ public class PlayerData implements IPlayerData {
     @Override
     public void setReloading(boolean reloading) {
         this.reloading = reloading;
-    }
-
-    @Override
-    public boolean isAiming() {
-        return this.aiming;
-    }
-
-    @Override
-    public void setAiming(boolean aiming) {
-        this.aiming = aiming;
     }
 
     @Override
@@ -161,11 +168,11 @@ public class PlayerData implements IPlayerData {
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = new NBTTagCompound();
         c.setTag("boostStats", boostStats.serializeNBT());
+        c.setTag("aimInfo", aimInfo.serializeNBT());
         c.setInteger("level", level);
         c.setBoolean("eqnv", eqNV);
         c.setInteger("scopetype", scopetype);
         c.setInteger("scopecolor", scopecolor);
-        c.setBoolean("aim", this.aiming);
         c.setBoolean("reload", this.reloading);
         c.setBoolean("prone", this.isProne);
         return c;
@@ -174,11 +181,11 @@ public class PlayerData implements IPlayerData {
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         deserialize(boostStats, "boostStats", nbt);
+        deserialize(aimInfo, "aimInfo", nbt);
         level = nbt.getInteger("level");
         eqNV = nbt.getBoolean("eqnv");
         scopetype = nbt.getInteger("scopetype");
         scopecolor = nbt.getInteger("scopecolor");
-        aiming = nbt.getBoolean("aim");
         reloading = nbt.getBoolean("reload");
         isProne = nbt.getBoolean("prone");
     }

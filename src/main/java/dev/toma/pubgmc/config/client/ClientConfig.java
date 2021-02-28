@@ -2,13 +2,11 @@ package dev.toma.pubgmc.config.client;
 
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
-import dev.toma.configuration.api.type.EnumType;
 import dev.toma.configuration.api.type.ObjectType;
 
 public final class ClientConfig extends ObjectType {
 
     final ConfigPlugin plugin;
-    public EnumType<CFGAimType> aimType;
     public CFGOverlaySettings overlays;
     public CFGOtherSettings other;
     public CFGContentSettings content;
@@ -20,7 +18,6 @@ public final class ClientConfig extends ObjectType {
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
-        aimType = configCreator.createEnum("Aim type", CFGAimType.TOGGLE);
         overlays = configCreator.createObject(new CFGOverlaySettings(plugin), plugin);
         other = configCreator.createObject(new CFGOtherSettings(), plugin);
         content = configCreator.createObject(new CFGContentSettings(), plugin);

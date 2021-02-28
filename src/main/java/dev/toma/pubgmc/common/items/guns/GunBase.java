@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.client.models.ModelGun;
+import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
@@ -598,7 +599,7 @@ public class GunBase extends PMCItem {
             ItemStack heldItem = player.getHeldItemMainhand();
 
             if (heldItem.getItem() instanceof GunBase) {
-                data.setAiming(false);
+                data.getAimInfo().setAiming(false, AimInfo.STOP_AIMING_SPEED);
                 GunBase gun = (GunBase) heldItem.getItem();
 
                 if ((heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem) || !gun.hasPlayerAmmoForGun(player, gun)) && data.isReloading()) {

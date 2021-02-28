@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
-import dev.toma.pubgmc.client.models.ModelGhillie;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.player.BoostStats;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -16,7 +15,6 @@ import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.client.CFGAimType;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import dev.toma.pubgmc.init.PMCRegistry;
 import dev.toma.pubgmc.init.PMCSounds;
@@ -71,19 +69,12 @@ public class ClientEvents {
     private static final List<ResourceLocation> HOLOS = new ArrayList<>();
     private static final DecimalFormat DECIMAL = new DecimalFormat("###");
     public static int recoilTicks = 0;
-    /**
-     * Time it takes to render red dot / holographic overlay after aiming
-     **/
-    private static final int AIM_TIME = 10;
-    private final ModelGhillie ghillieSuit = new ModelGhillie();
+
     /**
      * Random Number Generator
      **/
     private final Random rand = new Random();
-    /**
-     * Time since started aiming
-     **/
-    private int aimingTicks;
+
     /**
      * Slot to determine which gun is being reloaded
      **/
@@ -115,19 +106,9 @@ public class ClientEvents {
     private int shootingTimer;
 
     /**
-     * Mouse sensitivity player had before he started aiming
-     **/
-    public static float mouseSens;
-
-    /**
      * Used for reloading to tell the game to play the sound or not. Simple workaround to prevent multiple reload sound playing
      **/
     private boolean hasAmmo;
-
-    /**
-     * Used to stop aiming when player switches slot
-     **/
-    private int aimSlot;
 
     /**
      * IDs for different red dot sight styles and colors
@@ -420,7 +401,7 @@ public class ClientEvents {
             //Scopes
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                if (data.isAiming() && mc.gameSettings.thirdPersonView == 0) {
+                if (data.getAimInfo().isAiming() && mc.gameSettings.thirdPersonView == 0) {
                     if (stack.getItem() == PMCRegistry.PMCItems.VSS) {
                         ImageUtil.drawFullScreenImage(mc, res, ScopeVSS, true);
                     }
@@ -431,10 +412,10 @@ public class ClientEvents {
                         int left = halfX - 8;
                         int top = halfY - 8;
 
-                        if (stack.getTagCompound().getInteger("scope") == 1 && aimingTicks >= AIM_TIME) {
+                        if (stack.getTagCompound().getInteger("scope") == 1 && data.getAimInfo().isFullyAds()) {
                             ImageUtil.drawCustomSizedImage(mc, SCOPES.get(getScopeTypeID(data.getScopeType(), data.getScopeColor())), left, top, 17, 17, true);
 
-                        } else if (stack.getTagCompound().getInteger("scope") == 2 && aimingTicks >= AIM_TIME) {
+                        } else if (stack.getTagCompound().getInteger("scope") == 2 && data.getAimInfo().isFullyAds()) {
                             ImageUtil.drawCustomSizedImage(mc, HOLOS.get(getHoloID(data.getScopeColor())), left, top, 17, 17, true);
                         } else if (stack.getTagCompound().getInteger("scope") == 3) {
                             ImageUtil.drawFullScreenImage(mc, res, Scope2X, true);
@@ -477,7 +458,7 @@ public class ClientEvents {
             IPlayerData data = PlayerData.get(sp);
             if (data != null) {
                 data.setProning(!data.isProning());
-                if(data.isAiming()) this.setAiming(data, false);
+                if(data.getAimInfo().isAiming()) this.setAiming(data, false);
                 if(data.isReloading()) this.setReloading(data, false);
                 PacketHandler.sendToServer(new PacketProne(data.isProning()));
             }
@@ -516,10 +497,8 @@ public class ClientEvents {
                         reloadingSlot = sp.inventory.currentItem;
 
                         //You can't aim while you're reloading
-                        if (data.isAiming()) {
-                            data.setAiming(false);
-                            PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
-                            Minecraft.getMinecraft().gameSettings.mouseSensitivity = mouseSens;
+                        if (data.getAimInfo().isAiming()) {
+                            PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                         }
                     }
                 }
@@ -529,8 +508,7 @@ public class ClientEvents {
         //Same as above, we just send packet to server and everything else will be done in the rendering method above
         if (KeyBinds.NV.isPressed()) {
             if (data.getEquippedNV()) {
-                data.setNV(!data.isUsingNV());
-                PacketHandler.sendToServer(new PacketServerAction(data.isUsingNV(), PacketServerAction.ServerAction.NIGHT_VISION));
+                PacketHandler.sendToServer(new SPacketSetProperty(!data.isUsingNV(), SPacketSetProperty.Action.NIGHT_VISION));
             }
         }
 
@@ -586,12 +564,9 @@ public class ClientEvents {
 
                 //Aiming on RMB press
                 if (gs.keyBindUseItem.isPressed()) {
-                    if (!data.isAiming() && !player.isSprinting()) {
-                        aimingTicks = 0;
-                        aimSlot = player.inventory.currentItem;
-                        data.setAiming(true);
+                    if (!data.getAimInfo().isAiming() && !player.isSprinting()) {
                         //We have to tell the server the player is aiming to make it work on servers
-                        PacketHandler.sendToServer(new PacketServerAction(true, PacketServerAction.ServerAction.AIM));
+                        PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
                         int scopeID = stack.getTagCompound().getInteger("scope");
 
                         //sensitivity modifier
@@ -615,9 +590,7 @@ public class ClientEvents {
                                 break;
                         }
                     } else {
-                        data.setAiming(false);
-                        PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.AIM));
-                        gs.mouseSensitivity = mouseSens;
+                        PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
                 }
             }
@@ -701,41 +674,6 @@ public class ClientEvents {
                 }
             }
 
-            if (data.isAiming()) {
-                if (aimingTicks < AIM_TIME) aimingTicks++;
-
-                if (aimSlot != player.inventory.currentItem) {
-                    setAiming(data, false);
-                    gs.mouseSensitivity = mouseSens;
-                }
-
-                if (ConfigPMC.client.aimType.get() == CFGAimType.HOLD) {
-                    if (!gs.keyBindUseItem.isKeyDown()) {
-                        setAiming(data, false);
-                        gs.mouseSensitivity = mouseSens;
-                    }
-                }
-            }
-
-            if (player.isSprinting() && data.isAiming()) {
-                setAiming(data, false);
-                gs.mouseSensitivity = mouseSens;
-            }
-
-            if (!(player.getHeldItemMainhand().getItem() instanceof GunBase) && data.isAiming()) {
-                setAiming(data, false);
-                gs.mouseSensitivity = mouseSens;
-            }
-
-            //Reset the mouse sensitivity after aiming
-            if (!data.isAiming()) {
-                mouseSens = gs.mouseSensitivity;
-
-                if (gs.mouseSensitivity != mouseSens) {
-                    gs.mouseSensitivity = mouseSens;
-                }
-            }
-
             if (data.isReloading()) {
                 if (reloadingSlot != player.inventory.currentItem) {
                     setReloading(data, true);
@@ -764,13 +702,13 @@ public class ClientEvents {
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
                                     setReloading(data, false);
-                                    PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
+                                    PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                 }
                             } else if (gun.getReloadType() == GunBase.ReloadType.SINGLE) {
                                 if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
-                                    PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
+                                    PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                 }
                             } else if (gun.getReloadType() == GunBase.ReloadType.KAR98K) {
                                 if (itemstack.hasTagCompound()) {
@@ -778,13 +716,13 @@ public class ClientEvents {
                                         if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
                                             data.setReloadingTime(0);
                                             hasAmmo = false;
-                                            PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
+                                            PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                         }
                                     } else {
                                         if (data.getReloadingTime() >= 18) {
                                             data.setReloadingTime(0);
                                             hasAmmo = false;
-                                            PacketHandler.sendToServer(new PacketServerAction(false, PacketServerAction.ServerAction.RELOAD));
+                                            PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                         }
                                     }
                                 }
@@ -914,8 +852,7 @@ public class ClientEvents {
     }
 
     private void setAiming(IPlayerData data, boolean aim) {
-        data.setAiming(aim);
-        PacketHandler.sendToServer(new PacketServerAction(aim, PacketServerAction.ServerAction.AIM));
+        PacketHandler.sendToServer(new SPacketSetProperty(aim, SPacketSetProperty.Action.AIM));
     }
 
     private void switchScopeType(IPlayerData data) {

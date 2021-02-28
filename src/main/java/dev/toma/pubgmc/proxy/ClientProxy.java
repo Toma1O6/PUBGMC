@@ -104,9 +104,4 @@ public class ClientProxy extends Proxy {
         int ticks = (int) ((distance / 34) * 5);
         mc.getSoundHandler().playDelayedSound(sound, ticks);
     }
-
-    @Override
-    public void resetMouseSens() {
-        Minecraft.getMinecraft().gameSettings.mouseSensitivity = ClientEvents.mouseSens;
-    }
 }
