@@ -7,11 +7,11 @@ public final class AttachmentType<I> {
 
     public static AttachmentType<?>[] allTypes = new AttachmentType[0];
 
-    public static final AttachmentType<Muzzle> MUZZLE = new AttachmentType<>("muzzle", 0, 0);
-    public static final AttachmentType<Grip> GRIP = new AttachmentType<>("grip", 0, 0);
-    public static final AttachmentType<Magazine> MAGAZINE = new AttachmentType<>("magazine", 0, 0);
-    public static final AttachmentType<Stock> STOCK = new AttachmentType<>("stock", 0, 0);
-    public static final AttachmentType<Scope> SCOPE = new AttachmentType<>("scope", 0, 0);
+    public static final AttachmentType<Muzzle> MUZZLE = new AttachmentType<>("muzzle", 20, 31);
+    public static final AttachmentType<Grip> GRIP = new AttachmentType<>("grip", 48, 60);
+    public static final AttachmentType<Magazine> MAGAZINE = new AttachmentType<>("magazine", 80, 65);
+    public static final AttachmentType<Stock> STOCK = new AttachmentType<>("stock", 135, 31);
+    public static final AttachmentType<Scope> SCOPE = new AttachmentType<>("scope", 90, 12);
 
     final ResourceLocation slotTexture;
     final int x;
@@ -25,7 +25,7 @@ public final class AttachmentType<I> {
         this.slotTexture = slotTexture;
         this.x = slotX;
         this.y = slotY;
-        this.addToArray();
+        addToArray(this);
     }
 
     public ResourceLocation getSlotTexture() {
@@ -40,10 +40,10 @@ public final class AttachmentType<I> {
         return y;
     }
 
-    void addToArray() {
+    static void addToArray(AttachmentType<?> type) {
         AttachmentType<?>[] array = new AttachmentType[allTypes.length + 1];
         System.arraycopy(allTypes, 0, array, 0, allTypes.length);
-        array[array.length - 1] = this;
+        array[array.length - 1] = type;
         allTypes = array;
     }
 }

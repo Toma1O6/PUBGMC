@@ -3,7 +3,7 @@ package dev.toma.pubgmc.util.recipes;
 import com.google.common.collect.Lists;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import dev.toma.pubgmc.init.PMCRegistry.PMCItems;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

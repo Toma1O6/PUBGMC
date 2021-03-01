@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.items.armor;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.ToolMaterials;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
@@ -22,7 +22,7 @@ public class ItemGhillie extends ItemArmor {
     public static final int DEFAULT_COLOR = 0x52D900;
 
     public ItemGhillie(String name) {
-        super(PMCRegistry.ToolMaterials.GHILLIE_SUIT, 1, EntityEquipmentSlot.LEGS);
+        super(ToolMaterials.GHILLIE_SUIT, 1, EntityEquipmentSlot.LEGS);
         setUnlocalizedName(name);
         setRegistryName(name);
         this.setMaxStackSize(1);

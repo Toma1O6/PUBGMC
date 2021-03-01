@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class GunPostInitializeEvent extends Event {
     private final GunBase gun;
 

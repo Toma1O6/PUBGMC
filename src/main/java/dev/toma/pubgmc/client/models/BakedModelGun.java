@@ -5,7 +5,7 @@ import dev.toma.pubgmc.client.util.ModelHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.guns.GunBase;
-import dev.toma.pubgmc.init.PMCRegistry.PMCItems;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,16 +1,31 @@
 package dev.toma.pubgmc;
 
+import java.util.Collection;
+import java.util.function.BiPredicate;
+
 public class DevUtil {
 
     public static boolean isDev() {
         return Pubgmc.isDevEnvironment;
     }
 
-    public static <E> boolean containsD(E[] group, E element) {
+    public static <E> boolean contains(E[] group, E element) {
         for(E e : group) {
             if(element == e) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static <T> boolean contains(T t, Collection<T> collection) {
+        return contains(t, collection, (t1, t2) -> t1 == t2);
+    }
+
+    public static <T, U> boolean contains(T t, Collection<U> collection, BiPredicate<T, U> test) {
+        for (U u : collection) {
+            if(test.test(t, u))
+                return true;
         }
         return false;
     }

@@ -11,7 +11,7 @@ import dev.toma.pubgmc.common.items.ItemExplodeable;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketGetConfigFromServer;
 import dev.toma.pubgmc.network.sp.PacketLoadConfig;
@@ -249,7 +249,7 @@ public class CommonEvents {
         EntityPlayer player = e.getPlayer();
         EntityItem itemEntity = e.getEntityItem();
 
-        if (itemEntity.getItem().getItem() == PMCRegistry.PMCItems.IBLOCK) {
+        if (itemEntity.getItem().getItem() == PMCItems.IBLOCK) {
             if (!player.capabilities.isCreativeMode) {
                 e.setCanceled(true);
             }

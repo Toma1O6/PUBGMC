@@ -16,7 +16,7 @@ import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.server.*;
@@ -349,7 +349,7 @@ public class ClientEvents {
             }
             if (weaponStack.hasTagCompound()) {
                 int ammo = weaponStack.getTagCompound().getInteger("ammo");
-                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(new ItemStack(gun)) + ": " + gun.getFiremode(), x, y - 9, 16777215);
+                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(new ItemStack(gun)) + ": " + gun.getFiremode(weaponStack), x, y - 9, 16777215);
                 mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "" + ammo + TextFormatting.RESET + " | " + totalCount, x, y, 16777215);
             }
         }
@@ -402,7 +402,7 @@ public class ClientEvents {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
                 if (data.getAimInfo().isAiming() && mc.gameSettings.thirdPersonView == 0) {
-                    if (stack.getItem() == PMCRegistry.PMCItems.VSS) {
+                    if (stack.getItem() == PMCItems.VSS) {
                         ImageUtil.drawFullScreenImage(mc, res, ScopeVSS, true);
                     }
 
@@ -513,14 +513,10 @@ public class ClientEvents {
         }
 
         //Switch firemode
-        //Syncing happens from the GunBase.class
         if (KeyBinds.FIREMODE.isPressed()) {
-            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
-                GunBase item = (GunBase) sp.getHeldItemMainhand().getItem();
-
-                if (item.getCanSwitchFiremode()) {
-                    item.switchFiremode(sp);
-                }
+            ItemStack stack = sp.getHeldItemMainhand();
+            if (stack.getItem() instanceof GunBase) {
+                PacketHandler.sendToServer(new SPacketFiremode());
             }
         }
     }
@@ -536,7 +532,7 @@ public class ClientEvents {
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 if (gs.keyBindAttack.isPressed()) {
                     CooldownTracker tracker = player.getCooldownTracker();
-                    if (gun.getFiremode() == GunBase.Firemode.SINGLE) {
+                    if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
                         //If the gun has no cooldown
                         if (!data.isReloading() && !tracker.hasCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
@@ -550,7 +546,7 @@ public class ClientEvents {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
                         }
-                    } else if (gun.getFiremode() == GunBase.Firemode.BURST) {
+                    } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
                         if (!shooting && !data.isReloading() && !tracker.hasCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 shooting = true;
@@ -624,13 +620,14 @@ public class ClientEvents {
 
                 if (gs.keyBindAttack.isKeyDown()) {
                     CooldownTracker tracker = player.getCooldownTracker();
-                    if (!player.isSpectator() && player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                        GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                        if (gun.getFiremode() == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.hasCooldown(gun)) {
-                            if (gun.hasAmmo(player.getHeldItemMainhand())) {
+                    ItemStack stack = player.getHeldItemMainhand();
+                    if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
+                        GunBase gun = (GunBase) stack.getItem();
+                        if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.hasCooldown(gun)) {
+                            if (gun.hasAmmo(stack)) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                this.applyRecoil(player, player.getHeldItemMainhand());
+                                this.applyRecoil(player, stack);
                             } else {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
@@ -641,9 +638,9 @@ public class ClientEvents {
                 if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
                     ItemStack stack = player.getHeldItemMainhand();
                     GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                    int maxRounds = gun.isHasTwoRoundBurst() ? 2 : 3;
+                    int maxRounds = gun.getBurstAmount();
                     if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
-                        if (shooting && gun.getFiremode() == GunBase.Firemode.BURST) {
+                        if (shooting && gun.getFiremode(stack) == GunBase.Firemode.BURST) {
                             shootingTimer++;
 
                             if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {

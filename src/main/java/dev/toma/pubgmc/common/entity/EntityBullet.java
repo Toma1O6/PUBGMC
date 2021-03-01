@@ -13,8 +13,7 @@ import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.init.DamageSourceGun;
-import dev.toma.pubgmc.init.PMCRegistry;
-import dev.toma.pubgmc.init.PMCRegistry.PMCItems;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketParticle;
@@ -349,11 +348,11 @@ public class EntityBullet extends Entity {
         if (isHeadShot) {
             ItemStack head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 
-            if (head.getItem() == PMCRegistry.PMCItems.ARMOR1HELMET) {
+            if (head.getItem() == PMCItems.ARMOR1HELMET) {
                 damage *= 0.7f;
-            } else if (head.getItem() == PMCRegistry.PMCItems.ARMOR2HELMET) {
+            } else if (head.getItem() == PMCItems.ARMOR2HELMET) {
                 damage *= 0.6f;
-            } else if (head.getItem() == PMCRegistry.PMCItems.ARMOR3HELMET) {
+            } else if (head.getItem() == PMCItems.ARMOR3HELMET) {
                 damage *= 0.4f;
             }
 
@@ -363,11 +362,11 @@ public class EntityBullet extends Entity {
         } else {
             ItemStack body = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-            if (body.getItem() == PMCRegistry.PMCItems.ARMOR1BODY) {
+            if (body.getItem() == PMCItems.ARMOR1BODY) {
                 damage *= 0.7f;
-            } else if (body.getItem() == PMCRegistry.PMCItems.ARMOR2BODY) {
+            } else if (body.getItem() == PMCItems.ARMOR2BODY) {
                 damage *= 0.6f;
-            } else if (body.getItem() == PMCRegistry.PMCItems.ARMOR3BODY) {
+            } else if (body.getItem() == PMCItems.ARMOR3BODY) {
                 damage *= 0.5f;
             }
 

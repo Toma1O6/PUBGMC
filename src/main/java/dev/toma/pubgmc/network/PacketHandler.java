@@ -20,7 +20,7 @@ public class PacketHandler {
 
     public static void initialize() {
         registerServerPacket(SPacketSetProperty.Handler.class, SPacketSetProperty.class);
-        registerServerPacket(PacketFiremode.Handler.class, PacketFiremode.class);
+        registerServerPacket(SPacketFiremode.Handler.class, SPacketFiremode.class);
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);

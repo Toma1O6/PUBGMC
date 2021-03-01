@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.ModelAIPlayer;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.items.armor.ItemGhillie;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderBiped;
@@ -59,7 +59,7 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
         @Override
         public void doRenderLayer(EntityAIPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             ItemStack stack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
-            if(!stack.isEmpty() && stack.getItem() == PMCRegistry.PMCItems.GHILLIE_SUIT) {
+            if(!stack.isEmpty() && stack.getItem() == PMCItems.GHILLIE_SUIT) {
                 this.baseLayer.setModelAttributes(this.renderLivingBase.getMainModel());
                 this.overlay.setModelAttributes(this.renderLivingBase.getMainModel());
                 this.baseLayer.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);

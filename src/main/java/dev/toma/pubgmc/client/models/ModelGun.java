@@ -7,7 +7,7 @@ import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.init.PMCRegistry.PMCItems;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;

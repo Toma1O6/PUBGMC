@@ -9,7 +9,7 @@ import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.game.GameControlItem;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -40,7 +40,7 @@ public class RenderHandler {
         if (data.isAiming()) {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
-                int scope = stack.getItem() == PMCRegistry.PMCItems.VSS ? 4 : stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
+                int scope = stack.getItem() == PMCItems.VSS ? 4 : stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
                 switch (scope) {
                     case 1:
                     case 2:

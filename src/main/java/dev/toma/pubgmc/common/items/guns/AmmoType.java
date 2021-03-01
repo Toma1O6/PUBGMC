@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.items.guns;
 
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,19 +42,19 @@ public enum AmmoType {
     public Item ammo() {
         switch (this) {
             case AMMO9MM: default:
-                return PMCRegistry.PMCItems.AMMO_9MM;
+                return PMCItems.AMMO_9MM;
             case AMMO45ACP:
-                return PMCRegistry.PMCItems.AMMO_45ACP;
+                return PMCItems.AMMO_45ACP;
             case AMMO556:
-                return PMCRegistry.PMCItems.AMMO_556;
+                return PMCItems.AMMO_556;
             case AMMO762:
-                return PMCRegistry.PMCItems.AMMO_762;
+                return PMCItems.AMMO_762;
             case AMMO300M:
-                return PMCRegistry.PMCItems.AMMO_300M;
+                return PMCItems.AMMO_300M;
             case AMMO12G:
-                return PMCRegistry.PMCItems.AMMO_SHOTGUN;
+                return PMCItems.AMMO_SHOTGUN;
             case FLARE:
-                return PMCRegistry.PMCItems.AMMO_FLARE;
+                return PMCItems.AMMO_FLARE;
         }
     }
 

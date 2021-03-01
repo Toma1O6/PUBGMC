@@ -16,7 +16,8 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.client.Minecraft;
@@ -180,7 +181,7 @@ public class GameHandler {
                 Pubgmc.logger.warn("Couldn't create death crate for {}", player.getDisplayName());
                 return;
             }
-            world.setBlockState(pos, PMCRegistry.PMCBlocks.PLAYER_CRATE.getDefaultState());
+            world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
             TileEntityPlayerCrate te = (TileEntityPlayerCrate)world.getTileEntity(pos);
             if(te == null) {
                 Pubgmc.logger.fatal("Exception occurred when creating player crate, tile entity is null!");
@@ -193,10 +194,10 @@ public class GameHandler {
             IPlayerData data = PlayerData.get(player);
             int backpack = data.getBackpackLevel();
             if(backpack > 0) {
-                te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCRegistry.PMCItems.BACKPACK1 : backpack == 2 ? PMCRegistry.PMCItems.BACKPACK2 : PMCRegistry.PMCItems.BACKPACK3));
+                te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCItems.BACKPACK1 : backpack == 2 ? PMCItems.BACKPACK2 : PMCItems.BACKPACK3));
             }
             if(data.getEquippedNV()) {
-                te.setInventorySlotContents(42, new ItemStack(PMCRegistry.PMCItems.NV_GOGGLES));
+                te.setInventorySlotContents(42, new ItemStack(PMCItems.NV_GOGGLES));
             }
             player.inventory.clear();
         }
@@ -204,7 +205,7 @@ public class GameHandler {
         public static boolean isEmpty(InventoryPlayer inv) {
             for(int i = 0; i < inv.getSizeInventory(); i++) {
                 ItemStack stack = inv.getStackInSlot(i);
-                if(!stack.isEmpty() && stack.getItem() != PMCRegistry.PMCItems.IBLOCK) {
+                if(!stack.isEmpty() && stack.getItem() != PMCItems.IBLOCK) {
                     return false;
                 }
             }

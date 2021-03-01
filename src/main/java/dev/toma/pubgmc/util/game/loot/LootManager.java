@@ -4,7 +4,7 @@ import dev.toma.pubgmc.common.capability.IWorldData;
 import dev.toma.pubgmc.common.items.armor.ItemGhillie;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketSyncTileEntity;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -82,17 +82,17 @@ public class LootManager {
         ++i;
         int j = 1 + rand.nextInt(3);
         ItemStack stack = ((GunBase) inventory.get(i-1).getItem()).getAmmoType().ammoStack();
-        stack.setCount(stack.getItem() == PMCRegistry.PMCItems.AMMO_300M ? 5 : 30);
+        stack.setCount(stack.getItem() == PMCItems.AMMO_300M ? 5 : 30);
         for(int k = 0; k < j; k++) {
             inventory.set(i, stack.copy());
             i++;
         }
         fillSpecialAttachmentList();
-        inventory.set(i, new ItemStack(PMCRegistry.PMCItems.ARMOR3HELMET));
+        inventory.set(i, new ItemStack(PMCItems.ARMOR3HELMET));
         i++;
-        inventory.set(i, new ItemStack(PMCRegistry.PMCItems.ARMOR3BODY));
+        inventory.set(i, new ItemStack(PMCItems.ARMOR3BODY));
         i++;
-        inventory.set(i, new ItemStack(PMCRegistry.PMCItems.BACKPACK3));
+        inventory.set(i, new ItemStack(PMCItems.BACKPACK3));
         i++;
         ItemStack stack1 = new ItemStack(SPECIAL_ATTACHMENTS.get(rand.nextInt(SPECIAL_ATTACHMENTS.size())));
         inventory.set(i, stack1);
@@ -102,7 +102,7 @@ public class LootManager {
             int color = ints.length == 0 ? ItemGhillie.DEFAULT_COLOR : ints[rand.nextInt(ints.length)];
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setInteger("ghillieColor", color);
-            ItemStack stack2 = new ItemStack(PMCRegistry.PMCItems.GHILLIE_SUIT);
+            ItemStack stack2 = new ItemStack(PMCItems.GHILLIE_SUIT);
             stack2.setTagCompound(nbt);
             inventory.set(i, stack2);
             i++;
@@ -112,15 +112,15 @@ public class LootManager {
 
     private static void fillSpecialAttachmentList() {
         if(SPECIAL_ATTACHMENTS.isEmpty()) {
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_MAG_AR);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.SCOPE4X);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_MAG_SNIPER);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.COMPENSATOR_AR);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.SCOPE8X);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_AR);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.COMPENSATOR_SNIPER);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER);
-            SPECIAL_ATTACHMENTS.add(PMCRegistry.PMCItems.SCOPE15X);
+            SPECIAL_ATTACHMENTS.add(PMCItems.EXTENDED_MAG_AR);
+            SPECIAL_ATTACHMENTS.add(PMCItems.SCOPE4X);
+            SPECIAL_ATTACHMENTS.add(PMCItems.EXTENDED_MAG_SNIPER);
+            SPECIAL_ATTACHMENTS.add(PMCItems.COMPENSATOR_AR);
+            SPECIAL_ATTACHMENTS.add(PMCItems.SCOPE8X);
+            SPECIAL_ATTACHMENTS.add(PMCItems.EXTENDED_QUICKDRAW_MAG_AR);
+            SPECIAL_ATTACHMENTS.add(PMCItems.COMPENSATOR_SNIPER);
+            SPECIAL_ATTACHMENTS.add(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER);
+            SPECIAL_ATTACHMENTS.add(PMCItems.SCOPE15X);
         }
     }
 

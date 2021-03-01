@@ -10,11 +10,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerAttachments extends Container {
+
     private InventoryAttachments inv;
     private InventoryPlayer playerInv;
     private EntityPlayer invUser;
     public ItemStack stack;
-    private short i;
 
     public ContainerAttachments(InventoryPlayer playerInv, EntityPlayer player) {
         this.playerInv = playerInv;
@@ -23,8 +23,8 @@ public class ContainerAttachments extends Container {
         inv = new InventoryAttachments(5, stack);
         int[] xPos = {20, 48, 80, 135, 90};
         int[] yPos = {31, 60, 65, 31, 12};
-        for(i = 0; i < IAttachment.Type.values().length; i++) {
-            addSlotToContainer(this.new AttachmentSlot(inv, i, xPos[i], yPos[i], stack));
+        for(int i = 0; i < IAttachment.Type.values().length; i++) {
+            addSlotToContainer(new AttachmentSlot(inv, i, xPos[i], yPos[i], stack));
 
         }
         // Vanilla inv
@@ -112,15 +112,15 @@ public class ContainerAttachments extends Container {
     private boolean canAttachTo(GunBase gun, ItemAttachment attachment) {
         switch(attachment.getType()) {
             case BARREL:
-                return DevUtil.containsD(gun.getBarrelAttachments(), attachment);
+                return DevUtil.contains(gun.getBarrelAttachments(), attachment);
             case GRIP:
-                return DevUtil.containsD(gun.getGripAttachments(), attachment);
+                return DevUtil.contains(gun.getGripAttachments(), attachment);
             case MAGAZINE:
-                return DevUtil.containsD(gun.getMagazineAttachments(), attachment);
+                return DevUtil.contains(gun.getMagazineAttachments(), attachment);
             case SCOPE:
-                return DevUtil.containsD(gun.getScopeAttachments(), attachment);
+                return DevUtil.contains(gun.getScopeAttachments(), attachment);
             case STOCK:
-                return DevUtil.containsD(gun.getStockAttachments(), attachment);
+                return DevUtil.contains(gun.getStockAttachments(), attachment);
             default: return false;
         }
     }
@@ -129,7 +129,7 @@ public class ContainerAttachments extends Container {
         return item.getType().ordinal();
     }
 
-    class AttachmentSlot extends Slot {
+    static class AttachmentSlot extends Slot {
 
         private boolean enabled;
 

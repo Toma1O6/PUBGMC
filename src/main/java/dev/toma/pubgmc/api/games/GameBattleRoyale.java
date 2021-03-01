@@ -18,7 +18,7 @@ import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
 import dev.toma.pubgmc.common.entity.bot.ai.EntityAISearchLoot;
 import dev.toma.pubgmc.common.items.guns.GunBase;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.server.PacketChooseLocation;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -339,37 +339,37 @@ public class GameBattleRoyale extends Game {
             case 1: {
                 GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.PISTOL, GunBase.GunType.SHOTGUN, GunBase.GunType.SMG}, (byte) 0);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
-                player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCRegistry.PMCItems.PAINKILLERS : PMCRegistry.PMCItems.ENERGYDRINK));
+                player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCItems.PAINKILLERS : PMCItems.ENERGYDRINK));
                 Item ammo = gun.getAmmoType().ammo();
                 player.inventory.set(1, new ItemStack(ammo, 30));
                 player.inventory.set(2, new ItemStack(ammo, 30));
                 if(player.getRNG().nextInt(2) == 0) {
-                    player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(PMCRegistry.PMCItems.ARMOR1HELMET));
-                } else player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCRegistry.PMCItems.ARMOR1BODY));
+                    player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(PMCItems.ARMOR1HELMET));
+                } else player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCItems.ARMOR1BODY));
                 player.world.spawnEntity(item);
                 break;
             }
             case 2: case 3: {
                 GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SMG}, (byte) 0);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
-                player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCRegistry.PMCItems.FIRSTAIDKIT : PMCRegistry.PMCItems.BANDAGE));
+                player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCItems.FIRSTAIDKIT : PMCItems.BANDAGE));
                 Item ammo = gun.getAmmoType().ammo();
                 player.inventory.set(1, new ItemStack(ammo, 30));
                 player.inventory.set(2, new ItemStack(ammo, 30));
-                player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(PMCRegistry.PMCItems.ARMOR2HELMET));
-                player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCRegistry.PMCItems.ARMOR1BODY));
+                player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(PMCItems.ARMOR2HELMET));
+                player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCItems.ARMOR1BODY));
                 player.world.spawnEntity(item);
                 break;
             }
             default: {
                 GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SR}, (byte) 1);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
-                player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCRegistry.PMCItems.FIRSTAIDKIT : PMCRegistry.PMCItems.MEDKIT));
+                player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCItems.FIRSTAIDKIT : PMCItems.MEDKIT));
                 Item ammo = gun.getAmmoType().ammo();
                 player.inventory.set(1, new ItemStack(ammo, 30));
                 player.inventory.set(2, new ItemStack(ammo, 30));
-                player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(player.getRNG().nextInt(5) == 0 ? PMCRegistry.PMCItems.ARMOR3HELMET : PMCRegistry.PMCItems.ARMOR2HELMET));
-                player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCRegistry.PMCItems.ARMOR2BODY));
+                player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(player.getRNG().nextInt(5) == 0 ? PMCItems.ARMOR3HELMET : PMCItems.ARMOR2HELMET));
+                player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCItems.ARMOR2BODY));
                 player.world.spawnEntity(item);
                 break;
             }

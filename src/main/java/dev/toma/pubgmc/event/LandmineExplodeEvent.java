@@ -12,6 +12,7 @@ import java.util.List;
  * This is called when landmine explodes in world
  * for both sides
  */
+@Deprecated
 public class LandmineExplodeEvent extends Event {
     public final Side side;
     private final BlockPos pos;

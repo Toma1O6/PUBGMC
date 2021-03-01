@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.PMCTabs;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.CommonRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -20,7 +20,7 @@ public class PMCBlock extends Block {
         setUnlocalizedName(name);
         setRegistryName(name);
         setCreativeTab(PMCTabs.TAB_BLOCKS);
-        PMCRegistry.Registry.registerItemBlock(this);
+        CommonRegistry.registerItemBlock(this);
         this.setHardness(0.7f);
     }
 

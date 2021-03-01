@@ -6,6 +6,7 @@ import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+@Deprecated
 public class GunModelAttachEvent extends Event {
     private final GunBase gun;
     private final ResourceLocation name;

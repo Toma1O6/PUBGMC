@@ -15,21 +15,13 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 public class FlareGun extends GunBase {
-    public FlareGun(String name) {
-        super(name);
-        this.setStats(new CFGWeapon("Flare gun", 0f, 0f, 0f, 0));
-        this.setFiremode(Firemode.SINGLE);
-        this.setReloadType(ReloadType.MAGAZINE);
-        this.setAmmoType(AmmoType.FLARE);
-        this.setGunType(GunType.PISTOL);
-        this.setReloadTime(70);
-        this.setFireRate(110);
-        this.setVerticalRecoil(1);
-        this.setHorizontalRecoil(0);
 
-        this.setGunSound(PMCSounds.gun_flare);
-        this.setGunSoundVolume(25f);
+    public FlareGun(GunBuilder builder) {
+        super(builder);
+    }
 
+    @Override
+    public void registerToGlobalLootPool(boolean airdropOnly) {
         LootManager.register(LootType.GUN, new LootManager.LootEntry(this, 1, false));
     }
 
@@ -44,7 +36,6 @@ public class FlareGun extends GunBase {
         CooldownTracker tr = player.getCooldownTracker();
         if (this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading() && !tr.hasCooldown(this)) {
             world.playSound(null, player.posX, player.posY, player.posZ, this.getGunSound(), SoundCategory.PLAYERS, this.getGunVolume(), 1.0f);
-
             if (!world.isRemote) {
                 EntityFlare bullet = new EntityFlare(world, player);
                 world.spawnEntity(bullet);
@@ -52,7 +43,6 @@ public class FlareGun extends GunBase {
                     stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                 }
             }
-
             tr.setCooldown(this, getFireRate());
         }
     }

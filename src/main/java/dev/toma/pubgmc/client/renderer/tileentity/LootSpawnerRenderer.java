@@ -3,7 +3,7 @@ package dev.toma.pubgmc.client.renderer.tileentity;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
@@ -48,14 +48,14 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
         if(item instanceof GunBase) {
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
             GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-        } else if(item == PMCRegistry.PMCItems.ENERGYDRINK || item == PMCRegistry.PMCItems.PAINKILLERS) {
+        } else if(item == PMCItems.ENERGYDRINK || item == PMCItems.PAINKILLERS) {
             GlStateManager.translate(0, 0.15, 0);
-        } else if(item == PMCRegistry.PMCItems.FIRSTAIDKIT || item == PMCRegistry.PMCItems.BANDAGE) {
+        } else if(item == PMCItems.FIRSTAIDKIT || item == PMCItems.BANDAGE) {
             GlStateManager.translate(0, 0.2, 0);
-        } else if(item == PMCRegistry.PMCItems.MEDKIT) {
+        } else if(item == PMCItems.MEDKIT) {
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
             GlStateManager.translate(0, 0.2, 0);
-        } else if(item == PMCRegistry.PMCItems.FUELCAN) {
+        } else if(item == PMCItems.FUELCAN) {
             GlStateManager.scale(0.7F, 0.7F, 0.7F);
             GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
             GlStateManager.translate(0, 0.3, 0);

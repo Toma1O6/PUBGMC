@@ -1,5 +1,11 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import java.util.List;
+
 public class ItemScope extends ItemAttachment implements Scope {
 
     final int zoom;
@@ -16,6 +22,11 @@ public class ItemScope extends ItemAttachment implements Scope {
     }
 
     @Override
+    public AttachmentType<?> getType() {
+        return AttachmentType.SCOPE;
+    }
+
+    @Override
     public int getZoom(int fov) {
         return Math.min(fov, zoom);
     }
@@ -23,5 +34,10 @@ public class ItemScope extends ItemAttachment implements Scope {
     @Override
     public float getMouseSensMultiplier() {
         return mouseSens;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(formatProperty("FOV", zoom + ""));
     }
 }

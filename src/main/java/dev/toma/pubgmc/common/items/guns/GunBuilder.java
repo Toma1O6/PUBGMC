@@ -9,75 +9,46 @@ import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.util.SoundEvent;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GunBuilder {
-    String name;
-    int reloadTime, firerate, maxAmmo, exMaxAmmo;
-    float vertical, horizontal, volumeNormal, volumeSilenced;
-    boolean twoRoundBurst, airdrop;
+
+    final Function<GunBuilder, GunBase> buildFunc;
+    final String name;
+    int reloadTime;
+    int firerate;
+    int maxAmmo;
+    int exMaxAmmo;
+    int burstAmount;
+    float vertical;
+    float horizontal;
+    float volumeNormal;
+    float volumeSilenced;
+    boolean airdropOnly;
     GunType weaponType;
     ReloadType reloadType;
     AmmoType ammoType;
     Firemode defFiremode;
-    Firemode[] validFiremodes;
-    SoundEvent reloadSound, shootNormal, shootSilenced;
+    Function<Firemode, Firemode> firemodeSwitchFunc;
+    SoundEvent shootNormal;
+    SoundEvent shootSilenced;
+    SoundEvent reloadSound;
     CFGWeapon cfgStats;
+    GunAttachments attachments;
     Supplier<SoundEvent> action;
 
-    private GunBuilder() {
+    private GunBuilder(String name, Function<GunBuilder, GunBase> buildFunc) {
+        this.name = name;
+        this.buildFunc = buildFunc;
     }
 
-    /**
-     * Initialize new builder object
-     *
-     * @param regName - the item registry name
-     * @return new builder instance
-     */
     public static GunBuilder create(String regName) {
-        GunBuilder builder = new GunBuilder();
-        builder.name = regName;
-        builder.twoRoundBurst = false;
-        return builder;
+        return create(regName, GunBase::new);
     }
 
-    private static <T> boolean isObjectInsideGroup(T obj, T[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            Object o = arr[i];
-            if (obj.equals(o)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static <T> T checkNotNull(T obj) throws NullPointerException {
-        if (obj == null) {
-            throw new NullPointerException(obj + " cannot be null!");
-        }
-        return obj;
-    }
-
-    private static float validateFloat(float floatToValidate, float min, float max) throws IllegalArgumentException {
-        if (floatToValidate < min || floatToValidate > max) {
-            throw new IllegalArgumentException("Float value must be in <" + min + ";" + max + "> range! Got: " + floatToValidate);
-        }
-
-        return floatToValidate;
-    }
-
-    private static double validateDouble(double doubleToValidate, double min, double max) throws IllegalArgumentException {
-        if (doubleToValidate < min || doubleToValidate > max) {
-            throw new IllegalArgumentException("Double value must be in <" + min + ";" + max + "> range! Got: " + doubleToValidate);
-        }
-        return doubleToValidate;
-    }
-
-    private static int validateInt(int intToValidate, int min, int max) throws IllegalArgumentException {
-        if (intToValidate < min || intToValidate > max) {
-            throw new IllegalArgumentException("Int value must be in <" + min + ";" + max + "> range! Got: " + intToValidate);
-        }
-        return intToValidate;
+    public static GunBuilder create(String regName, Function<GunBuilder, GunBase> buildFunc) {
+        return new GunBuilder(regName, buildFunc);
     }
 
     public GunBuilder stats(CFGWeapon cfg) {
@@ -111,20 +82,21 @@ public class GunBuilder {
     }
 
     public GunBuilder ammo(AmmoType ammoType, int maxAmmo) {
-        this.ammoType = ammoType;
-        this.maxAmmo = maxAmmo;
-        this.exMaxAmmo = maxAmmo;
-        return this;
+        return this.ammo(ammoType, maxAmmo, maxAmmo);
     }
 
-    public GunBuilder firemode(Firemode defaultFiremode, Firemode... validFiremodes) {
+    public GunBuilder firemode(Firemode firemode) {
+        return this.firemode(firemode, Function.identity());
+    }
+
+    public GunBuilder firemode(Firemode defaultFiremode, Function<Firemode, Firemode> firemodeSwitchFunc) {
         this.defFiremode = defaultFiremode;
-        this.validFiremodes = validFiremodes;
+        this.firemodeSwitchFunc = firemodeSwitchFunc;
         return this;
     }
 
-    public GunBuilder setTwoRoundBurst() {
-        this.twoRoundBurst = true;
+    public GunBuilder burstAmount(int burstAmount) {
+        this.burstAmount = burstAmount;
         return this;
     }
 
@@ -155,73 +127,69 @@ public class GunBuilder {
     }
 
     public GunBuilder airdropOnly() {
-        this.airdrop = true;
+        this.airdropOnly = true;
         return this;
     }
 
-    /**
-     * <i><u>In order to successfully build new Gun object you need to call:</u></i>
-     * <b>
-     * <li> firerate
-     * <li> recoil
-     * <li> reload
-     * <li> ammo
-     * <li> firemode
-     * <li> weaponType
-     * <li> sound
-     * </b>
-     *
-     * @return new GunBase object with required parameters
-     */
+    public GunAttachments.Builder attachments() {
+        return new GunAttachments.Builder(this);
+    }
+
+    public GunBuilder setAttachments(GunAttachments attachments) {
+        this.attachments = attachments;
+        return this;
+    }
+
     public GunBase build() {
-        cfgStats = checkNotNull(cfgStats);
-        vertical = validateFloat(vertical, 0.1f, 10f);
-        horizontal = validateFloat(horizontal, 0.1f, 10f);
-        reloadType = checkNotNull(reloadType);
-        reloadTime = validateInt(reloadTime, 1, 150);
-        firerate = validateInt(firerate, 1, 150);
-        ammoType = checkNotNull(ammoType);
-        maxAmmo = validateInt(maxAmmo, 1, 100);
-        exMaxAmmo = validateInt(exMaxAmmo, 1, 100);
-        defFiremode = checkNotNull(defFiremode);
-        validFiremodes = checkNotNull(validFiremodes);
-        weaponType = checkNotNull(weaponType);
-        shootNormal = checkNotNull(shootNormal);
-        shootSilenced = checkNotNull(shootSilenced);
-        volumeNormal = validateFloat(volumeNormal, 1f, 40f);
-        volumeSilenced = validateFloat(volumeSilenced, 1f, 30f);
-        reloadSound = checkNotNull(reloadSound);
-
+        checkNotNull(cfgStats);
+        validateFloat(vertical, 0.1f, 10f);
+        validateFloat(horizontal, 0.1f, 10f);
+        checkNotNull(reloadType);
+        validateInt(reloadTime, 1, 150);
+        validateInt(firerate, 1, 150);
+        checkNotNull(ammoType);
+        validateInt(maxAmmo, 1, 100);
+        validateInt(exMaxAmmo, 1, 100);
+        checkNotNull(defFiremode);
+        checkNotNull(firemodeSwitchFunc);
+        checkNotNull(weaponType);
+        checkNotNull(shootNormal);
+        checkNotNull(shootSilenced);
+        validateFloat(volumeNormal, 1f, 40f);
+        validateFloat(volumeSilenced, 1f, 30f);
+        checkNotNull(reloadSound);
+        if(attachments == null)
+            attachments().build();
+        validateInt(burstAmount, 0, 3);
         if(action != null) {
-            Preconditions.checkNotNull(action.get(), "Cannot add IBoltAction with null soundevent");
+            Preconditions.checkNotNull(action.get(), "Action cannot return null sound event");
         }
+        GunBase gunBase = buildFunc.apply(this);
+        gunBase.registerToGlobalLootPool(airdropOnly);
+        return gunBase;
+    }
 
-        if (twoRoundBurst) {
-            if (!isObjectInsideGroup(Firemode.BURST, validFiremodes)) {
-                throw new NullPointerException("Two round is registered, but BURST firemode isn't valid for the weapon " + name);
-            }
+    private static <T> void checkNotNull(T obj) throws NullPointerException {
+        if (obj == null) {
+            throw new NullPointerException();
         }
+    }
 
-        GunBase gun = new GunBase(this.name);
-        LootManager.register(LootType.GUN, new LootManager.LootEntry(gun, weaponType.getWeight(), airdrop));
-        gun.setStats(cfgStats);
-        gun.setVerticalRecoil(vertical);
-        gun.setHorizontalRecoil(horizontal);
-        gun.setReloadType(reloadType);
-        gun.setReloadTime(reloadTime);
-        gun.setFireRate(firerate);
-        gun.setAmmoType(ammoType);
-        gun.setMaxAmmo(maxAmmo, exMaxAmmo);
-        gun.setFiremode(defFiremode);
-        gun.setValidFiremodes(validFiremodes);
-        gun.setHasTwoRoundBurst(twoRoundBurst);
-        gun.setGunType(weaponType);
-        gun.setGunSound(shootNormal);
-        gun.setGunSoundVolume(volumeNormal);
-        gun.setGunSilencedSound(shootSilenced);
-        gun.setGunSilencedSoundVolume(volumeSilenced);
-        gun.setReloadSound(reloadSound);
-        gun.action = action;
-        return gun;
+    private static void validateFloat(float floatToValidate, float min, float max) throws IllegalArgumentException {
+        if (floatToValidate < min || floatToValidate > max) {
+            throw new IllegalArgumentException("Float value must be in <" + min + ";" + max + "> range! Got: " + floatToValidate);
+        }
+    }
+
+    private static void validateDouble(double doubleToValidate, double min, double max) throws IllegalArgumentException {
+        if (doubleToValidate < min || doubleToValidate > max) {
+            throw new IllegalArgumentException("Double value must be in <" + min + ";" + max + "> range! Got: " + doubleToValidate);
+        }
+    }
+
+    private static void validateInt(int intToValidate, int min, int max) throws IllegalArgumentException {
+        if (intToValidate < min || intToValidate > max) {
+            throw new IllegalArgumentException("Int value must be in <" + min + ";" + max + "> range! Got: " + intToValidate);
+        }
     }
 }

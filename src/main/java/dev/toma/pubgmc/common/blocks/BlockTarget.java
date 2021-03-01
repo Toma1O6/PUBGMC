@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.common.entity.EntityBullet;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -36,7 +36,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
             EntityPlayer player = (EntityPlayer) bullet.getShooter();
             IBlockState state = bullet.world.getBlockState(new BlockPos(hit));
             double delta = hit.y - (int) hit.y;
-            boolean headShot = state.getBlock() == PMCRegistry.PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
+            boolean headShot = state.getBlock() == PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
             player.sendStatusMessage(new TextComponentString(headShot ? TextFormatting.RED + "Headshot! Damage: " + bullet.getDamage() * 2.5 : "Damage: " + bullet.getDamage()), true);
         }
     }

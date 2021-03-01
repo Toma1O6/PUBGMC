@@ -9,8 +9,7 @@ import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.*;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.event.GunPostInitializeEvent;
-import dev.toma.pubgmc.init.PMCRegistry;
-import dev.toma.pubgmc.init.PMCSounds;
+import dev.toma.pubgmc.init.*;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.proxy.Proxy;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
@@ -38,8 +37,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,8 +83,8 @@ public class Pubgmc {
 
     private static void registerSmeltingRecipes() {
         FurnaceRecipes rec = FurnaceRecipes.instance();
-        rec.addSmeltingRecipeForBlock(PMCRegistry.PMCBlocks.COPPER_ORE, new ItemStack(PMCRegistry.PMCItems.COPPER_INGOT, 1), 2f);
-        rec.addSmelting(PMCRegistry.PMCItems.STEEL_DUST, new ItemStack(PMCRegistry.PMCItems.STEEL_INGOT, 1), 2f);
+        rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
+        rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
     }
 
     @EventHandler
@@ -110,7 +107,7 @@ public class Pubgmc {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(Pubgmc.instance, new GuiHandler());
-        PMCRegistry.Registry.initTileEntities();
+        CommonRegistry.initTileEntities();
 
         registerSmeltingRecipes();
 

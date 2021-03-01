@@ -14,7 +14,8 @@ import dev.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.entity.bot.ai.EntityAIMoveIntoZone;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.math.ZonePos;
 import dev.toma.pubgmc.world.BlueZone;
 import net.minecraft.block.Block;
@@ -75,7 +76,7 @@ public final class GameUtils {
         while (iterator.hasNext()) {
             EntityPlayer player = iterator.next();
             player.inventory.clear();
-            player.addItemStackToInventory(new ItemStack(PMCRegistry.PMCItems.PARACHUTE));
+            player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
             boolean flag = iterator.hasNext();
             ++joined;
             plane.pendingPlayers.add(player);
@@ -170,7 +171,7 @@ public final class GameUtils {
     public static void createDeathCrate(EntityPlayer player) {
         BlockPos pos = getPosForCrate(player);
         if(pos == null) return;
-        player.world.setBlockState(pos, PMCRegistry.PMCBlocks.PLAYER_CRATE.getDefaultState());
+        player.world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
         TileEntityPlayerCrate te = (TileEntityPlayerCrate) player.world.getTileEntity(pos);
         for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
@@ -185,7 +186,7 @@ public final class GameUtils {
     public static void createDeathCrate(EntityAIPlayer bot) {
         BlockPos pos = getPosForCrate(bot);
         if(pos == null) return;
-        bot.world.setBlockState(pos, PMCRegistry.PMCBlocks.PLAYER_CRATE.getDefaultState());
+        bot.world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
         TileEntityPlayerCrate playerCrate = (TileEntityPlayerCrate) bot.world.getTileEntity(pos);
         for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
             ItemStack stack = bot.getItemStackFromSlot(slot);

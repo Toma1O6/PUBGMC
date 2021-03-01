@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.items.guns.attachments;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.items.PMCItem;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,27 +42,27 @@ public class ItemAttachment extends PMCItem implements IAttachment {
     public int getID(Item item) {
         int id = 0;
 
-        if (item == PMCRegistry.PMCItems.SILENCER_PISTOL || item == PMCRegistry.PMCItems.SILENCER_SMG || item == PMCRegistry.PMCItems.SILENCER_AR || item == PMCRegistry.PMCItems.SILENCER_SNIPER)
+        if (item == PMCItems.SILENCER_PISTOL || item == PMCItems.SILENCER_SMG || item == PMCItems.SILENCER_AR || item == PMCItems.SILENCER_SNIPER)
             id = 1;
-        if (item == PMCRegistry.PMCItems.COMPENSATOR_SMG || item == PMCRegistry.PMCItems.COMPENSATOR_AR || item == PMCRegistry.PMCItems.COMPENSATOR_SNIPER)
+        if (item == PMCItems.COMPENSATOR_SMG || item == PMCItems.COMPENSATOR_AR || item == PMCItems.COMPENSATOR_SNIPER)
             id = 2;
-        if (item == PMCRegistry.PMCItems.RED_DOT) id = 1;
-        if (item == PMCRegistry.PMCItems.HOLOGRAPHIC) id = 2;
-        if (item == PMCRegistry.PMCItems.SCOPE2X) id = 3;
-        if (item == PMCRegistry.PMCItems.SCOPE4X) id = 4;
-        if (item == PMCRegistry.PMCItems.SCOPE8X) id = 5;
-        if (item == PMCRegistry.PMCItems.SCOPE15X) id = 6;
-        if (item == PMCRegistry.PMCItems.GRIP_VERTICAL) id = 1;
-        if (item == PMCRegistry.PMCItems.GRIP_ANGLED) id = 2;
-        if (item == PMCRegistry.PMCItems.QUICKDRAW_MAG_PISTOL || item == PMCRegistry.PMCItems.QUICKDRAW_MAG_SMG || item == PMCRegistry.PMCItems.QUICKDRAW_MAG_AR || item == PMCRegistry.PMCItems.QUICKDRAW_MAG_SNIPER)
+        if (item == PMCItems.RED_DOT) id = 1;
+        if (item == PMCItems.HOLOGRAPHIC) id = 2;
+        if (item == PMCItems.SCOPE2X) id = 3;
+        if (item == PMCItems.SCOPE4X) id = 4;
+        if (item == PMCItems.SCOPE8X) id = 5;
+        if (item == PMCItems.SCOPE15X) id = 6;
+        if (item == PMCItems.GRIP_VERTICAL) id = 1;
+        if (item == PMCItems.GRIP_ANGLED) id = 2;
+        if (item == PMCItems.QUICKDRAW_MAG_PISTOL || item == PMCItems.QUICKDRAW_MAG_SMG || item == PMCItems.QUICKDRAW_MAG_AR || item == PMCItems.QUICKDRAW_MAG_SNIPER)
             id = 1;
-        if (item == PMCRegistry.PMCItems.EXTENDED_MAG_PISTOL || item == PMCRegistry.PMCItems.EXTENDED_MAG_SMG || item == PMCRegistry.PMCItems.EXTENDED_MAG_AR || item == PMCRegistry.PMCItems.EXTENDED_MAG_SNIPER)
+        if (item == PMCItems.EXTENDED_MAG_PISTOL || item == PMCItems.EXTENDED_MAG_SMG || item == PMCItems.EXTENDED_MAG_AR || item == PMCItems.EXTENDED_MAG_SNIPER)
             id = 2;
-        if (item == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL || item == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SMG || item == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_AR || item == PMCRegistry.PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)
+        if (item == PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL || item == PMCItems.EXTENDED_QUICKDRAW_MAG_SMG || item == PMCItems.EXTENDED_QUICKDRAW_MAG_AR || item == PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)
             id = 3;
-        if (item == PMCRegistry.PMCItems.BULLET_LOOPS_SHOTGUN || item == PMCRegistry.PMCItems.BULLET_LOOPS_SNIPER)
+        if (item == PMCItems.BULLET_LOOPS_SHOTGUN || item == PMCItems.BULLET_LOOPS_SNIPER)
             id = 1;
-        if (item == PMCRegistry.PMCItems.CHEEKPAD) id = 2;
+        if (item == PMCItems.CHEEKPAD) id = 2;
 
         return id;
     }

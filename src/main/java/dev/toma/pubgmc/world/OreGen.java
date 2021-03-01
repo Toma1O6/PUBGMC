@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.world;
 
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +17,7 @@ public class OreGen implements IWorldGenerator {
     private WorldGenerator copper;
 
     public OreGen() {
-        copper = new WorldGenMinable(PMCRegistry.PMCBlocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
+        copper = new WorldGenMinable(PMCBlocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));
     }
 
     @Override

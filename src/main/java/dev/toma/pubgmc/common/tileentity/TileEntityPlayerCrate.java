@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.tileentity;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -159,6 +159,6 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
 
     @Override
     public void onLoaded() {
-        GameUtils.markBlockForRemoval(world, pos, PMCRegistry.PMCBlocks.PLAYER_CRATE);
+        GameUtils.markBlockForRemoval(world, pos, PMCBlocks.PLAYER_CRATE);
     }
 }

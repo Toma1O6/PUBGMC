@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,19 +27,19 @@ public class ItemAmmo extends PMCItem {
     public Item getAmmoItem() {
         switch (type) {
             case AMMO9MM:
-                return PMCRegistry.PMCItems.AMMO_9MM;
+                return PMCItems.AMMO_9MM;
             case AMMO45ACP:
-                return PMCRegistry.PMCItems.AMMO_45ACP;
+                return PMCItems.AMMO_45ACP;
             case AMMO12G:
-                return PMCRegistry.PMCItems.AMMO_SHOTGUN;
+                return PMCItems.AMMO_SHOTGUN;
             case AMMO556:
-                return PMCRegistry.PMCItems.AMMO_556;
+                return PMCItems.AMMO_556;
             case AMMO762:
-                return PMCRegistry.PMCItems.AMMO_762;
+                return PMCItems.AMMO_762;
             case AMMO300M:
-                return PMCRegistry.PMCItems.AMMO_300M;
+                return PMCItems.AMMO_300M;
             case FLARE:
-                return PMCRegistry.PMCItems.AMMO_FLARE;
+                return PMCItems.AMMO_FLARE;
         }
 
         return Items.AIR;

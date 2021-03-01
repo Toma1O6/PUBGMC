@@ -8,7 +8,7 @@ import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
-import dev.toma.pubgmc.init.PMCRegistry;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
@@ -132,7 +132,7 @@ public class EntityAIPlayer extends EntityCreature {
         for (int i = 0; i < lootSpawner.getSizeInventory(); i++) {
             ItemStack stack = lootSpawner.getStackInSlot(i);
             if (needsGun) {
-                if (stack.getItem() instanceof GunBase && stack.getItem() != PMCRegistry.PMCItems.FLARE_GUN) {
+                if (stack.getItem() instanceof GunBase && stack.getItem() != PMCItems.FLARE_GUN) {
                     this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
                     EntityItem item = new EntityItem(world, this.posX, this.posY, this.posZ, stack.copy());
                     item.setPickupDelay(0);

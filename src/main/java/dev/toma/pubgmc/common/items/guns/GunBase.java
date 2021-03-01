@@ -12,11 +12,12 @@ import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.PacketFiremode;
 import dev.toma.pubgmc.network.sp.PacketCreateNBT;
 import dev.toma.pubgmc.network.sp.PacketDelayedSound;
 import dev.toma.pubgmc.network.sp.PacketReloadingSP;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.game.loot.LootManager;
+import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,73 +39,92 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * @author Toma1O6
  * This is the core class for all guns
+ * @author Toma
  */
 public class GunBase extends PMCItem {
+
     public static final List<GunBase> GUNS = new ArrayList<>();
-    public boolean airdropWeapon = false;
-    protected Supplier<SoundEvent> action = null;
-    private CFGWeapon wepStats;
-    private float horizontal_recoil = 0f;
-    private float vertical_recoil = 0f;
-    private double reloadTime = 100;
-    private int rate = 10;
-    private int maxAmmo, exMaxAmmo;
-    private AmmoType ammotype;
-    private Firemode firemode;
-    private Firemode[] validFiremodes = new Firemode[]{Firemode.SINGLE};
-    private ReloadType reloadType;
-    private GunType gunType;
-    private boolean hasTwoRoundBurst = false;
+    protected final Supplier<SoundEvent> action;
+    private final CFGWeapon wepStats;
+    private final float horizontalRecoil;
+    private final float verticalRecoil;
+    private final int reloadTime;
+    private final int firerate;
+    private final int maxAmmo, exMaxAmmo;
+    private final int burstAmount;
+    private final AmmoType ammoType;
+    private final Firemode firemode;
+    private final Function<Firemode, Firemode> firemodeSwitch;
+    private final ReloadType reloadType;
+    private final GunType gunType;
+    private final SoundEvent shootSound, silentShootSound, reloadSound;
+    private final float gunVolume, silentGunVolume;
+    private final GunAttachments attachments;
+
+    // TODO delete all below
     @SideOnly(Side.CLIENT)
     private ModelGun gunModel;
-
-    //Attachments
     private ItemAttachment[]
             barrel = new ItemAttachment[0],
             grip = new ItemAttachment[0],
             magazine = new ItemAttachment[0],
             stock = new ItemAttachment[0],
             scope = new ItemAttachment[0];
-
-    //SOUNDS
-    private SoundEvent gun_shoot, gun_silenced, gun_reload;
-    private float gun_volume, gun_volume_s;
-
     private ItemAmmo ammoItem;
     private int ammoCount = 0;
 
-    protected GunBase(String name) {
-        super(name);
+    protected GunBase(GunBuilder builder) {
+        super(builder.name);
         setCreativeTab(PMCTabs.TAB_GUNS);
         setMaxStackSize(1);
         GUNS.add(this);
+        this.action = builder.action;
+        this.gunType = builder.weaponType;
+        this.wepStats = builder.cfgStats;
+        this.verticalRecoil = builder.vertical;
+        this.horizontalRecoil = builder.horizontal;
+        this.reloadType = builder.reloadType;
+        this.reloadTime = builder.reloadTime;
+        this.firerate = builder.firerate;
+        this.ammoType = builder.ammoType;
+        this.maxAmmo = builder.maxAmmo;
+        this.exMaxAmmo = builder.exMaxAmmo;
+        this.firemode = builder.defFiremode;
+        this.firemodeSwitch = builder.firemodeSwitchFunc;
+        this.burstAmount = builder.burstAmount;
+        this.shootSound = builder.shootNormal;
+        this.silentShootSound = builder.shootSilenced;
+        this.reloadSound = builder.reloadSound;
+        this.gunVolume = builder.volumeNormal;
+        this.silentGunVolume = builder.volumeSilenced;
+        this.attachments = builder.attachments;
     }
 
     public static boolean canAttachAttachment(GunBase gun, ItemAttachment attachment) {
         switch (attachment.getType()) {
             case BARREL:
-                return DevUtil.containsD(gun.getBarrelAttachments(), attachment);
+                return DevUtil.contains(gun.getBarrelAttachments(), attachment);
             case GRIP:
-                return DevUtil.containsD(gun.getGripAttachments(), attachment);
+                return DevUtil.contains(gun.getGripAttachments(), attachment);
             case MAGAZINE:
-                return DevUtil.containsD(gun.getMagazineAttachments(), attachment);
+                return DevUtil.contains(gun.getMagazineAttachments(), attachment);
             case SCOPE:
-                return DevUtil.containsD(gun.getScopeAttachments(), attachment);
+                return DevUtil.contains(gun.getScopeAttachments(), attachment);
             case STOCK:
-                return DevUtil.containsD(gun.getStockAttachments(), attachment);
+                return DevUtil.contains(gun.getStockAttachments(), attachment);
             default:
                 return false;
         }
     }
 
     public SoundEvent getWeaponReloadSound() {
-        return this.gun_reload;
+        return this.reloadSound;
     }
 
     /**
@@ -191,37 +211,6 @@ public class GunBase extends PMCItem {
         return false;
     }
 
-    //Set the firemode on both client and server
-    public void switchFiremode(EntityPlayer player) {
-        switch (this.getFiremode()) {
-            case SINGLE: {
-                if (canGunBurstFire()) {
-                    setFiremode(Firemode.BURST);
-                    break;
-                } else {
-                    setFiremode(Firemode.AUTO);
-                    break;
-                }
-            }
-
-            case BURST: {
-                if (canGunAutofire()) {
-                    setFiremode(Firemode.AUTO);
-                    break;
-                } else {
-                    setFiremode(Firemode.SINGLE);
-                    break;
-                }
-            }
-
-            case AUTO: {
-                setFiremode(Firemode.SINGLE);
-                break;
-            }
-        }
-        PacketHandler.INSTANCE.sendToServer(new PacketFiremode(firemode));
-    }
-
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (entityIn instanceof EntityPlayer && !worldIn.isRemote) {
@@ -290,7 +279,7 @@ public class GunBase extends PMCItem {
         }
 
         tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getAmmo(stack));
-        tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firemode") + ": " + TextFormatting.RESET + "" + TextFormatting.GRAY + getFiremode().translatedName());
+        tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firemode") + ": " + TextFormatting.RESET + "" + TextFormatting.GRAY + getFiremode(stack).translatedName());
 
         if (GuiScreen.isShiftKeyDown() && stack.hasTagCompound()) {
             DecimalFormat f = new DecimalFormat("###.##");
@@ -303,7 +292,7 @@ public class GunBase extends PMCItem {
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.velocity.get() * 5.5) + " " + I18n.format("gun.velocity.info"));
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.gravityModifier.get() * 20) + " " + I18n.format("gun.gravity.info"));
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firerate") + ": " + TextFormatting.RESET + "" + TextFormatting.AQUA + g.format(20.00 / this.getFireRate()) + " " + I18n.format("gun.firerate.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + ammotype.translatedName());
+            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + ammoType.translatedName());
             tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.maxammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getWeaponAmmoLimit(stack));
         } else if (GuiScreen.isCtrlKeyDown()) {
             if (stack.hasTagCompound()) {
@@ -325,124 +314,72 @@ public class GunBase extends PMCItem {
         return true;
     }
 
-//-------------------------------------------------
-// Setters and getters
-//-------------------------------------------------
+    public int getBurstAmount() {
+        return burstAmount;
+    }
+
+    public Firemode getFiremode(ItemStack stack) {
+        NBTTagCompound nbt = getOrCreateGunData(stack);
+        int i = nbt.getInteger("firemode");
+        return Firemode.fromID(i);
+    }
+
+    public void setFiremode(ItemStack stack, Firemode firemode) {
+        NBTTagCompound nbt = getOrCreateGunData(stack);
+        nbt.setInteger("firemode", firemode.ordinal());
+    }
+
+    public Firemode switchFiremode(ItemStack stack) {
+        Firemode current = getFiremode(stack);
+        return firemodeSwitch.apply(current);
+    }
+
+    public NBTTagCompound getOrCreateGunData(ItemStack stack) {
+        if(!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        return stack.getTagCompound();
+    }
 
     public Supplier<SoundEvent> getAction() {
         return action;
     }
 
     @SideOnly(Side.CLIENT)
+    @Deprecated
     public void setGunModel(ModelGun model) {
         this.gunModel = model;
     }
 
     @SideOnly(Side.CLIENT)
+    @Deprecated
     public ModelGun getWeaponModel() {
         return gunModel;
     }
 
-    public void setMaxAmmo(int maxAmmo, int exMaxAmmo) {
-        this.maxAmmo = maxAmmo;
-        this.exMaxAmmo = exMaxAmmo;
-    }
-
-    public void setReloadSound(SoundEvent reload) {
-        this.gun_reload = reload;
-    }
-
+    @Deprecated
     public ItemAttachment[] getBarrelAttachments() {
         return barrel;
     }
 
-    public void setBarrelAttachments(ItemAttachment... attachments) {
-        this.barrel = attachments;
-    }
-
+    @Deprecated
     public ItemAttachment[] getGripAttachments() {
         return grip;
     }
 
-    public void setGripAttachments(ItemAttachment... attachments) {
-        this.grip = attachments;
-    }
-
+    @Deprecated
     public ItemAttachment[] getMagazineAttachments() {
         return magazine;
     }
 
-    public void setMagazineAttachments(ItemAttachment... attachments) {
-        this.magazine = attachments;
-    }
-
+    @Deprecated
     public ItemAttachment[] getStockAttachments() {
         return stock;
     }
 
-    public void setStockAttachments(ItemAttachment... attachments) {
-        this.stock = attachments;
-    }
-
+    @Deprecated
     public ItemAttachment[] getScopeAttachments() {
         return scope;
-    }
-
-    public void setScopeAttachments(ItemAttachment... attachments) {
-        this.scope = attachments;
-    }
-
-    public Firemode[] getValidFiremodes() {
-        return validFiremodes;
-    }
-
-    public void setValidFiremodes(Firemode... firemodes) {
-        this.validFiremodes = firemodes;
-    }
-
-    public boolean canGunBurstFire() {
-        for (Firemode f : validFiremodes) {
-            if (f.equals(Firemode.BURST))
-                return true;
-        }
-        return false;
-    }
-
-    public boolean canGunAutofire() {
-        for (Firemode f : validFiremodes)
-            if (f.equals(Firemode.AUTO))
-                return true;
-
-        return false;
-    }
-
-    public void setStats(CFGWeapon cfgStats) {
-        this.wepStats = cfgStats;
-    }
-
-    public void setReloadTime(double time) {
-        this.reloadTime = time;
-    }
-
-    public void setHorizontalRecoil(float recoil) {
-        this.horizontal_recoil = recoil;
-    }
-
-    public void setVerticalRecoil(float recoil) {
-        this.vertical_recoil = recoil;
-    }
-
-    public void setGunSoundVolume(float volume) {
-        this.gun_volume = volume;
-    }
-
-    //set this after the first sound volume
-    public void setGunSilencedSoundVolume(float volume) {
-        this.gun_volume_s = volume;
-    }
-
-    public GunBase getGun() {
-        return this;
     }
 
     public CFGWeapon getConfigurableStats() {
@@ -455,81 +392,48 @@ public class GunBase extends PMCItem {
         } else return reloadTime;
     }
 
-    public AmmoType getAmmoType() {
-        return ammotype;
+    public void registerToGlobalLootPool(boolean airdropOnly) {
+        LootManager.register(LootType.GUN, new LootManager.LootEntry(this, gunType.getWeight(), airdropOnly));
     }
 
-    public void setAmmoType(AmmoType type) {
-        this.ammotype = type;
+    public AmmoType getAmmoType() {
+        return ammoType;
     }
 
     public SoundEvent getGunSound() {
-        return gun_shoot;
-    }
-
-    public void setGunSound(SoundEvent shootSound) {
-        this.gun_shoot = shootSound;
+        return shootSound;
     }
 
     public SoundEvent getGunSilencedSound() {
-        return gun_silenced;
-    }
-
-    public void setGunSilencedSound(SoundEvent silenced) {
-        this.gun_silenced = silenced;
+        return silentShootSound;
     }
 
     public float getGunVolume() {
-        return gun_volume;
+        return gunVolume;
     }
 
     public float getGunSilencedVolume() {
-        return gun_volume_s;
-    }
-
-    public Firemode getFiremode() {
-        return firemode;
-    }
-
-    public void setFiremode(Firemode type) {
-        this.firemode = type;
-    }
-
-    public boolean getCanSwitchFiremode() {
-        return validFiremodes.length > 1;
+        return silentGunVolume;
     }
 
     public ReloadType getReloadType() {
         return reloadType;
     }
 
-    public void setReloadType(ReloadType type) {
-        this.reloadType = type;
-    }
-
     public int getFireRate() {
-        return rate;
-    }
-
-    public void setFireRate(int firerate) {
-        this.rate = firerate;
+        return firerate;
     }
 
     public GunType getGunType() {
         return gunType;
     }
 
-    //For testing attachment types for different guns
-    public void setGunType(GunType type) {
-        this.gunType = type;
-    }
-
     public float getHorizontalRecoil(ItemStack stack) {
-        return horizontal_recoil;
+        return horizontalRecoil;
     }
 
     public float getVerticalRecoil(ItemStack stack) {
-        return vertical_recoil;
+        return verticalRecoil;
     }
 
     public int getAmmo(ItemStack stack) {
@@ -551,14 +455,6 @@ public class GunBase extends PMCItem {
         return false;
     }
 
-    public boolean isHasTwoRoundBurst() {
-        return hasTwoRoundBurst;
-    }
-
-    public void setHasTwoRoundBurst(boolean hasTwoRoundBurst) {
-        this.hasTwoRoundBurst = hasTwoRoundBurst;
-    }
-
     public enum Firemode {
         SINGLE("gun.firemode.single"),
         BURST("gun.firemode.burst"),
@@ -570,16 +466,24 @@ public class GunBase extends PMCItem {
             this.name = name;
         }
 
-        public static Firemode[] all() {
-            return new Firemode[]{Firemode.SINGLE, Firemode.BURST, Firemode.AUTO};
+        public static Firemode fromID(int id) {
+            return values()[DevUtil.wrap(id, 0, 2)];
         }
 
-        public static Firemode[] noBurst() {
-            return new Firemode[]{Firemode.SINGLE, Firemode.AUTO};
+        public static Firemode ignoreAuto(Firemode current) {
+            return current == SINGLE ? BURST : SINGLE;
         }
 
-        public static Firemode[] noAuto() {
-            return new Firemode[]{Firemode.SINGLE, Firemode.BURST};
+        public static Firemode ignoreBurst(Firemode current) {
+            return current == SINGLE ? AUTO : SINGLE;
+        }
+
+        public static Firemode cycleAll(Firemode current) {
+            int i = current.ordinal();
+            int j = i + 1;
+            if(j > 2)
+                j = 0;
+            return values()[j];
         }
 
         @SideOnly(Side.CLIENT)
@@ -677,7 +581,13 @@ public class GunBase extends PMCItem {
     }
 
     public enum GunType {
-        LMG(40), PISTOL(100), SHOTGUN(80), SMG(70), AR(50), DMR(30), SR(10);
+        LMG(40),
+        PISTOL(100),
+        SHOTGUN(80),
+        SMG(70),
+        AR(50),
+        DMR(30),
+        SR(10);
 
         private int weight;
 
