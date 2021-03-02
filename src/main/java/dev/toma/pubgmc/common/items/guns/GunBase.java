@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.items.guns;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -9,34 +10,33 @@ import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.PMCItem;
-import dev.toma.pubgmc.common.items.guns.attachments.ItemAttachment;
+import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketCreateNBT;
 import dev.toma.pubgmc.network.sp.PacketDelayedSound;
 import dev.toma.pubgmc.network.sp.PacketReloadingSP;
-import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -66,16 +66,11 @@ public class GunBase extends PMCItem {
     private final SoundEvent shootSound, silentShootSound, reloadSound;
     private final float gunVolume, silentGunVolume;
     private final GunAttachments attachments;
+    private final ScopeData customScope;
 
     // TODO delete all below
     @SideOnly(Side.CLIENT)
     private ModelGun gunModel;
-    private ItemAttachment[]
-            barrel = new ItemAttachment[0],
-            grip = new ItemAttachment[0],
-            magazine = new ItemAttachment[0],
-            stock = new ItemAttachment[0],
-            scope = new ItemAttachment[0];
     private ItemAmmo ammoItem;
     private int ammoCount = 0;
 
@@ -104,42 +99,18 @@ public class GunBase extends PMCItem {
         this.gunVolume = builder.volumeNormal;
         this.silentGunVolume = builder.volumeSilenced;
         this.attachments = builder.attachments;
-    }
-
-    public static boolean canAttachAttachment(GunBase gun, ItemAttachment attachment) {
-        switch (attachment.getType()) {
-            case BARREL:
-                return DevUtil.contains(gun.getBarrelAttachments(), attachment);
-            case GRIP:
-                return DevUtil.contains(gun.getGripAttachments(), attachment);
-            case MAGAZINE:
-                return DevUtil.contains(gun.getMagazineAttachments(), attachment);
-            case SCOPE:
-                return DevUtil.contains(gun.getScopeAttachments(), attachment);
-            case STOCK:
-                return DevUtil.contains(gun.getStockAttachments(), attachment);
-            default:
-                return false;
-        }
+        this.customScope = builder.customScope;
     }
 
     public SoundEvent getWeaponReloadSound() {
         return this.reloadSound;
     }
 
-    /**
-     * Gets maximum possible amount of bullet gun can have loaded
-     *
-     * @param stack - the gun itemstack
-     * @return the weapon ammo limit
-     */
     public int getWeaponAmmoLimit(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1 ? exMaxAmmo : maxAmmo;
+        ItemMagazine mag = getAttachment(AttachmentType.MAGAZINE, stack);
+        return mag != null && mag.isExtended() ? exMaxAmmo : maxAmmo;
     }
 
-    /**
-     * Used to spawn bullet entity, called from packet
-     */
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
         IPlayerData data = PlayerData.get(player);
         CooldownTracker tracker = player.getCooldownTracker();
@@ -156,54 +127,22 @@ public class GunBase extends PMCItem {
                 }
 
                 if (!player.capabilities.isCreativeMode) {
-                    stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
+                    this.consumeAmmo(stack);
                 }
                 tracker.setCooldown(stack.getItem(), getFireRate());
-                PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 150));
+                PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 256));
             }
         }
     }
 
-    /**
-     * Function for getting the right volume of the weapon
-     *
-     * @param stack - the weapon
-     * @return volume
-     */
     public float playWeaponSoundVolume(ItemStack stack) {
-        float volume = 1f;
-
-        if (stack.hasTagCompound()) {
-            if (stack.getTagCompound().getInteger("barrel") == 1) {
-                volume = getGunSilencedVolume();
-            } else volume = getGunVolume();
-        } else PUBGMCUtil.createNBT(stack);
-        return volume;
+        ItemMuzzle muzzle = this.getAttachment(AttachmentType.MUZZLE, stack);
+        return muzzle != null && muzzle.isSilenced() ? this.getGunSilencedVolume() : this.getGunVolume();
     }
 
-    /**
-     * Function for playing the right weapon sound
-     * If silencer is equipped the silenced sound will be played
-     *
-     * @param stack - the itemstack which is shooting
-     * @return the soundEvent
-     */
     public SoundEvent playWeaponSound(ItemStack stack) {
-        SoundEvent event = SoundEvents.BLOCK_LEVER_CLICK;
-        if (stack.hasTagCompound()) {
-            if (stack.getTagCompound().getInteger("barrel") == 1) {
-                if (getGunSilencedSound() != null) {
-                    event = getGunSilencedSound();
-                }
-            } else {
-                event = getGunSound();
-            }
-        } else {
-            PUBGMCUtil.createNBT(stack);
-            event = getGunSound();
-        }
-
-        return event;
+        ItemMuzzle muzzle = this.getAttachment(AttachmentType.MUZZLE, stack);
+        return muzzle != null && muzzle.isSilenced() ? this.getGunSilencedSound() : this.getGunSound();
     }
 
     @Override
@@ -211,26 +150,8 @@ public class GunBase extends PMCItem {
         return false;
     }
 
-    @Override
-    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (entityIn instanceof EntityPlayer && !worldIn.isRemote) {
-            EntityPlayer player = (EntityPlayer) entityIn;
-            if (!player.capabilities.isCreativeMode) {
-                if (!stack.hasTagCompound() || !stack.getTagCompound().getBoolean("isValidWeapon")) {
-                    PUBGMCUtil.createWeaponNBT(stack, 0);
-                    PacketHandler.INSTANCE.sendTo(new PacketCreateNBT(0), (EntityPlayerMP) player);
-                }
-            } else {
-                if (!stack.hasTagCompound() || !stack.getTagCompound().getBoolean("isValidWeapon")) {
-                    PUBGMCUtil.createWeaponNBT(stack, getWeaponAmmoLimit(stack));
-                    PacketHandler.INSTANCE.sendTo(new PacketCreateNBT(getWeaponAmmoLimit(stack)), (EntityPlayerMP) player);
-                }
-            }
-        }
-    }
-
     public boolean hasAmmo(ItemStack itemStack) {
-        return itemStack.getTagCompound().getInteger("ammo") > 0;
+        return getAmmo(itemStack) > 0;
     }
 
     public boolean hasPlayerAmmoForGun(EntityPlayer player, GunBase gun) {
@@ -249,59 +170,24 @@ public class GunBase extends PMCItem {
         return player.capabilities.isCreativeMode;
     }
 
-    //Here we add all info which will be displayed on the stack
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        String barrel = "default";
-        String grip = "none";
-        String magazine = "default";
-        String stock = "default";
-        String scope = "ironsight";
-        
-        if (stack.hasTagCompound()) {
-            NBTTagCompound c = stack.getTagCompound();
-
-            if (c.getInteger("barrel") == 1) barrel = "suppressor";
-            if (c.getInteger("barrel") == 2) barrel = "compensator";
-            if (c.getInteger("scope") == 1) scope = "red dot sight";
-            if (c.getInteger("scope") == 2) scope = "holographic";
-            if (c.getInteger("scope") == 3) scope = "2X";
-            if (c.getInteger("scope") == 4) scope = "4X";
-            if (c.getInteger("scope") == 5) scope = "8X";
-            if (c.getInteger("scope") == 6) scope = "15X";
-            if (c.getInteger("grip") == 1) grip = "vertical grip";
-            if (c.getInteger("grip") == 2) grip = "angled grip";
-            if (c.getInteger("magazine") == 1) magazine = "quickdraw";
-            if (c.getInteger("magazine") == 2) magazine = "extended";
-            if (c.getInteger("magazine") == 3) magazine = "extended quickdraw";
-            if (c.getInteger("stock") == 2) stock = "cheekpad";
-            if (c.getInteger("stock") == 1) stock = "bullet loops";
-        }
-
-        tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getAmmo(stack));
-        tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firemode") + ": " + TextFormatting.RESET + "" + TextFormatting.GRAY + getFiremode(stack).translatedName());
-
-        if (GuiScreen.isShiftKeyDown() && stack.hasTagCompound()) {
-            DecimalFormat f = new DecimalFormat("###.##");
-            DecimalFormat g = new DecimalFormat("###.###");
-            // TODO this is just temp fix, this needs to be rewritten completely
+        tooltip.add(I18n.format("gun.desc.ammo") + ": " + TextFormatting.RED + getAmmo(stack));
+        tooltip.add(I18n.format("gun.desc.firemode") + ": " + getFiremode(stack).translatedName());
+        if(GuiScreen.isShiftKeyDown()) {
             if(wepStats.damage == null)
                 return;
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.damage") + ": " + TextFormatting.RESET + "" + TextFormatting.DARK_RED + this.wepStats.damage.get());
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.reloadtime") + ": " + TextFormatting.RESET + "" + TextFormatting.GREEN + g.format(getReloadTime(stack) / 20) + " " + I18n.format("gun.reloadtime.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.velocity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.velocity.get() * 5.5) + " " + I18n.format("gun.velocity.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.gravity") + ": " + TextFormatting.RESET + "" + TextFormatting.BLUE + f.format(wepStats.gravityModifier.get() * 20) + " " + I18n.format("gun.gravity.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.firerate") + ": " + TextFormatting.RESET + "" + TextFormatting.AQUA + g.format(20.00 / this.getFireRate()) + " " + I18n.format("gun.firerate.info"));
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.ammotype") + ": " + TextFormatting.BLUE + ammoType.translatedName());
-            tooltip.add(TextFormatting.BOLD + I18n.format("gun.desc.maxammo") + ": " + TextFormatting.RESET + "" + TextFormatting.RED + getWeaponAmmoLimit(stack));
-        } else if (GuiScreen.isCtrlKeyDown()) {
-            if (stack.hasTagCompound()) {
-                tooltip.add(TextFormatting.BOLD + "Attachments:");
-                tooltip.add(TextFormatting.BOLD + "Scope:" + TextFormatting.RESET + " " + TextFormatting.GREEN + scope);
-                tooltip.add(TextFormatting.BOLD + "Barrel:" + TextFormatting.RESET + "" + TextFormatting.GREEN + " " + barrel);
-                tooltip.add(TextFormatting.BOLD + "Grip:" + TextFormatting.RESET + " " + TextFormatting.GREEN + grip);
-                tooltip.add(TextFormatting.BOLD + "Magazine:" + TextFormatting.RESET + " " + TextFormatting.GREEN + magazine);
-                tooltip.add(TextFormatting.BOLD + "Stock:" + TextFormatting.RESET + " " + TextFormatting.GREEN + stock);
+            tooltip.add(I18n.format("gun.desc.damage") + ": " + TextFormatting.RED + DevUtil.formatToTwoDecimals(wepStats.damage.getAsFloat()));
+            tooltip.add(I18n.format("gun.desc.velocity") + ": " + TextFormatting.AQUA + DevUtil.formatToTwoDecimals(wepStats.velocity.getAsFloat() * 20) + " m/s");
+            tooltip.add(I18n.format("gun.desc.ammotype") + ": " + TextFormatting.GREEN + ammoType.translatedName());
+            tooltip.add(I18n.format("gun.desc.firerate") + ": " + TextFormatting.GOLD + DevUtil.formatToTwoDecimals(20.0D / firerate) + " shots per second");
+        } else if(GuiScreen.isCtrlKeyDown()) {
+            tooltip.add("Attachments");
+            for (AttachmentType<?> type : AttachmentType.allTypes) {
+                ItemAttachment attachment = getAttachment(type, stack);
+                if(attachment != null) {
+                    tooltip.add(type.getName() + ": " + I18n.format(attachment.getUnlocalizedName() + ".name"));
+                }
             }
         } else {
             tooltip.add(TextFormatting.YELLOW + I18n.format("gun.desc.moreinfo"));
@@ -318,10 +204,32 @@ public class GunBase extends PMCItem {
         return burstAmount;
     }
 
+    @SuppressWarnings("unchecked")
+    public <I extends ItemAttachment> I getAttachment(AttachmentType<I> type, ItemStack stack) {
+        NBTTagCompound nbt = getOrCreateGunData(stack);
+        if(nbt.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
+            NBTTagCompound attachmentData = nbt.getCompoundTag("attachments");
+            String key = type.getName();
+            if(attachmentData.hasKey(key, Constants.NBT.TAG_STRING)) {
+                ResourceLocation loc = new ResourceLocation(attachmentData.getString(key));
+                Item item = ForgeRegistries.ITEMS.getValue(loc);
+                try {
+                    return (I) item;
+                } catch (ClassCastException ex) {
+                    Pubgmc.logger.fatal("Exception occurred while trying to get {} attachment for item {}: {}", key, stack, ex);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
     public Firemode getFiremode(ItemStack stack) {
         NBTTagCompound nbt = getOrCreateGunData(stack);
-        int i = nbt.getInteger("firemode");
-        return Firemode.fromID(i);
+        if(nbt.hasKey("firemode", Constants.NBT.TAG_INT)) {
+            return Firemode.fromID(nbt.getInteger("firemode"));
+        }
+        return firemode;
     }
 
     public void setFiremode(ItemStack stack, Firemode firemode) {
@@ -334,15 +242,29 @@ public class GunBase extends PMCItem {
         return firemodeSwitch.apply(current);
     }
 
+    public ScopeData getScopeData(ItemStack stack) {
+        if(customScope != null) {
+            return customScope;
+        }
+        ItemScope scope = getAttachment(AttachmentType.SCOPE, stack);
+        return scope != null ? scope.getData() : null;
+    }
+
     public NBTTagCompound getOrCreateGunData(ItemStack stack) {
         if(!stack.hasTagCompound()) {
-            stack.setTagCompound(new NBTTagCompound());
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger("ammo", 0);
+            stack.setTagCompound(nbt);
         }
         return stack.getTagCompound();
     }
 
     public Supplier<SoundEvent> getAction() {
         return action;
+    }
+
+    public GunAttachments getAttachments() {
+        return attachments;
     }
 
     @SideOnly(Side.CLIENT)
@@ -357,41 +279,17 @@ public class GunBase extends PMCItem {
         return gunModel;
     }
 
-    @Deprecated
-    public ItemAttachment[] getBarrelAttachments() {
-        return barrel;
-    }
-
-    @Deprecated
-    public ItemAttachment[] getGripAttachments() {
-        return grip;
-    }
-
-    @Deprecated
-    public ItemAttachment[] getMagazineAttachments() {
-        return magazine;
-    }
-
-    @Deprecated
-    public ItemAttachment[] getStockAttachments() {
-        return stock;
-    }
-
-    @Deprecated
-    public ItemAttachment[] getScopeAttachments() {
-        return scope;
-    }
-
     public CFGWeapon getConfigurableStats() {
         return wepStats;
     }
 
     public double getReloadTime(ItemStack stack) {
-        if (stack.hasTagCompound() && (stack.getTagCompound().getInteger("magazine") == 1 || stack.getTagCompound().getInteger("magazine") == 3) || stack.getTagCompound().getInteger("stock") == 1) {
-            return reloadTime * 0.7;
-        } else return reloadTime;
+        ItemMagazine mag = this.getAttachment(AttachmentType.MAGAZINE, stack);
+        ItemStock stock = this.getAttachment(AttachmentType.STOCK, stack);
+        return (mag != null && mag.isQuickdraw()) || (stock != null && stock.isFasterReload()) ? reloadTime * 0.7 : reloadTime;
     }
 
+    @Deprecated
     public void registerToGlobalLootPool(boolean airdropOnly) {
         LootManager.register(LootType.GUN, new LootManager.LootEntry(this, gunType.getWeight(), airdropOnly));
     }
@@ -428,31 +326,27 @@ public class GunBase extends PMCItem {
         return gunType;
     }
 
-    public float getHorizontalRecoil(ItemStack stack) {
-        return horizontalRecoil;
+    public float getHorizontalRecoil() {
+        return horizontalRecoil * wepStats.horizontalRecoilMultiplier.getAsFloat();
     }
 
-    public float getVerticalRecoil(ItemStack stack) {
-        return verticalRecoil;
+    public float getVerticalRecoil() {
+        return verticalRecoil * wepStats.verticalRecoilMultiplier.getAsFloat();
     }
 
     public int getAmmo(ItemStack stack) {
-        int a = 0;
-        if (stack.hasTagCompound()) {
-            a = stack.getTagCompound().getInteger("ammo");
-        }
-
-        return a;
+        NBTTagCompound nbt = getOrCreateGunData(stack);
+        return DevUtil.wrap(nbt.getInteger("ammo"), 0, getWeaponAmmoLimit(stack));
     }
 
-    public boolean containsAttachment(ItemAttachment[] group, ItemAttachment toCheck) {
-        for (ItemAttachment a : group) {
-            if (a == toCheck) {
-                return true;
-            }
-        }
+    public void setAmmo(ItemStack stack, int ammo) {
+        NBTTagCompound nbt = getOrCreateGunData(stack);
+        nbt.setInteger("ammo", DevUtil.wrap(ammo, 0, getWeaponAmmoLimit(stack)));
+    }
 
-        return false;
+    public void consumeAmmo(ItemStack stack) {
+        int ammo = getAmmo(stack);
+        setAmmo(stack, ammo - 1);
     }
 
     public enum Firemode {
@@ -460,7 +354,7 @@ public class GunBase extends PMCItem {
         BURST("gun.firemode.burst"),
         AUTO("gun.firemode.auto");
 
-        private String name;
+        final String name;
 
         Firemode(String name) {
             this.name = name;
@@ -589,7 +483,7 @@ public class GunBase extends PMCItem {
         DMR(30),
         SR(10);
 
-        private int weight;
+        final int weight;
 
         GunType(int weight) {
             this.weight = weight;

@@ -24,7 +24,6 @@ public class PacketHandler {
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
-        registerServerPacket(PacketSetScopeVariants.Handler.class, PacketSetScopeVariants.class);
         registerServerPacket(PacketChooseLocation.Handler.class, PacketChooseLocation.class);
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
@@ -35,7 +34,6 @@ public class PacketHandler {
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
-        registerClientPacket(PacketCreateNBT.Handler.class, PacketCreateNBT.class);
         registerClientPacket(PacketParticle.Handler.class, PacketParticle.class);
         registerClientPacket(PacketClientCapabilitySync.Handler.class, PacketClientCapabilitySync.class);
         registerClientPacket(PacketUpdatePlayerRotation.Handler.class, PacketUpdatePlayerRotation.class);

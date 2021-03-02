@@ -1,9 +1,21 @@
 package dev.toma.pubgmc;
 
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.function.BiPredicate;
 
 public class DevUtil {
+
+    private static final DecimalFormat _FFF = new DecimalFormat("#.###");
+    private static final DecimalFormat _FF = new DecimalFormat("#.##");
+
+    public static String formatToThreeDecimals(Number number) {
+        return _FFF.format(number.doubleValue());
+    }
+
+    public static String formatToTwoDecimals(Number number) {
+        return _FF.format(number.doubleValue());
+    }
 
     public static boolean isDev() {
         return Pubgmc.isDevEnvironment;

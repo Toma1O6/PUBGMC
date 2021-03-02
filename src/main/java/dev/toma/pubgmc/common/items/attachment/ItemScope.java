@@ -8,17 +8,11 @@ import java.util.List;
 
 public class ItemScope extends ItemAttachment implements Scope {
 
-    final int zoom;
-    final float mouseSens;
+    final ScopeData data;
 
-    public ItemScope(String name, int zoom) {
-        this(name, zoom, 1.0F);
-    }
-
-    public ItemScope(String name, int zoom, float mouseSens) {
+    public ItemScope(String name, ScopeData data) {
         super(name);
-        this.zoom = zoom;
-        this.mouseSens = mouseSens;
+        this.data = data;
     }
 
     @Override
@@ -28,16 +22,20 @@ public class ItemScope extends ItemAttachment implements Scope {
 
     @Override
     public int getZoom(int fov) {
-        return Math.min(fov, zoom);
+        return Math.min(fov, data.getZoom());
     }
 
     @Override
     public float getMouseSensMultiplier() {
-        return mouseSens;
+        return data.getMouseSens();
+    }
+
+    public ScopeData getData() {
+        return data;
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(formatProperty("FOV", zoom + ""));
+        tooltip.add(formatProperty("FOV", data.getZoom() + ""));
     }
 }

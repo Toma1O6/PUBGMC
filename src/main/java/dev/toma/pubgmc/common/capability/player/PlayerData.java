@@ -30,9 +30,6 @@ public class PlayerData implements IPlayerData {
     private int level;
     private boolean eqNV;
 
-    private int scopetype;
-    private int scopecolor;
-
     private double dist;
 
     public PlayerData() {
@@ -125,26 +122,6 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public int getScopeType() {
-        return scopetype;
-    }
-
-    @Override
-    public void setScopeType(int type) {
-        this.scopetype = type;
-    }
-
-    @Override
-    public int getScopeColor() {
-        return scopecolor;
-    }
-
-    @Override
-    public void setScopeColor(int color) {
-        this.scopecolor = color;
-    }
-
-    @Override
     public double getDistance() {
         return dist;
     }
@@ -171,8 +148,6 @@ public class PlayerData implements IPlayerData {
         c.setTag("aimInfo", aimInfo.serializeNBT());
         c.setInteger("level", level);
         c.setBoolean("eqnv", eqNV);
-        c.setInteger("scopetype", scopetype);
-        c.setInteger("scopecolor", scopecolor);
         c.setBoolean("reload", this.reloading);
         c.setBoolean("prone", this.isProne);
         return c;
@@ -184,8 +159,6 @@ public class PlayerData implements IPlayerData {
         deserialize(aimInfo, "aimInfo", nbt);
         level = nbt.getInteger("level");
         eqNV = nbt.getBoolean("eqnv");
-        scopetype = nbt.getInteger("scopetype");
-        scopecolor = nbt.getInteger("scopecolor");
         reloading = nbt.getBoolean("reload");
         isProne = nbt.getBoolean("prone");
     }

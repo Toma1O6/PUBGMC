@@ -30,6 +30,7 @@ import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.config.common.CFGWeapons;
+import dev.toma.pubgmc.util.helper.AttachmentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -48,6 +49,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +57,12 @@ import java.util.List;
 @Mod.EventBusSubscriber
 public class CommonRegistry {
 
-    private static int entityID = -1;
+    private static int entityID = 0;
     private static List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        final Block[] BLOCKS = {
+        event.getRegistry().registerAll(
                 BlockBuilder.create("roadasphalt", Material.ROCK).soundType(SoundType.STONE).build(),
                 BlockBuilder.create("schoolwall", Material.ROCK).soundType(SoundType.STONE).build(),
                 BlockBuilder.create("schoolroof", Material.ROCK).soundType(SoundType.STONE).build(),
@@ -153,15 +155,14 @@ public class CommonRegistry {
                 HorizontalBlockBuilder.create("lamp_top", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).build(),
                 HorizontalBlockBuilder.create("radiator", Material.IRON).soundType(SoundType.METAL).setTransparent().nullAABB().build(),
                 new BlockSmallChest()
-        };
-
-        event.getRegistry().registerAll(BLOCKS);
+        );
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         CFGWeapons cfg = ConfigPMC.guns();
-        event.getRegistry().registerAll(
+        IForgeRegistry<Item> registry = event.getRegistry();
+        registry.registerAll(
                 new ItemBackpack("backpack1").addDescription("Right Click to equip"),
                 new ItemBackpack("backpack2").addDescription("Right Click to equip"),
                 new ItemBackpack("backpack3").addDescription("Right Click to equip"),
@@ -201,12 +202,12 @@ public class CommonRegistry {
                 new ItemMuzzle("compensator_smg", 0.7F, 0.7F),
                 new ItemMuzzle("compensator_ar", 0.7F, 0.7F),
                 new ItemMuzzle("compensator_sniper", 0.7F, 0.7F),
-                new ItemScope("red_dot", 70),
-                new ItemScope("holographic", 70),
-                new ItemScope("scope2x", 45),
-                new ItemScope("scope4x", 25),
-                new ItemScope("scope8x", 10),
-                new ItemScope("scope15x", 5),
+                new ItemScope("red_dot", new ScopeData(70, 1.0F)),
+                new ItemScope("holographic", new ScopeData(70, 1.0F)),
+                new ItemScope("scope2x", new ScopeData(45, 1.0F, Pubgmc.getResource("textures/overlay/scope2x.png"))),
+                new ItemScope("scope4x", new ScopeData(25, 1.0F, Pubgmc.getResource("textures/overlay/scope4x.png"))),
+                new ItemScope("scope8x", new ScopeData(10, 1.0F, Pubgmc.getResource("textures/overlay/scope8x.png"))),
+                new ItemScope("scope15x", new ScopeData(5, 1.0F, Pubgmc.getResource("textures/overlay/scope15x.png"))),
                 new ItemGrip("grip_vertical", 0.8F, 1.0F),
                 new ItemGrip("grip_angled", 1.0F, 0.8F),
                 new ItemMagazine("quickdraw_mag_smg", false, true),
@@ -230,7 +231,7 @@ public class CommonRegistry {
                 GunBuilder.create("flare_gun", FlareGun::new)
                         .stats(new CFGWeapon("Flare gun", 0f, 0f, 0f, 0))
                         .firerate(110)
-                        .recoil(1.0F, 0.0F)
+                        .recoil(1.0F, 0.1F)
                         .reload(GunBase.ReloadType.MAGAZINE, 70, PMCSounds.reload_flare)
                         .ammo(AmmoType.FLARE, 1)
                         .firemode(GunBase.Firemode.SINGLE)
@@ -247,9 +248,9 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_p92, 12f, PMCSounds.gun_p92_silenced, 8f)
                         .attachments()
-                        .addForType(AttachmentType.MUZZLE, () -> new Muzzle[]{PMCItems.SILENCER_SMG})
-                        .addForType(AttachmentType.MAGAZINE, () -> new Magazine[]{PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG})
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT})
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
                         .build(),
                 GunBuilder.create("p1911")
@@ -262,9 +263,9 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_p1911, 12f, PMCSounds.gun_p1911_silenced, 8f)
                         .attachments()
-                        .addForType(AttachmentType.MUZZLE, () -> new Muzzle[]{PMCItems.SILENCER_SMG})
-                        .addForType(AttachmentType.MAGAZINE, () -> new Magazine[]{PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG})
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT})
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
                         .build(),
                 GunBuilder.create("p18c")
@@ -277,9 +278,9 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_p18c, 12f, PMCSounds.gun_p18c_silenced, 8f)
                         .attachments()
-                        .addForType(AttachmentType.MUZZLE, () -> new Muzzle[]{PMCItems.SILENCER_SMG})
-                        .addForType(AttachmentType.MAGAZINE, () -> new Magazine[]{PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG})
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT})
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
                         .build(),
                 GunBuilder.create("r1895")
@@ -292,7 +293,7 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_r1895, 12f, PMCSounds.gun_r1895_silenced, 8f)
                         .attachments()
-                        .addForType(AttachmentType.MUZZLE, () -> new Muzzle[]{PMCItems.SILENCER_SMG})
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
                         .build()
                         .build(),
                 GunBuilder.create("r45")
@@ -305,7 +306,7 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_r45, 12f)
                         .attachments()
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT})
+                        .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
                         .build(),
                 GunBuilder.create("scorpion")
@@ -318,10 +319,10 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_scorpion, 12f, PMCSounds.gun_scorpion_silenced, 8f)
                         .attachments()
-                        .addForType(AttachmentType.MUZZLE, () -> new Muzzle[]{PMCItems.SILENCER_SMG})
-                        .addForType(AttachmentType.MAGAZINE, () -> new Magazine[]{PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG})
-                        .addForType(AttachmentType.GRIP, () -> new Grip[]{PMCItems.GRIP_VERTICAL})
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT})
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.GRIP, () -> new ItemGrip[]{PMCItems.GRIP_VERTICAL})
+                        .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
                         .build(),
                 GunBuilder.create("deagle")
@@ -334,8 +335,8 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_deagle, 14f)
                         .attachments()
-                        .addForType(AttachmentType.MAGAZINE, () -> new Magazine[]{PMCItems.QUICKDRAW_MAG_SMG, PMCItems.EXTENDED_MAG_SMG, PMCItems.EXTENDED_QUICKDRAW_MAG_SMG})
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
                         .build(),
                 GunBuilder.create("sawed_off")
@@ -358,7 +359,7 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.SHOTGUN)
                         .sound(PMCSounds.gun_s1897, 16f)
                         .attachments()
-                        .addForType(AttachmentType.STOCK, () -> new Stock[]{PMCItems.BULLET_LOOPS})
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
                         .build()
                         .build(),
                 GunBuilder.create("s686")
@@ -371,7 +372,7 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.SHOTGUN)
                         .sound(PMCSounds.gun_s686, 16f)
                         .attachments()
-                        .addForType(AttachmentType.STOCK, () -> new Stock[]{PMCItems.BULLET_LOOPS})
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
                         .build()
                         .build(),
                 GunBuilder.create("s12k")
@@ -384,36 +385,475 @@ public class CommonRegistry {
                         .weaponType(GunBase.GunType.SHOTGUN)
                         .sound(PMCSounds.gun_s12k, 16f)
                         .attachments()
-                        .addForType(AttachmentType.MUZZLE, () -> new Muzzle[]{PMCItems.COMPENSATOR_AR})
-                        .addForType(AttachmentType.MAGAZINE, () -> new Magazine[]{PMCItems.QUICKDRAW_MAG_AR, PMCItems.EXTENDED_MAG_AR, PMCItems.EXTENDED_QUICKDRAW_MAG_AR})
-                        .addForType(AttachmentType.SCOPE, () -> new Scope[]{PMCItems.RED_DOT, PMCItems.HOLOGRAPHIC, PMCItems.SCOPE2X, PMCItems.SCOPE4X})
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.COMPENSATOR_AR})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("microuzi")
+                        .stats(cfg.microuzi)
+                        .firerate(1)
+                        .recoil(2f, 0.5f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 56, PMCSounds.reload_microuzi)
+                        .ammo(AmmoType.AMMO9MM, 25, 35)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.SMG)
+                        .sound(PMCSounds.gun_micro_uzi, 16f, PMCSounds.gun_micro_uzi_silenced, 8f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::redDotHoloScope)
+                        .build()
+                        .build(),
+                GunBuilder.create("vector")
+                        .stats(cfg.vector)
+                        .firerate(1)
+                        .recoil(2f, 0.6f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 30, PMCSounds.reload_vector)
+                        .ammo(AmmoType.AMMO9MM, 19, 33)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::cycleAll)
+                        .weaponType(GunBase.GunType.SMG)
+                        .burstAmount(2)
+                        .sound(PMCSounds.gun_vector, 16f, PMCSounds.gun_vector_silenced, 8f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
+                        .addForType(AttachmentType.GRIP, () -> new ItemGrip[]{PMCItems.GRIP_VERTICAL})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("bizon")
+                        .stats(cfg.bizon)
+                        .firerate(2)
+                        .recoil(2.0f, 0.7f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 62, PMCSounds.reload_bizon)
+                        .ammo(AmmoType.AMMO9MM, 53)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.SMG)
+                        .sound(PMCSounds.gun_bizon, 16f, PMCSounds.gun_bizon_silenced, 8f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("mp5k")
+                        .stats(cfg.mp5k)
+                        .firerate(2)
+                        .recoil(2f, 0.7f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 64, PMCSounds.reload_mp5k)
+                        .ammo(AmmoType.AMMO9MM, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.SMG)
+                        .sound(PMCSounds.gun_mp5k, 16f, PMCSounds.gun_mp5k_silenced, 8f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("tommy_gun")
+                        .stats(cfg.tommygun)
+                        .firerate(2)
+                        .recoil(2f, 0.75f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 60, PMCSounds.reload_tommygun)
+                        .ammo(AmmoType.AMMO45ACP, 30, 50)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.SMG)
+                        .sound(PMCSounds.gun_tommy_gun, 16f, PMCSounds.gun_tommy_gun_silenced, 8f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
+                        .addForType(AttachmentType.GRIP, () -> new ItemGrip[]{PMCItems.GRIP_VERTICAL})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .build()
+                        .build(),
+                GunBuilder.create("ump45")
+                        .stats(cfg.ump45)
+                        .firerate(2)
+                        .recoil(1.9f, 0.5f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 52, PMCSounds.reload_ump9)
+                        .ammo(AmmoType.AMMO45ACP, 25, 35)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::cycleAll)
+                        .weaponType(GunBase.GunType.SMG)
+                        .burstAmount(2)
+                        .sound(PMCSounds.gun_ump9, 16f, PMCSounds.gun_ump9_silenced, 8f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("m16a4")
+                        .stats(cfg.m16a4)
+                        .firerate(2)
+                        .recoil(2.0f, 1f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 66, PMCSounds.reload_m16a4)
+                        .ammo(AmmoType.AMMO556, 30, 40)
+                        .firemode(GunBase.Firemode.SINGLE, GunBase.Firemode::ignoreAuto)
+                        .weaponType(GunBase.GunType.AR)
+                        .burstAmount(3)
+                        .sound(PMCSounds.gun_m16a4, 20f, PMCSounds.gun_m16a4_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("m416")
+                        .stats(cfg.m416)
+                        .firerate(2)
+                        .recoil(2.25f, 1.0f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 66, PMCSounds.reload_m416)
+                        .ammo(AmmoType.AMMO556, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .sound(PMCSounds.gun_m416, 20f, PMCSounds.gun_m416_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("scar_l")
+                        .stats(cfg.scarl)
+                        .firerate(2)
+                        .recoil(2.0f, 1.0f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 65, PMCSounds.reload_scarl)
+                        .ammo(AmmoType.AMMO556, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .sound(PMCSounds.gun_scarl, 20f, PMCSounds.gun_scarl_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("qbz")
+                        .stats(cfg.qbz)
+                        .firerate(2)
+                        .recoil(2.0f, 1.0f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 70, PMCSounds.reload_qbz)
+                        .ammo(AmmoType.AMMO556, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .sound(PMCSounds.gun_qbz, 20f, PMCSounds.gun_qbz_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("g36c")
+                        .stats(cfg.g36c)
+                        .firerate(2)
+                        .recoil(2.25f, 0.8f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 82, PMCSounds.reload_g36c)
+                        .ammo(AmmoType.AMMO556, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .sound(PMCSounds.gun_g36c, 20f, PMCSounds.gun_g36c_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("aug")
+                        .stats(cfg.aug)
+                        .firerate(2)
+                        .recoil(2.3f, 0.75f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 69, PMCSounds.reload_aug)
+                        .ammo(AmmoType.AMMO556, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .airdropOnly()
+                        .sound(PMCSounds.gun_aug, 20f, PMCSounds.gun_aug_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("akm")
+                        .stats(cfg.akm)
+                        .firerate(2)
+                        .recoil(2.7f, 1.3f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 60, PMCSounds.reload_akm)
+                        .ammo(AmmoType.AMMO762, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .sound(PMCSounds.gun_akm, 20f, PMCSounds.gun_akm_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("beryl_m762")
+                        .stats(cfg.m762)
+                        .firerate(2)
+                        .recoil(2.9f, 1.5f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 50, PMCSounds.reload_m762)
+                        .ammo(AmmoType.AMMO762, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::cycleAll)
+                        .weaponType(GunBase.GunType.AR)
+                        .burstAmount(3)
+                        .sound(PMCSounds.gun_m762, 20f, PMCSounds.gun_m762_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("mk47_mutant")
+                        .stats(cfg.mk47)
+                        .firerate(2)
+                        .recoil(2.7f, 1.5f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 66, PMCSounds.reload_mk47)
+                        .ammo(AmmoType.AMMO762, 20, 30)
+                        .firemode(GunBase.Firemode.SINGLE, GunBase.Firemode::ignoreAuto)
+                        .weaponType(GunBase.GunType.AR)
+                        .burstAmount(2)
+                        .sound(PMCSounds.gun_mk47, 20f, PMCSounds.gun_mk47_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getARMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("groza")
+                        .stats(cfg.groza)
+                        .firerate(2)
+                        .recoil(2.5f, 1.2f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 50, PMCSounds.reload_groza)
+                        .ammo(AmmoType.AMMO762, 30, 40)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.AR)
+                        .airdropOnly()
+                        .sound(PMCSounds.gun_groza, 20f, PMCSounds.gun_groza_silenced, 14f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_AR})
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("dp28")
+                        .stats(cfg.dp28)
+                        .firerate(2)
+                        .recoil(2.5f, 1.5f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 95, PMCSounds.reload_dp28)
+                        .ammo(AmmoType.AMMO762, 47)
+                        .firemode(GunBase.Firemode.AUTO)
+                        .weaponType(GunBase.GunType.LMG)
+                        .sound(PMCSounds.gun_dp28, 20f)
+                        .attachments()
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("m249")
+                        .stats(cfg.m249)
+                        .firerate(2)
+                        .recoil(2.0f, 0.9f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 148, PMCSounds.reload_m249)
+                        .ammo(AmmoType.AMMO556, 100)
+                        .firemode(GunBase.Firemode.AUTO)
+                        .weaponType(GunBase.GunType.LMG)
+                        .airdropOnly()
+                        .sound(PMCSounds.gun_m249, 20f)
+                        .attachments()
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("vss")
+                        .stats(cfg.vss)
+                        .firerate(2)
+                        .recoil(1.5f, 0.5f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 40, PMCSounds.reload_vss)
+                        .ammo(AmmoType.AMMO9MM, 10, 20)
+                        .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.DMR)
+                        .sound(PMCSounds.gun_vss, 5f)
+                        .builtInScope(25, 1.0F, Pubgmc.getResource("textures/overlay/scopevss.png"))
+                        .attachments()
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
+                        .build()
+                        .build(),
+                GunBuilder.create("mini14")
+                        .stats(cfg.mini14)
+                        .firerate(1)
+                        .recoil(3.5f, 2f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 62, PMCSounds.reload_mini14)
+                        .ammo(AmmoType.AMMO556, 20, 30)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.DMR)
+                        .sound(PMCSounds.gun_mini14, 24f, PMCSounds.gun_mini14_silenced, 16f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getDMRMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("qbu")
+                        .stats(cfg.qbu)
+                        .firerate(1)
+                        .recoil(3.5f, 2f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 44, PMCSounds.reload_qbu)
+                        .ammo(AmmoType.AMMO556, 10, 20)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.DMR)
+                        .sound(PMCSounds.gun_qbu, 24f, PMCSounds.gun_qbu_silenced, 12f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getDMRMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .build()
+                        .build(),
+                GunBuilder.create("sks")
+                        .stats(cfg.sks)
+                        .firerate(1)
+                        .recoil(5.5f, 2.25f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 32, PMCSounds.reload_sks)
+                        .ammo(AmmoType.AMMO762, 10, 20)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.DMR)
+                        .sound(PMCSounds.gun_sks, 24f, PMCSounds.gun_sks_silenced, 16f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getDMRMuzzle)
+                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
+                        .build()
+                        .build(),
+                GunBuilder.create("slr")
+                        .stats(cfg.slr)
+                        .firerate(1)
+                        .recoil(5.75f, 2.25f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 53, PMCSounds.reload_slr)
+                        .ammo(AmmoType.AMMO762, 10, 20)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.DMR)
+                        .sound(PMCSounds.gun_slr, 24f, PMCSounds.gun_slr_silenced, 16f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getDMRMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
+                        .build()
+                        .build(),
+                GunBuilder.create("mk14")
+                        .stats(cfg.mk14)
+                        .firerate(2)
+                        .recoil(7.5f, 3.25f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 39, PMCSounds.reload_mk14)
+                        .ammo(AmmoType.AMMO762, 10, 20)
+                        .firemode(GunBase.Firemode.SINGLE, GunBase.Firemode::ignoreBurst)
+                        .weaponType(GunBase.GunType.DMR)
+                        .airdropOnly()
+                        .sound(PMCSounds.gun_mk14, 24f, PMCSounds.gun_mk14_silenced, 16f)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getDMRMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
+                        .build()
+                        .build(),
+                GunBuilder.create("win94")
+                        .stats(cfg.win94)
+                        .firerate(25)
+                        .recoil(5.5f, 3.5f)
+                        .reload(GunBase.ReloadType.SINGLE, 15, PMCSounds.reload_win94)
+                        .ammo(AmmoType.AMMO45ACP, 8)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.SR)
+                        .sound(PMCSounds.gun_win94, 20f)
+                        .addBoltAction(() -> PMCSounds.bolt_win94)
+                        .attachments()
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
+                        .build()
+                        .build(),
+                GunBuilder.create("kar98k")
+                        .stats(cfg.kar98k)
+                        .firerate(30)
+                        .recoil(2.5f, 1.25f)
+                        .reload(GunBase.ReloadType.KAR98K, 63, PMCSounds.reload_kar98k)
+                        .ammo(AmmoType.AMMO762, 5)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.SR)
+                        .sound(PMCSounds.gun_kar98k, 30f, PMCSounds.gun_kar98k_silenced, 20f)
+                        .addBoltAction(() -> PMCSounds.bolt_kar98k)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSRMuzzle)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS, PMCItems.CHEEKPAD})
+                        .build()
+                        .build(),
+                GunBuilder.create("m24")
+                        .stats(cfg.m24)
+                        .firerate(35)
+                        .recoil(2.5f, 1.25f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 71, PMCSounds.reload_m24)
+                        .ammo(AmmoType.AMMO762, 5, 7)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.SR)
+                        .sound(PMCSounds.gun_m24, 30f, PMCSounds.gun_m24_silenced, 20f)
+                        .addBoltAction(() -> PMCSounds.bolt_m24)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSRMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getSRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
+                        .build()
+                        .build(),
+                GunBuilder.create("awm")
+                        .stats(cfg.awm)
+                        .firerate(35)
+                        .recoil(2.5f, 1.25f)
+                        .reload(GunBase.ReloadType.MAGAZINE, 78, PMCSounds.reload_awm)
+                        .ammo(AmmoType.AMMO300M, 5, 7)
+                        .firemode(GunBase.Firemode.SINGLE)
+                        .weaponType(GunBase.GunType.SR)
+                        .airdropOnly()
+                        .sound(PMCSounds.gun_awm, 30f, PMCSounds.gun_awm_silenced, 20f)
+                        .addBoltAction(() -> PMCSounds.bolt_awm)
+                        .attachments()
+                        .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSRMuzzle)
+                        .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getSRMags)
+                        .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
+                        .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
                         .build()
         );
-
-        event.getRegistry().registerAll(ITEM_BLOCKS.toArray(new ItemBlock[0]));
+        ITEM_BLOCKS.forEach(registry::register);
         ITEM_BLOCKS = null;
     }
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityEntry> e) {
-        final EntityEntry[] entries =
-                {
-                        registerEntity("bullet", EntityBullet.class, 64, 40),
-                        registerEntity("flare", EntityFlare.class, 64, 20),
-                        registerEntity("parachute", EntityParachute.class, 256, 1),
-                        registerEntity("plane", EntityPlane.class, 128, 25),
-                        registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
-                        registerVehicle("uaz", EntityVehicleUAZ.class),
-                        registerVehicle("dacia", EntityVehicleDacia.class),
-                        registerEntity("enemyai", EntityAIPlayer.class, 256, 3, true, 0x000000, 0xFFFFFF),
-                        registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
-                        registerEntity("molotov", EntityMolotov.class, 64, 1),
-                        registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
-                        registerEntity("flashbang", EntityFlashBang.class, 64, 1)
-                };
-
-        e.getRegistry().registerAll(entries);
+        e.getRegistry().registerAll(
+                registerEntity("bullet", EntityBullet.class, 64, 40),
+                registerEntity("flare", EntityFlare.class, 64, 20),
+                registerEntity("parachute", EntityParachute.class, 256, 1),
+                registerEntity("plane", EntityPlane.class, 128, 25),
+                registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
+                registerVehicle("uaz", EntityVehicleUAZ.class),
+                registerVehicle("dacia", EntityVehicleDacia.class),
+                registerEntity("enemyai", EntityAIPlayer.class, 256, 3, true, 0x000000, 0xFFFFFF),
+                registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
+                registerEntity("molotov", EntityMolotov.class, 64, 1),
+                registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
+                registerEntity("flashbang", EntityFlashBang.class, 64, 1)
+        );
     }
 
     @SubscribeEvent
@@ -428,11 +868,7 @@ public class CommonRegistry {
     public static void registerItemBlock(Block block) {
         ItemBlock itemBlock = new ItemBlock(block);
         itemBlock.setRegistryName(block.getRegistryName());
-        try {
-            ITEM_BLOCKS.add(itemBlock);
-        } catch (NullPointerException e) {
-            Pubgmc.logger.fatal("Attempted to register itemblock for {} after PMC registration was complete!", block.getRegistryName());
-        }
+        ITEM_BLOCKS.add(itemBlock);
     }
 
     private static EntityEntry registerEntity(String name, Class<? extends Entity> cl, int trackRange, int frequency) {
@@ -450,346 +886,7 @@ public class CommonRegistry {
     private static <E extends Entity> EntityEntryBuilder<E> createEntityBuilder(String name) {
         EntityEntryBuilder<E> builder = EntityEntryBuilder.create();
         ResourceLocation regName = new ResourceLocation(Pubgmc.MOD_ID, name);
-        return builder.id(regName, ID()).name(regName.toString());
-    }
-
-    private static int ID() {
-        ++entityID;
-        return entityID;
-    }
-
-    private static GunBase[] getInitializedGuns() {
-        CFGWeapons cfg = ConfigPMC.common.weapons;
-
-        GunBuilder.create("win94")
-                .stats(cfg.win94)
-                .firerate(25)
-                .recoil(5.5f, 3.5f)
-                .reload(GunBase.ReloadType.SINGLE, 15, PMCSounds.reload_win94)
-                .ammo(AmmoType.AMMO45ACP, 8)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.SR)
-                .sound(PMCSounds.gun_win94, 20f)
-                .addBoltAction(() -> PMCSounds.bolt_win94)
-                .build();
-
-        GunBase uzi = GunBuilder.create("microuzi")
-                .stats(cfg.microuzi)
-                .firerate(1)
-                .recoil(2f, 0.5f)
-                .reload(GunBase.ReloadType.MAGAZINE, 56, PMCSounds.reload_microuzi)
-                .ammo(AmmoType.AMMO9MM, 25, 35)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.SMG)
-                .sound(PMCSounds.gun_micro_uzi, 16f, PMCSounds.gun_micro_uzi_silenced, 8f)
-                .build();
-
-        GunBase vector = GunBuilder.create("vector")
-                .stats(cfg.vector)
-                .firerate(1)
-                .recoil(2f, 0.6f)
-                .reload(GunBase.ReloadType.MAGAZINE, 30, PMCSounds.reload_vector)
-                .ammo(AmmoType.AMMO9MM, 19, 33)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::cycleAll)
-                .weaponType(GunBase.GunType.SMG)
-                .burstAmount(2)
-                .sound(PMCSounds.gun_vector, 16f, PMCSounds.gun_vector_silenced, 8f)
-                .build();
-
-        GunBase bizon = GunBuilder.create("bizon")
-                .stats(cfg.bizon)
-                .firerate(2)
-                .recoil(2.0f, 0.7f)
-                .reload(GunBase.ReloadType.MAGAZINE, 62, PMCSounds.reload_bizon)
-                .ammo(AmmoType.AMMO9MM, 53)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.SMG)
-                .sound(PMCSounds.gun_bizon, 16f, PMCSounds.gun_bizon_silenced, 8f)
-                .build();
-
-        GunBase mp5k = GunBuilder.create("mp5k")
-                .stats(cfg.mp5k)
-                .firerate(2)
-                .recoil(2f, 0.7f)
-                .reload(GunBase.ReloadType.MAGAZINE, 64, PMCSounds.reload_mp5k)
-                .ammo(AmmoType.AMMO9MM, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.SMG)
-                .sound(PMCSounds.gun_mp5k, 16f, PMCSounds.gun_mp5k_silenced, 8f)
-                .build();
-
-        GunBase tommy = GunBuilder.create("tommy_gun")
-                .stats(cfg.tommygun)
-                .firerate(2)
-                .recoil(2f, 0.75f)
-                .reload(GunBase.ReloadType.MAGAZINE, 60, PMCSounds.reload_tommygun)
-                .ammo(AmmoType.AMMO45ACP, 30, 50)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.SMG)
-                .sound(PMCSounds.gun_tommy_gun, 16f, PMCSounds.gun_tommy_gun_silenced, 8f)
-                .build();
-
-        GunBase ump = GunBuilder.create("ump45")
-                .stats(cfg.ump45)
-                .firerate(2)
-                .recoil(1.9f, 0.5f)
-                .reload(GunBase.ReloadType.MAGAZINE, 52, PMCSounds.reload_ump9)
-                .ammo(AmmoType.AMMO45ACP, 25, 35)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::cycleAll)
-                .weaponType(GunBase.GunType.SMG)
-                .burstAmount(2)
-                .sound(PMCSounds.gun_ump9, 16f, PMCSounds.gun_ump9_silenced, 8f)
-                .build();
-
-        GunBase m16a4 = GunBuilder.create("m16a4")
-                .stats(cfg.m16a4)
-                .firerate(2)
-                .recoil(2.0f, 1f)
-                .reload(GunBase.ReloadType.MAGAZINE, 66, PMCSounds.reload_m16a4)
-                .ammo(AmmoType.AMMO556, 30, 40)
-                .firemode(GunBase.Firemode.SINGLE, GunBase.Firemode::ignoreAuto)
-                .weaponType(GunBase.GunType.AR)
-                .burstAmount(3)
-                .sound(PMCSounds.gun_m16a4, 20f, PMCSounds.gun_m16a4_silenced, 14f)
-                .build();
-
-        GunBase m416 = GunBuilder.create("m416")
-                .stats(cfg.m416)
-                .firerate(2)
-                .recoil(2.25f, 1.0f)
-                .reload(GunBase.ReloadType.MAGAZINE, 66, PMCSounds.reload_m416)
-                .ammo(AmmoType.AMMO556, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .sound(PMCSounds.gun_m416, 20f, PMCSounds.gun_m416_silenced, 14f)
-                .build();
-
-        GunBase scarl = GunBuilder.create("scar_l")
-                .stats(cfg.scarl)
-                .firerate(2)
-                .recoil(2.0f, 1.0f)
-                .reload(GunBase.ReloadType.MAGAZINE, 65, PMCSounds.reload_scarl)
-                .ammo(AmmoType.AMMO556, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .sound(PMCSounds.gun_scarl, 20f, PMCSounds.gun_scarl_silenced, 14f)
-                .build();
-
-        GunBase qbz = GunBuilder.create("qbz")
-                .stats(cfg.qbz)
-                .firerate(2)
-                .recoil(2.0f, 1.0f)
-                .reload(GunBase.ReloadType.MAGAZINE, 70, PMCSounds.reload_qbz)
-                .ammo(AmmoType.AMMO556, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .sound(PMCSounds.gun_qbz, 20f, PMCSounds.gun_qbz_silenced, 14f)
-                .build();
-
-        GunBase g36c = GunBuilder.create("g36c")
-                .stats(cfg.g36c)
-                .firerate(2)
-                .recoil(2.25f, 0.8f)
-                .reload(GunBase.ReloadType.MAGAZINE, 82, PMCSounds.reload_g36c)
-                .ammo(AmmoType.AMMO556, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .sound(PMCSounds.gun_g36c, 20f, PMCSounds.gun_g36c_silenced, 14f)
-                .build();
-
-        GunBase aug = GunBuilder.create("aug")
-                .stats(cfg.aug)
-                .firerate(2)
-                .recoil(2.3f, 0.75f)
-                .reload(GunBase.ReloadType.MAGAZINE, 69, PMCSounds.reload_aug)
-                .ammo(AmmoType.AMMO556, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .airdropOnly()
-                .sound(PMCSounds.gun_aug, 20f, PMCSounds.gun_aug_silenced, 14f)
-                .build();
-
-        GunBase akm = GunBuilder.create("akm")
-                .stats(cfg.akm)
-                .firerate(2)
-                .recoil(2.7f, 1.3f)
-                .reload(GunBase.ReloadType.MAGAZINE, 60, PMCSounds.reload_akm)
-                .ammo(AmmoType.AMMO762, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .sound(PMCSounds.gun_akm, 20f, PMCSounds.gun_akm_silenced, 14f)
-                .build();
-
-        GunBase m762 = GunBuilder.create("beryl_m762")
-                .stats(cfg.m762)
-                .firerate(2)
-                .recoil(2.9f, 1.5f)
-                .reload(GunBase.ReloadType.MAGAZINE, 50, PMCSounds.reload_m762)
-                .ammo(AmmoType.AMMO762, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::cycleAll)
-                .weaponType(GunBase.GunType.AR)
-                .burstAmount(3)
-                .sound(PMCSounds.gun_m762, 20f, PMCSounds.gun_m762_silenced, 14f)
-                .build();
-
-        GunBase mk47 = GunBuilder.create("mk47_mutant")
-                .stats(cfg.mk47)
-                .firerate(2)
-                .recoil(2.7f, 1.5f)
-                .reload(GunBase.ReloadType.MAGAZINE, 66, PMCSounds.reload_mk47)
-                .ammo(AmmoType.AMMO762, 20, 30)
-                .firemode(GunBase.Firemode.SINGLE, GunBase.Firemode::ignoreAuto)
-                .weaponType(GunBase.GunType.AR)
-                .burstAmount(2)
-                .sound(PMCSounds.gun_mk47, 20f, PMCSounds.gun_mk47_silenced, 14f)
-                .build();
-
-        GunBase groza = GunBuilder.create("groza")
-                .stats(cfg.groza)
-                .firerate(2)
-                .recoil(2.5f, 1.2f)
-                .reload(GunBase.ReloadType.MAGAZINE, 50, PMCSounds.reload_groza)
-                .ammo(AmmoType.AMMO762, 30, 40)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.AR)
-                .airdropOnly()
-                .sound(PMCSounds.gun_groza, 20f, PMCSounds.gun_groza_silenced, 14f)
-                .build();
-
-        GunBase dp28 = GunBuilder.create("dp28")
-                .stats(cfg.dp28)
-                .firerate(2)
-                .recoil(2.5f, 1.5f)
-                .reload(GunBase.ReloadType.MAGAZINE, 95, PMCSounds.reload_dp28)
-                .ammo(AmmoType.AMMO762, 47)
-                .firemode(GunBase.Firemode.AUTO)
-                .weaponType(GunBase.GunType.LMG)
-                .sound(PMCSounds.gun_dp28, 20f)
-                .build();
-
-        GunBase m249 = GunBuilder.create("m249")
-                .stats(cfg.m249)
-                .firerate(2)
-                .recoil(2.0f, 0.9f)
-                .reload(GunBase.ReloadType.MAGAZINE, 148, PMCSounds.reload_m249)
-                .ammo(AmmoType.AMMO556, 100)
-                .firemode(GunBase.Firemode.AUTO)
-                .weaponType(GunBase.GunType.LMG)
-                .airdropOnly()
-                .sound(PMCSounds.gun_m249, 20f)
-                .build();
-
-        GunBase vss = GunBuilder.create("vss")
-                .stats(cfg.vss)
-                .firerate(2)
-                .recoil(1.5f, 0.5f)
-                .reload(GunBase.ReloadType.MAGAZINE, 40, PMCSounds.reload_vss)
-                .ammo(AmmoType.AMMO9MM, 10, 20)
-                .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.DMR)
-                .sound(PMCSounds.gun_vss, 5f)
-                .build();
-
-        GunBase mini14 = GunBuilder.create("mini14")
-                .stats(cfg.mini14)
-                .firerate(1)
-                .recoil(3.5f, 2f)
-                .reload(GunBase.ReloadType.MAGAZINE, 62, PMCSounds.reload_mini14)
-                .ammo(AmmoType.AMMO556, 20, 30)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.DMR)
-                .sound(PMCSounds.gun_mini14, 24f, PMCSounds.gun_mini14_silenced, 16f)
-                .build();
-
-        GunBase qbu = GunBuilder.create("qbu")
-                .stats(cfg.qbu)
-                .firerate(1)
-                .recoil(3.5f, 2f)
-                .reload(GunBase.ReloadType.MAGAZINE, 44, PMCSounds.reload_qbu)
-                .ammo(AmmoType.AMMO556, 10, 20)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.DMR)
-                .sound(PMCSounds.gun_qbu, 24f, PMCSounds.gun_qbu_silenced, 12f)
-                .build();
-
-        GunBase sks = GunBuilder.create("sks")
-                .stats(cfg.sks)
-                .firerate(1)
-                .recoil(5.5f, 2.25f)
-                .reload(GunBase.ReloadType.MAGAZINE, 32, PMCSounds.reload_sks)
-                .ammo(AmmoType.AMMO762, 10, 20)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.DMR)
-                .sound(PMCSounds.gun_sks, 24f, PMCSounds.gun_sks_silenced, 16f)
-                .build();
-
-        GunBase slr = GunBuilder.create("slr")
-                .stats(cfg.slr)
-                .firerate(1)
-                .recoil(5.75f, 2.25f)
-                .reload(GunBase.ReloadType.MAGAZINE, 53, PMCSounds.reload_slr)
-                .ammo(AmmoType.AMMO762, 10, 20)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.DMR)
-                .sound(PMCSounds.gun_slr, 24f, PMCSounds.gun_slr_silenced, 16f)
-                .build();
-
-        GunBase mk14 = GunBuilder.create("mk14")
-                .stats(cfg.mk14)
-                .firerate(2)
-                .recoil(7.5f, 3.25f)
-                .reload(GunBase.ReloadType.MAGAZINE, 39, PMCSounds.reload_mk14)
-                .ammo(AmmoType.AMMO762, 10, 20)
-                .firemode(GunBase.Firemode.SINGLE, GunBase.Firemode::ignoreBurst)
-                .weaponType(GunBase.GunType.DMR)
-                .airdropOnly()
-                .sound(PMCSounds.gun_mk14, 24f, PMCSounds.gun_mk14_silenced, 16f)
-                .build();
-
-        GunBase kar98k = GunBuilder.create("kar98k")
-                .stats(cfg.kar98k)
-                .firerate(30)
-                .recoil(2.5f, 1.25f)
-                .reload(GunBase.ReloadType.KAR98K, 63, PMCSounds.reload_kar98k)
-                .ammo(AmmoType.AMMO762, 5)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.SR)
-                .sound(PMCSounds.gun_kar98k, 30f, PMCSounds.gun_kar98k_silenced, 20f)
-                .addBoltAction(() -> PMCSounds.bolt_kar98k)
-                .build();
-
-        GunBase m24 = GunBuilder.create("m24")
-                .stats(cfg.m24)
-                .firerate(35)
-                .recoil(2.5f, 1.25f)
-                .reload(GunBase.ReloadType.MAGAZINE, 71, PMCSounds.reload_m24)
-                .ammo(AmmoType.AMMO762, 5, 7)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.SR)
-                .sound(PMCSounds.gun_m24, 30f, PMCSounds.gun_m24_silenced, 20f)
-                .addBoltAction(() -> PMCSounds.bolt_m24)
-                .build();
-
-        GunBase awm = GunBuilder.create("awm")
-                .stats(cfg.awm)
-                .firerate(35)
-                .recoil(2.5f, 1.25f)
-                .reload(GunBase.ReloadType.MAGAZINE, 78, PMCSounds.reload_awm)
-                .ammo(AmmoType.AMMO300M, 5, 7)
-                .firemode(GunBase.Firemode.SINGLE)
-                .weaponType(GunBase.GunType.SR)
-                .airdropOnly()
-                .sound(PMCSounds.gun_awm, 30f, PMCSounds.gun_awm_silenced, 20f)
-                .addBoltAction(() -> PMCSounds.bolt_awm)
-                .build();
-
-        return new GunBase[]{
-                uzi, vector, bizon, mp5k, tommy, ump,
-                m16a4, m416, scarl, qbz, g36c, aug, akm, m762, mk47, groza,
-                dp28, m249,
-                vss, mini14, qbu, sks, slr, mk14,
-                kar98k, m24, awm
-        };
+        return builder.id(regName, entityID++).name(regName.toString());
     }
 
     public static void initTileEntities() {

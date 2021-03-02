@@ -2,11 +2,15 @@ package dev.toma.pubgmc.common.entity.bot.ai;
 
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityBullet;
+import dev.toma.pubgmc.common.items.attachment.AttachmentType;
+import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
+import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketDelayedSound;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 
 public class EntityAIGunAttack extends EntityAIBase {
@@ -57,27 +61,31 @@ public class EntityAIGunAttack extends EntityAIBase {
         if(!this.aiPlayer.hasGun()) {
             return;
         }
-        GunBase gun = this.aiPlayer.getGun();
-        int tableIndex = gun.getGunType().ordinal();
-        if(distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] * 1.5 && this.timeWatching >= 20) {
-            this.aiPlayer.getNavigator().clearPath();
-        } else this.aiPlayer.getNavigator().tryMoveToEntityLiving(this.target, 1.0D);
-        this.aiPlayer.getLookHelper().setLookPositionWithEntity(this.target, 30, 30);
-        if(--this.timeRemaining <= 0) {
-            if(!flag) {
-                return;
+        ItemStack stack = aiPlayer.getHeldItemMainhand();
+        if(stack.getItem() instanceof GunBase) {
+            GunBase gun = (GunBase) stack.getItem();
+            int tableIndex = gun.getGunType().ordinal();
+            if(distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] * 1.5 && this.timeWatching >= 20) {
+                this.aiPlayer.getNavigator().clearPath();
+            } else this.aiPlayer.getNavigator().tryMoveToEntityLiving(this.target, 1.0D);
+            this.aiPlayer.getLookHelper().setLookPositionWithEntity(this.target, 30, 30);
+            if(--this.timeRemaining <= 0) {
+                if(!flag) {
+                    return;
+                }
+                this.shoot(gun, stack, distanceToTarget);
             }
-            this.shoot(gun, distanceToTarget);
         }
     }
 
-    private void shoot(GunBase gun, double distanceToTarget) {
+    private void shoot(GunBase gun, ItemStack stack, double distanceToTarget) {
         if(distanceToTarget > MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
             return;
         }
         ++this.shotsFired;
         int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 8 : 1;
-        boolean isSilenced = this.aiPlayer.getHeldItemMainhand().hasTagCompound() && this.aiPlayer.getHeldItemMainhand().getTagCompound().getInteger("barrel") == 1;
+        ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
+        boolean isSilenced = muzzle != null && muzzle.isSilenced();
         SoundEvent event = isSilenced ? gun.getGunSilencedSound() : gun.getGunSound();
         float volume = isSilenced ? gun.getGunSilencedVolume() : gun.getGunVolume();
         PacketHandler.sendToDimension(new PacketDelayedSound(event, volume, this.aiPlayer.posX, this.aiPlayer.posY, this.aiPlayer.posZ), this.aiPlayer.dimension);
@@ -92,7 +100,7 @@ public class EntityAIGunAttack extends EntityAIBase {
         }
         boolean effectiveRange = distanceToTarget < MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()];
         this.timeRemaining = gun.getFireRate() + (effectiveRange ? 6 : 18);
-        if(shotsFired >= gun.getWeaponAmmoLimit(this.aiPlayer.getHeldItemMainhand())) {
+        if(shotsFired >= gun.getWeaponAmmoLimit(stack)) {
             this.shotsFired = 0;
             this.timeRemaining = 80;
         }

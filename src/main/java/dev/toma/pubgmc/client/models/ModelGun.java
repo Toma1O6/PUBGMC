@@ -7,12 +7,19 @@ import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
+import dev.toma.pubgmc.common.items.attachment.AttachmentType;
+import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
+import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
+import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
+import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
 import javax.vecmath.Vector3f;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 public abstract class ModelGun extends ModelBase {
     public static final Vector3f[] DEFAULT_PART_ANIMATION = {
@@ -55,64 +62,75 @@ public abstract class ModelGun extends ModelBase {
      * @param stack - item
      */
     public void preRender(ItemStack stack) {
-        if ((!hasScopeAtachment(stack) || this.getScopeLevel(stack) > 2) && aimAnimation.getFinalState().y != aimStates[0]) {
+        boolean redDot = hasRedDot(stack);
+        boolean hologr = hasHoloSight(stack);
+        if (!redDot && !hologr && aimAnimation.getFinalState().y != aimStates[0]) {
             initAimAnimation(aimAnimation.getFinalState().x, aimStates[0], aimAnimation.getFinalState().z);
-        } else if (hasRedDot(stack) && aimAnimation.getFinalState().y != aimStates[1]) {
+        } else if (redDot && aimAnimation.getFinalState().y != aimStates[1]) {
             initAimAnimation(aimAnimation.getFinalState().x, aimStates[1], aimAnimation.getFinalState().z);
-        } else if (hasHoloSight(stack) && aimAnimation.getFinalState().y != aimStates[2])
+        } else if (hologr && aimAnimation.getFinalState().y != aimStates[2])
             initAimAnimation(aimAnimation.getFinalState().x, aimStates[2], aimAnimation.getFinalState().z);
     }
 
-    public int getScopeLevel(ItemStack stack) {
-        return stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
-    }
-
     public boolean hasRedDot(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") == 1;
+        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.RED_DOT);
     }
 
     public boolean hasHoloSight(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") == 2;
+        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.HOLOGRAPHIC);
     }
 
     public boolean has2X(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") == 3;
+        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.SCOPE2X);
     }
 
     public boolean has4X(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") == 4;
+        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.SCOPE4X);
     }
 
     public boolean has8X(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") == 5;
+        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.SCOPE8X);
     }
 
     public boolean has15X(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") == 6;
+        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.SCOPE15X);
     }
 
     public boolean hasSilencer(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("barrel") == 1;
+        return has(stack, AttachmentType.MUZZLE, ItemMuzzle::isSilenced);
     }
 
     public boolean hasVerticalGrip(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("grip") == 1;
+        return has(stack, AttachmentType.GRIP, grip -> grip == PMCItems.GRIP_VERTICAL);
     }
 
     public boolean hasAngledGrip(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("grip") == 2;
+        return has(stack, AttachmentType.GRIP, grip -> grip == PMCItems.GRIP_ANGLED);
     }
 
     public boolean enableADS(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") < 3 && stack.getItem() != PMCItems.VSS;
+        if(stack.getItem() instanceof GunBase) {
+            GunBase gunBase = (GunBase) stack.getItem();
+            return gunBase.getScopeData(stack).isBuiltInRenderer();
+        }
+        return false;
     }
 
     public boolean hasScopeAtachment(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("scope") > 0;
+        return has(stack, AttachmentType.SCOPE, Objects::nonNull);
     }
 
     public boolean hasExtendedMagazine(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getInteger("magazine") > 1;
+        return has(stack, AttachmentType.MAGAZINE, ItemMagazine::isExtended);
+    }
+
+    public <I extends ItemAttachment> boolean has(ItemStack stack, AttachmentType<I> type, Predicate<I> predicate) {
+        if(stack.getItem() instanceof GunBase) {
+            GunBase gunBase = (GunBase) stack.getItem();
+            I i = gunBase.getAttachment(type, stack);
+            return i != null && predicate.test(i);
+        }
+        return false;
     }
 
     public void renderRedDot(double x, double y, double z, float scale, ItemStack stack) {

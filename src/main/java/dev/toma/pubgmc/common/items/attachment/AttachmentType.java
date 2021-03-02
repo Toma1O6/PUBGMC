@@ -1,34 +1,43 @@
 package dev.toma.pubgmc.common.items.attachment;
 
-import dev.toma.pubgmc.Pubgmc;
-import net.minecraft.util.ResourceLocation;
-
-public final class AttachmentType<I> {
+public final class AttachmentType<I extends ItemAttachment> {
 
     public static AttachmentType<?>[] allTypes = new AttachmentType[0];
 
-    public static final AttachmentType<Muzzle> MUZZLE = new AttachmentType<>("muzzle", 20, 31);
-    public static final AttachmentType<Grip> GRIP = new AttachmentType<>("grip", 48, 60);
-    public static final AttachmentType<Magazine> MAGAZINE = new AttachmentType<>("magazine", 80, 65);
-    public static final AttachmentType<Stock> STOCK = new AttachmentType<>("stock", 135, 31);
-    public static final AttachmentType<Scope> SCOPE = new AttachmentType<>("scope", 90, 12);
+    public static final AttachmentType<ItemMuzzle> MUZZLE = new AttachmentType<>("Muzzle", 26, 45);
+    public static final AttachmentType<ItemGrip> GRIP = new AttachmentType<>("Grip", 44, 88);
+    public static final AttachmentType<ItemMagazine> MAGAZINE = new AttachmentType<>("Magazine", 80, 88);
+    public static final AttachmentType<ItemStock> STOCK = new AttachmentType<>("Stock", 134, 45);
+    public static final AttachmentType<ItemScope> SCOPE = new AttachmentType<>("Scope", 80, 15);
 
-    final ResourceLocation slotTexture;
+    final int index;
+    final String name;
+    final String slotTexture;
     final int x;
     final int y;
 
-    public AttachmentType(String texture, int slotX, int slotY) {
-        this(Pubgmc.getResource("textures/items/" + texture + ".png"), slotX, slotY);
+    public AttachmentType(String name, int slotX, int slotY) {
+        this(name, name.toLowerCase(), slotX, slotY);
     }
 
-    public AttachmentType(ResourceLocation slotTexture, int slotX, int slotY) {
-        this.slotTexture = slotTexture;
+    public AttachmentType(String name, String slotTexture, int slotX, int slotY) {
+        this.name = name;
+        this.slotTexture = "pubgmc:textures/items/" + slotTexture + ".png";
         this.x = slotX;
         this.y = slotY;
+        this.index = allTypes.length;
         addToArray(this);
     }
 
-    public ResourceLocation getSlotTexture() {
+    public int getIndex() {
+        return index;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSlotTexture() {
         return slotTexture;
     }
 

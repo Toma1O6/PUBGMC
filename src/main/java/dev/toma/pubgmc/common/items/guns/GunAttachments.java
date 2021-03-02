@@ -5,7 +5,7 @@ import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.util.LazyLoad;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.LazyLoadBase;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,14 +15,15 @@ import java.util.function.Supplier;
 
 public class GunAttachments {
 
-    Map<AttachmentType<?>, LazyLoad<List<?>>> uninitialized;
-    Map<AttachmentType<?>, List<?>> initializedAttachments;
+    Map<AttachmentType<?>, LazyLoad<List<ItemAttachment>>> uninitialized;
+    Map<AttachmentType<?>, List<ItemAttachment>> initializedAttachments;
 
     GunAttachments(Builder builder) {
         this.uninitialized = builder.map;
     }
 
-    public <T> List<T> getList(AttachmentType<T> type) {
+    @SuppressWarnings("unchecked")
+    public <T extends ItemAttachment> List<T> getList(AttachmentType<T> type) {
         if(uninitialized != null) {
             initializedAttachments = new HashMap<>();
             uninitialized.forEach((k, v) -> initializedAttachments.put(k, v.get()));
@@ -46,19 +47,31 @@ public class GunAttachments {
     }
 
     public void attach(ItemStack gunStack, ItemAttachment attachment) {
-        // TODO
+        if(gunStack.getItem() instanceof GunBase) {
+            GunBase gunBase = (GunBase) gunStack.getItem();
+            NBTTagCompound nbt = gunBase.getOrCreateGunData(gunStack);
+            NBTTagCompound attachmentTag;
+            if(!nbt.hasKey("attachments")) {
+                attachmentTag = new NBTTagCompound();
+                nbt.setTag("attachments", attachmentTag);
+            } else {
+                attachmentTag = nbt.getCompoundTag("attachments");
+            }
+            String key = attachment.getType().getName();
+            attachmentTag.setString(key, attachment.getRegistryName().toString());
+        }
     }
 
     public static class Builder {
 
         final GunBuilder gunBuilder;
-        Map<AttachmentType<?>, LazyLoad<List<?>>> map = new HashMap<>();
+        Map<AttachmentType<?>, LazyLoad<List<ItemAttachment>>> map = new HashMap<>();
 
         public Builder(GunBuilder builder) {
             this.gunBuilder = builder;
         }
 
-        public <T> Builder addForType(AttachmentType<T> type, Supplier<T[]> supplier) {
+        public <T extends ItemAttachment> Builder addForType(AttachmentType<T> type, Supplier<T[]> supplier) {
             map.put(type, new LazyLoad<>(() -> Arrays.asList(supplier.get())));
             return this;
         }

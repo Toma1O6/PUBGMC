@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
+import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.player.BoostStats;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -12,11 +13,14 @@ import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
+import dev.toma.pubgmc.common.items.attachment.AttachmentType;
+import dev.toma.pubgmc.common.items.attachment.ItemGrip;
+import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
+import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
-import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.server.*;
@@ -30,6 +34,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -47,17 +52,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class ClientEvents {
-    //Scope overlays
-    private static final ResourceLocation ScopeVSS = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scopevss.png");
-    private static final ResourceLocation Scope2X = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope2x.png");
-    private static final ResourceLocation[] Scope4X = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope4x_arrow.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope4x_cross.png")};
-    private static final ResourceLocation Scope8X = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope8x.png");
-    private static final ResourceLocation Scope15X = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope15x.png");
+
     private static final ResourceLocation NV = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nv.png");
     private static final ResourceLocation BOOST = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_empty.png");
     private static final ResourceLocation BOOST_FULL = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_full.png");
@@ -65,9 +63,6 @@ public class ClientEvents {
     private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
     private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
-    private static final List<ResourceLocation> SCOPES = new ArrayList<>();
-    private static final List<ResourceLocation> HOLOS = new ArrayList<>();
-    private static final DecimalFormat DECIMAL = new DecimalFormat("###");
     public static int recoilTicks = 0;
 
     /**
@@ -77,16 +72,13 @@ public class ClientEvents {
 
     /**
      * Slot to determine which gun is being reloaded
+     * TODO remove
      **/
     private int reloadingSlot;
 
     /**
-     * The brightness the player had when joins world
-     **/
-    private float prevBrightness;
-
-    /**
      * Timer for boost decrease
+     * TODO remove
      **/
     private int timer;
 
@@ -107,17 +99,13 @@ public class ClientEvents {
 
     /**
      * Used for reloading to tell the game to play the sound or not. Simple workaround to prevent multiple reload sound playing
+     * TODO remove
      **/
     private boolean hasAmmo;
 
     /**
-     * IDs for different red dot sight styles and colors
-     **/
-    private int currentColor = 0;
-    private int currentType = 0;
-
-    /**
      * Method for rendering the textured boost overlays
+     * TODO improve
      */
     private static void renderBoost(BoostStats stats) {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
@@ -142,103 +130,47 @@ public class ClientEvents {
         }
     }
 
-    private static int getScopeTypeID(int scope, int color) {
-        int id = 0;
-        switch (scope) {
-            case 0:
-                id += 0;
-                break;
-            case 1:
-                id += 4;
-                break;
-            case 2:
-                id += 8;
-                break;
-        }
-
-        switch (color) {
-            case 0:
-                id += 0;
-                break;
-            case 1:
-                id += 1;
-                break;
-            case 2:
-                id += 2;
-                break;
-            case 3:
-                id += 3;
-                break;
-        }
-
-        return id;
-    }
-
-    private static int getHoloID(int color) {
-        int id = 0;
-        switch (color) {
-            case 0:
-                id += 0;
-                break;
-            case 1:
-                id += 1;
-                break;
-            case 2:
-                id += 2;
-                break;
-            case 3:
-                id += 3;
-                break;
-        }
-
-        return id;
-    }
-
-    private static int get4xIDFromGun(GunBase gun) {
-        return gun.getGunType() == GunBase.GunType.DMR || gun.getGunType() == GunBase.GunType.SR ? 1 : 0;
-    }
-
     private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
-        ArmorBase head = player.inventory.getStackInSlot(39).getItem() instanceof ArmorBase ? (ArmorBase) player.inventory.getStackInSlot(39).getItem() : null;
-        ArmorBase body = player.inventory.getStackInSlot(38).getItem() instanceof ArmorBase ? (ArmorBase) player.inventory.getStackInSlot(38).getItem() : null;
+        ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
         int left = width / 2 + 93;
         int top = height - 19;
         int offset = 0;
 
-        if (head != null) {
-            int level = head.armorLevel().getArmorLevel();
-            ItemStack headS = player.inventory.getStackInSlot(39);
-            ResourceLocation img = head.armorLevel().getIcon(true, level, getDamageLevel(headS));
-
+        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
+            ArmorBase armor = (ArmorBase) head.getItem();
+            int level = armor.armorLevel().getArmorLevel();
+            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
             ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
             offset += 17;
         }
 
-        if (body != null) {
-            int level = body.armorLevel().getArmorLevel();
-            ItemStack bodyS = player.inventory.getStackInSlot(38);
-            ResourceLocation img = body.armorLevel().getIcon(false, level, getDamageLevel(bodyS));
-
+        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
+            ArmorBase armor = (ArmorBase) body.getItem();
+            int level = armor.armorLevel().getArmorLevel();
+            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
             ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
             offset += 17;
         }
 
         if (data.getBackpackLevel() > 0) {
             int level = data.getBackpackLevel() - 1;
-
             ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
             offset += 17;
         }
 
         if (data.getEquippedNV()) {
             int i = data.isUsingNV() ? 1 : 0;
-
             ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
         }
     }
 
+    /**
+     * @deprecated render tinted texture instead
+     */
+    @Deprecated
     private static int getDamageLevel(ItemStack stack) {
         final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
         return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
@@ -247,8 +179,8 @@ public class ClientEvents {
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
         if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-
-            mc.fontRenderer.drawStringWithShadow("Speed: " + DECIMAL.format(Math.abs(car.currentSpeed) * 48.5) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
+            double speed = car.getSpeed() * 20;
+            mc.fontRenderer.drawStringWithShadow("Speed: " + (int)(speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
         } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
@@ -257,25 +189,6 @@ public class ClientEvents {
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
         }
-    }
-
-    static {
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_red.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_green.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_yellow.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_dot_blue.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_red.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_green.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_yellow.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_arrow_blue.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_red.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_green.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_yellow.png"));
-        SCOPES.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/scope_crosshair_blue.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_red.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_green.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_yellow.png"));
-        HOLOS.add(new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/holo_blue.png"));
     }
 
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
@@ -323,10 +236,6 @@ public class ClientEvents {
             if (boostLevel > 9) {
                 left -= 5;
             }
-
-            //There is the rendering
-            //Users can edit the position using their configs
-            //Position by default: Above hunger bar
             mc.fontRenderer.drawStringWithShadow(boostLevel + " / 20", left + ConfigPMC.client.overlays.textBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.textBoostOverlayPos.getY(), color);
         }
 
@@ -348,12 +257,11 @@ public class ClientEvents {
                 }
             }
             if (weaponStack.hasTagCompound()) {
-                int ammo = weaponStack.getTagCompound().getInteger("ammo");
-                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(new ItemStack(gun)) + ": " + gun.getFiremode(weaponStack), x, y - 9, 16777215);
-                mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "" + ammo + TextFormatting.RESET + " | " + totalCount, x, y, 16777215);
+                int ammo = gun.getAmmo(weaponStack);
+                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(weaponStack) + ": " + gun.getFiremode(weaponStack), x, y - 9, 16777215);
+                mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD.toString() + ammo + TextFormatting.RESET + " | " + totalCount, x, y, 16777215);
             }
         }
-
         renderVehicleOverlay(sp, mc, res, e);
     }
 
@@ -402,30 +310,10 @@ public class ClientEvents {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
                 if (data.getAimInfo().isAiming() && mc.gameSettings.thirdPersonView == 0) {
-                    if (stack.getItem() == PMCItems.VSS) {
-                        ImageUtil.drawFullScreenImage(mc, res, ScopeVSS, true);
-                    }
-
-                    if (stack.hasTagCompound()) {
-                        int halfX = res.getScaledWidth() / 2;
-                        int halfY = res.getScaledHeight() / 2;
-                        int left = halfX - 8;
-                        int top = halfY - 8;
-
-                        if (stack.getTagCompound().getInteger("scope") == 1 && data.getAimInfo().isFullyAds()) {
-                            ImageUtil.drawCustomSizedImage(mc, SCOPES.get(getScopeTypeID(data.getScopeType(), data.getScopeColor())), left, top, 17, 17, true);
-
-                        } else if (stack.getTagCompound().getInteger("scope") == 2 && data.getAimInfo().isFullyAds()) {
-                            ImageUtil.drawCustomSizedImage(mc, HOLOS.get(getHoloID(data.getScopeColor())), left, top, 17, 17, true);
-                        } else if (stack.getTagCompound().getInteger("scope") == 3) {
-                            ImageUtil.drawFullScreenImage(mc, res, Scope2X, true);
-                        } else if (stack.getTagCompound().getInteger("scope") == 4) {
-                            ImageUtil.drawFullScreenImage(mc, res, Scope4X[get4xIDFromGun(gun)], true);
-                        } else if (stack.getTagCompound().getInteger("scope") == 5) {
-                            ImageUtil.drawFullScreenImage(mc, res, Scope8X, true);
-                        } else if (stack.getTagCompound().getInteger("scope") == 6) {
-                            ImageUtil.drawFullScreenImage(mc, res, Scope15X, true);
-                        }
+                    ScopeData scopeData = gun.getScopeData(stack);
+                    if(scopeData != null && !scopeData.isBuiltInRenderer()) {
+                        mc.getTextureManager().bindTexture(scopeData.getTexture());
+                        Widget.drawTexturedShape(0, 0, res.getScaledWidth(), res.getScaledHeight());
                     }
                 }
             }
@@ -446,14 +334,6 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
-        /* Scope Variants */
-        if (KeyBinds.CHANGE_SCOPETYPE.isPressed() && (canSwitchType(sp.getHeldItemMainhand()) && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null))) {
-            switchScopeType(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
-        }
-        if (KeyBinds.CHANGE_SCOPECOLOR.isPressed() && sp.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            switchScopeColor(sp.getCapability(PlayerDataProvider.PLAYER_DATA, null));
-        }
-
         if (KeyBinds.PRONE.isPressed()) {
             IPlayerData data = PlayerData.get(sp);
             if (data != null) {
@@ -463,9 +343,7 @@ public class ClientEvents {
                 PacketHandler.sendToServer(new PacketProne(data.isProning()));
             }
         }
-
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
         if (KeyBinds.ATTACHMENT.isPressed()) {
             if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
@@ -473,20 +351,20 @@ public class ClientEvents {
                 sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
             }
         }
-
         if (KeyBinds.RELOAD.isPressed()) {
             if (data.isReloading()) {
                 return;
             }
             //Check if the player is able to reload
             //Ammo checking is being handled in the onReload method from GunBase
-            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
-                GunBase gun = (GunBase) sp.getHeldItemMainhand().getItem();
+            ItemStack stack = sp.getHeldItemMainhand();
+            if (stack.getItem() instanceof GunBase) {
+                GunBase gun = (GunBase) stack.getItem();
 
-                if (sp.getHeldItemMainhand().hasTagCompound()) {
-                    int ammo = sp.getHeldItemMainhand().getTagCompound().getInteger("ammo");
+                if (stack.hasTagCompound()) {
+                    int ammo = gun.getAmmo(stack);
 
-                    if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(sp.getHeldItemMainhand())) {
+                    if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(stack)) {
                         data.setReloading(true);
                         data.setReloadingTime(0);
 
@@ -541,7 +419,7 @@ public class ClientEvents {
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                 if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
                                 //Do the recoil
-                                applyRecoil(player, stack);
+                                applyRecoil(player, stack, gun);
                             } else {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
@@ -561,30 +439,7 @@ public class ClientEvents {
                 //Aiming on RMB press
                 if (gs.keyBindUseItem.isPressed()) {
                     if (!data.getAimInfo().isAiming() && !player.isSprinting()) {
-                        //We have to tell the server the player is aiming to make it work on servers
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
-                        int scopeID = stack.getTagCompound().getInteger("scope");
-
-                        //sensitivity modifier
-                        switch (scopeID) {
-                            case 1: case 2:
-                                gs.mouseSensitivity *= 0.95f;
-                                break;
-                            case 3:
-                                gs.mouseSensitivity *= 0.85f;
-                                break;
-                            case 4:
-                                gs.mouseSensitivity *= 0.65f;
-                                break;
-                            case 5:
-                                gs.mouseSensitivity *= 0.4f;
-                                break;
-                            case 6:
-                                gs.mouseSensitivity *= 0.01f;
-                                break;
-                            default:
-                                break;
-                        }
                     } else {
                         PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
@@ -627,7 +482,7 @@ public class ClientEvents {
                             if (gun.hasAmmo(stack)) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                this.applyRecoil(player, stack);
+                                this.applyRecoil(player, stack, gun);
                             } else {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
@@ -646,7 +501,7 @@ public class ClientEvents {
                             if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                applyRecoil(player, stack);
+                                applyRecoil(player, stack, gun);
                                 shotsFired++;
                                 shootingTimer = 0;
                             }
@@ -678,12 +533,12 @@ public class ClientEvents {
             }
         }
         if (ev.phase == Phase.END && player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            ItemStack itemstack = player.getHeldItemMainhand();
-            Item item = itemstack.getItem();
+            ItemStack gunStack = player.getHeldItemMainhand();
+            Item item = gunStack.getItem();
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if (data.isReloading()) {
-                if (player.getHeldItemMainhand().getItem() instanceof GunBase && player.getHeldItemMainhand().getTagCompound().getBoolean("isValidWeapon")) {
-                    GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+                if (gunStack.getItem() instanceof GunBase) {
+                    GunBase gun = (GunBase) gunStack.getItem();
                     data.setReloadingTime(data.getReloadingTime() + 1);
                     // TODO optimize
                     for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
@@ -695,32 +550,30 @@ public class ClientEvents {
                             }
 
                             if (gun.getReloadType() == GunBase.ReloadType.MAGAZINE) {
-                                if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
+                                if (data.getReloadingTime() >= gun.getReloadTime(gunStack)) {
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
                                     setReloading(data, false);
                                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                 }
                             } else if (gun.getReloadType() == GunBase.ReloadType.SINGLE) {
-                                if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
+                                if (data.getReloadingTime() >= gun.getReloadTime(gunStack)) {
                                     data.setReloadingTime(0);
                                     hasAmmo = false;
                                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                 }
                             } else if (gun.getReloadType() == GunBase.ReloadType.KAR98K) {
-                                if (itemstack.hasTagCompound()) {
-                                    if (itemstack.getTagCompound().getInteger("ammo") == 0) {
-                                        if (data.getReloadingTime() >= gun.getReloadTime(itemstack)) {
-                                            data.setReloadingTime(0);
-                                            hasAmmo = false;
-                                            PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
-                                        }
-                                    } else {
-                                        if (data.getReloadingTime() >= 18) {
-                                            data.setReloadingTime(0);
-                                            hasAmmo = false;
-                                            PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
-                                        }
+                                if (gun.getAmmo(gunStack) == 0) {
+                                    if (data.getReloadingTime() >= gun.getReloadTime(gunStack)) {
+                                        data.setReloadingTime(0);
+                                        hasAmmo = false;
+                                        PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                                    }
+                                } else {
+                                    if (data.getReloadingTime() >= 18) {
+                                        data.setReloadingTime(0);
+                                        hasAmmo = false;
+                                        PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                                     }
                                 }
                             }
@@ -732,21 +585,17 @@ public class ClientEvents {
                             player.playSound(gun.getWeaponReloadSound(), 1f, 1f);
                             hasAmmo = false;
                         } else if (gun.getReloadType() == GunBase.ReloadType.SINGLE) {
-                            if (itemstack.hasTagCompound()) {
-                                if (itemstack.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(itemstack) && hasAmmo) {
-                                    player.playSound(gun.getWeaponReloadSound(), 1f, 1f);
-                                    hasAmmo = false;
-                                }
+                            if (gun.getAmmo(gunStack) < gun.getWeaponAmmoLimit(gunStack) && hasAmmo) {
+                                player.playSound(gun.getWeaponReloadSound(), 1f, 1f);
+                                hasAmmo = false;
                             }
                         } else if (gun.getReloadType() == GunBase.ReloadType.KAR98K) {
-                            if (itemstack.hasTagCompound()) {
-                                if (itemstack.getTagCompound().getInteger("ammo") == 0 && hasAmmo) {
-                                    player.playSound(PMCSounds.reload_kar98k, 1f, 1f);
-                                    hasAmmo = false;
-                                } else if (itemstack.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(itemstack) && hasAmmo) {
-                                    player.playSound(PMCSounds.reload_kar98k_single, 1f, 1f);
-                                    hasAmmo = false;
-                                }
+                            if (gun.getAmmo(gunStack) == 0 && hasAmmo) {
+                                player.playSound(PMCSounds.reload_kar98k, 1f, 1f);
+                                hasAmmo = false;
+                            } else if (gun.getAmmo(gunStack) < gun.getWeaponAmmoLimit(gunStack) && hasAmmo) {
+                                player.playSound(PMCSounds.reload_kar98k_single, 1f, 1f);
+                                hasAmmo = false;
                             }
                         }
                     }
@@ -781,66 +630,31 @@ public class ClientEvents {
         }
     }
 
-    //Do the recoil for the player
-    private void applyRecoil(EntityPlayer player, ItemStack gun) {
-        float gripModifier = 1f;
-        float angledGrip = 1f;
-        float stockMod = 1f;
-
-        if (gun.getItem() instanceof GunBase) {
-            if (gun.hasTagCompound()) {
-                if (gun.getTagCompound().getInteger("stock") == 2) {
-                    stockMod = 0.9f;
-                }
-
-                if (gun.getTagCompound().getInteger("grip") == 1) {
-                    gripModifier = 0.8f;
-                } else if (gun.getTagCompound().getInteger("grip") == 2) {
-                    angledGrip = 0.8f;
-                } else {
-                    gripModifier = 1f;
-                    angledGrip = 1f;
-                }
-            } else {
-                throw new IllegalArgumentException("No valid NBT found. Report this to PUBGMC author!");
-            }
-
-            GunBase wep = (GunBase) gun.getItem();
-
-            //10% AttachmentGripVertical recoil reduction while you're sneaking
-            if (player.isSneaking()) {
-                if (gun.hasTagCompound()) {
-                    if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationPitch = player.rotationPitch - ((((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * 0.8f * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f) * 0.9f);
-                    } else
-                        player.rotationPitch = player.rotationPitch - ((((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f) * 0.9f);
-                }
-            } else {
-                if (gun.hasTagCompound()) {
-                    if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationPitch = player.rotationPitch - (((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * 0.8f * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f);
-                    } else
-                        player.rotationPitch = player.rotationPitch - (((wep.getVerticalRecoil(gun) * wep.getConfigurableStats().verticalRecoilMultiplier.getAsFloat()) * gripModifier * stockMod) * (float) rand.nextDouble() * 1.5f);
-                }
-            }
-
-            //set horizontal recoil (50% to go right and 50% to go left)
-            if (Pubgmc.rng().nextBoolean()) {
-                if (gun.hasTagCompound()) {
-                    if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationYaw = player.rotationYaw - (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * 0.8f * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
-                    } else
-                        player.rotationYaw = player.rotationYaw - (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
-                }
-            } else {
-                if (gun.hasTagCompound()) {
-                    if (gun.getTagCompound().getInteger("barrel") == 2) {
-                        player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * 0.8f * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
-                    } else
-                        player.rotationYaw = player.rotationYaw + (((wep.getHorizontalRecoil(gun) * wep.getConfigurableStats().horizontalRecoilMultiplier.getAsFloat()) * angledGrip * stockMod) * (float) rand.nextDouble() * 1.5f);
-                }
-            }
+    private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun) {
+        ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
+        ItemGrip grip = gun.getAttachment(AttachmentType.GRIP, stack);
+        float vertical = 1.0F;
+        float horizontal = 1.0F;
+        IPlayerData data = PlayerData.get(player);
+        if(data.isProning()) {
+            vertical *= 0.3F;
+            horizontal *= 0.3F;
+        } else if(player.isSneaking()) {
+            vertical *= 0.85F;
+            horizontal *= 0.85F;
         }
+        if(muzzle != null) {
+            vertical = muzzle.applyVerticalRecoilMultiplier(vertical);
+            horizontal = muzzle.applyHorizontalRecoilMultiplier(horizontal);
+        }
+        if(grip != null) {
+            vertical = grip.applyVerticalRecoilMultiplier(vertical);
+            horizontal = grip.applyHorizontalRecoilMultiplier(horizontal);
+        }
+        float v = gun.getVerticalRecoil() * vertical;
+        float h = Pubgmc.rng().nextBoolean() ? -gun.getHorizontalRecoil() * horizontal : gun.getHorizontalRecoil() * horizontal;
+        player.rotationPitch -= v;
+        player.rotationYaw += h;
     }
 
     private void setReloading(IPlayerData data, boolean reload) {
@@ -850,25 +664,5 @@ public class ClientEvents {
 
     private void setAiming(IPlayerData data, boolean aim) {
         PacketHandler.sendToServer(new SPacketSetProperty(aim, SPacketSetProperty.Action.AIM));
-    }
-
-    private void switchScopeType(IPlayerData data) {
-        if (currentType < 2) {
-            currentType++;
-        } else currentType = 0;
-        data.setScopeType(currentType);
-        PacketHandler.INSTANCE.sendToServer(new PacketSetScopeVariants(currentType, currentColor));
-    }
-
-    private void switchScopeColor(IPlayerData data) {
-        if (currentColor < 3) {
-            currentColor++;
-        } else currentColor = 0;
-        data.setScopeColor(currentColor);
-        PacketHandler.INSTANCE.sendToServer(new PacketSetScopeVariants(currentType, currentColor));
-    }
-
-    private boolean canSwitchType(ItemStack heldStack) {
-        return heldStack.hasTagCompound() && heldStack.getTagCompound().getInteger("scope") == 1;
     }
 }

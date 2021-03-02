@@ -20,60 +20,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class PUBGMCUtil {
-    /**
-     * This class contains some basic helper functions for me
-     */
-
-    /**
-     * @param stack
-     * @return the stack NBT
-     */
-    public static NBTTagCompound createNBT(ItemStack stack) {
-        if (!stack.hasTagCompound()) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        return stack.getTagCompound();
-    }
-
-    public static void writeBasicEntityNBT(NBTTagCompound compound, Entity entity) {
-        compound.setDouble("posX", entity.posX);
-        compound.setDouble("posY", entity.posY);
-        compound.setDouble("posZ", entity.posZ);
-        compound.setDouble("motionX", entity.motionX);
-        compound.setDouble("motionY", entity.motionY);
-        compound.setDouble("motionZ", entity.motionZ);
-    }
-
-    public static void readBasicEntityNBT(NBTTagCompound compound, Entity entity) {
-        entity.posX = compound.getDouble("posX");
-        entity.posY = compound.getDouble("posY");
-        entity.posZ = compound.getDouble("posZ");
-        entity.motionX = compound.getDouble("motionX");
-        entity.motionY = compound.getDouble("motionY");
-        entity.motionZ = compound.getDouble("motionZ");
-    }
-
-    /**
-     * Validates stack as a weapon
-     *
-     * @param stack -
-     * @param maxAmmo - the ammo the weapon will get
-     * @return new NBT tag
-     */
-    public static NBTTagCompound createWeaponNBT(ItemStack stack, int maxAmmo) {
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setInteger("ammo", maxAmmo);
-        compound.setBoolean("isValidWeapon", true);
-        stack.setTagCompound(compound);
-        return compound;
-    }
-
-    public static NBTTagCompound clearNBTTag(ItemStack stack) {
-        NBTTagCompound compound = new NBTTagCompound();
-        stack.setTagCompound(compound);
-        return compound;
-    }
 
     public static void sendSoundPacket(SoundEvent event, float volume, BlockPos pos, TargetPoint target) {
         PacketHandler.INSTANCE.sendToAllAround(new PacketDelayedSound(event, volume, pos.getX(), pos.getY(), pos.getZ()), target);
@@ -177,8 +123,7 @@ public class PUBGMCUtil {
     }
 
     public static float getAngleBetween2Points(Entity entityToRotate, BlockPos targetPos) {
-        float angle = (float) (MathHelper.atan2(entityToRotate.posZ - targetPos.getZ(), entityToRotate.posX - targetPos.getX()) * (180D / Math.PI)) - 90f;
-        return angle;
+        return (float) (MathHelper.atan2(entityToRotate.posZ - targetPos.getZ(), entityToRotate.posX - targetPos.getX()) * (180D / Math.PI)) - 90f;
     }
 
     public static float updateRotation(float prevRotation, float additionalRotation) {
@@ -213,12 +158,6 @@ public class PUBGMCUtil {
         model.offsetZ = z;
     }
 
-    public static void setModelRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
-    }
-
     public static void spawnAirdrop(World world, BlockPos pos, boolean bigDrop) {
         if (!world.isRemote && world.isBlockLoaded(pos)) {
             EntityAirdrop drop = new EntityAirdrop(world, pos, bigDrop);
@@ -232,20 +171,5 @@ public class PUBGMCUtil {
 
     public static double interpolate(double prev, double current, double partial) {
         return prev + partial * (current - prev);
-    }
-
-    public static Vec3d multiply(Vec3d vec, double amount) {
-        return new Vec3d(vec.x * amount, vec.y * amount, vec.z * amount);
-    }
-
-    public static String convertStringArray(String[] array) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for(int i = 0; i < array.length; i++) {
-            boolean hasNext = i < array.length - 1;
-            builder.append(array[i]).append(hasNext ? ", " : "");
-        }
-        builder.append("]");
-        return builder.toString();
     }
 }

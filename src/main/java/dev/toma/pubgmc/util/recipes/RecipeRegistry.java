@@ -451,11 +451,6 @@ public final class RecipeRegistry {
 
         // Attachments
         registerRecipe(PMCRecipeBuilder.createAttachment()
-                .result(PMCItems.SILENCER_PISTOL)
-                .ingredient(Blocks.WOOL, 5, 15)
-                .ingredient(Items.IRON_INGOT, 3)
-                .build());
-        registerRecipe(PMCRecipeBuilder.createAttachment()
                 .result(PMCItems.SILENCER_SMG)
                 .ingredient(Blocks.WOOL, 7, 15)
                 .ingredient(Items.IRON_INGOT, 4)
@@ -532,11 +527,6 @@ public final class RecipeRegistry {
                 .ingredient(Items.IRON_INGOT, 10)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAttachment()
-                .result(PMCItems.QUICKDRAW_MAG_PISTOL)
-                .ingredient(PMCItems.STEEL_INGOT, 3)
-                .ingredient(Items.IRON_INGOT, 3)
-                .build());
-        registerRecipe(PMCRecipeBuilder.createAttachment()
                 .result(PMCItems.QUICKDRAW_MAG_SMG)
                 .ingredient(PMCItems.STEEL_INGOT, 5)
                 .ingredient(Items.IRON_INGOT, 5)
@@ -550,11 +540,6 @@ public final class RecipeRegistry {
                 .result(PMCItems.QUICKDRAW_MAG_SNIPER)
                 .ingredient(PMCItems.STEEL_INGOT, 15)
                 .ingredient(Items.IRON_INGOT, 15)
-                .build());
-        registerRecipe(PMCRecipeBuilder.createAttachment()
-                .result(PMCItems.EXTENDED_MAG_PISTOL)
-                .ingredient(PMCItems.STEEL_INGOT, 3)
-                .ingredient(Items.IRON_INGOT, 5)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAttachment()
                 .result(PMCItems.EXTENDED_MAG_SMG)
@@ -572,11 +557,6 @@ public final class RecipeRegistry {
                 .ingredient(Items.IRON_INGOT, 25)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAttachment()
-                .result(PMCItems.EXTENDED_QUICKDRAW_MAG_PISTOL)
-                .ingredient(PMCItems.QUICKDRAW_MAG_PISTOL, 1)
-                .ingredient(PMCItems.EXTENDED_MAG_PISTOL, 1)
-                .build());
-        registerRecipe(PMCRecipeBuilder.createAttachment()
                 .result(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG)
                 .ingredient(PMCItems.QUICKDRAW_MAG_SMG, 1)
                 .ingredient(PMCItems.EXTENDED_MAG_SMG, 1)
@@ -592,12 +572,7 @@ public final class RecipeRegistry {
                 .ingredient(PMCItems.EXTENDED_MAG_SNIPER, 1)
                 .build());
         registerRecipe(PMCRecipeBuilder.createAttachment()
-                .result(PMCItems.BULLET_LOOPS_SHOTGUN)
-                .ingredient(Blocks.PLANKS, 5)
-                .ingredient(Items.IRON_INGOT, 3)
-                .build());
-        registerRecipe(PMCRecipeBuilder.createAttachment()
-                .result(PMCItems.BULLET_LOOPS_SNIPER)
+                .result(PMCItems.BULLET_LOOPS)
                 .ingredient(PMCItems.STEEL_INGOT, 3)
                 .ingredient(Items.IRON_INGOT, 5)
                 .build());

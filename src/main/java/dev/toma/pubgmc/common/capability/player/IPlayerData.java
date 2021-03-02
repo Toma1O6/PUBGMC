@@ -43,21 +43,10 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     boolean isProning();
 
-    // proning
     void setProning(boolean proning);
-
-    int getScopeType();
-
-    //scope variants
-    void setScopeType(int type);
-
-    int getScopeColor();
-
-    void setScopeColor(int color);
 
     double getDistance();
 
-    // map drop location distance
     void setDistance(double dist);
 
     void sync();

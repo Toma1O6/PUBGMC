@@ -16,6 +16,10 @@ public class EntityControllable extends Entity implements IControllable {
         this.ignoreFrustumCheck = false;
     }
 
+    public double getSpeed() {
+        return Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+    }
+
     public void callMovementMethods() {
         if((encodedInput & 0b1) > 0 && (encodedInput & 0b10) == 0) {
             handleForward();

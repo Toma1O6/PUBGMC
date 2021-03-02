@@ -2,8 +2,6 @@ package dev.toma.pubgmc.util.handlers;
 
 import dev.toma.pubgmc.client.gui.*;
 import dev.toma.pubgmc.common.container.*;
-import dev.toma.pubgmc.common.items.guns.attachments.ContainerAttachments;
-import dev.toma.pubgmc.common.items.guns.attachments.GuiAttachments;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
@@ -42,7 +40,7 @@ public class GuiHandler implements IGuiHandler {
             case GUI_CRATE:
                 return new ContainerPlayerCrate(player.inventory, (TileEntityPlayerCrate) world.getTileEntity(new BlockPos(x, y, z)));
             case GUI_ATTACHMENTS:
-                return new ContainerAttachments(player.inventory, player);
+                return new ContainerAttachments(player);
             case GUI_GUNCRAFTINGTABLE:
                 ContainerGunWorkbench c = new ContainerGunWorkbench((TileEntityGunWorkbench) world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
                 update(world, player, x, y, z);
@@ -64,7 +62,7 @@ public class GuiHandler implements IGuiHandler {
             case GUI_CRATE:
                 return new GuiPlayerCrate(player.inventory, (TileEntityPlayerCrate) world.getTileEntity(new BlockPos(x, y, z)));
             case GUI_ATTACHMENTS:
-                return new GuiAttachments(player.inventory, player);
+                return new GuiAttachments(player);
             case GUI_GUNCRAFTINGTABLE:
                 return new GuiGunWorkbench((TileEntityGunWorkbench) world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
             case GUI_BIG_AIRDROP:

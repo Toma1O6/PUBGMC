@@ -3,19 +3,19 @@ package dev.toma.pubgmc;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.*;
-import dev.toma.pubgmc.common.items.guns.GunBase;
-import dev.toma.pubgmc.event.GunPostInitializeEvent;
-import dev.toma.pubgmc.init.*;
+import dev.toma.pubgmc.init.CommonRegistry;
+import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.proxy.Proxy;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import dev.toma.pubgmc.util.recipes.RecipeRegistry;
 import dev.toma.pubgmc.world.OreGen;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.launchwrapper.Launch;
@@ -35,7 +35,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -117,14 +116,6 @@ public class Pubgmc {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        for (ResourceLocation rl : ForgeRegistries.ITEMS.getKeys()) {
-            if (rl.getResourceDomain().equals(MOD_ID)) {
-                Item item = ForgeRegistries.ITEMS.getValue(rl);
-                if (item instanceof GunBase) {
-                    MinecraftForge.EVENT_BUS.post(new GunPostInitializeEvent((GunBase) item));
-                }
-            }
-        }
         RecipeRegistry.registerWorkbenchRecipes();
         proxy.postInit(event);
     }

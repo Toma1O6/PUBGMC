@@ -6,10 +6,10 @@ import dev.toma.pubgmc.api.objectives.types.GameArea;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
+import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.game.GameControlItem;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -40,24 +40,10 @@ public class RenderHandler {
         if (data.isAiming()) {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
-                int scope = stack.getItem() == PMCItems.VSS ? 4 : stack.hasTagCompound() ? stack.getTagCompound().getInteger("scope") : 0;
-                switch (scope) {
-                    case 1:
-                    case 2:
-                        settings.fovSetting = 45;
-                        break;
-                    case 3:
-                        settings.fovSetting = 35;
-                        break;
-                    case 4:
-                        settings.fovSetting = 25;
-                        break;
-                    case 5:
-                        settings.fovSetting = 10;
-                        break;
-                    case 6:
-                        settings.fovSetting = 3;
-                        break;
+                GunBase gunBase = (GunBase) stack.getItem();
+                ScopeData scopeData = gunBase.getScopeData(stack);
+                if(scopeData != null) {
+                    settings.fovSetting = scopeData.getZoom();
                 }
             }
         } else {

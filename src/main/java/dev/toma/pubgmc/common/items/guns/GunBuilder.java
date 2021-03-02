@@ -1,12 +1,14 @@
 package dev.toma.pubgmc.common.items.guns;
 
 import com.google.common.base.Preconditions;
+import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;
 import dev.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 import java.util.function.Function;
@@ -37,6 +39,7 @@ public class GunBuilder {
     CFGWeapon cfgStats;
     GunAttachments attachments;
     Supplier<SoundEvent> action;
+    ScopeData customScope;
 
     private GunBuilder(String name, Function<GunBuilder, GunBase> buildFunc) {
         this.name = name;
@@ -128,6 +131,11 @@ public class GunBuilder {
 
     public GunBuilder airdropOnly() {
         this.airdropOnly = true;
+        return this;
+    }
+
+    public GunBuilder builtInScope(int zoom, float mouseSens, ResourceLocation texture) {
+        this.customScope = new ScopeData(zoom, mouseSens, texture);
         return this;
     }
 
