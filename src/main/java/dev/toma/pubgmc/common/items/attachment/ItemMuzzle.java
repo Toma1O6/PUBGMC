@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.items.attachment;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -50,10 +51,14 @@ public class ItemMuzzle extends ItemAttachment implements Muzzle {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if(verticalRecoil < 1)
-            tooltip.add(formatProperty("Vertical recoil", "-" + (int)((1.0F - verticalRecoil) * 100)) + "%");
-        if(horizontalRecoil < 1)
-            tooltip.add(formatProperty("Horizontal recoil", "-" + (int)((1.0F - horizontalRecoil) * 100)) + "%");
+        if(verticalRecoil < 1) {
+            int i = Math.round((1.0F - verticalRecoil) * 100);
+            tooltip.add(formatProperty("Vertical recoil", "-" + i) + "%");
+        }
+        if(horizontalRecoil < 1) {
+            int i = Math.round((1.0F - horizontalRecoil) * 100);
+            tooltip.add(formatProperty("Horizontal recoil", "-" + i) + "%");
+        }
         if(silent)
             tooltip.add(TextFormatting.AQUA + "Silences weapon");
     }

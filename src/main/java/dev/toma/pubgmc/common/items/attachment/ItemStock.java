@@ -37,7 +37,9 @@ public class ItemStock extends ItemAttachment implements Stock {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if(fastReload)
             tooltip.add(TextFormatting.AQUA + "Faster reload");
-        if(ads < 1)
-            tooltip.add(formatProperty("ADS speed", "-" + (int)((1.0F - ads) * 100)) + "%");
+        if(ads < 1) {
+            int i = Math.round((1.0F - ads) * 100);
+            tooltip.add(formatProperty("ADS speed", "-" + i) + "%");
+        }
     }
 }
