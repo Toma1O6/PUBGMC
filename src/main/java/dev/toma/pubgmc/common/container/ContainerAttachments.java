@@ -32,6 +32,10 @@ public class ContainerAttachments extends Container {
         }
     }
 
+    public InventoryAttachments getAttachments() {
+        return inventory;
+    }
+
     @Override
     public void onContainerClosed(EntityPlayer playerIn) {
         inventory.closeInventory(playerIn);

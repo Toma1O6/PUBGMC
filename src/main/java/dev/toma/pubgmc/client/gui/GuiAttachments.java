@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.gui;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.container.ContainerAttachments;
+import dev.toma.pubgmc.common.inventory.InventoryAttachments;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunAttachments;
@@ -17,19 +18,19 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiAttachments extends GuiContainer {
 
-    private ItemStack stack;
+    private final ItemStack stack;
     private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/attachments.png");
 
     public GuiAttachments(EntityPlayer player) {
         super(new ContainerAttachments(player));
         ySize = 197;
-        stack = ((ContainerAttachments) inventorySlots).stack.copy();
-        stack.setTagCompound(new NBTTagCompound());
+        ContainerAttachments container = (ContainerAttachments) inventorySlots;
+        InventoryAttachments inventory = container.getAttachments();
+        stack = inventory.getDisplayItem();
     }
 
     @Override
@@ -65,6 +66,7 @@ public class GuiAttachments extends GuiContainer {
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
+        renderItem(stack, guiLeft + xSize / 2, guiTop + 40);
     }
 
     void drawSlot(Slot slot, boolean compatible, boolean drawDefaultSlot, BufferBuilder bufferBuilder) {

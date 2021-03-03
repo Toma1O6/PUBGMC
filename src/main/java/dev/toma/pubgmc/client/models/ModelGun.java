@@ -7,10 +7,7 @@ import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.items.attachment.AttachmentType;
-import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
-import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
-import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
+import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.model.ModelBase;
@@ -111,7 +108,8 @@ public abstract class ModelGun extends ModelBase {
     public boolean enableADS(ItemStack stack) {
         if(stack.getItem() instanceof GunBase) {
             GunBase gunBase = (GunBase) stack.getItem();
-            return gunBase.getScopeData(stack).isBuiltInRenderer();
+            ScopeData data = gunBase.getScopeData(stack);
+            return data == null || data.isBuiltInRenderer();
         }
         return false;
     }

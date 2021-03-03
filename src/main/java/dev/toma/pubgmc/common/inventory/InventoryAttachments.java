@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 public class InventoryAttachments extends InventoryBasic {
 
     final EntityPlayer player;
+    ItemStack displayItem;
 
     public InventoryAttachments(EntityPlayer player) {
         super("inventory.attachments", false, AttachmentType.allTypes.length);
@@ -26,6 +27,7 @@ public class InventoryAttachments extends InventoryBasic {
     @Override
     public void openInventory(EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
+        this.displayItem = stack.copy();
         if(validate(player, stack)) {
             GunBase gun = (GunBase) stack.getItem();
             NBTTagCompound nbt = gun.getOrCreateGunData(stack);
@@ -65,10 +67,33 @@ public class InventoryAttachments extends InventoryBasic {
             for (AttachmentType<?> type : AttachmentType.allTypes) {
                 ItemStack itemStack = this.getStackInSlot(type.getIndex());
                 if(!itemStack.isEmpty()) {
-                    attach(nbt, itemStack, attachments);
+                    attach(nbt, itemStack, attachments, false);
                 }
             }
         }
+    }
+
+    @Override
+    public void markDirty() {
+        ItemStack held = player.getHeldItemMainhand();
+        if(validate(player, held)) {
+            GunAttachments attachments = ((GunBase) held.getItem()).getAttachments();
+            NBTTagCompound att = new NBTTagCompound();
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setTag("attachments", att);
+            displayItem.setTagCompound(nbt);
+            for (AttachmentType<?> type : AttachmentType.allTypes) {
+                ItemStack stack = this.getStackInSlot(type.getIndex());
+                if(!stack.isEmpty()) {
+                    attach(att, stack, attachments, true);
+                }
+            }
+        }
+        super.markDirty();
+    }
+
+    public ItemStack getDisplayItem() {
+        return displayItem;
     }
 
     ItemStack detach(NBTTagCompound nbt, AttachmentType<?> type) {
@@ -82,17 +107,19 @@ public class InventoryAttachments extends InventoryBasic {
         return ItemStack.EMPTY;
     }
 
-    void attach(NBTTagCompound nbt, ItemStack stack, GunAttachments attachments) {
+    void attach(NBTTagCompound nbt, ItemStack stack, GunAttachments attachments, boolean simulate) {
         if(stack.getItem() instanceof ItemAttachment) {
             ItemAttachment attachment = (ItemAttachment) stack.getItem();
             AttachmentType<?> type = attachment.getType();
             String key = type.getName();
             if(!attachments.supports(attachment)) {
-                dropItem(stack);
+                if(!simulate) {
+                    dropItem(stack);
+                }
                 return;
             }
             nbt.setString(key, attachment.getRegistryName().toString());
-        } else {
+        } else if(!simulate) {
             dropItem(stack);
         }
     }
