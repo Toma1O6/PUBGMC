@@ -9,6 +9,7 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.ItemAmmo;
+import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.config.common.CFGWeapon;
@@ -21,14 +22,17 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -47,7 +51,7 @@ import java.util.stream.Collectors;
  * This is the core class for all guns
  * @author Toma
  */
-public class GunBase extends PMCItem {
+public class GunBase extends PMCItem implements MainHandOnly {
 
     public static final List<GunBase> GUNS = new ArrayList<>();
     protected final Supplier<SoundEvent> action;
@@ -168,6 +172,18 @@ public class GunBase extends PMCItem {
         }
 
         return player.capabilities.isCreativeMode;
+    }
+
+    @Override
+    public void block(ItemStack stack, EntityPlayer player) {
+        EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, stack.copy());
+        Vec3d vec = player.getLookVec();
+        item.motionX = vec.x * 0.3;
+        item.motionY = vec.y * 0.3;
+        item.motionZ = vec.z * 0.3;
+        item.setPickupDelay(30);
+        player.world.spawnEntity(item);
+        player.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack.EMPTY);
     }
 
     @Override

@@ -8,19 +8,22 @@ import dev.toma.pubgmc.common.entity.throwables.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ItemExplodeable extends PMCItem {
+public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     private final int maxFuse;
     private final ExplodeableItemAction explodeableItemAction;
@@ -38,6 +41,22 @@ public class ItemExplodeable extends PMCItem {
     public ItemExplodeable addAditionalDescription(String... description) {
         this.description = description;
         return this;
+    }
+
+    @Override
+    public void block(ItemStack stack, EntityPlayer player) {
+        if(isCooking(stack)) {
+            getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, maxFuse - getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
+        } else {
+            EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, stack.copy());
+            Vec3d vec = player.getLookVec();
+            item.motionX = vec.x * 0.3;
+            item.motionY = vec.y * 0.3;
+            item.motionZ = vec.z * 0.3;
+            item.setPickupDelay(30);
+            player.world.spawnEntity(item);
+        }
+        player.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack.EMPTY);
     }
 
     @Override

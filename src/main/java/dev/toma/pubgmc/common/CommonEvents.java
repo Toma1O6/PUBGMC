@@ -8,6 +8,7 @@ import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
+import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
@@ -18,12 +19,14 @@ import dev.toma.pubgmc.network.sp.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -39,6 +42,7 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -139,15 +143,9 @@ public class CommonEvents {
             data.sync();
         }
         if (!player.world.isRemote) {
-            if (player.getHeldItemOffhand().getItem() instanceof GunBase) {
-                EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, player.getHeldItemOffhand());
-                Vec3d vec = player.getLookVec();
-                item.motionX = vec.x * 0.3;
-                item.motionY = vec.y * 0.3;
-                item.motionZ = vec.z * 0.3;
-                item.setPickupDelay(30);
-                player.world.spawnEntity(item);
-                player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
+            ItemStack offHandStack = player.getHeldItemOffhand();
+            if (offHandStack.getItem() instanceof MainHandOnly) {
+                ((MainHandOnly) offHandStack.getItem()).block(offHandStack, player);
             }
         }
     }
