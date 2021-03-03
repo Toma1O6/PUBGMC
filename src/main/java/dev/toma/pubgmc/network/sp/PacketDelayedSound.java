@@ -3,11 +3,13 @@ package dev.toma.pubgmc.network.sp;
 import dev.toma.pubgmc.Pubgmc;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketDelayedSound implements IMessage {
     private SoundEvent event;
@@ -44,12 +46,15 @@ public class PacketDelayedSound implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketDelayedSound, IMessage> {
+
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketDelayedSound message, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                EntityPlayerSP player = Minecraft.getMinecraft().player;
-                Minecraft.getMinecraft().addScheduledTask(() -> Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume));
-            }
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
+                EntityPlayer player = mc.player;
+                Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume);
+            });
             return null;
         }
     }

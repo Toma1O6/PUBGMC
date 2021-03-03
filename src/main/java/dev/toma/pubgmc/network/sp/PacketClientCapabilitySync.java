@@ -9,9 +9,12 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 
+// TODO improve player serialization
 public class PacketClientCapabilitySync implements IMessage {
 
     private EntityPlayer player;
@@ -41,12 +44,12 @@ public class PacketClientCapabilitySync implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketClientCapabilitySync, IMessage> {
+
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                if(m.player == null) return null;
-                Minecraft.getMinecraft().addScheduledTask(() -> PlayerData.get(m.player).deserializeNBT(m.nbt));
-            }
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> PlayerData.get(m.player).deserializeNBT(m.nbt));
             return null;
         }
     }

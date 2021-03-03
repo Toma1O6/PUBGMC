@@ -7,6 +7,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketVehicleData implements IMessage {
     private int ID;
@@ -46,21 +48,21 @@ public class PacketVehicleData implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketVehicleData, IMessage> {
+
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketVehicleData m, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                Minecraft.getMinecraft().addScheduledTask(() -> {
-                    World world = Minecraft.getMinecraft().player.world;
-                    if (world.getEntityByID(m.ID) instanceof EntityVehicle) {
-                        EntityVehicle car = (EntityVehicle) world.getEntityByID(m.ID);
-                        car.currentSpeed = m.currentSpeed;
-                        car.turnModifier = m.turnMod;
-                        car.health = m.health;
-                        car.fuel = m.fuel;
-                        car.isBroken = m.isBroken;
-                    }
-                });
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                World world = Minecraft.getMinecraft().player.world;
+                if (world.getEntityByID(m.ID) instanceof EntityVehicle) {
+                    EntityVehicle car = (EntityVehicle) world.getEntityByID(m.ID);
+                    car.currentSpeed = m.currentSpeed;
+                    car.turnModifier = m.turnMod;
+                    car.health = m.health;
+                    car.fuel = m.fuel;
+                    car.isBroken = m.isBroken;
+                }
+            });
             return null;
         }
     }

@@ -8,6 +8,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketReloadingSP implements IMessage {
     private boolean reloading;
@@ -31,14 +33,16 @@ public class PacketReloadingSP implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketReloadingSP, IMessage> {
+
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketReloadingSP message, MessageContext ctx) {
-            if (ctx.side.isClient()) {
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
                 EntityPlayerSP player = Minecraft.getMinecraft().player;
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 data.setReloading(message.reloading);
-            }
-
+            });
             return null;
         }
     }

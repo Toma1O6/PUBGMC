@@ -85,12 +85,11 @@ item.ghillieboots.name=Ghillie boots
 item.nv_goggles.name=Night Vision Goggles
 
 //Attachments
-item.silencer_pistol.name=Suppressor (Pistol)
-item.silencer_smg.name=Suppressor (SMG)
-item.silencer_ar.name=Suppressor (AR)
+item.silencer_smg.name=Suppressor (Pistol, SMG)
+item.silencer_ar.name=Suppressor (AR, DMR)
 item.silencer_sniper.name=Suppressor (DMR,SR)
 item.compensator_smg.name=Compensator (SMG)
-item.compensator_ar.name=Compensator (AR)
+item.compensator_ar.name=Compensator (AR, DMR)
 item.compensator_sniper.name=Compensator (DMR,SR)
 item.red_dot.name=Red Dot Sight
 item.holographic.name=Holographic Sight
@@ -100,20 +99,16 @@ item.scope8x.name=8X Scope
 item.scope15x.name=15X Scope
 item.grip_vertical.name=Vertical Grip
 item.grip_angled.name=Angled Grip
-item.quickdraw_mag_pistol.name=Quickdraw Magazine (Pistol)
-item.quickdraw_mag_smg.name=Quickdraw Magazine (SMG)
-item.quickdraw_mag_ar.name=Quickdraw Magazine (AR)
-item.quickdraw_mag_sniper.name=Quickdraw Magazine (DMR,SR)
-item.extended_mag_pistol.name=Extended Magazine (Pistol)
-item.extended_mag_smg.name=Extended Magazine (SMG)
-item.extended_mag_ar.name=Extended Magazine (AR)
-item.extended_mag_sniper.name=Extended Magazine (DMR,SR)
-item.extended_quickdraw_mag_pistol.name=Extended Quickdraw Magazine (Pistol)
-item.extended_quickdraw_mag_smg.name=Extended Quickdraw Magazine (SMG)
-item.extended_quickdraw_mag_ar.name=Extended Quickdraw Magazine (AR)
-item.extended_quickdraw_mag_sniper.name=Extended Quickdraw Magazine (DMR,SR)
-item.bullet_loops_shotgun.name=Bullet Loops (Shotgun)
-item.bullet_loops_sniper.name=Bullet Loops (Kar98K,Win94)
+item.quickdraw_mag_smg.name=Quickdraw Magazine (Pistol, SMG)
+item.quickdraw_mag_ar.name=Quickdraw Magazine (AR, DMR)
+item.quickdraw_mag_sniper.name=Quickdraw Magazine (DMR, SR)
+item.extended_mag_smg.name=Extended Magazine (Pistol, SMG)
+item.extended_mag_ar.name=Extended Magazine (AR, DMR)
+item.extended_mag_sniper.name=Extended Magazine (DMR, SR)
+item.extended_quickdraw_mag_smg.name=Extended Quickdraw Magazine (Pistol, SMG)
+item.extended_quickdraw_mag_ar.name=Extended Quickdraw Magazine (AR, DMR)
+item.extended_quickdraw_mag_sniper.name=Extended Quickdraw Magazine (DMR, SR)
+item.bullet_loops.name=Bullet Loops
 item.cheekpad.name=Cheekpad
 
 //Keybinding

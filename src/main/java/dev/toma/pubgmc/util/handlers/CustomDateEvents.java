@@ -13,15 +13,12 @@ public class CustomDateEvents {
 
     public static void handleDates(EntityPlayer loggedPlayer) {
         date = LocalDate.now();
-
         if (isChristmastTime()) {
-            message(loggedPlayer, TextFormatting.AQUA + "  * * * * * * * * * * * *  ", "From Toma, PUBGMC creator");
-            message(loggedPlayer, TextFormatting.AQUA + "* * * Merry Christmas * * *", "From Toma, PUBGMC creator");
-            message(loggedPlayer, TextFormatting.AQUA + "  * * * * * * * * * * * *  ", "From Toma, PUBGMC creator");
+            message(loggedPlayer, TextFormatting.AQUA + "[PUBGMC] Merry Christmas", "From PUBGMC team");
         } else if (isNewYear()) {
-            message(loggedPlayer, TextFormatting.YELLOW + "[" + TextFormatting.GREEN + date.getYear() + TextFormatting.YELLOW + "] !!HAPPY NEW YEAR!! [" + TextFormatting.GREEN + date.getYear() + TextFormatting.YELLOW + "]");
+            message(loggedPlayer, TextFormatting.YELLOW + "[" + TextFormatting.GREEN + "PUBGMC" + TextFormatting.YELLOW + "] [" + TextFormatting.GREEN + date.getYear() + TextFormatting.YELLOW + "] !! HAPPY NEW YEAR !! [" + TextFormatting.GREEN + date.getYear() + TextFormatting.YELLOW + "]");
         } else if (is1stApril()) {
-            message(loggedPlayer, TextFormatting.RED + "It's april fools time! Don't believe anything, especially on internet!");
+            message(loggedPlayer, TextFormatting.RED + "[PUBGMC] It's april fools time! You know what that means! Beware");
         } else if (isPUBGMCAnniversary()) {
             int year = date.getYear() - 2018;
             String s = year == 1 ? "year" : "years";
@@ -30,8 +27,7 @@ public class CustomDateEvents {
     }
 
     private static boolean isChristmastTime() {
-        int[] days = new int[]{24, 25, 26};
-        return isDate(days, 12);
+        return isDate(24, 26, 12);
     }
 
     private static boolean isNewYear() {
@@ -47,16 +43,11 @@ public class CustomDateEvents {
     }
 
     private static boolean isDate(int day, int month) {
-        return date.getDayOfMonth() == day && date.getMonthValue() == month;
+        return isDate(day, day, month);
     }
 
-    private static boolean isDate(int[] days, int month) {
-        for (int day : days) {
-            if (isDate(day, month)) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean isDate(int intervalStart, int intervalEnd, int month) {
+        return date.getMonthValue() == month && date.getDayOfMonth() >= intervalStart && date.getDayOfMonth() <= intervalEnd;
     }
 
     private static void message(EntityPlayer p, String message) {

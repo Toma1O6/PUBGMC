@@ -1,9 +1,11 @@
 package dev.toma.pubgmc.network.sp;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.util.helper.PacketHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -11,6 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -79,37 +83,37 @@ public class PacketParticle implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketParticle, IMessage> {
+
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketParticle message, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                Minecraft.getMinecraft().addScheduledTask(() ->
-                {
-                    World world = Minecraft.getMinecraft().player.world;
-                    final Random rand = new Random();
-                    switch (message.action) {
-                        case SPREAD_RANDOMLY: {
-                            for (int i = 0; i < message.amount; i++)
-                                world.spawnParticle(message.particle, true, message.x, message.y, message.z, rand.nextDouble() / 5, rand.nextDouble() / 5, rand.nextDouble() / 5, Block.getStateId(world.getBlockState(message.hitBlock)));
-                            break;
-                        }
-                        case CREATE_LINE: {
-                            Vec3d start = new Vec3d(message.x, message.y, message.z);
-                            boolean eastWest = message.parameter > 0;
-                            for (int i = 0; i < message.amount; i++) {
-                                world.spawnParticle(message.particle, eastWest ? start.x + rand.nextDouble() : start.x + 0.5, start.y + 1, eastWest ? start.z + 0.5 : start.z + rand.nextDouble(), 0, -0.25, 0, Block.getStateId(world.getBlockState(message.hitBlock)));
-                            }
-                            break;
-                        }
-                        case HIT_EFFECT: {
-                            for (int i = 0; i < message.amount; i++) {
-                                world.spawnParticle(message.particle, true, message.x, message.y, message.z, rand.nextDouble() / 5, rand.nextDouble() / 5, rand.nextDouble() / 5, message.additional);
-                            }
-                            break;
-                        }
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
+                EntityPlayer player = mc.player;
+                World world = mc.world;
+                Random rand = Pubgmc.rng();
+                switch (message.action) {
+                    case SPREAD_RANDOMLY: {
+                        for (int i = 0; i < message.amount; i++)
+                            world.spawnParticle(message.particle, true, message.x, message.y, message.z, rand.nextDouble() / 5, rand.nextDouble() / 5, rand.nextDouble() / 5, Block.getStateId(world.getBlockState(message.hitBlock)));
+                        break;
                     }
-
-                });
-            }
+                    case CREATE_LINE: {
+                        Vec3d start = new Vec3d(message.x, message.y, message.z);
+                        boolean eastWest = message.parameter > 0;
+                        for (int i = 0; i < message.amount; i++) {
+                            world.spawnParticle(message.particle, eastWest ? start.x + rand.nextDouble() : start.x + 0.5, start.y + 1, eastWest ? start.z + 0.5 : start.z + rand.nextDouble(), 0, -0.25, 0, Block.getStateId(world.getBlockState(message.hitBlock)));
+                        }
+                        break;
+                    }
+                    case HIT_EFFECT: {
+                        for (int i = 0; i < message.amount; i++) {
+                            world.spawnParticle(message.particle, true, message.x, message.y, message.z, rand.nextDouble() / 5, rand.nextDouble() / 5, rand.nextDouble() / 5, message.additional);
+                        }
+                        break;
+                    }
+                }
+            });
             return null;
         }
     }

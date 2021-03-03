@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketDisplayLootSetupGui implements IMessage {
 
@@ -31,16 +33,15 @@ public class PacketDisplayLootSetupGui implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketDisplayLootSetupGui, IMessage> {
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketDisplayLootSetupGui message, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                Minecraft mc = Minecraft.getMinecraft();
-                mc.addScheduledTask(() -> {
-                    IWorldData data = mc.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
-                    data.deserializeNBT(message.nbt);
-                    mc.displayGuiScreen(new GuiLootSetup(data));
-                });
-            }
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
+                IWorldData data = mc.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
+                data.deserializeNBT(message.nbt);
+                mc.displayGuiScreen(new GuiLootSetup(data));
+            });
             return null;
         }
     }

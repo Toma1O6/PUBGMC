@@ -19,20 +19,17 @@ import dev.toma.pubgmc.network.sp.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -42,7 +39,6 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -64,10 +60,9 @@ public class CommonEvents {
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
         switch (result.status) {
             case AHEAD: {
-                sendMessage(player, "[PUBGMC] It appears you're using unofficial version, expect bugs ;)", TextFormatting.AQUA);
+                sendMessage(player, "[PUBGMC] It appears you're using early access version, bugs might occur. Report them please", TextFormatting.LIGHT_PURPLE);
                 break;
             }
-
             case UP_TO_DATE: {
                 sendMessage(player, "You have the newest version of PUBGMC!", TextFormatting.GREEN);
                 TextComponentString discordNotification = new TextComponentString(TextFormatting.GREEN + "Join my official " + TextFormatting.AQUA + "DISCORD" + TextFormatting.GREEN + ". Click HERE");
@@ -76,21 +71,11 @@ public class CommonEvents {
                 break;
             }
 
-            case FAILED: {
-                sendMessage(player, "[PUBGMC] Update check failed! Check your internet connection", TextFormatting.RED);
-                break;
-            }
-
-            case OUTDATED: {
+            case OUTDATED: case BETA_OUTDATED: {
                 sendMessage(player, "[PUBGMC] You are using old version! Get a new one.", TextFormatting.YELLOW);
                 TextComponentString comp = new TextComponentString(TextFormatting.YELLOW + "New version is available! You can get it " + TextFormatting.ITALIC + "HERE");
                 comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files")));
                 player.sendMessage(comp);
-                break;
-            }
-
-            case PENDING: {
-                sendMessage(player, "[PUBGMC] Unable to check new version, check took too long!", TextFormatting.BLUE);
                 break;
             }
 

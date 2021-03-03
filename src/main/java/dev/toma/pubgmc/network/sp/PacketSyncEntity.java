@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketSyncEntity implements IMessage {
 
@@ -38,17 +40,16 @@ public class PacketSyncEntity implements IMessage {
 
     public static class Handler implements IMessageHandler<PacketSyncEntity, IMessage> {
 
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketSyncEntity message, MessageContext ctx) {
-            if(ctx.side.isClient()) {
-                Minecraft.getMinecraft().addScheduledTask(() -> {
-                    WorldClient client = Minecraft.getMinecraft().world;
-                    Entity entity = client.getEntityByID(message.entityID);
-                    if(entity != null) {
-                        entity.readFromNBT(message.nbt);
-                    }
-                });
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                WorldClient client = Minecraft.getMinecraft().world;
+                Entity entity = client.getEntityByID(message.entityID);
+                if(entity != null) {
+                    entity.readFromNBT(message.nbt);
+                }
+            });
             return null;
         }
     }

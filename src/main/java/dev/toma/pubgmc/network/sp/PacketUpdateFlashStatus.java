@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketUpdateFlashStatus implements IMessage {
 
@@ -30,11 +32,10 @@ public class PacketUpdateFlashStatus implements IMessage {
 
     public static class Handler implements IMessageHandler<PacketUpdateFlashStatus, IMessage> {
 
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketUpdateFlashStatus message, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                Minecraft.getMinecraft().addScheduledTask(() -> FlashHandler.ClientHandler.update(message.blind));
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> FlashHandler.ClientHandler.update(message.blind));
             return null;
         }
     }

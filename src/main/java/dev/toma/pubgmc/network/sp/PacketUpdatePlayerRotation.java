@@ -6,6 +6,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketUpdatePlayerRotation implements IMessage {
     float rotYaw;
@@ -29,14 +31,15 @@ public class PacketUpdatePlayerRotation implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<PacketUpdatePlayerRotation, IMessage> {
+
+        @SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(PacketUpdatePlayerRotation message, MessageContext ctx) {
-            if (ctx.side.isClient()) {
-                Minecraft.getMinecraft().addScheduledTask(() -> {
-                    EntityPlayerSP player = Minecraft.getMinecraft().player;
-                    player.rotationYaw = message.rotYaw;
-                });
-            }
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
+                EntityPlayerSP player = mc.player;
+                player.rotationYaw = message.rotYaw;
+            });
             return null;
         }
     }
