@@ -202,7 +202,7 @@ public class GunBase extends PMCItem implements MainHandOnly {
             for (AttachmentType<?> type : AttachmentType.allTypes) {
                 ItemAttachment attachment = getAttachment(type, stack);
                 if(attachment != null) {
-                    tooltip.add(type.getName() + ": " + I18n.format(attachment.getUnlocalizedName() + ".name"));
+                    tooltip.add(type.getName() + ": " + TextFormatting.AQUA + I18n.format(attachment.getUnlocalizedName() + ".name"));
                 }
             }
         } else {
