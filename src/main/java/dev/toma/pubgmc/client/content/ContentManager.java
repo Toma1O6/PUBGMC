@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ContentManager {
 
-    private static final Logger log = LogManager.getLogger("Content");
+    protected static final Logger log = LogManager.getLogger("Content");
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(ContentResult.class, new ContentResult.Deserializer())
             .registerTypeAdapter(MenuDisplayContent.class, new MenuDisplayContent.Deserializer())

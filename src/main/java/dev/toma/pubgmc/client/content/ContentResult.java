@@ -23,9 +23,10 @@ public class ContentResult {
     }
 
     public void updateModifiable(ContentResult other) {
-        this.changed = this.menuDisplayContents.length != other.menuDisplayContents.length || !Arrays.equals(news, other.news);
+        this.changed = this.menuDisplayContents.length != other.menuDisplayContents.length || !Arrays.equals(news, other.news) || !Arrays.equals(vipPatrons, other.vipPatrons);
         this.menuDisplayContents = other.menuDisplayContents;
         this.news = other.news;
+        this.vipPatrons = other.vipPatrons;
         Minecraft mc = Minecraft.getMinecraft();
         if(changed && mc.currentScreen instanceof RefreshListener) {
             synchronized (Minecraft.getMinecraft()) {
@@ -62,7 +63,11 @@ public class ContentResult {
             JsonArray vipPatronArray = JsonUtils.getJsonArray(object, "vips");
             List<MenuDisplayContent> menuDisplayContentList = new ArrayList<>();
             for (JsonElement element : displayArray) {
-                menuDisplayContentList.add(context.deserialize(element, MenuDisplayContent.class));
+                try {
+                    menuDisplayContentList.add(context.deserialize(element, MenuDisplayContent.class));
+                } catch (JsonParseException ex) {
+                    ContentManager.log.error("Skipping event loading: {}", ex.getMessage());
+                }
             }
             List<String> stringList = new ArrayList<>();
             for (JsonElement element : newsArray) {

@@ -219,7 +219,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
     public static class EventPanelComponent extends Widget implements ITickable {
 
         final GuiMenu parent;
-        final int count;
+        int count;
         short timer = 100;
         int currentMsg = 0;
         private final List<Widget> msgComponents = new ArrayList<>();
@@ -229,14 +229,16 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             super(x, y, width, height);
             this.parent = parent;
             this.count = getMessageCount();
-            if (count > 0) {
-                Optional<MenuDisplayContent[]> optional = allContent();
-                optional.ifPresent(arr -> {
-                    for (MenuDisplayContent mdc : arr) {
-                        msgComponents.add(mdc.createWidget(parent, x + 4, y + 15, width - 8, 40));
-                    }
-                });
+            if(Pubgmc.isOutdated()) {
+                msgComponents.add(new UpdatePromptWidget(parent, x + 4, y + 15, width - 8, 40));
+                ++count;
             }
+            Optional<MenuDisplayContent[]> optional = allContent();
+            optional.ifPresent(arr -> {
+                for (MenuDisplayContent mdc : arr) {
+                    msgComponents.add(mdc.createWidget(parent, x + 4, y + 15, width - 8, 40));
+                }
+            });
             updateChilds();
         }
 
@@ -244,6 +246,11 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         public boolean handleClicked(int mouseX, int mouseY, int mouseButton) {
             for (Widget component : msgComponents) {
                 if (component.handleClicked(mouseX, mouseY, mouseButton)) {
+                    return true;
+                }
+            }
+            for (Widget widget : children) {
+                if(widget.handleClicked(mouseX, mouseY, mouseButton)) {
                     return true;
                 }
             }
@@ -427,6 +434,34 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
             Minecraft.getMinecraft().displayGuiScreen(new GuiHallOfFame(parent));
+        }
+    }
+
+    static class UpdatePromptWidget extends Widget {
+
+        final GuiMenu parent;
+        static final String link = "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files";
+
+        public UpdatePromptWidget(GuiMenu parent, int x, int y, int w, int h) {
+            super(x, y, w, h);
+            this.parent = parent;
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            boolean hovered = isMouseOver(mouseX, mouseY);
+            drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.25F);
+            if(hovered) {
+                drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.2F);
+            }
+            FontRenderer renderer = mc.fontRenderer;
+            renderer.drawString(TextFormatting.YELLOW.toString() + TextFormatting.BOLD + "Update available", x + 3, y + 4, 0xffffff);
+            renderer.drawString("Click here to update", x + 3, y + 22, 0xffffff);
+        }
+
+        @Override
+        public void onClick(int mouseX, int mouseY, int button) {
+            parent.openWebLink(link);
         }
     }
 }
