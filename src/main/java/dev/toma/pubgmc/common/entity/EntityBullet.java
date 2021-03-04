@@ -114,8 +114,11 @@ public class EntityBullet extends Entity {
             BlockPos pos = rayTraceResult.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            if(block instanceof IBulletReaction && ((IBulletReaction) block).canReceiveFeedBack(world, rayTraceResult.getBlockPos(), state)) {
-                ((IBulletReaction) block).onHit(this, rayTraceResult.hitVec);
+            if(block instanceof IBulletReaction) {
+                IBulletReaction reaction = (IBulletReaction) block;
+                if(reaction.allowBulletInteraction(world, pos, state)) {
+                    reaction.onHit(this, rayTraceResult.hitVec, pos);
+                }
             }
             boolean griefingFlag = world.getGameRules().getBoolean("weaponGriefing");
             boolean canBePenetrated = false;

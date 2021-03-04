@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 public interface IBulletReaction {
 
-    void onHit(EntityBullet bullet, Vec3d hit);
+    void onHit(EntityBullet bullet, Vec3d hit, BlockPos pos);
 
-    boolean canReceiveFeedBack(World world, BlockPos pos, IBlockState state);
+    boolean allowBulletInteraction(World world, BlockPos pos, IBlockState state);
 }

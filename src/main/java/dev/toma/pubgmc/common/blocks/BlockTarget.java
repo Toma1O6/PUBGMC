@@ -31,10 +31,10 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
     }
 
     @Override
-    public void onHit(EntityBullet bullet, Vec3d hit) {
+    public void onHit(EntityBullet bullet, Vec3d hit, BlockPos pos) {
         if(bullet.getShooter() != null && bullet.getShooter() instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) bullet.getShooter();
-            IBlockState state = bullet.world.getBlockState(new BlockPos(hit));
+            IBlockState state = bullet.world.getBlockState(pos);
             double delta = hit.y - (int) hit.y;
             boolean headShot = state.getBlock() == PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
             player.sendStatusMessage(new TextComponentString(headShot ? TextFormatting.RED + "Headshot! Damage: " + bullet.getDamage() * 2.5 : "Damage: " + bullet.getDamage()), true);
@@ -42,7 +42,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
     }
 
     @Override
-    public boolean canReceiveFeedBack(World world, BlockPos pos, IBlockState state) {
+    public boolean allowBulletInteraction(World world, BlockPos pos, IBlockState state) {
         return state.getValue(FEEDBACK);
     }
 
