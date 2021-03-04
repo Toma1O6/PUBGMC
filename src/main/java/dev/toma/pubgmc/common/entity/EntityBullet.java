@@ -43,14 +43,12 @@ import java.util.List;
 
 public class EntityBullet extends Entity {
     private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
-    private int shooterId;
     private EntityLivingBase shooter;
     private int gravitystart;
     private double velocity;
     private double gravity;
     private float damage;
     private GunBase.GunType type;
-    private int survivalTime;
     private ItemStack stack;
     private RayTraceResult entityRaytrace;
 
@@ -64,7 +62,6 @@ public class EntityBullet extends Entity {
         this(worldIn);
         this.setSize(0.1f, 0.1f);
         this.noClip = true;
-        this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
         CFGWeapon cfg = gun.getConfigurableStats();
         gravitystart = cfg.gravityEffectStart.get();
@@ -72,7 +69,6 @@ public class EntityBullet extends Entity {
         velocity = cfg.velocity.getAsFloat();
         damage = cfg.damage.getAsFloat();
         type = gun.getGunType();
-        survivalTime = (int) velocity + 3;
         stack = new ItemStack(gun);
 
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));

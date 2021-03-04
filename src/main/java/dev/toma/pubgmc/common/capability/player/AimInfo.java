@@ -45,7 +45,7 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
     }
 
     public void setAiming(boolean aim, float aimSpeed) {
-        if(aiming) {
+        if(aim) {
             slot = data.getPlayer().inventory.currentItem;
         }
         this.aiming = aim;

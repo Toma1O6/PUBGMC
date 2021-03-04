@@ -49,6 +49,7 @@ public class PlayerData implements IPlayerData {
     @Override
     public void tick() {
         boostStats.onTick(player);
+        aimInfo.onTick();
     }
 
     @Override
