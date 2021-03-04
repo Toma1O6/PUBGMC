@@ -4,6 +4,7 @@ import dev.toma.configuration.api.Config;
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
 import dev.toma.configuration.api.client.ClientHandles;
+import dev.toma.configuration.api.type.ObjectType;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.client.CFGOtherSettings;
 import dev.toma.pubgmc.config.client.CFGOverlaySettings;
@@ -12,6 +13,7 @@ import dev.toma.pubgmc.config.common.CFGVehicles;
 import dev.toma.pubgmc.config.common.CFGWeapons;
 import dev.toma.pubgmc.config.common.CFGWorld;
 import dev.toma.pubgmc.config.common.CommonConfig;
+import dev.toma.pubgmc.config.type.PMCConfigCreator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,6 +43,13 @@ public class ConfigPMC implements ConfigPlugin {
     @Override
     public ClientHandles getClientHandles() {
         return PMCClientHandles.PMC_HANDLES;
+    }
+
+    @Override
+    public ConfigCreator builder(ObjectType configObject) {
+        PMCConfigCreator configCreator = new PMCConfigCreator();
+        configCreator.assignTo(configObject);
+        return configCreator;
     }
 
     @SideOnly(Side.CLIENT)

@@ -5,6 +5,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
+import dev.toma.pubgmc.client.renderer.WeaponRenderer;
 import dev.toma.pubgmc.client.renderer.entity.*;
 import dev.toma.pubgmc.client.renderer.throwable.RenderThrowable;
 import dev.toma.pubgmc.client.renderer.tileentity.LootSpawnerRenderer;
@@ -22,6 +23,7 @@ import dev.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -38,6 +40,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -78,6 +81,13 @@ public class ClientProxy extends Proxy {
 
     @SideOnly(Side.CLIENT)
     public void postInit(FMLPostInitializationEvent e) {
+        // TODO call once weapons use new system
+        /*
+        ForgeRegistries.ITEMS.getValuesCollection().stream()
+                .filter(it -> it instanceof GunBase)
+                .map(it -> (WeaponRenderer) it.getTileEntityItemStackRenderer())
+                .forEach(WeaponRenderer::registerAttachmentRenders);
+        */
     }
 
     @Override

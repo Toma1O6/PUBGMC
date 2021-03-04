@@ -39,6 +39,7 @@ jar {
     manifest {
         attributes 'FMLCorePlugin': 'dev.toma.pubgmc.asm.PMCPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'FMLAT': 'pubgmc_at.cfg'
     }
 }
 
@@ -54,4 +55,5 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }

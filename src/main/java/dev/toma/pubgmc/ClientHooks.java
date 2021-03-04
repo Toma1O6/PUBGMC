@@ -10,12 +10,15 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class ClientHooks {
+
+    private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.FIXED;
 
     public static void model_setupModelAngles(ModelBiped model, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();
@@ -91,5 +94,14 @@ public class ClientHooks {
 
     public static void player_constructRender(RenderPlayer renderPlayer, RenderManager manager, boolean useSmallArms) {
         renderPlayer.addLayer(new LayerGhillie(renderPlayer));
+    }
+
+    // TODO inject into ItemRenderer#renderItemSide
+    public static void preRenderItem(ItemCameraTransforms.TransformType renderingType) {
+         transformType = renderingType;
+    }
+
+    public static ItemCameraTransforms.TransformType getTransformType() {
+        return transformType;
     }
 }

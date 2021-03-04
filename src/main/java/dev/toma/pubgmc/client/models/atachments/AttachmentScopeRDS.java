@@ -1,10 +1,18 @@
 package dev.toma.pubgmc.client.models.atachments;
 
 import dev.toma.pubgmc.client.models.ModelAtachmentBase;
+import dev.toma.pubgmc.client.models.renderer.ExtendedModelBox;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.client.CFGReticles;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.ResourceLocation;
 
 public class AttachmentScopeRDS extends ModelAtachmentBase {
+
 	private final ModelRenderer bone;
 	private final ModelRenderer bone2;
 	private final ModelRenderer bone3;
@@ -15,6 +23,7 @@ public class AttachmentScopeRDS extends ModelAtachmentBase {
 	private final ModelRenderer bone8;
 	private final ModelRenderer bone9;
 	private final ModelRenderer bone10;
+	private final ModelRenderer reticle;
 
 	public AttachmentScopeRDS() {
 		textureWidth = 128;
@@ -39,32 +48,32 @@ public class AttachmentScopeRDS extends ModelAtachmentBase {
 
 		bone2 = new ModelRenderer(this);
 		bone2.setRotationPoint(9.5F, -2.0F, -4.5F);
-		setRotationAngle(bone2, 0.0F, -0.4363F, 0.0F);
 		bone.addChild(bone2);
+		setRotationAngle(bone2, 0.0F, -0.4363F, 0.0F);
 		bone2.cubeList.add(new ModelBox(bone2, 72, 72, -3.4153F, -1.9994F, -0.3029F, 1, 4, 3, 0.0F, false));
 
 		bone3 = new ModelRenderer(this);
 		bone3.setRotationPoint(-9.5F, -2.0F, -4.5F);
-		setRotationAngle(bone3, 0.0F, 0.4363F, 0.0F);
 		bone.addChild(bone3);
+		setRotationAngle(bone3, 0.0F, 0.4363F, 0.0F);
 		bone3.cubeList.add(new ModelBox(bone3, 72, 72, 2.4778F, -1.9994F, -0.7255F, 1, 4, 3, 0.0F, true));
 
 		bone4 = new ModelRenderer(this);
 		bone4.setRotationPoint(0.0F, -6.5F, 3.0F);
-		setRotationAngle(bone4, 0.1745F, 0.0F, 0.0F);
 		bone.addChild(bone4);
+		setRotationAngle(bone4, 0.1745F, 0.0F, 0.0F);
 		bone4.cubeList.add(new ModelBox(bone4, 72, 72, -6.5156F, 1.8245F, -4.2909F, 13, 1, 6, 0.0F, false));
 
 		bone5 = new ModelRenderer(this);
 		bone5.setRotationPoint(0.0F, -6.5F, 3.0F);
-		setRotationAngle(bone5, -0.6109F, 0.0F, 0.0F);
 		bone.addChild(bone5);
+		setRotationAngle(bone5, -0.6109F, 0.0F, 0.0F);
 		bone5.cubeList.add(new ModelBox(bone5, 72, 72, -7.5156F, 11.8811F, -16.0962F, 15, 2, 4, 0.0F, false));
 
 		bone6 = new ModelRenderer(this);
 		bone6.setRotationPoint(-15.0F, 0.0F, -10.0F);
-		setRotationAngle(bone6, 0.0F, -0.7854F, 0.0F);
 		bone.addChild(bone6);
+		setRotationAngle(bone6, 0.0F, -0.7854F, 0.0F);
 		bone6.cubeList.add(new ModelBox(bone6, 65, 67, 8.5349F, -6.0F, -22.2628F, 1, 6, 1, 0.0F, false));
 		bone6.cubeList.add(new ModelBox(bone6, 65, 67, 8.1207F, -6.0F, -22.2628F, 1, 6, 1, 0.0F, false));
 		bone6.cubeList.add(new ModelBox(bone6, 65, 67, -1.0717F, -6.0F, -13.0704F, 1, 6, 1, 0.0F, false));
@@ -72,22 +81,22 @@ public class AttachmentScopeRDS extends ModelAtachmentBase {
 
 		bone7 = new ModelRenderer(this);
 		bone7.setRotationPoint(6.9844F, -7.0F, -18.0F);
-		setRotationAngle(bone7, 0.0F, 0.0F, 0.2618F);
 		bone.addChild(bone7);
+		setRotationAngle(bone7, 0.0F, 0.0F, 0.2618F);
 		bone7.cubeList.add(new ModelBox(bone7, 65, 67, -0.2582F, -3.1635F, -2.0F, 1, 8, 3, 0.0F, false));
 		bone7.cubeList.add(new ModelBox(bone7, 65, 67, -16.7522F, -6.6171F, -2.0F, 1, 4, 3, 0.0F, false));
 
 		bone8 = new ModelRenderer(this);
 		bone8.setRotationPoint(-6.9844F, -7.0F, -18.0F);
-		setRotationAngle(bone8, 0.0F, 0.0F, -0.2618F);
 		bone.addChild(bone8);
+		setRotationAngle(bone8, 0.0F, 0.0F, -0.2618F);
 		bone8.cubeList.add(new ModelBox(bone8, 65, 67, -0.7418F, -3.1635F, -2.0F, 1, 8, 3, 0.0F, true));
 		bone8.cubeList.add(new ModelBox(bone8, 65, 67, 15.7522F, -6.6171F, -2.0F, 1, 4, 3, 0.0F, true));
 
 		bone9 = new ModelRenderer(this);
 		bone9.setRotationPoint(0.7813F, -2.6875F, 4.7188F);
-		setRotationAngle(bone9, 0.0F, 0.0F, 0.5236F);
 		bone.addChild(bone9);
+		setRotationAngle(bone9, 0.0F, 0.0F, 0.5236F);
 		bone9.cubeList.add(new ModelBox(bone9, 67, 68, 3.9074F, -5.1333F, 5.5F, 2, 4, 2, 0.0F, false));
 		bone9.cubeList.add(new ModelBox(bone9, 67, 68, 3.9074F, -5.1333F, 1.5F, 2, 4, 2, 0.0F, false));
 		bone9.cubeList.add(new ModelBox(bone9, 79, 102, 3.9074F, -6.1333F, 1.0F, 2, 1, 3, 0.0F, false));
@@ -97,14 +106,31 @@ public class AttachmentScopeRDS extends ModelAtachmentBase {
 
 		bone10 = new ModelRenderer(this);
 		bone10.setRotationPoint(0.0F, -3.5625F, 5.3594F);
-		setRotationAngle(bone10, -0.4363F, 0.0F, 0.0F);
 		bone.addChild(bone10);
+		setRotationAngle(bone10, -0.4363F, 0.0F, 0.0F);
 		bone10.cubeList.add(new ModelBox(bone10, 67, 68, -3.0F, -1.5F, -3.5F, 6, 3, 7, 0.0F, false));
+
+		reticle = new ModelRenderer(this);
+		reticle.setRotationPoint(0.0F, 24.5F, 0.5F);
+		reticle.cubeList.add(new ExtendedModelBox(reticle, -4.5156F, -16.7274F, -19.0F, 9, 9, 0, 0.0F));
 	}
 
 	@Override
 	public void render() {
-		bone.render(1f);
+		bone.render(1.0F);
+		Minecraft mc = Minecraft.getMinecraft();
+		CFGReticles reticles = ConfigPMC.client.reticles;
+		ResourceLocation reticleStyle = reticles.redDotVariants.get().getResource();
+		int reticleColor = reticles.redDotColor.getColor();
+		float a = ((reticleColor >> 24) & 255) / 255F;
+		float r = ((reticleColor >> 16) & 255) / 255F;
+		float g = ((reticleColor >> 8) & 255) / 255F;
+		float b = (reticleColor & 255) / 255F;
+		mc.getTextureManager().bindTexture(reticleStyle);
+		GlStateManager.color(r, g, b, a);
+		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+		reticle.render(1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

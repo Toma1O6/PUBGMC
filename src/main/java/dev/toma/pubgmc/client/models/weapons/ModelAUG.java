@@ -519,11 +519,11 @@ public class ModelAUG extends ModelGun {
         GlStateManager.popMatrix();
 
         renderARSilencer(-0.025, -1.525, 29, 1f, stack);
+        renderVerticalGrip(0, -5, 13, 0.6F, stack);
+        renderAngledGrip(0, 3, 13, 0.6F, stack);
         renderRedDot(0.05, 11.8, 9, 0.8F, stack);
         renderHolo(-0.1, 8, -1, 0.8F, stack);
         renderScope2X(0, 2, 0, 1f, stack);
         renderScope4X(0, 4, -2, 1f, stack);
-        renderVerticalGrip(0, -5, 13, 0.6F, stack);
-        renderAngledGrip(0, 3, 13, 0.6F, stack);
     }
 }
