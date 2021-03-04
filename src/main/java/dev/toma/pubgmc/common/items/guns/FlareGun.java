@@ -51,4 +51,14 @@ public class FlareGun extends GunBase {
     public SoundEvent getWeaponReloadSound() {
         return PMCSounds.reload_flare;
     }
+
+    @Override
+    public float getVerticalRecoil() {
+        return 0.6F;
+    }
+
+    @Override
+    public float getHorizontalRecoil() {
+        return 0.6F;
+    }
 }
