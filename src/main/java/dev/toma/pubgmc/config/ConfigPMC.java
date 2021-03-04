@@ -3,6 +3,7 @@ package dev.toma.pubgmc.config;
 import dev.toma.configuration.api.Config;
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
+import dev.toma.configuration.api.client.ClientHandles;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.client.CFGOtherSettings;
 import dev.toma.pubgmc.config.client.CFGOverlaySettings;
@@ -34,6 +35,12 @@ public class ConfigPMC implements ConfigPlugin {
     public void buildConfigStructure(ConfigCreator builder) {
         client = builder.createObject(new ClientConfig(this), this);
         common = builder.createObject(new CommonConfig(this), this);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public ClientHandles getClientHandles() {
+        return PMCClientHandles.PMC_HANDLES;
     }
 
     @SideOnly(Side.CLIENT)

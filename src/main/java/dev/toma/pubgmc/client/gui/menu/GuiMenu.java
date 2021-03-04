@@ -31,7 +31,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
     static final ResourceLocation PATREON_ICON = Pubgmc.getResource("textures/gui/menu/patreon.png");
     static final ResourceLocation VIP_ICON = Pubgmc.getResource("textures/gui/menu/vip.png");
     static final ResourceLocation TITLE = Pubgmc.getResource("textures/gui/menu/title.png");
-    static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
+    public static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
     public String clickedUrl;
 
     @Override
