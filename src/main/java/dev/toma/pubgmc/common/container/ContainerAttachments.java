@@ -127,7 +127,8 @@ public class ContainerAttachments extends Container {
         public boolean isItemValid(ItemStack stack) {
             if(this.stack.getItem() instanceof GunBase && stack.getItem() instanceof ItemAttachment) {
                 GunAttachments attachments = ((GunBase) this.stack.getItem()).getAttachments();
-                return attachments.supports((ItemAttachment) stack.getItem());
+                ItemAttachment attachment = (ItemAttachment) stack.getItem();
+                return attachment.getType() == this.type && attachments.supports((ItemAttachment) stack.getItem());
             }
             return false;
         }
