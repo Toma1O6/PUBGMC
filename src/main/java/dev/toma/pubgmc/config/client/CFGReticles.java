@@ -12,6 +12,7 @@ public class CFGReticles extends ObjectType {
     public ColorType redDotColor;
     public ColorType holographicColor;
     public TextureType redDotVariants;
+    public TextureType holographicVariants;
 
     public CFGReticles() {
         super("Reticles", "Configure your reticles here");
@@ -27,5 +28,11 @@ public class CFGReticles extends ObjectType {
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/red_dot_chevron.png"), "Chevron"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/red_dot_cross.png"), "Cross")
         }, () -> redDotColor.getColor());
+        holographicVariants = creator.createTextureArray("Holographic variant", 0, new TextureType.Entry[] {
+                new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_normal.png"), "EOTech"),
+                new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_large.png"), "EOTech Large"),
+                new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_vortex.png"), "Vortex"),
+                new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_holosun.png"), "Holosun"),
+        }, () -> holographicColor.getColor());
     }
 }
