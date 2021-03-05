@@ -1,10 +1,10 @@
 package dev.toma.pubgmc.client.models.atachments;
 
-import dev.toma.pubgmc.client.models.ModelAtachmentBase;
+import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
-public class AttachmentGripVertical extends ModelAtachmentBase {
+public class ModelVerticalGrip extends ModelAttachment<ItemGrip> {
 
 	private final ModelRenderer gripsegment1;
 	private final ModelRenderer grip3;
@@ -15,7 +15,7 @@ public class AttachmentGripVertical extends ModelAtachmentBase {
 	private final ModelRenderer grip7;
 	private final ModelRenderer gripsegment2;
 
-	public AttachmentGripVertical() {
+	public ModelVerticalGrip() {
 		textureWidth = 128;
 		textureHeight = 128;
 

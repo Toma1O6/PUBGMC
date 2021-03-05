@@ -1,10 +1,10 @@
 package dev.toma.pubgmc.client.models.atachments;
 
-import dev.toma.pubgmc.client.models.ModelAtachmentBase;
+import dev.toma.pubgmc.common.items.attachment.ItemScope;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
-public class AttachmentScope2x extends ModelAtachmentBase {
+public class ModelScope2x extends ModelAttachment<ItemScope> {
 
 	private final ModelRenderer bone;
 	private final ModelRenderer bone2;
@@ -36,7 +36,7 @@ public class AttachmentScope2x extends ModelAtachmentBase {
 	private final ModelRenderer bone28;
 	private final ModelRenderer bone29;
 
-	public AttachmentScope2x() {
+	public ModelScope2x() {
 		textureWidth = 128;
 		textureHeight = 128;
 

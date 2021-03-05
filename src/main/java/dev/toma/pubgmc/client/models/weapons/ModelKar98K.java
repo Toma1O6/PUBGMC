@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -10,6 +9,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelKar98K extends ModelGun {
@@ -56,7 +56,7 @@ public class ModelKar98K extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -77,13 +77,13 @@ public class ModelKar98K extends ModelGun {
         kar98k.render(1f);
         GlStateManager.popMatrix();
 
-        renderSniperSilencer(0.225, 1.725, 16.825, 1f, stack);
+        /*renderSniperSilencer(0.225, 1.725, 16.825, 1f, stack);
         renderRedDot(-0.1, 6.45, -35, 0.8f, stack);
         renderHolo(-0.1, 4, -18, 0.87f, stack);
         renderScope2X(-0.175, 4, -23, 0.9f, stack);
         renderScope4X(0, 9, -40, 0.8f, stack);
         renderScope8X(0, 10, -15, 0.7f, stack);
-        renderScope15X(0.15, 17.075, -9, 0.64f, stack);
+        renderScope15X(0.15, 17.075, -9, 0.64f, stack);*/
     }
 
     public ModelKar98K() {

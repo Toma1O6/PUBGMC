@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -9,6 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelSKS extends ModelGun {
@@ -90,7 +90,7 @@ public class ModelSKS extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -111,7 +111,8 @@ public class ModelSKS extends ModelGun {
         magazine.render(1f);
         if(!hasScopeAtachment(stack)) ironsights.render(1f);
         GlStateManager.popMatrix();
-        renderSniperSilencer(-0.1, -10, 24, 1.3F, stack);
+
+        /*renderSniperSilencer(-0.1, -10, 24, 1.3F, stack);
         renderRedDot(0, 9.7, 2.0, 0.8F, stack);
         renderHolo(-0.075, 18.0, -2, 0.6F, stack);
         renderScope2X(0, 5, 0, 0.9f, stack);
@@ -119,7 +120,7 @@ public class ModelSKS extends ModelGun {
         renderScope8X(0, 9, 6, 0.8f, stack);
         renderScope15X(0, 16.7, 12, 0.67F, stack);
         renderVerticalGrip(0, -3.075, 16, 0.8F, stack);
-        renderAngledGrip(0, -1, 20, 0.8F, stack);
+        renderAngledGrip(0, -1, 20, 0.8F, stack);*/
     }
 
     public ModelSKS() {

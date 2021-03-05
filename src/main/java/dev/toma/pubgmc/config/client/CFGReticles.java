@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.config.client;
 
 import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.ColorType;
 import dev.toma.configuration.api.type.ObjectType;
 import dev.toma.pubgmc.Pubgmc;
@@ -13,6 +14,7 @@ public class CFGReticles extends ObjectType {
     public ColorType holographicColor;
     public TextureType redDotVariants;
     public TextureType holographicVariants;
+    public BooleanType glowingReticles;
 
     public CFGReticles() {
         super("Reticles", "Configure your reticles here");
@@ -21,6 +23,7 @@ public class CFGReticles extends ObjectType {
     @Override
     public void buildStructure(ConfigCreator configCreator) {
         PMCConfigCreator creator = (PMCConfigCreator) configCreator;
+        glowingReticles = creator.createBoolean("Glowing reticles", true, "Reticles will be rendered with full brightness");
         redDotColor = creator.createColorARGB("Red dot color", "#FFFF0000", "Manages color of red dot reticle");
         holographicColor = creator.createColorARGB("Holographic color", "#FFFF0000", "Manages color of holographic reticle");
         redDotVariants = creator.createTextureArray("Red dot variant", 0, new TextureType.Entry[] {

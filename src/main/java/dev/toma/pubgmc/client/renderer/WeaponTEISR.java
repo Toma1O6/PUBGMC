@@ -2,8 +2,7 @@ package dev.toma.pubgmc.client.renderer;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.ClientEvents;
-import dev.toma.pubgmc.client.models.ModelGun;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.client.models.weapons.*;
@@ -64,7 +63,7 @@ public class WeaponTEISR extends TileEntityItemStackRenderer {
         ModelGun gun = ((GunBase) stack.getItem()).getWeaponModel();
         this.bindTexture(gun.textureName());
         if(flag0 && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) this.applyRecoilAnimation(player);
-        gun.render(stack);
+        gun.render(stack, null);
     }
 
     private void applyRecoilAnimation(EntityPlayer player) {

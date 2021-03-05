@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -11,6 +10,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelAUG extends ModelGun {
@@ -496,7 +496,7 @@ public class ModelAUG extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         IPlayerData data = PlayerData.get(player);
         if (data != null) {
@@ -517,7 +517,7 @@ public class ModelAUG extends ModelGun {
         magazine.render(1f);
         if (!hasScopeAtachment(stack)) ironsights.render(1f);
         GlStateManager.popMatrix();
-
+        /*
         renderARSilencer(-0.025, -1.525, 29, 1f, stack);
         renderVerticalGrip(0, -5, 13, 0.6F, stack);
         renderAngledGrip(0, 3, 13, 0.6F, stack);
@@ -525,5 +525,6 @@ public class ModelAUG extends ModelGun {
         renderHolo(-0.1, 8, -1, 0.8F, stack);
         renderScope2X(0, 2, 0, 1f, stack);
         renderScope4X(0, 4, -2, 1f, stack);
+        */
     }
 }

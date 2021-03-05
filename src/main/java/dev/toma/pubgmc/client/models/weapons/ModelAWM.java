@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -11,6 +10,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelAWM extends ModelGun {
@@ -76,7 +76,7 @@ public class ModelAWM extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         IPlayerData data = PlayerData.get(player);
         if (data != null) {
@@ -101,6 +101,7 @@ public class ModelAWM extends ModelGun {
         awm.render(1f);
         GlStateManager.popMatrix();
 
+        /*
         renderSniperSilencer(0, 0, 0, 1f, stack);
         renderRedDot(0, -1.15, -10, 1f, stack);
         renderHolo(0, -0.65, -7, 1f, stack);
@@ -108,6 +109,7 @@ public class ModelAWM extends ModelGun {
         renderScope4X(0, -1, -8, 1f, stack);
         renderScope8X(0, 0, 0, 1f, stack);
         renderScope15X(0, 0, 0, 1f, stack);
+        */
     }
 
     public ModelAWM() {

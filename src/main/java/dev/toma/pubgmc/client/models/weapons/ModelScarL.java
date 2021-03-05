@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
@@ -10,6 +9,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelScarL extends ModelGun {
@@ -75,7 +75,7 @@ public class ModelScarL extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -99,13 +99,13 @@ public class ModelScarL extends ModelGun {
         ironsights.offsetY = hasScopeAtachment(stack) ? 7.5f : 0;
         GlStateManager.popMatrix();
 
-        renderRedDot(0, 6.4, -3, 1f, stack);
+        /*renderRedDot(0, 6.4, -3, 1f, stack);
         renderHolo(0, 2, -2, 1f, stack);
         renderScope2X(0, 3, 0, 1f, stack);
         renderScope4X(0, 4.9, -8, 1f, stack);
         renderARSilencer(0, -7.35, 0, 1.2f, stack);
         renderVerticalGrip(0, 0, 0, 1, stack);
-        renderAngledGrip(0, 0, 0, 1, stack);
+        renderAngledGrip(0, 0, 0, 1, stack);*/
     }
 
     public ModelScarL() {

@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.models;
 
 import dev.toma.pubgmc.animation.Animation;
-import dev.toma.pubgmc.client.util.ModelHelper;
+import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -126,14 +126,6 @@ public class BakedModelGun implements IBakedModel {
         }
 
         return Pair.of(this, trsrt.getMatrix());
-    }
-
-    private Quat4f debugQuat0(float x, float y, float z) {
-        return new Quat4f(x, y, z, 0f);
-    }
-
-    private Quat4f debugQuat1() {
-        return new Quat4f(ModelHelper.x, ModelHelper.y, ModelHelper.z, 0f);
     }
 
     private void process(ItemStack held, IPlayerData data) {

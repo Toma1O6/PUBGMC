@@ -34,7 +34,7 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void onModelAttach(GunModelAttachEvent e) {
         GunBase g = e.getGun();
-
+        /*
         switch (e.getName()) {
             case "flare_gun":
                 e.attachModel(e.getTEISR().flareGun);
@@ -156,7 +156,7 @@ public class ClientRegistry {
             case "awm":
                 e.attachModel(e.getTEISR().awm);
                 break;
-        }
+        }*/
     }
 
     @SubscribeEvent
@@ -178,7 +178,7 @@ public class ClientRegistry {
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 
         if (item instanceof GunBase) {
-            item.setTileEntityItemStackRenderer(TEISR);
+            //item.setTileEntityItemStackRenderer(TEISR);
             MinecraftForge.EVENT_BUS.post(new GunModelAttachEvent((GunBase) item, item.getRegistryName()));
         }
     }

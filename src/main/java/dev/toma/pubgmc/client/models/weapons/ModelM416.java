@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -10,6 +9,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelM416 extends ModelGun {
@@ -92,7 +92,7 @@ public class ModelM416 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
@@ -110,13 +110,14 @@ public class ModelM416 extends ModelGun {
         if(!hasScopeAtachment(stack)) GlStateManager.rotate(-0.8F, 1.0F, 0.0F, 0.0F);
         renderParts(hasScopeAtachment(stack));
         GlStateManager.popMatrix();
-        this.renderARSilencer(0.35, -4.9, 5, 1.1F, stack);
+
+        /*this.renderARSilencer(0.35, -4.9, 5, 1.1F, stack);
         this.renderRedDot(0.225, 1.925, 8, 1.0F, stack);
         this.renderHolo(0, 3.375, 0, 0.9F, stack);
         this.renderScope2X(0, 1, 2, 1.0F, stack);
         this.renderScope4X(0, 1.05, 1, 1.0F, stack);
         this.renderVerticalGrip(0, -3, 4, 1.0F, stack);
-        this.renderAngledGrip(0, -3, 5, 1.0F, stack);
+        this.renderAngledGrip(0, -3, 5, 1.0F, stack);*/
     }
 
     private void renderParts(boolean scope) {

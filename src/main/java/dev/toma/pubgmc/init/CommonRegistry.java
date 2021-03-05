@@ -4,6 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.games.GameBattleRoyale;
 import dev.toma.pubgmc.api.games.GameBombDefuse;
 import dev.toma.pubgmc.api.games.GameInactive;
+import dev.toma.pubgmc.client.renderer.item.RenderP92;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
 import dev.toma.pubgmc.common.blocks.*;
@@ -252,6 +253,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
+                        .renderer(() -> RenderP92::new)
                         .build(),
                 GunBuilder.create("p1911")
                         .stats(cfg.p1911)

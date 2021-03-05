@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
@@ -11,6 +10,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelBerylM762 extends ModelGun {
@@ -94,7 +94,7 @@ public class ModelBerylM762 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -121,13 +121,13 @@ public class ModelBerylM762 extends ModelGun {
         magazine.render(1f);
         GlStateManager.popMatrix();
 
-        renderARSilencer(0, -1.8, 6, 1F, stack);
+        /*renderARSilencer(0, -1.8, 6, 1F, stack);
         renderRedDot(0, 3.85, 19, 0.8F, stack);
         renderHolo(-0.1, 16, 7, 0.6F, stack);
         renderScope2X(0, 0, 7, 1F, stack);
         renderScope4X(0, 0, 10, 1F, stack);
         renderVerticalGrip(0, -4.975, 17, 0.8f, stack);
-        renderAngledGrip(0, 0, 22, 0.7F, stack);
+        renderAngledGrip(0, 0, 22, 0.7F, stack);*/
     }
 
     public ModelBerylM762() {

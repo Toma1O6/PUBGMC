@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -9,6 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelQBZ extends ModelGun {
@@ -58,7 +58,7 @@ public class ModelQBZ extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -78,13 +78,13 @@ public class ModelQBZ extends ModelGun {
         this.magazine.render(1f);
         if(!this.hasScopeAtachment(stack)) this.ironsights.render(1f);
         GlStateManager.popMatrix();
-        this.renderARSilencer(0.15, -11, 21, 1.2F, stack);
+        /*this.renderARSilencer(0.15, -11, 21, 1.2F, stack);
         this.renderRedDot(-0.05, 8, -8, 0.8F, stack);
         this.renderHolo(-0.05, 7, -6, 0.8F, stack);
         this.renderScope2X(0, 0.75, -4, 1.0F, stack);
         this.renderScope4X(0, 2, -8, 1.0F, stack);
         this.renderVerticalGrip(0, 0, 0, 0.8F, stack);
-        this.renderAngledGrip(0, 4, 11, 0.8F, stack);
+        this.renderAngledGrip(0, 4, 11, 0.8F, stack);*/
     }
 
     public ModelQBZ() {

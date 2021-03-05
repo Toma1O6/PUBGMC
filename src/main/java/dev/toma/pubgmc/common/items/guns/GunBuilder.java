@@ -1,16 +1,16 @@
 package dev.toma.pubgmc.common.items.guns;
 
 import com.google.common.base.Preconditions;
+import dev.toma.pubgmc.client.renderer.item.WeaponRenderer;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;
 import dev.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import dev.toma.pubgmc.config.common.CFGWeapon;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -40,6 +40,7 @@ public class GunBuilder {
     GunAttachments attachments;
     Supplier<SoundEvent> action;
     ScopeData customScope;
+    Supplier<Callable<WeaponRenderer>> renderer;
 
     private GunBuilder(String name, Function<GunBuilder, GunBase> buildFunc) {
         this.name = name;
@@ -146,6 +147,15 @@ public class GunBuilder {
     public GunBuilder setAttachments(GunAttachments attachments) {
         this.attachments = attachments;
         return this;
+    }
+
+    public GunBuilder renderer(Supplier<Callable<WeaponRenderer>> renderer) {
+        this.renderer = renderer;
+        return this;
+    }
+
+    public Supplier<Callable<WeaponRenderer>> getRenderer() {
+        return renderer;
     }
 
     public GunBase build() {

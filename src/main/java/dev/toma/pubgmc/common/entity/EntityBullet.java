@@ -202,7 +202,6 @@ public class EntityBullet extends Entity {
         if (raytraceresult != null && !ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
             this.onBulletCollided(raytraceresult);
         }
-
         move(MoverType.SELF, motionX, motionY, motionZ);
     }
 

@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.event;
 
-import dev.toma.pubgmc.client.models.ModelGun;
+import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.WeaponTEISR;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.util.ResourceLocation;

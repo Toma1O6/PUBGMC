@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -10,6 +9,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelGroza extends ModelGun {
@@ -94,7 +94,7 @@ public class ModelGroza extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -115,11 +115,12 @@ public class ModelGroza extends ModelGun {
         bone.render(1f);
         magazine.render(1f);
         GlStateManager.popMatrix();
-        renderARSilencer(0, 1, 45, 1f, stack);
+
+        /*renderARSilencer(0, 1, 45, 1f, stack);
         renderRedDot(0, -12, -29, 0.7F, stack);
         renderHolo(-0.125, 3, -14, 0.7F, stack);
         renderScope2X(0, -3, -15, 0.8F, stack);
-        renderScope4X(0, -5.05, -23, 0.8F, stack);
+        renderScope4X(0, -5.05, -23, 0.8F, stack);*/
     }
 
     public ModelGroza() {

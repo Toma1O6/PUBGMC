@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -10,6 +9,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelSLR extends ModelGun {
@@ -448,7 +448,7 @@ public class ModelSLR extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
@@ -464,12 +464,12 @@ public class ModelSLR extends ModelGun {
         ironsights.offsetY = hasScopeAtachment(stack) ? 6.5f : 0f;
         SLR.render(1f);
         GlStateManager.popMatrix();
-        renderRedDot(0, 14, 13, 1f, stack);
+        /*renderRedDot(0, 14, 13, 1f, stack);
         renderHolo(0, 4.5, 0, 1f, stack);
         renderScope2X(0, 7, 7, 1f, stack);
         renderScope4X(0, 9.35, 10, 1f, stack);
         renderScope8X(-0.15, 8, 14, 1f, stack);
         renderScope15X(0, 7, 12, 1f, stack);
-        renderSniperSilencer(0.1, -14.9, 13, 1.7f, stack);
+        renderSniperSilencer(0.1, -14.9, 13, 1.7f, stack);*/
     }
 }

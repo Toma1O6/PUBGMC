@@ -4,7 +4,6 @@ import dev.toma.pubgmc.animation.HeldAnimation;
 import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -12,6 +11,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelPP19Bizon extends ModelGun {
@@ -60,7 +60,7 @@ public class ModelPP19Bizon extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -85,11 +85,11 @@ public class ModelPP19Bizon extends ModelGun {
         }
         GlStateManager.popMatrix();
 
-        this.renderSMGSilencer(0, -9, -41, 1.2F, stack);
+        /*this.renderSMGSilencer(0, -9, -41, 1.2F, stack);
         this.renderRedDot(1.025, -0.725, 0, 1f, stack);
         this.renderHolo(0.275, -0.175, -2, 1f, stack);
         this.renderScope2X(0, 0, 0, 1.0F, stack);
-        this.renderScope4X(0, -5, -5, 1.2F, stack);
+        this.renderScope4X(0, -5, -5, 1.2F, stack);*/
     }
 
     public ModelPP19Bizon() {

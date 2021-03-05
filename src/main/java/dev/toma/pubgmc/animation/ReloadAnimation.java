@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.animation;
 
-import dev.toma.pubgmc.client.models.ModelGun;
+import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;

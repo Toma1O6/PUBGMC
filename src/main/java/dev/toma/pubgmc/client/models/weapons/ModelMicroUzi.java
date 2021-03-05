@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client.models.weapons;
 import dev.toma.pubgmc.animation.HeldAnimation;
 import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelMicroUzi extends ModelGun {
@@ -41,7 +41,7 @@ public class ModelMicroUzi extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -61,9 +61,9 @@ public class ModelMicroUzi extends ModelGun {
         magazine.render(1f);
         GlStateManager.popMatrix();
 
-        renderSMGSilencer(0, -6, 0, 1.2F, stack);
+        /*renderSMGSilencer(0, -6, 0, 1.2F, stack);
         renderRedDot(-0.05, -6.25, -10, 1.2F, stack);
-        renderHolo(-0.1, -2.475, -6, 1.1F, stack);
+        renderHolo(-0.1, -2.475, -6, 1.1F, stack);*/
     }
 
     public ModelMicroUzi() {

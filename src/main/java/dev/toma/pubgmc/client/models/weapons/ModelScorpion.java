@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client.models.weapons;
 import dev.toma.pubgmc.animation.HeldAnimation;
 import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelScorpion extends ModelGun {
@@ -65,7 +65,7 @@ public class ModelScorpion extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
@@ -86,9 +86,9 @@ public class ModelScorpion extends ModelGun {
         }
         GlStateManager.popMatrix();
 
-        renderRedDot(-0.075, -7, -8, 1.2f, stack);
+        /*renderRedDot(-0.075, -7, -8, 1.2f, stack);
         renderPistolSilencer(-1, 0, -7, 1f, stack);
-        renderVerticalGrip(0, -5.175, 8, 1f, stack);
+        renderVerticalGrip(0, -5.175, 8, 1f, stack);*/
     }
 
     private void renderParts() {

@@ -4,7 +4,6 @@ import dev.toma.pubgmc.animation.HeldAnimation;
 import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
@@ -13,6 +12,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelUmp45 extends ModelGun {
@@ -203,7 +203,7 @@ public class ModelUmp45 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -226,13 +226,13 @@ public class ModelUmp45 extends ModelGun {
         renderAll();
         GlStateManager.popMatrix();
 
-        renderSMGSilencer(0, 0, 0, 1f, stack);
+        /*renderSMGSilencer(0, 0, 0, 1f, stack);
         renderVerticalGrip(0, -13, 21, 0.7f, stack);
         renderAngledGrip(0, -8, 20, 0.8f, stack);
         renderRedDot(0, -5.95, 16, 1f, stack);
         renderHolo(-0.05, -0.05, 3, 0.9f, stack);
         renderScope2X(0, -3, 7, 1f, stack);
-        renderScope4X(0, -3.95, 5, 1f, stack);
+        renderScope4X(0, -3.95, 5, 1f, stack);*/
     }
 
     private void renderAll() {

@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.proxy;
 
+import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.common.items.guns.GunBuilder;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -24,4 +26,6 @@ public abstract class Proxy {
     public void playDelayedSound(SoundEvent event, double x, double y, double z, float volume) {
 
     }
+
+    public void initWeapon(GunBuilder builder, GunBase gunBase) {}
 }

@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.client.models.ModelGun;
+import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;

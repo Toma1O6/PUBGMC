@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client.models.weapons;
 import dev.toma.pubgmc.animation.HeldAnimation;
 import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelP92 extends ModelGun {
@@ -54,7 +54,7 @@ public class ModelP92 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -69,8 +69,9 @@ public class ModelP92 extends ModelGun {
 
         renderParts();
         GlStateManager.popMatrix();
-        renderRedDot(-8.36, 6.925, -25, 1.1f, stack);
-        renderPistolSilencer(2.075, -0.035, -4, 0.9f, stack);
+
+        /*renderRedDot(-8.36, 6.925, -25, 1.1f, stack);
+        renderPistolSilencer(2.075, -0.035, -4, 0.9f, stack);*/
     }
 
     private void renderParts() {

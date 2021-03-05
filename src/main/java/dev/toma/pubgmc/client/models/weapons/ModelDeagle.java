@@ -4,13 +4,13 @@ import dev.toma.pubgmc.animation.HeldAnimation;
 import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.animation.ReloadAnimation;
 import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -62,7 +62,7 @@ public class ModelDeagle extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null) {
             GlStateManager.pushMatrix();
@@ -80,7 +80,8 @@ public class ModelDeagle extends ModelGun {
         magazine.render(1f);
         if(hasScopeAtachment(stack)) rail.render(1f);
         GlStateManager.popMatrix();
-        renderRedDot(-0.15, 6, 27, 0.7F, stack);
+
+        //renderRedDot(-0.15, 6, 27, 0.7F, stack);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

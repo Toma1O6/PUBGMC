@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.models.atachments;
 
-import dev.toma.pubgmc.client.models.ModelAtachmentBase;
 import dev.toma.pubgmc.client.models.renderer.ExtendedModelBox;
+import dev.toma.pubgmc.common.items.attachment.ItemScope;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFGReticles;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
-public class AttachmentScopeRDS extends ModelAtachmentBase {
+public class ModelRedDot extends ModelAttachment<ItemScope> {
 
 	private final ModelRenderer bone;
 	private final ModelRenderer bone2;
@@ -25,7 +25,7 @@ public class AttachmentScopeRDS extends ModelAtachmentBase {
 	private final ModelRenderer bone10;
 	private final ModelRenderer reticle;
 
-	public AttachmentScopeRDS() {
+	public ModelRedDot() {
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -128,7 +128,7 @@ public class AttachmentScopeRDS extends ModelAtachmentBase {
 		float b = (reticleColor & 255) / 255F;
 		mc.getTextureManager().bindTexture(reticleStyle);
 		GlStateManager.color(r, g, b, a);
-		//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
 		reticle.render(1.0F);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}

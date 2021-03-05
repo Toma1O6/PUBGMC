@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.client.models.ModelGun;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import net.minecraft.client.Minecraft;
@@ -9,6 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelM249 extends ModelGun {
@@ -128,7 +128,7 @@ public class ModelM249 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack) {
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -149,10 +149,10 @@ public class ModelM249 extends ModelGun {
         magazine.render(1f);
         GlStateManager.popMatrix();
 
-        renderRedDot(0, 0, 18, 1.0F, stack);
+        /*renderRedDot(0, 0, 18, 1.0F, stack);
         renderHolo(-0.075, 3, 5, 0.9F, stack);
         renderScope2X(0, 0, 9, 1.0F, stack);
-        renderScope4X(0, 0, 10, 1.0F, stack);
+        renderScope4X(0, 0, 10, 1.0F, stack);*/
     }
 
     public ModelM249() {
