@@ -40,7 +40,6 @@ public class LootSpawnerRenderer extends TileEntitySpecialRenderer<TileEntityLoo
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
-        GlStateManager.translate(x, y, z);
     }
 
     @SuppressWarnings("ConditionCoveredByFurtherCondition")
