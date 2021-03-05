@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.client.renderer.item;
+package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelP92;

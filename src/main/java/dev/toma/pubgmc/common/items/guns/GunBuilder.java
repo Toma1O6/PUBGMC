@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.guns;
 
 import com.google.common.base.Preconditions;
-import dev.toma.pubgmc.client.renderer.item.WeaponRenderer;
+import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;

@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.client.renderer.item;
+package dev.toma.pubgmc.client.renderer.item.attachment;
 
 import dev.toma.pubgmc.client.models.atachments.ModelScope4x;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;

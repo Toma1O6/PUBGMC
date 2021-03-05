@@ -1,8 +1,10 @@
-package dev.toma.pubgmc.client.renderer.item;
+package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
+import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.item.attachment.AttachmentRenderer;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunBase;

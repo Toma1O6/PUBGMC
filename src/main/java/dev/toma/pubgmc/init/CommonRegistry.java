@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.games.GameBattleRoyale;
 import dev.toma.pubgmc.api.games.GameBombDefuse;
 import dev.toma.pubgmc.api.games.GameInactive;
-import dev.toma.pubgmc.client.renderer.item.RenderP92;
+import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
 import dev.toma.pubgmc.common.blocks.*;
@@ -238,6 +238,7 @@ public class CommonRegistry {
                         .firemode(GunBase.Firemode.SINGLE)
                         .weaponType(GunBase.GunType.PISTOL)
                         .sound(PMCSounds.gun_flare, 25.0F)
+                        .renderer(() -> RenderFlareGun::new)
                         .build(),
                 GunBuilder.create("p92")
                         .stats(cfg.p92)
@@ -269,6 +270,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
+                        .renderer(() -> RenderP1911::new)
                         .build(),
                 GunBuilder.create("p18c")
                         .stats(cfg.p18c)
@@ -284,6 +286,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
+                        .renderer(() -> RenderP18C::new)
                         .build(),
                 GunBuilder.create("r1895")
                         .stats(cfg.r1895)
@@ -297,6 +300,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.MUZZLE, () -> new ItemMuzzle[]{PMCItems.SILENCER_SMG})
                         .build()
+                        .renderer(() -> RenderR1895::new)
                         .build(),
                 GunBuilder.create("r45")
                         .stats(cfg.r45)
@@ -310,6 +314,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
+                        .renderer(() -> RenderR45::new)
                         .build(),
                 GunBuilder.create("scorpion")
                         .stats(cfg.scorpion)
@@ -326,6 +331,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.GRIP, () -> new ItemGrip[]{PMCItems.GRIP_VERTICAL})
                         .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
+                        .renderer(() -> RenderScorpion::new)
                         .build(),
                 GunBuilder.create("deagle")
                         .stats(cfg.deagle)
@@ -340,6 +346,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, () -> new ItemScope[]{PMCItems.RED_DOT})
                         .build()
+                        .renderer(() -> RenderDeagle::new)
                         .build(),
                 GunBuilder.create("sawed_off")
                         .stats(cfg.sawedoff)
@@ -350,6 +357,7 @@ public class CommonRegistry {
                         .firemode(GunBase.Firemode.SINGLE)
                         .weaponType(GunBase.GunType.SHOTGUN)
                         .sound(PMCSounds.gun_sawed_off, 16f)
+                        .renderer(() -> RenderSawedOff::new)
                         .build(),
                 GunBuilder.create("s1897")
                         .stats(cfg.s1897)
@@ -363,6 +371,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
                         .build()
+                        .renderer(() -> RenderS1897::new)
                         .build(),
                 GunBuilder.create("s686")
                         .stats(cfg.s686)
@@ -376,6 +385,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
                         .build()
+                        .renderer(() -> RenderS686::new)
                         .build(),
                 GunBuilder.create("s12k")
                         .stats(cfg.s12k)
@@ -391,6 +401,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderS12K::new)
                         .build(),
                 GunBuilder.create("microuzi")
                         .stats(cfg.microuzi)
@@ -406,6 +417,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::redDotHoloScope)
                         .build()
+                        .renderer(() -> RenderMicroUzi::new)
                         .build(),
                 GunBuilder.create("vector")
                         .stats(cfg.vector)
@@ -423,6 +435,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderVector::new)
                         .build(),
                 GunBuilder.create("bizon")
                         .stats(cfg.bizon)
@@ -437,6 +450,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderPPBizon::new)
                         .build(),
                 GunBuilder.create("mp5k")
                         .stats(cfg.mp5k)
@@ -453,6 +467,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderMP5K::new)
                         .build(),
                 GunBuilder.create("tommy_gun")
                         .stats(cfg.tommygun)
@@ -468,6 +483,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.GRIP, () -> new ItemGrip[]{PMCItems.GRIP_VERTICAL})
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .build()
+                        .renderer(() -> RenderTommyGun::new)
                         .build(),
                 GunBuilder.create("ump45")
                         .stats(cfg.ump45)
@@ -485,6 +501,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderUMP45::new)
                         .build(),
                 GunBuilder.create("m16a4")
                         .stats(cfg.m16a4)
