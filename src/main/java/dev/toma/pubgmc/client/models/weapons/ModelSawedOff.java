@@ -30,11 +30,6 @@ public class ModelSawedOff extends ModelGun {
     private final ModelRenderer bone3;
 
     @Override
-    public String textureName() {
-        return "sawedoff";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.295f, 0.1f);
         initAimingAnimationStates(0.295f);

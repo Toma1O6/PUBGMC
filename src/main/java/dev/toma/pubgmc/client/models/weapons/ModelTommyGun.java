@@ -55,11 +55,6 @@ public class ModelTommyGun extends ModelGun {
     private final ModelRenderer bone34;
 
     @Override
-    public String textureName() {
-        return "thompson";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.39f, 0.15f);
         initAimingAnimationStates(0.39f);

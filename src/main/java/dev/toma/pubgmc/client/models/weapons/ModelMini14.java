@@ -69,11 +69,6 @@ public class ModelMini14 extends ModelGun {
     private final ModelRenderer bone10;
 
     @Override
-    public String textureName() {
-        return "mini14";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.275f, 0.23f);
         initAimingAnimationStates(0.275f, 0.21f, 0.18f);

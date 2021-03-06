@@ -184,11 +184,6 @@ public class ModelUmp45 extends ModelGun {
     }
 
     @Override
-    public String textureName() {
-        return "ump45";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.2f, 0.14f);
         initAimingAnimationStates(0.2f, 0.12f, 0.08f);

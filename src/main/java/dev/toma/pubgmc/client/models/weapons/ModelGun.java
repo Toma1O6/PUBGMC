@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 public abstract class ModelGun extends ModelBase {
+
     public static final Vector3f[] DEFAULT_PART_ANIMATION = {
             new Vector3f(0f, 15f, 0f),
             new Vector3f(15f, 30f, 15f),
@@ -29,7 +30,6 @@ public abstract class ModelGun extends ModelBase {
             new Vector3f(15f, 20f, 15f),
             new Vector3f(0f, 0f, 0f)
     };
-
     public AimingAnimation aimAnimation;
     public HeldAnimation heldAnimation;
     public ReloadAnimation reloadAnimation;
@@ -44,6 +44,7 @@ public abstract class ModelGun extends ModelBase {
         animations = new Animation[]{aimAnimation, heldAnimation, reloadAnimation};
     }
 
+    @Deprecated
     public static void rotateModelForADSRendering() {
         GlStateManager.rotate(0.2f, 0, 1f, 0);
         GlStateManager.rotate(0.5f, 1f, 0, 0);
@@ -51,8 +52,7 @@ public abstract class ModelGun extends ModelBase {
 
     public abstract void render(ItemStack stack, ItemCameraTransforms.TransformType transformType);
 
-    public abstract String textureName();
-
+    @Deprecated
     public abstract void initAnimations();
 
     /**
@@ -61,6 +61,7 @@ public abstract class ModelGun extends ModelBase {
      *
      * @param stack - item
      */
+    @Deprecated
     public void preRender(ItemStack stack) {
         boolean redDot = hasRedDot(stack);
         boolean hologr = hasHoloSight(stack);
@@ -106,20 +107,24 @@ public abstract class ModelGun extends ModelBase {
         return false;
     }
 
+    @Deprecated
     public void processAnimations(boolean aim, boolean reload) {
         aimAnimation.processAnimation(aim);
         heldAnimation.processAnimation();
         reloadAnimation.processAnimation(reload);
     }
 
+    @Deprecated
     public AimingAnimation getAimAnimation() {
         return aimAnimation;
     }
 
+    @Deprecated
     public HeldAnimation getHeldAnimation() {
         return heldAnimation;
     }
 
+    @Deprecated
     public ReloadAnimation getReloadAnimation() {
         return reloadAnimation;
     }
@@ -133,6 +138,7 @@ public abstract class ModelGun extends ModelBase {
      * @param y - final y location of the model (this is changed inside the initAimAnimationStates method for more options)
      * @param z - final z location of the model
      */
+    @Deprecated
     public void initAimAnimation(float x, float y, float z) {
         aimAnimation = new AimingAnimation(x, y, z);
     }
@@ -145,6 +151,7 @@ public abstract class ModelGun extends ModelBase {
      * @param z     - final z location of the model
      * @param speed - speed of the animation; Default: 3.0F
      */
+    @Deprecated
     public void initAimAnimation(float x, float y, float z, float speed) {
         aimAnimation = new AimingAnimation(x, y, z, speed);
     }
@@ -153,6 +160,7 @@ public abstract class ModelGun extends ModelBase {
      * Initialize the final y-height of aiming animation based on scope attachment
      * f[0] - ironsight, f[1] - red dot, f[2] - holographic
      */
+    @Deprecated
     public void initAimingAnimationStates(float... f) {
         if (f == null) {
             aimStates[0] = aimAnimation.getFinalState().y;

@@ -46,11 +46,6 @@ public class ModelQBZ extends ModelGun {
     private final ModelRenderer bone26;
 
     @Override
-    public String textureName() {
-        return "g36c";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.25f, 0.35f);
         initAimingAnimationStates(0.25f, 0.215f, 0.19f);

@@ -48,11 +48,6 @@ public class ModelMP5K extends ModelGun {
     private final ModelRenderer bone27;
 
     @Override
-    public String textureName() {
-        return "g36c";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.55f, 0.23f, 0.1f);
         initAimingAnimationStates(0.23f, 0.15f, 0.13f);

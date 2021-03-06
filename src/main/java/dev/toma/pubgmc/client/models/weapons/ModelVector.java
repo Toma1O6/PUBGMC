@@ -45,11 +45,6 @@ public class ModelVector extends ModelGun {
     private final ModelRenderer bone21;
 
     @Override
-    public String textureName() {
-        return "g36c";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.315f, 0.225f);
         initAimingAnimationStates(0.315f, 0.275f, 0.2575f);

@@ -80,11 +80,6 @@ public class ModelM416 extends ModelGun {
     private final ModelRenderer bone41;
 
     @Override
-    public String textureName() {
-        return "m416";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.5575f, 0.235f, 0.25f);
         initAimingAnimationStates(0.235f, 0.2f, 0.175f);

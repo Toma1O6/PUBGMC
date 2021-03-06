@@ -72,11 +72,6 @@ public class ModelSKS extends ModelGun {
     private final ModelRenderer bone47;
 
     @Override
-    public String textureName() {
-        return "sks";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.2625f, 0.245f);
         initAimingAnimationStates(0.2625f, 0.23f, 0.235f);

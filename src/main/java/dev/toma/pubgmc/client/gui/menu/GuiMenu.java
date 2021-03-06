@@ -92,6 +92,9 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this, true).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
         addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this, true).withInfo("Become a patron"));
         addWidget(new VipListWidget(60, height - 20, 20, 20, this));
+        if(Pubgmc.isEarlyAccess()) {
+            addWidget(new OpenGunManagerWidget(this, 80, height - 20, 20, 20));
+        }
     }
 
     @Override
@@ -462,6 +465,33 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
             parent.openWebLink(link);
+        }
+    }
+
+    static class OpenGunManagerWidget extends Widget {
+
+        final GuiMenu parent;
+
+        OpenGunManagerWidget(GuiMenu parent, int x, int y, int width, int height) {
+            super(x, y, width, height);
+            this.parent = parent;
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            boolean hovered = isMouseOver(mouseX, mouseY);
+            drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.4F);
+            if(hovered) {
+                drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.5F);
+            }
+            FontRenderer renderer = mc.fontRenderer;
+            String text = "GC";
+            renderer.drawStringWithShadow(text, x + (width - renderer.getStringWidth(text)) / 2.0F, y + (height - renderer.FONT_HEIGHT) / 2.0F, 0xFFFFFF);
+        }
+
+        @Override
+        public void onClick(int mouseX, int mouseY, int button) {
+            // TODO open gun manager
         }
     }
 }

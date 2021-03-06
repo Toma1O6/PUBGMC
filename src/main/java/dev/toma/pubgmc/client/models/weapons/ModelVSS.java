@@ -44,11 +44,6 @@ public class ModelVSS extends ModelGun {
     private final ModelRenderer bone5;
 
     @Override
-    public String textureName() {
-        return "vss";
-    }
-
-    @Override
     public void initAnimations() {
         this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.6F);
     }

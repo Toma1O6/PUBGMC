@@ -42,11 +42,6 @@ public class ModelR1895 extends ModelGun {
     private final ModelRenderer bone3;
 
     @Override
-    public String textureName() {
-        return "scar";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.25f, 0.05f, 2.5F);
         initAimingAnimationStates(0.25f, 0f, 0f);

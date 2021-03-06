@@ -60,11 +60,6 @@ public class ModelS12K extends ModelGun {
     private final ModelRenderer bone40;
 
     @Override
-    public String textureName() {
-        return "s12k";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.535f, 0.27f, 0.235f);
         initAimingAnimationStates(0.27f, 0.235f, 0.195f);

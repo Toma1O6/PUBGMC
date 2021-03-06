@@ -28,11 +28,6 @@ public class ModelMicroUzi extends ModelGun {
     private final ModelRenderer bone4;
 
     @Override
-    public String textureName() {
-        return "uzi";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.21f, 0.23f);
         initAimingAnimationStates(0.21f, 0.125f, 0.12f);

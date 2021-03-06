@@ -443,11 +443,6 @@ public class ModelSLR extends ModelGun {
     }
 
     @Override
-    public String textureName() {
-        return "slr";
-    }
-
-    @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {

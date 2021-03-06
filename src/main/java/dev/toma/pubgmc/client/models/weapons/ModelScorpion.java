@@ -46,11 +46,6 @@ public class ModelScorpion extends ModelGun {
     private final ModelRenderer bone;
 
     @Override
-    public String textureName() {
-        return "m16a4";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.2f, -0.2f, 2.0F);
         initAimingAnimationStates(0.2f, 0.117f, 0f);

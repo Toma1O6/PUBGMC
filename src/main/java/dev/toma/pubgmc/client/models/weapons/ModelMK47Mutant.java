@@ -1269,11 +1269,6 @@ public class ModelMK47Mutant extends ModelGun {
     }
 
     @Override
-    public String textureName() {
-        return "mk47";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.18f, 0.12f);
         initAimingAnimationStates(0.18f, 0.17f, 0.125f);

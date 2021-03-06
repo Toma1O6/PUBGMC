@@ -142,6 +142,15 @@ public class Pubgmc {
         return status == ForgeVersion.Status.OUTDATED || status == ForgeVersion.Status.BETA_OUTDATED;
     }
 
+    public static boolean isEarlyAccess() {
+        ModContainer container = Loader.instance().activeModContainer();
+        if(container == null)
+            return false;
+        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
+        ForgeVersion.Status status = result.status;
+        return status == ForgeVersion.Status.AHEAD;
+    }
+
     public static ResourceLocation getResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }

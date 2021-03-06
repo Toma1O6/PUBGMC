@@ -45,11 +45,6 @@ public class ModelR45 extends ModelGun {
     private final ModelRenderer bone3;
 
     @Override
-    public String textureName() {
-        return "r45";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.555f, 0.175f, -0.01f, 2.5f);
         initAimingAnimationStates(0.175f, 0.095f, 0f);

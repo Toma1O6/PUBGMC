@@ -310,11 +310,6 @@ public class ModelS686 extends ModelGun {
     }
 
     @Override
-    public String textureName() {
-        return "slr";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.525f, 0.23f, 0.35f);
         initAimingAnimationStates(0.23f);

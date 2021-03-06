@@ -59,11 +59,6 @@ public class ModelQBU extends ModelGun {
     private final ModelRenderer bone32;
 
     @Override
-    public String textureName() {
-        return "qbu";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.305f, 0.22f);
         initAimingAnimationStates(0.305f, 0.3f, 0.2625f);

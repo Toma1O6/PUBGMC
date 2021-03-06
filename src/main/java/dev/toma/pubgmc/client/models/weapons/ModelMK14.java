@@ -88,11 +88,6 @@ public class ModelMK14 extends ModelGun {
     private final ModelRenderer bone36;
 
     @Override
-    public String textureName() {
-        return "scar";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.58f, 0.26f, 0.33f);
         initAimingAnimationStates(0.26f, 0.1875f, 0.14f);

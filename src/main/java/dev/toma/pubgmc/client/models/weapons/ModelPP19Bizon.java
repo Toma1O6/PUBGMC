@@ -41,11 +41,6 @@ public class ModelPP19Bizon extends ModelGun {
     private final ModelRenderer bone;
 
     @Override
-    public String textureName() {
-        return "g36c";
-    }
-
-    @Override
     public void initAnimations() {
         initAimAnimation(-0.55f, 0.235f, 0.15f);
         initAimingAnimationStates(0.235f, 0.165f, 0.135f);
