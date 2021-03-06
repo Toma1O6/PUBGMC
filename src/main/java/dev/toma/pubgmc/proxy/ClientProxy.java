@@ -41,6 +41,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.concurrent.Callable;
 
@@ -129,12 +130,9 @@ public class ClientProxy extends Proxy {
         AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SMG, suppressors);
         AttachmentRenderer.registerRenderer(PMCItems.SILENCER_AR, suppressors);
         AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SNIPER, suppressors);
-        // TODO call once weapons use new system
-        /*
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(it -> it instanceof GunBase)
                 .map(it -> (WeaponRenderer) it.getTileEntityItemStackRenderer())
                 .forEach(WeaponRenderer::registerAttachmentRenders);
-        */
     }
 }

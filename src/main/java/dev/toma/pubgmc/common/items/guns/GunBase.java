@@ -3,7 +3,6 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -53,7 +52,6 @@ import java.util.stream.Collectors;
  */
 public class GunBase extends PMCItem implements MainHandOnly {
 
-    public static final List<GunBase> GUNS = new ArrayList<>();
     protected final Supplier<SoundEvent> action;
     private final CFGWeapon wepStats;
     private final float horizontalRecoil;
@@ -73,8 +71,6 @@ public class GunBase extends PMCItem implements MainHandOnly {
     private final ScopeData customScope;
 
     // TODO delete all below
-    @SideOnly(Side.CLIENT)
-    private ModelGun gunModel;
     private ItemAmmo ammoItem;
     private int ammoCount = 0;
 
@@ -82,7 +78,6 @@ public class GunBase extends PMCItem implements MainHandOnly {
         super(builder.name);
         setCreativeTab(PMCTabs.TAB_GUNS);
         setMaxStackSize(1);
-        GUNS.add(this);
         this.action = builder.action;
         this.gunType = builder.weaponType;
         this.wepStats = builder.cfgStats;
@@ -104,6 +99,7 @@ public class GunBase extends PMCItem implements MainHandOnly {
         this.silentGunVolume = builder.volumeSilenced;
         this.attachments = builder.attachments;
         this.customScope = builder.customScope;
+        Pubgmc.proxy.initWeapon(builder, this);
     }
 
     public SoundEvent getWeaponReloadSound() {
@@ -281,18 +277,6 @@ public class GunBase extends PMCItem implements MainHandOnly {
 
     public GunAttachments getAttachments() {
         return attachments;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Deprecated
-    public void setGunModel(ModelGun model) {
-        this.gunModel = model;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Deprecated
-    public ModelGun getWeaponModel() {
-        return gunModel;
     }
 
     public CFGWeapon getConfigurableStats() {

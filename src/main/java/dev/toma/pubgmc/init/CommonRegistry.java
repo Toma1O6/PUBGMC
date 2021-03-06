@@ -518,6 +518,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderM16A4::new)
                         .build(),
                 GunBuilder.create("m416")
                         .stats(cfg.m416)
@@ -534,6 +535,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderM416::new)
                         .build(),
                 GunBuilder.create("scar_l")
                         .stats(cfg.scarl)
@@ -550,6 +552,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderScarL::new)
                         .build(),
                 GunBuilder.create("qbz")
                         .stats(cfg.qbz)
@@ -566,6 +569,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderQBZ::new)
                         .build(),
                 GunBuilder.create("g36c")
                         .stats(cfg.g36c)
@@ -582,6 +586,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderG36C::new)
                         .build(),
                 GunBuilder.create("aug")
                         .stats(cfg.aug)
@@ -599,6 +604,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderAUG::new)
                         .build(),
                 GunBuilder.create("akm")
                         .stats(cfg.akm)
@@ -614,6 +620,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderAKM::new)
                         .build(),
                 GunBuilder.create("beryl_m762")
                         .stats(cfg.m762)
@@ -631,6 +638,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderBerylM762::new)
                         .build(),
                 GunBuilder.create("mk47_mutant")
                         .stats(cfg.mk47)
@@ -648,6 +656,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderMK47Mutant::new)
                         .build(),
                 GunBuilder.create("groza")
                         .stats(cfg.groza)
@@ -664,6 +673,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getARMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderGroza::new)
                         .build(),
                 GunBuilder.create("dp28")
                         .stats(cfg.dp28)
@@ -677,6 +687,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderDP28::new)
                         .build(),
                 GunBuilder.create("m249")
                         .stats(cfg.m249)
@@ -691,6 +702,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()
+                        .renderer(() -> RenderM249::new)
                         .build(),
                 GunBuilder.create("vss")
                         .stats(cfg.vss)
@@ -706,6 +718,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderVSS::new)
                         .build(),
                 GunBuilder.create("mini14")
                         .stats(cfg.mini14)
@@ -721,6 +734,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .build()
+                        .renderer(() -> RenderMini14::new)
                         .build(),
                 GunBuilder.create("qbu")
                         .stats(cfg.qbu)
@@ -736,6 +750,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .build()
+                        .renderer(() -> RenderQBU::new)
                         .build(),
                 GunBuilder.create("sks")
                         .stats(cfg.sks)
@@ -753,6 +768,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderSKS::new)
                         .build(),
                 GunBuilder.create("slr")
                         .stats(cfg.slr)
@@ -769,6 +785,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderSLR::new)
                         .build(),
                 GunBuilder.create("mk14")
                         .stats(cfg.mk14)
@@ -786,6 +803,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderMK14Ebr::new)
                         .build(),
                 GunBuilder.create("win94")
                         .stats(cfg.win94)
@@ -800,6 +818,7 @@ public class CommonRegistry {
                         .attachments()
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
                         .build()
+                        .renderer(() -> RenderWincherster94::new)
                         .build(),
                 GunBuilder.create("kar98k")
                         .stats(cfg.kar98k)
@@ -816,6 +835,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS, PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderKar98k::new)
                         .build(),
                 GunBuilder.create("m24")
                         .stats(cfg.m24)
@@ -833,6 +853,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderM24::new)
                         .build(),
                 GunBuilder.create("awm")
                         .stats(cfg.awm)
@@ -851,6 +872,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::longRangeScopes)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
+                        .renderer(() -> RenderAWM::new)
                         .build()
         );
         ITEM_BLOCKS.forEach(registry::register);

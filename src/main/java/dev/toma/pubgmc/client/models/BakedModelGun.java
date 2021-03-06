@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.models;
 
 import dev.toma.pubgmc.animation.Animation;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
+import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -73,10 +74,12 @@ public class BakedModelGun implements IBakedModel {
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             data = data == null ? player.getCapability(PlayerDataProvider.PLAYER_DATA, null) : data;
-            if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
-                held = player.getHeldItemMainhand();
-                if (((GunBase) held.getItem()).getWeaponModel().aimAnimation.getFinalState().equals(Animation.EMPTYVEC) && held.getItem() != PMCItems.VSS) {
-                    ((GunBase) held.getItem()).getWeaponModel().initAnimations();
+            held = player.getHeldItemMainhand();
+            if (held.getItem() instanceof GunBase) {
+                GunBase gunBase = (GunBase) held.getItem();
+                ModelGun weaponModel = ((WeaponRenderer) gunBase.getTileEntityItemStackRenderer()).getWeaponModel();
+                if (weaponModel.aimAnimation.getFinalState().equals(Animation.EMPTYVEC) && held.getItem() != PMCItems.VSS) {
+                    weaponModel.initAnimations();
                 }
             }
         } else {
@@ -96,9 +99,9 @@ public class BakedModelGun implements IBakedModel {
             case FIRST_PERSON_RIGHT_HAND: {
                 held = player.getHeldItemMainhand();
                 if (held.getItem() instanceof GunBase) {
-                    ModelGun gun = ((GunBase) held.getItem()).getWeaponModel();
+                    ModelGun gun = ((WeaponRenderer) held.getItem().getTileEntityItemStackRenderer()).getWeaponModel();
                     gun.preRender(held);
-                    this.process(held, data);
+                    this.process(held, data, gun);
                     if (data.isAiming() && !gun.enableADS(held)) {
                         GlStateManager.scale(0, 0, 0);
                     }
@@ -128,8 +131,7 @@ public class BakedModelGun implements IBakedModel {
         return Pair.of(this, trsrt.getMatrix());
     }
 
-    private void process(ItemStack held, IPlayerData data) {
-        ModelGun gun = ((GunBase) held.getItem()).getWeaponModel();
+    private void process(ItemStack held, IPlayerData data, ModelGun gun) {
         gun.processAnimations(data.isAiming(), data.isReloading());
     }
 }

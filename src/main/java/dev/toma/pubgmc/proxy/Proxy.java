@@ -27,5 +27,7 @@ public abstract class Proxy {
 
     }
 
-    public void initWeapon(GunBuilder builder, GunBase gunBase) {}
+    public void initWeapon(GunBuilder builder, GunBase gunBase) {
+
+    }
 }
