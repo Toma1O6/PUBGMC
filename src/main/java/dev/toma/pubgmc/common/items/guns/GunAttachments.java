@@ -24,10 +24,8 @@ public class GunAttachments {
 
     @SuppressWarnings("unchecked")
     public <T extends ItemAttachment> List<T> getList(AttachmentType<T> type) {
-        if(uninitialized != null) {
-            initializedAttachments = new HashMap<>();
-            uninitialized.forEach((k, v) -> initializedAttachments.put(k, v.get()));
-            uninitialized = null;
+        if(!this.isLoaded()) {
+            load();
         }
         return (List<T>) initializedAttachments.get(type);
     }
@@ -60,6 +58,20 @@ public class GunAttachments {
             String key = attachment.getType().getName();
             attachmentTag.setString(key, attachment.getRegistryName().toString());
         }
+    }
+
+    public Map<AttachmentType<?>, List<ItemAttachment>> getCompatibilityMap() {
+        return initializedAttachments;
+    }
+
+    public boolean isLoaded() {
+        return uninitialized == null;
+    }
+
+    public void load() {
+        initializedAttachments = new HashMap<>();
+        uninitialized.forEach((k, v) -> initializedAttachments.put(k, v.get()));
+        uninitialized = null;
     }
 
     public static class Builder {

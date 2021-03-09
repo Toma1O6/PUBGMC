@@ -3,13 +3,11 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.EntityFlare;
-import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -33,8 +31,7 @@ public class FlareGun extends GunBase {
     @Override
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        CooldownTracker tr = player.getCooldownTracker();
-        if (this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading() && !tr.hasCooldown(this)) {
+        if (this.hasAmmo(stack) || player.capabilities.isCreativeMode && !data.isReloading()) {
             world.playSound(null, player.posX, player.posY, player.posZ, this.getGunSound(), SoundCategory.PLAYERS, this.getGunVolume(), 1.0f);
             if (!world.isRemote) {
                 EntityFlare bullet = new EntityFlare(world, player);
@@ -43,7 +40,6 @@ public class FlareGun extends GunBase {
                     stack.getTagCompound().setInteger("ammo", stack.getTagCompound().getInteger("ammo") - 1);
                 }
             }
-            tr.setCooldown(this, getFireRate());
         }
     }
 

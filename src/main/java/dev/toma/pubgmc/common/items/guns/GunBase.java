@@ -28,7 +28,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -113,8 +112,7 @@ public class GunBase extends PMCItem implements MainHandOnly {
 
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
         IPlayerData data = PlayerData.get(player);
-        CooldownTracker tracker = player.getCooldownTracker();
-        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading() && !tracker.hasCooldown(stack.getItem())) {
+        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading()) {
             if (!world.isRemote) {
                 if (!gunType.equals(GunType.SHOTGUN)) {
                     EntityBullet bullet = new EntityBullet(world, player, this);
@@ -129,7 +127,6 @@ public class GunBase extends PMCItem implements MainHandOnly {
                 if (!player.capabilities.isCreativeMode) {
                     this.consumeAmmo(stack);
                 }
-                tracker.setCooldown(stack.getItem(), getFireRate());
                 PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 256));
             }
         }

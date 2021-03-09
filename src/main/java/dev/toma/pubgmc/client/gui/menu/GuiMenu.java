@@ -93,7 +93,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this, true).withInfo("Become a patron"));
         addWidget(new VipListWidget(60, height - 20, 20, 20, this));
         if(Pubgmc.isEarlyAccess()) {
-            addWidget(new OpenGunManagerWidget(this, 80, height - 20, 20, 20));
+            addWidget(new OpenGunManagerWidget(80, height - 20, 20, 20));
         }
     }
 
@@ -470,11 +470,8 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
     static class OpenGunManagerWidget extends Widget {
 
-        final GuiMenu parent;
-
-        OpenGunManagerWidget(GuiMenu parent, int x, int y, int width, int height) {
+        OpenGunManagerWidget(int x, int y, int width, int height) {
             super(x, y, width, height);
-            this.parent = parent;
         }
 
         @Override
@@ -491,7 +488,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
-            // TODO open gun manager
+            Minecraft.getMinecraft().displayGuiScreen(new GuiGunConfig());
         }
     }
 }

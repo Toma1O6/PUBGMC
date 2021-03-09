@@ -37,7 +37,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -65,42 +64,16 @@ public class ClientEvents {
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
     public static int recoilTicks = 0;
 
-    /**
-     * Random Number Generator
-     **/
+    private final WeaponCooldownTracker tracker = new WeaponCooldownTracker();
     private final Random rand = new Random();
-
-    /**
-     * Slot to determine which gun is being reloaded
-     * TODO remove
-     **/
+    // TODO remove
     private int reloadingSlot;
-
-    /**
-     * Timer for boost decrease
-     * TODO remove
-     **/
+    // TODO remove
     private int timer;
-
-    /**
-     * Number of shots from one burst
-     **/
     private int shotsFired;
-
-    /**
-     * Burst firemode; so my clientick event knows it's supposed to shoot
-     **/
     private boolean shooting;
-
-    /**
-     * Timer for burst fire
-     **/
     private int shootingTimer;
-
-    /**
-     * Used for reloading to tell the game to play the sound or not. Simple workaround to prevent multiple reload sound playing
-     * TODO remove
-     **/
+    // TODO remove
     private boolean hasAmmo;
 
     /**
@@ -409,14 +382,14 @@ public class ClientEvents {
                 GunBase gun = (GunBase) stack.getItem();
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 if (gs.keyBindAttack.isPressed()) {
-                    CooldownTracker tracker = player.getCooldownTracker();
                     if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
                         //If the gun has no cooldown
-                        if (!data.isReloading() && !tracker.hasCooldown(gun)) {
+                        if (!data.isReloading() && !tracker.isOnCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 //We send packet to server telling it to spawn new entity
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                tracker.add(gun);
                                 if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
                                 //Do the recoil
                                 applyRecoil(player, stack, gun);
@@ -425,7 +398,7 @@ public class ClientEvents {
                             }
                         }
                     } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
-                        if (!shooting && !data.isReloading() && !tracker.hasCooldown(gun)) {
+                        if (!shooting && !data.isReloading() && !tracker.isOnCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 shooting = true;
                                 shotsFired = 0;
@@ -464,6 +437,7 @@ public class ClientEvents {
         }
 
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+            tracker.tick(mc.isGamePaused());
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if (ev.phase == Phase.END) {
                 if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
@@ -474,15 +448,15 @@ public class ClientEvents {
                 }
 
                 if (gs.keyBindAttack.isKeyDown()) {
-                    CooldownTracker tracker = player.getCooldownTracker();
                     ItemStack stack = player.getHeldItemMainhand();
                     if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
                         GunBase gun = (GunBase) stack.getItem();
-                        if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.hasCooldown(gun)) {
+                        if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.isOnCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                 this.applyRecoil(player, stack, gun);
+                                tracker.add(gun);
                             } else {
                                 player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                             }
