@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.util;
 
 import net.minecraft.client.renderer.GlStateManager;
 
+@Deprecated
 public class ModelTransformationHelper {
     public static ModelTransformationHelper instance;
 

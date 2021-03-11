@@ -110,10 +110,6 @@ public class ModelAWM extends ModelGun {
         GlStateManager.scale(0.9, 0.9, 0.9);
         GlStateManager.translate(-7.0, 8.699999, 0.0);
 
-        if (aim && enableADS(stack)) {
-            rotateModelForADSRendering();
-        }
-
         awm.render(1f);
         magazine.render(1.0F);
         ironsights.render(1.0F);

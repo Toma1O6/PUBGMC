@@ -44,12 +44,6 @@ public abstract class ModelGun extends ModelBase {
         animations = new Animation[]{aimAnimation, heldAnimation, reloadAnimation};
     }
 
-    @Deprecated
-    public static void rotateModelForADSRendering() {
-        GlStateManager.rotate(0.2f, 0, 1f, 0);
-        GlStateManager.rotate(0.5f, 1f, 0, 0);
-    }
-
     public abstract void render(ItemStack stack, ItemCameraTransforms.TransformType transformType);
 
     @Deprecated

@@ -897,11 +897,6 @@ public class ModelM24 extends ModelGun {
             ModelTransformationHelper.defaultSRTransform();
             GlStateManager.scale(0.79999995, 0.79999995, 0.79999995);
             GlStateManager.translate(0.0, -15.300001, -18.0);
-
-            if (aim && enableADS(stack)) {
-                rotateModelForADSRendering();
-            }
-
             renderParts();
         }
         GlStateManager.popMatrix();

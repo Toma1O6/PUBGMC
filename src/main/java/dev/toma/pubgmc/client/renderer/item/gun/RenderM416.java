@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelM416;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderM416 extends WeaponRenderer {
@@ -10,7 +11,7 @@ public class RenderM416 extends WeaponRenderer {
 
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {
-
+        GlStateManager.translate(0.0, 0.24, -0.2);
     }
 
     @Override

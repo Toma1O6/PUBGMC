@@ -726,11 +726,6 @@ public class ModelUmp45 extends ModelGun {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, -8.0, 0.0);
-
-        if (aim && enableADS(stack)) {
-            rotateModelForADSRendering();
-        }
-
         renderAll();
         GlStateManager.popMatrix();
 

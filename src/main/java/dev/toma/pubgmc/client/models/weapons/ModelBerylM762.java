@@ -108,10 +108,6 @@ public class ModelBerylM762 extends ModelGun {
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 42.9, -4.0);
 
-        if (aim && enableADS(stack)) {
-            rotateModelForADSRendering();
-        }
-
         bone.render(1f);
         magazine.render(1f);
         GlStateManager.popMatrix();

@@ -121,9 +121,6 @@ public class ModelM16A4 extends ModelGun {
         GlStateManager.rotate(90, 0, 1, 0);
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(21.0, 1.975, -4.6000023);
-        if (aim && enableADS(stack)) {
-            rotateModelForADSRendering();
-        }
         gun.render(1f);
         charging_handle.render(1.0F);
         barrel.render(1.0F);

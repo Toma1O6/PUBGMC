@@ -54,7 +54,6 @@ public class ModelP18C extends ModelGun {
         {
             ModelTransformationHelper.defaultPistolTransform();
             GlStateManager.translate(-0.9, -1.0, -6.0);
-            if (aim) rotateModelForADSRendering();
             gun.render(1f);
             magazine.render(1.0F);
             slide.render(1.0F);

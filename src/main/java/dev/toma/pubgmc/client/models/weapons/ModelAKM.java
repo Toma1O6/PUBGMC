@@ -87,7 +87,6 @@ public class ModelAKM extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 41.0, -13.0);
-        rotateModelForADSRendering();
         this.render();
         GlStateManager.popMatrix();
         /*

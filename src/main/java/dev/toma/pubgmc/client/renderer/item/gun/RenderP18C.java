@@ -11,7 +11,7 @@ public class RenderP18C extends WeaponRenderer {
 
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {
-        GlStateManager.translate(1.05, 0.2, 0.7);
+        GlStateManager.translate(1.055, 0.3, 0.7);
         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
     }
 

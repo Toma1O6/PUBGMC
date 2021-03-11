@@ -338,7 +338,6 @@ public class ModelS686 extends ModelGun {
         {
             ModelTransformationHelper.defaultShotgunTransform();
             GlStateManager.translate(-0.15, -5.300001, -10.0);
-            if (aim) rotateModelForADSRendering();
             s686.render(1f);
             barrels.render(1.0F);
         }
