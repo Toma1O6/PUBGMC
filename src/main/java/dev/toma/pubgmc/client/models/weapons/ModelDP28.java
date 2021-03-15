@@ -62,7 +62,7 @@ public class ModelDP28 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.325f, 0.1f);
-        initAimingAnimationStates(0.325f, 0.27f, 0.235f);
+        initAimingAnimationStates(0.325f, 0.255f, 0.265f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -74,7 +74,6 @@ public class ModelDP28 extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 

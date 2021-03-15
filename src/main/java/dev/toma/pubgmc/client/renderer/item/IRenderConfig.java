@@ -8,6 +8,10 @@ public interface IRenderConfig {
 
     void applyTransforms();
 
+    static IRenderConfig empty() {
+        return EMPTY;
+    }
+
     static IRenderConfig translated(float x, float y, float z) {
         return new TranslationRenderConfig(x, y, z);
     }

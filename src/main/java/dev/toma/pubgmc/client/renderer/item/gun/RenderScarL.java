@@ -22,6 +22,6 @@ public class RenderScarL extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(IRenderConfig.EMPTY, PMCItems.RED_DOT, PMCItems.HOLOGRAPHIC, PMCItems.SCOPE2X, PMCItems.SCOPE4X, PMCItems.GRIP_ANGLED, PMCItems.GRIP_VERTICAL, PMCItems.SILENCER_AR);
+        registerRenderConfig(IRenderConfig.empty(), PMCItems.RED_DOT, PMCItems.HOLOGRAPHIC, PMCItems.SCOPE2X, PMCItems.SCOPE4X, PMCItems.GRIP_ANGLED, PMCItems.GRIP_VERTICAL, PMCItems.SILENCER_AR);
     }
 }

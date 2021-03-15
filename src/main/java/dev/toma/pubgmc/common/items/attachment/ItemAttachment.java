@@ -14,6 +14,7 @@ public abstract class ItemAttachment extends PMCItem {
     public ItemAttachment(String name) {
         super(name);
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
+        setMaxStackSize(1);
     }
 
     public abstract AttachmentType<?> getType();
