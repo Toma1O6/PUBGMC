@@ -80,7 +80,7 @@ public class ModelMicroUzi extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.21f, 0.23f);
-        initAimingAnimationStates(0.21f, 0.125f, 0.12f);
+        initAimingAnimationStates(0.21f, 0.055f, 0.05f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.2F);
     }
@@ -88,7 +88,6 @@ public class ModelMicroUzi extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
             {

@@ -68,7 +68,6 @@ public class ModelS12K extends ModelGun {
 
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-//        initAnimations();
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();

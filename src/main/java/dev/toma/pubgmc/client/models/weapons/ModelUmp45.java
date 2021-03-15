@@ -699,7 +699,7 @@ public class ModelUmp45 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.2f, 0.14f);
-        initAimingAnimationStates(0.2f, 0.12f, 0.08f);
+        initAimingAnimationStates(0.2f, 0.12f, 0.114f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
@@ -713,7 +713,6 @@ public class ModelUmp45 extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             GlStateManager.pushMatrix();
@@ -726,7 +725,7 @@ public class ModelUmp45 extends ModelGun {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, -8.0, 0.0);
-        renderAll();
+        renderAll(stack);
         GlStateManager.popMatrix();
 
         /*renderSMGSilencer(0, 0, 0, 1f, stack);
@@ -738,10 +737,12 @@ public class ModelUmp45 extends ModelGun {
         renderScope4X(0, -3.95, 5, 1f, stack);*/
     }
 
-    private void renderAll() {
-        ironsights.render(1.0F);
+    private void renderAll(ItemStack stack) {
         magazine.render(1.0F);
         ump45.render(1.0F);
         charging_handle.render(1.0F);
+        if(hasScopeAtachment(stack))
+            return;
+        ironsights.render(1.0F);
     }
 }

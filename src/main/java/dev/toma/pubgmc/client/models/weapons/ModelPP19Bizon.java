@@ -44,7 +44,7 @@ public class ModelPP19Bizon extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.55f, 0.235f, 0.15f);
-        initAimingAnimationStates(0.235f, 0.165f, 0.135f);
+        initAimingAnimationStates(0.235f, 0.165f, 0.145f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
     }
@@ -58,7 +58,6 @@ public class ModelPP19Bizon extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
             {

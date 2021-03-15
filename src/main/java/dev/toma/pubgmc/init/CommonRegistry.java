@@ -463,7 +463,6 @@ public class CommonRegistry {
                         .sound(PMCSounds.gun_mp5k, 16f, PMCSounds.gun_mp5k_silenced, 8f)
                         .attachments()
                         .addForType(AttachmentType.MUZZLE, AttachmentHelper::getSmgMuzzle)
-                        .addForType(AttachmentType.GRIP, AttachmentHelper::allGrips)
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getPistolSmgMags)
                         .addForType(AttachmentType.SCOPE, AttachmentHelper::closeRangeScopes)
                         .build()

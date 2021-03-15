@@ -51,7 +51,7 @@ public class ModelMP5K extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.55f, 0.23f, 0.1f);
-        initAimingAnimationStates(0.23f, 0.15f, 0.13f);
+        initAimingAnimationStates(0.23f, 0.15f, 0.15f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
