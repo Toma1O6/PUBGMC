@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public interface IRenderConfig {
 
+    IRenderConfig EMPTY = () -> {};
+
     void applyTransforms();
 
     static IRenderConfig translated(float x, float y, float z) {

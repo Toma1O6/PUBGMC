@@ -62,12 +62,13 @@ public class ModelS12K extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.535f, 0.27f, 0.235f);
-        initAimingAnimationStates(0.27f, 0.235f, 0.195f);
+        initAimingAnimationStates(0.27f, 0.21f, 0.195f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
     }
 
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
+//        initAnimations();
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();

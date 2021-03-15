@@ -80,8 +80,6 @@ public class ModelDeagle extends ModelGun {
         hammer.render(1.0F);
         if(hasScopeAtachment(stack)) rail.render(1f);
         GlStateManager.popMatrix();
-
-        //renderRedDot(-0.15, 6, 27, 0.7F, stack);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

@@ -10,7 +10,7 @@ public class RedDotRenderer extends AttachmentRenderer<ItemScope> {
 
     @Override
     public void preRenderCallback() {
-        GlStateManager.translate(0.5, 0.97, 0.4);
+        GlStateManager.translate(0.5, 0.93, 0.4);
         GlStateManager.scale(0.06F, 0.06F, 0.04F);
     }
 
