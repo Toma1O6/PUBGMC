@@ -65,18 +65,16 @@ public class ModelScarL extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.245f, 0.225f);
-        initAimingAnimationStates(0.245f, 0.245f, 0.205f);
+        initAimingAnimationStates(0.245f, 0.235f, 0.22f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE);
     }
 
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             boolean aim = data.isAiming();
-
             GlStateManager.pushMatrix();
             {
                 renderScarL(aim, stack);

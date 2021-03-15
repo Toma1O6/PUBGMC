@@ -1233,7 +1233,7 @@ public class ModelMK47Mutant extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.18f, 0.12f);
-        initAimingAnimationStates(0.18f, 0.17f, 0.125f);
+        initAimingAnimationStates(0.18f, 0.135f, 0.138f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
@@ -1246,7 +1246,6 @@ public class ModelMK47Mutant extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             GlStateManager.pushMatrix();

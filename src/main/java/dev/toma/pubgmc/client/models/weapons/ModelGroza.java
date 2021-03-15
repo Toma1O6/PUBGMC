@@ -78,7 +78,7 @@ public class ModelGroza extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.135f, 0.28f);
-        initAimingAnimationStates(0.135f, 0.0575f, 0.03f);
+        initAimingAnimationStates(0.135f, 0.045f, 0.038f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).withSpeed(1.2F);
     }
 
@@ -91,7 +91,6 @@ public class ModelGroza extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
             {

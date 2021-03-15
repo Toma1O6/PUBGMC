@@ -89,14 +89,13 @@ public class ModelQBZ extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.25f, 0.35f);
-        initAimingAnimationStates(0.25f, 0.215f, 0.19f);
+        initAimingAnimationStates(0.25f, 0.07f, 0.078f);
         this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE);
     }
 
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
             {

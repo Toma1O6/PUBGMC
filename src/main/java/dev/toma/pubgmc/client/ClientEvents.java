@@ -64,7 +64,6 @@ public class ClientEvents {
     private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
     private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
-    public static int recoilTicks = 0;
 
     private final WeaponCooldownTracker tracker = new WeaponCooldownTracker();
     private final Random rand = new Random();
@@ -392,7 +391,6 @@ public class ClientEvents {
                         if (!data.isReloading() && !tracker.isOnCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
                                 //We send packet to server telling it to spawn new entity
-                                recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                 tracker.add(gun);
                                 if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
@@ -433,10 +431,6 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         GameSettings gs = mc.gameSettings;
-        if(recoilTicks > 0) {
-            recoilTicks--;
-        }
-
         if(ev.phase == Phase.START && mc.currentScreen instanceof ITickable) {
             ((ITickable) mc.currentScreen).update();
         }
@@ -451,14 +445,12 @@ public class ClientEvents {
                     controllable.handle((byte) inputs);
                     PacketHandler.sendToServer(new SPacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
                 }
-
                 if (gs.keyBindAttack.isKeyDown()) {
                     ItemStack stack = player.getHeldItemMainhand();
                     if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
                         GunBase gun = (GunBase) stack.getItem();
                         if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.isOnCooldown(gun)) {
                             if (gun.hasAmmo(stack)) {
-                                recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                 this.applyRecoil(player, stack, gun);
                                 tracker.add(gun);
@@ -476,9 +468,7 @@ public class ClientEvents {
                     if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
                         if (shooting && gun.getFiremode(stack) == GunBase.Firemode.BURST) {
                             shootingTimer++;
-
                             if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
-                                recoilTicks = 10;
                                 PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                 applyRecoil(player, stack, gun);
                                 shotsFired++;

@@ -126,7 +126,7 @@ public class ModelG36C extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.581f, 0.188f, 0.3f);
-        initAimingAnimationStates(0.188f, 0.106f, 0.057f);
+        initAimingAnimationStates(0.188f, 0.085f, 0.1f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
