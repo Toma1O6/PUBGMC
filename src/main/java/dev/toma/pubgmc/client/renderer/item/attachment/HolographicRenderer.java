@@ -8,6 +8,11 @@ public class HolographicRenderer extends AttachmentRenderer<ItemScope> {
     private final ModelHolographic model = new ModelHolographic();
 
     @Override
+    public void preRenderCallback() {
+
+    }
+
+    @Override
     public ModelHolographic getModel() {
         return model;
     }

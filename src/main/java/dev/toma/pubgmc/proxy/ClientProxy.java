@@ -32,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -134,5 +135,9 @@ public class ClientProxy extends Proxy {
                 .filter(it -> it instanceof GunBase)
                 .map(it -> (WeaponRenderer) it.getTileEntityItemStackRenderer())
                 .forEach(WeaponRenderer::registerAttachmentRenders);
+    }
+
+    public static void playButtonPressSound() {
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 }

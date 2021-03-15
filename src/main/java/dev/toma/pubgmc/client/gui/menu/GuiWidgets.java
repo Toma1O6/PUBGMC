@@ -35,11 +35,12 @@ public class GuiWidgets extends GuiScreen implements ITickable {
         }
     }
 
-    public void addWidget(Widget widget) {
+    public <W extends Widget> W addWidget(W widget) {
         widgets.add(widget);
         if(widget instanceof ITickable) {
             this.addTickListener((ITickable) widget);
         }
+        return widget;
     }
 
     public void addTickListener(ITickable tickable) {

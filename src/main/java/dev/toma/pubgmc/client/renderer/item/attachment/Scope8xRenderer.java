@@ -8,6 +8,11 @@ public class Scope8xRenderer extends AttachmentRenderer<ItemScope> {
     private final ModelScope8x model = new ModelScope8x();
 
     @Override
+    public void preRenderCallback() {
+
+    }
+
+    @Override
     public ModelScope8x getModel() {
         return model;
     }

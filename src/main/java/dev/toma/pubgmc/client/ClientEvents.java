@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.client.util.KeyBinds;
@@ -49,6 +50,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -302,11 +304,14 @@ public class ClientEvents {
         }
     }
 
-    //Keybinding stuff
-    //Everything has to be synced with server!
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
+        if(Pubgmc.isDevEnvironment) {
+            if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
+                Minecraft.getMinecraft().displayGuiScreen(new GuiGunConfig());
+            }
+        }
         if (KeyBinds.PRONE.isPressed()) {
             IPlayerData data = PlayerData.get(sp);
             if (data != null) {

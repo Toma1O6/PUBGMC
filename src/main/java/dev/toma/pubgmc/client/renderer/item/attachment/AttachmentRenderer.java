@@ -39,4 +39,8 @@ public abstract class AttachmentRenderer<I extends ItemAttachment> {
     public static <I extends ItemAttachment> AttachmentRenderer<I> getRenderFor(I attachment) {
         return (AttachmentRenderer<I>) RENDERERS.get(attachment);
     }
+
+    public static boolean hasRender(ItemAttachment attachment) {
+        return RENDERERS.containsKey(attachment);
+    }
 }

@@ -23,7 +23,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
 
     public static final ResourceLocation GUN_TEXTURES = Pubgmc.getResource("textures/weapon/gun_textures.png");
     public static final ResourceLocation ATTACHMENT_TEXTURES = Pubgmc.getResource("textures/weapon/attachment_textures.png");
-    private final Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
+    private Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
 
     public abstract ModelGun getWeaponModel();
 
@@ -36,9 +36,9 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
     public final void renderByItem(ItemStack itemStackIn) {
         TextureManager manager = Minecraft.getMinecraft().getTextureManager();
         ItemCameraTransforms.TransformType transformType = ClientHooks.getTransformType();
-        this.preRender(transformType);
+        preRender(transformType);
         manager.bindTexture(GUN_TEXTURES);
-        this.getWeaponModel().render(itemStackIn, transformType);
+        getWeaponModel().render(itemStackIn, transformType);
         GunBase gun = (GunBase) itemStackIn.getItem();
         for (AttachmentType<?> type : AttachmentType.allTypes) {
             ItemAttachment attachment = gun.getAttachment(type, itemStackIn);
@@ -66,5 +66,13 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
 
     public final IRenderConfig getRenderConfig(ItemAttachment attachment) {
         return renderConfigs.get(attachment);
+    }
+
+    public void setRenderConfigsTempt(Map<ItemAttachment, IRenderConfig> map) {
+        this.renderConfigs = map;
+    }
+
+    public Map<ItemAttachment, IRenderConfig> getRenderConfigs() {
+        return renderConfigs;
     }
 }

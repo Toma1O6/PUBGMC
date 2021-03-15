@@ -8,6 +8,11 @@ public class Scope2xRenderer extends AttachmentRenderer<ItemScope> {
     private final ModelScope2x model = new ModelScope2x();
 
     @Override
+    public void preRenderCallback() {
+
+    }
+
+    @Override
     public ModelScope2x getModel() {
         return model;
     }
