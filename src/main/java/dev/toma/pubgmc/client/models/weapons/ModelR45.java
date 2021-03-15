@@ -49,7 +49,7 @@ public class ModelR45 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.555f, 0.175f, -0.01f, 2.5f);
-        initAimingAnimationStates(0.175f, 0.095f, 0f);
+        initAimingAnimationStates(0.175f, 0.085f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(null, ReloadStyle.REVOLVER);
     }

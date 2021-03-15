@@ -31,7 +31,7 @@ public class ModelP18C extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.585f, 0.22f, -0.01f, 2.5F);
-        initAimingAnimationStates(0.22f, 0.14f, 0f);
+        initAimingAnimationStates(0.22f, 0.16f, 0f);
         heldAnimation = new HeldAnimation(HeldStyle.SMALL);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(2.0F);
     }

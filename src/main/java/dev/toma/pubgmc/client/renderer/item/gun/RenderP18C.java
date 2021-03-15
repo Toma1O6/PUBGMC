@@ -2,6 +2,8 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelP18C;
+import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
@@ -22,6 +24,7 @@ public class RenderP18C extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.rotated(0.93F, -0.1F, 0.7F, 0.8F, 0.8F, 0.8F, 0F, 180F, 0F));
+        registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.rotated(1.03F, -0.17F, -0.05F, 1F, 1F, 1F, 0F, 180F, 0F));
     }
 }

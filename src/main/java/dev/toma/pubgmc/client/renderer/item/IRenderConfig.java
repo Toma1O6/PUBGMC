@@ -14,6 +14,10 @@ public interface IRenderConfig {
         return new ScaledRenderConfig(x, y, z, scaleX, scaleY, scaleZ);
     }
 
+    static IRenderConfig rotated(float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rx, float ry, float rz) {
+        return new RotatedRenderConfig(x, y, z, scaleX, scaleY, scaleZ, rx, ry, rz);
+    }
+
     class TranslationRenderConfig implements IRenderConfig {
 
         final float x, y, z;
@@ -45,6 +49,29 @@ public interface IRenderConfig {
         public void applyTransforms() {
             super.applyTransforms();
             GlStateManager.scale(sx, sy, sz);
+        }
+    }
+
+    class RotatedRenderConfig extends ScaledRenderConfig {
+
+        final float rx, ry, rz;
+
+        RotatedRenderConfig(float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rx, float ry, float rz) {
+            super(x, y, z, scaleX, scaleY, scaleZ);
+            this.rx = rx;
+            this.ry = ry;
+            this.rz = rz;
+        }
+
+        @Override
+        public void applyTransforms() {
+            super.applyTransforms();
+            if(rx != 0)
+                GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
+            if(ry != 0)
+                GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
+            if(rz != 0)
+                GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
         }
     }
 }

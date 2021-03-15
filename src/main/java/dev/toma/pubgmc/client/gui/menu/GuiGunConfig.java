@@ -31,6 +31,8 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BooleanSupplier;
@@ -48,6 +50,7 @@ public class GuiGunConfig extends GuiWidgets {
     AttachmentListWidget attachmentListWidget;
     PropertyArrayWidget translateWidget;
     PropertyArrayWidget scaleWidget;
+    PropertyArrayWidget rotateWidget;
     ItemStack displayWeapon;
     boolean lightTheme;
 
@@ -69,7 +72,7 @@ public class GuiGunConfig extends GuiWidgets {
         int third = (width - 90) / 3;
         translateWidget = addWidget(new PropertyArrayWidget(90, height - 75, third, 90, "Translation", MutableRenderConfig::setTranslation, 0.0F));
         scaleWidget = addWidget(new PropertyArrayWidget(90 + third, height - 75, third, 90, "Scale", MutableRenderConfig::setScale, 1.0F));
-        addWidget(new PropertyArrayWidget(90 + 2 * third, height - 75, third, 90, "Rotation", MutableRenderConfig::setRotation, 0.0F));
+        rotateWidget = addWidget(new PropertyArrayWidget(90 + 2 * third, height - 75, third, 90, "Rotation", MutableRenderConfig::setRotation, 0.0F, 15.0F, 1.0F, 0.1F));
         addWidget(new ButtonWidget(width - 60, 5, 55, 20, "Export", (widget, mouseX, mouseY, button) -> exportFile()));
         addWidget(new ButtonWidget(width - 85, 5, 20, 20, "R", (widget, mouseX, mouseY, button) -> map.clear()));
         GunBase element = gunSelector.getElement();
@@ -132,6 +135,7 @@ public class GuiGunConfig extends GuiWidgets {
         }
         translateWidget.reset();
         scaleWidget.reset();
+        rotateWidget.reset();
     }
 
     void removeAttachment(ItemAttachment attachment) {
@@ -157,6 +161,7 @@ public class GuiGunConfig extends GuiWidgets {
         }
         translateWidget.reset();
         scaleWidget.reset();
+        rotateWidget.reset();
     }
 
     void renderItem(int x, int y, float scale, float yaw, float pitch) {
@@ -199,6 +204,10 @@ public class GuiGunConfig extends GuiWidgets {
     void exportFile() {
         File dir = new File("./export");
         try {
+            DecimalFormat df = new DecimalFormat("#.####");
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setDecimalSeparator('.');
+            df.setDecimalFormatSymbols(symbols);
             dir.mkdir();
             String fileName = "cfg_" + displayWeapon.getItem().getRegistryName().getResourcePath() + "_" + LocalDateTime.now().toString().replaceAll(":|\\.", "-") + ".txt";
             File out = new File(dir, fileName);
@@ -212,12 +221,12 @@ public class GuiGunConfig extends GuiWidgets {
                 if(config instanceof MutableRenderConfig) {
                     MutableRenderConfig mcfg = (MutableRenderConfig) config;
                     String configDef;
-                    if(mcfg.hasModifiedScale()) {
-                        // export translatedScaled
-                        configDef = String.format("IRenderConfig.translatedScaled(%f, %f, %f, %f, %f, %f)", mcfg.x, mcfg.y, mcfg.z, mcfg.scaleX, mcfg.scaleY, mcfg.scaleZ);
+                    if(mcfg.hasModifiedRotation()) {
+                        configDef = String.format("IRenderConfig.rotated(%sF, %sF, %sF, %sF, %sF, %sF, %sF, %sF, %sF)", df.format(mcfg.x), df.format(mcfg.y), df.format(mcfg.z), df.format(mcfg.scaleX), df.format(mcfg.scaleY), df.format(mcfg.scaleZ), df.format(mcfg.rx), df.format(mcfg.ry), df.format(mcfg.rz));
+                    } else if(mcfg.hasModifiedScale()) {
+                        configDef = String.format("IRenderConfig.translatedScaled(%sF, %sF, %sF, %sF, %sF, %sF)", df.format(mcfg.x), df.format(mcfg.y), df.format(mcfg.z), df.format(mcfg.scaleX), df.format(mcfg.scaleY), df.format(mcfg.scaleZ));
                     } else {
-                        // export translated
-                        configDef = String.format("IRenderConfig.translated(%f, %f, %f)", mcfg.x, mcfg.y, mcfg.z);
+                        configDef = String.format("IRenderConfig.translated(%sF, %sF, %sF)", df.format(mcfg.x), df.format(mcfg.y), df.format(mcfg.z));
                     }
                     builder.append(String.format("registerRenderConfig(%s, %s);\n", itemName, configDef));
                 }
@@ -405,14 +414,18 @@ public class GuiGunConfig extends GuiWidgets {
         FloatFieldWidget yValue;
         FloatFieldWidget zValue;
 
-        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float f) {
+        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float value, float f, float shiftF, float controlF) {
             super(x, y, width, height);
             this.propertyName = propertyName;
             this.setter = setter;
-            FloatFieldWidget.Callback callback = value -> GuiGunConfig.this.activeConfigs.forEach(mcfg -> setter.set(mcfg, xValue.f, yValue.f, zValue.f));
-            xValue = new FloatFieldWidget(x, y + 15, width, 20, f).withCallback(callback);
-            yValue = new FloatFieldWidget(x, y + 35, width, 20, f).withCallback(callback);
-            zValue = new FloatFieldWidget(x, y + 55, width, 20, f).withCallback(callback);
+            FloatFieldWidget.Callback callback = val -> GuiGunConfig.this.activeConfigs.forEach(mcfg -> setter.set(mcfg, xValue.f, yValue.f, zValue.f));
+            xValue = new FloatFieldWidget(x, y + 15, width, 20, value, f, shiftF, controlF).withCallback(callback);
+            yValue = new FloatFieldWidget(x, y + 35, width, 20, value, f, shiftF, controlF).withCallback(callback);
+            zValue = new FloatFieldWidget(x, y + 55, width, 20, value, f, shiftF, controlF).withCallback(callback);
+        }
+
+        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float f) {
+            this(x, y, width, height, propertyName, setter, f, 0.1F, 0.025F, 0.01F);
         }
 
         void reset() {
