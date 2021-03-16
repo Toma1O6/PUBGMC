@@ -2,6 +2,8 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelSLR;
+import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
@@ -21,6 +23,13 @@ public class RenderSLR extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
+        registerRenderConfig(IRenderConfig.translated(0F, 0.01F, 0.3F), PMCItems.SILENCER_AR, PMCItems.SILENCER_SNIPER);
+        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.translated(0F, 0.05F, 0.22F));
+        registerRenderConfig(PMCItems.SCOPE15X, IRenderConfig.translated(0F, 0.15F, 0.3F));
+        registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.translated(0F, 0.13F, 0.24F));
+        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.translatedScaled(0.1F, 0.2F, 0.24F, 0.8F, 0.8F, 0.8F));
+        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.translated(0F, 0.05F, 0.2F));
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.translated(0.005F, 0.06F, 0.14F));
 
     }
 }

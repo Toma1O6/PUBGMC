@@ -61,7 +61,7 @@ public class ModelQBU extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.305f, 0.22f);
-        initAimingAnimationStates(0.305f, 0.3f, 0.2625f);
+        initAimingAnimationStates(0.305f, 0.307f, 0.295f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.3F);
     }
 
@@ -74,7 +74,6 @@ public class ModelQBU extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 

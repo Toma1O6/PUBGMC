@@ -92,7 +92,7 @@ public class ModelMK14 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.58f, 0.26f, 0.33f);
-        initAimingAnimationStates(0.26f, 0.1875f, 0.14f);
+        initAimingAnimationStates(0.26f, 0.16f, 0.165f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180).withSpeed(1.3F);
     }
 
@@ -105,7 +105,6 @@ public class ModelMK14 extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
 

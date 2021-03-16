@@ -66,7 +66,7 @@ public class ModelMini14 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.275f, 0.23f);
-        initAimingAnimationStates(0.275f, 0.21f, 0.18f);
+        initAimingAnimationStates(0.275f, 0.19f, 0.21f);
         this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
     }
 
@@ -79,7 +79,6 @@ public class ModelMini14 extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
             {

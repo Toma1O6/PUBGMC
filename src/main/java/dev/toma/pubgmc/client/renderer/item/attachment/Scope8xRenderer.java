@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.renderer.item.attachment;
 
 import dev.toma.pubgmc.client.models.atachments.ModelScope8x;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class Scope8xRenderer extends AttachmentRenderer<ItemScope> {
 
@@ -9,7 +10,8 @@ public class Scope8xRenderer extends AttachmentRenderer<ItemScope> {
 
     @Override
     public void preRenderCallback() {
-
+        GlStateManager.translate(0.5, 0.87, 0.3);
+        GlStateManager.scale(0.08F, 0.08F, 0.08F);
     }
 
     @Override
