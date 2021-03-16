@@ -867,7 +867,7 @@ public class ModelM24 extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.265f, 0.335f);
-        initAimingAnimationStates(0.265f, 0.205f, 0.16f);
+        initAimingAnimationStates(0.265f, 0.17f, 0.19f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
@@ -880,7 +880,6 @@ public class ModelM24 extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             GlStateManager.pushMatrix();

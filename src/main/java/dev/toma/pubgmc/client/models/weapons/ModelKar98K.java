@@ -61,7 +61,7 @@ public class ModelKar98K extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.56f, 0.265f, 0.245f);
-        initAimingAnimationStates(0.265f, 0.205f, 0.17f);
+        initAimingAnimationStates(0.265f, 0.193f, 0.19f);
         reloadAnimation = new ReloadAnimation(null, ReloadStyle.SINGLE);
     }
 
@@ -74,7 +74,6 @@ public class ModelKar98K extends ModelGun {
     @Override
     public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-
         if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             GlStateManager.pushMatrix();
             {

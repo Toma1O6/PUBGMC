@@ -80,7 +80,7 @@ public class ModelAWM extends ModelGun {
     @Override
     public void initAnimations() {
         initAimAnimation(-0.557f, 0.255f, 0.2f);
-        initAimingAnimationStates(0.255f, 0.17f, 0.119f);
+        initAimingAnimationStates(0.255f, 0.17f, 0.185f);
         reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, -90)
                 .withSpeed(0.8f);
     }
@@ -112,20 +112,11 @@ public class ModelAWM extends ModelGun {
 
         awm.render(1f);
         magazine.render(1.0F);
-        ironsights.render(1.0F);
         bolt.render(1.0F);
         stock.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
         GlStateManager.popMatrix();
-
-        /*
-        renderSniperSilencer(0, 0, 0, 1f, stack);
-        renderRedDot(0, -1.15, -10, 1f, stack);
-        renderHolo(0, -0.65, -7, 1f, stack);
-        renderScope2X(0, -1, -6, 1f, stack);
-        renderScope4X(0, -1, -8, 1f, stack);
-        renderScope8X(0, 0, 0, 1f, stack);
-        renderScope15X(0, 0, 0, 1f, stack);
-        */
     }
 
     public ModelAWM() {
