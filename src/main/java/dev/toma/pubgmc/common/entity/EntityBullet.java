@@ -11,6 +11,7 @@ import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCItems;
@@ -116,7 +117,7 @@ public class EntityBullet extends Entity {
                     reaction.onHit(this, rayTraceResult.hitVec, pos);
                 }
             }
-            boolean griefingFlag = world.getGameRules().getBoolean("weaponGriefing");
+            boolean griefingFlag = ConfigPMC.world().weaponGriefing.get();
             boolean canBePenetrated = false;
             if(block instanceof BlockWindow) {
                 canBePenetrated = true;

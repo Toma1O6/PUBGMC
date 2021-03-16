@@ -11,8 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class BlockGunWorkbench extends PMCBlock {
@@ -27,11 +25,7 @@ public class BlockGunWorkbench extends PMCBlock {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!playerIn.isSneaking() && !worldIn.isRemote) {
-            if (worldIn.getGameRules().getBoolean("weaponCrafting")) {
-                playerIn.openGui(Pubgmc.instance, GuiHandler.GUI_GUNCRAFTINGTABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
-            } else {
-                playerIn.sendMessage(new TextComponentString(TextFormatting.RED + "Crafting is disabled!"));
-            }
+            playerIn.openGui(Pubgmc.instance, GuiHandler.GUI_GUNCRAFTINGTABLE, worldIn, pos.getX(), pos.getY(), pos.getZ());
         }
 
         return true;

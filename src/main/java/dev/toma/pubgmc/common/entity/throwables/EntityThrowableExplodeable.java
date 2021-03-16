@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
 import dev.toma.pubgmc.common.blocks.BlockWindow;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketSyncEntity;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -110,7 +111,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public final void onCollide(Vec3d from, Vec3d to, RayTraceResult result) {
         BlockPos pos = result.getBlockPos();
         IBlockState state = this.world.getBlockState(pos);
-        boolean flag = this.world.getGameRules().getBoolean("weaponGriefing");
+        boolean flag = ConfigPMC.world().weaponGriefing.get();
         if(flag) {
             boolean hasBrokenGlass = false;
             if(state.getBlock() instanceof BlockWindow) {

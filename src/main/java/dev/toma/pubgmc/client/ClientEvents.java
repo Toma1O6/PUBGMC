@@ -333,8 +333,6 @@ public class ClientEvents {
             if (data.isReloading()) {
                 return;
             }
-            //Check if the player is able to reload
-            //Ammo checking is being handled in the onReload method from GunBase
             ItemStack stack = sp.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();

@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.GameRules;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -36,7 +35,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,24 +62,6 @@ public class Pubgmc {
 
     public static Random rng() {
         return RANDOM;
-    }
-
-    // TODO move to LoadWorldEvent
-    private static void registerGamerules(FMLServerStartingEvent e) {
-        GameRules gr = e.getServer().getWorld(0).getGameRules();
-        if (!gr.hasRule("weaponCrafting")) {
-            gr.addGameRule("weaponCrafting", "true", GameRules.ValueType.BOOLEAN_VALUE);
-        }
-        if (!gr.hasRule("weaponGriefing")) {
-            gr.addGameRule("weaponGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
-        }
-        logger.log(Level.INFO, "Registered gamerules");
-    }
-
-    private static void registerSmeltingRecipes() {
-        FurnaceRecipes rec = FurnaceRecipes.instance();
-        rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
-        rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
     }
 
     @EventHandler
@@ -127,10 +107,12 @@ public class Pubgmc {
         event.registerServerCommand(new CommandGame());
         event.registerServerCommand(new CommandPlayerData());
         event.registerServerCommand(new CommandManageGhillieVariants());
+    }
 
-        registerGamerules(event);
-
-        logger.log(Level.INFO, "Registered commands");
+    private static void registerSmeltingRecipes() {
+        FurnaceRecipes rec = FurnaceRecipes.instance();
+        rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
+        rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
     }
 
     public static boolean isOutdated() {

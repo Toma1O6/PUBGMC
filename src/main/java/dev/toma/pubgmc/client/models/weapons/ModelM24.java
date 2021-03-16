@@ -862,6 +862,8 @@ public class ModelM24 extends ModelGun {
         bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.4F, -0.3F, 0.0F, 2, 2, 11, 0.0F, false));
         bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.8F, -0.9F, 0.0F, 2, 2, 11, 0.0F, false));
         bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.8F, -0.3F, 0.0F, 2, 2, 11, 0.0F, false));
+
+        variants.isHidden = true;
     }
 
     @Override
