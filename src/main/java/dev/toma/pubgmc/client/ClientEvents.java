@@ -18,6 +18,7 @@ import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
+import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -337,23 +338,26 @@ public class ClientEvents {
             ItemStack stack = sp.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-
                 if (stack.hasTagCompound()) {
                     int ammo = gun.getAmmo(stack);
-
+                    AmmoType type = gun.getAmmoType();
                     if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(stack)) {
-                        data.setReloading(true);
-                        data.setReloadingTime(0);
-
-                        //Sync with server
-                        PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
-
-                        //Get the slot with gun which is being reloaded
-                        reloadingSlot = sp.inventory.currentItem;
-
-                        //You can't aim while you're reloading
-                        if (data.getAimInfo().isAiming()) {
-                            PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
+                        boolean hasAmmo = false;
+                        for (int i = 0; i < sp.inventory.getSizeInventory(); i++) {
+                            ItemStack ammoStack = sp.inventory.getStackInSlot(i);
+                            if(!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
+                                hasAmmo = true;
+                                break;
+                            }
+                        }
+                        if(hasAmmo) {
+                            data.setReloading(true);
+                            data.setReloadingTime(0);
+                            PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
+                            reloadingSlot = sp.inventory.currentItem;
+                            if (data.getAimInfo().isAiming()) {
+                                PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
+                            }
                         }
                     }
                 }
