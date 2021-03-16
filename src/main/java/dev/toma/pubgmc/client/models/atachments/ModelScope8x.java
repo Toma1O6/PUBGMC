@@ -204,7 +204,7 @@ public class ModelScope8x extends ModelAttachment<ItemScope> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		bone.render(1f);
 	}
 

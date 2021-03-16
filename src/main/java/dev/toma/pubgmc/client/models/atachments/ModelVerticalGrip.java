@@ -110,7 +110,7 @@ public class ModelVerticalGrip extends ModelAttachment<ItemGrip> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		gripsegment1.render(1f);
 		gripsegment2.render(1f);
 	}

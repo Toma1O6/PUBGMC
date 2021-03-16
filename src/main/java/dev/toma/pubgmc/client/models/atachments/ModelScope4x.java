@@ -199,7 +199,7 @@ public class ModelScope4x extends ModelAttachment<ItemScope> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		acog.render(1f);
 	}
 

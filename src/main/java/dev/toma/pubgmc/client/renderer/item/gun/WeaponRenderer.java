@@ -5,6 +5,8 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
 import dev.toma.pubgmc.client.renderer.item.attachment.AttachmentRenderer;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -40,6 +42,8 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
         manager.bindTexture(GUN_TEXTURES);
         getWeaponModel().render(itemStackIn, transformType);
         GunBase gun = (GunBase) itemStackIn.getItem();
+        IPlayerData data = PlayerData.get(Minecraft.getMinecraft().player);
+        float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress() : 0.0F;
         for (AttachmentType<?> type : AttachmentType.allTypes) {
             ItemAttachment attachment = gun.getAttachment(type, itemStackIn);
             if(attachment != null) {
@@ -47,7 +51,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
                 if(renderer == null)
                     continue;
                 manager.bindTexture(ATTACHMENT_TEXTURES);
-                renderer.render(this, attachment);
+                renderer.render(this, attachment, aimPct);
             }
         }
     }

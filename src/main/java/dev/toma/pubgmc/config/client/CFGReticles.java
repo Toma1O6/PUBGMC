@@ -34,7 +34,6 @@ public class CFGReticles extends ObjectType {
         holographicVariants = creator.createTextureArray("Holographic variant", 0, new TextureType.Entry[] {
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_normal.png"), "EOTech"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_large.png"), "EOTech Large"),
-                new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_vortex.png"), "Vortex"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_holosun.png"), "Holosun"),
         }, () -> holographicColor.getColor());
     }

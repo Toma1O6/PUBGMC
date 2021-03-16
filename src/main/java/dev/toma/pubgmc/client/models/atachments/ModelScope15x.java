@@ -638,7 +638,7 @@ public class ModelScope15x extends ModelAttachment<ItemScope> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		scope.render(1f);
 	}
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

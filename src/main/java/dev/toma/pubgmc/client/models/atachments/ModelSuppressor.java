@@ -50,7 +50,7 @@ public class ModelSuppressor extends ModelAttachment<ItemMuzzle> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		bone.render(1f);
 		bone2.render(1f);
 		bone3.render(1f);

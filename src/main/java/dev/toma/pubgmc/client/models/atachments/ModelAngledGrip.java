@@ -97,7 +97,7 @@ public class ModelAngledGrip extends ModelAttachment<ItemGrip> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		bone.render(1f);
 	}
 

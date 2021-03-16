@@ -116,13 +116,13 @@ public class ModelRedDot extends ModelAttachment<ItemScope> {
 	}
 
 	@Override
-	public void render() {
+	public void render(float aimPct) {
 		bone.render(1.0F);
 		Minecraft mc = Minecraft.getMinecraft();
 		CFGReticles reticles = ConfigPMC.client.reticles;
 		ResourceLocation reticleStyle = reticles.redDotVariants.get().getResource();
 		int reticleColor = reticles.redDotColor.getColor();
-		float a = ((reticleColor >> 24) & 255) / 255F;
+		float a = aimPct * ((reticleColor >> 24) & 255) / 255F;
 		float r = ((reticleColor >> 16) & 255) / 255F;
 		float g = ((reticleColor >> 8) & 255) / 255F;
 		float b = (reticleColor & 255) / 255F;

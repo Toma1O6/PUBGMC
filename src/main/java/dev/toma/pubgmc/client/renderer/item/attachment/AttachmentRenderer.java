@@ -17,7 +17,7 @@ public abstract class AttachmentRenderer<I extends ItemAttachment> {
 
     public void preRenderCallback() {}
 
-    public final void render(WeaponRenderer renderer, I item) {
+    public final void render(WeaponRenderer renderer, I item, float aimPct) {
         GlStateManager.pushMatrix();
         IRenderConfig config = renderer.getRenderConfig(item);
         if(config != null) {
@@ -27,7 +27,7 @@ public abstract class AttachmentRenderer<I extends ItemAttachment> {
         GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.scale(0.2F, 0.2F, 0.2F);
-        this.getModel().render();
+        this.getModel().render(aimPct);
         GlStateManager.popMatrix();
     }
 

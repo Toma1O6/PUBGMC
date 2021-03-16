@@ -18,7 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ClientHooks {
 
-    private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.FIXED;
+    private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND;
 
     public static void model_setupModelAngles(ModelBiped model, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();

@@ -5,5 +5,5 @@ import net.minecraft.client.model.ModelBase;
 
 public abstract class ModelAttachment<I extends ItemAttachment> extends ModelBase {
 
-    public abstract void render();
+    public abstract void render(float aimPct);
 }
