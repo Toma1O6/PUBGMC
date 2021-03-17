@@ -1,11 +1,11 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation.AimingAnimation;
-import dev.toma.pubgmc.animation.Animation;
-import dev.toma.pubgmc.animation.HeldAnimation;
-import dev.toma.pubgmc.animation.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
+import dev.toma.pubgmc.animation_old.AimingAnimation;
+import dev.toma.pubgmc.animation_old.Animation;
+import dev.toma.pubgmc.animation_old.HeldAnimation;
+import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
+import dev.toma.pubgmc.animation_old.ReloadAnimation;
+import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
@@ -13,7 +13,6 @@ import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 

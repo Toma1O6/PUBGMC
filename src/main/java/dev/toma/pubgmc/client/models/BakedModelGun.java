@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.models;
 
-import dev.toma.pubgmc.animation.Animation;
+import dev.toma.pubgmc.animation_old.Animation;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;

@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.animation;
+package dev.toma.pubgmc.animation_old;
 
 import javax.vecmath.Vector3f;
 

@@ -2,7 +2,9 @@ package dev.toma.pubgmc;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 public class DevUtil {
 
@@ -19,6 +21,19 @@ public class DevUtil {
 
     public static boolean isDev() {
         return Pubgmc.isDevEnvironment;
+    }
+
+    public static <T> T getPrevious(List<T> list, int index, T fallback) {
+        int prev = index - 1;
+        if(prev < 0)
+            return fallback;
+        return list.get(prev);
+    }
+
+    public static <T> T make(T t, Consumer<T> consumer) {
+        if(t != null)
+            consumer.accept(t);
+        return t;
     }
 
     public static <E> boolean contains(E[] group, E element) {

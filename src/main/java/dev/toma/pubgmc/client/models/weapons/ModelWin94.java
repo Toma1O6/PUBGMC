@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation.ReloadAnimation;
-import dev.toma.pubgmc.animation.ReloadAnimation.ReloadStyle;
+import dev.toma.pubgmc.animation_old.ReloadAnimation;
+import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;

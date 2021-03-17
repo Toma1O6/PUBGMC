@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.animation;
+package dev.toma.pubgmc.animation_old;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import net.minecraft.client.Minecraft;

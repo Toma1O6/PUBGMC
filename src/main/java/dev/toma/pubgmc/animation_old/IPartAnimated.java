@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.animation;
+package dev.toma.pubgmc.animation_old;
 
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.model.ModelRenderer;
