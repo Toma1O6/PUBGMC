@@ -204,7 +204,8 @@ public class ModelHolographic extends ModelAttachment<ItemScope> {
 		float b = (reticleColor & 255) / 255F;
 		mc.getTextureManager().bindTexture(reticleStyle);
 		GlStateManager.color(r, g, b, a);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+		if(a > 0.25F)
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
 		reticle.render(1.0F);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}

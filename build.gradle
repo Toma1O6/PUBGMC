@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.6.4-test"
+version = "1.6.4"
 group = "dev.toma.pubgmc" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "PUBGMC"
 
@@ -26,7 +26,7 @@ minecraft {
 }
 
 dependencies {
-    compile files('libs/configuration-1.12.2-1.0.3.jar')
+    compile files('libs/configuration-1.12.2-1.0.3.1.jar')
     testCompile "junit:junit:4.11"
 }
 

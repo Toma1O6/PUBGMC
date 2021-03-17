@@ -45,12 +45,12 @@ public class Pubgmc {
 
     public static final String MOD_ID = "pubgmc";
     public static final String NAME = "PUBGMC";
-    public static final String VERSION = "1.6.4-test";
+    public static final String VERSION = "1.6.4";
     public static final String ACCEPTED_VERSIONS = "[1.12.2]";
     public static final String CLIENT_PROXY_CLASS = "dev.toma.pubgmc.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "dev.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
-    public static final String DEPENDENCIES = "required-after:configuration@[1.0.3,)";
+    public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");
     public static boolean isDevEnvironment;
@@ -85,9 +85,7 @@ public class Pubgmc {
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(Pubgmc.instance, new GuiHandler());
         CommonRegistry.initTileEntities();
-
         registerSmeltingRecipes();
-
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
     }

@@ -3,7 +3,7 @@
   "modid": "pubgmc",
   "name": "PUBGMC",
   "description": "Mod which adds lot of ways to make fighting in Minecraft more interesting.",
-  "version": "1.6.4-test",
+  "version": "1.6.4",
   "mcversion": "1.12.2",
   "authorList": ["Toma1O6"],
   "logoFile": "",
