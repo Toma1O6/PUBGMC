@@ -19,9 +19,13 @@ public class AnimationProcessor {
 
     AnimationProcessor() {}
 
-    public void insert(AnimationType<?> type) {
+    public <A extends Animation> void play(AnimationType<A> type) {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        Animation animation = type.createAnimation(player);
+        A animation = type.createAnimation(player);
+        play(type, animation);
+    }
+
+    public <A extends Animation> void play(AnimationType<A> type, A animation) {
         if(animation != null)
             animations.put(type, animation);
     }
@@ -75,14 +79,14 @@ public class AnimationProcessor {
         Vec3d staticRotate = prevFrame.rotateTarget();
         Vec3d smoothRotate = currentFrame.rotateTarget();
         if(!staticRotate.equals(Vec3d.ZERO) || !smoothRotate.equals(Vec3d.ZERO)) {
-            if(staticRotate.x != 0.0 || smoothRotate.x != 0) {
+            if(staticRotate.x != 0.0 || smoothRotate.x != 0.0) {
                 GlStateManager.rotate((float) (staticRotate.x + smoothRotate.x * pct), 1.0F, 0.0F, 0.0F);
             }
-            if(staticRotate.y != 0.0 || smoothRotate.y != 0) {
-                GlStateManager.rotate((float) (staticRotate.x + smoothRotate.x * pct), 1.0F, 0.0F, 0.0F);
+            if(staticRotate.y != 0.0 || smoothRotate.y != 0.0) {
+                GlStateManager.rotate((float) (staticRotate.y + smoothRotate.y * pct), 0.0F, 1.0F, 0.0F);
             }
-            if(staticRotate.z != 0.0 || smoothRotate.z != 0) {
-                GlStateManager.rotate((float) (staticRotate.x + smoothRotate.x * pct), 1.0F, 0.0F, 0.0F);
+            if(staticRotate.z != 0.0 || smoothRotate.z != 0.0) {
+                GlStateManager.rotate((float) (staticRotate.z + smoothRotate.z * pct), 0.0F, 0.0F, 1.0F);
             }
         }
     }

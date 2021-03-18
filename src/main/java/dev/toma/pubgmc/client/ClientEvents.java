@@ -2,7 +2,9 @@ package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.AnimationFactory;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
+import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.Elements;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
@@ -384,73 +386,72 @@ public class ClientEvents {
         }
     }
 
-    //Client tick event
-    //All tick related stuff from client will be handled here
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClientTick(TickEvent.ClientTickEvent ev) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         GameSettings gs = mc.gameSettings;
-        if(ev.phase == Phase.START && mc.currentScreen instanceof ITickable) {
-            ((ITickable) mc.currentScreen).update();
+        if(ev.phase == Phase.END) {
+            if(mc.currentScreen instanceof ITickable) {
+                ((ITickable) mc.currentScreen).update();
+            }
+            AnimationProcessor.instance().processTick();
         }
 
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+        if (player != null && ev.phase == Phase.END && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             tracker.tick(mc.isGamePaused());
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if (ev.phase == Phase.END) {
-                if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
-                    IControllable controllable = (IControllable) player.getRidingEntity();
-                    int inputs = controllable.encode(gs);
-                    controllable.handle((byte) inputs);
-                    PacketHandler.sendToServer(new SPacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
-                }
-                if (gs.keyBindAttack.isKeyDown()) {
-                    ItemStack stack = player.getHeldItemMainhand();
-                    if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
-                        GunBase gun = (GunBase) stack.getItem();
-                        if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.isOnCooldown(gun)) {
-                            if (gun.hasAmmo(stack)) {
-                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                this.applyRecoil(player, stack, gun);
-                                tracker.add(gun);
-                            } else {
-                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-                            }
+            if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
+                IControllable controllable = (IControllable) player.getRidingEntity();
+                int inputs = controllable.encode(gs);
+                controllable.handle((byte) inputs);
+                PacketHandler.sendToServer(new SPacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
+            }
+            if (gs.keyBindAttack.isKeyDown()) {
+                ItemStack stack = player.getHeldItemMainhand();
+                if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
+                    GunBase gun = (GunBase) stack.getItem();
+                    if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.isOnCooldown(gun)) {
+                        if (gun.hasAmmo(stack)) {
+                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                            this.applyRecoil(player, stack, gun);
+                            tracker.add(gun);
+                        } else {
+                            player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                         }
                     }
                 }
+            }
 
-                if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
-                    ItemStack stack = player.getHeldItemMainhand();
-                    GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
-                    int maxRounds = gun.getBurstAmount();
-                    if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
-                        if (shooting && gun.getFiremode(stack) == GunBase.Firemode.BURST) {
-                            shootingTimer++;
-                            if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
-                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                applyRecoil(player, stack, gun);
-                                shotsFired++;
-                                shootingTimer = 0;
-                            }
+            if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.isSpectator()) {
+                ItemStack stack = player.getHeldItemMainhand();
+                GunBase gun = (GunBase) player.getHeldItemMainhand().getItem();
+                int maxRounds = gun.getBurstAmount();
+                if (stack.hasTagCompound() && gun.hasAmmo(stack)) {
+                    if (shooting && gun.getFiremode(stack) == GunBase.Firemode.BURST) {
+                        shootingTimer++;
+                        if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
+                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                            applyRecoil(player, stack, gun);
+                            shotsFired++;
+                            shootingTimer = 0;
+                        }
 
-                            if (shotsFired >= maxRounds || !gun.hasAmmo(stack)) {
-                                shooting = false;
-                                shootingTimer = 0;
-                                shotsFired = 0;
-                            }
-                        } else {
+                        if (shotsFired >= maxRounds || !gun.hasAmmo(stack)) {
                             shooting = false;
                             shootingTimer = 0;
                             shotsFired = 0;
                         }
                     } else {
-                        if (shooting) {
-                            shooting = false;
-                            shootingTimer = 0;
-                            shotsFired = 0;
-                        }
+                        shooting = false;
+                        shootingTimer = 0;
+                        shotsFired = 0;
+                    }
+                } else {
+                    if (shooting) {
+                        shooting = false;
+                        shootingTimer = 0;
+                        shotsFired = 0;
                     }
                 }
             }
@@ -559,6 +560,13 @@ public class ClientEvents {
         }
     }
 
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if(event.phase == Phase.START) {
+            AnimationProcessor.instance().processFrame(event.renderTickTime);
+        }
+    }
+
     private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun) {
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         ItemGrip grip = gun.getAttachment(AttachmentType.GRIP, stack);
@@ -584,6 +592,7 @@ public class ClientEvents {
         float h = Pubgmc.rng().nextBoolean() ? -gun.getHorizontalRecoil() * horizontal : gun.getHorizontalRecoil() * horizontal;
         player.rotationPitch -= v;
         player.rotationYaw += h;
+        AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, AnimationFactory.createRecoilAnimation(h, v));
     }
 
     private void setReloading(IPlayerData data, boolean reload) {

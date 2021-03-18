@@ -16,7 +16,7 @@ public class WeaponCooldownTracker {
             while (itr.hasNext()) {
                 Map.Entry<GunBase, Integer> entry = itr.next();
                 int i = entry.getValue() - 1;
-                if(i < 0) {
+                if(i <= 0) {
                     itr.remove();
                     continue;
                 }
@@ -27,7 +27,7 @@ public class WeaponCooldownTracker {
 
     public boolean isOnCooldown(GunBase gunBase) {
         Integer i = map.get(gunBase);
-        return i != null && i >= 0;
+        return i != null && i > 0;
     }
 
     public void add(GunBase gun) {

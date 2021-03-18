@@ -68,6 +68,7 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
         ProgressManager.ProgressBar bar = ProgressManager.push("Animation loader:", paths.size());
+        animationSpecMap.clear();
         for (ResourceLocation path : paths) {
             try {
                 bar.step(path.toString());
@@ -76,7 +77,6 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
                 log.error("Exception occurred while loading file {}: {}", path.toString(), e);
             }
         }
-        paths = null;
         ProgressManager.pop(bar);
     }
 

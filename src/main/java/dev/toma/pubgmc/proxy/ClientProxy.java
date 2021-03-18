@@ -60,7 +60,6 @@ public class ClientProxy extends Proxy {
         registerEntityRenderers();
         Pubgmc.getContentManager().initialize();
         Animations.registerAnimations(animationLoader);
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(animationLoader);
     }
 
     @Override
@@ -70,6 +69,7 @@ public class ClientProxy extends Proxy {
         ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
         itemColors.registerItemColorHandler((stack, tintIndex) -> stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : 0x359E35, PMCItems.GHILLIE_SUIT);
         registerWeaponRenderers();
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(animationLoader);
     }
 
     @Override
