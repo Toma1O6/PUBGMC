@@ -23,6 +23,15 @@ public class DevUtil {
         return Pubgmc.isDevEnvironment;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T[] expandArray(T[] array, int addedLength) {
+        if(addedLength <= 0)
+            throw new IllegalArgumentException("Number must be bigger than 0");
+        T[] expanded = (T[]) new Object[array.length + addedLength];
+        System.arraycopy(array, 0, expanded, 0, array.length);
+        return expanded;
+    }
+
     public static <T> T getPrevious(List<T> list, int index, T fallback) {
         int prev = index - 1;
         if(prev < 0)

@@ -49,8 +49,17 @@ public class AnimationProcessor {
         animations.values().forEach(anim -> anim.renderTick(partialTicks));
     }
 
-    public void process(String element) {
+    public void process(AnimationElement element) {
         animations.values().forEach(anim -> anim.animateElement(element));
+    }
+
+    public boolean isItemRenderBlocked() {
+        for (Animation animation : animations.values()) {
+            if (animation.blocksItemRender()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void processKeyFrame(KeyFrame frame, float pct) {

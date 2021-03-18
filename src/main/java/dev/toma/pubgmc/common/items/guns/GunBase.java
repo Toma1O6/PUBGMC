@@ -3,6 +3,8 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
+import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -28,6 +30,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -49,7 +52,7 @@ import java.util.stream.Collectors;
  * This is the core class for all guns
  * @author Toma
  */
-public class GunBase extends PMCItem implements MainHandOnly {
+public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
 
     protected final Supplier<SoundEvent> action;
     private final CFGWeapon wepStats;
@@ -284,6 +287,12 @@ public class GunBase extends PMCItem implements MainHandOnly {
         ItemMagazine mag = this.getAttachment(AttachmentType.MAGAZINE, stack);
         ItemStock stock = this.getAttachment(AttachmentType.STOCK, stack);
         return (mag != null && mag.isQuickdraw()) || (stock != null && stock.isFasterReload()) ? reloadTime * 0.7 : reloadTime;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void animate(EnumHandSide side) {
+        ((WeaponRenderer) getTileEntityItemStackRenderer()).getWeaponModel().renderArm(side);
     }
 
     @Deprecated

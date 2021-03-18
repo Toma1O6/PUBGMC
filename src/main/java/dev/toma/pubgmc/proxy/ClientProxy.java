@@ -3,6 +3,8 @@ package dev.toma.pubgmc.proxy;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
+import dev.toma.pubgmc.client.animation.AnimationLoader;
+import dev.toma.pubgmc.client.animation.Animations;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
 import dev.toma.pubgmc.client.renderer.entity.*;
 import dev.toma.pubgmc.client.renderer.item.attachment.*;
@@ -32,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -48,18 +51,7 @@ import java.util.concurrent.Callable;
 
 public class ClientProxy extends Proxy {
 
-    private static void registerEntityRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityFragGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.GRENADE));
-        RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.SMOKE));
-        RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, manager -> new RenderThrowable<>(manager, PMCItems.MOLOTOV));
-        RenderingRegistry.registerEntityRenderingHandler(EntityFlashBang.class, manager -> new RenderThrowable<>(manager, PMCItems.FLASHBANG));
-        RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleDacia.class, RenderDacia::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
-    }
+    public static AnimationLoader animationLoader = new AnimationLoader();
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -67,6 +59,8 @@ public class ClientProxy extends Proxy {
         MinecraftForge.EVENT_BUS.register(new RenderHandler());
         registerEntityRenderers();
         Pubgmc.getContentManager().initialize();
+        Animations.registerAnimations(animationLoader);
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(animationLoader);
     }
 
     @Override
@@ -135,6 +129,19 @@ public class ClientProxy extends Proxy {
                 .filter(it -> it instanceof GunBase)
                 .map(it -> (WeaponRenderer) it.getTileEntityItemStackRenderer())
                 .forEach(WeaponRenderer::registerAttachmentRenders);
+    }
+
+    static void registerEntityRenderers() {
+        RenderingRegistry.registerEntityRenderingHandler(EntityFragGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.GRENADE));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.SMOKE));
+        RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, manager -> new RenderThrowable<>(manager, PMCItems.MOLOTOV));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFlashBang.class, manager -> new RenderThrowable<>(manager, PMCItems.FLASHBANG));
+        RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleDacia.class, RenderDacia::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
     }
 
     public static void playButtonPressSound() {

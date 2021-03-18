@@ -1,6 +1,10 @@
 package dev.toma.pubgmc.client;
 
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.AnimationProcessor;
+import dev.toma.pubgmc.client.animation.Elements;
+import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.Widget;
@@ -33,12 +37,14 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
@@ -46,6 +52,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -78,109 +85,60 @@ public class ClientEvents {
     // TODO remove
     private boolean hasAmmo;
 
-    /**
-     * Method for rendering the textured boost overlays
-     * TODO improve
-     */
-    private static void renderBoost(BoostStats stats) {
-        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
-
-        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
-            int left = width / 2 - 91;
-            int top = height - 32 + 3;
-            short barWidth = 182;
-
-            //Actual drawing code
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
-            int boost = stats.getLevel();
-            if (boost > 0) {
-                double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
-                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
-            }
-
-            //This will render after these 2 above to make sure this will always be on the top
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
-        }
-    }
-
-    private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
-        ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
-        int left = width / 2 + 93;
-        int top = height - 19;
-        int offset = 0;
-
-        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) head.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
-            offset += 17;
-        }
-
-        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) body.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
-            offset += 17;
-        }
-
-        if (data.getBackpackLevel() > 0) {
-            int level = data.getBackpackLevel() - 1;
-            ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
-            offset += 17;
-        }
-
-        if (data.getEquippedNV()) {
-            int i = data.isUsingNV() ? 1 : 0;
-            ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
-        }
-    }
-
-    /**
-     * @deprecated render tinted texture instead
-     */
-    @Deprecated
-    private static int getDamageLevel(ItemStack stack) {
-        final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
-        return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
-    }
-
-    private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int)(speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
-        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
-        }
-    }
-
-    private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
-        final DecimalFormat f = new DecimalFormat("#,#0.0");
-        final float useTime = (float) player.getItemInUseCount();
-        FontRenderer font = mc.fontRenderer;
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
-        int left = width / 2;
-        int top = height / 2;
-        font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
-    }
-
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
         if(event.getGui() instanceof GuiMainMenu) {
             event.setGui(new GuiMenu());
+        }
+    }
+
+    @SubscribeEvent
+    public void renderHands(RenderSpecificHandEvent event) {
+        ItemStack stack = event.getItemStack();
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayerSP player = mc.player;
+        float partial = event.getPartialTicks();
+        if(stack.getItem() instanceof HandAnimate) {
+            HandAnimate animate = (HandAnimate) stack.getItem();
+            event.setCanceled(true);
+            float pitch = DevUtil.lerp(player.rotationPitch, player.prevRotationPitch, partial);
+            float swing = event.getSwingProgress();
+            float equip = event.getEquipProgress();
+            AnimationProcessor processor = AnimationProcessor.instance();
+            GlStateManager.pushMatrix();
+            {
+                processor.process(Elements.ITEM_AND_HANDS);
+                GlStateManager.pushMatrix();
+                {
+                    float yOff = -0.5F * equip;
+                    processor.process(Elements.HANDS);
+                    GlStateManager.pushMatrix();
+                    {
+                        GlStateManager.disableCull();
+                        GlStateManager.translate(0, yOff, 0);
+                        GlStateManager.pushMatrix();
+                        {
+                            processor.process(Elements.RIGHT_HAND);
+                            animate.animate(EnumHandSide.RIGHT);
+                        }
+                        GlStateManager.popMatrix();
+                        GlStateManager.pushMatrix();
+                        {
+                            processor.process(Elements.LEFT_HAND);
+                            animate.animate(EnumHandSide.LEFT);
+                        }
+                        GlStateManager.popMatrix();
+                        GlStateManager.enableCull();
+                    }
+                    GlStateManager.popMatrix();
+                }
+                GlStateManager.popMatrix();
+                if(!processor.isItemRenderBlocked()) {
+                    processor.process(Elements.ITEM);
+                    mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, equip);
+                }
+            }
+            GlStateManager.popMatrix();
         }
     }
 
@@ -635,5 +593,104 @@ public class ClientEvents {
 
     private void setAiming(IPlayerData data, boolean aim) {
         PacketHandler.sendToServer(new SPacketSetProperty(aim, SPacketSetProperty.Action.AIM));
+    }
+
+    /**
+     * Method for rendering the textured boost overlays
+     * TODO improve
+     */
+    private static void renderBoost(BoostStats stats) {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+
+        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
+            int left = width / 2 - 91;
+            int top = height - 32 + 3;
+            short barWidth = 182;
+
+            //Actual drawing code
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
+            int boost = stats.getLevel();
+            if (boost > 0) {
+                double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
+                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
+            }
+
+            //This will render after these 2 above to make sure this will always be on the top
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
+        }
+    }
+
+    private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
+        ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+        int left = width / 2 + 93;
+        int top = height - 19;
+        int offset = 0;
+
+        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
+            ArmorBase armor = (ArmorBase) head.getItem();
+            int level = armor.armorLevel().getArmorLevel();
+            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
+            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+            offset += 17;
+        }
+
+        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
+            ArmorBase armor = (ArmorBase) body.getItem();
+            int level = armor.armorLevel().getArmorLevel();
+            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
+            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+            offset += 17;
+        }
+
+        if (data.getBackpackLevel() > 0) {
+            int level = data.getBackpackLevel() - 1;
+            ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
+            offset += 17;
+        }
+
+        if (data.getEquippedNV()) {
+            int i = data.isUsingNV() ? 1 : 0;
+            ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
+        }
+    }
+
+    /**
+     * @deprecated render tinted texture instead
+     */
+    @Deprecated
+    private static int getDamageLevel(ItemStack stack) {
+        final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
+        return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
+    }
+
+    private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
+        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
+            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
+            double speed = car.getSpeed() * 20;
+            mc.fontRenderer.drawStringWithShadow("Speed: " + (int)(speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
+        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
+            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
+            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
+        }
+    }
+
+    private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
+        final DecimalFormat f = new DecimalFormat("#,#0.0");
+        final float useTime = (float) player.getItemInUseCount();
+        FontRenderer font = mc.fontRenderer;
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+        int left = width / 2;
+        int top = height / 2;
+        font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
     }
 }

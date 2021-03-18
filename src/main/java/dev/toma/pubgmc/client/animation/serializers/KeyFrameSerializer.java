@@ -1,15 +1,13 @@
 package dev.toma.pubgmc.client.animation.serializers;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.Vec3d;
 
 import java.lang.reflect.Type;
 
-public class KeyFrameSerializer implements JsonSerializer<KeyFrame> {
+public class KeyFrameSerializer implements JsonSerializer<KeyFrame>, JsonDeserializer<KeyFrame> {
 
     @Override
     public JsonElement serialize(KeyFrame src, Type typeOfSrc, JsonSerializationContext context) {
@@ -23,5 +21,24 @@ public class KeyFrameSerializer implements JsonSerializer<KeyFrame> {
         if(!rotate.equals(Vec3d.ZERO))
             object.add("rotate", context.serialize(rotate, Vec3d.class));
         return object;
+    }
+
+    @Override
+    public KeyFrame deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!json.isJsonObject())
+            throw new JsonParseException("Expected object, got: " + json.getClass().getSimpleName());
+        JsonObject object = json.getAsJsonObject();
+        float endpoint = JsonUtils.getFloat(json, "endpoint");
+        Vec3d move = Vec3d.ZERO;
+        if (object.has("move")) {
+            move = context.deserialize(object.get("move"), Vec3d.class);
+        }
+        KeyFrame frame;
+        if (object.has("rotate")) {
+            Vec3d rotate = context.deserialize(json, Vec3d.class);
+            frame = KeyFrame.rotate(endpoint, move, rotate);
+        } else
+            frame = KeyFrame.move(endpoint, move);
+        return frame;
     }
 }

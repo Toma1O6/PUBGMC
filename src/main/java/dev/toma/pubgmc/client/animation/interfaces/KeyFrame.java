@@ -20,6 +20,10 @@ public interface KeyFrame {
         return new Basic(endpoint, move);
     }
 
+    static KeyFrame rotate(float endpoint, Vec3d move, Vec3d rotate) {
+        return new Rotate(endpoint, move, rotate);
+    }
+
     class Basic implements KeyFrame {
 
         final float endPoint;
@@ -38,6 +42,21 @@ public interface KeyFrame {
         @Override
         public Vec3d moveTarget() {
             return move;
+        }
+    }
+
+    class Rotate extends Basic {
+
+        final Vec3d rotate;
+
+        Rotate(float end, Vec3d move, Vec3d rotate) {
+            super(end, move);
+            this.rotate = rotate;
+        }
+
+        @Override
+        public Vec3d rotateTarget() {
+            return rotate;
         }
     }
 }

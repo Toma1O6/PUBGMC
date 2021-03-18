@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client.animation.impl;
 
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
 import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class MultiFrameAnimation extends TickableAnimation {
 
     final AnimationSpec spec;
-    final Map<String, Integer> elementIndexCache;
+    final Map<AnimationElement, Integer> elementIndexCache;
     float progress, progressPrev, progressSmooth;
 
     public MultiFrameAnimation(int length, AnimationSpec spec) {
@@ -22,7 +23,7 @@ public class MultiFrameAnimation extends TickableAnimation {
     }
 
     @Override
-    public void animateElement(String element) {
+    public void animateElement(AnimationElement element) {
         spec.getDefs(element).ifPresent(list -> {
             int index = elementIndexCache.get(element);
             KeyFrame currentFrame = list.get(index);
@@ -44,9 +45,9 @@ public class MultiFrameAnimation extends TickableAnimation {
         super.tick();
         this.progressPrev = progress;
         progress = this.getProgress();
-        for (Map.Entry<String, List<KeyFrame>> entry : spec.getFrameDefs().entrySet()) {
+        for (Map.Entry<AnimationElement, List<KeyFrame>> entry : spec.getFrameDefs().entrySet()) {
             List<KeyFrame> keyFrames = entry.getValue();
-            String element = entry.getKey();
+            AnimationElement element = entry.getKey();
             int index = elementIndexCache.get(element);
             KeyFrame frame = keyFrames.get(index);
             float endpoint = frame.endPoint();

@@ -1,14 +1,12 @@
 package dev.toma.pubgmc.client.animation.serializers;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.Vec3d;
 
 import java.lang.reflect.Type;
 
-public class Vec3dSerializer implements JsonSerializer<Vec3d> {
+public class Vec3dSerializer implements JsonSerializer<Vec3d>, JsonDeserializer<Vec3d> {
 
     @Override
     public JsonElement serialize(Vec3d src, Type typeOfSrc, JsonSerializationContext context) {
@@ -17,5 +15,18 @@ public class Vec3dSerializer implements JsonSerializer<Vec3d> {
         object.addProperty("y", src.y);
         object.addProperty("z", src.z);
         return object;
+    }
+
+    @Override
+    public Vec3d deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if(!json.isJsonObject())
+            throw new JsonParseException("Expected object, got: " + json.getClass().getSimpleName());
+        JsonObject object = json.getAsJsonObject();
+        double x = JsonUtils.getFloat(object, "x");
+        double y = JsonUtils.getFloat(object, "y");
+        double z = JsonUtils.getFloat(object, "z");
+        if(x == 0 && y == 0 && z == 0)
+            return Vec3d.ZERO;
+        return new Vec3d(x, y, z);
     }
 }
