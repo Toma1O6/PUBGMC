@@ -55,4 +55,8 @@ public class MultiFrameAnimation extends TickableAnimation {
                 elementIndexCache.put(element, index + 1);
         }
     }
+
+    public AnimationSpec getSpec() {
+        return spec;
+    }
 }

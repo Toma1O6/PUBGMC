@@ -591,7 +591,7 @@ public class ClientEvents {
         float v = gun.getVerticalRecoil() * vertical;
         float h = Pubgmc.rng().nextBoolean() ? -gun.getHorizontalRecoil() * horizontal : gun.getHorizontalRecoil() * horizontal;
         player.rotationPitch -= v;
-        player.rotationYaw += h;
+        player.rotationYaw -= h;
         AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, AnimationFactory.createRecoilAnimation(h, v));
     }
 
