@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.*;
 
 public class PMCClassTransformer implements IClassTransformer {
 
-    static final Logger log = LogManager.getLogger("PUBGMC-CORE");
+    static final Logger log = LogManager.getLogger("pubgmc-core");
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
@@ -20,8 +20,56 @@ public class PMCClassTransformer implements IClassTransformer {
                 return this.injectPlayerSetupAngles(basicClass, isObfEnv);
             case "net.minecraft.client.renderer.entity.RenderPlayer":
                 return this.injectRenderPlayer(basicClass, isObfEnv);
+            case "net.minecraftforge.client.ForgeHooksClient":
+                return this.injectHandleCameraTransforms(basicClass);
         }
         return basicClass;
+    }
+
+    /*
+    Couldn't figure out better injection point. Feel free to suggest anything else
+    Why is this needed? Injected method sets last used TransformType which is used
+    to determine whether model animation should be applied or not.
+    */
+    byte[] injectHandleCameraTransforms(byte[] bytes) {
+        log.info("Preparing injection into 'net.minecraftforge.client.ForgeHooksClient'");
+        ClassNode node = new ClassNode();
+        ClassReader reader = new ClassReader(bytes);
+        reader.accept(node, 0);
+        for (MethodNode methodNode : node.methods) {
+            if(methodNode.name.equals("handleCameraTransforms") && methodNode.desc.equals("(Lnet/minecraft/client/renderer/block/model/IBakedModel;Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)Lnet/minecraft/client/renderer/block/model/IBakedModel;")) {
+                InsnList insnList = methodNode.instructions;
+                boolean injected = false;
+                for (int i = 0; i < insnList.size(); i++) {
+                    AbstractInsnNode insnNode = insnList.get(i);
+                    if(insnNode.getOpcode() == Opcodes.INVOKEINTERFACE && insnNode instanceof MethodInsnNode) {
+                        MethodInsnNode methodInsnNode = (MethodInsnNode) insnNode;
+                        if(methodInsnNode.name.equals("handlePerspective")) {
+                            log.info("Injecting hook into {} method", methodInsnNode.name);
+                            InsnList list = new InsnList();
+                            list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                            list.add(new MethodInsnNode(
+                                    Opcodes.INVOKESTATIC,
+                                    "dev/toma/pubgmc/ClientHooks",
+                                    "preRenderItem",
+                                    "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V",
+                                    false
+                            ));
+                            insnList.insertBefore(insnList.get(i - 2), list);
+                            log.info("Injection successful");
+                            injected = true;
+                            break;
+                        }
+                    }
+                }
+                if(!injected) {
+                    log.fatal("Injection failed");
+                }
+            }
+        }
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
     }
 
     /*
@@ -165,15 +213,6 @@ public class PMCClassTransformer implements IClassTransformer {
                 }
             }
         }
-        ClassWriter writer = new ClassWriter(0);
-        node.accept(writer);
-        return writer.toByteArray();
-    }
-
-    byte[] injectLayers(byte[] bytes, boolean isObf) {
-        ClassNode node = new ClassNode();
-        ClassReader reader = new ClassReader(bytes);
-        reader.accept(node, 0);
         ClassWriter writer = new ClassWriter(0);
         node.accept(writer);
         return writer.toByteArray();

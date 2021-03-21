@@ -2,19 +2,23 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
+import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.client.renderer.item.attachment.AttachmentRenderer;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -25,11 +29,24 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
 
     public static final ResourceLocation GUN_TEXTURES = Pubgmc.getResource("textures/weapon/gun_textures.png");
     public static final ResourceLocation ATTACHMENT_TEXTURES = Pubgmc.getResource("textures/weapon/attachment_textures.png");
+    private final Pair<IRenderConfig, IRenderConfig> handRenderConfigs;
     private Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
+
+    public WeaponRenderer() {
+        this.handRenderConfigs = createHandRenderConfigs();
+    }
 
     public abstract ModelGun getWeaponModel();
 
     public abstract void registerAttachmentRenders();
+
+    public Pair<IRenderConfig, IRenderConfig> createHandRenderConfigs() {
+        return Pair.of(GuiHandPlacer.left, GuiHandPlacer.right);
+    }
+
+    public void renderArm(EnumHandSide side) {
+        HandAnimate.renderHand(side, side == EnumHandSide.RIGHT ? handRenderConfigs.getRight() : handRenderConfigs.getLeft());
+    }
 
     public void preRender(ItemCameraTransforms.TransformType transformType) {
     }

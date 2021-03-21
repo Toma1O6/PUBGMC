@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.client.renderer.item;
+package dev.toma.pubgmc.client.renderer;
 
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -12,23 +12,27 @@ public interface IRenderConfig {
         return EMPTY;
     }
 
-    static IRenderConfig translated(float x, float y, float z) {
-        return new TranslationRenderConfig(x, y, z);
+    static IRenderConfig positioned(float x, float y, float z) {
+        return new PositionedRenderConfig(x, y, z);
     }
 
-    static IRenderConfig translatedScaled(float x, float y, float z, float scaleX, float scaleY, float scaleZ) {
+    static IRenderConfig positionedScaled(float x, float y, float z, float scaleX, float scaleY, float scaleZ) {
         return new ScaledRenderConfig(x, y, z, scaleX, scaleY, scaleZ);
     }
 
-    static IRenderConfig rotated(float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rx, float ry, float rz) {
+    static IRenderConfig rotated(float x, float y, float z, float rx, float ry, float rz) {
+        return new PositionRotatedConfig(x, y, z, rx, ry, rz);
+    }
+
+    static IRenderConfig rotatedScaled(float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rx, float ry, float rz) {
         return new RotatedRenderConfig(x, y, z, scaleX, scaleY, scaleZ, rx, ry, rz);
     }
 
-    class TranslationRenderConfig implements IRenderConfig {
+    class PositionedRenderConfig implements IRenderConfig {
 
         final float x, y, z;
 
-        TranslationRenderConfig(float x, float y, float z) {
+        PositionedRenderConfig(float x, float y, float z) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -40,7 +44,7 @@ public interface IRenderConfig {
         }
     }
 
-    class ScaledRenderConfig extends TranslationRenderConfig {
+    class ScaledRenderConfig extends PositionedRenderConfig {
 
         final float sx, sy, sz;
 
@@ -64,6 +68,29 @@ public interface IRenderConfig {
 
         RotatedRenderConfig(float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rx, float ry, float rz) {
             super(x, y, z, scaleX, scaleY, scaleZ);
+            this.rx = rx;
+            this.ry = ry;
+            this.rz = rz;
+        }
+
+        @Override
+        public void applyTransforms() {
+            super.applyTransforms();
+            if(rx != 0)
+                GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
+            if(ry != 0)
+                GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
+            if(rz != 0)
+                GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
+        }
+    }
+
+    class PositionRotatedConfig extends PositionedRenderConfig {
+
+        final float rx, ry, rz;
+
+        public PositionRotatedConfig(float x, float y, float z, float rx, float ry, float rz) {
+            super(x, y, z);
             this.rx = rx;
             this.ry = ry;
             this.rz = rz;

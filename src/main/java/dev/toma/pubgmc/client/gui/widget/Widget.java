@@ -111,16 +111,24 @@ public abstract class Widget {
     }
 
     public static void drawColorShape(int x1, int y1, int x2, int y2, int depth, float r, float g, float b, float a) {
+        drawColorShape(x1, y2, x2, y2, x2, y1, x1, y1, depth, r, g, b, a);
+    }
+
+    public static void drawColorShape(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy, float r, float g, float b, float a) {
+        drawColorShape(ax, ay, bx, by, cx, cy, dx, dy, 0, r, g, b, a);
+    }
+
+    public static void drawColorShape(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy, int depth, float r, float g, float b, float a) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder builder = tessellator.getBuffer();
         builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        builder.pos(x1, y2, depth).color(r, g, b, a).endVertex();
-        builder.pos(x2, y2, depth).color(r, g, b, a).endVertex();
-        builder.pos(x2, y1, depth).color(r, g, b, a).endVertex();
-        builder.pos(x1, y1, depth).color(r, g, b, a).endVertex();
+        builder.pos(ax, ay, depth).color(r, g, b, a).endVertex();
+        builder.pos(bx, by, depth).color(r, g, b, a).endVertex();
+        builder.pos(cx, cy, depth).color(r, g, b, a).endVertex();
+        builder.pos(dx, dy, depth).color(r, g, b, a).endVertex();
         tessellator.draw();
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();

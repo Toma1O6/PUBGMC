@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.renderer.item.attachment;
 
 import dev.toma.pubgmc.client.models.atachments.ModelAttachment;
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import net.minecraft.client.renderer.GlStateManager;

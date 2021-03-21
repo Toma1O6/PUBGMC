@@ -28,17 +28,18 @@ public class KeyFrameSerializer implements JsonSerializer<KeyFrame>, JsonDeseria
         if (!json.isJsonObject())
             throw new JsonParseException("Expected object, got: " + json.getClass().getSimpleName());
         JsonObject object = json.getAsJsonObject();
-        float endpoint = JsonUtils.getFloat(json, "endpoint");
+        float endpoint = JsonUtils.getFloat(object.get("endpoint"), "endpoint");
         Vec3d move = Vec3d.ZERO;
         if (object.has("move")) {
             move = context.deserialize(object.get("move"), Vec3d.class);
         }
         KeyFrame frame;
         if (object.has("rotate")) {
-            Vec3d rotate = context.deserialize(json, Vec3d.class);
+            Vec3d rotate = context.deserialize(object.get("rotate"), Vec3d.class);
             frame = KeyFrame.rotate(endpoint, move, rotate);
-        } else
+        } else if(!move.equals(Vec3d.ZERO)) {
             frame = KeyFrame.move(endpoint, move);
+        } else frame = () -> endpoint;
         return frame;
     }
 }

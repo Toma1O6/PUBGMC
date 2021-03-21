@@ -2,7 +2,7 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelScarL;
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 

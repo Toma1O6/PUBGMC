@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.animation.interfaces;
 
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;

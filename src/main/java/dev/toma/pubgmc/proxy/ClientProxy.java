@@ -3,6 +3,7 @@ package dev.toma.pubgmc.proxy;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.client.animation.Animations;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
@@ -51,7 +52,7 @@ import java.util.concurrent.Callable;
 
 public class ClientProxy extends Proxy {
 
-    public static AnimationLoader animationLoader = new AnimationLoader();
+    private static AnimationLoader animationLoader = new AnimationLoader();
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -110,6 +111,10 @@ public class ClientProxy extends Proxy {
         } catch (Exception e) {
             Pubgmc.logger.fatal(e);
         }
+    }
+
+    public static AnimationLoader getAnimationLoader() {
+        return animationLoader;
     }
 
     static void registerWeaponRenderers() {

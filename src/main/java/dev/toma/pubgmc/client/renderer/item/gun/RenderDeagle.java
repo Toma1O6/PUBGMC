@@ -2,7 +2,7 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelDeagle;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
@@ -22,6 +22,6 @@ public class RenderDeagle extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.translatedScaled(0.155F, 0.28F, 0.3F, 0.7F, 0.7F, 0.7F));
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.155F, 0.28F, 0.3F, 0.7F, 0.7F, 0.7F));
     }
 }

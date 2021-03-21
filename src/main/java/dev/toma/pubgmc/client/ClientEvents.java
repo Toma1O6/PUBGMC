@@ -2,11 +2,13 @@ package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationFactory;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
-import dev.toma.pubgmc.client.animation.Elements;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
+import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
+import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.Widget;
@@ -109,24 +111,24 @@ public class ClientEvents {
             AnimationProcessor processor = AnimationProcessor.instance();
             GlStateManager.pushMatrix();
             {
-                processor.process(Elements.ITEM_AND_HANDS);
+                processor.process(AnimationElement.ITEM_AND_HANDS);
                 GlStateManager.pushMatrix();
                 {
                     float yOff = -0.5F * equip;
-                    processor.process(Elements.HANDS);
+                    processor.process(AnimationElement.HANDS);
                     GlStateManager.pushMatrix();
                     {
                         GlStateManager.disableCull();
                         GlStateManager.translate(0, yOff, 0);
                         GlStateManager.pushMatrix();
                         {
-                            processor.process(Elements.RIGHT_HAND);
+                            processor.process(AnimationElement.RIGHT_HAND);
                             animate.animate(EnumHandSide.RIGHT);
                         }
                         GlStateManager.popMatrix();
                         GlStateManager.pushMatrix();
                         {
-                            processor.process(Elements.LEFT_HAND);
+                            processor.process(AnimationElement.LEFT_HAND);
                             animate.animate(EnumHandSide.LEFT);
                         }
                         GlStateManager.popMatrix();
@@ -136,7 +138,7 @@ public class ClientEvents {
                 }
                 GlStateManager.popMatrix();
                 if(!processor.isItemRenderBlocked()) {
-                    processor.process(Elements.ITEM);
+                    processor.process(AnimationElement.ITEM);
                     mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, equip);
                 }
             }
@@ -268,8 +270,13 @@ public class ClientEvents {
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
         if(Pubgmc.isDevEnvironment) {
+            Minecraft mc = Minecraft.getMinecraft();
             if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
-                Minecraft.getMinecraft().displayGuiScreen(new GuiGunConfig());
+                mc.displayGuiScreen(new GuiGunConfig());
+            } else if(Keyboard.isKeyDown(Keyboard.KEY_M)) {
+                mc.displayGuiScreen(new GuiAnimator());
+            } else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+                mc.displayGuiScreen(new GuiHandPlacer());
             }
         }
         if (KeyBinds.PRONE.isPressed()) {

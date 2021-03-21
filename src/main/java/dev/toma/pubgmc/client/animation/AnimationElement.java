@@ -4,8 +4,16 @@ import dev.toma.pubgmc.DevUtil;
 
 public final class AnimationElement {
 
-    private static int id = 0;
     private static AnimationElement[] elements = new AnimationElement[8];
+    private static int id = 0;
+    public static final AnimationElement ITEM_AND_HANDS = AnimationElement.create("base.hands.item");
+    public static final AnimationElement HANDS = AnimationElement.create("base.hands");
+    public static final AnimationElement RIGHT_HAND = AnimationElement.create("base.hand.right");
+    public static final AnimationElement LEFT_HAND = AnimationElement.create("base.hand.left");
+    public static final AnimationElement ITEM = AnimationElement.create("base.item");
+    public static final AnimationElement MAGAZINE = AnimationElement.create("dynamic.magazine");
+    public static final AnimationElement CHARGING = AnimationElement.create("dynamic.charging");
+    public static final AnimationElement HAMMER = AnimationElement.create("dynamic.hammer");
     final int index = id++;
     final String name;
 

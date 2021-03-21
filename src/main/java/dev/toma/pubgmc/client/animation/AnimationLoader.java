@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client.animation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
 import dev.toma.pubgmc.client.animation.serializers.AnimationSpecSerializer;
@@ -18,10 +19,7 @@ import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +28,14 @@ import java.util.function.Predicate;
 
 public class AnimationLoader implements ISelectiveResourceReloadListener {
 
-    private static final Logger log = LogManager.getLogger("Animation Loader");
-    private static final Gson GSON = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(Vec3d.class, new Vec3dSerializer())
-            .registerTypeAdapter(KeyFrame.class, new KeyFrameSerializer())
+            .registerTypeHierarchyAdapter(KeyFrame.class, new KeyFrameSerializer())
             .registerTypeAdapter(AnimationSpec.class, new AnimationSpecSerializer())
             .create();
     private List<ResourceLocation> paths = new ArrayList<>();
+    private static final Logger log = LogManager.getLogger("Animation Loader");
     private final Map<ResourceLocation, AnimationSpec> animationSpecMap = new HashMap<>();
 
     public void registerEntries(ResourceLocation... locations) {
@@ -53,16 +51,8 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
         return animationSpecMap.get(location);
     }
 
-    public AnimationSpec load(File file) {
-        try {
-            JsonReader reader = new JsonReader(new FileReader(file));
-            AnimationSpec spec = GSON.fromJson(reader, AnimationSpec.class);
-            reader.close();
-            return spec;
-        } catch (IOException e) {
-            log.fatal("Exception occurred while parsing animation spec file: ", e);
-            return null;
-        }
+    public Map<ResourceLocation, AnimationSpec> getAnimations() {
+        return animationSpecMap;
     }
 
     @Override
@@ -84,9 +74,14 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
         IResource resource = manager.getResource(path);
         JsonReader reader = new JsonReader(new InputStreamReader(resource.getInputStream()));
         try {
-            animationSpecMap.put(path, GSON.fromJson(reader, AnimationSpec.class));
+            AnimationSpec spec = load(reader);
+            animationSpecMap.put(path, spec);
         } catch (JsonParseException ex) {
             log.error("File {} has invalid syntax! {}", path, ex);
         }
+    }
+
+    public AnimationSpec load(JsonReader reader) throws JsonSyntaxException {
+        return GSON.fromJson(reader, AnimationSpec.class);
     }
 }

@@ -2,7 +2,7 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelM16A4;
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -24,10 +24,10 @@ public class RenderM16A4 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.rotated(0.11F, -0.02F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.SILENCER_AR, IRenderConfig.rotated(-0.03F, -0.2F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.rotated(0.11F, -0.03F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.rotated(0.04F, -0.02F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.rotated(0.16F, 0.18F, 0.29F, 0.7F, 0.7F, 0.7F, 0F, 90F, 0F));
+        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.rotatedScaled(0.11F, -0.02F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
+        registerRenderConfig(PMCItems.SILENCER_AR, IRenderConfig.rotatedScaled(-0.03F, -0.2F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
+        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.rotatedScaled(0.11F, -0.03F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.rotatedScaled(0.04F, -0.02F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
+        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.rotatedScaled(0.16F, 0.18F, 0.29F, 0.7F, 0.7F, 0.7F, 0F, 90F, 0F));
     }
 }

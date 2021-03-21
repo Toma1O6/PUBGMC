@@ -4,7 +4,8 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.CheckboxWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
-import dev.toma.pubgmc.client.renderer.item.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.IRenderConfig;
+import dev.toma.pubgmc.client.renderer.MutableRenderConfig;
 import dev.toma.pubgmc.client.renderer.item.attachment.AttachmentRenderer;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
@@ -31,8 +32,6 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BooleanSupplier;
@@ -204,12 +203,8 @@ public class GuiGunConfig extends GuiWidgets {
     void exportFile() {
         File dir = new File("./export");
         try {
-            DecimalFormat df = new DecimalFormat("#.####");
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setDecimalSeparator('.');
-            df.setDecimalFormatSymbols(symbols);
             dir.mkdir();
-            String fileName = "cfg_" + displayWeapon.getItem().getRegistryName().getResourcePath() + "_" + LocalDateTime.now().toString().replaceAll(":|\\.", "-") + ".txt";
+            String fileName = "cfg_" + displayWeapon.getItem().getRegistryName().getResourcePath() + "_" + LocalDateTime.now().toString().replaceAll("[:.]", "-") + ".txt";
             File out = new File(dir, fileName);
             out.createNewFile();
             FileWriter writer = new FileWriter(out);
@@ -220,14 +215,7 @@ public class GuiGunConfig extends GuiWidgets {
                 String itemName = "PMCItems." + attachment.getRegistryName().getResourcePath().toUpperCase();
                 if(config instanceof MutableRenderConfig) {
                     MutableRenderConfig mcfg = (MutableRenderConfig) config;
-                    String configDef;
-                    if(mcfg.hasModifiedRotation()) {
-                        configDef = String.format("IRenderConfig.rotated(%sF, %sF, %sF, %sF, %sF, %sF, %sF, %sF, %sF)", df.format(mcfg.x), df.format(mcfg.y), df.format(mcfg.z), df.format(mcfg.scaleX), df.format(mcfg.scaleY), df.format(mcfg.scaleZ), df.format(mcfg.rx), df.format(mcfg.ry), df.format(mcfg.rz));
-                    } else if(mcfg.hasModifiedScale()) {
-                        configDef = String.format("IRenderConfig.translatedScaled(%sF, %sF, %sF, %sF, %sF, %sF)", df.format(mcfg.x), df.format(mcfg.y), df.format(mcfg.z), df.format(mcfg.scaleX), df.format(mcfg.scaleY), df.format(mcfg.scaleZ));
-                    } else {
-                        configDef = String.format("IRenderConfig.translated(%sF, %sF, %sF)", df.format(mcfg.x), df.format(mcfg.y), df.format(mcfg.z));
-                    }
+                    String configDef = mcfg.toString();
                     builder.append(String.format("registerRenderConfig(%s, %s);\n", itemName, configDef));
                 }
             }
@@ -581,57 +569,6 @@ public class GuiGunConfig extends GuiWidgets {
 
         interface Callback {
             void onSet(float value);
-        }
-    }
-
-    static class MutableRenderConfig implements IRenderConfig {
-
-        protected float x;
-        protected float y;
-        protected float z;
-        protected float scaleX = 1.0F;
-        protected float scaleY = 1.0F;
-        protected float scaleZ = 1.0F;
-        protected float rx;
-        protected float ry;
-        protected float rz;
-
-        @Override
-        public void applyTransforms() {
-            GlStateManager.translate(x, y, z);
-            if(rx != 0)
-                GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
-            if(ry != 0)
-                GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
-            if(rz != 0)
-                GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
-            GlStateManager.scale(scaleX, scaleY, scaleZ);
-        }
-
-        void setTranslation(float x, float y, float z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        void setScale(float x, float y, float z) {
-            this.scaleX = x;
-            this.scaleY = y;
-            this.scaleZ = z;
-        }
-
-        void setRotation(float x, float y, float z) {
-            this.rx = x;
-            this.ry = y;
-            this.rz = z;
-        }
-
-        boolean hasModifiedScale() {
-            return scaleX != 1.0F || scaleY != 1.0F || scaleZ != 1.0F;
-        }
-
-        boolean hasModifiedRotation() {
-            return rx != 0.0F || ry != 0.0F || rz != 0.0F;
         }
     }
 }

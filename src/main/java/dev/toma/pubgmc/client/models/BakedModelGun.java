@@ -95,7 +95,6 @@ public class BakedModelGun implements IBakedModel {
                 break;
             }
 
-            // Implement animations here
             case FIRST_PERSON_RIGHT_HAND: {
                 held = player.getHeldItemMainhand();
                 if (held.getItem() instanceof GunBase) {
@@ -103,14 +102,13 @@ public class BakedModelGun implements IBakedModel {
                     gun.preRender(held);
                     this.process(held, data, gun);
                     if (data.isAiming() && !gun.enableADS(held)) {
-                        GlStateManager.scale(0, 0, 0);
+                        //GlStateManager.scale(0, 0, 0);
                     }
                 } else break;
                 trsrt = new TRSRTransformation(transl, leftRot, scale, rightRot);
                 break;
             }
 
-            // Third person animations, sometime later propably
             case THIRD_PERSON_RIGHT_HAND: case GROUND: {
                 trsrt = new TRSRTransformation(transl, leftRot, new Vector3f(0.65F, 0.65F, 0.65F), rightRot);
                 break;

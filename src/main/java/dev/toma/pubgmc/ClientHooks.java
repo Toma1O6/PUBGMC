@@ -96,7 +96,6 @@ public class ClientHooks {
         renderPlayer.addLayer(new LayerGhillie(renderPlayer));
     }
 
-    // TODO inject into ItemRenderer#renderItemSide
     public static void preRenderItem(ItemCameraTransforms.TransformType renderingType) {
          transformType = renderingType;
     }

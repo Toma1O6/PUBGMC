@@ -292,7 +292,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     @SideOnly(Side.CLIENT)
     @Override
     public void animate(EnumHandSide side) {
-        ((WeaponRenderer) getTileEntityItemStackRenderer()).getWeaponModel().renderArm(side);
+        ((WeaponRenderer) getTileEntityItemStackRenderer()).renderArm(side);
     }
 
     @Deprecated
