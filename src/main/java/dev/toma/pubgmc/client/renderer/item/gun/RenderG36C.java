@@ -4,11 +4,20 @@ import dev.toma.pubgmc.client.models.weapons.ModelG36C;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderG36C extends WeaponRenderer {
 
     final ModelG36C model = new ModelG36C();
+
+    @Override
+    public Pair<IRenderConfig, IRenderConfig> createHandRenderConfigs() {
+        return Pair.of(
+                IRenderConfig.rotatedScaled(0.3F, -0.405F, 0.28F, 1F, 1F, 2.4F, 0F, -50F, 0F),
+                IRenderConfig.positioned(0.2F, -0.28F, 0.3F)
+        );
+    }
 
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {

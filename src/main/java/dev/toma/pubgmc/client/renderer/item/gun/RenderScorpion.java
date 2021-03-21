@@ -4,6 +4,8 @@ import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelScorpion;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.util.Pair;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderScorpion extends WeaponRenderer {
@@ -11,8 +13,18 @@ public class RenderScorpion extends WeaponRenderer {
     final ModelScorpion model = new ModelScorpion();
 
     @Override
-    public void preRender(ItemCameraTransforms.TransformType transformType) {
+    public Pair<IRenderConfig, IRenderConfig> createHandRenderConfigs() {
+        return Pair.of(
+                IRenderConfig.rotatedScaled(0.48F, -0.23F, 0.1F, 1F, 1F, 1.9F, 0F, -26F, 0F),
+                IRenderConfig.positioned(0.15F, -0.18F, 0.03F)
+        );
+    }
 
+    @Override
+    public void preRender(ItemCameraTransforms.TransformType transformType) {
+        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+            GlStateManager.translate(0, 0, -0.2);
+        }
     }
 
     @Override

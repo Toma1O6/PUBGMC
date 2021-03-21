@@ -4,6 +4,8 @@ import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelMP5K;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.util.Pair;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderMP5K extends WeaponRenderer {
@@ -11,8 +13,16 @@ public class RenderMP5K extends WeaponRenderer {
     final ModelMP5K model = new ModelMP5K();
 
     @Override
-    public void preRender(ItemCameraTransforms.TransformType transformType) {
+    public Pair<IRenderConfig, IRenderConfig> createHandRenderConfigs() {
+        return Pair.of(
+                IRenderConfig.rotatedScaled(0.24F, -0.315F, 0.1F, 1F, 1F, 1.7F, 5F, -40F, 0F),
+                IRenderConfig.positioned(0.15F, -0.3F, 0.2F)
+        );
+    }
 
+    @Override
+    public void preRender(ItemCameraTransforms.TransformType transformType) {
+        GlStateManager.translate(0, 0.03, -0.3);
     }
 
     @Override

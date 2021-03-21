@@ -4,11 +4,20 @@ import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelMK47Mutant;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderMK47Mutant extends WeaponRenderer {
 
     final ModelMK47Mutant model = new ModelMK47Mutant();
+
+    @Override
+    public Pair<IRenderConfig, IRenderConfig> createHandRenderConfigs() {
+        return Pair.of(
+                IRenderConfig.rotatedScaled(0.445F, -0.265F, -0.05F, 1F, 1F, 1.7F, 0F, -30F, 0F),
+                IRenderConfig.positioned(0.1F, -0.23F, 0.3F)
+        );
+    }
 
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {
