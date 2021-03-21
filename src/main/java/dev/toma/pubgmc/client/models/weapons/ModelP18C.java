@@ -1,17 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelP18C extends ModelGun {
@@ -29,24 +21,10 @@ public class ModelP18C extends ModelGun {
     private final ModelRenderer magazine;
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.585f, 0.22f, -0.01f, 2.5F);
-        initAimingAnimationStates(0.22f, 0.16f, 0f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(2.0F);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            {
-                renderP18C(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        magazine.render(1.0F);
+        slide.render(1.0F);
     }
 
     private void renderP18C(boolean aim, ItemStack stack) {
@@ -54,9 +32,7 @@ public class ModelP18C extends ModelGun {
         {
             ModelTransformationHelper.defaultPistolTransform();
             GlStateManager.translate(-0.9, -1.0, -6.0);
-            gun.render(1f);
-            magazine.render(1.0F);
-            slide.render(1.0F);
+
         }
         GlStateManager.popMatrix();
 
@@ -172,8 +148,6 @@ public class ModelP18C extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 84, 77, -1.0F, -9.096F, -3.5F, 1, 1, 4, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 84, 77, 1.0F, -9.096F, -3.5F, 1, 1, 4, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 9, 490, 0.0F, -9.396F, -3.0F, 1, 1, 3, 0.0F, false));
-
-        initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

@@ -1,16 +1,7 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
-import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -52,34 +43,12 @@ public class ModelDeagle extends ModelGun {
     private final ModelRenderer magazine;
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.561f, 0.268f, -0.1f, 2.0F);
-        initAimingAnimationStates(0.268f, 0.165f, 0.268f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).withSpeed(1.7F);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null) {
-            GlStateManager.pushMatrix();
-            this.renderDeagle(stack);
-            GlStateManager.popMatrix();
-        }
-    }
-
-    private void renderDeagle(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.scale(0.5, 0.5, 0.5);
-        GlStateManager.translate(-0.15, 20.0, 10.0);
+    public void renderModel(ItemStack stack) {
         deagle.render(1f);
         magazine.render(1f);
         slide.render(1.0F);
         hammer.render(1.0F);
         if(hasScopeAtachment(stack)) rail.render(1f);
-        GlStateManager.popMatrix();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -497,6 +466,5 @@ public class ModelDeagle extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 8, 497, -0.2321F, -19.0852F, 11.2656F, 3, 3, 1, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 8, 497, -0.2321F, -19.0852F, 6.6976F, 3, 3, 4, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 8, 497, 0.2679F, -18.5852F, 5.4576F, 2, 2, 6, 0.0F, true));
-        this.initAnimations();
     }
 }

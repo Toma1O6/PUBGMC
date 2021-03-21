@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelSLR extends ModelGun {
@@ -727,7 +721,6 @@ public class ModelSLR extends ModelGun {
         cube_r59.cubeList.add(new ModelBox(cube_r59, 12, 165, -0.5F, -1.5F, -0.5F, 1, 5, 2, 0.0F, false));
         cube_r59.cubeList.add(new ModelBox(cube_r59, 90, 103, -0.1F, 2.0F, -13.0F, 1, 1, 1, 0.0F, false));
         cube_r59.cubeList.add(new ModelBox(cube_r59, 12, 165, -0.5F, -1.5F, -13.5F, 1, 5, 2, 0.0F, false));
-        this.initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -737,32 +730,19 @@ public class ModelSLR extends ModelGun {
     }
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.335f, 0.1f);
-        initAimingAnimationStates(0.335f, 0.255f, 0.25f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).withSpeed(1.2F);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            renderSLR(stack);
-            GlStateManager.popMatrix();
-        }
-    }
-
-    private void renderSLR(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.translate(0, -9.0, -8.0);
+    public void renderModel(ItemStack stack) {
         slr.render(1.0F);
         magazine.render(1.0F);
         if(hasScopeAtachment(stack))
             toprail.render(1.0F);
         else
             ironsights.render(1.0F);
+    }
+
+    private void renderSLR(ItemStack stack) {
+        GlStateManager.pushMatrix();
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.translate(0, -9.0, -8.0);
         GlStateManager.popMatrix();
         /*renderRedDot(0, 14, 13, 1f, stack);
         renderHolo(0, 4.5, 0, 1f, stack);

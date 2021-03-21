@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelMini14 extends ModelGun {
@@ -63,13 +58,6 @@ public class ModelMini14 extends ModelGun {
     private final ModelRenderer bone11;
     private final ModelRenderer bone10;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.275f, 0.23f);
-        initAimingAnimationStates(0.275f, 0.19f, 0.21f);
-        this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -77,15 +65,11 @@ public class ModelMini14 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderMini14(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        mini14.render(1f);
+        magazine.render(1f);
+        slide.render(1.0F);
+        if(!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
     private void renderMini14(ItemStack stack) {
@@ -93,10 +77,7 @@ public class ModelMini14 extends ModelGun {
         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.translate(47.64998, 6.8749995, -26.0);
-        mini14.render(1f);
-        magazine.render(1f);
-        slide.render(1.0F);
-        if(!hasScopeAtachment(stack)) ironsights.render(1f);
+
         GlStateManager.popMatrix();
 
         /*renderSniperSilencer(0, -2.45, 6, 1.0F, stack);
@@ -735,6 +716,5 @@ public class ModelMini14 extends ModelGun {
         setRotationAngle(bone10, 0.0F, 0.0F, -1.0472F);
         bone10.cubeList.add(new ModelBox(bone10, 41, 80, 0.067F, 0.116F, 0.252F, 2, 1, 1, 0.0F, false));
         bone10.cubeList.add(new ModelBox(bone10, 41, 80, 0.067F, -2.3481F, 0.252F, 2, 1, 1, 0.0F, false));
-        this.initAnimations();
     }
 }

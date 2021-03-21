@@ -1,18 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelUmp45 extends ModelGun {
@@ -693,15 +684,6 @@ public class ModelUmp45 extends ModelGun {
         charging_handle.addChild(bone17);
         setRotationAngle(bone17, 0.0F, 0.3491F, 0.0F);
         bone17.cubeList.add(new ModelBox(bone17, 39, 14, -1.5704F, -0.5F, 0.1822F, 2, 1, 1, 0.0F, false));
-        this.initAnimations();
-    }
-
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.2f, 0.14f);
-        initAimingAnimationStates(0.2f, 0.12f, 0.114f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -710,22 +692,10 @@ public class ModelUmp45 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            renderUmp(data.isAiming(), stack);
-            GlStateManager.popMatrix();
-        }
-    }
-
     private void renderUmp(boolean aim, ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, -8.0, 0.0);
-        renderAll(stack);
         GlStateManager.popMatrix();
 
         /*renderSMGSilencer(0, 0, 0, 1f, stack);
@@ -737,7 +707,8 @@ public class ModelUmp45 extends ModelGun {
         renderScope4X(0, -3.95, 5, 1f, stack);*/
     }
 
-    private void renderAll(ItemStack stack) {
+    @Override
+    public void renderModel(ItemStack stack) {
         magazine.render(1.0F);
         ump45.render(1.0F);
         charging_handle.render(1.0F);

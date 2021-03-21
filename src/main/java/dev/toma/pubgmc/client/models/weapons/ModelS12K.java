@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelS12K extends ModelGun {
@@ -59,32 +54,14 @@ public class ModelS12K extends ModelGun {
     private final ModelRenderer bone42;
     private final ModelRenderer bone40;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.535f, 0.27f, 0.235f);
-        initAimingAnimationStates(0.27f, 0.21f, 0.195f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderWeapon(stack);
-            }
-            GlStateManager.popMatrix();
-        }
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderParts(ItemStack stack) {
+    @Override
+    public void renderModel(ItemStack stack) {
         s12k.render(1f);
         magazine.render(1f);
         charging_handle.render(1.0F);
@@ -99,7 +76,6 @@ public class ModelS12K extends ModelGun {
             ModelTransformationHelper.defaultShotgunTransform();
             GlStateManager.translate(-0.65000033, -1.0, -9.0);
             GlStateManager.rotate(180, 0, 1, 0);
-            renderParts(stack);
         }
         GlStateManager.popMatrix();
 
@@ -622,6 +598,5 @@ public class ModelS12K extends ModelGun {
         bone40.cubeList.add(new ModelBox(bone40, 0, 0, 1.5F, -4.683F, -6.3792F, 1, 1, 1, 0.0F, true));
         bone40.cubeList.add(new ModelBox(bone40, 0, 0, -0.5F, -6.049F, -7.7452F, 1, 2, 1, 0.0F, false));
         bone40.cubeList.add(new ModelBox(bone40, 0, 0, 1.5F, -6.049F, -7.7452F, 1, 2, 1, 0.0F, true));
-        initAnimations();
     }
 }

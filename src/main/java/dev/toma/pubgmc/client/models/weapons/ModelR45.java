@@ -1,17 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelR45 extends ModelGun {
@@ -46,30 +38,10 @@ public class ModelR45 extends ModelGun {
     private final ModelRenderer bone2;
     private final ModelRenderer bone3;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.555f, 0.175f, -0.01f, 2.5f);
-        initAimingAnimationStates(0.175f, 0.085f, 0f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(null, ReloadStyle.REVOLVER);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderR45(stack);
-            }
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderR45(ItemStack stack) {
@@ -77,13 +49,17 @@ public class ModelR45 extends ModelGun {
         {
             ModelTransformationHelper.defaultPistolTransform();
             GlStateManager.translate(0.15, -9.349995, -7.0);
-            drum.render(1.0F);
-            hammer.render(1.0F);
-            r45.render(1f);
         }
         GlStateManager.popMatrix();
 
 //        renderRedDot(0.475, -7.25, -8, 0.8f, stack);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        drum.render(1.0F);
+        hammer.render(1.0F);
+        r45.render(1f);
     }
 
     public ModelR45() {
@@ -310,6 +286,5 @@ public class ModelR45 extends ModelGun {
         bone3.setRotationPoint(0.0F, 0.0F, 0.0F);
         r45.addChild(bone3);
         setRotationAngle(bone3, 0.0F, -0.1745F, 0.0F);
-        this.initAnimations();
     }
 }

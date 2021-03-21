@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelScorpion extends ModelGun {
@@ -46,30 +39,10 @@ public class ModelScorpion extends ModelGun {
     private final ModelRenderer bone19;
     private final ModelRenderer bone;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.2f, -0.2f, 2.0F);
-        initAimingAnimationStates(0.2f, 0.127f, 0f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.3F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderScorpion(stack);
-            }
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderScorpion(ItemStack stack) {
@@ -77,8 +50,6 @@ public class ModelScorpion extends ModelGun {
         {
             ModelTransformationHelper.defaultPistolTransform();
             GlStateManager.translate(0.0, 9.499992, -9.0);
-
-            renderParts();
         }
         GlStateManager.popMatrix();
 
@@ -87,7 +58,8 @@ public class ModelScorpion extends ModelGun {
         renderVerticalGrip(0, -5.175, 8, 1f, stack);*/
     }
 
-    private void renderParts() {
+    @Override
+    public void renderModel(ItemStack stack) {
         scorpion.render(1f);
         magazine.render(1f);
         charging_handle.render(1.0F);
@@ -360,6 +332,5 @@ public class ModelScorpion extends ModelGun {
         bone.cubeList.add(new ModelBox(bone, 91, 24, -14.4238F, -16.838F, -20.0F, 1, 2, 3, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 91, 24, -18.2522F, -16.838F, -20.0F, 1, 2, 3, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 91, 24, -16.838F, -14.4238F, -20.0F, 2, 1, 3, 0.0F, false));
-        this.initAnimations();
     }
 }

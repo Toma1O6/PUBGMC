@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelWin94 extends ModelGun {
@@ -44,37 +37,20 @@ public class ModelWin94 extends ModelGun {
     private final ModelRenderer bone3;
     private final ModelRenderer bullet;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.5625f, 0.365f, 0.29f);
-        initAimingAnimationStates(0.365f);
-        reloadAnimation = new ReloadAnimation(null, ReloadStyle.SINGLE);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-            GlStateManager.pushMatrix();
-            {
-                renderWin(data.isAiming());
-            }
-            GlStateManager.popMatrix();
-        }
-    }
-
     private void renderWin(boolean aim) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(-0.1, 0.85, -5.0);
+
+        GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
         win94.render(1f);
         lever.render(1.0F);
         bolt.render(1.0F);
         bullet.render(1.0F);
-        GlStateManager.popMatrix();
     }
 
     public ModelWin94() {
@@ -439,7 +415,6 @@ public class ModelWin94 extends ModelGun {
         bullet.cubeList.add(new ModelBox(bullet, 0, 497, -6.1F, -15.1F, -4.0F, 1, 1, 4, 0.0F, false));
         bullet.cubeList.add(new ModelBox(bullet, 0, 497, -6.9F, -15.9F, -4.0F, 1, 1, 4, 0.0F, false));
         bullet.cubeList.add(new ModelBox(bullet, 0, 497, -6.9F, -15.1F, -4.0F, 1, 1, 4, 0.0F, false));
-        initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

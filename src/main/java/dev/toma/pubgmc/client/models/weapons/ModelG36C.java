@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelG36C extends ModelGun {
@@ -123,13 +116,6 @@ public class ModelG36C extends ModelGun {
     private final ModelRenderer bone33;
     private final ModelRenderer bone27;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.581f, 0.188f, 0.3f);
-        initAimingAnimationStates(0.188f, 0.085f, 0.1f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -137,16 +123,10 @@ public class ModelG36C extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            {
-                renderG36C(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        g36.render(1f);
+        magazine.render(1f);
+        charging_handle.render(1.0F);
     }
 
     private void renderG36C(boolean aim, ItemStack stack) {
@@ -155,23 +135,8 @@ public class ModelG36C extends ModelGun {
             ModelTransformationHelper.defaultARTransform();
             GlStateManager.scale(0.5, 0.5, 0.5);
             GlStateManager.translate(-1.975, 37.125, -20.0);
-            renderParts(hasScopeAtachment(stack));
         }
         GlStateManager.popMatrix();
-
-        /*renderARSilencer(1, 0, 36, 1f, stack);
-        renderVerticalGrip(-1, -7, 13, 1f, stack);
-        renderAngledGrip(-1, -6, 16, 1f, stack);
-        renderRedDot(-2.1, -7.975, 1, 1f, stack);
-        renderHolo(-0.775, -2.75, -2, 1f, stack);
-        renderScope2X(-1, -4, -1, 1f, stack);
-        renderScope4X(-1, -3, -5, 0.9f, stack);*/
-    }
-
-    private void renderParts(boolean hasScope) {
-        g36.render(1f);
-        magazine.render(1f);
-        charging_handle.render(1.0F);
     }
 
     public ModelG36C() {
@@ -1270,6 +1235,5 @@ public class ModelG36C extends ModelGun {
         charging_handle.addChild(bone27);
         setRotationAngle(bone27, 0.0F, -0.3491F, 0.0F);
         bone27.cubeList.add(new ModelBox(bone27, 42, 14, 11.6808F, -29.0F, 36.5877F, 4, 2, 2, 0.0F, false));
-        this.initAnimations();
     }
 }

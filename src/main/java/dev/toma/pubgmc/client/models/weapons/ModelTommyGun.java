@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelTommyGun extends ModelGun {
@@ -55,38 +48,10 @@ public class ModelTommyGun extends ModelGun {
     private final ModelRenderer bone9;
     private final ModelRenderer bone8;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.39f, 0.15f);
-        initAimingAnimationStates(0.39f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine1, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.2F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            if(hasExtendedMagazine(stack)) {
-                if(isSameRenderer(reloadAnimation.getPart(), magazine1)) {
-                    reloadAnimation = new ReloadAnimation(magazine2, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-                }
-            } else {
-                if(isSameRenderer(reloadAnimation.getPart(), magazine2)) {
-                    reloadAnimation = new ReloadAnimation(magazine1, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-                }
-            }
-            GlStateManager.pushMatrix();
-            renderTommyGun(stack);
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderTommyGun(ItemStack stack) {
@@ -94,13 +59,17 @@ public class ModelTommyGun extends ModelGun {
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.scale(0.7, 0.7, 0.7);
         GlStateManager.translate(-0.05, 15.975, 0);
+        GlStateManager.popMatrix();
+//        renderSMGSilencer(0.07, -6.75, -17, 1f, stack);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
         thompson.render(1f);
         charging_handle.render(1.0F);
         if(hasExtendedMagazine(stack)) {
             magazine2.render(1f);
         } else magazine1.render(1f);
-        GlStateManager.popMatrix();
-//        renderSMGSilencer(0.07, -6.75, -17, 1f, stack);
     }
 
     public ModelTommyGun() {
@@ -485,11 +454,5 @@ public class ModelTommyGun extends ModelGun {
         charging_handle.addChild(bone8);
         setRotationAngle(bone8, 0.1745F, 0.0F, 0.0F);
         bone8.cubeList.add(new ModelBox(bone8, 51, 48, -0.5F, -0.898F, -0.3339F, 1, 2, 1, 0.0F, true));
-        this.initAnimations();
-    }
-
-    // simple workaround for magazine animation
-    private boolean isSameRenderer(ModelRenderer r0, ModelRenderer r1) {
-        return r0.cubeList.size() == r1.cubeList.size();
     }
 }

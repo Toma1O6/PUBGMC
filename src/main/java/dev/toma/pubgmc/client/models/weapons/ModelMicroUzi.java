@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelMicroUzi extends ModelGun {
@@ -78,29 +71,7 @@ public class ModelMicroUzi extends ModelGun {
     private final ModelRenderer bone8;
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.21f, 0.23f);
-        initAimingAnimationStates(0.21f, 0.055f, 0.05f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.2F);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderUzi(stack);
-            }
-            GlStateManager.popMatrix();
-        }
-    }
-
-    private void renderUzi(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        ModelTransformationHelper.defaultSMGTransform();
-        GlStateManager.translate(0.0, 0.85, -14.0);
+    public void renderModel(ItemStack stack) {
         gun.render(1.0F);
         magazine.render(1.0F);
         charger.render(1.0F);
@@ -108,6 +79,13 @@ public class ModelMicroUzi extends ModelGun {
         if(hasScopeAtachment(stack))
             toprail.render(1.0F);
         botrail.render(1.0F);
+    }
+
+    private void renderUzi(ItemStack stack) {
+        GlStateManager.pushMatrix();
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.translate(0.0, 0.85, -14.0);
+
         GlStateManager.popMatrix();
 
         /*renderSMGSilencer(0, -6, 0, 1.2F, stack);
@@ -693,7 +671,6 @@ public class ModelMicroUzi extends ModelGun {
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 1.5F, 0, 1, 1, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 4.5F, 1, 1, 1, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 3.5F, 0, 1, 1, 0.0F, true));
-        this.initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer r, float x, float y, float z) {

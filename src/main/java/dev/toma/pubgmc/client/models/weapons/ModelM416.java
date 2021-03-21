@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelM416 extends ModelGun {
@@ -66,22 +60,10 @@ public class ModelM416 extends ModelGun {
     private final ModelRenderer bone5;
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.5575f, 0.235f, 0.25f);
-        initAimingAnimationStates(0.235f, 0.153f, 0.17f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderM416(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        hk416.render(1f);
+        magazine.render(1f);
+        ironsights.render(1.0F);
     }
 
     private void renderM416(ItemStack stack) {
@@ -89,7 +71,6 @@ public class ModelM416 extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0.1, 1.05, -22.0);
         if(!hasScopeAtachment(stack)) GlStateManager.rotate(-0.8F, 1.0F, 0.0F, 0.0F);
-        renderParts(hasScopeAtachment(stack));
         GlStateManager.popMatrix();
 
         /*this.renderARSilencer(0.35, -4.9, 5, 1.1F, stack);
@@ -99,12 +80,6 @@ public class ModelM416 extends ModelGun {
         this.renderScope4X(0, 1.05, 1, 1.0F, stack);
         this.renderVerticalGrip(0, -3, 4, 1.0F, stack);
         this.renderAngledGrip(0, -3, 5, 1.0F, stack);*/
-    }
-
-    private void renderParts(boolean scope) {
-        hk416.render(1f);
-        magazine.render(1f);
-        ironsights.render(1.0F);
     }
 
     public ModelM416() {
@@ -1053,7 +1028,6 @@ public class ModelM416 extends ModelGun {
         bone5.cubeList.add(new ModelBox(bone5, 66, 18, 2.0884F, -1.5F, 14.5F, 1, 3, 1, 0.0F, false));
         bone5.cubeList.add(new ModelBox(bone5, 66, 18, 2.0884F, -1.5F, 17.5F, 1, 3, 1, 0.0F, false));
         bone5.cubeList.add(new ModelBox(bone5, 66, 18, 2.0884F, -1.5F, 20.5F, 1, 3, 1, 0.0F, false));
-        this.initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

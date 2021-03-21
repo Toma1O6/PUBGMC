@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelM24 extends ModelGun {
@@ -866,30 +859,10 @@ public class ModelM24 extends ModelGun {
         variants.isHidden = true;
     }
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.265f, 0.335f);
-        initAimingAnimationStates(0.265f, 0.17f, 0.19f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            {
-                renderM24(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderM24(boolean aim, ItemStack stack) {
@@ -898,20 +871,12 @@ public class ModelM24 extends ModelGun {
             ModelTransformationHelper.defaultSRTransform();
             GlStateManager.scale(0.79999995, 0.79999995, 0.79999995);
             GlStateManager.translate(0.0, -15.300001, -18.0);
-            renderParts();
         }
         GlStateManager.popMatrix();
-
-        /*renderRedDot(0, 2, -19, 1f, stack);
-        renderHolo(-0.025, 0.725, -8.15, 1f, stack);
-        renderScope2X(0, 0, 5, 1f, stack);
-        renderScope4X(0, 0, 8, 1f, stack);
-        renderScope8X(0, 1.3, -2, 1f, stack);
-        renderScope15X(0, -1.75, 0, 1f, stack);
-        renderSniperSilencer(0.175, -6.45, 9, 1.46f, stack);*/
     }
 
-    private void renderParts() {
+    @Override
+    public void renderModel(ItemStack stack) {
         m24.render(1f);
         magazine.render(1f);
         bolt.render(1f);

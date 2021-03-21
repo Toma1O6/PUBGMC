@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelFlareGun extends ModelGun {
@@ -36,13 +29,6 @@ public class ModelFlareGun extends ModelGun {
     private final ModelRenderer bone3;
     private final ModelRenderer bone4;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.57f, 0.215f, 0.225f);
-        initAimingAnimationStates(0.215f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -50,18 +36,10 @@ public class ModelFlareGun extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-            GlStateManager.pushMatrix();
-            {
-                renderFlareGun();
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        flaregun.render(1f);
+        hammer.render(1.0F);
+        barrel.render(1.0F);
     }
 
     private void renderFlareGun() {
@@ -69,9 +47,6 @@ public class ModelFlareGun extends ModelGun {
         ModelTransformationHelper.defaultPistolTransform();
         GlStateManager.scale(0.39999992, 0.39999992, 0.39999992);
         GlStateManager.translate(-0.8750001, 8.4249935, 0.0);
-        flaregun.render(1f);
-        hammer.render(1.0F);
-        barrel.render(1.0F);
         GlStateManager.popMatrix();
     }
 
@@ -262,6 +237,5 @@ public class ModelFlareGun extends ModelGun {
         setRotationAngle(bone4, 0.7854F, 0.0F, 0.0F);
         bone4.cubeList.add(new ModelBox(bone4, 16, 166, -3.0F, -18.1421F, -24.0416F, 6, 4, 5, 0.0F, false));
         bone4.cubeList.add(new ModelBox(bone4, 16, 166, -3.0F, -15.1421F, -19.3848F, 6, 1, 1, 0.0F, false));
-        this.initAnimations();
     }
 }

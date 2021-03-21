@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelQBZ extends ModelGun {
@@ -86,34 +81,10 @@ public class ModelQBZ extends ModelGun {
     private final ModelRenderer bone;
     private final ModelRenderer bone2;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.25f, 0.35f);
-        initAimingAnimationStates(0.25f, 0.07f, 0.078f);
-        this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderQBZ(stack);
-            }
-            GlStateManager.popMatrix();
-        }
-    }
-
     private void renderQBZ(ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(-0.025000004, 11.875002, -11.0);
-        gun.render(1f);
-        magazine.render(1f);
-        bolt.render(1.0F);
-        if(hasScopeAtachment(stack))
-            rail.render(1f);
         GlStateManager.popMatrix();
         /*this.renderARSilencer(0.15, -11, 21, 1.2F, stack);
         this.renderRedDot(-0.05, 8, -8, 0.8F, stack);
@@ -122,6 +93,15 @@ public class ModelQBZ extends ModelGun {
         this.renderScope4X(0, 2, -8, 1.0F, stack);
         this.renderVerticalGrip(0, 0, 0, 0.8F, stack);
         this.renderAngledGrip(0, 4, 11, 0.8F, stack);*/
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        magazine.render(1f);
+        bolt.render(1.0F);
+        if(hasScopeAtachment(stack))
+            rail.render(1f);
     }
 
     public ModelQBZ() {
@@ -927,7 +907,6 @@ public class ModelQBZ extends ModelGun {
         bone2.cubeList.add(new ModelBox(bone2, 68, 78, -1.741F, -0.7165F, -9.0F, 0, 1, 1, 0.0F, true));
         bone2.cubeList.add(new ModelBox(bone2, 68, 78, -1.741F, -0.7165F, -15.0F, 0, 1, 1, 0.0F, true));
         bone2.cubeList.add(new ModelBox(bone2, 68, 78, -1.741F, -0.7165F, -21.0F, 0, 1, 1, 0.0F, true));
-        this.initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

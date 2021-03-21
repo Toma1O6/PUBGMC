@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelGroza extends ModelGun {
@@ -75,13 +69,6 @@ public class ModelGroza extends ModelGun {
     private final ModelRenderer bone7;
     private final ModelRenderer bone8;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.135f, 0.28f);
-        initAimingAnimationStates(0.135f, 0.045f, 0.038f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).withSpeed(1.2F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -89,15 +76,9 @@ public class ModelGroza extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderGroza(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        bone.render(1f);
+        magazine.render(1f);
     }
 
     private void renderGroza(ItemStack stack) {
@@ -106,8 +87,7 @@ public class ModelGroza extends ModelGun {
         GlStateManager.scale(0.6F, 0.6F, 0.6F);
         GlStateManager.translate(-0.15, 40.675, 11);
 
-        bone.render(1f);
-        magazine.render(1f);
+
         GlStateManager.popMatrix();
 
         /*renderARSilencer(0, 1, 45, 1f, stack);
@@ -766,6 +746,5 @@ public class ModelGroza extends ModelGun {
         bone7.addChild(bone8);
         setRotationAngle(bone8, -0.0873F, 0.0F, 0.0F);
         bone8.cubeList.add(new ModelBox(bone8, 67, 28, 39.0F, -30.4137F, -42.1992F, 4, 2, 12, 0.0F, false));
-        this.initAnimations();
     }
 }

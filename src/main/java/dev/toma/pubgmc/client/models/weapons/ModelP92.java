@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelP92 extends ModelGun {
@@ -34,42 +27,24 @@ public class ModelP92 extends ModelGun {
     private final ModelRenderer bone6;
     private final ModelRenderer magazine;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.651f, 0.31f, -0.01f, 2.8F);
-        initAimingAnimationStates(0.31f, 0.255f, 0f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
 
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            renderP92(stack);
-        }
-    }
-
     private void renderP92(ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultPistolTransform();
         GlStateManager.translate(-3.0750017, -4.0750017, -13.0);
-
-        renderParts();
         GlStateManager.popMatrix();
 
         /*renderRedDot(-8.36, 6.925, -25, 1.1f, stack);
         renderPistolSilencer(2.075, -0.035, -4, 0.9f, stack);*/
     }
 
-    private void renderParts() {
+    @Override
+    public void renderModel(ItemStack stack) {
         p92.render(1f);
         magazine.render(1f);
         slide.render(1.0F);
@@ -255,6 +230,5 @@ public class ModelP92 extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 80, 92, -3.0F, -6.9834F, 10.4225F, 3, 11, 4, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 80, 92, -3.0F, 4.0166F, 9.4225F, 3, 1, 5, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 8, 505, -2.0F, -7.6865F, 11.0632F, 1, 1, 3, 0.0F, true));
-        this.initAnimations();
     }
 }

@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelMK14 extends ModelGun {
@@ -89,13 +83,6 @@ public class ModelMK14 extends ModelGun {
     private final ModelRenderer magazine;
     private final ModelRenderer bone36;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.58f, 0.26f, 0.33f);
-        initAimingAnimationStates(0.26f, 0.16f, 0.165f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180).withSpeed(1.3F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -103,17 +90,11 @@ public class ModelMK14 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-            GlStateManager.pushMatrix();
-            {
-                renderMK14(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        mk14.render(1.0F);
+        slide.render(1.0F);
+        ironsights.render(1.0F);
+        magazine.render(1.0F);
     }
 
     private void renderMK14(boolean aim, ItemStack stack) {
@@ -124,8 +105,6 @@ public class ModelMK14 extends ModelGun {
             GlStateManager.rotate(180f, 0, 1, 0);
             GlStateManager.scale(1.1, 1.1, 1.1);
             GlStateManager.translate(0.8, 5.3, 27.0);
-
-            renderParts(hasScopeAtachment(stack));
         }
         GlStateManager.popMatrix();
 
@@ -137,13 +116,6 @@ public class ModelMK14 extends ModelGun {
         renderScope8X(-1.05, 1.2, -23, 1f, stack);
         renderScope15X(-1, 0.85, -26, 1f, stack);
         renderSniperSilencer(0.7, -10.9, -21, 1.7f, stack);*/
-    }
-
-    private void renderParts(boolean hasScope) {
-        mk14.render(1.0F);
-        slide.render(1.0F);
-        ironsights.render(1.0F);
-        magazine.render(1.0F);
     }
 
     public ModelMK14() {
@@ -1257,6 +1229,5 @@ public class ModelMK14 extends ModelGun {
         magazine.addChild(bone36);
         setRotationAngle(bone36, 0.2967F, 0.0F, 0.0F);
         bone36.cubeList.add(new ModelBox(bone36, 104, 18, -2.5F, -2.0F, 0.0F, 5, 2, 7, 0.0F, false));
-        this.initAnimations();
     }
 }

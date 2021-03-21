@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelAKM extends ModelGun {
@@ -68,18 +63,10 @@ public class ModelAKM extends ModelGun {
     private final ModelRenderer bone8;
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.5581F, 0.23F, 0.18F);
-        initAimingAnimationStates(0.23F, 0.16F, 0.16F);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.15F);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if(player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            renderAKM(stack);
-        }
+    public void renderModel(ItemStack stack) {
+        akm.render(1.0F);
+        magazine.render(1.0F);
+        bolt.render(1.0F);
     }
 
     private void renderAKM(ItemStack stack) {
@@ -87,21 +74,7 @@ public class ModelAKM extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 41.0, -13.0);
-        this.render();
         GlStateManager.popMatrix();
-        /*
-        renderRedDot(0, 0, 0, 1f, stack);
-        renderHolo(0, 0, 0, 1f, stack);
-        renderScope2X(0, 0, 0, 1f, stack);
-        renderScope4X(0, 0, 0, 1f, stack);
-        renderARSilencer(0, 0, 0, 1f, stack);
-        */
-    }
-
-    private void render() {
-        akm.render(1.0F);
-        magazine.render(1.0F);
-        bolt.render(1.0F);
     }
 
     public ModelAKM() {
@@ -708,8 +681,6 @@ public class ModelAKM extends ModelGun {
         bone7.addChild(bone8);
         setRotationAngle(bone8, -0.0873F, 0.0F, 0.0F);
         bone8.cubeList.add(new ModelBox(bone8, 86, 38, 39.0F, -30.4137F, -42.1992F, 4, 2, 12, 0.0F, false));
-
-        this.initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

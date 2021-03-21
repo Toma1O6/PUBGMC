@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelScarL extends ModelGun {
@@ -62,36 +56,12 @@ public class ModelScarL extends ModelGun {
     private final ModelRenderer bone44;
     private final ModelRenderer bone39;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.245f, 0.225f);
-        initAimingAnimationStates(0.245f, 0.235f, 0.22f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            boolean aim = data.isAiming();
-            GlStateManager.pushMatrix();
-            {
-                renderScarL(aim, stack);
-            }
-            GlStateManager.popMatrix();
-        }
-    }
-
     private void renderScarL(boolean aim, ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0.0, -1.1999998, -15.0);
 
-        scar.render(1f);
-        magazine.render(1.0F);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
+
         GlStateManager.popMatrix();
 
         /*renderRedDot(0, 6.4, -3, 1f, stack);
@@ -101,6 +71,14 @@ public class ModelScarL extends ModelGun {
         renderARSilencer(0, -7.35, 0, 1.2f, stack);
         renderVerticalGrip(0, 0, 0, 1, stack);
         renderAngledGrip(0, 0, 0, 1, stack);*/
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        scar.render(1f);
+        magazine.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
     }
 
     public ModelScarL() {
@@ -863,7 +841,6 @@ public class ModelScarL extends ModelGun {
         bone39.cubeList.add(new ModelBox(bone39, 66, 4, 2.4151F, -1.817F, -0.5F, 1, 1, 1, 0.0F, false));
         bone39.cubeList.add(new ModelBox(bone39, 66, 4, -0.317F, -1.817F, -0.5F, 1, 1, 1, 0.0F, false));
         bone39.cubeList.add(new ModelBox(bone39, 66, 4, 1.049F, -3.183F, -0.5F, 1, 1, 1, 0.0F, false));
-        initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelVSS extends ModelGun {
@@ -45,28 +40,10 @@ public class ModelVSS extends ModelGun {
     private final ModelRenderer bone;
     private final ModelRenderer bone5;
 
-    @Override
-    public void initAnimations() {
-        this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.6F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderVSS();
-            }
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderVSS() {
@@ -74,10 +51,15 @@ public class ModelVSS extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(1.1F, 1.1F, 1.1F);
         GlStateManager.translate(0.0, 13.0, -6.0);
+
+        GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
         vss.render(1f);
         magazine.render(1f);
         charging_handle.render(1.0F);
-        GlStateManager.popMatrix();
     }
 
     public ModelVSS() {
@@ -431,6 +413,5 @@ public class ModelVSS extends ModelGun {
         vss.addChild(bone5);
         setRotationAngle(bone5, 0.0F, 0.4363F, 0.0F);
         bone5.cubeList.add(new ModelBox(bone5, 14, 86, -5.9496F, -31.0F, 3.1942F, 1, 3, 3, 0.0F, true));
-        this.initAnimations();
     }
 }

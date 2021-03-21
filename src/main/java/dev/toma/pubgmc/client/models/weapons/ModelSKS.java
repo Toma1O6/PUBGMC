@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelSKS extends ModelGun {
@@ -72,13 +67,6 @@ public class ModelSKS extends ModelGun {
     private final ModelRenderer bone;
     private final ModelRenderer bone47;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.2625f, 0.245f);
-        initAimingAnimationStates(0.2625f, 0.22f, 0.228f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.5F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -86,15 +74,12 @@ public class ModelSKS extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderSKS(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        sks.render(1f);
+        charging_handle.render(1.0F);
+        magazine.render(1f);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1f);
     }
 
     private void renderSKS(ItemStack stack) {
@@ -102,11 +87,7 @@ public class ModelSKS extends ModelGun {
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.scale(0.7, 0.7, 0.7);
         GlStateManager.translate(0.025, 5.7, 9);
-        sks.render(1f);
-        charging_handle.render(1.0F);
-        magazine.render(1f);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1f);
+
         GlStateManager.popMatrix();
 
         /*renderSniperSilencer(-0.1, -10, 24, 1.3F, stack);
@@ -942,6 +923,5 @@ public class ModelSKS extends ModelGun {
         ironsights.addChild(bone47);
         setRotationAngle(bone47, 0.0F, 0.0F, -0.5236F);
         bone47.cubeList.add(new ModelBox(bone47, 66, 12, -2.4821F, -2.433F, -0.5F, 1, 3, 4, 0.0F, false));
-        this.initAnimations();
     }
 }

@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelS686 extends ModelGun {
@@ -311,26 +306,6 @@ public class ModelS686 extends ModelGun {
         s686.addChild(bone23);
         setRotationAngle(bone23, -1.1345F, 0.0F, 0.0F);
         bone23.cubeList.add(new ModelBox(bone23, 0, 86, -2.001F, 5.0297F, -0.2124F, 4, 2, 2, 0.0F, false));
-
-    }
-
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.525f, 0.23f, 0.35f);
-        initAimingAnimationStates(0.23f);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            {
-                renderS686(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderS686(boolean aim, ItemStack stack) {
@@ -338,10 +313,14 @@ public class ModelS686 extends ModelGun {
         {
             ModelTransformationHelper.defaultShotgunTransform();
             GlStateManager.translate(-0.15, -5.300001, -10.0);
-            s686.render(1f);
-            barrels.render(1.0F);
         }
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        s686.render(1f);
+        barrels.render(1.0F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

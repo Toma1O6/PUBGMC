@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelDP28 extends ModelGun {
@@ -59,12 +54,6 @@ public class ModelDP28 extends ModelGun {
     private final ModelRenderer bone23;
     private final ModelRenderer charging_handle;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.325f, 0.1f);
-        initAimingAnimationStates(0.325f, 0.255f, 0.265f);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -72,40 +61,18 @@ public class ModelDP28 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-            GlStateManager.pushMatrix();
-            {
-                renderDP28(data.getAimInfo().isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        dp28.render(1f);
+        magazine.render(1f);
+        if(!hasScopeAtachment(stack)) ironsights.render(1f);
+        charging_handle.render(1.0F);
     }
 
     private void renderDP28(boolean aim, ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(-0.075, -10.85, -10.0);
-
-        renderParts(hasScopeAtachment(stack));
         GlStateManager.popMatrix();
-
-        /*
-        renderRedDot(0, 10, 14, 1f, stack);
-        renderHolo(0, 3.125, 2, 1f, stack);
-        renderScope2X(0, 5, 6, 1f, stack);
-        renderScope4X(0, 8, 15, 1f, stack);
-        */
-    }
-
-    private void renderParts(boolean hasScope) {
-        dp28.render(1f);
-        magazine.render(1f);
-        if(!hasScope) ironsights.render(1f);
-        charging_handle.render(1.0F);
     }
 
     public ModelDP28() {
@@ -661,6 +628,5 @@ public class ModelDP28 extends ModelGun {
         charging_handle.setRotationPoint(-0.5F, 24.0F, 0.0F);
         charging_handle.cubeList.add(new ModelBox(charging_handle, 33, 155, -3.5F, 0.7188F, -15.6328F, 8, 1, 2, 0.0F, false));
         charging_handle.cubeList.add(new ModelBox(charging_handle, 33, 155, -1.0F, -0.4609F, -16.6328F, 3, 2, 4, 0.0F, false));
-        this.initAnimations();
     }
 }

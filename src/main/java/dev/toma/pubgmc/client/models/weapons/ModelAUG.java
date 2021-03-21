@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelAUG extends ModelGun {
@@ -520,15 +513,6 @@ public class ModelAUG extends ModelGun {
         aug.addChild(bone13);
         setRotationAngle(bone13, -0.5236F, 0.0F, 0.0F);
         bone13.cubeList.add(new ModelBox(bone13, 210, 84, 0.0F, -22.3923F, 4.1244F, 6, 5, 2, 0.0F, true));
-        this.initAnimations();
-    }
-
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.2825f, 0.3f, 2f);
-        initAimingAnimationStates(0.2825f, 0.195f, 0.2f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180)
-                .withSpeed(0.9f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -538,16 +522,11 @@ public class ModelAUG extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        IPlayerData data = PlayerData.get(player);
-        if (data != null) {
-            GlStateManager.pushMatrix();
-            {
-                renderAUG(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        aug.render(1f);
+        magazine.render(1f);
+        slide.render(1.0F);
+        if (!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
     private void renderAUG(boolean aim, ItemStack stack) {
@@ -555,19 +534,7 @@ public class ModelAUG extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.translate(0.0, 3.85, -6.0);
-        aug.render(1f);
-        magazine.render(1f);
-        slide.render(1.0F);
-        if (!hasScopeAtachment(stack)) ironsights.render(1f);
+
         GlStateManager.popMatrix();
-        /*
-        renderARSilencer(-0.025, -1.525, 29, 1f, stack);
-        renderVerticalGrip(0, -5, 13, 0.6F, stack);
-        renderAngledGrip(0, 3, 13, 0.6F, stack);
-        renderRedDot(0.05, 11.8, 9, 0.8F, stack);
-        renderHolo(-0.1, 8, -1, 0.8F, stack);
-        renderScope2X(0, 2, 0, 1f, stack);
-        renderScope4X(0, 4, -2, 1f, stack);
-        */
     }
 }

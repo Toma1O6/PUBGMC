@@ -1,17 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class ModelMP5K extends ModelGun {
@@ -49,32 +41,19 @@ public class ModelMP5K extends ModelGun {
     private final ModelRenderer charging_handle;
 
     @Override
-    public void initAnimations() {
-        initAimAnimation(-0.55f, 0.23f, 0.1f);
-        initAimingAnimationStates(0.23f, 0.15f, 0.15f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            renderMP5K(stack);
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        mp5k.render(1.0F);
+        charging_handle.render(1.0F);
+        magazine.render(1f);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1f);
     }
 
     private void renderMP5K(ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.32499984, 16.450008, -1.0);
-        mp5k.render(1.0F);
-        charging_handle.render(1.0F);
-        magazine.render(1f);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1f);
+
         GlStateManager.popMatrix();
 
         /*this.renderSMGSilencer(0, -7, 2, 1.2F, stack);
@@ -481,7 +460,6 @@ public class ModelMP5K extends ModelGun {
         setRotationAngle(charging_handle, 0.0F, 0.0F, -0.5236F);
         charging_handle.cubeList.add(new ModelBox(charging_handle, 26, 94, 18.5131F, -29.5095F, -14.2616F, 2, 1, 2, 0.0F, true));
         charging_handle.cubeList.add(new ModelBox(charging_handle, 26, 94, 17.5131F, -29.5095F, -13.8296F, 1, 1, 1, 0.0F, true));
-        this.initAnimations();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

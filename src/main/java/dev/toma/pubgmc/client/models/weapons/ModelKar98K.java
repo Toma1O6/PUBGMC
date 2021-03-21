@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelKar98K extends ModelGun {
@@ -58,13 +52,6 @@ public class ModelKar98K extends ModelGun {
     private final ModelRenderer bone39;
     private final ModelRenderer bone40;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.265f, 0.245f);
-        initAimingAnimationStates(0.265f, 0.193f, 0.19f);
-        reloadAnimation = new ReloadAnimation(null, ReloadStyle.SINGLE);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -72,15 +59,10 @@ public class ModelKar98K extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderKar98K(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        kar98k.render(1f);
+        bolt.render(1.0F);
+        stock.render(1.0F);
     }
 
     private void renderKar98K(ItemStack stack) {
@@ -88,19 +70,7 @@ public class ModelKar98K extends ModelGun {
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
         GlStateManager.translate(0.0, -9.900002, 3.0);
-
-        kar98k.render(1f);
-        bolt.render(1.0F);
-        stock.render(1.0F);
         GlStateManager.popMatrix();
-
-        /*renderSniperSilencer(0.225, 1.725, 16.825, 1f, stack);
-        renderRedDot(-0.1, 6.45, -35, 0.8f, stack);
-        renderHolo(-0.1, 4, -18, 0.87f, stack);
-        renderScope2X(-0.175, 4, -23, 0.9f, stack);
-        renderScope4X(0, 9, -40, 0.8f, stack);
-        renderScope8X(0, 10, -15, 0.7f, stack);
-        renderScope15X(0.15, 17.075, -9, 0.64f, stack);*/
     }
 
     public ModelKar98K() {
@@ -558,6 +528,5 @@ public class ModelKar98K extends ModelGun {
         stock.addChild(bone40);
         setRotationAngle(bone40, -0.4538F, -0.3665F, 0.1833F);
         bone40.cubeList.add(new ModelBox(bone40, 212, 153, -0.3729F, -2.7295F, -0.7208F, 1, 6, 1, 0.0F, false));
-        this.initAnimations();
     }
 }

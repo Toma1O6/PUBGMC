@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelSawedOff extends ModelGun {
@@ -30,29 +24,10 @@ public class ModelSawedOff extends ModelGun {
     private final ModelRenderer bone11;
     private final ModelRenderer bone5;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.295f, 0.1f);
-        initAimingAnimationStates(0.295f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-
-            GlStateManager.pushMatrix();
-            renderSawedOff(stack);
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderSawedOff(ItemStack stack) {
@@ -61,10 +36,15 @@ public class ModelSawedOff extends ModelGun {
             ModelTransformationHelper.defaultPistolTransform();
             GlStateManager.scale(0.5, 0.5, 0.5);
             GlStateManager.translate(-0.05, -0.6, -12);
-            sawedoff.render(1f);
-            barrels.render(1.0F);
+
         }
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        sawedoff.render(1f);
+        barrels.render(1.0F);
     }
 
     public ModelSawedOff() {
@@ -273,6 +253,5 @@ public class ModelSawedOff extends ModelGun {
         sawedoff.addChild(bone5);
         setRotationAngle(bone5, -0.0873F, 0.0F, 0.0F);
         bone5.cubeList.add(new ModelBox(bone5, 64, 13, -5.0F, 3.2501F, -3.2729F, 10, 6, 5, 0.0F, true));
-        this.initAnimations();
     }
 }

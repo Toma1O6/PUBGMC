@@ -1,15 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelQBU extends ModelGun {
@@ -58,31 +52,10 @@ public class ModelQBU extends ModelGun {
     private final ModelRenderer bone31;
     private final ModelRenderer bone32;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.305f, 0.22f);
-        initAimingAnimationStates(0.305f, 0.307f, 0.295f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.3F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-            GlStateManager.pushMatrix();
-            {
-                renderQBU(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
     }
 
     private void renderQBU(boolean aim, ItemStack stack) {
@@ -90,7 +63,6 @@ public class ModelQBU extends ModelGun {
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
         GlStateManager.translate(0.0, 11.0, 0.0);
-        renderParts(hasScopeAtachment(stack));
         GlStateManager.popMatrix();
         //attachments
         /*renderSniperSilencer(-0.025, -14, 17, 1.4f, stack);
@@ -102,11 +74,12 @@ public class ModelQBU extends ModelGun {
         renderScope15X(0, 8, 0, 1f, stack);*/
     }
 
-    private void renderParts(boolean hasScope) {
+    @Override
+    public void renderModel(ItemStack stack) {
         charging_handle.render(1.0F);
         qbu.render(1f);
         magazine.render(1f);
-        if(!hasScope)
+        if(!hasScopeAtachment(stack))
             ironsights.render(1f);
     }
 
@@ -702,6 +675,5 @@ public class ModelQBU extends ModelGun {
         setRotationAngle(bone32, 0.0F, -0.3491F, 0.0F);
         bone32.cubeList.add(new ModelBox(bone32, 40, 16, -1.5356F, 3.5F, 4.4761F, 1, 1, 3, 0.0F, false));
         bone32.cubeList.add(new ModelBox(bone32, 34, 8, -20.6888F, 3.5F, -48.1467F, 1, 1, 3, 0.0F, false));
-        this.initAnimations();
     }
 }

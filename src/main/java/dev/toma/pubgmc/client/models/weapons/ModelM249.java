@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelM249 extends ModelGun {
@@ -109,13 +104,6 @@ public class ModelM249 extends ModelGun {
     private final ModelRenderer bone37;
     private final ModelRenderer bone38;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.265f, 0.125f);
-        initAimingAnimationStates(0.265f, 0.165f, 0.167f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(0.55F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -123,15 +111,10 @@ public class ModelM249 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderM249(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        m249.render(1f);
+        charging_handle.render(1.0F);
+        magazine.render(1f);
     }
 
     private void renderM249(ItemStack stack) {
@@ -139,9 +122,7 @@ public class ModelM249 extends ModelGun {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0, -0.25, -9.0);
 
-        m249.render(1f);
-        charging_handle.render(1.0F);
-        magazine.render(1f);
+
         GlStateManager.popMatrix();
 
         /*renderRedDot(0, 0, 18, 1.0F, stack);
@@ -1236,6 +1217,5 @@ public class ModelM249 extends ModelGun {
         m249.addChild(bone38);
         setRotationAngle(bone38, 0.0F, 0.0F, 0.5236F);
         bone38.cubeList.add(new ModelBox(bone38, 8, 77, -0.817F, -0.683F, -0.5F, 1, 1, 1, 0.0F, true));
-        this.initAnimations();
     }
 }

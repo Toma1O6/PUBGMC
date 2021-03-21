@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelAWM extends ModelGun {
@@ -77,14 +70,6 @@ public class ModelAWM extends ModelGun {
     private final ModelRenderer bone40;
     private final ModelRenderer bone43;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.557f, 0.255f, 0.2f);
-        initAimingAnimationStates(0.255f, 0.17f, 0.185f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, -90)
-                .withSpeed(0.8f);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -92,15 +77,13 @@ public class ModelAWM extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        IPlayerData data = PlayerData.get(player);
-        if (data != null) {
-            GlStateManager.pushMatrix(); {
-                renderAWM(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        awm.render(1f);
+        magazine.render(1.0F);
+        bolt.render(1.0F);
+        stock.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
     }
 
     private void renderAWM(boolean aim, ItemStack stack) {
@@ -109,13 +92,6 @@ public class ModelAWM extends ModelGun {
         GlStateManager.rotate(-90f, 0f, 1f, 0f);
         GlStateManager.scale(0.9, 0.9, 0.9);
         GlStateManager.translate(-7.0, 8.699999, 0.0);
-
-        awm.render(1f);
-        magazine.render(1.0F);
-        bolt.render(1.0F);
-        stock.render(1.0F);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
         GlStateManager.popMatrix();
     }
 
@@ -723,6 +699,5 @@ public class ModelAWM extends ModelGun {
         stock.addChild(bone43);
         setRotationAngle(bone43, -0.0436F, 0.5236F, -0.0436F);
         bone43.cubeList.add(new ModelBox(bone43, 89, 149, -13.5241F, -1.9374F, 3.1927F, 1, 2, 2, 0.0F, false));
-        this.initAnimations();
     }
 }

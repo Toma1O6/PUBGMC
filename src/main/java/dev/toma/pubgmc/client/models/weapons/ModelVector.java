@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelVector extends ModelGun {
@@ -45,14 +38,6 @@ public class ModelVector extends ModelGun {
     private final ModelRenderer bone21;
     private final ModelRenderer charging_handle;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.315f, 0.225f);
-        initAimingAnimationStates(0.315f, 0.275f, 0.2575f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        this.reloadAnimation = new ReloadAnimation(magazine, ReloadAnimation.ReloadStyle.MAGAZINE).withSpeed(1.8F);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -60,25 +45,19 @@ public class ModelVector extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            renderVector(stack);
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        vector.render(1.0F);
+        magazine.render(1.0F);
+        charging_handle.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
     }
 
     private void renderVector(ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, -3.025, -16.0);
-        vector.render(1.0F);
-        magazine.render(1.0F);
-        charging_handle.render(1.0F);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
+
         GlStateManager.popMatrix();
 
         /*renderSMGSilencer(0, -10, -10, 1.0F, stack);
@@ -559,6 +538,5 @@ public class ModelVector extends ModelGun {
         charging_handle = new ModelRenderer(this);
         charging_handle.setRotationPoint(-1.5F, 24.0F, -0.304F);
         charging_handle.cubeList.add(new ModelBox(charging_handle, 40, 54, 3.264F, -10.0F, -11.568F, 2, 1, 1, 0.0F, false));
-        this.initAnimations();
     }
 }

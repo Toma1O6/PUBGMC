@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelMK47Mutant extends ModelGun {
@@ -1227,14 +1220,6 @@ public class ModelMK47Mutant extends ModelGun {
         bone25.setRotationPoint(0.0F, -17.5898F, -4.6885F);
         magazine.addChild(bone25);
         setRotationAngle(bone25, -0.8727F, 0.0F, 0.0F);
-        this.initAnimations();
-    }
-
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.18f, 0.12f);
-        initAimingAnimationStates(0.18f, 0.135f, 0.138f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -1244,27 +1229,19 @@ public class ModelMK47Mutant extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            {
-                renderMK47(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        Mk47.render(1.0F);
+        charging_handle.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
+        magazine.render(1.0F);
     }
 
     private void renderMK47(boolean aim, ItemStack stack) {
         GlStateManager.pushMatrix();
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0.0, -6.0, -9.0);
-        Mk47.render(1.0F);
-        charging_handle.render(1.0F);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
-        magazine.render(1.0F);
+
         GlStateManager.popMatrix();
 
         /*renderARSilencer(0, 0.125, 6, 1f, stack);

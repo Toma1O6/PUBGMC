@@ -1,16 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelBerylM762 extends ModelGun {
@@ -75,13 +68,6 @@ public class ModelBerylM762 extends ModelGun {
     private final ModelRenderer bone7;
     private final ModelRenderer bone8;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.56f, 0.26f, 0.18f);
-        initAimingAnimationStates(0.26f, 0.145f, 0.16f);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -89,16 +75,9 @@ public class ModelBerylM762 extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            GlStateManager.pushMatrix();
-            {
-                renderM762(data.isAiming(), stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        bone.render(1f);
+        magazine.render(1f);
     }
 
     private void renderM762(boolean aim, ItemStack stack) {
@@ -107,17 +86,8 @@ public class ModelBerylM762 extends ModelGun {
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 42.9, -4.0);
 
-        bone.render(1f);
-        magazine.render(1f);
-        GlStateManager.popMatrix();
 
-        /*renderARSilencer(0, -1.8, 6, 1F, stack);
-        renderRedDot(0, 3.85, 19, 0.8F, stack);
-        renderHolo(-0.1, 16, 7, 0.6F, stack);
-        renderScope2X(0, 0, 7, 1F, stack);
-        renderScope4X(0, 0, 10, 1F, stack);
-        renderVerticalGrip(0, -4.975, 17, 0.8f, stack);
-        renderAngledGrip(0, 0, 22, 0.7F, stack);*/
+        GlStateManager.popMatrix();
     }
 
     public ModelBerylM762() {
@@ -985,6 +955,5 @@ public class ModelBerylM762 extends ModelGun {
         bone7.addChild(bone8);
         setRotationAngle(bone8, -0.0873F, 0.0F, 0.0F);
         bone8.cubeList.add(new ModelBox(bone8, 0, 72, 39.0F, -30.4137F, -42.1992F, 4, 2, 12, 0.0F, false));
-        this.initAnimations();
     }
 }

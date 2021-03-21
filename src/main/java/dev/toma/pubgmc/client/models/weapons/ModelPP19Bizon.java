@@ -1,17 +1,9 @@
 package dev.toma.pubgmc.client.models.weapons;
 
-import dev.toma.pubgmc.animation_old.HeldAnimation;
-import dev.toma.pubgmc.animation_old.HeldAnimation.HeldStyle;
-import dev.toma.pubgmc.animation_old.ReloadAnimation;
-import dev.toma.pubgmc.animation_old.ReloadAnimation.ReloadStyle;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ModelPP19Bizon extends ModelGun {
@@ -41,14 +33,6 @@ public class ModelPP19Bizon extends ModelGun {
     private final ModelRenderer bone6;
     private final ModelRenderer bone;
 
-    @Override
-    public void initAnimations() {
-        initAimAnimation(-0.55f, 0.235f, 0.15f);
-        initAimingAnimationStates(0.235f, 0.165f, 0.145f);
-        heldAnimation = new HeldAnimation(HeldStyle.SMALL);
-        reloadAnimation = new ReloadAnimation(magazine, ReloadStyle.MAGAZINE).initMovement(DEFAULT_PART_ANIMATION, 180);
-    }
-
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
@@ -56,15 +40,12 @@ public class ModelPP19Bizon extends ModelGun {
     }
 
     @Override
-    public void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            GlStateManager.pushMatrix();
-            {
-                renderBizon(stack);
-            }
-            GlStateManager.popMatrix();
-        }
+    public void renderModel(ItemStack stack) {
+        pp19.render(1f);
+        magazine.render(1f);
+        charging_handle.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1f);
     }
 
     private void renderBizon(ItemStack stack) {
@@ -73,12 +54,6 @@ public class ModelPP19Bizon extends ModelGun {
             GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
             ModelTransformationHelper.defaultSMGTransform();
             GlStateManager.translate(33.05, 2.275001, -38.0);
-
-            pp19.render(1f);
-            magazine.render(1f);
-            charging_handle.render(1.0F);
-            if(!hasScopeAtachment(stack))
-                ironsights.render(1f);
         }
         GlStateManager.popMatrix();
 
@@ -563,6 +538,5 @@ public class ModelPP19Bizon extends ModelGun {
         ironsights.addChild(bone);
         setRotationAngle(bone, -0.1222F, 0.0F, 0.0F);
         bone.cubeList.add(new ModelBox(bone, 43, 48, -1.0F, -0.7437F, -0.5149F, 2, 1, 5, 0.0F, false));
-        this.initAnimations();
     }
 }
