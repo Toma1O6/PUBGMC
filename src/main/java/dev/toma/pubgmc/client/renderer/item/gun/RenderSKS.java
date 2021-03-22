@@ -20,11 +20,6 @@ public class RenderSKS extends WeaponRenderer {
     }
 
     @Override
-    public void preRender(ItemCameraTransforms.TransformType transformType) {
-
-    }
-
-    @Override
     public ModelGun getWeaponModel() {
         return model;
     }

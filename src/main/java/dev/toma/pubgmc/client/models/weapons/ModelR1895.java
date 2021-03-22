@@ -41,16 +41,11 @@ public class ModelR1895 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderR1895(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.scale(0.7f, 0.7f, 0.7f);
-            ModelTransformationHelper.defaultPistolTransform();
-            GlStateManager.translate(-7.1499963, -16.95, 0.0);
-        }
-        GlStateManager.popMatrix();
-
-//        renderPistolSilencer(-2, 27, 18, 0.5f, stack);
+    @Override
+    public void transformModel() {
+        GlStateManager.scale(0.7f, 0.7f, 0.7f);
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-7.1499963, -16.95, 0.0);
     }
 
     @Override

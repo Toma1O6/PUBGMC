@@ -733,25 +733,17 @@ public class ModelSLR extends ModelGun {
     }
 
     @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.translate(0, -9.0, -8.0);
+    }
+
+    @Override
     public void renderModel(ItemStack stack) {
         slr.render(1.0F);
         if(hasScopeAtachment(stack))
             toprail.render(1.0F);
         else
             ironsights.render(1.0F);
-    }
-
-    private void renderSLR(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.translate(0, -9.0, -8.0);
-        GlStateManager.popMatrix();
-        /*renderRedDot(0, 14, 13, 1f, stack);
-        renderHolo(0, 4.5, 0, 1f, stack);
-        renderScope2X(0, 7, 7, 1f, stack);
-        renderScope4X(0, 9.35, 10, 1f, stack);
-        renderScope8X(-0.15, 8, 14, 1f, stack);
-        renderScope15X(0, 7, 12, 1f, stack);
-        renderSniperSilencer(0.1, -14.9, 13, 1.7f, stack);*/
     }
 }

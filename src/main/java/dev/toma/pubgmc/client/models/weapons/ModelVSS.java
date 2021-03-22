@@ -47,13 +47,11 @@ public class ModelVSS extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderVSS() {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(1.1F, 1.1F, 1.1F);
         GlStateManager.translate(0.0, 13.0, -6.0);
-
-        GlStateManager.popMatrix();
     }
 
     @Override

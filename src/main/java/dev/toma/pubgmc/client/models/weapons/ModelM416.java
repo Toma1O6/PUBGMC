@@ -66,20 +66,10 @@ public class ModelM416 extends ModelGun {
         ironsights.render(1.0F);
     }
 
-    private void renderM416(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0.1, 1.05, -22.0);
-        if(!hasScopeAtachment(stack)) GlStateManager.rotate(-0.8F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.popMatrix();
-
-        /*this.renderARSilencer(0.35, -4.9, 5, 1.1F, stack);
-        this.renderRedDot(0.225, 1.925, 8, 1.0F, stack);
-        this.renderHolo(0, 3.375, 0, 0.9F, stack);
-        this.renderScope2X(0, 1, 2, 1.0F, stack);
-        this.renderScope4X(0, 1.05, 1, 1.0F, stack);
-        this.renderVerticalGrip(0, -3, 4, 1.0F, stack);
-        this.renderAngledGrip(0, -3, 5, 1.0F, stack);*/
     }
 
     public ModelM416() {

@@ -55,13 +55,11 @@ public class ModelTommyGun extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderTommyGun(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.scale(0.7, 0.7, 0.7);
         GlStateManager.translate(-0.05, 15.975, 0);
-        GlStateManager.popMatrix();
-//        renderSMGSilencer(0.07, -6.75, -17, 1f, stack);
     }
 
     @Override

@@ -52,19 +52,10 @@ public class ModelVector extends ModelGun {
             ironsights.render(1.0F);
     }
 
-    private void renderVector(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, -3.025, -16.0);
-
-        GlStateManager.popMatrix();
-
-        /*renderSMGSilencer(0, -10, -10, 1.0F, stack);
-        renderRedDot(0, 6, 6, 1.2F, stack);
-        renderHolo(-0.1, 4, -3, 1.0F, stack);
-        renderScope2X(0, 1, -2, 1.2F, stack);
-        renderScope4X(0, 5, -6, 1.1F, stack);
-        renderVerticalGrip(0, 1, 4, 1.0F, stack);*/
     }
 
     public ModelVector() {

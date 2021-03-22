@@ -65,12 +65,11 @@ public class ModelKar98K extends ModelGun {
         stock.render(1.0F);
     }
 
-    private void renderKar98K(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
         GlStateManager.translate(0.0, -9.900002, 3.0);
-        GlStateManager.popMatrix();
     }
 
     public ModelKar98K() {

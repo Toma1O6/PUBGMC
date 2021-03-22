@@ -859,14 +859,11 @@ public class ModelM24 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderM24(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultSRTransform();
-            GlStateManager.scale(0.79999995, 0.79999995, 0.79999995);
-            GlStateManager.translate(0.0, -15.300001, -18.0);
-        }
-        GlStateManager.popMatrix();
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.scale(0.79999995, 0.79999995, 0.79999995);
+        GlStateManager.translate(0.0, -15.300001, -18.0);
     }
 
     @Override

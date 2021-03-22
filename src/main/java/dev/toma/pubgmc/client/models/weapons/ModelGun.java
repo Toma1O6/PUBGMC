@@ -25,6 +25,10 @@ public abstract class ModelGun extends ModelBase {
 
     private final List<AnimateEntry> entries = new ArrayList<>();
 
+    public void transformModel() {
+
+    }
+
     public abstract void renderModel(ItemStack stack);
 
     public final void addEntry(AnimationElement element, Function<ItemStack, ModelRenderer> stack2RendererFunc) {
@@ -37,6 +41,7 @@ public abstract class ModelGun extends ModelBase {
 
     public final void render(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         GlStateManager.pushMatrix();
+        this.transformModel();
         this.renderModel(stack);
         EntityPlayer client = Minecraft.getMinecraft().player;
         boolean flag = client.getHeldItemMainhand() == stack && transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND;

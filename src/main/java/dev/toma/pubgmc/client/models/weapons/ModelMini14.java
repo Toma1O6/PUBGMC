@@ -71,13 +71,11 @@ public class ModelMini14 extends ModelGun {
         if(!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
-    private void renderMini14(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.translate(47.64998, 6.8749995, -26.0);
-
-        GlStateManager.popMatrix();
     }
 
     public ModelMini14() {

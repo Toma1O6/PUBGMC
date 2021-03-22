@@ -38,12 +38,10 @@ public class ModelWin94 extends ModelGun {
     private final ModelRenderer bone3;
     private final ModelRenderer bullet;
 
-    private void renderWin(boolean aim) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(-0.1, 0.85, -5.0);
-
-        GlStateManager.popMatrix();
     }
 
     @Override

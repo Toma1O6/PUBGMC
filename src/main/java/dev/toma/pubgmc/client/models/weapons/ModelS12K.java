@@ -69,19 +69,11 @@ public class ModelS12K extends ModelGun {
         ironsights.render(1f);
     }
 
-    private void renderWeapon(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultShotgunTransform();
-            GlStateManager.translate(-0.65000033, -1.0, -9.0);
-            GlStateManager.rotate(180, 0, 1, 0);
-        }
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(3.525, 13.4, 14, 0.7F, stack);
-        renderHolo(1, 7.075,  1, 0.8F, stack);
-        renderScope2X(1.15, 4, 5, 0.9F, stack);
-        renderScope4X(2, 6, 1, 0.9F, stack);*/
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultShotgunTransform();
+        GlStateManager.translate(-0.65000033, -1.0, -9.0);
+        GlStateManager.rotate(180, 0, 1, 0);
     }
 
     public ModelS12K() {

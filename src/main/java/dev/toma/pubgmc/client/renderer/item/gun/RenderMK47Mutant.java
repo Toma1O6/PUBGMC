@@ -20,11 +20,6 @@ public class RenderMK47Mutant extends WeaponRenderer {
     }
 
     @Override
-    public void preRender(ItemCameraTransforms.TransformType transformType) {
-
-    }
-
-    @Override
     public ModelGun getWeaponModel() {
         return model;
     }

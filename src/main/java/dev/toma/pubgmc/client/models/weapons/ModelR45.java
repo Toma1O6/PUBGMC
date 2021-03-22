@@ -45,15 +45,10 @@ public class ModelR45 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderR45(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultPistolTransform();
-            GlStateManager.translate(0.15, -9.349995, -7.0);
-        }
-        GlStateManager.popMatrix();
-
-//        renderRedDot(0.475, -7.25, -8, 0.8f, stack);
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(0.15, -9.349995, -7.0);
     }
 
     @Override

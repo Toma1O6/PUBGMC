@@ -1239,19 +1239,9 @@ public class ModelMK47Mutant extends ModelGun {
             ironsights.render(1.0F);
     }
 
-    private void renderMK47(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0.0, -6.0, -9.0);
-
-        GlStateManager.popMatrix();
-
-        /*renderARSilencer(0, 0.125, 6, 1f, stack);
-        renderVerticalGrip(0, -7, 3, 1f, stack);
-        renderAngledGrip(0, -6.125, 5, 1f, stack);
-        renderRedDot(0, -1.125, 3, 1f, stack);
-        renderHolo(-0.075, -0.6, 0, 1f, stack);
-        renderScope2X(0, -1, 0, 1f, stack);
-        renderScope4X(0, -1.925, 0, 1f, stack);*/
     }
 }

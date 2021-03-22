@@ -34,13 +34,10 @@ public class ModelS1897 extends ModelGun {
     private final ModelRenderer bone5;
     private final ModelRenderer bone3;
 
-    private void renderS1897(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultShotgunTransform();
-            GlStateManager.translate(-0.050000004, -2.8250031, -19.0);
-        }
-        GlStateManager.popMatrix();
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultShotgunTransform();
+        GlStateManager.translate(-0.050000004, -2.8250031, -19.0);
     }
 
     @Override

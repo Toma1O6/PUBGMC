@@ -41,12 +41,11 @@ public class ModelFlareGun extends ModelGun {
         flaregun.render(1f);
     }
 
-    private void renderFlareGun() {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultPistolTransform();
         GlStateManager.scale(0.39999992, 0.39999992, 0.39999992);
         GlStateManager.translate(-0.8750001, 8.4249935, 0.0);
-        GlStateManager.popMatrix();
     }
 
     public ModelFlareGun() {

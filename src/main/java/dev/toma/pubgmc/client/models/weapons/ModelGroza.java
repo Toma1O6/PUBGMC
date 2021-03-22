@@ -81,20 +81,11 @@ public class ModelGroza extends ModelGun {
         bone.render(1f);
     }
 
-    private void renderGroza(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(0.6F, 0.6F, 0.6F);
         GlStateManager.translate(-0.15, 40.675, 11);
-
-
-        GlStateManager.popMatrix();
-
-        /*renderARSilencer(0, 1, 45, 1f, stack);
-        renderRedDot(0, -12, -29, 0.7F, stack);
-        renderHolo(-0.125, 3, -14, 0.7F, stack);
-        renderScope2X(0, -3, -15, 0.8F, stack);
-        renderScope4X(0, -5.05, -23, 0.8F, stack);*/
     }
 
     public ModelGroza() {

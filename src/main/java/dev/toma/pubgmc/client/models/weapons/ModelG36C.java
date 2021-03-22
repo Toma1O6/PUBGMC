@@ -128,14 +128,11 @@ public class ModelG36C extends ModelGun {
         g36.render(1f);
     }
 
-    private void renderG36C(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultARTransform();
-            GlStateManager.scale(0.5, 0.5, 0.5);
-            GlStateManager.translate(-1.975, 37.125, -20.0);
-        }
-        GlStateManager.popMatrix();
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        GlStateManager.translate(-1.975, 37.125, -20.0);
     }
 
     public ModelG36C() {

@@ -34,14 +34,10 @@ public class ModelP92 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderP92(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultPistolTransform();
         GlStateManager.translate(-3.0750017, -4.0750017, -13.0);
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(-8.36, 6.925, -25, 1.1f, stack);
-        renderPistolSilencer(2.075, -0.035, -4, 0.9f, stack);*/
     }
 
     @Override

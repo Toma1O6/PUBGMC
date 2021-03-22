@@ -98,13 +98,10 @@ public class ModelM16A4 extends ModelGun {
         railBot.render(1.0F);
     }
 
-    private void renderM16A4(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(90, 0, 1, 0);
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(21.0, 1.975, -4.6000023);
-
-        GlStateManager.popMatrix();
     }
 
     public ModelM16A4() {

@@ -526,17 +526,15 @@ public class ModelAUG extends ModelGun {
     }
 
     @Override
-    public void renderModel(ItemStack stack) {
-        aug.render(1f);
-        if (!hasScopeAtachment(stack)) ironsights.render(1f);
-    }
-
-    private void renderAUG(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.translate(0.0, 3.85, -6.0);
+    }
 
-        GlStateManager.popMatrix();
+    @Override
+    public void renderModel(ItemStack stack) {
+        aug.render(1f);
+        if (!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 }

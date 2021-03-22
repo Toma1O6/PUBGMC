@@ -19,11 +19,6 @@ public class RenderS686 extends WeaponRenderer {
     }
 
     @Override
-    public void preRender(ItemCameraTransforms.TransformType transformType) {
-
-    }
-
-    @Override
     public ModelGun getWeaponModel() {
         return model;
     }

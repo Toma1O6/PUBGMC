@@ -67,11 +67,10 @@ public class ModelDP28 extends ModelGun {
         if(!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
-    private void renderDP28(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(-0.075, -10.85, -10.0);
-        GlStateManager.popMatrix();
     }
 
     public ModelDP28() {

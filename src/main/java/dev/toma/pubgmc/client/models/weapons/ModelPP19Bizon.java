@@ -47,20 +47,11 @@ public class ModelPP19Bizon extends ModelGun {
             ironsights.render(1f);
     }
 
-    private void renderBizon(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-            ModelTransformationHelper.defaultSMGTransform();
-            GlStateManager.translate(33.05, 2.275001, -38.0);
-        }
-        GlStateManager.popMatrix();
-
-        /*this.renderSMGSilencer(0, -9, -41, 1.2F, stack);
-        this.renderRedDot(1.025, -0.725, 0, 1f, stack);
-        this.renderHolo(0.275, -0.175, -2, 1f, stack);
-        this.renderScope2X(0, 0, 0, 1.0F, stack);
-        this.renderScope4X(0, -5, -5, 1.2F, stack);*/
+    @Override
+    public void transformModel() {
+        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.translate(33.05, 2.275001, -38.0);
     }
 
     public ModelPP19Bizon() {

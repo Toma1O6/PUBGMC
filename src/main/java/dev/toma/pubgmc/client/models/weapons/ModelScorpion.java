@@ -46,17 +46,10 @@ public class ModelScorpion extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderScorpion(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultPistolTransform();
-            GlStateManager.translate(0.0, 9.499992, -9.0);
-        }
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(-0.075, -7, -8, 1.2f, stack);
-        renderPistolSilencer(-1, 0, -7, 1f, stack);
-        renderVerticalGrip(0, -5.175, 8, 1f, stack);*/
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(0.0, 9.499992, -9.0);
     }
 
     @Override

@@ -81,23 +81,11 @@ public class ModelSKS extends ModelGun {
             ironsights.render(1f);
     }
 
-    private void renderSKS(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.scale(0.7, 0.7, 0.7);
         GlStateManager.translate(0.025, 5.7, 9);
-
-        GlStateManager.popMatrix();
-
-        /*renderSniperSilencer(-0.1, -10, 24, 1.3F, stack);
-        renderRedDot(0, 9.7, 2.0, 0.8F, stack);
-        renderHolo(-0.075, 18.0, -2, 0.6F, stack);
-        renderScope2X(0, 5, 0, 0.9f, stack);
-        renderScope4X(0, 3, -4, 1f, stack);
-        renderScope8X(0, 9, 6, 0.8f, stack);
-        renderScope15X(0, 16.7, 12, 0.67F, stack);
-        renderVerticalGrip(0, -3.075, 16, 0.8F, stack);
-        renderAngledGrip(0, -1, 20, 0.8F, stack);*/
     }
 
     public ModelSKS() {

@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 import dev.toma.pubgmc.client.models.weapons.ModelAWM;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
+import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.renderer.GlStateManager;

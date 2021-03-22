@@ -64,16 +64,15 @@ public class ModelAKM extends ModelGun {
     private final ModelRenderer bone8;
 
     @Override
-    public void renderModel(ItemStack stack) {
-        akm.render(1.0F);
-    }
-
-    private void renderAKM(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 41.0, -13.0);
-        GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        akm.render(1.0F);
     }
 
     public ModelAKM() {

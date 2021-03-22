@@ -116,18 +116,10 @@ public class ModelM249 extends ModelGun {
         m249.render(1f);
     }
 
-    private void renderM249(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0, -0.25, -9.0);
-
-
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(0, 0, 18, 1.0F, stack);
-        renderHolo(-0.075, 3, 5, 0.9F, stack);
-        renderScope2X(0, 0, 9, 1.0F, stack);
-        renderScope4X(0, 0, 10, 1.0F, stack);*/
     }
 
     public ModelM249() {

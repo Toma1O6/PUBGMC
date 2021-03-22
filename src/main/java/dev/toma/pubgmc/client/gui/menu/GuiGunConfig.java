@@ -559,6 +559,8 @@ public class GuiGunConfig extends GuiWidgets {
                 f += valueStepLControl * mod;
             } else if(GuiScreen.isShiftKeyDown()) {
                 f += valueStepLShift * mod;
+            } else if(GuiScreen.isAltKeyDown()) {
+                f += (valueStepNormal * 0.025) * mod;
             } else {
                 f += valueStepNormal * mod;
             }

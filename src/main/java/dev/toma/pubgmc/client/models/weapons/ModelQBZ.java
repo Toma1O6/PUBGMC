@@ -82,18 +82,10 @@ public class ModelQBZ extends ModelGun {
     private final ModelRenderer bone;
     private final ModelRenderer bone2;
 
-    private void renderQBZ(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(-0.025000004, 11.875002, -11.0);
-        GlStateManager.popMatrix();
-        /*this.renderARSilencer(0.15, -11, 21, 1.2F, stack);
-        this.renderRedDot(-0.05, 8, -8, 0.8F, stack);
-        this.renderHolo(-0.05, 7, -6, 0.8F, stack);
-        this.renderScope2X(0, 0.75, -4, 1.0F, stack);
-        this.renderScope4X(0, 2, -8, 1.0F, stack);
-        this.renderVerticalGrip(0, 0, 0, 0.8F, stack);
-        this.renderAngledGrip(0, 4, 11, 0.8F, stack);*/
     }
 
     @Override

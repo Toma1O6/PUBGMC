@@ -80,14 +80,11 @@ public class ModelBerylM762 extends ModelGun {
         bone.render(1f);
     }
 
-    private void renderM762(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.scale(0.6, 0.6, 0.6);
         GlStateManager.translate(0.0, 42.9, -4.0);
-
-
-        GlStateManager.popMatrix();
     }
 
     public ModelBerylM762() {

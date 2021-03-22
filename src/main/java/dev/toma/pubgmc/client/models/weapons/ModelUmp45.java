@@ -696,19 +696,10 @@ public class ModelUmp45 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderUmp(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, -8.0, 0.0);
-        GlStateManager.popMatrix();
-
-        /*renderSMGSilencer(0, 0, 0, 1f, stack);
-        renderVerticalGrip(0, -13, 21, 0.7f, stack);
-        renderAngledGrip(0, -8, 20, 0.8f, stack);
-        renderRedDot(0, -5.95, 16, 1f, stack);
-        renderHolo(-0.05, -0.05, 3, 0.9f, stack);
-        renderScope2X(0, -3, 7, 1f, stack);
-        renderScope4X(0, -3.95, 5, 1f, stack);*/
     }
 
     @Override

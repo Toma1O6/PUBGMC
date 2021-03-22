@@ -57,21 +57,10 @@ public class ModelScarL extends ModelGun {
     private final ModelRenderer bone44;
     private final ModelRenderer bone39;
 
-    private void renderScarL(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultARTransform();
         GlStateManager.translate(0.0, -1.1999998, -15.0);
-
-
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(0, 6.4, -3, 1f, stack);
-        renderHolo(0, 2, -2, 1f, stack);
-        renderScope2X(0, 3, 0, 1f, stack);
-        renderScope4X(0, 4.9, -8, 1f, stack);
-        renderARSilencer(0, -7.35, 0, 1.2f, stack);
-        renderVerticalGrip(0, 0, 0, 1, stack);
-        renderAngledGrip(0, 0, 0, 1, stack);*/
     }
 
     @Override

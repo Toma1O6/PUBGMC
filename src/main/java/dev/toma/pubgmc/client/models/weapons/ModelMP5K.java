@@ -48,18 +48,10 @@ public class ModelMP5K extends ModelGun {
             ironsights.render(1f);
     }
 
-    private void renderMP5K(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.32499984, 16.450008, -1.0);
-
-        GlStateManager.popMatrix();
-
-        /*this.renderSMGSilencer(0, -7, 2, 1.2F, stack);
-        this.renderRedDot(0.725, -4, 9, 1.2F, stack);
-        this.renderHolo(0.25, -0.225, 2, 1.0F, stack);
-        this.renderScope2X(0, 0, 4, 1.0F, stack);
-        this.renderScope4X(0, -3, 2, 1.1F, stack);*/
     }
 
     public ModelMP5K() {

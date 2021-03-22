@@ -59,20 +59,11 @@ public class ModelQBU extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderQBU(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSRTransform();
         GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
         GlStateManager.translate(0.0, 11.0, 0.0);
-        GlStateManager.popMatrix();
-        //attachments
-        /*renderSniperSilencer(-0.025, -14, 17, 1.4f, stack);
-        renderRedDot(0, 10, -6, 1.1f, stack);
-        renderHolo(-0.05, 1.9, -5, 1.1f, stack);
-        renderScope2X(0, 4, -3, 1.1f, stack);
-        renderScope4X(0, 6, -12, 1.1f, stack);
-        renderScope8X(0, 8, -4, 1f, stack);
-        renderScope15X(0, 8, 0, 1f, stack);*/
     }
 
     @Override

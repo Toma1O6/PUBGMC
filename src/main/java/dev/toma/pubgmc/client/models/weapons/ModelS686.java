@@ -311,13 +311,10 @@ public class ModelS686 extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> barrels);
     }
 
-    private void renderS686(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultShotgunTransform();
-            GlStateManager.translate(-0.15, -5.300001, -10.0);
-        }
-        GlStateManager.popMatrix();
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultShotgunTransform();
+        GlStateManager.translate(-0.15, -5.300001, -10.0);
     }
 
     @Override

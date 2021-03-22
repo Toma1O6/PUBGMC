@@ -80,16 +80,10 @@ public class ModelMicroUzi extends ModelGun {
         botrail.render(1.0F);
     }
 
-    private void renderUzi(ItemStack stack) {
-        GlStateManager.pushMatrix();
+    @Override
+    public void transformModel() {
         ModelTransformationHelper.defaultSMGTransform();
         GlStateManager.translate(0.0, 0.85, -14.0);
-
-        GlStateManager.popMatrix();
-
-        /*renderSMGSilencer(0, -6, 0, 1.2F, stack);
-        renderRedDot(-0.05, -6.25, -10, 1.2F, stack);
-        renderHolo(-0.1, -2.475, -6, 1.1F, stack);*/
     }
 
     public ModelMicroUzi() {

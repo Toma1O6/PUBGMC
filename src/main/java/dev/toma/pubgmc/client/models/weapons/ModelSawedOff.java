@@ -31,15 +31,11 @@ public class ModelSawedOff extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderSawedOff(ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultPistolTransform();
-            GlStateManager.scale(0.5, 0.5, 0.5);
-            GlStateManager.translate(-0.05, -0.6, -12);
-
-        }
-        GlStateManager.popMatrix();
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        GlStateManager.translate(-0.05, -0.6, -12);
     }
 
     @Override

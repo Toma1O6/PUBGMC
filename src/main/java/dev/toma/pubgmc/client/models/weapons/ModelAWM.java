@@ -78,20 +78,19 @@ public class ModelAWM extends ModelGun {
     }
 
     @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.rotate(-90f, 0f, 1f, 0f);
+        GlStateManager.scale(0.9, 0.9, 0.9);
+        GlStateManager.translate(-7.0, 8.699999, 0.0);
+    }
+
+    @Override
     public void renderModel(ItemStack stack) {
         awm.render(1f);
         stock.render(1.0F);
         if(!hasScopeAtachment(stack))
             ironsights.render(1.0F);
-    }
-
-    private void renderAWM(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.rotate(-90f, 0f, 1f, 0f);
-        GlStateManager.scale(0.9, 0.9, 0.9);
-        GlStateManager.translate(-7.0, 8.699999, 0.0);
-        GlStateManager.popMatrix();
     }
 
     public ModelAWM() {

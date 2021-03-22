@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.client.animation.AnimationElement;
+import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -42,6 +44,13 @@ public class ModelDeagle extends ModelGun {
     private final ModelRenderer bone19;
     private final ModelRenderer bone20;
     private final ModelRenderer magazine;
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        GlStateManager.translate(-0.15, 20.0, 10.0);
+    }
 
     @Override
     public void renderModel(ItemStack stack) {

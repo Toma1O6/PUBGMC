@@ -23,7 +23,6 @@ public class RenderM16A4 extends WeaponRenderer {
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {
         GlStateManager.translate(0.44, 0.23, 0.0);
-        GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
     }
 
     @Override
@@ -33,10 +32,10 @@ public class RenderM16A4 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.rotatedScaled(0.11F, -0.02F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.SILENCER_AR, IRenderConfig.rotatedScaled(-0.03F, -0.2F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.rotatedScaled(0.11F, -0.03F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.rotatedScaled(0.04F, -0.02F, 0.44F, 1F, 1F, 1F, 0F, 90F, 0F));
-        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.rotatedScaled(0.16F, 0.18F, 0.29F, 0.7F, 0.7F, 0.7F, 0F, 90F, 0F));
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(-0.44F, -0.01F, 0F));
+        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(-0.44F, -0.035F, 0.11F));
+        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(-0.44F, -0.02F, 0.11F));
+        registerRenderConfig(PMCItems.SILENCER_AR, IRenderConfig.positioned(-0.44F, -0.2F, -0.09F));
+        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(-0.34F, 0.12F, 0.14F, 0.8F, 0.8F, 0.8F));
     }
 }

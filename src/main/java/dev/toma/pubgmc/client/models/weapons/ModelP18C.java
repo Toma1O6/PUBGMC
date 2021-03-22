@@ -26,17 +26,10 @@ public class ModelP18C extends ModelGun {
         gun.render(1f);
     }
 
-    private void renderP18C(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultPistolTransform();
-            GlStateManager.translate(-0.9, -1.0, -6.0);
-
-        }
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(-2.06, -5.76, -6, 1.3F, stack);
-        renderPistolSilencer(0, 0, 0, 1f, stack);*/
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-0.9, -1.0, -6.0);
     }
 
     public ModelP18C() {

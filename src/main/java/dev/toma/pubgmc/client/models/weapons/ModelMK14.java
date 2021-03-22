@@ -96,25 +96,12 @@ public class ModelMK14 extends ModelGun {
         ironsights.render(1.0F);
     }
 
-    private void renderMK14(boolean aim, ItemStack stack) {
-        //WEAPON
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultSRTransform();
-            GlStateManager.rotate(180f, 0, 1, 0);
-            GlStateManager.scale(1.1, 1.1, 1.1);
-            GlStateManager.translate(0.8, 5.3, 27.0);
-        }
-        GlStateManager.popMatrix();
-
-        //ATTACHMENTS
-        /*renderRedDot(-2, 0.65, -3, 1f, stack);
-        renderHolo(-0.7, -0.05, -4, 1f, stack);
-        renderScope2X(-1.15, -0.05, -29, 1f, stack);
-        renderScope4X(-1.45, 0, -54, 1f, stack);
-        renderScope8X(-1.05, 1.2, -23, 1f, stack);
-        renderScope15X(-1, 0.85, -26, 1f, stack);
-        renderSniperSilencer(0.7, -10.9, -21, 1.7f, stack);*/
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.rotate(180f, 0, 1, 0);
+        GlStateManager.scale(1.1, 1.1, 1.1);
+        GlStateManager.translate(0.8, 5.3, 27.0);
     }
 
     public ModelMK14() {

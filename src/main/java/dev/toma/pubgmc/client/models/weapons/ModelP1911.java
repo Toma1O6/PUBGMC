@@ -39,16 +39,10 @@ public class ModelP1911 extends ModelGun {
         modelRenderer.rotateAngleZ = z;
     }
 
-    private void renderP1911(boolean aim, ItemStack stack) {
-        GlStateManager.pushMatrix();
-        {
-            ModelTransformationHelper.defaultPistolTransform();
-            GlStateManager.translate(-0.03, -8.94, -15.0);
-        }
-        GlStateManager.popMatrix();
-
-        /*renderRedDot(0, 0.81, 1, 1f, stack);
-        renderPistolSilencer(-1, -1, -5, 1f, stack);*/
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-0.03, -8.94, -15.0);
     }
 
     @Override
