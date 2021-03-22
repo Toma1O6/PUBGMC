@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -57,8 +58,6 @@ public class ModelR45 extends ModelGun {
 
     @Override
     public void renderModel(ItemStack stack) {
-        drum.render(1.0F);
-        hammer.render(1.0F);
         r45.render(1f);
     }
 
@@ -263,12 +262,10 @@ public class ModelR45 extends ModelGun {
         r45.addChild(bone7);
         setRotationAngle(bone7, -0.5236F, 0.0F, 0.0F);
 
-
         bone5 = new ModelRenderer(this);
         bone5.setRotationPoint(0.0F, -1.5F, -6.2656F);
         r45.addChild(bone5);
         setRotationAngle(bone5, 0.1745F, 0.0F, 0.0F);
-
 
         bone4 = new ModelRenderer(this);
         bone4.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -281,10 +278,12 @@ public class ModelR45 extends ModelGun {
         r45.addChild(bone2);
         setRotationAngle(bone2, 0.0F, 0.1745F, 0.0F);
 
-
         bone3 = new ModelRenderer(this);
         bone3.setRotationPoint(0.0F, 0.0F, 0.0F);
         r45.addChild(bone3);
         setRotationAngle(bone3, 0.0F, -0.1745F, 0.0F);
+
+        addEntry(AnimationElement.MAGAZINE, stack -> drum);
+        addEntry(AnimationElement.HAMMER, stack -> hammer);
     }
 }

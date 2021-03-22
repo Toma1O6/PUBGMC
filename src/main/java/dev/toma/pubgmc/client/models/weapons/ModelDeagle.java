@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.item.ItemStack;
@@ -45,9 +46,6 @@ public class ModelDeagle extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         deagle.render(1f);
-        magazine.render(1f);
-        slide.render(1.0F);
-        hammer.render(1.0F);
         if(hasScopeAtachment(stack)) rail.render(1f);
     }
 
@@ -466,5 +464,9 @@ public class ModelDeagle extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 8, 497, -0.2321F, -19.0852F, 11.2656F, 3, 3, 1, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 8, 497, -0.2321F, -19.0852F, 6.6976F, 3, 3, 4, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 8, 497, 0.2679F, -18.5852F, 5.4576F, 2, 2, 6, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> slide);
+        addEntry(AnimationElement.HAMMER, stack -> hammer);
     }
 }

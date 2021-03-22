@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -513,6 +514,9 @@ public class ModelAUG extends ModelGun {
         aug.addChild(bone13);
         setRotationAngle(bone13, -0.5236F, 0.0F, 0.0F);
         bone13.cubeList.add(new ModelBox(bone13, 210, 84, 0.0F, -22.3923F, 4.1244F, 6, 5, 2, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> slide);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -524,8 +528,6 @@ public class ModelAUG extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         aug.render(1f);
-        magazine.render(1f);
-        slide.render(1.0F);
         if (!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 

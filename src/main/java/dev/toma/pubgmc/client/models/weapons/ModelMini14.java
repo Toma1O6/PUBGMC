@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -67,8 +68,6 @@ public class ModelMini14 extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         mini14.render(1f);
-        magazine.render(1f);
-        slide.render(1.0F);
         if(!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
@@ -79,14 +78,6 @@ public class ModelMini14 extends ModelGun {
         GlStateManager.translate(47.64998, 6.8749995, -26.0);
 
         GlStateManager.popMatrix();
-
-        /*renderSniperSilencer(0, -2.45, 6, 1.0F, stack);
-        renderRedDot(-0.125, 3.0, -14, 1.0F, stack);
-        renderHolo(-0.1, 3.85, -8, 0.9F, stack);
-        renderScope2X(0, 4.65, -27, 0.9F, stack);
-        renderScope4X(0, 3, -37, 1.0F, stack);
-        renderScope8X(0, 5, -15, 0.9F, stack);
-        renderScope15X(0, 5.925, -20, 0.9F, stack);*/
     }
 
     public ModelMini14() {
@@ -716,5 +707,8 @@ public class ModelMini14 extends ModelGun {
         setRotationAngle(bone10, 0.0F, 0.0F, -1.0472F);
         bone10.cubeList.add(new ModelBox(bone10, 41, 80, 0.067F, 0.116F, 0.252F, 2, 1, 1, 0.0F, false));
         bone10.cubeList.add(new ModelBox(bone10, 41, 80, 0.067F, -2.3481F, 0.252F, 2, 1, 1, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> slide);
     }
 }

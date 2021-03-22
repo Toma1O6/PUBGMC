@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -73,8 +74,6 @@ public class ModelMicroUzi extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1.0F);
-        magazine.render(1.0F);
-        charger.render(1.0F);
         stock.render(1.0F);
         if(hasScopeAtachment(stack))
             toprail.render(1.0F);
@@ -671,6 +670,9 @@ public class ModelMicroUzi extends ModelGun {
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 1.5F, 0, 1, 1, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 4.5F, 1, 1, 1, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 3.5F, 0, 1, 1, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charger);
     }
 
     public void setRotationAngle(ModelRenderer r, float x, float y, float z) {

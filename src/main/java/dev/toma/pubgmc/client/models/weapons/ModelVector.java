@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -47,8 +48,6 @@ public class ModelVector extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         vector.render(1.0F);
-        magazine.render(1.0F);
-        charging_handle.render(1.0F);
         if(!hasScopeAtachment(stack))
             ironsights.render(1.0F);
     }
@@ -538,5 +537,8 @@ public class ModelVector extends ModelGun {
         charging_handle = new ModelRenderer(this);
         charging_handle.setRotationPoint(-1.5F, 24.0F, -0.304F);
         charging_handle.cubeList.add(new ModelBox(charging_handle, 40, 54, 3.264F, -10.0F, -11.568F, 2, 1, 1, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
     }
 }

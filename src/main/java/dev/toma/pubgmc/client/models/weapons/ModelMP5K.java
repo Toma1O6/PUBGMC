@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -43,8 +44,6 @@ public class ModelMP5K extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         mp5k.render(1.0F);
-        charging_handle.render(1.0F);
-        magazine.render(1f);
         if(!hasScopeAtachment(stack))
             ironsights.render(1f);
     }
@@ -460,6 +459,9 @@ public class ModelMP5K extends ModelGun {
         setRotationAngle(charging_handle, 0.0F, 0.0F, -0.5236F);
         charging_handle.cubeList.add(new ModelBox(charging_handle, 26, 94, 18.5131F, -29.5095F, -14.2616F, 2, 1, 2, 0.0F, true));
         charging_handle.cubeList.add(new ModelBox(charging_handle, 26, 94, 17.5131F, -29.5095F, -13.8296F, 1, 1, 1, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

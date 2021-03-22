@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -90,13 +91,11 @@ public class ModelM16A4 extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1f);
-        charging_handle.render(1.0F);
         barrel.render(1.0F);
         stock.render(1.0F);
         if(hasScopeAtachment(stack))
             railTop.render(1.0F);
         railBot.render(1.0F);
-        magazine.render(1.0F);
     }
 
     private void renderM16A4(boolean aim, ItemStack stack) {
@@ -1042,5 +1041,8 @@ public class ModelM16A4 extends ModelGun {
         setRotationAngle(bone63, -0.0873F, 0.0F, 0.0F);
         bone63.cubeList.add(new ModelBox(bone63, 25, 158, -2.526F, -1.0F, -10.0F, 3, 1, 10, 0.0F, false));
         bone63.cubeList.add(new ModelBox(bone63, 25, 158, -0.434F, -1.0F, -10.0F, 3, 1, 10, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
     }
 }

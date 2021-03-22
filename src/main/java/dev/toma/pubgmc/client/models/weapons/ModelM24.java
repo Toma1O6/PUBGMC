@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -56,7 +57,6 @@ public class ModelM24 extends ModelGun {
     private final ModelRenderer cube_r34;
     private final ModelRenderer bolt;
     private final ModelRenderer boltrot;
-    private final ModelRenderer bullet;
     private final ModelRenderer magazine;
     private final ModelRenderer cube_r35;
     private final ModelRenderer cube_r36;
@@ -68,7 +68,7 @@ public class ModelM24 extends ModelGun {
     private final ModelRenderer cube_r42;
     private final ModelRenderer cube_r43;
     private final ModelRenderer cube_r44;
-    private final ModelRenderer variants;
+    private final ModelRenderer bullet2;
     private final ModelRenderer quickdraw;
     private final ModelRenderer cube_r45;
     private final ModelRenderer cube_r46;
@@ -102,7 +102,7 @@ public class ModelM24 extends ModelGun {
     private final ModelRenderer cube_r70;
     private final ModelRenderer cube_r71;
     private final ModelRenderer cube_r72;
-    private final ModelRenderer bullet2;
+    private final ModelRenderer bullet;
 
     public ModelM24() {
         textureWidth = 512;
@@ -542,19 +542,6 @@ public class ModelM24 extends ModelGun {
         boltrot.cubeList.add(new ModelBox(boltrot, 33, 19, -4.04F, -0.5F, -0.6F, 4, 1, 1, 0.0F, false));
         boltrot.cubeList.add(new ModelBox(boltrot, 33, 19, -6.04F, -1.0F, -1.1F, 2, 2, 2, 0.0F, false));
 
-        bullet = new ModelRenderer(this);
-        bullet.setRotationPoint(-1.9F, 0.1F, -1.0F);
-        bolt.addChild(bullet);
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.5F, -1.0F, 0.0F, 3, 3, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.5F, -1.0F, -7.3F, 3, 3, 7, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 111, 156, -1.0F, -0.5F, -12.3F, 2, 2, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -0.5F, -1.0F, -8.3F, 1, 3, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.5F, 0.0F, -8.3F, 3, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.3F, -0.8F, -11.0F, 2, 2, 11, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.3F, -0.2F, -11.0F, 2, 2, 11, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -0.7F, -0.8F, -11.0F, 2, 2, 11, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -0.7F, -0.2F, -11.0F, 2, 2, 11, 0.0F, false));
-
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.0F, 24.0F, 0.0F);
         magazine.cubeList.add(new ModelBox(magazine, 4, 135, -2.5F, -4.0F, -1.4F, 5, 8, 2, 0.0F, false));
@@ -628,14 +615,21 @@ public class ModelM24 extends ModelGun {
         setRotationAngle(cube_r44, 0.0F, 0.5236F, 0.0F);
         cube_r44.cubeList.add(new ModelBox(cube_r44, 4, 135, 1.5F, -0.5F, 0.0F, 1, 8, 1, 0.0F, false));
 
-        variants = new ModelRenderer(this);
-        variants.setRotationPoint(0.0F, 0.0F, 0.0F);
-        magazine.addChild(variants);
-
+        bullet2 = new ModelRenderer(this);
+        bullet2.setRotationPoint(0.1F, -6.43F, -11.95F);
+        magazine.addChild(bullet2);
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.6F, -1.1F, 11.0F, 3, 3, 1, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.6F, -1.1F, 3.7F, 3, 3, 7, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 111, 156, -1.1F, -0.6F, -1.3F, 2, 2, 2, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.6F, -1.1F, 2.7F, 1, 3, 1, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.6F, -0.1F, 2.7F, 3, 1, 1, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.4F, -0.9F, 0.0F, 2, 2, 11, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.4F, -0.3F, 0.0F, 2, 2, 11, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.8F, -0.9F, 0.0F, 2, 2, 11, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.8F, -0.3F, 0.0F, 2, 2, 11, 0.0F, false));
 
         quickdraw = new ModelRenderer(this);
-        quickdraw.setRotationPoint(0.0F, 0.0F, 0.0F);
-        variants.addChild(quickdraw);
+        quickdraw.setRotationPoint(0.0F, 24.0F, 0.0F);
         quickdraw.cubeList.add(new ModelBox(quickdraw, 34, 173, -2.0F, 3.866F, -1.4F, 4, 1, 2, 0.0F, false));
         quickdraw.cubeList.add(new ModelBox(quickdraw, 34, 173, -2.0F, 3.866F, -13.4F, 4, 1, 2, 0.0F, false));
         quickdraw.cubeList.add(new ModelBox(quickdraw, 34, 173, 0.9F, 4.866F, -13.3F, 1, 1, 1, 0.0F, false));
@@ -711,8 +705,7 @@ public class ModelM24 extends ModelGun {
         cube_r54.cubeList.add(new ModelBox(cube_r54, 216, 40, -1.0F, -0.5F, -0.5F, 2, 2, 1, 0.0F, true));
 
         extended = new ModelRenderer(this);
-        extended.setRotationPoint(0.0F, 4.0F, 0.0F);
-        variants.addChild(extended);
+        extended.setRotationPoint(0.0F, 28.0F, 0.0F);
         extended.cubeList.add(new ModelBox(extended, 21, 163, -2.5F, 0.0F, -1.4F, 5, 4, 2, 0.0F, false));
         extended.cubeList.add(new ModelBox(extended, 21, 163, -2.5F, 0.0F, -13.4F, 5, 4, 2, 0.0F, false));
         extended.cubeList.add(new ModelBox(extended, 21, 163, -2.5F, 0.0F, -7.4F, 5, 4, 2, 0.0F, false));
@@ -843,20 +836,21 @@ public class ModelM24 extends ModelGun {
         setRotationAngle(cube_r72, 0.5236F, 0.0F, 0.0F);
         cube_r72.cubeList.add(new ModelBox(cube_r72, 216, 40, -1.0F, -0.5F, -0.5F, 2, 2, 1, 0.0F, true));
 
-        bullet2 = new ModelRenderer(this);
-        bullet2.setRotationPoint(0.1F, -6.43F, -11.95F);
-        magazine.addChild(bullet2);
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.6F, -1.1F, 11.0F, 3, 3, 1, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.6F, -1.1F, 3.7F, 3, 3, 7, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 111, 156, -1.1F, -0.6F, -1.3F, 2, 2, 2, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.6F, -1.1F, 2.7F, 1, 3, 1, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.6F, -0.1F, 2.7F, 3, 1, 1, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.4F, -0.9F, 0.0F, 2, 2, 11, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -1.4F, -0.3F, 0.0F, 2, 2, 11, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.8F, -0.9F, 0.0F, 2, 2, 11, 0.0F, false));
-        bullet2.cubeList.add(new ModelBox(bullet2, 0, 503, -0.8F, -0.3F, 0.0F, 2, 2, 11, 0.0F, false));
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.1F, 14.1F, -13.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.5F, -1.0F, 0.0F, 3, 3, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.5F, -1.0F, -7.3F, 3, 3, 7, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 111, 156, -1.0F, -0.5F, -12.3F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -0.5F, -1.0F, -8.3F, 1, 3, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.5F, 0.0F, -8.3F, 3, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.3F, -0.8F, -11.0F, 2, 2, 11, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -1.3F, -0.2F, -11.0F, 2, 2, 11, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -0.7F, -0.8F, -11.0F, 2, 2, 11, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 503, -0.7F, -0.2F, -11.0F, 2, 2, 11, 0.0F, false));
 
-        variants.isHidden = true;
+        addEntryArray(AnimationElement.MAGAZINE, this::getMagRenderers);
+        addEntry(AnimationElement.CHARGING, stack -> bolt);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -878,7 +872,13 @@ public class ModelM24 extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         m24.render(1f);
-        magazine.render(1f);
-        bolt.render(1f);
+    }
+
+    ModelRenderer[] getMagRenderers(ItemStack stack) {
+        if(hasExtendedMagazine(stack)) {
+            return new ModelRenderer[] {magazine, extended};
+        } else if(hasQuickdrawMagazine(stack)) {
+            return new ModelRenderer[] {magazine, quickdraw};
+        } else return new ModelRenderer[] {magazine};
     }
 }

@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -721,6 +722,8 @@ public class ModelSLR extends ModelGun {
         cube_r59.cubeList.add(new ModelBox(cube_r59, 12, 165, -0.5F, -1.5F, -0.5F, 1, 5, 2, 0.0F, false));
         cube_r59.cubeList.add(new ModelBox(cube_r59, 90, 103, -0.1F, 2.0F, -13.0F, 1, 1, 1, 0.0F, false));
         cube_r59.cubeList.add(new ModelBox(cube_r59, 12, 165, -0.5F, -1.5F, -13.5F, 1, 5, 2, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
@@ -732,7 +735,6 @@ public class ModelSLR extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         slr.render(1.0F);
-        magazine.render(1.0F);
         if(hasScopeAtachment(stack))
             toprail.render(1.0F);
         else

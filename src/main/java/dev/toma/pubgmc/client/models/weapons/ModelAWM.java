@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -79,8 +80,6 @@ public class ModelAWM extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         awm.render(1f);
-        magazine.render(1.0F);
-        bolt.render(1.0F);
         stock.render(1.0F);
         if(!hasScopeAtachment(stack))
             ironsights.render(1.0F);
@@ -699,5 +698,8 @@ public class ModelAWM extends ModelGun {
         stock.addChild(bone43);
         setRotationAngle(bone43, -0.0436F, 0.5236F, -0.0436F);
         bone43.cubeList.add(new ModelBox(bone43, 89, 149, -13.5241F, -1.9374F, 3.1927F, 1, 2, 2, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> bolt);
     }
 }

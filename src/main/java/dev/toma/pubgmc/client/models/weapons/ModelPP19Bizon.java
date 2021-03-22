@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -42,8 +43,6 @@ public class ModelPP19Bizon extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         pp19.render(1f);
-        magazine.render(1f);
-        charging_handle.render(1.0F);
         if(!hasScopeAtachment(stack))
             ironsights.render(1f);
     }
@@ -538,5 +537,8 @@ public class ModelPP19Bizon extends ModelGun {
         ironsights.addChild(bone);
         setRotationAngle(bone, -0.1222F, 0.0F, 0.0F);
         bone.cubeList.add(new ModelBox(bone, 43, 48, -1.0F, -0.7437F, -0.5149F, 2, 1, 5, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
     }
 }

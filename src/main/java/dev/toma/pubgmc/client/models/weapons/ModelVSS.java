@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -58,8 +59,6 @@ public class ModelVSS extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         vss.render(1f);
-        magazine.render(1f);
-        charging_handle.render(1.0F);
     }
 
     public ModelVSS() {
@@ -413,5 +412,8 @@ public class ModelVSS extends ModelGun {
         vss.addChild(bone5);
         setRotationAngle(bone5, 0.0F, 0.4363F, 0.0F);
         bone5.cubeList.add(new ModelBox(bone5, 14, 86, -5.9496F, -31.0F, 3.1942F, 1, 3, 3, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
     }
 }

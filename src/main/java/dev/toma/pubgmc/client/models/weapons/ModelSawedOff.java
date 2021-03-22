@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -44,7 +45,6 @@ public class ModelSawedOff extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         sawedoff.render(1f);
-        barrels.render(1.0F);
     }
 
     public ModelSawedOff() {
@@ -253,5 +253,7 @@ public class ModelSawedOff extends ModelGun {
         sawedoff.addChild(bone5);
         setRotationAngle(bone5, -0.0873F, 0.0F, 0.0F);
         bone5.cubeList.add(new ModelBox(bone5, 64, 13, -5.0F, 3.2501F, -3.2729F, 10, 6, 5, 0.0F, true));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> barrels);
     }
 }

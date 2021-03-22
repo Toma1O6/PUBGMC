@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -76,8 +77,6 @@ public class ModelSKS extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         sks.render(1f);
-        charging_handle.render(1.0F);
-        magazine.render(1f);
         if(!hasScopeAtachment(stack))
             ironsights.render(1f);
     }
@@ -923,5 +922,8 @@ public class ModelSKS extends ModelGun {
         ironsights.addChild(bone47);
         setRotationAngle(bone47, 0.0F, 0.0F, -0.5236F);
         bone47.cubeList.add(new ModelBox(bone47, 66, 12, -2.4821F, -2.433F, -0.5F, 1, 3, 4, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
     }
 }

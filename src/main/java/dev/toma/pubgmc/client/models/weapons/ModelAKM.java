@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -65,8 +66,6 @@ public class ModelAKM extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         akm.render(1.0F);
-        magazine.render(1.0F);
-        bolt.render(1.0F);
     }
 
     private void renderAKM(ItemStack stack) {
@@ -681,6 +680,9 @@ public class ModelAKM extends ModelGun {
         bone7.addChild(bone8);
         setRotationAngle(bone8, -0.0873F, 0.0F, 0.0F);
         bone8.cubeList.add(new ModelBox(bone8, 86, 38, 39.0F, -30.4137F, -42.1992F, 4, 2, 12, 0.0F, false));
+
+        addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> bolt);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
