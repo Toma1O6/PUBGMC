@@ -38,4 +38,9 @@ public class RenderM16A4 extends WeaponRenderer {
         registerRenderConfig(PMCItems.SILENCER_AR, IRenderConfig.positioned(-0.44F, -0.2F, -0.09F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(-0.34F, 0.12F, 0.14F, 0.8F, 0.8F, 0.8F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "m16a4";
+    }
 }

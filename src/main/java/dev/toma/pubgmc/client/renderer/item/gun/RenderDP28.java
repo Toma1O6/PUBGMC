@@ -32,4 +32,9 @@ public class RenderDP28 extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.15F, 0.17F, 0.3F, 0.7F, 0.7F, 0.7F));
 
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "dp28";
+    }
 }

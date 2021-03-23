@@ -3,7 +3,7 @@ package dev.toma.pubgmc.client;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationElement;
-import dev.toma.pubgmc.client.animation.AnimationFactory;
+import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
@@ -385,6 +385,7 @@ public class ClientEvents {
                 if (gs.keyBindUseItem.isPressed()) {
                     if (!data.getAimInfo().isAiming() && !player.isSprinting()) {
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
+                        AnimationProcessor.instance().play(AnimationType.AIM_ANIMATION_TYPE, AnimationDispatcher.dispatchAimAnimation(gun, stack));
                     } else {
                         PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
@@ -599,7 +600,7 @@ public class ClientEvents {
         float h = Pubgmc.rng().nextBoolean() ? -gun.getHorizontalRecoil() * horizontal : gun.getHorizontalRecoil() * horizontal;
         player.rotationPitch -= v;
         player.rotationYaw -= h;
-        AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, AnimationFactory.createRecoilAnimation(h, v));
+        AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, AnimationDispatcher.dispatchRecoilAnimation(h, v));
     }
 
     private void setReloading(IPlayerData data, boolean reload) {

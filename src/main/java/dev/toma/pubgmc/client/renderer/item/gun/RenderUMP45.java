@@ -41,4 +41,9 @@ public class RenderUMP45 extends WeaponRenderer {
         registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positioned(0F, 0.09F, 0.43F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, 0.3F, 0.7F, 0.8F, 0.8F, 0.8F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "ump45";
+    }
 }

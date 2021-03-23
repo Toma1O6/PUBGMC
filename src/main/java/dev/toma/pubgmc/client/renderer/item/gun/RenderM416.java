@@ -39,6 +39,10 @@ public class RenderM416 extends WeaponRenderer {
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0F, -0.19F, 0.2F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, -0.16F, 0.2F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, -0.03F, 0.24F, 0.8F, 0.8F, 0.8F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "m416";
     }
 }

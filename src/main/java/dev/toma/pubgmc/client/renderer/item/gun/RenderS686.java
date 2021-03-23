@@ -25,6 +25,10 @@ public class RenderS686 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "s686";
     }
 }

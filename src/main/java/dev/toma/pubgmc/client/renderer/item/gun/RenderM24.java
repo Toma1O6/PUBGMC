@@ -40,4 +40,9 @@ public class RenderM24 extends WeaponRenderer {
         registerRenderConfig(PMCItems.SILENCER_SNIPER, IRenderConfig.positioned(0F, 0.22F, 0F));
         registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positionedScaled(0.1F, 0.39F, -0.06F, 0.8F, 0.8F, 0.8F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "m24";
+    }
 }

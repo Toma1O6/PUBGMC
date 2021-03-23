@@ -38,4 +38,9 @@ public class RenderScorpion extends WeaponRenderer {
         registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positionedScaled(-0.1F, -0.01F, 0.7F, 1.2F, 1.2F, 1.2F));
         registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positioned(0F, 0.1F, 0.13F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "scorpion";
+    }
 }

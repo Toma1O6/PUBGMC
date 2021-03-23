@@ -38,4 +38,9 @@ public class RenderMP5K extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positionedScaled(0.04F, 0.15F, 0.24F, 0.9F, 0.9F, 0.9F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(-0.01F, 0.09F, 0.2F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "mp5k";
+    }
 }

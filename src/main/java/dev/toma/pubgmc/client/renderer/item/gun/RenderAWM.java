@@ -42,4 +42,9 @@ public class RenderAWM extends WeaponRenderer {
         registerRenderConfig(PMCItems.SILENCER_SNIPER, IRenderConfig.positionedScaled(0F, 0.09F, -0.34F, 1F, 1F, 1.2F));
         registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positioned(0F, 0.17F, 0F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "awm";
+    }
 }

@@ -31,4 +31,9 @@ public class RenderS12K extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.175F, 0.31F, 0.32F, 0.6F, 0.6F, 0.6F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.125F, 0.18F, 0.27F, 0.7F, 0.8F, 0.8F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "s12k";
+    }
 }

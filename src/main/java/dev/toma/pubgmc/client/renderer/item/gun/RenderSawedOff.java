@@ -25,6 +25,10 @@ public class RenderSawedOff extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "sawed_off";
     }
 }

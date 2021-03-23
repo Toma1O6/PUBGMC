@@ -33,6 +33,10 @@ public class RenderG36C extends WeaponRenderer {
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positionedScaled(0.07F, 0.2F, 0.16F, 0.9F, 0.9F, 0.9F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.07F, 0.15F, 0.1F, 0.9F, 1F, 1F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.17F, 0.36F, 0.2F, 0.7F, 0.7F, 0.7F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "g36c";
     }
 }

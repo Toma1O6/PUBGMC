@@ -8,6 +8,7 @@ import java.util.*;
 
 public class AnimationSpec {
 
+    public static final AnimationSpec EMPTY_SPEC = new AnimationSpec(new HashMap<>());
     private final Map<AnimationElement, List<KeyFrame>> frameDefs;
 
     public AnimationSpec(Map<AnimationElement, List<KeyFrame>> frameDefs) {

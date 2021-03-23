@@ -5,7 +5,6 @@ import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderBerylM762 extends WeaponRenderer {
 
@@ -33,6 +32,10 @@ public class RenderBerylM762 extends WeaponRenderer {
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0F, 0.06F, 0.32F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, 0.09F, 0.2F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.15F, 0.3F, 0.34F, 0.7F, 0.7F, 0.7F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "beryl_m762";
     }
 }

@@ -5,7 +5,6 @@ import dev.toma.pubgmc.client.models.weapons.ModelMK47Mutant;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderMK47Mutant extends WeaponRenderer {
 
@@ -33,6 +32,10 @@ public class RenderMK47Mutant extends WeaponRenderer {
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0F, 0.08F, 0.2F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, 0.1F, 0.1F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positioned(0F, 0.11F, 0.1F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "mk47mutant";
     }
 }

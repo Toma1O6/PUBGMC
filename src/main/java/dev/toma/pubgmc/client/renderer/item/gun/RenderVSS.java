@@ -27,4 +27,9 @@ public class RenderVSS extends WeaponRenderer {
     public void registerAttachmentRenders() {
 
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "vss";
+    }
 }

@@ -5,7 +5,6 @@ import dev.toma.pubgmc.client.models.weapons.ModelMK14;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderMK14Ebr extends WeaponRenderer {
 
@@ -33,5 +32,10 @@ public class RenderMK14Ebr extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positioned(0.02F, 0.1F, -0.6F));
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(0.02F, 0.08F, -0.6F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0.02F, 0.075F, -0.53F));
+    }
+
+    @Override
+    public String getResourcePrefix() {
+        return "mk14ebr";
     }
 }

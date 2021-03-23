@@ -32,4 +32,9 @@ public class RenderPPBizon extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(-0.005F, 0.08F, 0.06F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(-0.01F, 0.08F, 0.1F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "ppbizon";
+    }
 }

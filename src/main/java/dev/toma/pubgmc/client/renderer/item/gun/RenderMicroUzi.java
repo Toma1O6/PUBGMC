@@ -35,6 +35,10 @@ public class RenderMicroUzi extends WeaponRenderer {
         registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0F, 0.175F, 0.19F));
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positionedScaled(-0.045F, 0.19F, -0.25F, 1.1F, 1.1F, 1.1F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, 0.275F, -0.28F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "uzi";
     }
 }

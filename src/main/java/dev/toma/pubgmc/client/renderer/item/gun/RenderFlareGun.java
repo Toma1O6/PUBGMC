@@ -33,6 +33,10 @@ public class RenderFlareGun extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "flare_gun";
     }
 }

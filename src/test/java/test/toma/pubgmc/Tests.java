@@ -98,27 +98,4 @@ public class Tests {
         assertEquals(0.875F, frames.get(3).endPoint(), 0.001F);
         assertEquals(1.0F, frames.get(4).endPoint(), 0.001F);
     }
-
-    @Test
-    public void testKeyFrameSerialization() {
-        Gson gson = AnimationLoader.GSON;
-        KeyFrame empty = KeyFrame.EMPTY_FRAME;
-        KeyFrame emptyEndpoint = () -> 0.5F;
-        KeyFrame moved = KeyFrame.move(0.4F, new Vec3d(1, 2, 3));
-        KeyFrame rotated = KeyFrame.rotate(0.978F, new Vec3d(3, 2, 1), new Vec3d(1, 2, 3));
-        JsonElement je0 = gson.toJsonTree(empty);
-        JsonElement je1 = gson.toJsonTree(emptyEndpoint);
-        JsonElement je2 = gson.toJsonTree(moved);
-        JsonElement je3 = gson.toJsonTree(rotated);
-        KeyFrame d_empty = gson.fromJson(je0, KeyFrame.class);
-        KeyFrame d_emptyEndpoint = gson.fromJson(je1, KeyFrame.class);
-        KeyFrame d_moved = gson.fromJson(je2, KeyFrame.class);
-        KeyFrame d_rotated = gson.fromJson(je3, KeyFrame.class);
-        assertEquals(0.0F, d_empty.endPoint(), 0.0001F);
-        assertEquals(0.5F, d_emptyEndpoint.endPoint(), 0.0001F);
-        assertEquals(Vec3d.ZERO, d_emptyEndpoint.moveTarget());
-        assertEquals(new Vec3d(1, 2, 3), d_moved.moveTarget());
-        assertEquals(0.978D, d_rotated.endPoint(), 0.0001F);
-        assertEquals(new Vec3d(1, 2, 3), d_rotated.rotateTarget());
-    }
 }

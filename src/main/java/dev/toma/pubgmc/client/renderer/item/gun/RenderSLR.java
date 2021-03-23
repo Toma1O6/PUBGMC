@@ -39,6 +39,10 @@ public class RenderSLR extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, 0.2F, 0.24F, 0.8F, 0.8F, 0.8F));
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(0F, 0.05F, 0.2F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0.005F, 0.06F, 0.14F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "slr";
     }
 }

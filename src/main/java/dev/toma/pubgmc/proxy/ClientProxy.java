@@ -3,9 +3,7 @@ package dev.toma.pubgmc.proxy;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
-import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
-import dev.toma.pubgmc.client.animation.Animations;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
 import dev.toma.pubgmc.client.renderer.entity.*;
 import dev.toma.pubgmc.client.renderer.item.attachment.*;
@@ -60,7 +58,6 @@ public class ClientProxy extends Proxy {
         MinecraftForge.EVENT_BUS.register(new RenderHandler());
         registerEntityRenderers();
         Pubgmc.getContentManager().initialize();
-        Animations.registerAnimations(animationLoader);
     }
 
     @Override
@@ -133,7 +130,7 @@ public class ClientProxy extends Proxy {
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(it -> it instanceof GunBase)
                 .map(it -> (WeaponRenderer) it.getTileEntityItemStackRenderer())
-                .forEach(WeaponRenderer::registerAttachmentRenders);
+                .forEach(WeaponRenderer::init);
     }
 
     static void registerEntityRenderers() {

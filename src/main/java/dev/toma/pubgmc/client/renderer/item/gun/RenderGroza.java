@@ -31,6 +31,10 @@ public class RenderGroza extends WeaponRenderer {
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positionedScaled(0.1F, 0.34F, -0.07F, 0.8F, 0.8F, 0.8F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.1F, 0.35F, -0.15F, 0.8F, 0.8F, 0.8F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.2F, 0.49F, -0.08F, 0.6F, 0.6F, 0.6F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "groza";
     }
 }

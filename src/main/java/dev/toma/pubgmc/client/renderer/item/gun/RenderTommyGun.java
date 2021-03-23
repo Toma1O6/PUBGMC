@@ -34,6 +34,10 @@ public class RenderTommyGun extends WeaponRenderer {
     public void registerAttachmentRenders() {
         registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0F, -0.01F, 0.35F));
         registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positionedScaled(0.05F, 0.1F, 0F, 0.9F, 0.9F, 0.9F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "thompson";
     }
 }

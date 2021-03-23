@@ -34,4 +34,9 @@ public class RenderKar98k extends WeaponRenderer {
         registerRenderConfig(PMCItems.SILENCER_SNIPER, IRenderConfig.positioned(0F, 0.125F, -0.08F));
         registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positionedScaled(0.1F, 0.27F, 0.47F, 0.8F, 0.8F, 0.8F));
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "kar98k";
+    }
 }

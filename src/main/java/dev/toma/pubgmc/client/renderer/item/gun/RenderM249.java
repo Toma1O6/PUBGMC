@@ -30,6 +30,10 @@ public class RenderM249 extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positionedScaled(0.1F, 0.2F, 0.3F, 0.8F, 0.8F, 0.8F));
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0F, 0.05F, 0.27F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, 0.28F, 0.25F, 0.8F, 0.7F, 0.9F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "m249";
     }
 }

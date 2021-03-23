@@ -5,7 +5,6 @@ import dev.toma.pubgmc.client.models.weapons.ModelMini14;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderMini14 extends WeaponRenderer {
 
@@ -33,5 +32,10 @@ public class RenderMini14 extends WeaponRenderer {
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.05F, 0.11F, -0.55F, 0.9F, 0.9F, 0.9F));
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(0F, 0.04F, -0.56F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, 0.05F, -0.56F));
+    }
+
+    @Override
+    public String getResourcePrefix() {
+        return "mini14";
     }
 }

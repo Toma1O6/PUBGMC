@@ -2,6 +2,8 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.AnimationLoader;
+import dev.toma.pubgmc.client.animation.AnimationSpec;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
@@ -11,7 +13,9 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
+import dev.toma.pubgmc.common.items.attachment.ItemScope;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.proxy.ClientProxy;
 import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -30,6 +34,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
     public static final ResourceLocation GUN_TEXTURES = Pubgmc.getResource("textures/weapon/gun_textures.png");
     public static final ResourceLocation ATTACHMENT_TEXTURES = Pubgmc.getResource("textures/weapon/attachment_textures.png");
     private final Pair<IRenderConfig, IRenderConfig> handRenderConfigs;
+    private final Map<ItemScope, ResourceLocation> attachment2AimAnimationMap = new HashMap<>();
     private Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
 
     public WeaponRenderer() {
@@ -39,6 +44,8 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
     public abstract ModelGun getWeaponModel();
 
     public abstract void registerAttachmentRenders();
+
+    public abstract String getResourcePrefix();
 
     public Pair<IRenderConfig, IRenderConfig> createHandRenderConfigs() {
         return Pair.of(GuiHandPlacer.left, GuiHandPlacer.right);
@@ -73,8 +80,22 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
         }
     }
 
+    public final void init() {
+        this.registerAttachmentRenders();
+        registerAimAnimation(null);
+    }
+
+    public AnimationSpec getAimAnimation(ItemStack stack) {
+        ItemScope scope = ((GunBase) stack.getItem()).getAttachment(AttachmentType.SCOPE, stack);
+        ResourceLocation location = attachment2AimAnimationMap.get(scope);
+        return ClientProxy.getAnimationLoader().getAnimationSpecification(location);
+    }
+
     public final void registerRenderConfig(ItemAttachment attachment, IRenderConfig config) {
         renderConfigs.put(attachment, config);
+        if(attachment instanceof ItemScope) {
+            registerAimAnimation((ItemScope) attachment);
+        }
     }
 
     public final void registerRenderConfig(IRenderConfig config, ItemAttachment... attachments) {
@@ -83,6 +104,15 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
         for (ItemAttachment attachment : attachments) {
             registerRenderConfig(Objects.requireNonNull(attachment), config);
         }
+    }
+
+    private void registerAimAnimation(ItemScope attachment) {
+        ResourceLocation location;
+        if(attachment == null) {
+            location = Pubgmc.getResource(this.getResourcePrefix() + "_aim");
+        } else location = Pubgmc.getResource(this.getResourcePrefix() + "_aim_" + attachment.getRegistryName().getResourcePath());
+        attachment2AimAnimationMap.put(attachment, location);
+        ClientProxy.getAnimationLoader().registerEntry(location);
     }
 
     public final IRenderConfig getRenderConfig(ItemAttachment attachment) {

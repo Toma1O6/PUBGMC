@@ -34,4 +34,9 @@ public class RenderWincherster94 extends WeaponRenderer {
     public void registerAttachmentRenders() {
 
     }
+
+    @Override
+    public String getResourcePrefix() {
+        return "win94";
+    }
 }

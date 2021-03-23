@@ -39,6 +39,10 @@ public class RenderQBZ extends WeaponRenderer {
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0F, -0.23F, -0.44F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, -0.2F, -0.5F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, -0.06F, -0.41F, 0.8F, 0.8F, 0.8F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "qbz";
     }
 }

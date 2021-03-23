@@ -32,6 +32,10 @@ public class RenderVector extends WeaponRenderer {
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, -0.04F, 0.13F));
         registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positioned(0F, -0.05F, 0.06F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.05F, 0.03F, 0.09F, 0.9F, 0.9F, 0.9F));
+    }
 
+    @Override
+    public String getResourcePrefix() {
+        return "vector";
     }
 }

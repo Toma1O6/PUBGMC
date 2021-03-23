@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 import dev.toma.pubgmc.client.models.weapons.ModelAUG;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
-import dev.toma.pubgmc.client.util.ModelTransformationHelper;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,5 +40,10 @@ public class RenderAUG extends WeaponRenderer {
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.1F, 0.09F, 0F, 0.8F, 1F, 1F));
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, 0.23F, 0.02F, 0.8F, 0.8F, 0.8F));
 
+    }
+
+    @Override
+    public String getResourcePrefix() {
+        return "aug";
     }
 }

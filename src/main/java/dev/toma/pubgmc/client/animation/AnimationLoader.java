@@ -48,7 +48,13 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
     }
 
     public AnimationSpec getAnimationSpecification(ResourceLocation location) {
-        return animationSpecMap.get(location);
+        AnimationSpec spec = animationSpecMap.get(location);
+        if(spec == null) {
+            spec = AnimationSpec.EMPTY_SPEC;
+            animationSpecMap.put(location, spec);
+            log.error("Couldn't lookup animation for {} key, falling back to default animation", location);
+        }
+        return spec;
     }
 
     public Map<ResourceLocation, AnimationSpec> getAnimations() {
@@ -57,12 +63,12 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-        ProgressManager.ProgressBar bar = ProgressManager.push("Animation loader:", paths.size());
+        ProgressManager.ProgressBar bar = ProgressManager.push("Baking animations", paths.size());
         animationSpecMap.clear();
         for (ResourceLocation path : paths) {
             try {
                 bar.step(path.toString());
-                loadResource(resourceManager, new ResourceLocation(path.getResourceDomain(), String.format("animations/%s.json", path.getResourcePath())));
+                loadResource(resourceManager, new ResourceLocation(path.getResourceDomain(), String.format("animations/%s.json", path.getResourcePath())), path);
             } catch (Exception e) {
                 log.error("Exception occurred while loading file {}: {}", path.toString(), e);
             }
@@ -70,14 +76,14 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
         ProgressManager.pop(bar);
     }
 
-    public void loadResource(IResourceManager manager, ResourceLocation path) throws IOException {
-        IResource resource = manager.getResource(path);
+    public void loadResource(IResourceManager manager, ResourceLocation filePath, ResourceLocation oldPath) throws IOException {
+        IResource resource = manager.getResource(filePath);
         JsonReader reader = new JsonReader(new InputStreamReader(resource.getInputStream()));
         try {
             AnimationSpec spec = load(reader);
-            animationSpecMap.put(path, spec);
+            animationSpecMap.put(oldPath, spec);
         } catch (JsonParseException ex) {
-            log.error("File {} has invalid syntax! {}", path, ex);
+            log.error("File {} has invalid syntax! {}", filePath, ex);
         }
     }
 
