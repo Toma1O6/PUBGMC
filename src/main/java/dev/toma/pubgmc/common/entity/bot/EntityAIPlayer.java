@@ -158,7 +158,7 @@ public class EntityAIPlayer extends EntityCreature {
             if (needsHelmet) {
                 if (stack.getItem() instanceof ArmorBase) {
                     ArmorBase armorBase = (ArmorBase) stack.getItem();
-                    if (armorBase.getEquipmentSlot() == EntityEquipmentSlot.HEAD) {
+                    if (armorBase.armorType == EntityEquipmentSlot.HEAD) {
                         this.setItemStackToSlot(EntityEquipmentSlot.HEAD, stack.copy());
                         lootSpawner.removeStackFromSlot(i);
                         needsHelmet = false;
@@ -168,7 +168,7 @@ public class EntityAIPlayer extends EntityCreature {
             if (needsVest) {
                 if (stack.getItem() instanceof ArmorBase) {
                     ArmorBase armorBase = (ArmorBase) stack.getItem();
-                    if (armorBase.getEquipmentSlot() == EntityEquipmentSlot.CHEST) {
+                    if (armorBase.armorType == EntityEquipmentSlot.CHEST) {
                         this.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack.copy());
                         lootSpawner.removeStackFromSlot(i);
                         needsVest = false;

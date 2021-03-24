@@ -172,7 +172,6 @@ public class GameBattleRoyale extends Game {
         joinedPlayers.forEach(p -> {
             p.setHealth(20.0F);
             p.getFoodStats().setFoodLevel(20);
-            p.getFoodStats().setFoodSaturationLevel(15000.0F);
             p.sendMessage(new TextComponentString("Choose one drop location"));
             for(MapLocation location : gameData.getSpawnLocations()) {
                 TextComponentString msg = new TextComponentString("- " + location.name());
@@ -211,7 +210,6 @@ public class GameBattleRoyale extends Game {
         if(hadRegenActive) {
             world.getGameRules().setOrCreateGameRule("naturalRegeneration", "true");
         }
-        this.getOnlinePlayers(world).forEach(player -> player.getFoodStats().setFoodSaturationLevel(15.0F));
     }
 
     @Override
