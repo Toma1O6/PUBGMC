@@ -2,27 +2,32 @@ package dev.toma.pubgmc.client.gui.animator;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.client.animation.AnimationElement;
+import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
+import dev.toma.pubgmc.client.animation.AnimationType;
+import dev.toma.pubgmc.client.animation.impl.AnimatorAnimation;
+import dev.toma.pubgmc.client.animation.interfaces.ElementProvider;
+import dev.toma.pubgmc.client.gui.GuiConfirm;
 import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
+import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
+import dev.toma.pubgmc.client.gui.widget.CheckboxWidget;
+import dev.toma.pubgmc.client.gui.widget.TextFieldWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
     final PopupHandler handler;
     ListWidget<String> animationList;
-    ListWidget<AnimationElement> elements;
     TimelineWidget timeline;
 
     public GuiAnimator() {
@@ -32,9 +37,28 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
     @Override
     public void init() {
-        timeline = addWidget(new TimelineWidget(150, height - 55, width - 150, 55));
-        animationList = addWidget(new ListWidget<>(this, 5, 30, 140, height / 2 - 5, new ArrayList<>(AnimatorCache.animations.keySet()), "Animations", (confirmed, parent) -> {
-            GuiAnimator.this.mc.displayGuiScreen(GuiAnimator.this);
+        int third = height / 3;
+        timeline = addWidget(new TimelineWidget(this, 0, 2 * third, width, third));
+        addWidget(
+                new CheckboxWidget(width - 80, 5, 75, 20, "Pause", (state, mouseX, mouseY, widget) -> AnimationProcessor.instance().getAnimation(AnimationType.ANIMATOR_TYPE).ifPresent(an -> an.setPaused(state)))
+                        .initialState(true)
+        );
+        addWidget(
+                new ButtonWidget(5, 5, 40, 20, "New", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiCreateProject(this)))
+        );
+        addWidget(
+                new ButtonWidget(50, 5, 40, 20, "Save", (widget, mouseX, mouseY, button) -> {
+                    AnimationProject project = AnimatorCache.project;
+                    File file = new File(project.workingFile, project.name + ".json");
+                    if(file.exists())
+                        project.save();
+                    else mc.displayGuiScreen(new GuiSaveProject(this));
+                })
+        );
+        addWidget(
+                new ButtonWidget(95, 5, 55, 20, "Save as", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiSaveProject(this)))
+        );
+        animationList = addWidget(new ListWidget<>(this, 5, 30, 140, 2 * third - 35, new ArrayList<>(AnimatorCache.animations.keySet()), "Animations", (confirmed, parent) -> {
             if(confirmed) {
                 IPopupHandler handler = (IPopupHandler) parent;
                 handler.sendText("Loading new animation project");
@@ -44,24 +68,20 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                     handler.sendError("File " + key + " not found");
                     AnimatorCache.refreshAnimations(ClientProxy.getAnimationLoader(), handler);
                     GuiAnimator.this.animationList.refresh(new ArrayList<>(AnimatorCache.animations.keySet()));
-                    return;
+                } else {
+                    AnimatorCache.project = new AnimationProject(spec);
+                    handler.sendText("New project has been created");
                 }
-                handler.sendText("New project has been created");
+                GuiAnimator.this.mc.displayGuiScreen(GuiAnimator.this);
             }
-        }).requireConfirm());
-        elements = addWidget(new ListWidget<>(this, 5, height / 2 + 30, 140, 75, new ArrayList<>(), "Elements", (confirmed, parent) -> {
-            AnimationElement element = elements.getSelectedElement();
-            // TODO place into timeline
-            elements.getList().remove(element);
-        }));
-
+        }).requireConfirm(() -> !AnimatorCache.project.isSaved));
         timeline.setProject(AnimatorCache.project);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         Widget.drawColorShape(0, 0, width, height, 0.0F, 0.0F, 0.0F, 0.15F);
-        Widget.drawColorShape(0, 0, 150, height, 0.0F, 0.0F, 0.0F, 0.15F);
+        Widget.drawColorShape(0, 30, 150, 2 * (height / 3), 0.0F, 0.0F, 0.0F, 0.5F);
         drawWidgets(mc, mouseX, mouseY, partialTicks);
         handler.draw(mc.fontRenderer, width, height, partialTicks);
     }
@@ -73,35 +93,213 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
     }
 
     @Override
-    public void sendError(String error) {
-        handler.sendError(error);
+    public void sendError(String error, Object... objects) {
+        handler.sendError(error, objects);
     }
 
     @Override
-    public void sendWarning(String warning) {
-        handler.sendWarning(warning);
+    public void sendWarning(String warning, Object... objects) {
+        handler.sendWarning(warning, objects);
     }
 
     @Override
-    public void sendText(String text) {
-        handler.sendText(text);
+    public void sendText(String text, Object... objects) {
+        handler.sendText(text, objects);
     }
 
     static class TimelineWidget extends Widget {
 
         AnimationProject project;
+        ListWidget<AnimationElement> listWidget;
+        GuiAnimator animator;
+        int length = 40;
+        float progress;
+        Map<AnimationElement, List<TimelineObject>> timelineObjects;
+        AnimationElement clickedElementTimeline;
 
-        public TimelineWidget(int x, int y, int width, int height) {
+        public <G extends GuiAnimator & IPopupHandler> TimelineWidget(G parent, int x, int y, int width, int height) {
             super(x, y, width, height);
+            this.animator = parent;
+            this.timelineObjects = new TreeMap<>(Comparator.comparingInt(AnimationElement::getIndex));
+            ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
+            Item item = stack.getItem();
+            List<AnimationElement> elements = new ArrayList<>();
+            if(item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
+                elements.addAll(((ElementProvider) item.getTileEntityItemStackRenderer()).getElements());
+            }
+            elements.addAll(AnimationElement.getBaseElements());
+            elements.sort((o1, o2) -> o2.getIndex() - o1.getIndex());
+            this.listWidget = new ListWidget<>(parent, x, y - 15, 100, height + 15, elements, null, (confirmed, parent1) -> {
+                AnimationElement element = TimelineWidget.this.listWidget.getSelectedElement();
+                TimelineWidget.this.insertElement(element);
+            }).withFormatter(AnimationElement::getLocalizedName);
         }
 
         @Override
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.3F);
+            drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
+            listWidget.render(mc, mouseX, mouseY, partialTicks);
+            FontRenderer renderer = mc.fontRenderer;
+            Optional<AnimatorAnimation> optional = AnimationProcessor.instance().getAnimation(AnimationType.ANIMATOR_TYPE);
+            optional.ifPresent(anim -> {
+                if(!anim.isPaused())
+                    progress = anim.getProgressSmooth();
+            });
+            int j = 0;
+            for (Map.Entry<AnimationElement, List<TimelineObject>> entry : timelineObjects.entrySet()) {
+                renderer.drawString(entry.getKey().getLocalizedName(), 103, y + 10 + j * 10, 0xFFFFFF);
+                drawColorShape(this.x + 165, 15 + y + j * 10, this.x + width - 10, 16 + y + j * 10, 1.0F, 0.0F, 0.0F, 0.5F);
+                for (TimelineObject object : entry.getValue()) {
+                    object.setY(10 + this.y + j * 10);
+                    object.render(mc, mouseX, mouseY, partialTicks);
+                }
+                ++j;
+            }
+            int timelineX = this.x + 165 + (int)((width - 175) * progress);
+            drawColorShape(timelineX - 1, y, timelineX + 1, y + height, 1.0F, 1.0F, 1.0F, 1.0F);
+            drawColorShape(timelineX - 5, y, timelineX, y + 10, timelineX + 5, y, timelineX - 5, y, 1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         public void setProject(AnimationProject project) {
             this.project = project;
+            timelineObjects.clear();
+            for (Map.Entry<AnimationElement, List<MutableKeyFrame>> entry : project.animation.entrySet()) {
+                List<TimelineObject> objects = new ArrayList<>();
+                for (MutableKeyFrame frame : entry.getValue()) {
+                    int ox = 165 + (int)(this.x + (this.width - this.x - 175) * frame.endPoint() - 5);
+                    TimelineObject object = new TimelineObject(ox, 0, 10, 10, this, frame);
+                    objects.add(object);
+                }
+                objects.sort((o1, o2) -> Float.compare(o1.frame.endpoint, o2.frame.endpoint));
+                timelineObjects.put(entry.getKey(), objects);
+            }
+            AnimationProcessor.instance().play(AnimationType.ANIMATOR_TYPE, new AnimatorAnimation(length).setPaused(true));
+        }
+
+        @Override
+        public boolean handleClicked(int mouseX, int mouseY, int button) {
+            for (Map.Entry<AnimationElement, List<TimelineObject>> entry : timelineObjects.entrySet()) {
+                for (TimelineObject object : entry.getValue()) {
+                    clickedElementTimeline = entry.getKey();
+                    if(object.handleClicked(mouseX, mouseY, button)) {
+                        return false;
+                    }
+                }
+            }
+            if(listWidget.handleClicked(mouseX, mouseY, button)) {
+                return false;
+            }
+            return super.handleClicked(mouseX, mouseY, button);
+        }
+
+        @Override
+        public boolean processClicked(int mouseX, int mouseY, int button) {
+            return mouseX >= x + 165 && mouseX <= x + width - 10 && mouseY >= y && mouseY <= y + 10;
+        }
+
+        @Override
+        public void onClick(int mouseX, int mouseY, int button) {
+            int x1 = x + 165;
+            int x2 = width - 10;
+            progress = (mouseX - x1) / (float) (x2 - x1);
+            animator.sendText("Set animation progress to {}%", DevUtil.formatToTwoDecimals(progress * 100.0F));
+            Optional<AnimatorAnimation> optional = AnimationProcessor.instance().getAnimation(AnimationType.ANIMATOR_TYPE);
+            optional.ifPresent(anim -> anim.set(progress));
+        }
+
+        @Override
+        public boolean handleDragged(int mouseX, int mouseY, int button, long time) {
+            for (Map.Entry<AnimationElement, List<TimelineObject>> entry : timelineObjects.entrySet()) {
+                for (TimelineObject object : entry.getValue()) {
+                    if(object.handleDragged(mouseX, mouseY, button, time))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean handleMouseScrolled(int mouseX, int mouseY, int delta) {
+            return listWidget.handleMouseScrolled(mouseX, mouseY, delta);
+        }
+
+        void insertElement(AnimationElement element) {
+            List<TimelineObject> list = timelineObjects.getOrDefault(element, new ArrayList<>());
+            if(hasElementAt(progress, list)) {
+                animator.sendError("Frame is already defined for this location");
+                return;
+            }
+            MutableKeyFrame frame = new MutableKeyFrame();
+            frame.setEndpoint(progress);
+            AnimatorCache.project.add(element, frame);
+            AnimationProcessor.instance().play(AnimationType.ANIMATOR_TYPE, new AnimatorAnimation(length));
+            int ox = 165 + (int)(this.x + (this.width - this.x - 175) * progress - 5);
+            TimelineObject object = new TimelineObject(ox, 0, 10, 10, this, frame);
+            list.add(object);
+            list.sort((o1, o2) -> Float.compare(o1.frame.endpoint, o2.frame.endpoint));
+            timelineObjects.put(element, list);
+            animator.sendText("Added new frame for {} element", element.getLocalizedName());
+        }
+
+        boolean hasElementAt(float f, List<TimelineObject> list) {
+            if(list == null || list.isEmpty())
+                return false;
+            for (TimelineObject object : list) {
+                if(object.frame.endpoint == f)
+                    return true;
+            }
+            return false;
+        }
+
+        static class TimelineObject extends Widget {
+
+            final TimelineWidget timeline;
+            final MutableKeyFrame frame;
+
+            public TimelineObject(int x, int y, int width, int height, TimelineWidget widget, MutableKeyFrame frame) {
+                super(x, y, width, height);
+                this.timeline = widget;
+                this.frame = frame;
+            }
+
+            public TimelineObject(int x, int y, int width, int height, TimelineWidget widget, float endpoint) {
+                super(x, y, width, height);
+                this.timeline = widget;
+                this.frame = new MutableKeyFrame();
+                this.frame.setEndpoint(endpoint);
+            }
+
+            public void setY(int y) {
+                this.y = y;
+            }
+
+            @Override
+            public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+                drawColorShape(x, y, x + width, y + height, 0.0F, 0.75F, 0.75F, 0.6F);
+                drawColorShape(x + 2, y + 2, x + width - 2, y + height - 2, 0.0F, 0.75F, 0.75F, 1.0F);
+            }
+
+            @Override
+            public boolean processClicked(int mouseX, int mouseY, int button) {
+                return isMouseOver(mouseX, mouseY);
+            }
+
+            @Override
+            public void onClick(int mouseX, int mouseY, int button) {
+                if(button == 1) {
+                    Minecraft.getMinecraft().displayGuiScreen(new GuiModifyFrame(timeline.animator, frame, timeline.clickedElementTimeline));
+                }
+            }
+
+            @Override
+            public void onDrag(int mouseX, int mouseY, int button, long time) {
+                int x1 = timeline.x + 165;
+                int x2 = timeline.x + timeline.width - 10;
+                float f = DevUtil.wrap((mouseX - x1) / (float) (x2 - x1), 0.0F, 1.0F);
+                frame.setEndpoint(f);
+                x = 165 + (int)(timeline.x + (timeline.width - timeline.x - 175) * f - 5);
+                AnimatorCache.project.markModified();
+            }
         }
     }
 
@@ -155,18 +353,18 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         }
 
         @Override
-        public void sendError(String error) {
-            send(2, error);
+        public void sendError(String error, Object... objects) {
+            send(2, error, objects);
         }
 
         @Override
-        public void sendWarning(String warning) {
-            send(1, warning);
+        public void sendWarning(String warning, Object... objects) {
+            send(1, warning, objects);
         }
 
         @Override
-        public void sendText(String text) {
-            send(0, text);
+        public void sendText(String text, Object... objects) {
+            send(0, text, objects);
         }
 
         public void update() {
@@ -180,7 +378,14 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             }
         }
 
-        void send(int flag, String text) {
+        void send(int flag, String text, Object... objects) {
+            if(objects.length != 0) {
+                int j = 0;
+                while (text.contains("{}") && j < objects.length) {
+                    text = text.replaceFirst("[{}].", objects[j].toString());
+                    ++j;
+                }
+            }
             popups.add(new Popup(flag, popupLifetime, text));
             updateWidth();
         }
@@ -230,6 +435,96 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 case 2:
                     return 0xFF0000;
             }
+        }
+    }
+
+    static class GuiConfirmTextInput extends GuiConfirm {
+
+        static final Pattern PATTERN = Pattern.compile("[a-zA-Z0-9_]");
+        protected TextFieldWidget textField;
+
+        GuiConfirmTextInput(GuiAnimator parent, String text) {
+            super(parent, text, null, null);
+        }
+
+        @Override
+        public void init() {
+            super.init();
+            textField = addWidget(
+                    new TextFieldWidget(guiLeft + 5, guiTop + 30, xSize - 10, 20, "", 40)
+                        .withValidator(character -> PATTERN.matcher(String.valueOf(character)).matches())
+                        .ghostText("Filename")
+            );
+        }
+    }
+
+    static class GuiCreateProject extends GuiConfirmTextInput {
+
+        public GuiCreateProject(GuiAnimator animator) {
+            super(animator, "Create new project");
+        }
+
+        @Override
+        protected void onConfirm() {
+            AnimationProject project = AnimatorCache.project;
+            String name = textField.getText();
+            if(name.isEmpty()) {
+                ((IPopupHandler) parent).sendError("You must define project name");
+                return;
+            }
+            if(!project.isSaved) {
+                GuiConfirm.display(this, "Close project without saving?", "", (confirmed, parent1) -> {
+                    if(confirmed) {
+                        AnimatorCache.project = new AnimationProject().named(name);
+                        mc.displayGuiScreen(((GuiConfirm) parent1).parent);
+                    } else
+                        mc.displayGuiScreen(parent1);
+                });
+            } else {
+                AnimatorCache.project = new AnimationProject().named(name);
+                mc.displayGuiScreen(parent);
+            }
+        }
+
+        @Override
+        protected void onCancel() {
+            mc.displayGuiScreen(parent);
+        }
+    }
+
+    static class GuiSaveProject extends GuiConfirmTextInput {
+
+        public GuiSaveProject(GuiAnimator parent) {
+            super(parent, "Save as");
+        }
+
+        @Override
+        protected void onConfirm() {
+            AnimationProject project = AnimatorCache.project;
+            String text = textField.getText();
+            if(text.isEmpty()) {
+                ((IPopupHandler) parent).sendError("You must define file name");
+                return;
+            }
+            File file = new File(project.workingFile, project.name + ".json");
+            if(file.exists()) {
+                GuiConfirm.display(this, "File already exists. Overwrite?", "", (confirmed, parent1) -> {
+                    if(confirmed) {
+                        project.saveAs(text);
+                        mc.displayGuiScreen(((GuiConfirm) parent1).parent);
+                    } else {
+                        mc.displayGuiScreen(parent1);
+                    }
+                });
+            } else {
+                project.saveAs(text);
+                mc.displayGuiScreen(parent);
+            }
+        }
+
+        @Override
+        protected void onCancel() {
+            mc.displayGuiScreen(parent);
         }
     }
 }

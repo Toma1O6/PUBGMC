@@ -6,8 +6,16 @@ import net.minecraft.util.math.Vec3d;
 public class MutableKeyFrame implements KeyFrame {
 
     float endpoint;
-    Vec3d move;
-    Vec3d rotate;
+    Vec3d move = Vec3d.ZERO;
+    Vec3d rotate = Vec3d.ZERO;
+
+    public static MutableKeyFrame fromImmutable(KeyFrame frame) {
+        MutableKeyFrame keyFrame = new MutableKeyFrame();
+        keyFrame.setEndpoint(frame.endPoint());
+        keyFrame.setMove(frame.moveTarget());
+        keyFrame.setRotate(frame.rotateTarget());
+        return keyFrame;
+    }
 
     @Override
     public float endPoint() {

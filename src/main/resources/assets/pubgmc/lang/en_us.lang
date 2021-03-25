@@ -260,3 +260,14 @@ death.gun.headshot=%s shot %s's head off using %s!
 death.gun=%s shot %s using %s
 
 entity.pubgmc:enemyai.name=Enemy AI
+
+// Animator
+base.hands.item=Hands,Item
+base.hands=Hands
+base.hand.right=Right Hand
+base.hand.left=Left Hand
+base.item=Item
+model.magazine=Magazine
+model.charging=Charging
+model.hammer=Hammer
+model.bullet=Bullet

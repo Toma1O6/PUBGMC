@@ -392,6 +392,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         }
     }
 
+    @Deprecated
     public enum ReloadType {
         MAGAZINE,
         SINGLE,

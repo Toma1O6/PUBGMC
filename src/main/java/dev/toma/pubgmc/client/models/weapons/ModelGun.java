@@ -56,6 +56,13 @@ public abstract class ModelGun extends ModelBase {
         GlStateManager.popMatrix();
     }
 
+    public final List<AnimationElement> getDefinedElements() {
+        List<AnimationElement> list = new ArrayList<>();
+        for (AnimateEntry entry : entries)
+            list.add(entry.element);
+        return list;
+    }
+
     public static boolean hasRedDot(ItemStack stack) {
         return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.RED_DOT);
     }

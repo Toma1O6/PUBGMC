@@ -9,15 +9,15 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GuiConfirm extends GuiWidgets {
 
-    final GuiScreen parent;
-    final Callback callback;
-    final String title;
-    final String desc;
-    int guiLeft;
-    int guiTop;
-    int xSize;
-    int ySize;
-    ButtonWidget confirm, cancel;
+    public final GuiScreen parent;
+    protected final Callback callback;
+    protected final String title;
+    protected final String desc;
+    protected int guiLeft;
+    protected int guiTop;
+    protected int xSize;
+    protected int ySize;
+    private ButtonWidget confirm, cancel;
 
     public static void display(GuiScreen parent, String title, String desc, Callback callback) {
         Minecraft.getMinecraft().displayGuiScreen(new GuiConfirm(parent, title, desc, callback));
@@ -39,8 +39,16 @@ public class GuiConfirm extends GuiWidgets {
         this.xSize = sixth * 4;
         this.ySize = half;
         int seventh = xSize / 7;
-        addWidget(new CustomButton(guiLeft + seventh, guiTop + ySize - 25, 2 * seventh, 20, "Confirm", (widget, mouseX, mouseY, button) -> callback.call(true, parent)));
-        addWidget(new CustomButton(guiLeft + 4 * seventh, guiTop + ySize - 25, 2 * seventh, 20, "Cancel", (widget, mouseX, mouseY, button) -> callback.call(false, parent)));
+        addWidget(new CustomButton(guiLeft + seventh, guiTop + ySize - 25, 2 * seventh, 20, "Confirm", (widget, mouseX, mouseY, button) -> onConfirm()));
+        addWidget(new CustomButton(guiLeft + 4 * seventh, guiTop + ySize - 25, 2 * seventh, 20, "Cancel", (widget, mouseX, mouseY, button) -> onCancel()));
+    }
+
+    protected void onConfirm() {
+        callback.call(true, parent);
+    }
+
+    protected void onCancel() {
+        callback.call(false, parent);
     }
 
     @Override

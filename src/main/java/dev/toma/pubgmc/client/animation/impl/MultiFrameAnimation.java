@@ -45,18 +45,34 @@ public class MultiFrameAnimation extends TickableAnimation {
         super.tick();
         this.progressPrev = progress;
         progress = this.getProgress();
+        this.updateCache();
+    }
+
+    public void updateCache() {
         for (Map.Entry<AnimationElement, List<KeyFrame>> entry : spec.getFrameDefs().entrySet()) {
             List<KeyFrame> keyFrames = entry.getValue();
             AnimationElement element = entry.getKey();
             int index = elementIndexCache.get(element);
             KeyFrame frame = keyFrames.get(index);
             float endpoint = frame.endPoint();
-            if(progress > endpoint)
+            if(progress > endpoint && index + 1 < keyFrames.size())
                 elementIndexCache.put(element, index + 1);
         }
     }
 
+    public void resetCache() {
+        elementIndexCache.replaceAll((k, v) -> 0);
+    }
+
     public AnimationSpec getSpec() {
         return spec;
+    }
+
+    public float getProgressPrev() {
+        return progressPrev;
+    }
+
+    public float getProgressSmooth() {
+        return progressSmooth;
     }
 }

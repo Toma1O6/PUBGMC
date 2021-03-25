@@ -11,7 +11,7 @@ public class AnimationDispatcher {
 
     public static TickableAnimation dispatchRecoilAnimation(float yaw, float pitch) {
         float scale = Math.min(Math.abs(yaw * pitch) * 0.05F, 0.1F);
-        return new MultiFrameAnimation(4, AnimationSpec.jump(AnimationElement.ITEM_AND_HANDS, 0.0, 0.0, scale, pitch, yaw, 0.0));
+        return new MultiFrameAnimation(2, AnimationSpec.jump(AnimationElement.ITEM_AND_HANDS, 0.0, 0.0, scale, pitch, yaw, 0.0));
     }
 
     public static AimAnimation dispatchAimAnimation(GunBase item, ItemStack stack) {

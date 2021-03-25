@@ -34,7 +34,7 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
             .registerTypeHierarchyAdapter(KeyFrame.class, new KeyFrameSerializer())
             .registerTypeAdapter(AnimationSpec.class, new AnimationSpecSerializer())
             .create();
-    private List<ResourceLocation> paths = new ArrayList<>();
+    private final List<ResourceLocation> paths = new ArrayList<>();
     private static final Logger log = LogManager.getLogger("Animation Loader");
     private final Map<ResourceLocation, AnimationSpec> animationSpecMap = new HashMap<>();
 

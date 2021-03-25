@@ -35,6 +35,11 @@ public class CheckboxWidget extends Widget {
         return this;
     }
 
+    public CheckboxWidget initialState(boolean state) {
+        this.selected = state;
+        return this;
+    }
+
     public void prepareText(String text) {
 
     }

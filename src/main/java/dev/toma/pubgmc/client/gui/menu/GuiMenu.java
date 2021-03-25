@@ -44,44 +44,29 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         int wd4 = width / 4;
         int w = 2 * wd4 - 30;
         boolean splitModsAndQuitButtons = height < 280;
-        int initialHeight = !splitModsAndQuitButtons ? 80 : 0;
+        int initialHeight = !splitModsAndQuitButtons ? 130 : 0;
+        int lowestPoint = splitModsAndQuitButtons ? 195 : height - initialHeight - 40;
         // anouncements
         addWidget(new EventPanelComponent(this, 15, initialHeight + 20, w, 68));
         // singleplayer
         int hw = w / 2;
-        /*
-        // TODO
-        ButtonWidget community = new ButtonWidget(15, initialHeight + 100, hw, 20, "Community maps", (c, x, y, b) -> mc.displayGuiScreen(new GuiWIP(this)));
-        ButtonWidget myWorlds = new ButtonWidget(15 + hw, initialHeight + 100, hw, 20, "My Worlds", (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this)));
-        addWidget(new HoverSplitButton(15, initialHeight + 100, w, 20, "Singleplayer", community, myWorlds));
-        // multiplayer
-        // TODO
-        ButtonWidget official = new ButtonWidget(15, initialHeight + 125, hw, 20, "Official servers", (c, x, y, b) -> mc.displayGuiScreen(new GuiWIP(this)));
-        ButtonWidget myServers = new ButtonWidget(15 + hw, initialHeight + 125, hw, 20, "Server list", (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this)));
-        addWidget(new HoverSplitButton(15, initialHeight + 125, w, 20, "Multiplayer", official, myServers));
-        */
-        // Before map explorer and server list UI is made
         addWidget(new ButtonWidget(15, initialHeight + 100, w, 20, "Singleplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this))));
         addWidget(new ButtonWidget(15, initialHeight + 125, w, 20, "Multiplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this))));
-
         // settings
         addWidget(new ButtonWidget(15, initialHeight + 150, w, 20, "Settings", (c, x, y, b) -> mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings))));
-        int lowestPoint;
         // mods & quit buttons
         if (splitModsAndQuitButtons) {
             int half = w / 2;
             addWidget(new ButtonWidget(15, 175, half - 5, 20, "Mods", (c, x, y, b) -> mc.displayGuiScreen(new GuiModList(this))));
             addWidget(new ButtonWidget(15 + half + 5, 175, half - 5, 20, "Quit", (c, x, y, b) -> mc.shutdown()));
-            lowestPoint = 195;
         } else {
             addWidget(new ButtonWidget(15, initialHeight + 175, w, 20, "Mods", (c, x, y, b) -> mc.displayGuiScreen(new GuiModList(this))));
             addWidget(new ButtonWidget(15, initialHeight + 200, w, 20, "Quit", (c, x, y, b) -> mc.shutdown()));
-            lowestPoint = 220;
         }
         // news panel
         addWidget(new InfoPanelComponent(15 + 2 * wd4, 20, 2 * wd4 - 30, lowestPoint - 20 + initialHeight, this));
         // title
-        if (!splitModsAndQuitButtons) addWidget(new Widget(40, 25, w - 50, 50) {
+        if (!splitModsAndQuitButtons) addWidget(new Widget(40, 25, w - 50, 100) {
             @Override
             public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
                 mc.getTextureManager().bindTexture(TITLE);

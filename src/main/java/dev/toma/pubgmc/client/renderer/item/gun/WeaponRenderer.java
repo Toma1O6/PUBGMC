@@ -2,8 +2,9 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.client.animation.AnimationLoader;
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
+import dev.toma.pubgmc.client.animation.interfaces.ElementProvider;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
@@ -26,10 +27,11 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
+public abstract class WeaponRenderer extends TileEntityItemStackRenderer implements ElementProvider {
 
     public static final ResourceLocation GUN_TEXTURES = Pubgmc.getResource("textures/weapon/gun_textures.png");
     public static final ResourceLocation ATTACHMENT_TEXTURES = Pubgmc.getResource("textures/weapon/attachment_textures.png");
@@ -104,6 +106,11 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer {
         for (ItemAttachment attachment : attachments) {
             registerRenderConfig(Objects.requireNonNull(attachment), config);
         }
+    }
+
+    @Override
+    public List<AnimationElement> getElements() {
+        return this.getWeaponModel().getDefinedElements();
     }
 
     private void registerAimAnimation(ItemScope attachment) {

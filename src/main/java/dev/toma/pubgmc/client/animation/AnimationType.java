@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client.animation;
 
 import dev.toma.pubgmc.client.animation.impl.AimAnimation;
+import dev.toma.pubgmc.client.animation.impl.AnimatorAnimation;
 import dev.toma.pubgmc.client.animation.impl.TickableAnimation;
 import dev.toma.pubgmc.client.animation.interfaces.Animation;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -11,6 +12,7 @@ import java.util.function.Function;
 
 public class AnimationType<A extends Animation> {
 
+    public static final AnimationType<AnimatorAnimation> ANIMATOR_TYPE = create(player -> new AnimatorAnimation(40));
     public static final AnimationType<TickableAnimation> RECOIL_ANIMATION_TYPE = create(player -> AnimationDispatcher.dispatchRecoilAnimation(player.rotationYaw - player.prevRotationYaw, player.rotationPitch - player.prevRotationYaw));
     public static final AnimationType<AimAnimation> AIM_ANIMATION_TYPE = create(player -> {
         ItemStack stack = player.getHeldItemMainhand();
