@@ -35,8 +35,8 @@ public class RenderP92 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0.09F, 0.03F, 0.67F));
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.195F, 0.11F, 0.06F, 0.8F, 0.8F, 0.8F));
+        //registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0.09F, 0.03F, 0.67F));
+        //registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.195F, 0.11F, 0.06F, 0.8F, 0.8F, 0.8F));
     }
 
     @Override

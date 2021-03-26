@@ -39,6 +39,10 @@ public class AnimationProcessor {
         return (Optional<A>) Optional.ofNullable(animations.get(type));
     }
 
+    public boolean isPlaying(AnimationType<?> type) {
+        return animations.containsKey(type);
+    }
+
     public void processTick() {
         Iterator<Animation> itr = animations.values().iterator();
         while (itr.hasNext()) {

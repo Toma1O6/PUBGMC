@@ -127,7 +127,7 @@ public class ModelRedDot extends ModelAttachment<ItemScope> {
 		float g = ((reticleColor >> 8) & 255) / 255F;
 		float b = (reticleColor & 255) / 255F;
 		mc.getTextureManager().bindTexture(reticleStyle);
-		GlStateManager.color(r, g, b, a);
+		GlStateManager.color(r, g, b, 1.0F);
 		if(a > 0.25F)
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
 		reticle.render(1.0F);

@@ -34,7 +34,7 @@ public class RenderDeagle extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.155F, 0.28F, 0.3F, 0.7F, 0.7F, 0.7F));
+        //registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.155F, 0.28F, 0.3F, 0.7F, 0.7F, 0.7F));
     }
 
     @Override

@@ -29,7 +29,6 @@ import java.util.function.Predicate;
 public class AnimationLoader implements ISelectiveResourceReloadListener {
 
     public static final Gson GSON = new GsonBuilder()
-            .setPrettyPrinting()
             .registerTypeAdapter(Vec3d.class, new Vec3dSerializer())
             .registerTypeHierarchyAdapter(KeyFrame.class, new KeyFrameSerializer())
             .registerTypeAdapter(AnimationSpec.class, new AnimationSpecSerializer())

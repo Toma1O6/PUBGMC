@@ -34,7 +34,7 @@ public class RenderR45 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.095F, 0.28F, 0.01F, 0.8F, 0.8F, 0.8F));
+        //registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.095F, 0.28F, 0.01F, 0.8F, 0.8F, 0.8F));
     }
 
     @Override

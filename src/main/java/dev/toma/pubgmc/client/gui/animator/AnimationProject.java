@@ -49,10 +49,11 @@ public class AnimationProject {
             File file = new File(workingFile, name + ".json");
             if(file.exists()) {
                 AnimationSpec spec = new AnimationSpec(toImmutable());
-                String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class);
+                String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class).replaceAll("\\s", "");
                 FileWriter writer = new FileWriter(file);
                 writer.write(content);
                 writer.close();
+                isSaved = true;
             }
         } catch (IOException ex) {
             //
@@ -67,10 +68,11 @@ public class AnimationProject {
             if(!file.exists())
                 file.createNewFile();
             AnimationSpec spec = new AnimationSpec(toImmutable());
-            String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class);
+            String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class).replaceAll("\\s", "");
             FileWriter writer = new FileWriter(file);
             writer.write(content);
             writer.close();
+            isSaved = true;
         } catch (IOException ex) {
             //
         }

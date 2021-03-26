@@ -34,9 +34,9 @@ public class RenderScorpion extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.05F, 0.14F, 0F, 0.9F, 0.9F, 0.9F));
-        registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positionedScaled(-0.1F, -0.01F, 0.7F, 1.2F, 1.2F, 1.2F));
-        registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positioned(0F, 0.1F, 0.13F));
+        //registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.05F, 0.14F, 0F, 0.9F, 0.9F, 0.9F));
+        //registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positionedScaled(-0.1F, -0.01F, 0.7F, 1.2F, 1.2F, 1.2F));
+        //registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positioned(0F, 0.1F, 0.13F));
     }
 
     @Override

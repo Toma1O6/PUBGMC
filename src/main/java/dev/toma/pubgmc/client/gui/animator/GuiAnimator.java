@@ -173,7 +173,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 objects.sort((o1, o2) -> Float.compare(o1.frame.endpoint, o2.frame.endpoint));
                 timelineObjects.put(entry.getKey(), objects);
             }
-            AnimationProcessor.instance().play(AnimationType.ANIMATOR_TYPE, new AnimatorAnimation(length).setPaused(true));
+            playAnimation();
         }
 
         @Override
@@ -232,13 +232,21 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             MutableKeyFrame frame = new MutableKeyFrame();
             frame.setEndpoint(progress);
             AnimatorCache.project.add(element, frame);
-            AnimationProcessor.instance().play(AnimationType.ANIMATOR_TYPE, new AnimatorAnimation(length));
+            playAnimation();
             int ox = 165 + (int)(this.x + (this.width - this.x - 175) * progress - 5);
             TimelineObject object = new TimelineObject(ox, 0, 10, 10, this, frame);
             list.add(object);
             list.sort((o1, o2) -> Float.compare(o1.frame.endpoint, o2.frame.endpoint));
             timelineObjects.put(element, list);
             animator.sendText("Added new frame for {} element", element.getLocalizedName());
+        }
+
+        void playAnimation() {
+            AnimationProcessor processor = AnimationProcessor.instance();
+            AnimatorAnimation animatorAnimation = new AnimatorAnimation(length);
+            animatorAnimation.set(progress);
+            animatorAnimation.setPaused(true);
+            processor.play(AnimationType.ANIMATOR_TYPE, animatorAnimation);
         }
 
         boolean hasElementAt(float f, List<TimelineObject> list) {
@@ -506,7 +514,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 ((IPopupHandler) parent).sendError("You must define file name");
                 return;
             }
-            File file = new File(project.workingFile, project.name + ".json");
+            File file = new File(project.workingFile, text + ".json");
             if(file.exists()) {
                 GuiConfirm.display(this, "File already exists. Overwrite?", "", (confirmed, parent1) -> {
                     if(confirmed) {

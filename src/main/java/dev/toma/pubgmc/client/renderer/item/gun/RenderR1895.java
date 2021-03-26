@@ -34,7 +34,7 @@ public class RenderR1895 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0F, 0.13F, 0.81F));
+        //registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0F, 0.13F, 0.81F));
     }
 
     @Override
