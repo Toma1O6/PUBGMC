@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class ClientHooks {
 
     private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND;
+    private static float renderTickTime;
 
     public static void model_setupModelAngles(ModelBiped model, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();
@@ -61,11 +62,13 @@ public class ClientHooks {
             float f2;
             if(aiming) {
                 f0 = (float) Math.toRadians(-90.0F);
-                f1 = (float) Math.toRadians(-30.0F);
+                f1 = (float) Math.toRadians(-15.0F);
                 f2 = (float) Math.toRadians(45.0F);
-                model.bipedRightArm.rotateAngleX = f0;
-                model.bipedRightArm.rotateAngleY = f1;
-                model.bipedLeftArm.rotateAngleX = f0;
+                model.bipedRightArm.rotateAngleX = model.bipedHead.rotateAngleX + f0;
+                model.bipedRightArm.rotateAngleY = model.bipedHead.rotateAngleY;
+                model.bipedRightArm.rotateAngleZ = -f1;
+                model.bipedLeftArm.rotateAngleX = model.bipedHead.rotateAngleX + f0;
+                model.bipedLeftArm.rotateAngleY = model.bipedHead.rotateAngleY + f2;
             } else {
                 f0 = (float) Math.toRadians(-55.0F);
                 f1 = (float) Math.toRadians(-40.0F);
@@ -74,8 +77,8 @@ public class ClientHooks {
                 model.bipedRightArm.rotateAngleX = f0;
                 model.bipedLeftArm.rotateAngleX = f3;
                 model.bipedRightArm.rotateAngleY = f1;
+                model.bipedLeftArm.rotateAngleY = f2;
             }
-            model.bipedLeftArm.rotateAngleY = f2;
             if(playerModel) {
                 ModelPlayer mp = (ModelPlayer) model;
                 ModelBase.copyModelAngles(model.bipedRightArm, mp.bipedRightArmwear);
@@ -102,5 +105,13 @@ public class ClientHooks {
 
     public static ItemCameraTransforms.TransformType getTransformType() {
         return transformType;
+    }
+
+    public static void setRenderTickTime(float renderTickTime) {
+        ClientHooks.renderTickTime = renderTickTime;
+    }
+
+    public static float getRenderTickTime() {
+        return renderTickTime;
     }
 }
