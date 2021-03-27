@@ -11,10 +11,10 @@ public class ExtendedTexturedQuad extends TexturedQuad {
 
     public ExtendedTexturedQuad(PositionTextureVertex[] vertices) {
         super(vertices);
-        vertices[0] = vertices[0].setTexturePosition(0.0F, 0.0F);
-        vertices[1] = vertices[1].setTexturePosition(1.0F, 0.0F);
-        vertices[2] = vertices[2].setTexturePosition(1.0F, 1.0F);
-        vertices[3] = vertices[3].setTexturePosition(0.0F, 1.0F);
+        vertices[0] = vertices[0].setTexturePosition(1.0F, 0.0F);
+        vertices[1] = vertices[1].setTexturePosition(0.0F, 0.0F);
+        vertices[2] = vertices[2].setTexturePosition(0.0F, 1.0F);
+        vertices[3] = vertices[3].setTexturePosition(1.0F, 1.0F);
     }
 
     @Override

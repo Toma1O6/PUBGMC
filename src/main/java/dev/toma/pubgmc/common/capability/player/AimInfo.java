@@ -1,8 +1,11 @@
 package dev.toma.pubgmc.common.capability.player;
 
+import dev.toma.pubgmc.DevUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AimInfo implements INBTSerializable<NBTTagCompound> {
 
@@ -10,7 +13,7 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
     final IPlayerData data;
     int slot;
     boolean aiming;
-    float progress;
+    float progress, progressPrev;
     float aimSpeed = STOP_AIMING_SPEED;
 
     public AimInfo(IPlayerData data) {
@@ -25,6 +28,7 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
             setAiming(false, STOP_AIMING_SPEED);
             data.sync();
         }
+        progressPrev = progress;
         if(aiming && progress < 1.0F) {
             progress = Math.min(1.0F, progress + aimSpeed);
         } else if(!aiming && progress > 0.0F) {
@@ -42,6 +46,11 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
 
     public float getProgress() {
         return progress;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getProgress(float renderTickTime) {
+        return DevUtil.lerp(progress, progressPrev, renderTickTime);
     }
 
     public void setAiming(boolean aim, float aimSpeed) {

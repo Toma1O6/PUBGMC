@@ -44,7 +44,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         int wd4 = width / 4;
         int w = 2 * wd4 - 30;
         boolean splitModsAndQuitButtons = height < 280;
-        int initialHeight = !splitModsAndQuitButtons ? 130 : 0;
+        int initialHeight = !splitModsAndQuitButtons ? 90 : 0;
         int lowestPoint = splitModsAndQuitButtons ? 195 : height - initialHeight - 40;
         // anouncements
         addWidget(new EventPanelComponent(this, 15, initialHeight + 20, w, 68));
@@ -66,7 +66,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         // news panel
         addWidget(new InfoPanelComponent(15 + 2 * wd4, 20, 2 * wd4 - 30, lowestPoint - 20 + initialHeight, this));
         // title
-        if (!splitModsAndQuitButtons) addWidget(new Widget(40, 25, w - 50, 100) {
+        if (!splitModsAndQuitButtons) addWidget(new Widget(40, 25, w - 50, 60) {
             @Override
             public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
                 mc.getTextureManager().bindTexture(TITLE);

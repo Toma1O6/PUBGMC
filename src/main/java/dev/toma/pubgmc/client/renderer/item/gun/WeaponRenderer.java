@@ -69,7 +69,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
         getWeaponModel().render(itemStackIn, transformType);
         GunBase gun = (GunBase) itemStackIn.getItem();
         IPlayerData data = PlayerData.get(Minecraft.getMinecraft().player);
-        float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress() : 0.0F;
+        float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress(ClientHooks.getRenderTickTime()) : 0.0F;
         for (AttachmentType<?> type : AttachmentType.allTypes) {
             ItemAttachment attachment = gun.getAttachment(type, itemStackIn);
             if(attachment != null) {

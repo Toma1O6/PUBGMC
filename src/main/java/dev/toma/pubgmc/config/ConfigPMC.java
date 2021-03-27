@@ -4,6 +4,7 @@ import dev.toma.configuration.api.Config;
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
 import dev.toma.configuration.api.client.ClientHandles;
+import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.ObjectType;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.client.CFGOtherSettings;
@@ -22,6 +23,7 @@ public class ConfigPMC implements ConfigPlugin {
 
     public static ClientConfig client;
     public static CommonConfig common;
+    public static BooleanType developerMode;
 
     @Override
     public String getModID() {
@@ -37,6 +39,7 @@ public class ConfigPMC implements ConfigPlugin {
     public void buildConfigStructure(ConfigCreator builder) {
         client = builder.createObject(new ClientConfig(this), this);
         common = builder.createObject(new CommonConfig(this), this);
+        developerMode = builder.createBoolean("Developer mode", false, "Enables use of some internal tools", "O - attachment placer", "N - hand placer", "M - animator");
     }
 
     @SideOnly(Side.CLIENT)

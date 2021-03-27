@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client;
 
+import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationElement;
@@ -202,21 +203,16 @@ public class ClientEvents {
         renderVehicleOverlay(sp, mc, res, e);
     }
 
-    //All pre overlay rendering
     @SubscribeEvent
     public void renderOverlayPre(RenderGameOverlayEvent.Pre e) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP sp = mc.player;
         ScaledResolution res = new ScaledResolution(mc);
         ItemStack stack = sp.getHeldItemMainhand();
-
-        //Get the player capability to use the stored data
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
 
-        //We don't want to render the crosshair in scopes
         if (e.getType() == ElementType.CROSSHAIRS) {
             if (stack.getItem() instanceof GunBase) {
                 //e.setCanceled(true);
@@ -224,7 +220,6 @@ public class ClientEvents {
         }
 
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
-            //We cancel the xp bar, but just only if the boost bar position is different than by default
             if (e.getType() == ElementType.EXPERIENCE) {
                 if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty()) {
                     e.setCanceled(true);
@@ -233,26 +228,12 @@ public class ClientEvents {
         }
 
         if (e.getType() == ElementType.ALL) {
-            //Render NIGHT VISION overlay
             if (data.isUsingNV()) {
                 ImageUtil.drawFullScreenImage(mc, res, NV, true);
             }
 
-            //BOOST
             if (!sp.capabilities.isCreativeMode && !sp.isSpectator() && !data.getBoostStats().isEmpty()) {
                 renderBoost(data.getBoostStats());
-            }
-
-            //Scopes
-            if (stack.getItem() instanceof GunBase) {
-                GunBase gun = (GunBase) stack.getItem();
-                if (data.getAimInfo().isAiming() && mc.gameSettings.thirdPersonView == 0) {
-                    ScopeData scopeData = gun.getScopeData(stack);
-                    if(scopeData != null && !scopeData.isBuiltInRenderer()) {
-                        mc.getTextureManager().bindTexture(scopeData.getTexture());
-                        Widget.drawTexturedShape(0, 0, res.getScaledWidth(), res.getScaledHeight());
-                    }
-                }
             }
 
             if (ConfigPMC.client.overlays.renderArmorIcons.get() && !sp.isSpectator())
@@ -269,7 +250,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
-        if(Pubgmc.isEarlyAccess()) {
+        if(ConfigPMC.developerMode.get()) {
             Minecraft mc = Minecraft.getMinecraft();
             if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
                 mc.displayGuiScreen(new GuiGunConfig());
@@ -570,6 +551,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
+        ClientHooks.setRenderTickTime(event.renderTickTime);
         if(event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }

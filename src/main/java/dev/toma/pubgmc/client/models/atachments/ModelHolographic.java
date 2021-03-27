@@ -4,12 +4,8 @@ import dev.toma.pubgmc.client.models.renderer.ExtendedModelBox;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFGReticles;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.ResourceLocation;
 
 public class ModelHolographic extends ModelAttachment<ItemScope> {
 
@@ -193,21 +189,8 @@ public class ModelHolographic extends ModelAttachment<ItemScope> {
 
 	@Override
 	public void render(float aimPct) {
-		bone.render(1f);
-		Minecraft mc = Minecraft.getMinecraft();
 		CFGReticles reticles = ConfigPMC.client.reticles;
-		ResourceLocation reticleStyle = reticles.holographicVariants.get().getResource();
-		int reticleColor = reticles.holographicColor.getColor();
-		float a = aimPct * ((reticleColor >> 24) & 255) / 255F;
-		float r = ((reticleColor >> 16) & 255) / 255F;
-		float g = ((reticleColor >> 8) & 255) / 255F;
-		float b = (reticleColor & 255) / 255F;
-		mc.getTextureManager().bindTexture(reticleStyle);
-		GlStateManager.color(r, g, b, 1.0F);
-		if(a > 0.25F)
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-		reticle.render(1.0F);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		renderReticle(aimPct, bone, reticle, reticles.holographicVariants.get().getResource(), reticles.holographicColor.getColor());
 	}
 
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

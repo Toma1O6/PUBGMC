@@ -19,6 +19,7 @@ public class AnimatorAnimation extends MultiFrameAnimation {
         this.progress = progress;
         this.progressPrev = progress;
         this.progressSmooth = progress;
+        this.actualTickLength = (int) (initialTickLength * progress);
         int max = 0;
         for (List<KeyFrame> list : spec.getFrameDefs().values()) {
             if(list.size() > max)
