@@ -269,7 +269,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
-        if(Pubgmc.isDevEnvironment) {
+        if(Pubgmc.isEarlyAccess()) {
             Minecraft mc = Minecraft.getMinecraft();
             if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
                 mc.displayGuiScreen(new GuiGunConfig());

@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client.gui.animator;
 
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
@@ -44,12 +45,14 @@ public class AnimatorCache {
             try {
                 JsonReader reader = new JsonReader(new FileReader(file));
                 AnimationSpec spec = loader.load(reader);
+                if(spec == null)
+                    throw new JsonParseException("Unable to parse");
                 String name = file.getName().replaceFirst("[.][^.]+$", "");
                 animations.put(name, new GuiAnimator.WrappedAnimationSpec(name, file.getParentFile(), spec, false));
             } catch (JsonParseException parseException) {
-                handler.sendError(String.format("%s is corrupted - %s", file.getPath(), parseException.toString()));
+                handler.sendError(String.format("%s is corrupted - %s", file.getAbsolutePath(), parseException.toString()));
             } catch (IOException exception) {
-                // ignore
+                handler.sendError(String.format("Error reading file %s - %s", file.getAbsolutePath(), exception.toString()));
             }
         }
     }

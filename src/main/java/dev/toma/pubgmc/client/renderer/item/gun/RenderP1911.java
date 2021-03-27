@@ -34,8 +34,8 @@ public class RenderP1911 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        //registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0.0F, 0.09F, 0.67F));
-        //registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.1F, 0.17F, 0.2F, 0.8F, 0.8F, 0.8F));
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.1025F, 0.2F, 0.2F, 0.8F, 0.8F, 0.8F));
+        registerRenderConfig(PMCItems.SILENCER_SMG, IRenderConfig.positioned(0F, 0.08F, 0.67F));
     }
 
     @Override

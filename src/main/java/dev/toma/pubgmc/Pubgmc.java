@@ -45,7 +45,7 @@ public class Pubgmc {
 
     public static final String MOD_ID = "pubgmc";
     public static final String NAME = "PUBGMC";
-    public static final String VERSION = "1.6.4";
+    public static final String VERSION = "1.7.0";
     public static final String ACCEPTED_VERSIONS = "[1.12.2]";
     public static final String CLIENT_PROXY_CLASS = "dev.toma.pubgmc.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "dev.toma.pubgmc.proxy.ServerProxy";
@@ -59,6 +59,7 @@ public class Pubgmc {
     @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
     public static Proxy proxy;
     private static final ContentManager contentManager = new ContentManager();
+    private static Boolean earlyAccess;
 
     public static Random rng() {
         return RANDOM;
@@ -123,12 +124,14 @@ public class Pubgmc {
     }
 
     public static boolean isEarlyAccess() {
+        if(earlyAccess != null)
+            return earlyAccess;
         ModContainer container = Loader.instance().activeModContainer();
         if(container == null)
             return false;
         ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
         ForgeVersion.Status status = result.status;
-        return status == ForgeVersion.Status.AHEAD;
+        return earlyAccess = status == ForgeVersion.Status.AHEAD;
     }
 
     public static ResourceLocation getResource(String path) {

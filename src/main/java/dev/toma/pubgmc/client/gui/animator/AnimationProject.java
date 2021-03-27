@@ -21,6 +21,7 @@ public class AnimationProject {
     String name = "";
     File workingFile;
     boolean isSaved;
+    float animationProgress;
 
     public AnimationProject(GuiAnimator.WrappedAnimationSpec wrappedSpec) {
         this.animation = convertToMutable(wrappedSpec.spec);
@@ -33,6 +34,10 @@ public class AnimationProject {
         animation = new HashMap<>();
         isSaved = true;
         workingFile = new File("./export/animations");
+    }
+
+    public void setAnimationProgress(float animationProgress) {
+        this.animationProgress = animationProgress;
     }
 
     public AnimationProject named(String name) {
