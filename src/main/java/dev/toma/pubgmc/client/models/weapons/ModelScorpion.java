@@ -21,12 +21,14 @@ public class ModelScorpion extends ModelGun {
     private final ModelRenderer bone15;
     private final ModelRenderer bone16;
     private final ModelRenderer bone17;
+    private final ModelRenderer bullet;
     private final ModelRenderer magazine;
     private final ModelRenderer bone6;
     private final ModelRenderer bone5;
     private final ModelRenderer bone4;
     private final ModelRenderer bone3;
-    private final ModelRenderer scorpion;
+    private final ModelRenderer bolt;
+    private final ModelRenderer gun;
     private final ModelRenderer bone2;
     private final ModelRenderer bone18;
     private final ModelRenderer bone21;
@@ -54,7 +56,7 @@ public class ModelScorpion extends ModelGun {
 
     @Override
     public void renderModel(ItemStack stack) {
-        scorpion.render(1f);
+        gun.render(1f);
     }
 
     public ModelScorpion() {
@@ -144,15 +146,18 @@ public class ModelScorpion extends ModelGun {
         bone17.cubeList.add(new ModelBox(bone17, 10, 78, -0.5F, 14.0342F, -4.8944F, 1, 1, 2, 0.0F, false));
         bone17.cubeList.add(new ModelBox(bone17, 10, 78, -8.5F, 14.0342F, -4.8944F, 1, 1, 2, 0.0F, true));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 9, 502, -1.0F, -22.3437F, -6.9492F, 2, 2, 3, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 9, 502, -1.0F, -22.3437F, -3.7266F, 2, 2, 1, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 9, 502, -0.5F, -21.8437F, -7.582F, 1, 1, 4, 0.0F, true));
+
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.0F, 44.1016F, 0.0F);
-        magazine.cubeList.add(new ModelBox(magazine, 9, 502, -0.5F, -41.9453F, -7.582F, 1, 1, 4, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 9, 144, 1.0F, -42.0469F, -8.0F, 1, 3, 6, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 9, 144, -2.0F, -42.0469F, -8.0F, 1, 3, 6, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 9, 144, -1.0F, -41.0469F, -3.0F, 2, 2, 1, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 9, 144, -1.0F, -40.4727F, -8.0F, 2, 2, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 9, 502, -1.0F, -42.4453F, -3.7266F, 2, 2, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 9, 502, -1.0F, -42.4453F, -6.9492F, 2, 2, 3, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 9, 144, -2.5F, -37.0469F, -8.5F, 5, 1, 7, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 9, 144, -2.0F, -39.0469F, -8.0F, 4, 2, 6, 0.0F, false));
 
@@ -188,95 +193,103 @@ public class ModelScorpion extends ModelGun {
         bone3.cubeList.add(new ModelBox(bone3, 9, 144, -2.0F, -18.2794F, -4.6734F, 4, 2, 6, 0.0F, false));
         bone3.cubeList.add(new ModelBox(bone3, 9, 144, -2.5F, -19.2794F, -5.1734F, 5, 1, 7, 0.0F, false));
 
-        scorpion = new ModelRenderer(this);
-        scorpion.setRotationPoint(0.0F, 24.0F, 0.0F);
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -3.0F, -19.0469F, -8.0F, 1, 1, 3, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -3.0F, -19.0469F, -4.0F, 1, 2, 2, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 88, 38, 2.0F, -19.0469F, -8.0F, 1, 1, 3, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -3.0F, -20.0469F, -12.0F, 6, 2, 4, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -2.5F, -19.4102F, -16.9023F, 5, 2, 7, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -1.2071F, -17.703F, -16.9023F, 3, 1, 7, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -1.7929F, -17.703F, -16.9023F, 1, 1, 7, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 80, 21, -3.0F, -20.0469F, -17.0F, 6, 1, 5, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, -3.0F, -20.0469F, -8.0F, 6, 1, 6, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 92, 27, 2.0F, -19.0469F, -4.0F, 1, 2, 2, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 83, 23, -3.0F, -20.0469F, -2.0F, 6, 3, 14, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 83, 23, -2.0F, -17.0469F, -0.2734F, 4, 3, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 83, 23, -2.0F, -14.8469F, 0.0266F, 4, 1, 7, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 83, 23, -3.0F, -25.0469F, 8.0F, 6, 5, 4, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -4.0F, -24.7656F, 9.6055F, 8, 2, 2, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, 3.0F, -24.2656F, 11.6055F, 1, 1, 11, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, 3.0F, -24.2656F, 22.6055F, 1, 1, 10, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -4.0F, -24.2656F, 11.6055F, 1, 1, 11, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -4.0F, -24.2656F, 22.6055F, 1, 1, 10, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -4.0F, -22.8514F, 33.0197F, 1, 4, 1, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -4.0F, -22.8514F, 38.8481F, 1, 4, 1, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -4.0F, -18.4372F, 34.4339F, 1, 1, 4, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, 3.0F, -18.4372F, 34.4339F, 1, 1, 4, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, 3.0F, -22.8514F, 33.0197F, 1, 4, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, 3.0F, -22.8514F, 38.8481F, 1, 4, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -0.4142F, -24.2656F, 38.8481F, 3, 1, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 34, 44, -2.5858F, -24.2656F, 38.8481F, 3, 1, 1, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 72, 9, -3.5F, -22.0469F, -16.0F, 7, 2, 18, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 73, 12, -3.5F, -25.0469F, -16.0F, 7, 2, 18, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 96, 82, -3.0F, -23.0469F, -7.0F, 6, 1, 9, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 96, 82, -3.0F, -23.0469F, -16.0F, 6, 1, 9, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -3.5F, -25.0469F, 2.0F, 7, 5, 6, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 66, 10, -2.5F, -26.0469F, -17.0F, 5, 1, 25, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 66, 10, -1.0F, -27.0469F, 6.0F, 2, 1, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 66, 10, 1.0F, -28.0469F, 6.0F, 1, 2, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 66, 10, -1.0F, -28.0469F, -16.0F, 2, 2, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 66, 10, -2.0F, -28.0469F, 6.0F, 1, 2, 1, 0.0F, true));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -3.5F, -25.0469F, -17.0F, 7, 5, 1, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -1.0F, -24.8125F, -20.0F, 2, 2, 3, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -1.0F, -21.9841F, -20.0F, 2, 2, 3, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, 0.4142F, -23.3983F, -20.0F, 2, 2, 3, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -1.0F, -23.3983F, -26.0F, 2, 2, 6, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -1.5F, -23.8983F, -24.5F, 3, 3, 3, 0.0F, false));
-        scorpion.cubeList.add(new ModelBox(scorpion, 91, 24, -2.4142F, -23.3983F, -20.0F, 2, 2, 3, 0.0F, true));
+        bolt = new ModelRenderer(this);
+        bolt.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bolt.cubeList.add(new ModelBox(bolt, 66, 10, -1.5F, -25.8469F, -8.0F, 3, 1, 7, 0.0F, false));
+
+        gun = new ModelRenderer(this);
+        gun.setRotationPoint(0.0F, 24.0F, 0.0F);
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -3.0F, -19.0469F, -8.0F, 1, 1, 3, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -3.0F, -19.0469F, -4.0F, 1, 2, 2, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 88, 38, 2.0F, -19.0469F, -8.0F, 1, 1, 3, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -3.0F, -20.0469F, -12.0F, 6, 2, 4, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -2.5F, -19.4102F, -16.9023F, 5, 2, 7, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -1.2071F, -17.703F, -16.9023F, 3, 1, 7, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -1.7929F, -17.703F, -16.9023F, 1, 1, 7, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 80, 21, -3.0F, -20.0469F, -17.0F, 6, 1, 5, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, -3.0F, -20.0469F, -8.0F, 6, 1, 6, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 92, 27, 2.0F, -19.0469F, -4.0F, 1, 2, 2, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 83, 23, -3.0F, -20.0469F, -2.0F, 6, 3, 14, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 83, 23, -2.0F, -17.0469F, -0.2734F, 4, 3, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 83, 23, -2.0F, -14.8469F, 0.0266F, 4, 1, 7, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 83, 23, -3.0F, -25.0469F, 8.0F, 6, 5, 4, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -4.0F, -24.7656F, 9.6055F, 8, 2, 2, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, 3.0F, -24.2656F, 11.6055F, 1, 1, 11, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, 3.0F, -24.2656F, 22.6055F, 1, 1, 10, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -4.0F, -24.2656F, 11.6055F, 1, 1, 11, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -4.0F, -24.2656F, 22.6055F, 1, 1, 10, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -4.0F, -22.8514F, 33.0197F, 1, 4, 1, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -4.0F, -22.8514F, 38.8481F, 1, 4, 1, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -4.0F, -18.4372F, 34.4339F, 1, 1, 4, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, 3.0F, -18.4372F, 34.4339F, 1, 1, 4, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, 3.0F, -22.8514F, 33.0197F, 1, 4, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, 3.0F, -22.8514F, 38.8481F, 1, 4, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -0.4142F, -24.2656F, 38.8481F, 3, 1, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 34, 44, -2.5858F, -24.2656F, 38.8481F, 3, 1, 1, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 72, 9, -3.5F, -22.0469F, -16.0F, 7, 2, 18, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 73, 12, -3.5F, -25.0469F, -16.0F, 7, 2, 18, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 96, 82, -3.0F, -23.0469F, -7.0F, 6, 1, 9, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 96, 82, -3.0F, -23.0469F, -16.0F, 6, 1, 9, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -3.5F, -25.0469F, 2.0F, 7, 5, 6, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -2.5F, -26.0469F, -1.0F, 5, 1, 9, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -2.5F, -26.0469F, -17.0F, 5, 1, 9, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, 1.5F, -26.0469F, -8.0F, 1, 1, 7, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -2.5F, -26.0469F, -8.0F, 1, 1, 7, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -1.5F, -25.1469F, -8.0F, 3, 1, 7, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -1.0F, -27.0469F, 6.0F, 2, 1, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, 1.0F, -28.0469F, 6.0F, 1, 2, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -1.0F, -28.0469F, -16.0F, 2, 2, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 66, 10, -2.0F, -28.0469F, 6.0F, 1, 2, 1, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -3.5F, -25.0469F, -17.0F, 7, 5, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -1.0F, -24.8125F, -20.0F, 2, 2, 3, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -1.0F, -21.9841F, -20.0F, 2, 2, 3, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, 0.4142F, -23.3983F, -20.0F, 2, 2, 3, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -1.0F, -23.3983F, -26.0F, 2, 2, 6, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -1.5F, -23.8983F, -24.5F, 3, 3, 3, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 91, 24, -2.4142F, -23.3983F, -20.0F, 2, 2, 3, 0.0F, true));
 
         bone2 = new ModelRenderer(this);
         bone2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        scorpion.addChild(bone2);
+        gun.addChild(bone2);
         setRotationAngle(bone2, -0.4363F, 0.0F, 0.0F);
         bone2.cubeList.add(new ModelBox(bone2, 92, 27, -3.0F, -15.7592F, -13.8296F, 1, 2, 3, 0.0F, true));
         bone2.cubeList.add(new ModelBox(bone2, 92, 27, 2.0F, -15.7592F, -13.8296F, 1, 2, 3, 0.0F, false));
 
         bone18 = new ModelRenderer(this);
         bone18.setRotationPoint(0.0F, -14.4102F, -13.4023F);
-        scorpion.addChild(bone18);
+        gun.addChild(bone18);
         setRotationAngle(bone18, 0.0F, 0.0F, 0.7854F);
         bone18.cubeList.add(new ModelBox(bone18, 92, 27, -3.8891F, -1.3536F, -3.5F, 1, 1, 7, 0.0F, false));
         bone18.cubeList.add(new ModelBox(bone18, 92, 27, -1.3536F, -3.8891F, -3.5F, 1, 1, 7, 0.0F, false));
 
         bone21 = new ModelRenderer(this);
         bone21.setRotationPoint(0.0F, 3.4219F, -1.1484F);
-        scorpion.addChild(bone21);
+        gun.addChild(bone21);
         setRotationAngle(bone21, 0.2618F, 0.0F, 0.0F);
         bone21.cubeList.add(new ModelBox(bone21, 83, 23, -2.5F, -19.4094F, 10.6792F, 5, 10, 6, 0.0F, false));
 
         bone22 = new ModelRenderer(this);
         bone22.setRotationPoint(0.0F, 11.4219F, -1.1484F);
-        scorpion.addChild(bone22);
+        gun.addChild(bone22);
         setRotationAngle(bone22, 0.0349F, 0.0F, 0.0F);
         bone22.cubeList.add(new ModelBox(bone22, 83, 23, -2.5F, -20.9153F, 8.4142F, 5, 4, 6, 0.0F, false));
 
         bone23 = new ModelRenderer(this);
         bone23.setRotationPoint(0.0F, 5.1836F, 16.2266F);
-        scorpion.addChild(bone23);
+        gun.addChild(bone23);
         setRotationAngle(bone23, 0.9076F, 0.0F, 0.0F);
         bone23.cubeList.add(new ModelBox(bone23, 83, 23, -2.5F, -19.017F, 12.9157F, 5, 2, 2, 0.0F, false));
 
         bone25 = new ModelRenderer(this);
         bone25.setRotationPoint(-1.0F, 0.0F, 0.0F);
-        scorpion.addChild(bone25);
+        gun.addChild(bone25);
         setRotationAngle(bone25, 0.0F, 0.0F, -0.7854F);
         bone25.cubeList.add(new ModelBox(bone25, 34, 44, 18.6939F, -14.6229F, 38.8481F, 1, 2, 1, 0.0F, false));
         bone25.cubeList.add(new ModelBox(bone25, 34, 44, 14.0371F, -18.2797F, 38.8481F, 2, 1, 1, 0.0F, false));
 
         bone24 = new ModelRenderer(this);
         bone24.setRotationPoint(1.0F, 0.0F, 0.0F);
-        scorpion.addChild(bone24);
+        gun.addChild(bone24);
         setRotationAngle(bone24, -0.7854F, 0.0F, 0.0F);
         bone24.cubeList.add(new ModelBox(bone24, 34, 44, -5.0F, -40.2139F, 5.8972F, 1, 1, 2, 0.0F, true));
         bone24.cubeList.add(new ModelBox(bone24, 34, 44, -5.0F, -37.6784F, 10.0185F, 1, 1, 2, 0.0F, true));
@@ -287,13 +300,13 @@ public class ModelScorpion extends ModelGun {
 
         bone20 = new ModelRenderer(this);
         bone20.setRotationPoint(0.0F, -31.5469F, 10.0F);
-        scorpion.addChild(bone20);
+        gun.addChild(bone20);
         setRotationAngle(bone20, -0.1745F, 0.0F, 0.0F);
         bone20.cubeList.add(new ModelBox(bone20, 83, 23, -3.0F, 6.054F, -0.9017F, 6, 1, 4, 0.0F, false));
 
         bone26 = new ModelRenderer(this);
         bone26.setRotationPoint(-1.5F, -27.0469F, 6.5F);
-        scorpion.addChild(bone26);
+        gun.addChild(bone26);
         setRotationAngle(bone26, 0.1745F, 0.0F, 0.0F);
         bone26.cubeList.add(new ModelBox(bone26, 66, 10, -0.5F, -0.898F, -0.3339F, 1, 2, 1, 0.0F, true));
         bone26.cubeList.add(new ModelBox(bone26, 66, 10, 2.5F, -0.898F, -0.3339F, 1, 2, 1, 0.0F, false));
@@ -301,7 +314,7 @@ public class ModelScorpion extends ModelGun {
 
         bone27 = new ModelRenderer(this);
         bone27.setRotationPoint(-1.5F, -27.0469F, 6.5F);
-        scorpion.addChild(bone27);
+        gun.addChild(bone27);
         setRotationAngle(bone27, -0.1745F, 0.0F, 0.0F);
         bone27.cubeList.add(new ModelBox(bone27, 66, 10, -0.5F, -0.898F, -0.6661F, 1, 2, 1, 0.0F, true));
         bone27.cubeList.add(new ModelBox(bone27, 66, 10, 2.5F, -0.898F, -0.6661F, 1, 2, 1, 0.0F, false));
@@ -309,7 +322,7 @@ public class ModelScorpion extends ModelGun {
 
         bone19 = new ModelRenderer(this);
         bone19.setRotationPoint(0.0F, -27.5469F, -4.5F);
-        scorpion.addChild(bone19);
+        gun.addChild(bone19);
         setRotationAngle(bone19, 0.0F, 0.0F, 0.7854F);
         bone19.cubeList.add(new ModelBox(bone19, 66, 10, 2.8284F, -0.7071F, -12.5F, 1, 1, 25, 0.0F, false));
         bone19.cubeList.add(new ModelBox(bone19, 66, 10, 3.2426F, -0.7071F, -12.5F, 1, 1, 25, 0.0F, false));
@@ -318,7 +331,7 @@ public class ModelScorpion extends ModelGun {
 
         bone = new ModelRenderer(this);
         bone.setRotationPoint(0.0F, 0.0F, 0.0F);
-        scorpion.addChild(bone);
+        gun.addChild(bone);
         setRotationAngle(bone, 0.0F, 0.0F, 0.7854F);
         bone.cubeList.add(new ModelBox(bone, 91, 24, -16.838F, -18.2522F, -20.0F, 2, 1, 3, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 91, 24, -14.4238F, -16.838F, -20.0F, 1, 2, 3, 0.0F, false));
@@ -327,5 +340,7 @@ public class ModelScorpion extends ModelGun {
 
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
+        addEntry(AnimationElement.BOLT, stack -> bolt);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 }

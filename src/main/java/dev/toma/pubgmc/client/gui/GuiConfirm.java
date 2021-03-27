@@ -65,6 +65,11 @@ public class GuiConfirm extends GuiWidgets {
         drawWidgets(mc, mouseX, mouseY, partialTicks);
     }
 
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
     public interface Callback {
         void call(boolean confirmed, GuiScreen parent);
     }

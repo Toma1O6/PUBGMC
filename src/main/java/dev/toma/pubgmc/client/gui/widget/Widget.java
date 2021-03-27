@@ -106,6 +106,30 @@ public abstract class Widget {
         return false;
     }
 
+    public static void drawLine(int x1, int y1, int x2, int y2, float r, float g, float b, float a) {
+        drawLine(x1, y1, x2, y2, r, g, b, a, 1);
+    }
+
+    public static void drawLine(int x1, int y1, int x2, int y2, float r, float g, float b, float a, int width) {
+        drawLine(x1, y1, x2, y2, 0, r, g, b, a, width);
+    }
+
+    public static void drawLine(int x1, int y1, int x2, int y2, int depth, float r, float g, float b, float a, int width) {
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.glLineWidth(width);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+        builder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+        builder.pos(x1, y1, depth).color(r, g, b, a).endVertex();
+        builder.pos(x2, y2, depth).color(r, g, b, a).endVertex();
+        tessellator.draw();
+        GlStateManager.glLineWidth(1.0F);
+        GlStateManager.disableBlend();
+        GlStateManager.enableTexture2D();
+    }
+
     public static void drawColorShape(int x1, int y1, int x2, int y2, float r, float g, float b, float a) {
         drawColorShape(x1, y1, x2, y2, 0, r, g, b, a);
     }

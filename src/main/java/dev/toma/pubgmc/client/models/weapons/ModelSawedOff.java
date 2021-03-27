@@ -24,6 +24,8 @@ public class ModelSawedOff extends ModelGun {
     private final ModelRenderer bone10;
     private final ModelRenderer bone11;
     private final ModelRenderer bone5;
+    private final ModelRenderer bullet1;
+    private final ModelRenderer bullet2;
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
@@ -250,6 +252,28 @@ public class ModelSawedOff extends ModelGun {
         setRotationAngle(bone5, -0.0873F, 0.0F, 0.0F);
         bone5.cubeList.add(new ModelBox(bone5, 64, 13, -5.0F, 3.2501F, -3.2729F, 10, 6, 5, 0.0F, true));
 
+        bullet1 = new ModelRenderer(this);
+        bullet1.setRotationPoint(0.0F, 24.0F, -1.0F);
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 511, 0.732F, -3.0F, 9.73F, 6, 4, 2, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 511, 1.732F, -3.0F, 8.73F, 4, 4, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 462, 0.732F, -3.0F, -1.27F, 6, 4, 10, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 511, 1.732F, -4.0F, 9.73F, 4, 1, 2, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 462, 1.732F, -4.0F, -1.27F, 4, 1, 10, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 511, 1.732F, 1.0F, 9.73F, 4, 1, 2, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 0, 462, 1.732F, 1.0F, -1.27F, 4, 1, 10, 0.0F, false));
+
+        bullet2 = new ModelRenderer(this);
+        bullet2.setRotationPoint(0.0F, 24.0F, -1.0F);
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 511, -6.732F, -3.0F, 9.73F, 6, 4, 2, 0.0F, true));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 511, -5.732F, -3.0F, 8.73F, 4, 4, 1, 0.0F, true));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 462, -6.732F, -3.0F, -1.27F, 6, 4, 10, 0.0F, true));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 511, -5.732F, -4.0F, 9.73F, 4, 1, 2, 0.0F, true));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 462, -5.732F, -4.0F, -1.27F, 4, 1, 10, 0.0F, true));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 511, -5.732F, 1.0F, 9.73F, 4, 1, 2, 0.0F, true));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 462, -5.732F, 1.0F, -1.27F, 4, 1, 10, 0.0F, true));
+
         addEntry(AnimationElement.MAGAZINE, stack -> barrels);
+        addEntry(AnimationElement.BULLET, stack -> bullet1);
+        addEntry(AnimationElement.BULLET1, stack -> bullet2);
     }
 }

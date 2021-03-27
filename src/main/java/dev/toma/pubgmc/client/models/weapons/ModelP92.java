@@ -19,7 +19,7 @@ public class ModelP92 extends ModelGun {
     private final ModelRenderer bone10;
     private final ModelRenderer hammer;
     private final ModelRenderer bone13;
-    private final ModelRenderer p92;
+    private final ModelRenderer gun;
     private final ModelRenderer bone16;
     private final ModelRenderer bone15;
     private final ModelRenderer bone;
@@ -27,6 +27,7 @@ public class ModelP92 extends ModelGun {
     private final ModelRenderer bone5;
     private final ModelRenderer bone6;
     private final ModelRenderer magazine;
+    private final ModelRenderer bullet;
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
@@ -42,7 +43,7 @@ public class ModelP92 extends ModelGun {
 
     @Override
     public void renderModel(ItemStack stack) {
-        p92.render(1f);
+        gun.render(1f);
     }
 
     public ModelP92() {
@@ -142,35 +143,35 @@ public class ModelP92 extends ModelGun {
         bone13.cubeList.add(new ModelBox(bone13, 38, 42, -0.5F, -0.5572F, -1.4353F, 1, 1, 1, 0.0F, true));
         bone13.cubeList.add(new ModelBox(bone13, 38, 42, -0.5F, 0.2503F, -1.393F, 1, 1, 1, 0.0F, true));
 
-        p92 = new ModelRenderer(this);
-        p92.setRotationPoint(0.0F, 24.0F, 0.0F);
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -1.0F, -1.0F, -6.0F, 2, 1, 8, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -1.0F, -1.0234F, 1.3984F, 2, 1, 1, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -1.0F, -4.0F, 0.0F, 2, 3, 2, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -2.0F, -4.0F, 2.0F, 4, 1, 6, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -2.0F, -4.0F, 8.0F, 4, 3, 5, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -1.0F, -0.124F, 3.4321F, 2, 1, 3, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -2.0F, 3.5015F, 9.3825F, 4, 2, 5, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, 1.0F, -4.0F, -6.0F, 1, 3, 8, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -2.0F, -4.0F, -6.0F, 1, 3, 8, 0.0F, false));
-        p92.cubeList.add(new ModelBox(p92, 82, 16, -2.0F, -4.5F, -3.4F, 4, 1, 9, 0.0F, false));
+        gun = new ModelRenderer(this);
+        gun.setRotationPoint(0.0F, 24.0F, 0.0F);
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -1.0F, -1.0F, -6.0F, 2, 1, 8, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -1.0F, -1.0234F, 1.3984F, 2, 1, 1, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -1.0F, -4.0F, 0.0F, 2, 3, 2, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -2.0F, -4.0F, 2.0F, 4, 1, 6, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -2.0F, -4.0F, 8.0F, 4, 3, 5, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -1.0F, -0.124F, 3.4321F, 2, 1, 3, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -2.0F, 3.5015F, 9.3825F, 4, 2, 5, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, 1.0F, -4.0F, -6.0F, 1, 3, 8, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -2.0F, -4.0F, -6.0F, 1, 3, 8, 0.0F, false));
+        gun.cubeList.add(new ModelBox(gun, 82, 16, -2.0F, -4.5F, -3.4F, 4, 1, 9, 0.0F, false));
 
         bone16 = new ModelRenderer(this);
         bone16.setRotationPoint(1.0F, 0.0F, 0.0F);
-        p92.addChild(bone16);
+        gun.addChild(bone16);
         setRotationAngle(bone16, -0.6109F, 0.0F, 0.0F);
         bone16.cubeList.add(new ModelBox(bone16, 82, 16, -2.0F, -2.251F, 0.3139F, 2, 1, 3, 0.0F, false));
 
         bone15 = new ModelRenderer(this);
         bone15.setRotationPoint(1.0F, 4.7969F, 0.0F);
-        p92.addChild(bone15);
+        gun.addChild(bone15);
         setRotationAngle(bone15, 0.2618F, 0.0F, 0.0F);
         bone15.cubeList.add(new ModelBox(bone15, 82, 16, -3.0F, -3.5288F, 9.2277F, 4, 6, 5, 0.0F, false));
         bone15.cubeList.add(new ModelBox(bone15, 82, 16, -2.0F, -3.1225F, 7.2277F, 2, 1, 2, 0.0F, false));
 
         bone = new ModelRenderer(this);
         bone.setRotationPoint(1.0F, 0.0F, 0.0F);
-        p92.addChild(bone);
+        gun.addChild(bone);
         setRotationAngle(bone, 0.0F, 0.0F, -0.7854F);
         bone.cubeList.add(new ModelBox(bone, 82, 16, 0.4142F, -1.0F, -6.0F, 1, 1, 8, 0.0F, false));
         bone.cubeList.add(new ModelBox(bone, 82, 16, 0.0F, -1.0F, -6.0F, 1, 1, 8, 0.0F, false));
@@ -179,7 +180,7 @@ public class ModelP92 extends ModelGun {
 
         bone4 = new ModelRenderer(this);
         bone4.setRotationPoint(1.0F, 0.0F, 0.0F);
-        p92.addChild(bone4);
+        gun.addChild(bone4);
         bone4.cubeList.add(new ModelBox(bone4, 30, 161, -1.5F, -8.0764F, -14.0289F, 1, 1, 13, 0.0F, true));
         bone4.cubeList.add(new ModelBox(bone4, 82, 16, -1.5F, -8.0764F, -2.0289F, 1, 1, 11, 0.0F, true));
         bone4.cubeList.add(new ModelBox(bone4, 30, 161, -1.5F, -5.3444F, -14.0289F, 1, 1, 13, 0.0F, true));
@@ -192,7 +193,7 @@ public class ModelP92 extends ModelGun {
 
         bone5 = new ModelRenderer(this);
         bone5.setRotationPoint(1.842F, -10.9397F, 6.6F);
-        p92.addChild(bone5);
+        gun.addChild(bone5);
         setRotationAngle(bone5, 0.0F, 0.0F, 0.5236F);
         bone5.cubeList.add(new ModelBox(bone5, 30, 161, 0.2694F, 3.1507F, -20.6289F, 1, 1, 13, 0.0F, true));
         bone5.cubeList.add(new ModelBox(bone5, 82, 16, 0.2694F, 3.1507F, -8.6289F, 1, 1, 11, 0.0F, true));
@@ -205,7 +206,7 @@ public class ModelP92 extends ModelGun {
 
         bone6 = new ModelRenderer(this);
         bone6.setRotationPoint(-1.842F, -10.9397F, 6.6F);
-        p92.addChild(bone6);
+        gun.addChild(bone6);
         setRotationAngle(bone6, 0.0F, 0.0F, -0.5236F);
         bone6.cubeList.add(new ModelBox(bone6, 30, 161, -1.2694F, 3.1507F, -20.6289F, 1, 1, 13, 0.0F, false));
         bone6.cubeList.add(new ModelBox(bone6, 82, 16, -1.2694F, 3.1507F, -8.6289F, 1, 1, 11, 0.0F, false));
@@ -223,10 +224,15 @@ public class ModelP92 extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 80, 92, -1.0F, -7.9834F, 10.4225F, 1, 1, 4, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 80, 92, -3.0F, -6.9834F, 10.4225F, 3, 11, 4, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 80, 92, -3.0F, 4.0166F, 9.4225F, 3, 1, 5, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 8, 505, -2.0F, -7.6865F, 11.0632F, 1, 1, 3, 0.0F, true));
+
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(1.5F, 26.1953F, -1.1953F);
+        setRotationAngle(bullet, 0.0873F, 0.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 8, 505, -2.0F, -7.6865F, 11.0632F, 1, 1, 3, 0.0F, true));
 
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> slide);
         addEntry(AnimationElement.HAMMER, stack -> hammer);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 }

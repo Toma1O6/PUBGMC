@@ -412,7 +412,7 @@ public class ModelWin94 extends ModelGun {
         bullet.cubeList.add(new ModelBox(bullet, 0, 497, -6.9F, -15.9F, -4.0F, 1, 1, 4, 0.0F, false));
         bullet.cubeList.add(new ModelBox(bullet, 0, 497, -6.9F, -15.1F, -4.0F, 1, 1, 4, 0.0F, false));
 
-        addEntry(AnimationElement.MAGAZINE, stack -> bolt);
+        addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.CHARGING, stack -> lever);
         addEntry(AnimationElement.BULLET, stack -> bullet);
     }

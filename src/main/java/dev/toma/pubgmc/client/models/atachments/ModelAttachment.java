@@ -17,7 +17,7 @@ public abstract class ModelAttachment<I extends ItemAttachment> extends ModelBas
 
     public abstract void render(float aimPct);
 
-    public void renderReticle(float aimPct, ModelRenderer main, ModelRenderer reticle, ResourceLocation texture, int color) {
+    public static void renderReticle(float aimPct, ModelRenderer main, ModelRenderer reticle, ResourceLocation texture, int color) {
         Minecraft mc = Minecraft.getMinecraft();
         main.render(1.0F);
         float a = (ConfigPMC.developerMode.get() ? 1.0F : aimPct) * ((color >> 24) & 255) / 255F;
@@ -35,11 +35,11 @@ public abstract class ModelAttachment<I extends ItemAttachment> extends ModelBas
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void renderScope(ModelRenderer mainRenderer, ResourceLocation reticleTexture, float aimPct, ModelRenderer reticleRenderer, ModelRenderer overlayRenderer) {
+    public static void renderScope(ModelRenderer mainRenderer, ResourceLocation reticleTexture, float aimPct, ModelRenderer reticleRenderer, ModelRenderer overlayRenderer) {
         renderScope(mainRenderer, reticleTexture, aimPct, reticleRenderer, overlayRenderer, 0.05F);
     }
 
-    public void renderScope(ModelRenderer mainRenderer, ResourceLocation reticleTexture, float aimPct, ModelRenderer reticleRenderer, ModelRenderer overlayRenderer, float scaleMin) {
+    public static void renderScope(ModelRenderer mainRenderer, ResourceLocation reticleTexture, float aimPct, ModelRenderer reticleRenderer, ModelRenderer overlayRenderer, float scaleMin) {
         Minecraft mc = Minecraft.getMinecraft();
         TextureManager manager = mc.getTextureManager();
         float inv = 1.0F - aimPct;

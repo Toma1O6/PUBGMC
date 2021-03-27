@@ -1,15 +1,20 @@
 package dev.toma.pubgmc.client.gui.animator;
 
 import dev.toma.pubgmc.client.animation.AnimationElement;
+import dev.toma.pubgmc.client.animation.interfaces.ElementProvider;
+import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
 import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
 import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.Vec3d;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -44,10 +49,20 @@ public class GuiModifyFrame extends GuiWidgets {
         addWidget(new DecimalInputWidget(guiLeft + 60, guiTop + 50, 50, 20, frame, () -> frame.rotate.y, (frame1, value) -> frame1.setRotate(new Vec3d(frame1.rotate.x, value, frame1.rotate.z))));
         addWidget(new DecimalInputWidget(guiLeft + 115, guiTop + 50, 50, 20, frame, () -> frame.rotate.z, (frame1, value) -> frame1.setRotate(new Vec3d(frame1.rotate.x, frame1.rotate.y, value))));
 
-        addWidget(new ButtonWidget(guiLeft + 10, guiTop + ySize - 25, 70, 20, "Continue", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(parent)));
-        addWidget(new ButtonWidget(guiLeft + 90, guiTop + ySize - 25, 70, 20, "Delete", (widget, mouseX, mouseY, button) -> {
+        addWidget(new ButtonWidget(guiLeft + 5, guiTop + ySize - 25, 50, 20, "Continue", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(parent)));
+        addWidget(new ButtonWidget(guiLeft + 60, guiTop + ySize - 25, 50, 20, "Delete", (widget, mouseX, mouseY, button) -> {
             AnimatorCache.project.remove(frameOwner, frame);
             mc.displayGuiScreen(parent);
+        }));
+        addWidget(new ButtonWidget(guiLeft + 115, guiTop + ySize - 25, 50, 20, "Copy", (widget, mouseX, mouseY, button) -> {
+            Item item = mc.player.getHeldItemMainhand().getItem();
+            List<AnimationElement> list = new ArrayList<>(AnimationElement.getBaseElements());
+            if(item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
+                ElementProvider provider = (ElementProvider) item.getTileEntityItemStackRenderer();
+                list.addAll(provider.getElements());
+            }
+            list.removeIf(element -> element == frameOwner);
+            mc.displayGuiScreen(new ElementList(parent, list, frame).onListInit(listWidget -> listWidget.withFormatter(AnimationElement::getLocalizedName)));
         }));
     }
 
@@ -138,6 +153,31 @@ public class GuiModifyFrame extends GuiWidgets {
 
         interface Setter {
             void set(MutableKeyFrame frame, double value);
+        }
+    }
+
+    static class ElementList extends GuiSelectList<AnimationElement> {
+
+        final KeyFrame frame;
+
+        ElementList(GuiAnimator parent, List<AnimationElement> elementList, KeyFrame frame) {
+            super(parent, "Select target element", "", elementList, null);
+            this.frame = frame;
+        }
+
+        @Override
+        protected void onConfirm() {
+            GuiAnimator animator = (GuiAnimator) parent;
+            AnimationElement element = widget.getSelectedElement();
+            if(element != null) {
+                animator.timeline.insertElement(element, MutableKeyFrame.fromImmutable(frame));
+            }
+            mc.displayGuiScreen(parent);
+        }
+
+        @Override
+        protected void onCancel() {
+            mc.displayGuiScreen(parent);
         }
     }
 }

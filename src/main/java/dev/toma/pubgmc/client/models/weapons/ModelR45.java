@@ -76,7 +76,7 @@ public class ModelR45 extends ModelGun {
 
         hammer = new ModelRenderer(this);
         hammer.setRotationPoint(0.0F, 16.832F, 5.84F);
-        setRotationAngle(hammer, -0.0873F, 0.0F, 0.0F);
+        setRotationAngle(hammer, -0.6982F, 0.0F, 0.0F);
         hammer.cubeList.add(new ModelBox(hammer, 8, 0, -0.5F, -1.1147F, 0.1037F, 1, 2, 1, 0.0F, false));
         hammer.cubeList.add(new ModelBox(hammer, 40, 13, -0.5F, -0.7727F, -0.836F, 1, 1, 1, 0.0F, false));
 

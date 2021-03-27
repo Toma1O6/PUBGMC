@@ -14,7 +14,6 @@ public class ModelMicroUzi extends ModelGun {
     private final ModelRenderer cube_r2;
     private final ModelRenderer cube_r3;
     private final ModelRenderer cube_r4;
-    private final ModelRenderer bullet;
     private final ModelRenderer gun;
     private final ModelRenderer cube_r5;
     private final ModelRenderer cube_r6;
@@ -51,7 +50,7 @@ public class ModelMicroUzi extends ModelGun {
     private final ModelRenderer cube_r32;
     private final ModelRenderer cube_r33;
     private final ModelRenderer cube_r34;
-    private final ModelRenderer charger;
+    private final ModelRenderer charging_handle;
     private final ModelRenderer cube_r35;
     private final ModelRenderer cube_r36;
     private final ModelRenderer cube_r37;
@@ -70,6 +69,7 @@ public class ModelMicroUzi extends ModelGun {
     private final ModelRenderer botrail;
     private final ModelRenderer bone7;
     private final ModelRenderer bone8;
+    private final ModelRenderer bullet;
 
     @Override
     public void renderModel(ItemStack stack) {
@@ -137,20 +137,6 @@ public class ModelMicroUzi extends ModelGun {
         cube_r4.cubeList.add(new ModelBox(cube_r4, 88, 32, -0.5F, -2.0F, 0.268F, 1, 1, 1, 0.0F, false));
         cube_r4.cubeList.add(new ModelBox(cube_r4, 88, 32, -0.5F, 1.0F, 0.268F, 1, 2, 1, 0.0F, false));
 
-        bullet = new ModelRenderer(this);
-        bullet.setRotationPoint(0.5F, -20.5F, -4.366F);
-        magazine.addChild(bullet);
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -1.0F, -1.6F, 4.766F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -1.0F, -1.6F, 2.366F, 2, 2, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.2F, -1.4F, 1.066F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.2F, -0.8F, 1.066F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.8F, -1.4F, 1.066F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.8F, -0.8F, 1.066F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.1F, -0.7F, 3.766F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.1F, -1.5F, 3.766F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.9F, -0.7F, 3.766F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.9F, -1.5F, 3.766F, 1, 1, 1, 0.0F, false));
-
         gun = new ModelRenderer(this);
         gun.setRotationPoint(0.0F, 22.0F, 0.0F);
         gun.cubeList.add(new ModelBox(gun, 73, 9, 1.3F, -18.0F, -15.0F, 1, 3, 24, 0.0F, false));
@@ -197,6 +183,7 @@ public class ModelMicroUzi extends ModelGun {
         gun.cubeList.add(new ModelBox(gun, 15, 95, 1.7F, -17.5F, 6.5F, 1, 2, 2, 0.0F, false));
         gun.cubeList.add(new ModelBox(gun, 15, 95, -2.7F, -17.5F, -14.5F, 1, 2, 2, 0.0F, true));
         gun.cubeList.add(new ModelBox(gun, 15, 95, -2.7F, -17.5F, 6.5F, 1, 2, 2, 0.0F, true));
+        gun.cubeList.add(new ModelBox(gun, 96, 35, -1.0F, -18.5F, 13.0F, 2, 3, 2, 0.0F, false));
 
         cube_r5 = new ModelRenderer(this);
         cube_r5.setRotationPoint(-1.939F, -19.0695F, 0.0F);
@@ -435,45 +422,45 @@ public class ModelMicroUzi extends ModelGun {
         setRotationAngle(cube_r34, 0.0F, 0.0F, 0.5236F);
         cube_r34.cubeList.add(new ModelBox(cube_r34, 14, 86, 0.5F, -1.5F, -4.5F, 1, 2, 7, 0.0F, false));
 
-        charger = new ModelRenderer(this);
-        charger.setRotationPoint(2.4F, 4.8F, 5.8F);
-        charger.cubeList.add(new ModelBox(charger, 30, 99, 0.0F, -3.8F, -11.3F, 1, 1, 1, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 30, 99, -5.8F, -3.8F, -11.3F, 1, 1, 1, 0.0F, true));
-        charger.cubeList.add(new ModelBox(charger, 93, 40, -1.0F, -4.3F, -11.8F, 1, 2, 2, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 93, 40, -4.8F, -4.3F, -11.8F, 1, 2, 2, 0.0F, true));
-        charger.cubeList.add(new ModelBox(charger, 95, 35, -1.0F, -3.6F, -9.8F, 1, 1, 3, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 95, 35, -4.8F, -3.6F, -9.8F, 1, 1, 3, 0.0F, true));
-        charger.cubeList.add(new ModelBox(charger, 95, 35, -1.0F, -4.0F, -9.8F, 1, 1, 3, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 95, 35, -4.8F, -4.0F, -9.8F, 1, 1, 3, 0.0F, true));
-        charger.cubeList.add(new ModelBox(charger, 95, 35, -3.9F, -4.0F, -7.1F, 3, 1, 1, 0.0F, true));
-        charger.cubeList.add(new ModelBox(charger, 31, 88, -3.5F, -3.16F, -9.3F, 2, 1, 3, 0.0F, true));
-        charger.cubeList.add(new ModelBox(charger, 0, 22, -3.9F, -5.4F, -11.7F, 3, 1, 7, 0.0F, false));
+        charging_handle = new ModelRenderer(this);
+        charging_handle.setRotationPoint(2.4F, 4.8F, 5.8F);
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 30, 99, 0.0F, -3.8F, -11.3F, 1, 1, 1, 0.0F, false));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 30, 99, -5.8F, -3.8F, -11.3F, 1, 1, 1, 0.0F, true));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 93, 40, -1.0F, -4.3F, -11.8F, 1, 2, 2, 0.0F, false));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 93, 40, -4.8F, -4.3F, -11.8F, 1, 2, 2, 0.0F, true));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 95, 35, -1.0F, -3.6F, -9.8F, 1, 1, 3, 0.0F, false));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 95, 35, -4.8F, -3.6F, -9.8F, 1, 1, 3, 0.0F, true));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 95, 35, -1.0F, -4.0F, -9.8F, 1, 1, 3, 0.0F, false));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 95, 35, -4.8F, -4.0F, -9.8F, 1, 1, 3, 0.0F, true));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 95, 35, -3.9F, -4.0F, -7.1F, 3, 1, 1, 0.0F, true));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 31, 88, -3.5F, -3.16F, -9.3F, 2, 1, 3, 0.0F, true));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 0, 22, -3.9F, -5.4F, -11.7F, 3, 1, 7, 0.0F, false));
 
         cube_r35 = new ModelRenderer(this);
         cube_r35.setRotationPoint(-3.5003F, 0.2F, -3.2292F);
-        charger.addChild(cube_r35);
+        charging_handle.addChild(cube_r35);
         setRotationAngle(cube_r35, 0.0F, 0.3491F, 0.0F);
         cube_r35.cubeList.add(new ModelBox(cube_r35, 95, 35, 0.0F, -4.0F, -3.8F, 1, 1, 1, 0.0F, true));
 
         cube_r36 = new ModelRenderer(this);
         cube_r36.setRotationPoint(-1.2997F, 0.2F, -3.2292F);
-        charger.addChild(cube_r36);
+        charging_handle.addChild(cube_r36);
         setRotationAngle(cube_r36, 0.0F, -0.3491F, 0.0F);
         cube_r36.cubeList.add(new ModelBox(cube_r36, 95, 35, -1.0F, -4.0F, -3.8F, 1, 1, 1, 0.0F, false));
 
         cube_r37 = new ModelRenderer(this);
         cube_r37.setRotationPoint(-6.7F, -3.3F, -10.8F);
-        charger.addChild(cube_r37);
+        charging_handle.addChild(cube_r37);
         setRotationAngle(cube_r37, -0.829F, 0.0F, 0.0F);
         cube_r37.cubeList.add(new ModelBox(cube_r37, 28, 102, -1.5F, -1.0F, -1.0F, 3, 2, 2, 0.0F, true));
         cube_r37.cubeList.add(new ModelBox(cube_r37, 28, 102, 7.1F, -1.0F, -1.0F, 3, 2, 2, 0.0F, false));
 
         stock = new ModelRenderer(this);
-        stock.setRotationPoint(0.0F, 24.0F, 0.0F);
-        stock.cubeList.add(new ModelBox(stock, 96, 35, -1.0F, -20.5F, 13.0F, 2, 3, 2, 0.0F, false));
+        stock.setRotationPoint(0.0F, 5.0F, 14.0F);
+
 
         stock9 = new ModelRenderer(this);
-        stock9.setRotationPoint(0.0F, -18.5F, 14.0F);
+        stock9.setRotationPoint(0.0F, 0.5F, 0.0F);
         stock.addChild(stock9);
         setRotationAngle(stock9, -2.8798F, 0.0F, 0.0F);
         stock9.cubeList.add(new ModelBox(stock9, 39, 20, -2.0F, -0.5F, -0.5F, 4, 1, 1, 0.0F, false));
@@ -665,8 +652,22 @@ public class ModelMicroUzi extends ModelGun {
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 4.5F, 1, 1, 1, 0.0F, true));
         bone8.cubeList.add(new ModelBox(bone8, 90, 83, -1.616F, -0.067F, 3.5F, 0, 1, 1, 0.0F, true));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.0F, 3.5F, -5.366F);
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -1.0F, -1.6F, 4.766F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -1.0F, -1.6F, 2.366F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.2F, -1.4F, 1.066F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.2F, -0.8F, 1.066F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.8F, -1.4F, 1.066F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.8F, -0.8F, 1.066F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.1F, -0.7F, 3.766F, 1, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.1F, -1.5F, 3.766F, 1, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.9F, -0.7F, 3.766F, 1, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 496, -0.9F, -1.5F, 3.766F, 1, 1, 1, 0.0F, false));
+
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
-        addEntry(AnimationElement.CHARGING, stack -> charger);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 
     public void setRotationAngle(ModelRenderer r, float x, float y, float z) {

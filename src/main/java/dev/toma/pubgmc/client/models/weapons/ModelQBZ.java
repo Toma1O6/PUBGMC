@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 public class ModelQBZ extends ModelGun {
 
     private final ModelRenderer magazine;
-    private final ModelRenderer bullet;
     private final ModelRenderer magrot1;
     private final ModelRenderer magrot2;
     private final ModelRenderer magrot3;
@@ -74,13 +73,15 @@ public class ModelQBZ extends ModelGun {
     private final ModelRenderer rail3;
     private final ModelRenderer bone5;
     private final ModelRenderer bone6;
-    private final ModelRenderer bolt;
+    private final ModelRenderer charging_handle;
     private final ModelRenderer cube_r43;
     private final ModelRenderer cube_r44;
+    private final ModelRenderer bolt;
     private final ModelRenderer cube_r45;
     private final ModelRenderer rail;
     private final ModelRenderer bone;
     private final ModelRenderer bone2;
+    private final ModelRenderer bullet;
 
     @Override
     public void transformModel() {
@@ -109,17 +110,6 @@ public class ModelQBZ extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 79, 90, -2.0F, -1.0F, -1.0F, 4, 3, 1, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 79, 90, -2.0F, -1.0F, -7.0F, 4, 3, 1, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 79, 90, -2.0F, -1.0F, -4.0F, 4, 3, 1, 0.0F, false));
-
-        bullet = new ModelRenderer(this);
-        bullet.setRotationPoint(2.0F, 0.0F, 0.0F);
-        magazine.addChild(bullet);
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.8F, -3.8F, -6.0F, 1, 1, 5, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.2F, -3.8F, -6.0F, 1, 1, 5, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.2F, -3.2F, -6.0F, 1, 1, 5, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.8F, -3.2F, -6.0F, 1, 1, 5, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -3.0F, -4.0F, -4.2F, 2, 2, 3, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.5F, -3.5F, -6.9F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -3.0F, -4.0F, -1.0F, 2, 2, 1, 0.0F, false));
 
         magrot1 = new ModelRenderer(this);
         magrot1.setRotationPoint(1.0F, 4.0F, 0.0F);
@@ -770,24 +760,27 @@ public class ModelQBZ extends ModelGun {
         bone6.cubeList.add(new ModelBox(bone6, 68, 78, -8.6115F, 26.0844F, -9.0F, 1, 0, 1, 0.0F, false));
         bone6.cubeList.add(new ModelBox(bone6, 68, 78, -8.6115F, 26.0844F, -15.0F, 1, 0, 1, 0.0F, false));
 
-        bolt = new ModelRenderer(this);
-        bolt.setRotationPoint(0.0F, 24.0F, 0.0F);
-        bolt.cubeList.add(new ModelBox(bolt, 19, 147, -2.9967F, -7.6402F, -6.9679F, 1, 2, 1, 0.0F, false));
-        bolt.cubeList.add(new ModelBox(bolt, 0, 82, -1.0F, -13.666F, -32.5F, 2, 1, 3, 0.0F, false));
-        bolt.cubeList.add(new ModelBox(bolt, 0, 82, -1.5F, -12.8F, -32.5F, 3, 3, 3, 0.0F, false));
-        bolt.cubeList.add(new ModelBox(bolt, 0, 82, -1.5F, -10.6F, -29.5F, 3, 1, 14, 0.0F, false));
+        charging_handle = new ModelRenderer(this);
+        charging_handle.setRotationPoint(0.0F, 24.0F, 0.0F);
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 0, 82, -1.5F, -10.6F, -29.5F, 3, 1, 14, 0.0F, false));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 0, 82, -1.5F, -12.8F, -32.5F, 3, 3, 3, 0.0F, false));
+        charging_handle.cubeList.add(new ModelBox(charging_handle, 0, 82, -1.0F, -13.666F, -32.5F, 2, 1, 3, 0.0F, false));
 
         cube_r43 = new ModelRenderer(this);
         cube_r43.setRotationPoint(-0.549F, -13.349F, -31.0F);
-        bolt.addChild(cube_r43);
+        charging_handle.addChild(cube_r43);
         setRotationAngle(cube_r43, 0.0F, 0.0F, -0.5236F);
         cube_r43.cubeList.add(new ModelBox(cube_r43, 0, 82, 0.5F, 0.5F, -1.5F, 1, 1, 3, 0.0F, true));
 
         cube_r44 = new ModelRenderer(this);
         cube_r44.setRotationPoint(0.549F, -13.349F, -31.0F);
-        bolt.addChild(cube_r44);
+        charging_handle.addChild(cube_r44);
         setRotationAngle(cube_r44, 0.0F, 0.0F, 0.5236F);
         cube_r44.cubeList.add(new ModelBox(cube_r44, 0, 82, -1.5F, 0.5F, -1.5F, 1, 1, 3, 0.0F, false));
+
+        bolt = new ModelRenderer(this);
+        bolt.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bolt.cubeList.add(new ModelBox(bolt, 19, 147, -2.9967F, -7.6402F, -6.9679F, 1, 2, 1, 0.0F, false));
 
         cube_r45 = new ModelRenderer(this);
         cube_r45.setRotationPoint(-0.5F, -14.5F, 0.2321F);
@@ -899,8 +892,20 @@ public class ModelQBZ extends ModelGun {
         bone2.cubeList.add(new ModelBox(bone2, 68, 78, -1.741F, -0.7165F, -15.0F, 0, 1, 1, 0.0F, true));
         bone2.cubeList.add(new ModelBox(bone2, 68, 78, -1.741F, -0.7165F, -21.0F, 0, 1, 1, 0.0F, true));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(2.0F, 21.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.8F, -3.8F, -6.0F, 1, 1, 5, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.2F, -3.8F, -6.0F, 1, 1, 5, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.2F, -3.2F, -6.0F, 1, 1, 5, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.8F, -3.2F, -6.0F, 1, 1, 5, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -3.0F, -4.0F, -4.2F, 2, 2, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -2.5F, -3.5F, -6.9F, 1, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -3.0F, -4.0F, -1.0F, 2, 2, 1, 0.0F, false));
+
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
-        addEntry(AnimationElement.CHARGING, stack -> bolt);
+        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
+        addEntry(AnimationElement.BOLT, stack -> bolt);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

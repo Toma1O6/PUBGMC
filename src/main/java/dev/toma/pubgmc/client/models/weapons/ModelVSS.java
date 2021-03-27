@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public class ModelVSS extends ModelGun {
 
-    private final ModelRenderer charging_handle;
+    private final ModelRenderer bolt;
     private final ModelRenderer bone28;
     private final ModelRenderer magazine;
     private final ModelRenderer bone4;
@@ -40,6 +40,7 @@ public class ModelVSS extends ModelGun {
     private final ModelRenderer bone10;
     private final ModelRenderer bone;
     private final ModelRenderer bone5;
+    private final ModelRenderer bullet;
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
@@ -63,26 +64,20 @@ public class ModelVSS extends ModelGun {
         textureWidth = 512;
         textureHeight = 512;
 
-        charging_handle = new ModelRenderer(this);
-        charging_handle.setRotationPoint(1.0F, 24.0F, 0.0F);
-        charging_handle.cubeList.add(new ModelBox(charging_handle, 85, 161, -5.6F, -31.544F, -3.276F, 2, 1, 1, 0.0F, false));
+        bolt = new ModelRenderer(this);
+        bolt.setRotationPoint(1.0F, 24.0F, 0.0F);
+        bolt.cubeList.add(new ModelBox(bolt, 85, 161, -5.6F, -31.544F, -3.276F, 2, 1, 1, 0.0F, false));
+        bolt.cubeList.add(new ModelBox(bolt, 85, 161, -3.6F, -32.0F, -3.5F, 1, 2, 7, 0.0F, false));
 
         bone28 = new ModelRenderer(this);
         bone28.setRotationPoint(-4.6F, -31.044F, -2.776F);
-        charging_handle.addChild(bone28);
+        bolt.addChild(bone28);
         setRotationAngle(bone28, 0.0F, -0.4363F, 0.0F);
         bone28.cubeList.add(new ModelBox(bone28, 85, 161, -1.1176F, -0.5F, -0.0305F, 3, 1, 1, 0.0F, false));
 
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.0F, 26.072F, 0.0F);
         magazine.cubeList.add(new ModelBox(magazine, 93, 34, -1.5F, -31.0F, 4.0F, 3, 2, 1, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -1.5F, -32.7227F, 3.0234F, 3, 3, 1, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -1.5F, -32.7227F, -0.5766F, 3, 3, 3, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -1.5F, -31.7227F, -2.5766F, 3, 1, 2, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -0.5F, -32.7227F, -2.5766F, 1, 3, 2, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -0.5F, -31.7227F, -3.6742F, 1, 1, 1, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -1.0F, -32.2227F, 2.0234F, 2, 2, 1, 0.0F, false));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 510, -1.0F, -32.2227F, -3.0766F, 2, 2, 3, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 93, 34, -1.5F, -30.0F, -4.0F, 3, 1, 1, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 93, 34, -2.5F, -32.0F, -4.0F, 1, 3, 9, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 93, 34, 1.5F, -32.0F, -4.0F, 1, 3, 9, 0.0F, true));
@@ -139,7 +134,6 @@ public class ModelVSS extends ModelGun {
         vss.cubeList.add(new ModelBox(vss, 14, 86, -3.0F, -30.0F, -5.5F, 6, 5, 11, 0.0F, false));
         vss.cubeList.add(new ModelBox(vss, 14, 86, -3.0F, -32.0F, -5.5F, 6, 2, 2, 0.0F, false));
         vss.cubeList.add(new ModelBox(vss, 14, 86, -3.0F, -32.0F, 3.5F, 6, 2, 2, 0.0F, false));
-        vss.cubeList.add(new ModelBox(vss, 85, 161, -2.6F, -32.0F, -3.5F, 1, 2, 7, 0.0F, false));
         vss.cubeList.add(new ModelBox(vss, 20, 158, 2.232F, -38.344F, 1.268F, 1, 8, 2, 0.0F, false));
         vss.cubeList.add(new ModelBox(vss, 20, 158, 3.064F, -36.0F, -4.14F, 1, 7, 2, 0.0F, false));
         vss.cubeList.add(new ModelBox(vss, 20, 158, 2.064F, -38.0F, -4.14F, 2, 2, 2, 0.0F, false));
@@ -411,7 +405,18 @@ public class ModelVSS extends ModelGun {
         setRotationAngle(bone5, 0.0F, 0.4363F, 0.0F);
         bone5.cubeList.add(new ModelBox(bone5, 14, 86, -5.9496F, -31.0F, 3.1942F, 1, 3, 3, 0.0F, true));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.0F, 26.072F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -1.5F, -32.7227F, 3.0234F, 3, 3, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -1.5F, -32.7227F, -0.5766F, 3, 3, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -1.5F, -31.7227F, -2.5766F, 3, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -0.5F, -32.7227F, -2.5766F, 1, 3, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -0.5F, -31.7227F, -3.6742F, 1, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -1.0F, -32.2227F, 2.0234F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 510, -1.0F, -32.2227F, -3.0766F, 2, 2, 3, 0.0F, false));
+
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
-        addEntry(AnimationElement.CHARGING, stack -> charging_handle);
+        addEntry(AnimationElement.BOLT, stack -> bolt);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 }

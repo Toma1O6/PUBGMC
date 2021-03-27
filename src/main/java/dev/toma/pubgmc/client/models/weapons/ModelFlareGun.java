@@ -29,6 +29,13 @@ public class ModelFlareGun extends ModelGun {
     private final ModelRenderer bone2;
     private final ModelRenderer bone3;
     private final ModelRenderer bone4;
+    private final ModelRenderer bullet;
+    private final ModelRenderer bullet2;
+    private final ModelRenderer bullet3;
+    private final ModelRenderer bullet4;
+    private final ModelRenderer bullet5;
+    private final ModelRenderer bullet6;
+    private final ModelRenderer bullet7;
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
@@ -236,7 +243,85 @@ public class ModelFlareGun extends ModelGun {
         bone4.cubeList.add(new ModelBox(bone4, 16, 166, -3.0F, -18.1421F, -24.0416F, 6, 4, 5, 0.0F, false));
         bone4.cubeList.add(new ModelBox(bone4, 16, 166, -3.0F, -15.1421F, -19.3848F, 6, 1, 1, 0.0F, false));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.0F, 24.0F, -3.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, -3.5F, -2.0F, 0.5F, 7, 1, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, -3.5F, -14.0F, 0.5F, 7, 1, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, -5.0F, -13.0F, 0.5F, 10, 1, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, -5.0F, -3.0F, 0.5F, 10, 1, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, -6.0F, -12.0F, 0.5F, 12, 9, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, -7.0F, -10.0F, 0.5F, 1, 5, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 0, 6.0F, -10.0F, 0.5F, 1, 5, 3, 0.0F, false));
+
+        bullet2 = new ModelRenderer(this);
+        bullet2.setRotationPoint(0.0F, 0.0F, -5.0F);
+        bullet.addChild(bullet2);
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, -3.5F, -2.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, -3.5F, -14.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, -5.0F, -13.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, -5.0F, -3.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, -6.0F, -12.0F, 0.5F, 12, 9, 4, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 18, 155, -5.0F, -12.5F, 4.5F, 10, 10, 1, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, -7.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+        bullet2.cubeList.add(new ModelBox(bullet2, 0, 455, 6.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+
+        bullet3 = new ModelRenderer(this);
+        bullet3.setRotationPoint(0.0F, 0.0F, -9.0F);
+        bullet.addChild(bullet3);
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, -3.5F, -2.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, -3.5F, -14.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, -5.0F, -13.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, -5.0F, -3.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, -6.0F, -12.0F, 0.5F, 12, 9, 4, 0.0F, false));
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, -7.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+        bullet3.cubeList.add(new ModelBox(bullet3, 0, 455, 6.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+
+        bullet4 = new ModelRenderer(this);
+        bullet4.setRotationPoint(0.0F, 0.0F, -13.0F);
+        bullet.addChild(bullet4);
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, -3.5F, -2.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, -3.5F, -14.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, -5.0F, -13.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, -5.0F, -3.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, -6.0F, -12.0F, 0.5F, 12, 9, 4, 0.0F, false));
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, -7.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+        bullet4.cubeList.add(new ModelBox(bullet4, 0, 455, 6.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+
+        bullet5 = new ModelRenderer(this);
+        bullet5.setRotationPoint(0.0F, 0.0F, -17.0F);
+        bullet.addChild(bullet5);
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, -3.5F, -2.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, -3.5F, -14.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, -5.0F, -13.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, -5.0F, -3.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, -6.0F, -12.0F, 0.5F, 12, 9, 4, 0.0F, false));
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, -7.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+        bullet5.cubeList.add(new ModelBox(bullet5, 0, 455, 6.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+
+        bullet6 = new ModelRenderer(this);
+        bullet6.setRotationPoint(0.0F, 0.0F, -21.0F);
+        bullet.addChild(bullet6);
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, -3.5F, -2.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, -3.5F, -14.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, -5.0F, -13.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, -5.0F, -3.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, -6.0F, -12.0F, 0.5F, 12, 9, 4, 0.0F, false));
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, -7.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+        bullet6.cubeList.add(new ModelBox(bullet6, 0, 455, 6.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+
+        bullet7 = new ModelRenderer(this);
+        bullet7.setRotationPoint(0.0F, 0.0F, -25.0F);
+        bullet.addChild(bullet7);
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, -3.5F, -2.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, -3.5F, -14.0F, 0.5F, 7, 1, 4, 0.0F, false));
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, -5.0F, -13.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, -5.0F, -3.0F, 0.5F, 10, 1, 4, 0.0F, false));
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, -6.0F, -12.0F, 0.5F, 12, 9, 4, 0.0F, false));
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, -7.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+        bullet7.cubeList.add(new ModelBox(bullet7, 0, 455, 6.0F, -10.0F, 0.5F, 1, 5, 4, 0.0F, false));
+
         addEntry(AnimationElement.MAGAZINE, stack -> barrel);
         addEntry(AnimationElement.HAMMER, stack -> hammer);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 }

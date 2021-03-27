@@ -151,6 +151,13 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 if(!anim.isPaused())
                     project.setAnimationProgress(anim.getProgressSmooth());
             });
+            drawLine(x + 165, y + 10, x + 165, y + height, 1.0F, 0.0F, 0.0F, 0.5F, 2);
+            renderer.drawString("0", x + 162.5F, y + 1, 0xFFFFFF, false);
+            drawLine(x + width - 10, y + 10, x + width - 10, y + height, 1.0F, 0.0F, 0.0F, 0.5F, 2);
+            renderer.drawString("100", x + width - 20, y + 1, 0xFFFFFF, false);
+            int center = x + 165 + (width - 175) / 2;
+            drawLine(center, y + 10, center, y + height, 1.0F, 0.0F, 0.0F, 0.5F, 2);
+            renderer.drawString("50", center - 6, y + 1, 0xFFFFFF, false);
             int j = 0;
             for (Map.Entry<AnimationElement, List<TimelineObject>> entry : timelineObjects.entrySet()) {
                 renderer.drawString(entry.getKey().getLocalizedName(), 103, y + 10 + j * 10, 0xFFFFFF);
@@ -208,10 +215,21 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             int x1 = x + 165;
             int x2 = width - 10;
             float f = DevUtil.wrap((mouseX - x1) / (float) (x2 - x1), 0.0F, 1.0F);
+            float f1 = f * 100;
+            int i = (int) f1;
+            float f2 = f1 - i;
+            if(f2 < 0.5) {
+                f = i;
+            } else {
+                f = i + 1;
+            }
+            f /= 100.0F;
             AnimatorCache.project.setAnimationProgress(f);
             animator.sendText("Set animation progress to {}%", DevUtil.formatToTwoDecimals(f * 100.0F));
             Optional<AnimatorAnimation> optional = AnimationProcessor.instance().getAnimation(AnimationType.ANIMATOR_TYPE);
-            optional.ifPresent(anim -> anim.set(f));
+            if(optional.isPresent()) {
+                optional.get().set(f);
+            }
         }
 
         @Override
@@ -230,14 +248,19 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             return listWidget.handleMouseScrolled(mouseX, mouseY, delta);
         }
 
-        void insertElement(AnimationElement element) {
+        public void insertElement(AnimationElement element) {
+            MutableKeyFrame keyFrame = new MutableKeyFrame();
+            keyFrame.setEndpoint(AnimatorCache.project.animationProgress);
+            insertElement(element, keyFrame);
+        }
+
+        public void insertElement(AnimationElement element, MutableKeyFrame frame) {
             List<TimelineObject> list = timelineObjects.getOrDefault(element, new ArrayList<>());
-            float progress = AnimatorCache.project.animationProgress;
+            float progress = frame.endpoint;
             if(hasElementAt(progress, list)) {
                 animator.sendError("Frame is already defined for this location");
                 return;
             }
-            MutableKeyFrame frame = new MutableKeyFrame();
             frame.setEndpoint(progress);
             AnimatorCache.project.add(element, frame);
             playAnimation();

@@ -64,12 +64,6 @@ public class ModelSLR extends ModelGun {
     private final ModelRenderer rail;
     private final ModelRenderer cube_r36;
     private final ModelRenderer cube_r37;
-    private final ModelRenderer charger;
-    private final ModelRenderer cube_r38;
-    private final ModelRenderer cube_r39;
-    private final ModelRenderer cube_r40;
-    private final ModelRenderer cube_r41;
-    private final ModelRenderer cube_r42;
     private final ModelRenderer barrel;
     private final ModelRenderer cube_r48;
     private final ModelRenderer cube_r49;
@@ -79,13 +73,20 @@ public class ModelSLR extends ModelGun {
     private final ModelRenderer cube_r53;
     private final ModelRenderer cube_r54;
     private final ModelRenderer cube_r55;
+    private final ModelRenderer bullet;
     private final ModelRenderer magazine;
     private final ModelRenderer cube_r56;
     private final ModelRenderer cube_r57;
-    private final ModelRenderer bullet;
     private final ModelRenderer toprail;
-    private final ModelRenderer cube_r58;
     private final ModelRenderer cube_r59;
+    private final ModelRenderer left;
+    private final ModelRenderer right;
+    private final ModelRenderer charger;
+    private final ModelRenderer cube_r38;
+    private final ModelRenderer cube_r39;
+    private final ModelRenderer cube_r40;
+    private final ModelRenderer cube_r41;
+    private final ModelRenderer cube_r42;
 
     public ModelSLR() {
         textureWidth = 512;
@@ -529,46 +530,6 @@ public class ModelSLR extends ModelGun {
         cube_r37.cubeList.add(new ModelBox(cube_r37, 93, 92, -1.0F, -0.5F, -3.5F, 1, 1, 1, 0.0F, false));
         cube_r37.cubeList.add(new ModelBox(cube_r37, 93, 92, -1.0F, -0.5F, 0.5F, 1, 1, 1, 0.0F, false));
 
-        charger = new ModelRenderer(this);
-        charger.setRotationPoint(1.0F, 8.5858F, 7.0F);
-        slr.addChild(charger);
-        charger.cubeList.add(new ModelBox(charger, 24, 171, 4.2101F, -4.5015F, 0.5F, 1, 1, 1, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 24, 171, 3.2101F, -5.1015F, -6.5F, 1, 2, 10, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 24, 171, 2.2101F, -4.2015F, 0.4F, 1, 1, 3, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 24, 171, 4.2101F, -5.1015F, -6.5F, 1, 2, 1, 0.0F, false));
-        charger.cubeList.add(new ModelBox(charger, 24, 171, 5.0761F, -4.6015F, -6.5F, 1, 1, 1, 0.0F, false));
-
-        cube_r38 = new ModelRenderer(this);
-        cube_r38.setRotationPoint(-0.8655F, 1.1485F, -8.0F);
-        charger.addChild(cube_r38);
-        setRotationAngle(cube_r38, 0.0F, 0.0F, -0.5236F);
-        cube_r38.cubeList.add(new ModelBox(cube_r38, 24, 171, 7.3866F, -1.6428F, 1.5F, 1, 1, 1, 0.0F, false));
-
-        cube_r39 = new ModelRenderer(this);
-        cube_r39.setRotationPoint(-0.8655F, -7.7515F, -7.0F);
-        charger.addChild(cube_r39);
-        setRotationAngle(cube_r39, 0.0F, 0.0F, 0.5236F);
-        cube_r39.cubeList.add(new ModelBox(cube_r39, 24, 171, 6.5866F, -0.7428F, 0.5F, 1, 1, 1, 0.0F, false));
-
-        cube_r40 = new ModelRenderer(this);
-        cube_r40.setRotationPoint(4.6101F, -3.3015F, 2.5F);
-        charger.addChild(cube_r40);
-        setRotationAngle(cube_r40, 0.0F, 0.0F, -0.7854F);
-        cube_r40.cubeList.add(new ModelBox(cube_r40, 24, 171, 0.1364F, -0.995F, -8.0F, 1, 1, 6, 0.0F, false));
-
-        cube_r41 = new ModelRenderer(this);
-        cube_r41.setRotationPoint(-2.7899F, -4.3015F, -7.0F);
-        charger.addChild(cube_r41);
-        setRotationAngle(cube_r41, 0.0F, 0.0F, 0.3054F);
-        cube_r41.cubeList.add(new ModelBox(cube_r41, 24, 31, -1.1F, -4.24F, 2.0F, 1, 2, 1, 0.0F, false));
-        cube_r41.cubeList.add(new ModelBox(cube_r41, 24, 31, -0.1F, -4.84F, 2.0F, 1, 3, 8, 0.0F, false));
-
-        cube_r42 = new ModelRenderer(this);
-        cube_r42.setRotationPoint(-1.8903F, -4.3015F, -2.4146F);
-        charger.addChild(cube_r42);
-        setRotationAngle(cube_r42, 0.0F, -0.7854F, 0.0F);
-        cube_r42.cubeList.add(new ModelBox(cube_r42, 24, 171, 6.7887F, -0.2F, -2.2527F, 1, 1, 2, 0.0F, false));
-
         barrel = new ModelRenderer(this);
         barrel.setRotationPoint(1.0F, 8.5858F, 1.0F);
         slr.addChild(barrel);
@@ -635,6 +596,16 @@ public class ModelSLR extends ModelGun {
         cube_r55.cubeList.add(new ModelBox(cube_r55, 65, 6, 0.0F, 1.5F, -19.0F, 1, 2, 5, 0.0F, false));
         cube_r55.cubeList.add(new ModelBox(cube_r55, 65, 6, 0.0F, -0.5F, -19.0F, 1, 2, 30, 0.0F, false));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.3F, 18.38F, -2.8F);
+        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.0F, -0.4F, -0.5F, 2, 2, 6, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 507, -1.8F, -1.2F, 5.0F, 3, 3, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 507, -1.8F, -1.2F, 2.5F, 3, 3, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 507, -1.3F, -0.7F, -2.5F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.6F, -1.0F, -0.5F, 2, 2, 6, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.6F, -0.4F, -0.5F, 2, 2, 6, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.0F, -1.0F, -0.5F, 2, 2, 6, 0.0F, false));
+
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.0F, 21.0F, 0.0F);
         magazine.cubeList.add(new ModelBox(magazine, 17, 22, -2.5F, -2.0F, 2.5F, 1, 17, 2, 0.0F, false));
@@ -663,17 +634,6 @@ public class ModelSLR extends ModelGun {
         setRotationAngle(cube_r57, -0.1309F, 0.0F, 0.0F);
         cube_r57.cubeList.add(new ModelBox(cube_r57, 17, 22, -3.5F, 1.5F, 3.0F, 4, 1, 5, 0.0F, false));
         cube_r57.cubeList.add(new ModelBox(cube_r57, 17, 22, -3.5F, 2.5F, -1.0F, 4, 1, 11, 0.0F, false));
-
-        bullet = new ModelRenderer(this);
-        bullet.setRotationPoint(0.3F, -2.62F, -2.8F);
-        magazine.addChild(bullet);
-        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.0F, -0.4F, -0.5F, 2, 2, 6, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 507, -1.8F, -1.2F, 5.0F, 3, 3, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 507, -1.8F, -1.2F, 2.5F, 3, 3, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 507, -1.3F, -0.7F, -2.5F, 2, 2, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.6F, -1.0F, -0.5F, 2, 2, 6, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.6F, -0.4F, -0.5F, 2, 2, 6, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 5, 495, -1.0F, -1.0F, -0.5F, 2, 2, 6, 0.0F, false));
 
         toprail = new ModelRenderer(this);
         toprail.setRotationPoint(0.0F, 24.0F, 0.0F);
@@ -707,13 +667,6 @@ public class ModelSLR extends ModelGun {
         toprail.cubeList.add(new ModelBox(toprail, 73, 88, -1.8652F, -12.5005F, -2.0F, 2, 0, 1, 0.0F, true));
         toprail.cubeList.add(new ModelBox(toprail, 73, 88, -1.8652F, -12.5005F, -4.0F, 2, 0, 1, 0.0F, true));
 
-        cube_r58 = new ModelRenderer(this);
-        cube_r58.setRotationPoint(-1.2F, -9.91F, 10.5F);
-        toprail.addChild(cube_r58);
-        setRotationAngle(cube_r58, 0.0F, 0.0F, 0.3491F);
-        cube_r58.cubeList.add(new ModelBox(cube_r58, 12, 165, -0.5F, -1.5F, -0.5F, 1, 5, 2, 0.0F, true));
-        cube_r58.cubeList.add(new ModelBox(cube_r58, 90, 103, -0.9F, 2.0F, 0.0F, 1, 1, 1, 0.0F, true));
-
         cube_r59 = new ModelRenderer(this);
         cube_r59.setRotationPoint(1.2F, -9.91F, 10.5F);
         toprail.addChild(cube_r59);
@@ -723,7 +676,96 @@ public class ModelSLR extends ModelGun {
         cube_r59.cubeList.add(new ModelBox(cube_r59, 90, 103, -0.1F, 2.0F, -13.0F, 1, 1, 1, 0.0F, false));
         cube_r59.cubeList.add(new ModelBox(cube_r59, 12, 165, -0.5F, -1.5F, -13.5F, 1, 5, 2, 0.0F, false));
 
+        left = new ModelRenderer(this);
+        left.setRotationPoint(0.0F, 0.0F, 0.0F);
+        toprail.addChild(left);
+        setRotationAngle(left, 0.0F, 0.0F, -0.5236F);
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 13.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 12.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 11.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 10.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 9.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 8.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 7.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 6.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 5.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 4.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 3.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 2.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 1.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, 0.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, -1.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, -2.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, -3.0F, 1, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, -4.0F, 0, 1, 1, 0.0F, false));
+        left.cubeList.add(new ModelBox(left, 73, 88, 4.634F, -11.7583F, -5.0F, 1, 1, 1, 0.0F, false));
+
+        right = new ModelRenderer(this);
+        right.setRotationPoint(0.0F, 0.0F, 0.0F);
+        toprail.addChild(right);
+        setRotationAngle(right, 0.0F, 0.0F, 0.5236F);
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 13.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 12.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 11.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 10.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 9.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 8.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 7.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 6.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 5.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 4.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 3.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 2.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, 1.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, 0.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, -1.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, -2.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, -3.0F, 1, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -4.634F, -11.7583F, -4.0F, 0, 1, 1, 0.0F, true));
+        right.cubeList.add(new ModelBox(right, 73, 88, -5.634F, -11.7583F, -5.0F, 1, 1, 1, 0.0F, true));
+
+        charger = new ModelRenderer(this);
+        charger.setRotationPoint(0.0F, 24.0F, 0.0F);
+        charger.cubeList.add(new ModelBox(charger, 24, 171, 4.2101F, -4.5015F, 0.5F, 1, 1, 1, 0.0F, false));
+        charger.cubeList.add(new ModelBox(charger, 24, 171, 3.2101F, -5.1015F, -6.5F, 1, 2, 10, 0.0F, false));
+        charger.cubeList.add(new ModelBox(charger, 24, 171, 2.2101F, -4.2015F, 0.4F, 1, 1, 3, 0.0F, false));
+        charger.cubeList.add(new ModelBox(charger, 24, 171, 4.2101F, -5.1015F, -6.5F, 1, 2, 1, 0.0F, false));
+        charger.cubeList.add(new ModelBox(charger, 24, 171, 5.0761F, -4.6015F, -6.5F, 1, 1, 1, 0.0F, false));
+
+        cube_r38 = new ModelRenderer(this);
+        cube_r38.setRotationPoint(-0.8655F, 1.1485F, -8.0F);
+        charger.addChild(cube_r38);
+        setRotationAngle(cube_r38, 0.0F, 0.0F, -0.5236F);
+        cube_r38.cubeList.add(new ModelBox(cube_r38, 24, 171, 7.3866F, -1.6428F, 1.5F, 1, 1, 1, 0.0F, false));
+
+        cube_r39 = new ModelRenderer(this);
+        cube_r39.setRotationPoint(-0.8655F, -7.7515F, -7.0F);
+        charger.addChild(cube_r39);
+        setRotationAngle(cube_r39, 0.0F, 0.0F, 0.5236F);
+        cube_r39.cubeList.add(new ModelBox(cube_r39, 24, 171, 6.5866F, -0.7428F, 0.5F, 1, 1, 1, 0.0F, false));
+
+        cube_r40 = new ModelRenderer(this);
+        cube_r40.setRotationPoint(4.6101F, -3.3015F, 2.5F);
+        charger.addChild(cube_r40);
+        setRotationAngle(cube_r40, 0.0F, 0.0F, -0.7854F);
+        cube_r40.cubeList.add(new ModelBox(cube_r40, 24, 171, 0.1364F, -0.995F, -8.0F, 1, 1, 6, 0.0F, false));
+
+        cube_r41 = new ModelRenderer(this);
+        cube_r41.setRotationPoint(-2.7899F, -4.3015F, -7.0F);
+        charger.addChild(cube_r41);
+        setRotationAngle(cube_r41, 0.0F, 0.0F, 0.3054F);
+        cube_r41.cubeList.add(new ModelBox(cube_r41, 24, 31, -1.1F, -4.24F, 2.0F, 1, 2, 1, 0.0F, false));
+        cube_r41.cubeList.add(new ModelBox(cube_r41, 24, 31, -0.1F, -4.84F, 2.0F, 1, 3, 8, 0.0F, false));
+
+        cube_r42 = new ModelRenderer(this);
+        cube_r42.setRotationPoint(-1.8903F, -4.3015F, -2.4146F);
+        charger.addChild(cube_r42);
+        setRotationAngle(cube_r42, 0.0F, -0.7854F, 0.0F);
+        cube_r42.cubeList.add(new ModelBox(cube_r42, 24, 171, 6.7887F, -0.2F, -2.2527F, 1, 1, 2, 0.0F, false));
+
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
+        addEntry(AnimationElement.CHARGING, stack -> charger);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

@@ -52,6 +52,7 @@ public class ModelKar98K extends ModelGun {
     private final ModelRenderer bone38;
     private final ModelRenderer bone39;
     private final ModelRenderer bone40;
+    private final ModelRenderer bullet;
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
@@ -91,11 +92,16 @@ public class ModelKar98K extends ModelGun {
         kar98k.cubeList.add(new ModelBox(kar98k, 142, 156, -2.5F, -7.0F, -14.0F, 5, 7, 1, 0.0F, false));
         kar98k.cubeList.add(new ModelBox(kar98k, 142, 156, -2.5F, -7.0F, -13.0F, 1, 7, 11, 0.0F, false));
         kar98k.cubeList.add(new ModelBox(kar98k, 142, 156, 1.5F, -7.0F, -13.0F, 1, 7, 11, 0.0F, true));
-        kar98k.cubeList.add(new ModelBox(kar98k, 142, 156, -1.8812F, -10.7383F, -15.0F, 4, 4, 2, 0.0F, false));
-        kar98k.cubeList.add(new ModelBox(kar98k, 12, 162, -1.5F, -11.7383F, -19.0F, 3, 1, 8, 0.0F, false));
-        kar98k.cubeList.add(new ModelBox(kar98k, 12, 162, -2.0F, -12.7383F, -13.0F, 4, 1, 1, 0.0F, false));
-        kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, -1.8812F, -10.7383F, -2.0F, 4, 4, 2, 0.0F, false));
-        kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, -1.8812F, -10.7383F, 10.0F, 4, 4, 2, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 5, 158, 1.1188F, -10.7383F, -14.0F, 1, 4, 1, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 5, 158, -0.8812F, -10.7383F, -14.0F, 2, 1, 1, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 5, 158, -0.8812F, -7.7383F, -14.0F, 2, 1, 1, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 5, 158, -1.8812F, -10.7383F, -14.0F, 1, 4, 1, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 12, 162, -1.5F, -11.7383F, -23.0F, 3, 1, 8, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 12, 162, -2.0F, -12.7383F, -17.0F, 4, 1, 1, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, 1.1188F, -10.7383F, -2.0F, 1, 4, 2, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, -2.1188F, -10.7383F, -2.0F, 1, 4, 2, 0.0F, true));
+        kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, 1.1188F, -10.7383F, 10.0F, 1, 4, 2, 0.0F, false));
+        kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, -2.1188F, -10.7383F, 10.0F, 1, 4, 2, 0.0F, true));
         kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, -1.5F, -11.7383F, -2.0F, 3, 1, 14, 0.0F, false));
         kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, -1.793F, -11.9023F, -2.0F, 1, 1, 14, 0.0F, false));
         kar98k.cubeList.add(new ModelBox(kar98k, 0, 93, 0.793F, -11.9023F, -2.0F, 1, 1, 14, 0.0F, true));
@@ -211,8 +217,8 @@ public class ModelKar98K extends ModelGun {
         bone12.setRotationPoint(1.0F, -12.2383F, -15.0F);
         kar98k.addChild(bone12);
         setRotationAngle(bone12, 0.1745F, 0.0F, 0.0F);
-        bone12.cubeList.add(new ModelBox(bone12, 12, 162, -0.5F, -0.2022F, -4.0261F, 1, 1, 8, 0.0F, false));
-        bone12.cubeList.add(new ModelBox(bone12, 12, 162, -2.5F, -0.2022F, -4.0261F, 1, 1, 8, 0.0F, true));
+        bone12.cubeList.add(new ModelBox(bone12, 12, 162, -0.5F, -0.8967F, -7.9654F, 1, 1, 8, 0.0F, false));
+        bone12.cubeList.add(new ModelBox(bone12, 12, 162, -2.5F, -0.8967F, -7.9654F, 1, 1, 8, 0.0F, true));
 
         bone10 = new ModelRenderer(this);
         bone10.setRotationPoint(0.0F, -3.0F, -30.5F);
@@ -528,6 +534,17 @@ public class ModelKar98K extends ModelGun {
         setRotationAngle(bone40, -0.4538F, -0.3665F, 0.1833F);
         bone40.cubeList.add(new ModelBox(bone40, 212, 153, -0.3729F, -2.7295F, -0.7208F, 1, 6, 1, 0.0F, false));
 
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.0F, 32.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -1.5F, -10.2071F, -4.0F, 3, 3, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -1.5F, -10.2071F, -8.4F, 3, 3, 4, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -1.0F, -9.7071F, -12.6F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -0.7F, -10.0071F, -11.0F, 2, 2, 7, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -0.7F, -9.4071F, -11.0F, 2, 2, 7, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -1.3F, -10.0071F, -11.0F, 2, 2, 7, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 6, 511, -1.3F, -9.4071F, -11.0F, 2, 2, 7, 0.0F, true));
+
         addEntry(AnimationElement.CHARGING, stack -> bolt);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 }

@@ -25,7 +25,6 @@ public class ModelVector extends ModelGun {
     private final ModelRenderer bone14;
     private final ModelRenderer bone2;
     private final ModelRenderer bone18;
-    private final ModelRenderer bone12;
     private final ModelRenderer bone16;
     private final ModelRenderer bone17;
     private final ModelRenderer bone15;
@@ -38,6 +37,9 @@ public class ModelVector extends ModelGun {
     private final ModelRenderer bone20;
     private final ModelRenderer bone21;
     private final ModelRenderer charging_handle;
+    private final ModelRenderer bolt;
+    private final ModelRenderer bone12;
+    private final ModelRenderer bullet;
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
@@ -128,8 +130,6 @@ public class ModelVector extends ModelGun {
         vector.cubeList.add(new ModelBox(vector, 90, 156, -1.0F, -9.292F, -20.88F, 2, 2, 7, 0.0F, false));
         vector.cubeList.add(new ModelBox(vector, 90, 156, -0.5F, -9.556F, -20.624F, 1, 1, 2, 0.0F, false));
         vector.cubeList.add(new ModelBox(vector, 67, 19, -2.5F, -11.0F, -3.0F, 1, 1, 7, 0.0F, false));
-        vector.cubeList.add(new ModelBox(vector, 0, 9, -2.1F, -10.0F, -3.0F, 1, 2, 7, 0.0F, false));
-        vector.cubeList.add(new ModelBox(vector, 0, 10, -2.636F, -10.0F, -2.968F, 1, 2, 1, 0.0F, false));
         vector.cubeList.add(new ModelBox(vector, 67, 19, -2.5F, -11.0F, 4.0F, 1, 3, 18, 0.0F, false));
         vector.cubeList.add(new ModelBox(vector, 67, 19, -2.628F, -10.5F, 3.776F, 1, 3, 1, 0.0F, false));
         vector.cubeList.add(new ModelBox(vector, 82, 17, -2.0F, -11.24F, 21.256F, 4, 4, 12, 0.0F, false));
@@ -406,12 +406,6 @@ public class ModelVector extends ModelGun {
         bone18.cubeList.add(new ModelBox(bone18, 5, 160, -7.481F, -8.1881F, 43.39F, 1, 1, 2, 0.0F, false));
         bone18.cubeList.add(new ModelBox(bone18, 5, 160, 0.7114F, 0.0043F, 43.39F, 1, 1, 2, 0.0F, false));
 
-        bone12 = new ModelRenderer(this);
-        bone12.setRotationPoint(-2.636F, -9.0F, -2.0F);
-        vector.addChild(bone12);
-        setRotationAngle(bone12, 0.0F, 0.576F, 0.0F);
-        bone12.cubeList.add(new ModelBox(bone12, 0, 10, -0.0174F, -0.5F, 0.0268F, 1, 1, 1, 0.0F, false));
-
         bone16 = new ModelRenderer(this);
         bone16.setRotationPoint(0.0F, -9.24F, 27.256F);
         vector.addChild(bone16);
@@ -460,7 +454,6 @@ public class ModelVector extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 4, 66, -7.0F, -3.3732F, -4.2066F, 1, 1, 5, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 4, 66, -8.0F, -2.7732F, -4.2066F, 1, 1, 1, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 4, 66, -8.0F, -3.0732F, -0.2066F, 1, 1, 1, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 0, 498, -8.0F, -3.7572F, -3.2066F, 1, 1, 3, 0.0F, true));
 
         ironsights = new ModelRenderer(this);
         ironsights.setRotationPoint(0.0F, 24.0F, -1.488F);
@@ -529,7 +522,25 @@ public class ModelVector extends ModelGun {
         charging_handle.setRotationPoint(-1.5F, 24.0F, -0.304F);
         charging_handle.cubeList.add(new ModelBox(charging_handle, 40, 54, 3.264F, -10.0F, -11.568F, 2, 1, 1, 0.0F, false));
 
+        bolt = new ModelRenderer(this);
+        bolt.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bolt.cubeList.add(new ModelBox(bolt, 0, 10, -2.636F, -10.0F, -2.968F, 1, 2, 1, 0.0F, false));
+        bolt.cubeList.add(new ModelBox(bolt, 0, 9, -2.1F, -10.0F, -3.0F, 1, 2, 7, 0.0F, false));
+
+        bone12 = new ModelRenderer(this);
+        bone12.setRotationPoint(-2.636F, -9.0F, -2.0F);
+        bolt.addChild(bone12);
+        setRotationAngle(bone12, 0.0F, 0.576F, 0.0F);
+        bone12.cubeList.add(new ModelBox(bone12, 0, 10, -0.0174F, -0.5F, 0.0268F, 1, 1, 1, 0.0F, false));
+
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(7.5F, 18.3F, 1.5F);
+        setRotationAngle(bullet, 0.3491F, 0.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 0, 498, -8.0F, -3.7572F, -3.2066F, 1, 1, 3, 0.0F, true));
+
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
+        addEntry(AnimationElement.BOLT, stack -> bolt);
+        addEntry(AnimationElement.BULLET, stack -> bullet);
     }
 }
