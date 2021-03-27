@@ -19,14 +19,20 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2768"
+    version = "1.12.2-14.23.5.2838"
     runDir = "run"
     
     mappings = "snapshot_20171003"
 }
 
+repositories {
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+}
+
 dependencies {
-    compile files('libs/configuration-1.12.2-1.0.3.1.jar')
+    compile 'curse.maven:configuration-444699:3241921'
     testCompile "junit:junit:4.11"
 }
 
