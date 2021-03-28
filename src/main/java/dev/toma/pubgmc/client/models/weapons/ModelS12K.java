@@ -74,13 +74,15 @@ public class ModelS12K extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1f);
+        handguard.render(1.0F);
+        if(hasScopeAtachment(stack))
+            rail.render(1.0F);
     }
 
     @Override
     public void transformModel() {
         ModelTransformationHelper.defaultShotgunTransform();
-        GlStateManager.translate(-0.65000033, -1.0, -9.0);
-        GlStateManager.rotate(180, 0, 1, 0);
+        GlStateManager.translate(-0.65000033, 50.0, -9.0);
     }
 
     public ModelS12K() {

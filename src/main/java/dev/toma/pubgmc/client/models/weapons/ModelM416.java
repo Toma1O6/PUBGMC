@@ -15,7 +15,6 @@ public class ModelM416 extends ModelGun {
     private final ModelRenderer bone28;
     private final ModelRenderer bone26;
     private final ModelRenderer magazine;
-    private final ModelRenderer bullet;
     private final ModelRenderer bone;
     private final ModelRenderer bone14;
     private final ModelRenderer bone16;
@@ -60,10 +59,12 @@ public class ModelM416 extends ModelGun {
     private final ModelRenderer bone33;
     private final ModelRenderer bone32;
     private final ModelRenderer bone36;
+    private final ModelRenderer bullet;
 
     @Override
     public void renderModel(ItemStack stack) {
         hk416.render(1f);
+        stock.render(1.0F);
         ironsights.render(1.0F);
     }
 
@@ -126,24 +127,6 @@ public class ModelM416 extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 72, 11, -5.0F, -0.2555F, 15.5F, 5, 9, 2, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 72, 11, -4.5F, -0.2555F, 11.5F, 4, 9, 13, 0.0F, false));
         magazine.cubeList.add(new ModelBox(magazine, 66, 18, -5.0F, -3.2555F, 11.5F, 1, 3, 13, 0.0F, true));
-
-        bullet = new ModelRenderer(this);
-        bullet.setRotationPoint(-2.5F, 4.16F, 0.0F);
-        magazine.addChild(bullet);
-        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -1.5F, -7.5595F, 15.828F, 3, 3, 6, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.7F, -7.3595F, 21.476F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.3F, -7.3595F, 21.476F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.5F, -7.5595F, 22.204F, 3, 3, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.7F, -7.3595F, 14.828F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.3F, -7.3595F, 14.828F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.5F, -7.2595F, 13.1F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.0F, -7.0595F, 12.828F, 2, 2, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, 0.2F, -6.5595F, 13.1F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.5F, -6.5595F, 12.404F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.2F, -6.5595F, 13.1F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.5F, -5.8595F, 13.1F, 1, 1, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.7F, -6.7595F, 21.476F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.3F, -6.7595F, 21.476F, 2, 2, 1, 0.0F, false));
 
         bone = new ModelRenderer(this);
         bone.setRotationPoint(-0.5F, -1.7555F, 18.0F);
@@ -1020,6 +1003,23 @@ public class ModelM416 extends ModelGun {
         stock.addChild(bone36);
         setRotationAngle(bone36, -0.6109F, 0.0F, 0.0F);
         bone36.cubeList.add(new ModelBox(bone36, 86, 27, -2.0F, 0.1052F, -1.2084F, 4, 3, 6, 0.0F, false));
+
+        bullet = new ModelRenderer(this);
+        bullet.setRotationPoint(0.0F, 26.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 5, 496, -1.5F, -7.5595F, 15.828F, 3, 3, 6, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.7F, -7.3595F, 21.476F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.3F, -7.3595F, 21.476F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.5F, -7.5595F, 22.204F, 3, 3, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.7F, -7.3595F, 14.828F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.3F, -7.3595F, 14.828F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.5F, -7.2595F, 13.1F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.0F, -7.0595F, 12.828F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, 0.2F, -6.5595F, 13.1F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.5F, -6.5595F, 12.404F, 1, 1, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.2F, -6.5595F, 13.1F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.5F, -5.8595F, 13.1F, 1, 1, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -0.7F, -6.7595F, 21.476F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 0, 505, -1.3F, -6.7595F, 21.476F, 2, 2, 1, 0.0F, false));
 
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
