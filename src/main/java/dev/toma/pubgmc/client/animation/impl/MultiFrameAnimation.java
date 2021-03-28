@@ -31,7 +31,7 @@ public class MultiFrameAnimation extends TickableAnimation {
             float f0 = previousFrame.endPoint();
             float f1 = currentFrame.endPoint();
             float f2 = (progressSmooth - f0) / (f1 - f0);
-            AnimationProcessor.processKeyFrame(previousFrame, currentFrame, f2);
+            AnimationProcessor.processKeyFrame(currentFrame, f2);
         });
     }
 

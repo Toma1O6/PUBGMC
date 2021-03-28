@@ -23,7 +23,7 @@ public class AimAnimation implements Animation {
 
     @Override
     public void animateElement(AnimationElement element) {
-        spec.getDefs(element).ifPresent(list -> AnimationProcessor.processKeyFrame(KeyFrame.EMPTY_FRAME, list.get(0), progressSmooth));
+        spec.getDefs(element).ifPresent(list -> AnimationProcessor.processKeyFrame(list.get(0), progressSmooth));
     }
 
     @Override

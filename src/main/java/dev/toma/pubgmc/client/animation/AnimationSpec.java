@@ -13,6 +13,7 @@ public class AnimationSpec {
 
     public AnimationSpec(Map<AnimationElement, List<KeyFrame>> frameDefs) {
         this.frameDefs = frameDefs;
+        compileFrames();
     }
 
     public static AnimationSpec jump(AnimationElement element, double x, double y, double z, double rotateX, double rotateY, double rotateZ) {
@@ -31,5 +32,20 @@ public class AnimationSpec {
 
     public Map<AnimationElement, List<KeyFrame>> getFrameDefs() {
         return frameDefs;
+    }
+
+    protected void compileFrames() {
+        for (List<KeyFrame> list : frameDefs.values()) {
+            Vec3d totalPos = new Vec3d(0, 0, 0);
+            Vec3d totalRot = new Vec3d(0, 0, 0);
+            for (int i = 0; i < list.size(); i++) {
+                KeyFrame currentFrame = list.get(i);
+                KeyFrame previousFrame = DevUtil.getPrevious(list, i, KeyFrame.EMPTY_FRAME);
+                totalPos = totalPos.add(previousFrame.moveTarget());
+                totalRot = totalRot.add(previousFrame.rotateTarget());
+                currentFrame.setPositionStart(totalPos);
+                currentFrame.setRotationStart(totalRot);
+            }
+        }
     }
 }

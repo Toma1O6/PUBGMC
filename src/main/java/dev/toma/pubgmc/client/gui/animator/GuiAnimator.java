@@ -19,6 +19,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 
 import java.io.File;
 import java.util.*;
@@ -63,6 +64,24 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         );
         addWidget(
                 new ButtonWidget(95, 5, 55, 20, "Save as", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiSaveProject(this)))
+        );
+        addWidget(
+                new ButtonWidget(155, 5, 120, 20, "Generate reset frames", (widget, mouseX, mouseY, button) -> {
+                    Map<AnimationElement, List<MutableKeyFrame>> map = AnimatorCache.project.animation;
+                    for (Map.Entry<AnimationElement, List<MutableKeyFrame>> entry : map.entrySet()) {
+                        List<MutableKeyFrame> list = entry.getValue();
+                        MutableKeyFrame lastElement = list.get(list.size() - 1);
+                        Vec3d pos = lastElement.getPositionStart().add(lastElement.moveTarget());
+                        Vec3d rot = lastElement.getRotationStart().add(lastElement.rotateTarget());
+                        MutableKeyFrame frame = new MutableKeyFrame();
+                        frame.setEndpoint(1.0F);
+                        frame.setPositionStart(pos);
+                        frame.setRotationStart(rot);
+                        frame.setMove(new Vec3d(-pos.x, -pos.y, -pos.z));
+                        frame.setRotate(new Vec3d(-rot.x, -rot.y, -rot.z));
+                        timeline.insertElement(entry.getKey(), frame);
+                    }
+                })
         );
         animationList = addWidget(new ListWidget<>(this, 5, 30, 140, 2 * third - 35, new ArrayList<>(AnimatorCache.animations.keySet()), "Animations", (confirmed, parent) -> {
             if(confirmed) {

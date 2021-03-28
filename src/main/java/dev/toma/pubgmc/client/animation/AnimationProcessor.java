@@ -70,17 +70,13 @@ public class AnimationProcessor {
         return false;
     }
 
-    public static void processKeyFrame(KeyFrame frame, float pct) {
-        processKeyFrame(KeyFrame.EMPTY_FRAME, frame, pct);
-    }
-
-    public static void processKeyFrame(KeyFrame prevFrame, KeyFrame currentFrame, float pct) {
+    public static void processKeyFrame(KeyFrame currentFrame, float pct) {
         // movement
-        Vec3d staticMove = prevFrame.moveTarget();
+        Vec3d staticMove = currentFrame.getPositionStart();
         Vec3d smoothMove = currentFrame.moveTarget();
         GlStateManager.translate(staticMove.x + smoothMove.x * pct, staticMove.y + smoothMove.y * pct, staticMove.z + smoothMove.z * pct);
         // rotation
-        Vec3d staticRotate = prevFrame.rotateTarget();
+        Vec3d staticRotate = currentFrame.getRotationStart();
         Vec3d smoothRotate = currentFrame.rotateTarget();
         if(!staticRotate.equals(Vec3d.ZERO) || !smoothRotate.equals(Vec3d.ZERO)) {
             if(staticRotate.x != 0.0 || smoothRotate.x != 0.0) {

@@ -41,6 +41,7 @@ public class AnimatorAnimation extends MultiFrameAnimation {
         if (!paused)
             super.tick();
         if(actualTickLength < 0) {
+            set(0.0F);
             actualTickLength = initialTickLength;
             resetCache();
         }

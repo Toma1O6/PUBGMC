@@ -8,6 +8,8 @@ public class MutableKeyFrame implements KeyFrame {
     float endpoint;
     Vec3d move = Vec3d.ZERO;
     Vec3d rotate = Vec3d.ZERO;
+    Vec3d positionStart = Vec3d.ZERO;
+    Vec3d rotationStart = Vec3d.ZERO;
 
     public static MutableKeyFrame fromImmutable(KeyFrame frame) {
         MutableKeyFrame keyFrame = new MutableKeyFrame();
@@ -42,5 +44,25 @@ public class MutableKeyFrame implements KeyFrame {
 
     public void setRotate(Vec3d rotate) {
         this.rotate = rotate;
+    }
+
+    @Override
+    public Vec3d getPositionStart() {
+        return positionStart;
+    }
+
+    @Override
+    public void setPositionStart(Vec3d positionStart) {
+        this.positionStart = positionStart;
+    }
+
+    @Override
+    public Vec3d getRotationStart() {
+        return rotationStart;
+    }
+
+    @Override
+    public void setRotationStart(Vec3d rotationStart) {
+        this.rotationStart = rotationStart;
     }
 }

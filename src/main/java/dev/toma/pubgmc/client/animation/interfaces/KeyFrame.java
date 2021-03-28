@@ -4,7 +4,7 @@ import net.minecraft.util.math.Vec3d;
 
 public interface KeyFrame {
 
-    KeyFrame EMPTY_FRAME = () -> 0;
+    KeyFrame EMPTY_FRAME = () -> 0.0F;
 
     float endPoint();
 
@@ -14,6 +14,20 @@ public interface KeyFrame {
 
     default Vec3d rotateTarget() {
         return Vec3d.ZERO;
+    }
+
+    default Vec3d getPositionStart() {
+        return Vec3d.ZERO;
+    }
+
+    default Vec3d getRotationStart() {
+        return Vec3d.ZERO;
+    }
+
+    default void setPositionStart(Vec3d positionStart) {
+    }
+
+    default void setRotationStart(Vec3d rotationStart) {
     }
 
     static KeyFrame move(float endpoint, Vec3d move) {
@@ -28,6 +42,8 @@ public interface KeyFrame {
 
         final float endPoint;
         final Vec3d move;
+        private Vec3d positionStart = Vec3d.ZERO;
+        private Vec3d rotationStart = Vec3d.ZERO;
 
         Basic(float end, Vec3d move) {
             this.endPoint = end;
@@ -42,6 +58,26 @@ public interface KeyFrame {
         @Override
         public Vec3d moveTarget() {
             return move;
+        }
+
+        @Override
+        public Vec3d getRotationStart() {
+            return rotationStart;
+        }
+
+        @Override
+        public Vec3d getPositionStart() {
+            return positionStart;
+        }
+
+        @Override
+        public void setRotationStart(Vec3d rotationStart) {
+            this.rotationStart = rotationStart;
+        }
+
+        @Override
+        public void setPositionStart(Vec3d positionStart) {
+            this.positionStart = positionStart;
         }
     }
 
