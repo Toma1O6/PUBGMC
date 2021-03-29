@@ -25,13 +25,13 @@ public class RenderMini14 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
+        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.1F, 0.19F, -0.1F, 0.8F, 0.8F, 0.8F));
+        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(0F, 0.05F, -0.26F));
+        registerRenderConfig(PMCItems.SCOPE15X, IRenderConfig.positioned(0F, 0.14F, -0.17F));
+        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positionedScaled(0.1F, 0.18F, 0F, 0.8F, 0.8F, 0.8F));
+        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positionedScaled(0.1F, 0.17F, 0.01F, 0.8F, 0.8F, 0.8F));
+        registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positioned(0F, 0.13F, -0.2F));
         registerRenderConfig(IRenderConfig.positioned(0F, 0.04F, -0.5F), PMCItems.SILENCER_AR, PMCItems.SILENCER_SNIPER);
-        registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0F, 0.01F, -0.53F));
-        registerRenderConfig(PMCItems.SCOPE15X, IRenderConfig.positioned(0F, 0.09F, -0.6F));
-        registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positioned(0F, 0.12F, -0.6F));
-        registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.05F, 0.11F, -0.55F, 0.9F, 0.9F, 0.9F));
-        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positioned(0F, 0.04F, -0.56F));
-        registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0F, 0.05F, -0.56F));
     }
 
     @Override
