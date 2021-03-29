@@ -3,16 +3,14 @@ package dev.toma.pubgmc.client;
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
+import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
-import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
-import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.player.BoostStats;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -26,7 +24,6 @@ import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
-import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
@@ -66,7 +63,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
-import java.util.Random;
 
 public class ClientEvents {
 
@@ -79,7 +75,6 @@ public class ClientEvents {
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
 
     private final WeaponCooldownTracker tracker = new WeaponCooldownTracker();
-    private final Random rand = new Random();
     // TODO remove
     private int reloadingSlot;
     // TODO remove
@@ -366,7 +361,7 @@ public class ClientEvents {
                 if (gs.keyBindUseItem.isPressed()) {
                     if (!data.getAimInfo().isAiming() && !player.isSprinting()) {
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
-                        AnimationProcessor.instance().play(AnimationType.AIM_ANIMATION_TYPE, AnimationDispatcher.dispatchAimAnimation(gun, stack));
+                        AnimationDispatcher.dispatchAimAnimation(gun, stack);
                     } else {
                         PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
@@ -582,7 +577,7 @@ public class ClientEvents {
         float h = Pubgmc.rng().nextBoolean() ? -gun.getHorizontalRecoil() * horizontal : gun.getHorizontalRecoil() * horizontal;
         player.rotationPitch -= v;
         player.rotationYaw -= h;
-        AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, AnimationDispatcher.dispatchRecoilAnimation(h, v));
+        AnimationDispatcher.dispatchRecoilAnimationDefault(h, v);
     }
 
     private void setReloading(IPlayerData data, boolean reload) {

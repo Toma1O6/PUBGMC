@@ -21,8 +21,7 @@ public class AnimationProcessor {
 
     public <A extends Animation> void play(AnimationType<A> type) {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        A animation = type.createAnimation(player);
-        play(type, animation);
+        type.getDispatcher().dispatch(this, type, player);
     }
 
     public <A extends Animation> void play(AnimationType<A> type, A animation) {
