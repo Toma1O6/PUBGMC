@@ -154,7 +154,7 @@ public class CommonEvents {
                 //We get the last player data and later sync it to client
                 player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
+                data.getAimInfo().setAiming(false, 1.0F);
                 //Sync some data from capability to client for overlay rendering
                 PacketHandler.syncPlayerDataToClient(data, player);
 

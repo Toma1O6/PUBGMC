@@ -27,10 +27,10 @@ public class RenderMK14Ebr extends WeaponRenderer {
     public void registerAttachmentRenders() {
         registerRenderConfig(PMCItems.SCOPE2X, IRenderConfig.positionedScaled(0.075F, 0.16F, 0F, 0.9F, 0.9F, 0.9F));
         registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positionedScaled(-0.0825F, -0.05F, -0.27F, 1.2F, 1.2F, 1.2F));
-        registerRenderConfig(PMCItems.SCOPE15X, IRenderConfig.positionedScaled(-0.08F, 0.07F, -0.2F, 1.2F, 1.2F, 1.2F));
+        registerRenderConfig(PMCItems.SCOPE15X, IRenderConfig.positionedScaled(-0.081F, 0.07F, -0.2F, 1.2F, 1.2F, 1.2F));
         registerRenderConfig(PMCItems.RED_DOT, IRenderConfig.positioned(0.02F, 0.08F, -0.02F));
         registerRenderConfig(PMCItems.HOLOGRAPHIC, IRenderConfig.positioned(0.02F, 0.07F, -0.03F));
-        registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positionedScaled(-0.08F, 0.04F, -0.2F, 1.2F, 1.2F, 1.2F));
+        registerRenderConfig(PMCItems.SCOPE8X, IRenderConfig.positionedScaled(-0.08275F, 0.04F, -0.2F, 1.2F, 1.2F, 1.2F));
         registerRenderConfig(IRenderConfig.positionedScaled(-0.18F, -0.16F, -0.4F, 1.4F, 1.4F, 1.4F), PMCItems.SILENCER_AR, PMCItems.SILENCER_SNIPER);
     }
 
