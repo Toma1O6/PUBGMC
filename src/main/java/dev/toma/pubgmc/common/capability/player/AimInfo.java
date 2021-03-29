@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.capability.player;
 
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -24,7 +25,7 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
         EntityPlayer player = data.getPlayer();
         boolean server = !player.world.isRemote;
         int equippedSlot = player.inventory.currentItem;
-        if(aiming && server && (equippedSlot != slot || player.isSprinting() || data.isReloading())) {
+        if(aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.isReloading())) {
             setAiming(false, STOP_AIMING_SPEED);
             data.sync();
         }
