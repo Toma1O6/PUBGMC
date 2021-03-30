@@ -5,7 +5,6 @@ import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;
-import dev.toma.pubgmc.common.items.guns.GunBase.ReloadType;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -29,7 +28,6 @@ public class GunBuilder {
     float volumeSilenced;
     boolean airdropOnly;
     GunType weaponType;
-    ReloadType reloadType;
     AmmoType ammoType;
     Firemode defFiremode;
     Function<Firemode, Firemode> firemodeSwitchFunc;
@@ -41,6 +39,7 @@ public class GunBuilder {
     Supplier<SoundEvent> action;
     ScopeData customScope;
     Supplier<Callable<WeaponRenderer>> renderer;
+    IReloader reloader;
 
     private GunBuilder(String name, Function<GunBuilder, GunBase> buildFunc) {
         this.name = name;
@@ -66,8 +65,8 @@ public class GunBuilder {
         return this;
     }
 
-    public GunBuilder reload(ReloadType typeOfReload, int reloadTime, SoundEvent reloadSound) {
-        this.reloadType = typeOfReload;
+    public GunBuilder reload(IReloader reloader, int reloadTime, SoundEvent reloadSound) {
+        this.reloader = reloader;
         this.reloadTime = reloadTime;
         this.reloadSound = reloadSound;
         return this;
@@ -162,7 +161,7 @@ public class GunBuilder {
         checkNotNull(cfgStats);
         validateFloat(vertical, 0.1f, 10f);
         validateFloat(horizontal, 0.1f, 10f);
-        checkNotNull(reloadType);
+        checkNotNull(reloader);
         validateInt(reloadTime, 1, 150);
         validateInt(firerate, 1, 150);
         checkNotNull(ammoType);

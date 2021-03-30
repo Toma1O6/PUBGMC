@@ -3,7 +3,7 @@ package dev.toma.pubgmc.network.server;
 import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.ReloadInfo;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,11 +55,17 @@ public class SPacketSetProperty implements IMessage {
             info.setAiming(aBoolean, AimInfo.STOP_AIMING_SPEED);
             data.sync();
         }),
-        // TODO remove this one
         RELOAD((player, aBoolean) -> {
+            IPlayerData data = PlayerData.get(player);
             ItemStack stack = player.getHeldItemMainhand();
             if(stack.getItem() instanceof GunBase) {
-                ((GunBase) stack.getItem()).getReloadType().handleReload(player);
+                ReloadInfo reloadInfo = data.getReloadInfo();
+                GunBase gun = (GunBase) stack.getItem();
+                if(aBoolean) {
+                    reloadInfo.startReload(player, gun, stack);
+                } else {
+                    reloadInfo.interrupt(data);
+                }
             }
         }),
         NIGHT_VISION((player, aBoolean) -> {

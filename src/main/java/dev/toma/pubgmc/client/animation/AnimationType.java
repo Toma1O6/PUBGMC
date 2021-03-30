@@ -2,6 +2,7 @@ package dev.toma.pubgmc.client.animation;
 
 import dev.toma.pubgmc.client.animation.impl.AimAnimation;
 import dev.toma.pubgmc.client.animation.impl.AnimatorAnimation;
+import dev.toma.pubgmc.client.animation.impl.MultiFrameAnimation;
 import dev.toma.pubgmc.client.animation.impl.TickableAnimation;
 import dev.toma.pubgmc.client.animation.interfaces.Animation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +12,8 @@ public class AnimationType<A extends Animation> {
     public static final AnimationType<AnimatorAnimation> ANIMATOR_TYPE = create(AnimatorAnimation.class, (processor, type, player) -> processor.play(type, new AnimatorAnimation(40)));
     public static final AnimationType<TickableAnimation> RECOIL_ANIMATION_TYPE = create(TickableAnimation.class, AnimationDispatcher::dispatchRecoilAnimationDefault);
     public static final AnimationType<AimAnimation> AIM_ANIMATION_TYPE = create(AimAnimation.class, AnimationDispatcher::dispatchAimAnimationDefault);
+    public static final AnimationType<MultiFrameAnimation> RELOAD_ANIMATION_TYPE = create(MultiFrameAnimation.class, AnimationDispatcher::dispatchReloadAnimationDefault);
+    public static final AnimationType<MultiFrameAnimation> SHOOT_ANIMATION_TYPE = create(MultiFrameAnimation.class, (processor, type, player) -> {});
 
     final Class<A> animationClass;
     final Dispatcher<A> dispatcher;

@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client.renderer.item.gun;
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationElement;
+import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
 import dev.toma.pubgmc.client.animation.interfaces.ElementProvider;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
@@ -16,6 +17,7 @@ import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.proxy.ClientProxy;
 import dev.toma.pubgmc.util.Pair;
 import net.minecraft.client.Minecraft;
@@ -24,6 +26,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.IntHashMap;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -37,7 +40,9 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
     public static final ResourceLocation ATTACHMENT_TEXTURES = Pubgmc.getResource("textures/weapon/attachment_textures.png");
     private final Pair<IRenderConfig, IRenderConfig> handRenderConfigs;
     private final Map<ItemScope, ResourceLocation> attachment2AimAnimationMap = new HashMap<>();
+    private IntHashMap<ResourceLocation> reloadAnimations;
     private Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
+    private ResourceLocation shootAnimation = Pubgmc.getResource(getResourcePrefix() + "_shoot");
 
     public WeaponRenderer() {
         this.handRenderConfigs = createHandRenderConfigs();
@@ -82,15 +87,33 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
         }
     }
 
-    public final void init() {
+    public final void init(GunBase gun) {
         this.registerAttachmentRenders();
         registerAimAnimation(null);
+        AnimationLoader loader = ClientProxy.getAnimationLoader();
+        loader.registerEntry(shootAnimation);
+        reloadAnimations = gun.getReloader().registerReloadAnimations(gun, getResourcePrefix(), loader);
     }
 
     public AnimationSpec getAimAnimation(ItemStack stack) {
         ItemScope scope = ((GunBase) stack.getItem()).getAttachment(AttachmentType.SCOPE, stack);
         ResourceLocation location = attachment2AimAnimationMap.get(scope);
         return ClientProxy.getAnimationLoader().getAnimationSpecification(location);
+    }
+
+    public AnimationSpec getReloadAnimation(GunBase gun, ItemStack stack) {
+        IReloader reloader = gun.getReloader();
+        int ammo = gun.getAmmo(stack);
+        if(reloader == IReloader.MAGAZINE) {
+            int i = ammo == 0 ? 0 : 1;
+            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(i));
+        } else {
+            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(ammo));
+        }
+    }
+
+    public AnimationSpec getShootingAnimation() {
+        return ClientProxy.getAnimationLoader().getAnimationSpecification(shootAnimation);
     }
 
     public final void registerRenderConfig(ItemAttachment attachment, IRenderConfig config) {

@@ -14,6 +14,8 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     AimInfo getAimInfo();
 
+    ReloadInfo getReloadInfo();
+
     void tick();
 
     EntityPlayer getPlayer();
@@ -23,15 +25,9 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     boolean isReloading();
 
-    void setReloading(boolean reloading);
-
     void setNV(boolean nv);
 
     boolean isUsingNV();
-
-    int getReloadingTime();
-
-    void setReloadingTime(int rt);
 
     void setBackpackLevel(int level);
 

@@ -5,7 +5,6 @@ import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
-import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
@@ -16,7 +15,6 @@ import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.sp.PacketDelayedSound;
-import dev.toma.pubgmc.network.sp.PacketReloadingSP;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
@@ -25,7 +23,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,16 +62,12 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     private final AmmoType ammoType;
     private final Firemode firemode;
     private final Function<Firemode, Firemode> firemodeSwitch;
-    private final ReloadType reloadType;
+    private final IReloader reloader;
     private final GunType gunType;
     private final SoundEvent shootSound, silentShootSound, reloadSound;
     private final float gunVolume, silentGunVolume;
     private final GunAttachments attachments;
     private final ScopeData customScope;
-
-    // TODO delete all below
-    private ItemAmmo ammoItem;
-    private int ammoCount = 0;
 
     protected GunBase(GunBuilder builder) {
         super(builder.name);
@@ -85,7 +78,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         this.wepStats = builder.cfgStats;
         this.verticalRecoil = builder.vertical;
         this.horizontalRecoil = builder.horizontal;
-        this.reloadType = builder.reloadType;
+        this.reloader = builder.reloader;
         this.reloadTime = builder.reloadTime;
         this.firerate = builder.firerate;
         this.ammoType = builder.ammoType;
@@ -111,6 +104,10 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     public int getWeaponAmmoLimit(ItemStack stack) {
         ItemMagazine mag = getAttachment(AttachmentType.MAGAZINE, stack);
         return mag != null && mag.isExtended() ? exMaxAmmo : maxAmmo;
+    }
+
+    public int getMaxAmmoExtended() {
+        return exMaxAmmo;
     }
 
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
@@ -152,22 +149,6 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
 
     public boolean hasAmmo(ItemStack itemStack) {
         return getAmmo(itemStack) > 0;
-    }
-
-    public boolean hasPlayerAmmoForGun(EntityPlayer player, GunBase gun) {
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-
-            if (stack.getItem() instanceof ItemAmmo) {
-                if (((ItemAmmo) stack.getItem()).type == gun.getAmmoType()) {
-                    ammoCount = stack.getCount();
-                    ammoItem = (ItemAmmo) stack.getItem();
-                    return true;
-                }
-            }
-        }
-
-        return player.capabilities.isCreativeMode;
     }
 
     @Override
@@ -283,10 +264,18 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         return wepStats;
     }
 
-    public double getReloadTime(ItemStack stack) {
+    public IReloader getReloader() {
+        return reloader;
+    }
+
+    public int getReloadTime(ItemStack stack) {
         ItemMagazine mag = this.getAttachment(AttachmentType.MAGAZINE, stack);
         ItemStock stock = this.getAttachment(AttachmentType.STOCK, stack);
-        return (mag != null && mag.isQuickdraw()) || (stock != null && stock.isFasterReload()) ? reloadTime * 0.7 : reloadTime;
+        return getReloadTime(mag != null && mag.isQuickdraw() || stock != null && stock.isFasterReload());
+    }
+
+    public int getReloadTime(boolean quickdraw) {
+        return quickdraw ? (int)(reloadTime * 0.7) : reloadTime;
     }
 
     @SideOnly(Side.CLIENT)
@@ -318,10 +307,6 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
 
     public float getGunSilencedVolume() {
         return silentGunVolume;
-    }
-
-    public ReloadType getReloadType() {
-        return reloadType;
     }
 
     public int getFireRate() {
@@ -389,95 +374,6 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         @SideOnly(Side.CLIENT)
         public String translatedName() {
             return I18n.format(name);
-        }
-    }
-
-    @Deprecated
-    public enum ReloadType {
-        MAGAZINE,
-        SINGLE,
-        KAR98K;
-
-        // TODO: clean
-        public void handleReload(EntityPlayer player) {
-            IPlayerData data = PlayerData.get(player);
-            ItemStack heldItem = player.getHeldItemMainhand();
-
-            if (heldItem.getItem() instanceof GunBase) {
-                data.getAimInfo().setAiming(false, AimInfo.STOP_AIMING_SPEED);
-                GunBase gun = (GunBase) heldItem.getItem();
-
-                if ((heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem) || !gun.hasPlayerAmmoForGun(player, gun)) && data.isReloading()) {
-                    data.setReloading(false);
-                    PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                }
-
-                if (heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                    if (gun.getReloadType() == ReloadType.MAGAZINE) {
-                        while ((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                            int ammoInGun = heldItem.getTagCompound().getInteger("ammo");
-                            int ammoToFill = gun.getWeaponAmmoLimit(heldItem) - ammoInGun;
-                            int ammoInInventory = gun.ammoCount;
-
-                            if (ammoToFill > ammoInInventory) ammoToFill = ammoInInventory;
-
-                            if (!player.capabilities.isCreativeMode) {
-                                ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-                                player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, ammoToFill, null);
-                            }
-
-                            heldItem.getTagCompound().setInteger("ammo", ammoInGun + ammoToFill);
-                        }
-
-                        data.setReloading(false);
-                        PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                    } else if (gun.getReloadType() == ReloadType.SINGLE) {
-                        if (gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) {
-                            //If the gun is already full and player still atempts to reload, cancel it
-                            if (heldItem.getTagCompound().getInteger("ammo") == gun.getWeaponAmmoLimit(heldItem)) {
-                                data.setReloading(false);
-                                PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                            }
-
-                            if (heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                                ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-
-                                if (!player.capabilities.isCreativeMode) {
-                                    player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-                                }
-
-                                //Increase ammo count by 1
-                                heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-                            }
-                        }
-                    } else if (gun.getReloadType() == ReloadType.KAR98K) {
-                        if (!gun.hasAmmo(heldItem)) {
-                            while ((gun.hasPlayerAmmoForGun(player, gun) || player.capabilities.isCreativeMode) && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                                ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-
-                                if (!player.capabilities.isCreativeMode) {
-                                    player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-                                }
-
-                                heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-                            }
-
-                            data.setReloading(false);
-                            PacketHandler.INSTANCE.sendTo(new PacketReloadingSP(false), (EntityPlayerMP) player);
-                        } else if (heldItem.getTagCompound().getInteger("ammo") > 0 && heldItem.getTagCompound().getInteger("ammo") < gun.getWeaponAmmoLimit(heldItem)) {
-                            ItemAmmo ammo = (ItemAmmo) gun.ammoItem.getAmmoItem();
-
-                            if (!player.capabilities.isCreativeMode) {
-                                player.inventory.clearMatchingItems(ammo.getAmmoItem(), 0, 1, null);
-                            }
-
-                            heldItem.getTagCompound().setInteger("ammo", heldItem.getTagCompound().getInteger("ammo") + 1);
-                        }
-                    } else {
-                        throw new IllegalArgumentException("Unknown reload type. Report this to mod author!");
-                    }
-                }
-            }
         }
     }
 

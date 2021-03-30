@@ -35,4 +35,35 @@ public class AnimationDispatcher {
             processor.play(type, new AimAnimation(spec));
         }
     }
+
+    public static void dispatchReloadAnimation(GunBase gun, ItemStack stack) {
+        WeaponRenderer renderer = (WeaponRenderer) gun.getTileEntityItemStackRenderer();
+        AnimationSpec spec = renderer.getReloadAnimation(gun, stack);
+        int animTime = gun.getReloader().getReloadAnimationTime(gun, stack);
+        AnimationProcessor.instance().play(AnimationType.RELOAD_ANIMATION_TYPE, new MultiFrameAnimation(animTime, spec));
+    }
+
+    public static void dispatchReloadAnimationDefault(AnimationProcessor processor, AnimationType<MultiFrameAnimation> type, EntityPlayer player) {
+        ItemStack stack = player.getHeldItemMainhand();
+        if(stack.getItem() instanceof GunBase) {
+            GunBase gun = (GunBase) stack.getItem();
+            AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getReloadAnimation(gun, stack);
+            int reloadTime = gun.getReloader().getReloadAnimationTime(gun, stack);
+            processor.play(type, new MultiFrameAnimation(reloadTime, spec));
+        }
+    }
+
+    public static void dispatchShootAnimation(GunBase gun) {
+        AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
+        AnimationProcessor.instance().play(AnimationType.RELOAD_ANIMATION_TYPE, new MultiFrameAnimation(gun.getFireRate(), spec));
+    }
+
+    public static void dispatchShootAnimationDefault(AnimationProcessor processor, AnimationType<MultiFrameAnimation> type, EntityPlayer player) {
+        ItemStack stack = player.getHeldItemMainhand();
+        if(stack.getItem() instanceof GunBase) {
+            GunBase gun = (GunBase) stack.getItem();
+            AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
+            processor.play(type, new MultiFrameAnimation(gun.getFireRate(), spec));
+        }
+    }
 }

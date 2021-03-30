@@ -39,7 +39,7 @@ public class KeyFrameSerializer implements JsonSerializer<KeyFrame>, JsonDeseria
             frame = KeyFrame.rotate(endpoint, move, rotate);
         } else if(!move.equals(Vec3d.ZERO)) {
             frame = KeyFrame.move(endpoint, move);
-        } else frame = () -> endpoint;
+        } else frame = KeyFrame.empty(endpoint);
         return frame;
     }
 }

@@ -34,7 +34,7 @@ public class PacketReloading implements IMessage {
             EntityPlayer player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 IPlayerData data = PlayerData.get(player);
-                data.setReloading(message.reload);
+                //data.setReloading(message.reload);
                 data.sync();
             });
             return null;

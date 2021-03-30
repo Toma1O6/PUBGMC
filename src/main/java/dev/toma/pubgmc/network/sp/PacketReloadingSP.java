@@ -41,7 +41,7 @@ public class PacketReloadingSP implements IMessage {
             mc.addScheduledTask(() -> {
                 EntityPlayerSP player = Minecraft.getMinecraft().player;
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                data.setReloading(message.reloading);
+                //data.setReloading(message.reloading);
             });
             return null;
         }

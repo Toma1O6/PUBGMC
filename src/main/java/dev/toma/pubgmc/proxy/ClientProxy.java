@@ -129,8 +129,8 @@ public class ClientProxy extends Proxy {
         AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SNIPER, suppressors);
         ForgeRegistries.ITEMS.getValuesCollection().stream()
                 .filter(it -> it instanceof GunBase)
-                .map(it -> (WeaponRenderer) it.getTileEntityItemStackRenderer())
-                .forEach(WeaponRenderer::init);
+                .map(it -> (GunBase) it)
+                .forEach(gun -> ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).init(gun));
     }
 
     static void registerEntityRenderers() {

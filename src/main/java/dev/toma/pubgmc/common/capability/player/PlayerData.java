@@ -20,16 +20,11 @@ public class PlayerData implements IPlayerData {
     final EntityPlayer player;
     final BoostStats boostStats;
     final AimInfo aimInfo;
-
-    private boolean reloading;
+    final ReloadInfo reloadInfo;
     private boolean nv;
-    private int reloading_time;
-
     private boolean isProne;
-
     private int level;
     private boolean eqNV;
-
     private double dist;
 
     public PlayerData() {
@@ -40,6 +35,7 @@ public class PlayerData implements IPlayerData {
         this.player = owner;
         this.boostStats = new BoostStats(this);
         this.aimInfo = new AimInfo(this);
+        this.reloadInfo = new ReloadInfo();
     }
 
     public static IPlayerData get(EntityPlayer player) {
@@ -50,6 +46,7 @@ public class PlayerData implements IPlayerData {
     public void tick() {
         boostStats.onTick(player);
         aimInfo.onTick();
+        reloadInfo.tick(this);
     }
 
     @Override
@@ -60,6 +57,11 @@ public class PlayerData implements IPlayerData {
     @Override
     public AimInfo getAimInfo() {
         return aimInfo;
+    }
+
+    @Override
+    public ReloadInfo getReloadInfo() {
+        return reloadInfo;
     }
 
     @Override
@@ -94,27 +96,12 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public boolean isReloading() {
-        return this.reloading;
-    }
-
-    @Override
-    public void setReloading(boolean reloading) {
-        this.reloading = reloading;
+        return reloadInfo.reloading;
     }
 
     @Override
     public boolean isUsingNV() {
         return this.nv;
-    }
-
-    @Override
-    public int getReloadingTime() {
-        return this.reloading_time;
-    }
-
-    @Override
-    public void setReloadingTime(int rt) {
-        this.reloading_time = rt;
     }
 
     @Override
@@ -147,9 +134,9 @@ public class PlayerData implements IPlayerData {
         NBTTagCompound c = new NBTTagCompound();
         c.setTag("boostStats", boostStats.serializeNBT());
         c.setTag("aimInfo", aimInfo.serializeNBT());
+        c.setTag("reloadInfo", reloadInfo.serializeNBT());
         c.setInteger("level", level);
         c.setBoolean("eqnv", eqNV);
-        c.setBoolean("reload", this.reloading);
         c.setBoolean("prone", this.isProne);
         return c;
     }
@@ -158,9 +145,9 @@ public class PlayerData implements IPlayerData {
     public void deserializeNBT(NBTTagCompound nbt) {
         deserialize(boostStats, "boostStats", nbt);
         deserialize(aimInfo, "aimInfo", nbt);
+        deserialize(reloadInfo, "reloadInfo", nbt);
         level = nbt.getInteger("level");
         eqNV = nbt.getBoolean("eqnv");
-        reloading = nbt.getBoolean("reload");
         isProne = nbt.getBoolean("prone");
     }
 

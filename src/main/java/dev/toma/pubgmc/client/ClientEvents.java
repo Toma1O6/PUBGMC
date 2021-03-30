@@ -12,10 +12,7 @@ import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.util.KeyBinds;
-import dev.toma.pubgmc.common.capability.player.BoostStats;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.*;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
@@ -44,7 +41,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ITickable;
@@ -75,15 +71,9 @@ public class ClientEvents {
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
 
     private final WeaponCooldownTracker tracker = new WeaponCooldownTracker();
-    // TODO remove
-    private int reloadingSlot;
-    // TODO remove
-    private int timer;
     private int shotsFired;
     private boolean shooting;
     private int shootingTimer;
-    // TODO remove
-    private boolean hasAmmo;
 
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
@@ -260,7 +250,10 @@ public class ClientEvents {
             if (data != null) {
                 data.setProning(!data.isProning());
                 if(data.getAimInfo().isAiming()) this.setAiming(data, false);
-                if(data.isReloading()) this.setReloading(data, false);
+                if(data.isReloading()) {
+                    data.getReloadInfo().interrupt(data);
+                    PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                }
                 PacketHandler.sendToServer(new PacketProne(data.isProning()));
             }
         }
@@ -282,7 +275,7 @@ public class ClientEvents {
                 if (stack.hasTagCompound()) {
                     int ammo = gun.getAmmo(stack);
                     AmmoType type = gun.getAmmoType();
-                    if (!data.isReloading() && ammo < gun.getWeaponAmmoLimit(stack)) {
+                    if (ammo < gun.getWeaponAmmoLimit(stack)) {
                         boolean hasAmmo = false;
                         for (int i = 0; i < sp.inventory.getSizeInventory(); i++) {
                             ItemStack ammoStack = sp.inventory.getStackInSlot(i);
@@ -292,13 +285,10 @@ public class ClientEvents {
                             }
                         }
                         if(hasAmmo) {
-                            data.setReloading(true);
-                            data.setReloadingTime(0);
-                            PacketHandler.INSTANCE.sendToServer(new PacketReloading(true));
-                            reloadingSlot = sp.inventory.currentItem;
-                            if (data.getAimInfo().isAiming()) {
-                                PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
-                            }
+                            AnimationDispatcher.dispatchReloadAnimation(gun, stack);
+                            ReloadInfo info = data.getReloadInfo();
+                            info.startReload(sp, gun, stack);
+                            PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.RELOAD));
                         }
                     }
                 }
@@ -439,108 +429,6 @@ public class ClientEvents {
                     }
                 }
             }
-
-            if (data.isReloading()) {
-                if (reloadingSlot != player.inventory.currentItem) {
-                    setReloading(data, true);
-                }
-            }
-        }
-        if (ev.phase == Phase.END && player != null && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            ItemStack gunStack = player.getHeldItemMainhand();
-            Item item = gunStack.getItem();
-            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if (data.isReloading()) {
-                if (gunStack.getItem() instanceof GunBase) {
-                    GunBase gun = (GunBase) gunStack.getItem();
-                    data.setReloadingTime(data.getReloadingTime() + 1);
-                    // TODO optimize
-                    for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                        ItemStack stack = player.inventory.getStackInSlot(i);
-                        if ((stack.getItem() instanceof ItemAmmo) && player.world.isRemote) {
-                            ItemAmmo ammo = (ItemAmmo) stack.getItem();
-                            if (ammo.type == gun.getAmmoType()) {
-                                hasAmmo = true;
-                            }
-
-                            if (gun.getReloadType() == GunBase.ReloadType.MAGAZINE) {
-                                if (data.getReloadingTime() >= gun.getReloadTime(gunStack)) {
-                                    data.setReloadingTime(0);
-                                    hasAmmo = false;
-                                    setReloading(data, false);
-                                    PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
-                                }
-                            } else if (gun.getReloadType() == GunBase.ReloadType.SINGLE) {
-                                if (data.getReloadingTime() >= gun.getReloadTime(gunStack)) {
-                                    data.setReloadingTime(0);
-                                    hasAmmo = false;
-                                    PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
-                                }
-                            } else if (gun.getReloadType() == GunBase.ReloadType.KAR98K) {
-                                if (gun.getAmmo(gunStack) == 0) {
-                                    if (data.getReloadingTime() >= gun.getReloadTime(gunStack)) {
-                                        data.setReloadingTime(0);
-                                        hasAmmo = false;
-                                        PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
-                                    }
-                                } else {
-                                    if (data.getReloadingTime() >= 18) {
-                                        data.setReloadingTime(0);
-                                        hasAmmo = false;
-                                        PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (data.getReloadingTime() == 1 && data.isReloading()) {
-                        if (gun.getReloadType() == GunBase.ReloadType.MAGAZINE && hasAmmo) {
-                            player.playSound(gun.getWeaponReloadSound(), 1f, 1f);
-                            hasAmmo = false;
-                        } else if (gun.getReloadType() == GunBase.ReloadType.SINGLE) {
-                            if (gun.getAmmo(gunStack) < gun.getWeaponAmmoLimit(gunStack) && hasAmmo) {
-                                player.playSound(gun.getWeaponReloadSound(), 1f, 1f);
-                                hasAmmo = false;
-                            }
-                        } else if (gun.getReloadType() == GunBase.ReloadType.KAR98K) {
-                            if (gun.getAmmo(gunStack) == 0 && hasAmmo) {
-                                player.playSound(PMCSounds.reload_kar98k, 1f, 1f);
-                                hasAmmo = false;
-                            } else if (gun.getAmmo(gunStack) < gun.getWeaponAmmoLimit(gunStack) && hasAmmo) {
-                                player.playSound(PMCSounds.reload_kar98k_single, 1f, 1f);
-                                hasAmmo = false;
-                            }
-                        }
-                    }
-                }
-
-                //cancel reloading
-                else {
-                    data.setReloadingTime(0);
-                    setReloading(data, false);
-                    hasAmmo = false;
-                }
-
-                // You cannot sprint while reloading
-                if (player.isSprinting()) {
-                    player.setSprinting(false);
-                }
-
-                // You cannot aim while reloading
-                if (data.isAiming()) {
-                    setAiming(data, false);
-                }
-
-                // to prevent reloading happening when player doesn't have ammo for the weapon
-                if (player.getHeldItemMainhand().getItem() instanceof GunBase && !player.inventory.hasItemStack(((GunBase) player.getHeldItemMainhand().getItem()).getAmmoType().ammoStack())) {
-                    setReloading(data, false);
-                }
-            } else {
-                if (hasAmmo) {
-                    hasAmmo = false;
-                }
-            }
         }
     }
 
@@ -578,11 +466,7 @@ public class ClientEvents {
         player.rotationPitch -= v;
         player.rotationYaw -= h;
         AnimationDispatcher.dispatchRecoilAnimationDefault(h, v);
-    }
-
-    private void setReloading(IPlayerData data, boolean reload) {
-        data.setReloading(reload);
-        PacketHandler.sendToServer(new PacketReloading(reload));
+        AnimationDispatcher.dispatchShootAnimation(gun);
     }
 
     private void setAiming(IPlayerData data, boolean aim) {
