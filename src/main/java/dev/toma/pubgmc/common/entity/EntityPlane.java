@@ -6,7 +6,7 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketUpdatePlayerRotation;
+import dev.toma.pubgmc.network.client.PacketUpdatePlayerRotation;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;

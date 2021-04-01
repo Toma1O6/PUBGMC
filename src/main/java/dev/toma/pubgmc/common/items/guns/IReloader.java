@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -93,12 +94,15 @@ public interface IReloader {
         @Override
         public IntHashMap<ResourceLocation> registerReloadAnimations(GunBase gun, String prefix, AnimationLoader loader) {
             IntHashMap<ResourceLocation> map = new IntHashMap<>();
-            ResourceLocation reload = Pubgmc.getResource(prefix + "_reload");
+            int maxAmmo = gun.getMaxAmmoExtended();
+            if(maxAmmo > 1) {
+                ResourceLocation reload = Pubgmc.getResource(prefix + "_reload");
+                loader.registerEntry(reload);
+                map.addKey(1, reload);
+            }
             ResourceLocation reloadEmpty = Pubgmc.getResource(prefix + "_reload_empty");
-            loader.registerEntry(reload);
             loader.registerEntry(reloadEmpty);
             map.addKey(0, reloadEmpty);
-            map.addKey(1, reload);
             return map;
         }
     }
@@ -118,7 +122,11 @@ public interface IReloader {
                     --left;
                     itemStack.shrink(1);
                     gun.setAmmo(stack, actual + 1);
-                    return left <= 0;
+                    boolean b = left <= 0;
+                    if(!b) {
+                        player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
+                    }
+                    return b;
                 }
             }
             return true;

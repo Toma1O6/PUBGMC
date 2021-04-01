@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.IWorldData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -14,17 +15,21 @@ import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketGetConfigFromServer;
-import dev.toma.pubgmc.network.sp.PacketLoadConfig;
+import dev.toma.pubgmc.network.client.CPacketAnimation;
+import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
+import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -35,10 +40,10 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
-import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -49,13 +54,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class CommonEvents {
 
-    private double prevDiameter = 0;
     public static final HashMap<UUID, NBTTagCompound> CONFIGS = new HashMap<>();
     public static final AttributeModifier PRONE_MODIFIER = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Prone modifier", -0.7, 2);
+    Map<UUID, Integer> selectedSlotCache = new HashMap<>();
 
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
         switch (result.status) {
@@ -89,6 +95,27 @@ public class CommonEvents {
 
     private static void sendMessage(EntityPlayer player, String message, TextFormatting color) {
         player.sendMessage(new TextComponentString(color + message));
+    }
+
+    @SubscribeEvent
+    public void livingChangeEquipment(LivingEquipmentChangeEvent event) {
+        if(event.getEntityLiving() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+            AbstractAttributeMap map = player.getAttributeMap();
+            ItemStack stack = event.getTo();
+            IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
+            instance.removeModifier(GunBase.EQUIP_MODIFIER_UID);
+            if(stack.getItem() instanceof GunBase) {
+                instance.applyModifier(((GunBase) stack.getItem()).getGunType().getModifier());
+                int last = selectedSlotCache.getOrDefault(player.getUniqueID(), 0);
+                if(last != player.inventory.currentItem) {
+                    PacketHandler.sendToClient(new CPacketAnimation(true, AnimationType.EQUIP_ANIMATION_TYPE), (EntityPlayerMP) player);
+                }
+            }
+            if(event.getSlot() == EntityEquipmentSlot.MAINHAND) {
+                selectedSlotCache.put(player.getUniqueID(), player.inventory.currentItem);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -144,13 +171,12 @@ public class CommonEvents {
                 handleUpdateResults(version, e.player);
             }
         }
+        selectedSlotCache.put(e.player.getUniqueID(), e.player.inventory.currentItem);
 
         if (e.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) e.player;
             if (player != null && !player.world.isRemote) {
-
                 PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
-
                 //We get the last player data and later sync it to client
                 player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -169,6 +195,7 @@ public class CommonEvents {
     @SubscribeEvent
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
         if(e.player instanceof EntityPlayerMP) {
+            selectedSlotCache.remove(e.player.getUniqueID());
             PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP)e.player);
             CONFIGS.remove(e.player.getUniqueID());
         }
@@ -256,9 +283,5 @@ public class CommonEvents {
                 explodeable.getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, explodeable.getMaxFuse() - explodeable.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
             }
         }
-    }
-
-    private boolean isZoneShrinking(WorldBorder border) {
-        return border.getDiameter() != prevDiameter;
     }
 }

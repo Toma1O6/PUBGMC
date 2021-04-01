@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

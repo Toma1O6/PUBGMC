@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
 import dev.toma.pubgmc.util.handlers.FlashHandler;
 import io.netty.buffer.ByteBuf;

@@ -8,19 +8,19 @@ import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
-import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketDelayedSound;
+import dev.toma.pubgmc.network.client.PacketDelayedSound;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -377,19 +378,32 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         }
     }
 
+    public static final UUID EQUIP_MODIFIER_UID = UUID.fromString("7F46C675-DE12-4163-9574-CB763544B74E");
+    static final AttributeModifier PISTOL_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", 0.5F, 2).setSaved(false);
+    static final AttributeModifier SMG_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", 0.2F, 2).setSaved(false);
+    static final AttributeModifier AR_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.2F, 2).setSaved(false);
+    static final AttributeModifier SNIPER_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.1F, 2).setSaved(false);
+    static final AttributeModifier HEAVY_GUN_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.6F, 2).setSaved(false);
+
     public enum GunType {
-        LMG(40),
-        PISTOL(100),
-        SHOTGUN(80),
-        SMG(70),
-        AR(50),
-        DMR(30),
-        SR(10);
+        LMG(40, HEAVY_GUN_MODIFIER),
+        PISTOL(100, PISTOL_MODIFIER),
+        SHOTGUN(80, AR_MODIFIER),
+        SMG(70, SMG_MODIFIER),
+        AR(50, AR_MODIFIER),
+        DMR(30, SNIPER_MODIFIER),
+        SR(10, SNIPER_MODIFIER);
 
         final int weight;
+        final AttributeModifier modifier;
 
-        GunType(int weight) {
+        GunType(int weight, AttributeModifier modifier) {
             this.weight = weight;
+            this.modifier = modifier;
+        }
+
+        public AttributeModifier getModifier() {
+            return modifier;
         }
 
         public static GunType getTypeFromName(String name) {

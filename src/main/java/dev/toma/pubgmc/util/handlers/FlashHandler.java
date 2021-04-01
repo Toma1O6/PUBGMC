@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketUpdateFlashStatus;
+import dev.toma.pubgmc.network.client.PacketUpdateFlashStatus;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;

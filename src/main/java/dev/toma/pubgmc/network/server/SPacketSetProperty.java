@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -63,6 +64,7 @@ public class SPacketSetProperty implements IMessage {
                 GunBase gun = (GunBase) stack.getItem();
                 if(aBoolean) {
                     reloadInfo.startReload(player, gun, stack);
+                    player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
                 } else {
                     reloadInfo.interrupt(data);
                 }

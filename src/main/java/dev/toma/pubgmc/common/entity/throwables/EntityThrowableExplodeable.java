@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.entity.throwables;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketSyncEntity;
+import dev.toma.pubgmc.network.client.PacketSyncEntity;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.material.Material;

@@ -15,7 +15,7 @@ import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketSyncGameData;
+import dev.toma.pubgmc.network.client.PacketSyncGameData;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.world.BlueZone;
 import net.minecraft.client.Minecraft;

@@ -1,7 +1,8 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
-import dev.toma.pubgmc.client.gui.GuiLootSetup;
-import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.server.PacketSaveConfig;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,13 +13,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PacketDisplayLootSetupGui implements IMessage {
+public class PacketGetConfigFromServer implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketDisplayLootSetupGui() {}
+    public PacketGetConfigFromServer() {}
 
-    public PacketDisplayLootSetupGui(NBTTagCompound nbt) {
+    public PacketGetConfigFromServer(NBTTagCompound nbt) {
         this.nbt = nbt;
     }
 
@@ -32,15 +33,14 @@ public class PacketDisplayLootSetupGui implements IMessage {
         nbt = ByteBufUtils.readTag(buf);
     }
 
-    public static class Handler implements IMessageHandler<PacketDisplayLootSetupGui, IMessage> {
+    public static class Handler implements IMessageHandler<PacketGetConfigFromServer, IMessage> {
+
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketDisplayLootSetupGui message, MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() -> {
-                IWorldData data = mc.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
-                data.deserializeNBT(message.nbt);
-                mc.displayGuiScreen(new GuiLootSetup(data));
+        public IMessage onMessage(PacketGetConfigFromServer message, MessageContext ctx) {
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                PacketHandler.sendToServer(new PacketSaveConfig());
+                ConfigPMC.common.deserializeNBT(message.nbt);
             });
             return null;
         }

@@ -1,12 +1,16 @@
 package dev.toma.pubgmc.client.animation;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.impl.AimAnimation;
+import dev.toma.pubgmc.client.animation.impl.EquipAnimation;
 import dev.toma.pubgmc.client.animation.impl.MultiFrameAnimation;
 import dev.toma.pubgmc.client.animation.impl.TickableAnimation;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.proxy.ClientProxy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class AnimationDispatcher {
 
@@ -55,7 +59,7 @@ public class AnimationDispatcher {
 
     public static void dispatchShootAnimation(GunBase gun) {
         AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
-        AnimationProcessor.instance().play(AnimationType.RELOAD_ANIMATION_TYPE, new MultiFrameAnimation(gun.getFireRate(), spec));
+        AnimationProcessor.instance().play(AnimationType.SHOOT_ANIMATION_TYPE, new MultiFrameAnimation(gun.getFireRate(), spec));
     }
 
     public static void dispatchShootAnimationDefault(AnimationProcessor processor, AnimationType<MultiFrameAnimation> type, EntityPlayer player) {
@@ -64,6 +68,17 @@ public class AnimationDispatcher {
             GunBase gun = (GunBase) stack.getItem();
             AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
             processor.play(type, new MultiFrameAnimation(gun.getFireRate(), spec));
+        }
+    }
+
+    public static void dispatchEquipAnimation(AnimationProcessor processor, AnimationType<EquipAnimation> type, EntityPlayer player) {
+        ItemStack stack = player.getHeldItemMainhand();
+        if(stack.getItem() instanceof GunBase) {
+            GunBase gun = (GunBase) stack.getItem();
+            GunBase.GunType gunType = gun.getGunType();
+            ResourceLocation key = Pubgmc.getResource("equip_" + gunType.name().toLowerCase());
+            AnimationSpec spec = ClientProxy.getAnimationLoader().getAnimationSpecification(key);
+            processor.play(type, new EquipAnimation(spec));
         }
     }
 }

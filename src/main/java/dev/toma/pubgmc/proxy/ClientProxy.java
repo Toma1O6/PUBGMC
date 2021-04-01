@@ -35,6 +35,7 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -58,6 +59,10 @@ public class ClientProxy extends Proxy {
         MinecraftForge.EVENT_BUS.register(new RenderHandler());
         registerEntityRenderers();
         Pubgmc.getContentManager().initialize();
+        for (GunBase.GunType type : GunBase.GunType.values()) {
+            ResourceLocation location = Pubgmc.getResource("equip_" + type.name().toLowerCase());
+            animationLoader.registerEntry(location);
+        }
     }
 
     @Override

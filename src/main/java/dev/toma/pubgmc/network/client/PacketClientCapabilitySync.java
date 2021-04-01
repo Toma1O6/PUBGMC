@@ -1,5 +1,8 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
+import dev.toma.pubgmc.client.animation.AnimationProcessor;
+import dev.toma.pubgmc.client.animation.AnimationType;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -49,7 +52,14 @@ public class PacketClientCapabilitySync implements IMessage {
         @Override
         public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
             Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() -> PlayerData.get(m.player).deserializeNBT(m.nbt));
+            mc.addScheduledTask(() -> {
+                IPlayerData data = PlayerData.get(m.player);
+                data.deserializeNBT(m.nbt);
+
+                if(!data.isReloading()) {
+                    AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                }
+            });
             return null;
         }
     }

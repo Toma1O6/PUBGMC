@@ -6,6 +6,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
+import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
@@ -23,6 +24,7 @@ import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
@@ -37,8 +39,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -51,6 +58,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -59,6 +67,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
+import java.util.UUID;
 
 public class ClientEvents {
 
@@ -100,12 +109,12 @@ public class ClientEvents {
                 processor.process(AnimationElement.ITEM_AND_HANDS);
                 GlStateManager.pushMatrix();
                 {
-                    float yOff = -0.5F * equip;
                     processor.process(AnimationElement.HANDS);
                     GlStateManager.pushMatrix();
                     {
-                        GlStateManager.disableCull();
+                        float yOff = -0.5F * equip;
                         GlStateManager.translate(0, yOff, 0);
+                        GlStateManager.disableCull();
                         GlStateManager.pushMatrix();
                         {
                             processor.process(AnimationElement.RIGHT_HAND);
@@ -199,8 +208,8 @@ public class ClientEvents {
         int height = res.getScaledHeight();
 
         if (e.getType() == ElementType.CROSSHAIRS) {
-            if (stack.getItem() instanceof GunBase) {
-                //e.setCanceled(true);
+            if (!ConfigPMC.developerMode.get() && stack.getItem() instanceof GunBase) {
+                e.setCanceled(true);
             }
         }
 
@@ -266,12 +275,19 @@ public class ClientEvents {
             }
         }
         if (KeyBinds.RELOAD.isPressed()) {
-            if (data.isReloading()) {
-                return;
-            }
             ItemStack stack = sp.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
+                if(data.isReloading()) {
+                    IReloader reloader = gun.getReloader();
+                    if(reloader.canInterrupt(gun, stack)) {
+                        ReloadInfo info = data.getReloadInfo();
+                        info.setReloading(false);
+                        PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                        AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                        return;
+                    }
+                }
                 if (stack.hasTagCompound()) {
                     int ammo = gun.getAmmo(stack);
                     AmmoType type = gun.getAmmoType();
@@ -313,42 +329,42 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent e) {
-        GameSettings gs = Minecraft.getMinecraft().gameSettings;
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        Minecraft mc = Minecraft.getMinecraft();
+        GameSettings gs = mc.gameSettings;
+        EntityPlayerSP player = mc.player;
         if (player != null && !player.isSpectator()) {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                if (gs.keyBindAttack.isPressed()) {
-                    if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
-                        //If the gun has no cooldown
-                        if (!data.isReloading() && !tracker.isOnCooldown(gun)) {
-                            if (gun.hasAmmo(stack)) {
-                                //We send packet to server telling it to spawn new entity
-                                PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                                tracker.add(gun);
-                                if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                //Do the recoil
-                                applyRecoil(player, stack, gun);
-                            } else {
-                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                if(isEquipAnimationDone(mc)) {
+                    if (gs.keyBindAttack.isPressed()) {
+                        if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
+                            if (!isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
+                                if (gun.hasAmmo(stack)) {
+                                    PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                    tracker.add(gun);
+                                    if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
+                                    applyRecoil(player, stack, gun);
+                                } else {
+                                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                                }
                             }
-                        }
-                    } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
-                        if (!shooting && !data.isReloading() && !tracker.isOnCooldown(gun)) {
-                            if (gun.hasAmmo(stack)) {
-                                shooting = true;
-                                shotsFired = 0;
-                            } else {
-                                player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                        } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
+                            if (!shooting && !isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
+                                if (gun.hasAmmo(stack)) {
+                                    shooting = true;
+                                    shotsFired = 0;
+                                } else {
+                                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                                }
                             }
                         }
                     }
                 }
 
                 //Aiming on RMB press
-                if (gs.keyBindUseItem.isPressed()) {
+                if (gs.keyBindUseItem.isPressed() && isEquipAnimationDone(mc)) {
                     if (!data.getAimInfo().isAiming() && !player.isSprinting()) {
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
@@ -381,11 +397,11 @@ public class ClientEvents {
                 controllable.handle((byte) inputs);
                 PacketHandler.sendToServer(new SPacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
             }
-            if (gs.keyBindAttack.isKeyDown()) {
+            if (gs.keyBindAttack.isKeyDown() && isEquipAnimationDone(mc)) {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
                     GunBase gun = (GunBase) stack.getItem();
-                    if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !data.isReloading() && !tracker.isOnCooldown(gun)) {
+                    if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
                         if (gun.hasAmmo(stack)) {
                             PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                             this.applyRecoil(player, stack, gun);
@@ -438,6 +454,21 @@ public class ClientEvents {
         if(event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }
+    }
+
+    private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
+        IReloader reloader = gun.getReloader();
+        if(data.isReloading()) {
+            if(reloader.canInterrupt(gun, stack)) {
+                ReloadInfo info = data.getReloadInfo();
+                info.setReloading(false);
+                PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun) {
@@ -570,5 +601,10 @@ public class ClientEvents {
         int left = width / 2;
         int top = height / 2;
         font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
+    }
+
+    private static boolean isEquipAnimationDone(Minecraft mc) {
+        ItemRenderer renderer = mc.getItemRenderer();
+        return renderer.equippedProgressMainHand == 1.0F;
     }
 }

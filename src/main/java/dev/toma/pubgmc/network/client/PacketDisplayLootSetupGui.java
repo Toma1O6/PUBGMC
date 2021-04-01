@@ -1,6 +1,7 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
-import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.client.gui.GuiLootSetup;
+import dev.toma.pubgmc.common.capability.IWorldData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,13 +12,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PacketLoadConfig implements IMessage {
+public class PacketDisplayLootSetupGui implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketLoadConfig() {}
+    public PacketDisplayLootSetupGui() {}
 
-    public PacketLoadConfig(NBTTagCompound nbt) {
+    public PacketDisplayLootSetupGui(NBTTagCompound nbt) {
         this.nbt = nbt;
     }
 
@@ -31,12 +32,16 @@ public class PacketLoadConfig implements IMessage {
         nbt = ByteBufUtils.readTag(buf);
     }
 
-    public static class Handler implements IMessageHandler<PacketLoadConfig, IMessage> {
-
+    public static class Handler implements IMessageHandler<PacketDisplayLootSetupGui, IMessage> {
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketLoadConfig message, MessageContext ctx) {
-            Minecraft.getMinecraft().addScheduledTask(() -> ConfigPMC.common.deserializeNBT(message.nbt));
+        public IMessage onMessage(PacketDisplayLootSetupGui message, MessageContext ctx) {
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(() -> {
+                IWorldData data = mc.world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
+                data.deserializeNBT(message.nbt);
+                mc.displayGuiScreen(new GuiLootSetup(data));
+            });
             return null;
         }
     }

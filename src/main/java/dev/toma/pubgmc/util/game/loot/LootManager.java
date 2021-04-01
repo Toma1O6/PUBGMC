@@ -6,7 +6,7 @@ import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketSyncTileEntity;
+import dev.toma.pubgmc.network.client.PacketSyncTileEntity;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.math.IWeight;
 import dev.toma.pubgmc.util.math.WeightedRandom;

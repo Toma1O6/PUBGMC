@@ -3,7 +3,7 @@ package dev.toma.pubgmc.network;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.network.server.*;
-import dev.toma.pubgmc.network.sp.*;
+import dev.toma.pubgmc.network.client.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -46,6 +46,7 @@ public class PacketHandler {
         registerClientPacket(PacketSyncGameData.Handler.class, PacketSyncGameData.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
         registerClientPacket(PacketOpenObjectiveGui.Handler.class, PacketOpenObjectiveGui.class);
+        registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

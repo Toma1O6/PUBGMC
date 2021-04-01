@@ -6,7 +6,7 @@ import dev.toma.pubgmc.api.objectives.types.GameArea;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketOpenObjectiveGui;
+import dev.toma.pubgmc.network.client.PacketOpenObjectiveGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

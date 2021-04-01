@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
 import dev.toma.pubgmc.client.gui.GuiSelectObjectiveType;
 import io.netty.buffer.ByteBuf;

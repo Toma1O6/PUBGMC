@@ -17,7 +17,7 @@ import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketParticle;
+import dev.toma.pubgmc.network.client.PacketParticle;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

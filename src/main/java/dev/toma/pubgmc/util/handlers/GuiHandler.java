@@ -7,7 +7,7 @@ import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketSyncTileEntity;
+import dev.toma.pubgmc.network.client.PacketSyncTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;

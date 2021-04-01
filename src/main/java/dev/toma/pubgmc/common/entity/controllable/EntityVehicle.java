@@ -6,8 +6,6 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.init.PMCSounds;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.sp.PacketVehicleData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;

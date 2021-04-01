@@ -1,8 +1,6 @@
-package dev.toma.pubgmc.network.sp;
+package dev.toma.pubgmc.network.client;
 
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.PacketSaveConfig;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,13 +11,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PacketGetConfigFromServer implements IMessage {
+public class PacketLoadConfig implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketGetConfigFromServer() {}
+    public PacketLoadConfig() {}
 
-    public PacketGetConfigFromServer(NBTTagCompound nbt) {
+    public PacketLoadConfig(NBTTagCompound nbt) {
         this.nbt = nbt;
     }
 
@@ -33,15 +31,12 @@ public class PacketGetConfigFromServer implements IMessage {
         nbt = ByteBufUtils.readTag(buf);
     }
 
-    public static class Handler implements IMessageHandler<PacketGetConfigFromServer, IMessage> {
+    public static class Handler implements IMessageHandler<PacketLoadConfig, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketGetConfigFromServer message, MessageContext ctx) {
-            Minecraft.getMinecraft().addScheduledTask(() -> {
-                PacketHandler.sendToServer(new PacketSaveConfig());
-                ConfigPMC.common.deserializeNBT(message.nbt);
-            });
+        public IMessage onMessage(PacketLoadConfig message, MessageContext ctx) {
+            Minecraft.getMinecraft().addScheduledTask(() -> ConfigPMC.common.deserializeNBT(message.nbt));
             return null;
         }
     }
