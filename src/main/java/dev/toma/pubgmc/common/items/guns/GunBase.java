@@ -379,11 +379,11 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     public static final UUID EQUIP_MODIFIER_UID = UUID.fromString("7F46C675-DE12-4163-9574-CB763544B74E");
-    static final AttributeModifier PISTOL_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", 0.5F, 2).setSaved(false);
-    static final AttributeModifier SMG_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", 0.2F, 2).setSaved(false);
-    static final AttributeModifier AR_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.2F, 2).setSaved(false);
-    static final AttributeModifier SNIPER_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.1F, 2).setSaved(false);
-    static final AttributeModifier HEAVY_GUN_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.6F, 2).setSaved(false);
+    static final AttributeModifier PISTOL_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", 0.0F, 2).setSaved(false);
+    static final AttributeModifier SMG_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.2F, 2).setSaved(false);
+    static final AttributeModifier AR_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.7F, 2).setSaved(false);
+    static final AttributeModifier SNIPER_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.5F, 2).setSaved(false);
+    static final AttributeModifier HEAVY_GUN_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.9F, 2).setSaved(false);
 
     public enum GunType {
         LMG(40, HEAVY_GUN_MODIFIER),
