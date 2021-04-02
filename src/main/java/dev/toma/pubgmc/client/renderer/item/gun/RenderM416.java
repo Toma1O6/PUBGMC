@@ -32,7 +32,7 @@ public class RenderM416 extends WeaponRenderer {
 
     @Override
     public void registerAttachmentRenders() {
-        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positionedScaled(0.045F, -0.1F, 0.18F, 0.9F, 0.9F, 0.9F));
+        registerRenderConfig(PMCItems.SCOPE4X, IRenderConfig.positionedScaled(0.0485F, -0.1F, 0.18F, 0.9F, 0.9F, 0.9F));
         registerRenderConfig(PMCItems.SILENCER_AR, IRenderConfig.positioned(0F, -0.15F, 0.48F));
         registerRenderConfig(PMCItems.GRIP_ANGLED, IRenderConfig.positioned(0F, -0.08F, 0.3F));
         registerRenderConfig(PMCItems.GRIP_VERTICAL, IRenderConfig.positioned(0F, -0.09F, 0.3F));

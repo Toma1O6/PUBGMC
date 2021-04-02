@@ -113,7 +113,7 @@ public class ClientEvents {
                     GlStateManager.pushMatrix();
                     {
                         float yOff = -0.5F * equip;
-                        GlStateManager.translate(0, yOff, 0);
+                        //GlStateManager.translate(0, yOff, 0);
                         GlStateManager.disableCull();
                         GlStateManager.pushMatrix();
                         {
@@ -134,7 +134,7 @@ public class ClientEvents {
                 GlStateManager.popMatrix();
                 if(!processor.isItemRenderBlocked()) {
                     processor.process(AnimationElement.ITEM);
-                    mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, equip);
+                    mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, 0.0F);
                 }
             }
             GlStateManager.popMatrix();
