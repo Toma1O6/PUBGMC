@@ -22,6 +22,7 @@ public class AnimationProject {
     File workingFile;
     boolean isSaved;
     float animationProgress;
+    int length = 40;
 
     public AnimationProject(GuiAnimator.WrappedAnimationSpec wrappedSpec) {
         this.animation = convertToMutable(wrappedSpec.spec);
@@ -111,6 +112,18 @@ public class AnimationProject {
                 map.put(entry.getKey(), frames);
             }
         });
+    }
+
+    public void setLength(int length) {
+        this.length = DevUtil.wrap(length, 1, 1200);
+    }
+
+    public void addLength(int amount) {
+        setLength(length + amount);
+    }
+
+    public int getLength() {
+        return length;
     }
 
     private static Map<AnimationElement, List<MutableKeyFrame>> convertToMutable(AnimationSpec spec) {

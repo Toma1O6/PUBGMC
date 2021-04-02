@@ -7,12 +7,10 @@ import dev.toma.pubgmc.client.animation.AnimationSpec;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.impl.AnimatorAnimation;
 import dev.toma.pubgmc.client.animation.interfaces.ElementProvider;
+import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
 import dev.toma.pubgmc.client.gui.GuiConfirm;
 import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
-import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
-import dev.toma.pubgmc.client.gui.widget.CheckboxWidget;
-import dev.toma.pubgmc.client.gui.widget.TextFieldWidget;
-import dev.toma.pubgmc.client.gui.widget.Widget;
+import dev.toma.pubgmc.client.gui.widget.*;
 import dev.toma.pubgmc.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -30,6 +28,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
     final PopupHandler handler;
     ListWidget<String> animationList;
     TimelineWidget timeline;
+    ModifyFrameWidget frameWidget;
 
     public GuiAnimator() {
         handler = new PopupHandler().withLifetime(100);
@@ -48,7 +47,10 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 new ButtonWidget(5, 5, 40, 20, "New", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiCreateProject(this)))
         );
         addWidget(
-                new ButtonWidget(50, 5, 40, 20, "Save", (widget, mouseX, mouseY, button) -> {
+                new ButtonWidget(50, 5, 40, 20, "Open", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiOpenAnimation(this)))
+        );
+        addWidget(
+                new ButtonWidget(95, 5, 40, 20, "Save", (widget, mouseX, mouseY, button) -> {
                     AnimationProject project = AnimatorCache.project;
                     File file = new File(project.workingFile, project.name + ".json");
                     if(file.exists()) {
@@ -63,10 +65,10 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 })
         );
         addWidget(
-                new ButtonWidget(95, 5, 55, 20, "Save as", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiSaveProject(this)))
+                new ButtonWidget(140, 5, 55, 20, "Save as", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiSaveProject(this)))
         );
         addWidget(
-                new ButtonWidget(155, 5, 120, 20, "Generate reset frames", (widget, mouseX, mouseY, button) -> {
+                new ButtonWidget(200, 5, 120, 20, "Generate reset frames", (widget, mouseX, mouseY, button) -> {
                     Map<AnimationElement, List<MutableKeyFrame>> map = AnimatorCache.project.animation;
                     for (Map.Entry<AnimationElement, List<MutableKeyFrame>> entry : map.entrySet()) {
                         List<MutableKeyFrame> list = entry.getValue();
@@ -83,30 +85,18 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                     }
                 })
         );
-        animationList = addWidget(new ListWidget<>(this, 5, 30, 140, 2 * third - 35, new ArrayList<>(AnimatorCache.animations.keySet()), "Animations", (confirmed, parent) -> {
-            if(confirmed) {
-                IPopupHandler handler = (IPopupHandler) parent;
-                handler.sendText("Loading new animation project");
-                String key = GuiAnimator.this.animationList.getSelectedElement();
-                WrappedAnimationSpec spec = AnimatorCache.animations.get(key);
-                if(spec == null) {
-                    handler.sendError("File " + key + " not found");
-                    AnimatorCache.refreshAnimations(ClientProxy.getAnimationLoader(), handler);
-                    GuiAnimator.this.animationList.refresh(new ArrayList<>(AnimatorCache.animations.keySet()));
-                } else {
-                    AnimatorCache.project = new AnimationProject(spec);
-                    handler.sendText("New project has been created");
-                }
-                GuiAnimator.this.mc.displayGuiScreen(GuiAnimator.this);
-            }
-        }).requireConfirm(() -> !AnimatorCache.project.isSaved));
+        addWidget(new AnimationLengthWidget(5, 30, 165, 15, timeline));
+        frameWidget = new ModifyFrameWidget(0, height - third - 100, 170, 100, this);
+        for (Widget widget1 : frameWidget.widgets) {
+            addWidget(widget1);
+        }
+        addWidget(frameWidget);
         timeline.setProject(AnimatorCache.project);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         Widget.drawColorShape(0, 0, width, height, 0.0F, 0.0F, 0.0F, 0.15F);
-        Widget.drawColorShape(0, 30, 150, 2 * (height / 3), 0.0F, 0.0F, 0.0F, 0.5F);
         drawWidgets(mc, mouseX, mouseY, partialTicks);
         handler.draw(mc.fontRenderer, width, height, partialTicks);
     }
@@ -132,12 +122,136 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         handler.sendText(text, objects);
     }
 
+    static class AnimationLengthWidget extends Widget {
+
+        final ButtonWidget decr, incr;
+        final TimelineWidget timelineRef;
+
+        AnimationLengthWidget(int x, int y, int width, int height, TimelineWidget timelineRef) {
+            super(x, y, width, height);
+            this.timelineRef = timelineRef;
+            decr = new ButtonWidget(x + width - 65, y, 15, 15, "<<", (widget, mouseX, mouseY, button) -> grow(-1));
+            incr = new ButtonWidget(x + width - 15, y, 15, 15, ">>", (widget, mouseX, mouseY, button) -> grow( 1));
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            FontRenderer renderer = mc.fontRenderer;
+            drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.4F);
+            renderer.drawStringWithShadow("Animation length", x + 5, y + (height - 9) / 2f, 0xFFFFFF);
+            renderer.drawStringWithShadow(String.valueOf(AnimatorCache.project.length), x + width - 45, y + (height - 9) / 2.0F, 0x00FF00);
+            decr.render(mc, mouseX, mouseY, partialTicks);
+            incr.render(mc, mouseX, mouseY, partialTicks);
+        }
+
+        @Override
+        public boolean handleClicked(int mouseX, int mouseY, int button) {
+            return decr.handleClicked(mouseX, mouseY, button) || incr.handleClicked(mouseX, mouseY, button);
+        }
+
+        void grow(int value) {
+            int amount = 5;
+            if(isShiftKeyDown()) {
+                amount = 20;
+            } else if(isCtrlKeyDown()) {
+                amount = 1;
+            }
+            amount *= value;
+            AnimatorCache.project.addLength(amount);
+            timelineRef.playAnimation();
+        }
+    }
+
+    static class ModifyFrameWidget extends Widget {
+
+        final GuiAnimator animator;
+        final List<DecimalInputWidget> inputs = new ArrayList<>();
+        final List<Widget> widgets = new ArrayList<>();
+        MutableKeyFrame frame;
+        AnimationElement frameOwner;
+
+        ModifyFrameWidget(int x, int y, int width, int height, GuiAnimator animator) {
+            super(x, y, width, height);
+            this.animator = animator;
+
+            inputs.add(new DecimalInputWidget(x + 5, y + 15, 50, 20, frame, () -> frame.move.x, (frame1, value) -> frame1.setMove(new Vec3d(value, frame1.move.y, frame1.move.z))));
+            inputs.add(new DecimalInputWidget(x + 60, y + 15, 50, 20, frame, () -> frame.move.y, (frame1, value) -> frame1.setMove(new Vec3d(frame1.move.x, value, frame1.move.z))));
+            inputs.add(new DecimalInputWidget(x + 115, y + 15, 50, 20, frame, () -> frame.move.z, (frame1, value) -> frame1.setMove(new Vec3d(frame1.move.x, frame1.move.y, value))));
+            inputs.add(new DecimalInputWidget(x + 5, y + 50, 50, 20, frame, () -> frame.rotate.x, (frame1, value) -> frame1.setRotate(new Vec3d(value, frame1.rotate.y, frame1.rotate.z))));
+            inputs.add(new DecimalInputWidget(x + 60, y + 50, 50, 20, frame, () -> frame.rotate.y, (frame1, value) -> frame1.setRotate(new Vec3d(frame1.rotate.x, value, frame1.rotate.z))));
+            inputs.add(new DecimalInputWidget(x + 115, y + 50, 50, 20, frame, () -> frame.rotate.z, (frame1, value) -> frame1.setRotate(new Vec3d(frame1.rotate.x, frame1.rotate.y, value))));
+            widgets.addAll(inputs);
+            widgets.add(new ButtonWidget(x + 5, y + height - 25, 50, 20, "Continue", (widget, mouseX, mouseY, button) -> Minecraft.getMinecraft().displayGuiScreen(animator)));
+            widgets.add(new ButtonWidget(x + 60, y + height - 25, 50, 20, "Delete", (widget, mouseX, mouseY, button) -> {
+                AnimatorCache.project.remove(frameOwner, frame);
+                Minecraft.getMinecraft().displayGuiScreen(animator);
+            }));
+            widgets.add(new ButtonWidget(x + 115, y + height - 25, 50, 20, "Copy", (widget, mouseX, mouseY, button) -> {
+                Minecraft mc = Minecraft.getMinecraft();
+                Item item = mc.player.getHeldItemMainhand().getItem();
+                List<AnimationElement> list = new ArrayList<>(AnimationElement.getBaseElements());
+                if(item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
+                    ElementProvider provider = (ElementProvider) item.getTileEntityItemStackRenderer();
+                    list.addAll(provider.getElements());
+                }
+                list.removeIf(element -> element == frameOwner);
+                mc.displayGuiScreen(new ElementList(animator, list, frame).onListInit(listWidget -> listWidget.withFormatter(AnimationElement::getLocalizedName)));
+            }));
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            drawColorShape(x, y - 10, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
+            FontRenderer renderer = mc.fontRenderer;
+            renderer.drawStringWithShadow("Position", x + 5, y + 5, 0xFFFFFF);
+            renderer.drawStringWithShadow("Rotation", x + 5, y + 40, 0xFFFFFF);
+            String ownerName = frameOwner != null ? frameOwner.getLocalizedName() : "null";
+            renderer.drawStringWithShadow("Frame owner: " + ownerName, x + 5, y - 6, 0xFFFFFF);
+            widgets.forEach(widget -> widget.render(mc, mouseX, mouseY, partialTicks));
+        }
+
+        void setFrame(MutableKeyFrame frame, AnimationElement frameOwner) {
+            this.frame = frame;
+            this.frameOwner = frameOwner;
+            inputs.forEach(widget -> widget.setFrame(frame));
+        }
+
+        @Override
+        public boolean handleClicked(int mouseX, int mouseY, int button) {
+            return false;
+        }
+
+        static class ElementList extends GuiSelectList<AnimationElement> {
+
+            final KeyFrame frame;
+
+            ElementList(GuiAnimator parent, List<AnimationElement> elementList, KeyFrame frame) {
+                super(parent, "Select target element", "", elementList, null);
+                this.frame = frame;
+            }
+
+            @Override
+            protected void onConfirm() {
+                GuiAnimator animator = (GuiAnimator) parent;
+                AnimationElement element = widget.getSelectedElement();
+                if(element != null) {
+                    animator.timeline.insertElement(element, MutableKeyFrame.fromImmutable(frame));
+                }
+                mc.displayGuiScreen(parent);
+            }
+
+            @Override
+            protected void onCancel() {
+                mc.displayGuiScreen(parent);
+            }
+        }
+    }
+
     static class TimelineWidget extends Widget {
 
         AnimationProject project;
         ListWidget<AnimationElement> listWidget;
         GuiAnimator animator;
-        int length = 40;
         Map<AnimationElement, List<TimelineObject>> timelineObjects;
         AnimationElement clickedElementTimeline;
 
@@ -293,7 +407,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
         void playAnimation() {
             AnimationProcessor processor = AnimationProcessor.instance();
-            AnimatorAnimation animatorAnimation = new AnimatorAnimation(length);
+            AnimatorAnimation animatorAnimation = new AnimatorAnimation(project.length);
             animatorAnimation.set(AnimatorCache.project.animationProgress);
             animatorAnimation.setPaused(true);
             processor.play(AnimationType.ANIMATOR_TYPE, animatorAnimation);
@@ -333,8 +447,9 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
             @Override
             public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-                drawColorShape(x, y, x + width, y + height, 0.0F, 0.75F, 0.75F, 0.6F);
-                drawColorShape(x + 2, y + 2, x + width - 2, y + height - 2, 0.0F, 0.75F, 0.75F, 1.0F);
+                boolean editing = timeline.animator.frameWidget.frame == frame;
+                drawColorShape(x, y, x + width, y + height, 0.0F, 0.75F, editing ? 0.0F : 0.75F, 0.6F);
+                drawColorShape(x + 2, y + 2, x + width - 2, y + height - 2, 0.0F, 0.75F, editing ? 0.0F : 0.75F, 1.0F);
             }
 
             @Override
@@ -345,7 +460,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             @Override
             public void onClick(int mouseX, int mouseY, int button) {
                 if(button == 1) {
-                    Minecraft.getMinecraft().displayGuiScreen(new GuiModifyFrame(timeline.animator, frame, timeline.clickedElementTimeline));
+                    timeline.animator.frameWidget.setFrame(frame, timeline.clickedElementTimeline);
                 }
             }
 
