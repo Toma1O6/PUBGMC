@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.network.client;
 
+import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -58,6 +59,9 @@ public class PacketClientCapabilitySync implements IMessage {
 
                 if(!data.isReloading()) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                }
+                if(!data.getAimInfo().isAiming()) {
+                    mc.gameSettings.fovSetting = RenderHandler.fovBackup;
                 }
             });
             return null;

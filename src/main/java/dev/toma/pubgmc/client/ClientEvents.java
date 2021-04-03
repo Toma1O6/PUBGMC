@@ -358,17 +358,17 @@ public class ClientEvents {
                 if (gs.keyBindUseItem.isPressed() && isEquipAnimationDone(mc)) {
                     if (!data.getAimInfo().isAiming()) {
                         player.setSprinting(false);
+                        RenderHandler.fovBackup = gs.fovSetting;
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
                     } else {
+                        gs.fovSetting = RenderHandler.fovBackup;
                         PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
                 }
             }
         }
     }
-
-    private static boolean bobbingBackup;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClientTick(TickEvent.ClientTickEvent ev) {
@@ -378,14 +378,6 @@ public class ClientEvents {
         if(ev.phase == Phase.END) {
             if(mc.currentScreen instanceof ITickable) {
                 ((ITickable) mc.currentScreen).update();
-            }
-            if(player != null) {
-                bobbingBackup = gs.viewBobbing;
-                if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
-
-                } else {
-
-                }
             }
             AnimationProcessor.instance().processTick();
         }

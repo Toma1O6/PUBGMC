@@ -28,8 +28,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RenderHandler {
 
+    public static float fovBackup;
+
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
+    }
+
+    public RenderHandler() {
+        fovBackup = Minecraft.getMinecraft().gameSettings.fovSetting;
     }
 
     @SubscribeEvent
@@ -42,12 +48,10 @@ public class RenderHandler {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gunBase = (GunBase) stack.getItem();
                 ScopeData scopeData = gunBase.getScopeData(stack);
-                if(scopeData != null) {
+                if(scopeData != null && scopeData.getZoom() > 0) {
                     settings.fovSetting = scopeData.getZoom();
                 }
             }
-        } else {
-            if (settings.fovSetting < 70) settings.fovSetting = 70;
         }
     }
 

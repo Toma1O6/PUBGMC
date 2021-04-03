@@ -29,7 +29,7 @@ public class ItemScope extends ItemAttachment implements Scope {
 
     @Override
     public int getZoom(int fov) {
-        return Math.min(fov, data.getZoom());
+        return data.getZoom() < 0 ? fov : data.getZoom();
     }
 
     @Override

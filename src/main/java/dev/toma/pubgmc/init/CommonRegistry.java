@@ -200,12 +200,12 @@ public class CommonRegistry {
                 new ItemMuzzle("compensator_smg", 0.7F, 0.7F),
                 new ItemMuzzle("compensator_ar", 0.7F, 0.7F),
                 new ItemMuzzle("compensator_sniper", 0.7F, 0.7F),
-                new ItemScope("red_dot", new ScopeData(70, 1.0F)),
-                new ItemScope("holographic", new ScopeData(70, 1.0F)),
-                new ItemScope("scope2x", new ScopeData(45, 1.0F, Pubgmc.getResource("textures/overlay/scope2x.png"))),
-                new ItemScope("scope4x", new ScopeData(25, 1.0F, Pubgmc.getResource("textures/overlay/scope4x.png"))),
-                new ItemScope("scope8x", new ScopeData(10, 1.0F, Pubgmc.getResource("textures/overlay/scope8x.png"))),
-                new ItemScope("scope15x", new ScopeData(5, 1.0F, Pubgmc.getResource("textures/overlay/scope15x.png")), true),
+                new ItemScope("red_dot", new ScopeData()),
+                new ItemScope("holographic", new ScopeData()),
+                new ItemScope("scope2x", new ScopeData(45, 1.0F)),
+                new ItemScope("scope4x", new ScopeData(25, 1.0F)),
+                new ItemScope("scope8x", new ScopeData(12, 1.0F)),
+                new ItemScope("scope15x", new ScopeData(7, 1.0F), true),
                 new ItemGrip("grip_vertical", 0.8F, 1.0F),
                 new ItemGrip("grip_angled", 1.0F, 0.8F),
                 new ItemMagazine("quickdraw_mag_smg", false, true),
@@ -709,7 +709,7 @@ public class CommonRegistry {
                         .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
                         .weaponType(GunBase.GunType.DMR)
                         .sound(PMCSounds.gun_vss, 5f)
-                        .builtInScope(25, 1.0F, Pubgmc.getResource("textures/overlay/scopevss.png"))
+                        .builtInScope(25, 1.0F)
                         .attachments()
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})

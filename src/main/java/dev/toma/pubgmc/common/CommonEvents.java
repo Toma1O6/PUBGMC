@@ -5,6 +5,7 @@ import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.IWorldData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
@@ -196,6 +197,9 @@ public class CommonEvents {
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
         if(e.player instanceof EntityPlayerMP) {
             selectedSlotCache.remove(e.player.getUniqueID());
+            IPlayerData data = PlayerData.get(e.player);
+            data.getAimInfo().setAiming(false, 1.0F);
+            data.sync();
             PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP)e.player);
             CONFIGS.remove(e.player.getUniqueID());
         }
