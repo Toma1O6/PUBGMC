@@ -6,13 +6,14 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class AnimationType<A extends Animation> {
 
-    private static final AnimationType<?>[] TYPES = new AnimationType[6];
+    private static final AnimationType<?>[] TYPES = new AnimationType[7];
     public static final AnimationType<AnimatorAnimation> ANIMATOR_TYPE = create((processor, type, player) -> processor.play(type, new AnimatorAnimation(40)));
     public static final AnimationType<TickableAnimation> RECOIL_ANIMATION_TYPE = create(AnimationDispatcher::dispatchRecoilAnimationDefault);
     public static final AnimationType<AimAnimation> AIM_ANIMATION_TYPE = create(AnimationDispatcher::dispatchAimAnimationDefault);
     public static final AnimationType<MultiFrameAnimation> RELOAD_ANIMATION_TYPE = create(AnimationDispatcher::dispatchReloadAnimationDefault);
     public static final AnimationType<MultiFrameAnimation> SHOOT_ANIMATION_TYPE = create(AnimationDispatcher::dispatchShootAnimationDefault);
     public static final AnimationType<EquipAnimation> EQUIP_ANIMATION_TYPE = create(AnimationDispatcher::dispatchEquipAnimation);
+    public static final AnimationType<HeldAnimation> HELD_ANIMATION_TYPE = create(AnimationDispatcher::dispatchHeldAnimation);
 
     static int id;
     final Dispatcher<A> dispatcher;
@@ -31,7 +32,7 @@ public class AnimationType<A extends Animation> {
         return index;
     }
 
-    public static <A extends Animation> AnimationType<A> create(Dispatcher<A> dispatcher) {
+    private static <A extends Animation> AnimationType<A> create(Dispatcher<A> dispatcher) {
         return new AnimationType<>(dispatcher);
     }
 
@@ -40,7 +41,7 @@ public class AnimationType<A extends Animation> {
         return (AnimationType<A>) TYPES[id];
     }
 
-    public interface Dispatcher<A extends Animation> {
+    protected interface Dispatcher<A extends Animation> {
         void dispatch(AnimationProcessor processor, AnimationType<A> type, EntityPlayer player);
     }
 }

@@ -1,10 +1,7 @@
 package dev.toma.pubgmc.client.animation;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.client.animation.impl.AimAnimation;
-import dev.toma.pubgmc.client.animation.impl.EquipAnimation;
-import dev.toma.pubgmc.client.animation.impl.MultiFrameAnimation;
-import dev.toma.pubgmc.client.animation.impl.TickableAnimation;
+import dev.toma.pubgmc.client.animation.impl.*;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.proxy.ClientProxy;
@@ -21,9 +18,11 @@ public class AnimationDispatcher {
         processor.play(type, new MultiFrameAnimation(2, AnimationSpec.jump(AnimationElement.ITEM_AND_HANDS, 0.0, 0.0, scale, pitch, yaw, 0.0)));
     }
 
-    public static void dispatchRecoilAnimationDefault(float yaw, float pitch) {
-        float scale = Math.min(Math.abs(yaw * pitch) * 0.05F, 0.1F);
-        AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, new MultiFrameAnimation(2, AnimationSpec.jump(AnimationElement.ITEM_AND_HANDS, 0.0, 0.0, scale, pitch, yaw, 0.0)));
+    public static void dispatchRecoilAnimationDefault(float yaw, float pitch, boolean aim) {
+        float zModifier = aim ? 0.01F : 0.05F;
+        float rotModifier = aim ? 1.0F : 1.2F;
+        float scale = Math.min(Math.abs(yaw * pitch) * zModifier, 0.1F);
+        AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, new MultiFrameAnimation(2, AnimationSpec.jump(AnimationElement.ITEM_AND_HANDS, 0.0, 0.0, scale, pitch * rotModifier, yaw * rotModifier, 0.0)));
     }
 
     public static void dispatchAimAnimation(GunBase item, ItemStack stack) {
@@ -80,5 +79,9 @@ public class AnimationDispatcher {
             AnimationSpec spec = ClientProxy.getAnimationLoader().getAnimationSpecification(key);
             processor.play(type, new EquipAnimation(spec));
         }
+    }
+
+    public static void dispatchHeldAnimation(AnimationProcessor processor, AnimationType<HeldAnimation> type, EntityPlayer player) {
+        processor.play(type, new HeldAnimation());
     }
 }

@@ -42,10 +42,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -58,7 +54,6 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -67,7 +62,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
-import java.util.UUID;
 
 public class ClientEvents {
 
@@ -342,7 +336,7 @@ public class ClientEvents {
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                     tracker.add(gun);
                                     if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                    applyRecoil(player, stack, gun);
+                                    applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                                 } else {
                                     player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                                 }
@@ -374,6 +368,8 @@ public class ClientEvents {
         }
     }
 
+    private static boolean bobbingBackup;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClientTick(TickEvent.ClientTickEvent ev) {
         Minecraft mc = Minecraft.getMinecraft();
@@ -382,6 +378,14 @@ public class ClientEvents {
         if(ev.phase == Phase.END) {
             if(mc.currentScreen instanceof ITickable) {
                 ((ITickable) mc.currentScreen).update();
+            }
+            if(player != null) {
+                bobbingBackup = gs.viewBobbing;
+                if(player.getHeldItemMainhand().getItem() instanceof GunBase) {
+
+                } else {
+
+                }
             }
             AnimationProcessor.instance().processTick();
         }
@@ -402,7 +406,7 @@ public class ClientEvents {
                     if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
                         if (gun.hasAmmo(stack)) {
                             PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                            this.applyRecoil(player, stack, gun);
+                            this.applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                             tracker.add(gun);
                         } else {
                             player.playSound(PMCSounds.gun_noammo, 4f, 1f);
@@ -420,7 +424,7 @@ public class ClientEvents {
                         shootingTimer++;
                         if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
                             PacketHandler.INSTANCE.sendToServer(new PacketShoot());
-                            applyRecoil(player, stack, gun);
+                            applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                             shotsFired++;
                             shootingTimer = 0;
                         }
@@ -469,7 +473,7 @@ public class ClientEvents {
         return false;
     }
 
-    private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun) {
+    private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun, boolean aiming) {
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         ItemGrip grip = gun.getAttachment(AttachmentType.GRIP, stack);
         float vertical = 1.0F;
@@ -494,7 +498,7 @@ public class ClientEvents {
         float h = Pubgmc.rng().nextBoolean() ? -gun.getHorizontalRecoil() * horizontal : gun.getHorizontalRecoil() * horizontal;
         player.rotationPitch -= v;
         player.rotationYaw -= h;
-        AnimationDispatcher.dispatchRecoilAnimationDefault(h, v);
+        AnimationDispatcher.dispatchRecoilAnimationDefault(h, v, aiming);
         AnimationDispatcher.dispatchShootAnimation(gun);
     }
 

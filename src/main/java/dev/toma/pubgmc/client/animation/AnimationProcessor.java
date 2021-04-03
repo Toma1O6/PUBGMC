@@ -17,11 +17,14 @@ public class AnimationProcessor {
     private static final AnimationProcessor INSTANCE = new AnimationProcessor();
     private final Map<AnimationType<?>, Animation> animations = new HashMap<>();
 
-    AnimationProcessor() {}
+    AnimationProcessor() {
+        play(AnimationType.HELD_ANIMATION_TYPE);
+    }
 
     public <A extends Animation> void play(AnimationType<A> type) {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        type.getDispatcher().dispatch(this, type, player);
+        AnimationType.Dispatcher<A> dispatcher = type.getDispatcher();
+        dispatcher.dispatch(this, type, player);
     }
 
     public <A extends Animation> void play(AnimationType<A> type, A animation) {
