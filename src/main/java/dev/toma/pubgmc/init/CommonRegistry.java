@@ -205,7 +205,7 @@ public class CommonRegistry {
                 new ItemScope("scope2x", new ScopeData(45, 1.0F, Pubgmc.getResource("textures/overlay/scope2x.png"))),
                 new ItemScope("scope4x", new ScopeData(25, 1.0F, Pubgmc.getResource("textures/overlay/scope4x.png"))),
                 new ItemScope("scope8x", new ScopeData(10, 1.0F, Pubgmc.getResource("textures/overlay/scope8x.png"))),
-                new ItemScope("scope15x", new ScopeData(5, 1.0F, Pubgmc.getResource("textures/overlay/scope15x.png"))),
+                new ItemScope("scope15x", new ScopeData(5, 1.0F, Pubgmc.getResource("textures/overlay/scope15x.png")), true),
                 new ItemGrip("grip_vertical", 0.8F, 1.0F),
                 new ItemGrip("grip_angled", 1.0F, 0.8F),
                 new ItemMagazine("quickdraw_mag_smg", false, true),

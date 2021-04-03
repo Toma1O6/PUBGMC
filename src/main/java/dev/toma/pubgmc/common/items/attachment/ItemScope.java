@@ -14,7 +14,11 @@ public class ItemScope extends ItemAttachment implements Scope {
     final ScopeData data;
 
     public ItemScope(String name, ScopeData data) {
-        super(name);
+        this(name, data, false);
+    }
+
+    public ItemScope(String name, ScopeData data, boolean airdropOnly) {
+        super(name, airdropOnly);
         this.data = data;
     }
 

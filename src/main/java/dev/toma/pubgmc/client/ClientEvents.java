@@ -102,7 +102,6 @@ public class ClientEvents {
             event.setCanceled(true);
             float pitch = DevUtil.lerp(player.rotationPitch, player.prevRotationPitch, partial);
             float swing = event.getSwingProgress();
-            float equip = event.getEquipProgress();
             AnimationProcessor processor = AnimationProcessor.instance();
             GlStateManager.pushMatrix();
             {
@@ -112,8 +111,6 @@ public class ClientEvents {
                     processor.process(AnimationElement.HANDS);
                     GlStateManager.pushMatrix();
                     {
-                        float yOff = -0.5F * equip;
-                        //GlStateManager.translate(0, yOff, 0);
                         GlStateManager.disableCull();
                         GlStateManager.pushMatrix();
                         {
@@ -365,7 +362,8 @@ public class ClientEvents {
 
                 //Aiming on RMB press
                 if (gs.keyBindUseItem.isPressed() && isEquipAnimationDone(mc)) {
-                    if (!data.getAimInfo().isAiming() && !player.isSprinting()) {
+                    if (!data.getAimInfo().isAiming()) {
+                        player.setSprinting(false);
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
                     } else {
