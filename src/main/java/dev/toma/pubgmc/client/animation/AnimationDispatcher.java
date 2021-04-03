@@ -19,8 +19,8 @@ public class AnimationDispatcher {
     }
 
     public static void dispatchRecoilAnimationDefault(float yaw, float pitch, boolean aim) {
-        float zModifier = aim ? 0.01F : 0.05F;
-        float rotModifier = aim ? 1.0F : 1.2F;
+        float zModifier = aim ? 0.007F : 0.05F;
+        float rotModifier = aim ? 0.4F : 1.2F;
         float scale = Math.min(Math.abs(yaw * pitch) * zModifier, 0.1F);
         AnimationProcessor.instance().play(AnimationType.RECOIL_ANIMATION_TYPE, new MultiFrameAnimation(2, AnimationSpec.jump(AnimationElement.ITEM_AND_HANDS, 0.0, 0.0, scale, pitch * rotModifier, yaw * rotModifier, 0.0)));
     }

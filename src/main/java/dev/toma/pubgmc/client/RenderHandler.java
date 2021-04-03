@@ -29,13 +29,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RenderHandler {
 
     public static float fovBackup;
+    public static float sensBackup;
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
     }
 
     public RenderHandler() {
-        fovBackup = Minecraft.getMinecraft().gameSettings.fovSetting;
+        Minecraft mc = Minecraft.getMinecraft();
+        GameSettings settings = mc.gameSettings;
+        fovBackup = settings.fovSetting;
+        sensBackup = settings.mouseSensitivity;
     }
 
     @SubscribeEvent

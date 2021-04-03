@@ -62,6 +62,7 @@ public class PacketClientCapabilitySync implements IMessage {
                 }
                 if(!data.getAimInfo().isAiming()) {
                     mc.gameSettings.fovSetting = RenderHandler.fovBackup;
+                    mc.gameSettings.mouseSensitivity = RenderHandler.sensBackup;
                 }
             });
             return null;

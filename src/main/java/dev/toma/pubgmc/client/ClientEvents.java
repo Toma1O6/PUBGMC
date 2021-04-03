@@ -22,6 +22,7 @@ import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
+import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
@@ -359,10 +360,16 @@ public class ClientEvents {
                     if (!data.getAimInfo().isAiming()) {
                         player.setSprinting(false);
                         RenderHandler.fovBackup = gs.fovSetting;
+                        RenderHandler.sensBackup = gs.mouseSensitivity;
+                        ScopeData scopeData = gun.getScopeData(stack);
+                        if(scopeData != null && scopeData.getMouseSens() < 1.0F) {
+                            gs.mouseSensitivity *= scopeData.getMouseSens();
+                        }
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
                     } else {
                         gs.fovSetting = RenderHandler.fovBackup;
+                        gs.mouseSensitivity = RenderHandler.sensBackup;
                         PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
                 }
