@@ -53,7 +53,15 @@ public class SPacketSetProperty implements IMessage {
         AIM((player, aBoolean) -> {
             IPlayerData data = PlayerData.get(player);
             AimInfo info = data.getAimInfo();
-            info.setAiming(aBoolean, AimInfo.STOP_AIMING_SPEED);
+            float speed = AimInfo.STOP_AIMING_SPEED;
+            if(aBoolean) {
+                ItemStack stack = player.getHeldItemMainhand();
+                if(stack.getItem() instanceof GunBase) {
+                    GunBase gunBase = (GunBase) stack.getItem();
+                    speed *= gunBase.getAimSpeedMultiplier(stack);
+                }
+            }
+            info.setAiming(aBoolean, speed);
             data.sync();
         }),
         RELOAD((player, aBoolean) -> {

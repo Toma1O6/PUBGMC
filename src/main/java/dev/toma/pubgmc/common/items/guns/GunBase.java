@@ -244,6 +244,19 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         return scope != null ? scope.getData() : null;
     }
 
+    public float getAimSpeedMultiplier(ItemStack stack) {
+        float f0 = 1.0F;
+        ItemStock stock = getAttachment(AttachmentType.STOCK, stack);
+        if(stock != null) {
+            f0 = stock.applyAdsSpeedMultiplier(f0);
+        }
+        ItemGrip grip = getAttachment(AttachmentType.GRIP, stack);
+        if(grip != null) {
+            f0 = grip.applyAdsSpeedMultiplier(f0);
+        }
+        return f0;
+    }
+
     public NBTTagCompound getOrCreateGunData(ItemStack stack) {
         if(!stack.hasTagCompound()) {
             NBTTagCompound nbt = new NBTTagCompound();
