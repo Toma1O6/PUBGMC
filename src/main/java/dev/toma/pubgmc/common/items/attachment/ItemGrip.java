@@ -2,12 +2,11 @@ package dev.toma.pubgmc.common.items.attachment;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemGrip extends ItemAttachment implements Grip {
+public class ItemGrip extends ItemAttachment {
 
     final float verticalRecoil;
     final float horizontalRecoil;
@@ -29,17 +28,14 @@ public class ItemGrip extends ItemAttachment implements Grip {
         return AttachmentType.GRIP;
     }
 
-    @Override
     public float applyVerticalRecoilMultiplier(float in) {
         return in * verticalRecoil;
     }
 
-    @Override
     public float applyHorizontalRecoilMultiplier(float in) {
         return in * horizontalRecoil;
     }
 
-    @Override
     public float applyAdsSpeedMultiplier(float in) {
         return in * ads;
     }

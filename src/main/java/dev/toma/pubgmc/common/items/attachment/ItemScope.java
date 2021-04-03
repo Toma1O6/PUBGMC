@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ItemScope extends ItemAttachment implements Scope {
+public class ItemScope extends ItemAttachment {
 
     final ScopeData data;
 
@@ -27,12 +27,10 @@ public class ItemScope extends ItemAttachment implements Scope {
         return AttachmentType.SCOPE;
     }
 
-    @Override
     public int getZoom(int fov) {
         return data.getZoom() < 0 ? fov : data.getZoom();
     }
 
-    @Override
     public float getMouseSensMultiplier() {
         return data.getMouseSens();
     }

@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemMagazine extends ItemAttachment implements Magazine {
+public class ItemMagazine extends ItemAttachment {
 
     final boolean extended;
     final boolean quickdraw;
@@ -23,12 +23,10 @@ public class ItemMagazine extends ItemAttachment implements Magazine {
         return AttachmentType.MAGAZINE;
     }
 
-    @Override
     public boolean isExtended() {
         return extended;
     }
 
-    @Override
     public boolean isQuickdraw() {
         return quickdraw;
     }

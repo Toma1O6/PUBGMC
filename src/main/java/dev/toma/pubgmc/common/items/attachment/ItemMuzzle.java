@@ -2,13 +2,12 @@ package dev.toma.pubgmc.common.items.attachment;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemMuzzle extends ItemAttachment implements Muzzle {
+public class ItemMuzzle extends ItemAttachment {
 
     final float verticalRecoil;
     final float horizontalRecoil;
@@ -34,17 +33,14 @@ public class ItemMuzzle extends ItemAttachment implements Muzzle {
         return AttachmentType.MUZZLE;
     }
 
-    @Override
     public float applyVerticalRecoilMultiplier(float in) {
         return in * verticalRecoil;
     }
 
-    @Override
     public float applyHorizontalRecoilMultiplier(float in) {
         return in * horizontalRecoil;
     }
 
-    @Override
     public boolean isSilenced() {
         return silent;
     }

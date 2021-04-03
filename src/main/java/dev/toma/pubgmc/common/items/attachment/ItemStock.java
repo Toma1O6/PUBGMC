@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemStock extends ItemAttachment implements Stock {
+public class ItemStock extends ItemAttachment {
 
     final boolean fastReload;
     final float ads;
@@ -23,12 +23,10 @@ public class ItemStock extends ItemAttachment implements Stock {
         return AttachmentType.STOCK;
     }
 
-    @Override
     public boolean isFasterReload() {
         return fastReload;
     }
 
-    @Override
     public float applyAdsSpeedMultiplier(float in) {
         return in * ads;
     }
