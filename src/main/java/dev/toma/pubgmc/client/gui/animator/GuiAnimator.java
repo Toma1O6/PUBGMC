@@ -85,6 +85,9 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                     }
                 })
         );
+        addWidget(
+                new ButtonWidget(325, 5, 65, 20, "Connector", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(new GuiConnectAnimations(this)))
+        );
         addWidget(new AnimationLengthWidget(5, 30, 165, 15, timeline));
         frameWidget = new ModifyFrameWidget(0, height - third - 100, 170, 100, this);
         for (Widget widget1 : frameWidget.widgets) {

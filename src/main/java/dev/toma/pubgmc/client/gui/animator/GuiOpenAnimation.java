@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class GuiOpenAnimation extends GuiWidgets {
 
-    static final Pattern PATTERN = Pattern.compile("[a-zA-Z0-9:_\\s]");
+    public static final Pattern PATTERN = Pattern.compile("[a-zA-Z0-9:_\\s]");
     final GuiAnimator parent;
     TextFieldWidget textField;
 

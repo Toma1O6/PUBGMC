@@ -68,6 +68,10 @@ public class CheckboxWidget extends Widget {
         clickCallback.clicked(selected, mouseX, mouseY, this);
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
     @Override
     public boolean isMouseOver(int mouseX, int mouseY) {
         return mouseX >= x && mouseX <= Math.min(x + width, x + height) && mouseY >= y && mouseY <= y + height;
