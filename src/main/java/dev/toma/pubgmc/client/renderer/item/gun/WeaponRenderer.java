@@ -42,7 +42,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
     private final Map<ItemScope, ResourceLocation> attachment2AimAnimationMap = new HashMap<>();
     private IntHashMap<ResourceLocation> reloadAnimations;
     private Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
-    private ResourceLocation shootAnimation = Pubgmc.getResource(getResourcePrefix() + "_shoot");
+    private final ResourceLocation shootAnimation = Pubgmc.getResource(getResourcePrefix() + "_shoot");
 
     public WeaponRenderer() {
         this.handRenderConfigs = createHandRenderConfigs();

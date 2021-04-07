@@ -7,14 +7,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class AnimationProcessor {
 
     private static final AnimationProcessor INSTANCE = new AnimationProcessor();
+    private final List<ScheduledAnimation<?>> scheduledAnimations = new ArrayList<>();
     private final Map<AnimationType<?>, Animation> animations = new HashMap<>();
 
     AnimationProcessor() {
@@ -32,6 +30,10 @@ public class AnimationProcessor {
             animations.put(type, animation);
     }
 
+    public <A extends Animation> void schedule(AnimationType<A> type, A animation, int ticks) {
+        scheduledAnimations.add(new ScheduledAnimation<>(type, animation, ticks));
+    }
+
     public void stop(AnimationType<?> type) {
         animations.remove(type);
     }
@@ -45,7 +47,16 @@ public class AnimationProcessor {
         return animations.containsKey(type);
     }
 
-    public void processTick() {
+    public <A extends Animation> void processTick() {
+        Iterator<ScheduledAnimation<?>> iterator = scheduledAnimations.iterator();
+        while (iterator.hasNext()) {
+            ScheduledAnimation<A> scheduledAnimation = (ScheduledAnimation<A>) iterator.next();
+            scheduledAnimation.tick();
+            if(scheduledAnimation.ticksRemaining == 0) {
+                play(scheduledAnimation.type, scheduledAnimation.animation);
+                iterator.remove();
+            }
+        }
         Iterator<Animation> itr = animations.values().iterator();
         while (itr.hasNext()) {
             Animation animation = itr.next();
@@ -95,5 +106,22 @@ public class AnimationProcessor {
 
     public static AnimationProcessor instance() {
         return INSTANCE;
+    }
+
+    private static class ScheduledAnimation<A extends Animation> {
+
+        final AnimationType<A> type;
+        final A animation;
+        int ticksRemaining;
+
+        private ScheduledAnimation(AnimationType<A> type, A animation, int ticks) {
+            this.type = type;
+            this.animation = animation;
+            this.ticksRemaining = ticks;
+        }
+
+        private void tick() {
+            --ticksRemaining;
+        }
     }
 }

@@ -36,9 +36,13 @@ public class ModelScope8x extends ModelAttachment<ItemScope> {
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -5.0F, -15.0F, -7.5F, 1, 4, 4, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -18.0F, -7.5F, 4, 1, 4, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -9.0F, 4.5F, 4, 1, 4, 0.0F, false));
+		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -9.0F, 11.5F, 4, 1, 4, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, 4.0F, -15.0F, 4.5F, 1, 4, 4, 0.0F, false));
+		bone.cubeList.add(new ModelBox(bone, 71, 68, 4.0F, -15.0F, 11.5F, 1, 4, 4, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -5.0F, -15.0F, 4.5F, 1, 4, 4, 0.0F, false));
+		bone.cubeList.add(new ModelBox(bone, 71, 68, -5.0F, -15.0F, 11.5F, 1, 4, 4, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -18.0F, 4.5F, 4, 1, 4, 0.0F, false));
+		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -18.0F, 11.5F, 4, 1, 4, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, 3.0F, -15.0F, -13.5F, 1, 4, 6, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -10.0F, -13.5F, 4, 1, 6, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -17.0F, -13.5F, 4, 1, 6, 0.0F, false));
@@ -47,14 +51,6 @@ public class ModelScope8x extends ModelAttachment<ItemScope> {
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -10.0F, 8.5F, 4, 1, 6, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -17.0F, 8.5F, 4, 1, 6, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -4.0F, -15.0F, 8.5F, 1, 4, 6, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, 3.0F, -16.0F, 14.5F, 1, 6, 4, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, 2.5F, -16.0F, 15.5F, 1, 6, 2, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, -3.0F, -10.0F, 14.5F, 6, 1, 4, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, -3.0F, -10.5F, 15.5F, 6, 1, 2, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, -3.0F, -17.0F, 14.5F, 6, 1, 4, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, -3.0F, -16.5F, 15.5F, 6, 1, 2, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, -4.0F, -16.0F, 14.5F, 1, 6, 4, 0.0F, false));
-		bone.cubeList.add(new ModelBox(bone, 71, 68, -3.5F, -16.0F, 15.5F, 1, 6, 2, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, 4.0F, -15.0F, -15.5F, 1, 4, 2, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -2.0F, -18.0F, -15.5F, 4, 1, 2, 0.0F, false));
 		bone.cubeList.add(new ModelBox(bone, 71, 68, -5.0F, -15.0F, -15.5F, 1, 4, 2, 0.0F, false));
@@ -83,22 +79,6 @@ public class ModelScope8x extends ModelAttachment<ItemScope> {
 		bone2.setRotationPoint(8.5F, -4.0F, 16.5F);
 		bone.addChild(bone2);
 		setRotationAngle(bone2, 0.0F, 0.0F, -0.7854F);
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -12.6673F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 3.8033F, -12.6673F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -13.0815F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 3.8033F, -13.0815F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.5962F, -12.6673F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.0962F, -12.6673F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.5962F, -13.0815F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.0962F, -13.0815F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -0.3536F, -8.4246F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -0.3536F, -8.9246F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -0.3536F, -17.3241F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -0.3536F, -16.8241F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.0607F, -17.3241F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.0607F, -16.8241F, -1.0F, 1, 1, 2, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.0607F, -8.4246F, -2.0F, 1, 1, 4, 0.0F, false));
-		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.0607F, -8.9246F, -1.0F, 1, 1, 2, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 3.5962F, -11.9602F, -8.0F, 1, 1, 6, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 3.5962F, -13.7886F, -8.0F, 1, 2, 6, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.7678F, -9.1317F, -8.0F, 1, 1, 6, 0.0F, false));
@@ -132,13 +112,21 @@ public class ModelScope8x extends ModelAttachment<ItemScope> {
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -13.253F, -24.0F, 1, 3, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -14.4957F, -24.0F, 1, 2, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -1.7678F, -17.3241F, -12.0F, 3, 1, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -1.7678F, -17.3241F, -5.0F, 3, 1, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.4749F, -17.3241F, -12.0F, 2, 1, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.4749F, -17.3241F, -5.0F, 2, 1, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -14.4957F, -12.0F, 1, 2, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -14.4957F, -5.0F, 1, 2, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -13.253F, -12.0F, 1, 3, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -13.253F, -5.0F, 1, 3, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -0.5251F, -8.4246F, -12.0F, 3, 1, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -0.5251F, -8.4246F, -5.0F, 3, 1, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -1.7678F, -8.4246F, -12.0F, 2, 1, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -1.7678F, -8.4246F, -5.0F, 2, 1, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.5962F, -12.253F, -12.0F, 1, 2, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.5962F, -12.253F, -5.0F, 1, 2, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.5962F, -14.4957F, -12.0F, 1, 3, 4, 0.0F, false));
+		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -4.5962F, -14.4957F, -5.0F, 1, 3, 4, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, -1.7678F, -17.3241F, -32.0F, 3, 1, 2, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 0.4749F, -17.3241F, -32.0F, 2, 1, 2, 0.0F, false));
 		bone2.cubeList.add(new ModelBox(bone2, 71, 68, 4.3033F, -14.4957F, -32.0F, 1, 2, 2, 0.0F, false));
@@ -214,12 +202,12 @@ public class ModelScope8x extends ModelAttachment<ItemScope> {
 
 		reticle = new ModelRenderer(this);
 		reticle.setRotationPoint(0.0F, 24.0F, 0.0F);
-		reticle.cubeList.add(new ExtendedModelBox(reticle, -3.0F, -16.0F, 17.0F, 6, 6, 0, 0.0F));
+		reticle.cubeList.add(new ExtendedModelBox(reticle, -3.0F, -16.0F, 13.85F, 6, 6, 0, 0.0F));
 
 		overlay = new ModelRenderer(this);
 		overlay.setRotationPoint(0.0F, 24.0F, 0.0F);
-		overlay.cubeList.add(new ExtendedModelBox(overlay, -3.0F, -16.0F, 17.3F, 6, 6, 0, 0.0F));
-		overlay.cubeList.add(new ExtendedModelBox(overlay, -4.0F, -17.0F, -18.7F, 8, 8, 0, 0.0F));
+		overlay.cubeList.add(new ExtendedModelBox(overlay, -3.0F, -16.0F, 14.15F, 6, 6, 0, 0.0F));
+		overlay.cubeList.add(new ExtendedModelBox(overlay, -4.0F, -17.0F, -18.85F, 8, 8, 0, 0.0F));
 	}
 
 	@Override

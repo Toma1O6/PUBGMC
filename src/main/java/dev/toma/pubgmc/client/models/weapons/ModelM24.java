@@ -526,7 +526,6 @@ public class ModelM24 extends ModelGun {
 
         bolt_case = new ModelRenderer(this);
         bolt_case.setRotationPoint(2.0F, 14.0F, -12.0F);
-        bolt_case.cubeList.add(new ModelBox(bolt_case, 0, 0, -3.5F, -1.0F, -0.9F, 3, 3, 1, 0.0F, false));
         bolt_case.cubeList.add(new ModelBox(bolt_case, 0, 3, -3.0F, -0.5F, 0.0F, 2, 2, 19, 0.0F, false));
         bolt_case.cubeList.add(new ModelBox(bolt_case, 0, 3, -3.0F, -0.5F, 20.0F, 2, 2, 2, 0.0F, false));
         bolt_case.cubeList.add(new ModelBox(bolt_case, 0, 3, -3.0F, -0.5F, 19.0F, 1, 0, 1, 0.0F, false));

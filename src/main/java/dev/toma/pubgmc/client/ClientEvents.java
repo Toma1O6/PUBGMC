@@ -336,7 +336,10 @@ public class ClientEvents {
                                 if (gun.hasAmmo(stack)) {
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                     tracker.add(gun);
-                                    if(gun.getAction() != null) Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
+                                    if(gun.getAction() != null) {
+                                        Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
+                                        setAiming(data, false);
+                                    }
                                     applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                                 } else {
                                     player.playSound(PMCSounds.gun_noammo, 4f, 1f);

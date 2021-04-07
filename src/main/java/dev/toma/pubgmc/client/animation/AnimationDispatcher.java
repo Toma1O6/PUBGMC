@@ -58,7 +58,11 @@ public class AnimationDispatcher {
 
     public static void dispatchShootAnimation(GunBase gun) {
         AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
-        AnimationProcessor.instance().play(AnimationType.SHOOT_ANIMATION_TYPE, new MultiFrameAnimation(Math.min(gun.getFireRate(), 3), spec));
+        if(gun.getAction() != null) {
+            AnimationProcessor.instance().schedule(AnimationType.SHOOT_ANIMATION_TYPE, new MultiFrameAnimation(30, spec), 10);
+        } else {
+            AnimationProcessor.instance().play(AnimationType.SHOOT_ANIMATION_TYPE, new MultiFrameAnimation(Math.min(gun.getFireRate(), 3), spec));
+        }
     }
 
     public static void dispatchShootAnimationDefault(AnimationProcessor processor, AnimationType<MultiFrameAnimation> type, EntityPlayer player) {
