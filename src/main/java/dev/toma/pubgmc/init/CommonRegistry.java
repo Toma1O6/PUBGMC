@@ -28,6 +28,7 @@ import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.config.common.CFGWeapons;
+import dev.toma.pubgmc.util.Constants;
 import dev.toma.pubgmc.util.helper.AttachmentHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -202,10 +203,10 @@ public class CommonRegistry {
                 new ItemMuzzle("compensator_sniper", 0.7F, 0.7F),
                 new ItemScope("red_dot", new ScopeData()),
                 new ItemScope("holographic", new ScopeData()),
-                new ItemScope("scope2x", new ScopeData(45, 0.85F)),
-                new ItemScope("scope4x", new ScopeData(25, 0.60F)),
-                new ItemScope("scope8x", new ScopeData(12, 0.35F)),
-                new ItemScope("scope15x", new ScopeData(7, 0.15F), true),
+                new ItemScope("scope2x", new ScopeData(Constants.SCOPE_2X_ZOOM, () -> ConfigPMC.client.reticles.scope2xSensitivity.getAsFloat())),
+                new ItemScope("scope4x", new ScopeData(Constants.SCOPE_4X_ZOOM, () -> ConfigPMC.client.reticles.scope4xSensitivity.getAsFloat())),
+                new ItemScope("scope8x", new ScopeData(Constants.SCOPE_8X_ZOOM, () -> ConfigPMC.client.reticles.scope8xSensitivity.getAsFloat())),
+                new ItemScope("scope15x", new ScopeData(Constants.SCOPE_15X_ZOOM, () -> ConfigPMC.client.reticles.scope15xSensitivity.getAsFloat()), true),
                 new ItemGrip("grip_vertical", 0.8F, 1.0F),
                 new ItemGrip("grip_angled", 1.0F, 0.8F),
                 new ItemMagazine("quickdraw_mag_smg", false, true),
@@ -709,7 +710,7 @@ public class CommonRegistry {
                         .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
                         .weaponType(GunBase.GunType.DMR)
                         .sound(PMCSounds.gun_vss, 5f)
-                        .builtInScope(25, 1.0F)
+                        .builtInScope(Constants.SCOPE_4X_ZOOM, () -> ConfigPMC.client.reticles.scope4xSensitivity.getAsFloat())
                         .attachments()
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})

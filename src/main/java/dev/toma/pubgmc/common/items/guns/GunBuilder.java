@@ -134,7 +134,7 @@ public class GunBuilder {
         return this;
     }
 
-    public GunBuilder builtInScope(int zoom, float mouseSens) {
+    public GunBuilder builtInScope(int zoom, Supplier<Float> mouseSens) {
         this.customScope = new ScopeData(zoom, mouseSens);
         return this;
     }

@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class ModelAttachment<I extends ItemAttachment> extends ModelBase {
 
-    static final ResourceLocation OVERLAY = Pubgmc.getResource("textures/white_texture.png");
+    public static final ResourceLocation OVERLAY = Pubgmc.getResource("textures/white_texture.png");
 
     public abstract void render(float aimPct);
 

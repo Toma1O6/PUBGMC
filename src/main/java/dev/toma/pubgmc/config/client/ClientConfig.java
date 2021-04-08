@@ -10,7 +10,7 @@ public final class ClientConfig extends ObjectType {
     public CFGOverlaySettings overlays;
     public CFGOtherSettings other;
     public CFGContentSettings content;
-    public CFGReticles reticles;
+    public CFGScopes reticles;
 
     public ClientConfig(ConfigPlugin plugin) {
         super("Client", "All client-side related stuff is here");
@@ -22,6 +22,6 @@ public final class ClientConfig extends ObjectType {
         overlays = configCreator.createObject(new CFGOverlaySettings(plugin), plugin);
         other = configCreator.createObject(new CFGOtherSettings(), plugin);
         content = configCreator.createObject(new CFGContentSettings(), plugin);
-        reticles = configCreator.createObject(new CFGReticles(), plugin);
+        reticles = configCreator.createObject(new CFGScopes(), plugin);
     }
 }

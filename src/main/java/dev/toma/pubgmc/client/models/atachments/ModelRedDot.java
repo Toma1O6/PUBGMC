@@ -3,7 +3,7 @@ package dev.toma.pubgmc.client.models.atachments;
 import dev.toma.pubgmc.client.models.renderer.ExtendedModelBox;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.client.CFGReticles;
+import dev.toma.pubgmc.config.client.CFGScopes;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
@@ -113,7 +113,7 @@ public class ModelRedDot extends ModelAttachment<ItemScope> {
 
 	@Override
 	public void render(float aimPct) {
-		CFGReticles reticles = ConfigPMC.client.reticles;
+		CFGScopes reticles = ConfigPMC.client.reticles;
 		renderReticle(aimPct, bone, reticle, reticles.redDotVariants.get().getResource(), reticles.redDotColor.getColor());
 	}
 

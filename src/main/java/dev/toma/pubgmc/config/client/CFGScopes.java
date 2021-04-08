@@ -3,27 +3,38 @@ package dev.toma.pubgmc.config.client;
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.ColorType;
+import dev.toma.configuration.api.type.DoubleType;
 import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.configuration.api.util.NumberDisplayType;
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.type.PMCConfigCreator;
 import dev.toma.pubgmc.config.type.TextureType;
 
-public class CFGReticles extends ObjectType {
+public class CFGScopes extends ObjectType {
 
+    public DoubleType scope2xSensitivity;
+    public DoubleType scope4xSensitivity;
+    public DoubleType scope8xSensitivity;
+    public DoubleType scope15xSensitivity;
     public ColorType redDotColor;
     public ColorType holographicColor;
     public TextureType redDotVariants;
     public TextureType holographicVariants;
     public BooleanType glowingReticles;
 
-    public CFGReticles() {
-        super("Reticles", "Configure your reticles here");
+    public CFGScopes() {
+        super("Scopes", "Configure your reticles here");
     }
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
         PMCConfigCreator creator = (PMCConfigCreator) configCreator;
         glowingReticles = creator.createBoolean("Glowing reticles", true, "Reticles will be rendered with full brightness");
+        scope2xSensitivity = creator.createDouble("2X scope sensitivity", 0.85F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
+        scope4xSensitivity = creator.createDouble("4X scope sensitivity", 0.6F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
+        scope8xSensitivity = creator.createDouble("8X scope sensitivity", 0.35F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
+        scope15xSensitivity = creator.createDouble("15X scope sensitivity", 0.15F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
         redDotColor = creator.createColorARGB("Red dot color", "#FFFF0000", "Manages color of red dot reticle");
         holographicColor = creator.createColorARGB("Holographic color", "#FFFF0000", "Manages color of holographic reticle");
         redDotVariants = creator.createTextureArray("Red dot variant", 0, new TextureType.Entry[] {

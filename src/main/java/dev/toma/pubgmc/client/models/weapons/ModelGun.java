@@ -1,7 +1,12 @@
 package dev.toma.pubgmc.client.models.weapons;
 
+import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
+import dev.toma.pubgmc.client.models.atachments.ModelAttachment;
+import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
@@ -12,8 +17,10 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,12 +70,24 @@ public abstract class ModelGun extends ModelBase {
         return list;
     }
 
-    public static boolean hasRedDot(ItemStack stack) {
-        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.RED_DOT);
-    }
-
-    public static boolean hasHoloSight(ItemStack stack) {
-        return has(stack, AttachmentType.SCOPE, scope -> scope == PMCItems.HOLOGRAPHIC);
+    public static void renderBuiltInScope(ModelRenderer scope, ModelRenderer reticle, ModelRenderer overlay, ResourceLocation texture) {
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.player;
+        float aimProgress = ClientHooks.getTransformType() == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? PlayerData.get(player).getAimInfo().getProgress(ClientHooks.getRenderTickTime()) : 0.0F;
+        float invertedAim = 1.0F - aimProgress;
+        TextureManager textureManager = mc.getTextureManager();
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(1.0F, 1.0F, 0.05F + 0.95F * invertedAim);
+        scope.render(1.0F);
+        textureManager.bindTexture(texture);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, aimProgress);
+        reticle.render(1.0F);
+        textureManager.bindTexture(ModelAttachment.OVERLAY);
+        GlStateManager.color(0.0F, 0.0F, 0.0F, invertedAim);
+        overlay.render(1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        textureManager.bindTexture(WeaponRenderer.GUN_TEXTURES);
+        GlStateManager.popMatrix();
     }
 
     public static boolean hasScopeAtachment(ItemStack stack) {

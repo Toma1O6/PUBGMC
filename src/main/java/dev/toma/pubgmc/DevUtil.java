@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 
 public class DevUtil {
 
-    private static final DecimalFormat _FFF = new DecimalFormat("#.###");
-    private static final DecimalFormat _FF = new DecimalFormat("#.##");
+    public static final DecimalFormat _FFF = new DecimalFormat("#.###");
+    public static final DecimalFormat _FF = new DecimalFormat("#.##");
 
     public static String formatToThreeDecimals(Number number) {
         return _FFF.format(number.doubleValue());
