@@ -9,7 +9,7 @@ import java.util.List;
 
 public final class AnimationElement implements Comparable<AnimationElement> {
 
-    private static AnimationElement[] elements = new AnimationElement[12];
+    private static AnimationElement[] elements = new AnimationElement[13];
     private static int id = 0;
     public static final AnimationElement ITEM_AND_HANDS = AnimationElement.create("base.hands.item");
     public static final AnimationElement HANDS = AnimationElement.create("base.hands");
@@ -23,6 +23,7 @@ public final class AnimationElement implements Comparable<AnimationElement> {
     public static final AnimationElement BULLET = AnimationElement.create("model.bullet");
     public static final AnimationElement BULLET1 = AnimationElement.create("model.bullet1");
     public static final AnimationElement BELT = AnimationElement.create("model.belt");
+    public static final AnimationElement TOP = AnimationElement.create("model.top");
     private static final LazyLoad<List<AnimationElement>> BASE_ELEMENTS = new LazyLoad<>(() -> {
         List<AnimationElement> list = new ArrayList<>();
         list.add(ITEM_AND_HANDS);
@@ -35,7 +36,7 @@ public final class AnimationElement implements Comparable<AnimationElement> {
     final int index = id++;
     final String name;
 
-    public static AnimationElement create(String name) {
+    private static AnimationElement create(String name) {
         AnimationElement element = new AnimationElement(name);
         int index = element.index;
         if(index >= elements.length)
