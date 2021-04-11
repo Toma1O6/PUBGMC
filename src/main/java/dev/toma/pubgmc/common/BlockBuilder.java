@@ -82,6 +82,17 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
         return this;
     }
 
+    public BlockBuilder nullAABB() {
+        this.boxes[1] = Block.NULL_AABB;
+        return this;
+    }
+
+    public BlockBuilder nullAABB(AxisAlignedBB bound) {
+        this.boxes[0] = bound;
+        this.boxes[1] = Block.NULL_AABB;
+        return this;
+    }
+
     public BlockBuilder soundType(SoundType type) {
         this.soundType = type;
         return this;
@@ -148,7 +159,7 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
 
             @Override
             public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-                return isGlass ? blockAccess.getBlockState(pos.offset(side)).getBlock() == this ? false : super.shouldSideBeRendered(blockState, blockAccess, pos, side) : super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+                return isGlass ? blockAccess.getBlockState(pos.offset(side)).getBlock() != this && super.shouldSideBeRendered(blockState, blockAccess, pos, side) : super.shouldSideBeRendered(blockState, blockAccess, pos, side);
             }
 
             @Override

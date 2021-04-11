@@ -20,10 +20,6 @@ public class ItemBackpack extends PMCItem {
         LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 10, false));
     }
 
-    private static void clearIcons(InventoryPlayer inv) {
-        inv.clearMatchingItems(PMCItems.IBLOCK, 0, inv.getSizeInventory() * 64, null);
-    }
-
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
@@ -64,8 +60,6 @@ public class ItemBackpack extends PMCItem {
 
             data.setBackpackLevel(3);
         }
-
-        clearIcons(playerIn.inventory);
 
         return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
     }

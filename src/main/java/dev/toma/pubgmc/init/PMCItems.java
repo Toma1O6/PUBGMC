@@ -22,7 +22,6 @@ public final class PMCItems {
     public static final ItemEnergyDrink ENERGYDRINK = null;
     public static final ItemPainkiller PAINKILLERS = null;
     public static final ItemAdrenalineSyringe ADRENALINESYRINGE = null;
-    public static final Item IBLOCK = null;
     public static final Item GHILLIE_SUIT = null;
     public static final ItemNVGoggles NV_GOGGLES = null;
     public static final FlareGun FLARE_GUN = null;
@@ -76,10 +75,6 @@ public final class PMCItems {
     public static final Item AMMO_762 = null;
     public static final Item AMMO_300M = null;
     public static final Item AMMO_FLARE = null;
-    public static final ItemSword PAN = null;
-    public static final ItemSword CROWBAR = null;
-    public static final ItemSword MACHETE = null;
-    public static final ItemSword SICKLE = null;
     public static final Item ARMOR1HELMET = null;
     public static final Item ARMOR1BODY = null;
     public static final Item ARMOR2HELMET = null;

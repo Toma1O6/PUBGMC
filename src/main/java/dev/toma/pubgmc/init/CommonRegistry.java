@@ -149,11 +149,18 @@ public class CommonRegistry {
                 BlockBuilder.create("metal_table", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("road_blocker", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.4, 0, 0.4, 0.6, 1, 0.6)).build(),
                 BlockBuilder.create("modern_lamp", Material.ROCK).soundType(SoundType.GLASS).light(1.0F).build(),
-                BlockBuilder.create("lamp_base", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
-                BlockBuilder.create("lamp_post", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
-                HorizontalBlockBuilder.create("lamp_top", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).build(),
                 HorizontalBlockBuilder.create("radiator", Material.IRON).soundType(SoundType.METAL).setTransparent().nullAABB().build(),
-                new BlockSmallChest()
+                new BlockSmallChest(),
+                BlockBuilder.create("canister", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                BlockBuilder.create("carrier_barrels_blue", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                BlockBuilder.create("carrier_barrels_red", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                BlockBuilder.create("carrier_barrels_white", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
+                BlockBuilder.create("carrier_empty_ground", Material.WOOD).soundType(SoundType.WOOD).setTransparent().aabb(new AxisAlignedBB(0, 0, 0, 1.0, 0.2, 1.0)).build(),
+                BlockBuilder.create("flare_stick", Material.CLOTH).soundType(SoundType.CLOTH).setTransparent().light(0.25F).nullAABB(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 0.1, 0.65)).build(),
+                BlockBuilder.create("metal_light", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.9, 0.7)).build(),
+                BlockBuilder.create("pole", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 1.0, 0.65)).build(),
+                BlockBuilder.create("pole_base", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.2, 0.0, 0.2, 0.8, 1.0, 0.8)).build(),
+                HorizontalBlockBuilder.create("pole_lamp_modern", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.7, 1.0)).build()
         );
     }
 
@@ -171,7 +178,6 @@ public class CommonRegistry {
                 new ItemEnergyDrink("energydrink"),
                 new ItemPainkiller("painkillers"),
                 new ItemAdrenalineSyringe("adrenalinesyringe"),
-                new PMCItem("iblock").setMaxStackSize(1),
                 new ItemGhillie("ghillie_suit"),
                 new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
                 new ItemExplodeable("grenade", 110, ItemExplodeable.Helper::onFragRemoved),

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pubgmc:pole_lamp_modern",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pubgmc:pole_lamp_modern",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pubgmc:pole_lamp_modern",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "pubgmc:pole_lamp_modern",
+      "y": 270
+    }
+  }
+}

@@ -262,14 +262,8 @@ public class CommonEvents {
     public void onItemDrop(ItemTossEvent e) {
         EntityPlayer player = e.getPlayer();
         EntityItem itemEntity = e.getEntityItem();
-
-        if (itemEntity.getItem().getItem() == PMCItems.IBLOCK) {
-            if (!player.capabilities.isCreativeMode) {
-                e.setCanceled(true);
-            }
-        }
         //Ammo returning back to inventory
-        else if (itemEntity.getItem().getItem() instanceof GunBase) {
+        if (itemEntity.getItem().getItem() instanceof GunBase) {
             ItemStack stack = itemEntity.getItem();
 
             if (stack.hasTagCompound() && !player.capabilities.isCreativeMode) {

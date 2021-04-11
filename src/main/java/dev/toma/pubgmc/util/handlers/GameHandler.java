@@ -202,16 +202,6 @@ public class GameHandler {
             player.inventory.clear();
         }
 
-        public static boolean isEmpty(InventoryPlayer inv) {
-            for(int i = 0; i < inv.getSizeInventory(); i++) {
-                ItemStack stack = inv.getStackInSlot(i);
-                if(!stack.isEmpty() && stack.getItem() != PMCItems.IBLOCK) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
         private static void eliminatePlayerAndTeam(Game game, UUID uuid) {
                 Team team = null;
             // TODO remove
