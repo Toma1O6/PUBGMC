@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pubgmc:roadblocker_light_gray",
+      "y": 0
+    },
+    "facing=west": {
+      "model": "pubgmc:roadblocker_light_gray",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pubgmc:roadblocker_light_gray",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "pubgmc:roadblocker_light_gray",
+      "y": 270
+    }
+  }
+}

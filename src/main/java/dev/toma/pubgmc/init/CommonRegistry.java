@@ -147,7 +147,7 @@ public class CommonRegistry {
                 new BlockTire(),
                 new BlockTireStack(),
                 BlockBuilder.create("metal_table", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
-                BlockBuilder.create("road_blocker", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.4, 0, 0.4, 0.6, 1, 0.6)).build(),
+                BlockBuilder.create("road_blocker", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.4, 0, 0.4, 0.6, 1, 0.6), new AxisAlignedBB(0.4, 0.0, 0.4, 0.6, 1.2, 0.6)).build(),
                 BlockBuilder.create("modern_lamp", Material.ROCK).soundType(SoundType.GLASS).light(1.0F).build(),
                 HorizontalBlockBuilder.create("radiator", Material.IRON).soundType(SoundType.METAL).setTransparent().nullAABB().build(),
                 new BlockSmallChest(),
@@ -160,7 +160,9 @@ public class CommonRegistry {
                 BlockBuilder.create("metal_light", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.9, 0.7)).build(),
                 BlockBuilder.create("pole", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 1.0, 0.65)).build(),
                 BlockBuilder.create("pole_base", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.2, 0.0, 0.2, 0.8, 1.0, 0.8)).build(),
-                HorizontalBlockBuilder.create("pole_lamp_modern", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.7, 1.0)).build()
+                HorizontalBlockBuilder.create("pole_lamp_modern", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.7, 1.0)).build(),
+                HorizontalBlockBuilder.create("roadblocker_light_gray", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(Block.FULL_BLOCK_AABB, new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.25, 1.0)).build(),
+                HorizontalBlockBuilder.create("roadblocker_red", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(Block.FULL_BLOCK_AABB, new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.25, 1.0)).build()
         );
     }
 

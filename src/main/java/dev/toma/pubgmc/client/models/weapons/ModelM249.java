@@ -76,6 +76,11 @@ public class ModelM249 extends ModelGun {
     private final ModelRenderer bone89;
     private final ModelRenderer bone90;
     private final ModelRenderer belt;
+    private final ModelRenderer bullet1;
+    private final ModelRenderer bone98;
+    private final ModelRenderer bone99;
+    private final ModelRenderer bone100;
+    private final ModelRenderer bone101;
     private final ModelRenderer bullet2;
     private final ModelRenderer bone6;
     private final ModelRenderer bone7;
@@ -894,6 +899,48 @@ public class ModelM249 extends ModelGun {
         belt = new ModelRenderer(this);
         belt.setRotationPoint(1.3F, 24.0F, 0.0F);
 
+
+        bullet1 = new ModelRenderer(this);
+        bullet1.setRotationPoint(12.85F, -0.01F, -3.3F);
+        belt.addChild(bullet1);
+        setRotationAngle(bullet1, 0.0F, 0.0F, 0.1745F);
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -3.606F, 11.2196F, 9.328F, 1, 1, 6, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.506F, 11.1196F, 9.768F, 2, 2, 5, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.506F, 11.1196F, 15.128F, 2, 2, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.406F, 11.2196F, 9.328F, 1, 1, 6, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -3.606F, 12.0196F, 9.328F, 1, 1, 6, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.406F, 12.0196F, 9.328F, 1, 1, 6, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.006F, 11.6196F, 7.658F, 1, 1, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.006F, 11.6196F, 7.658F, 1, 1, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 92, 98, -4.006F, 9.6196F, 10.988F, 1, 2, 3, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.006F, 11.2776F, 8.7377F, 1, 1, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.348F, 11.6196F, 8.7377F, 1, 1, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -3.664F, 11.6196F, 8.7377F, 1, 1, 1, 0.0F, false));
+        bullet1.cubeList.add(new ModelBox(bullet1, 8, 492, -4.006F, 11.9616F, 8.7377F, 1, 1, 1, 0.0F, false));
+
+        bone98 = new ModelRenderer(this);
+        bone98.setRotationPoint(0.0F, -5.5F, 1.71F);
+        bullet1.addChild(bone98);
+        setRotationAngle(bone98, 0.3491F, 0.0F, 0.0F);
+        bone98.cubeList.add(new ModelBox(bone98, 8, 492, -4.006F, 18.1694F, -0.135F, 1, 1, 1, 0.0F, false));
+
+        bone99 = new ModelRenderer(this);
+        bone99.setRotationPoint(0.0F, -4.5F, 1.71F);
+        bullet1.addChild(bone99);
+        setRotationAngle(bone99, -0.3491F, 0.0F, 0.0F);
+        bone99.cubeList.add(new ModelBox(bone99, 8, 492, -4.006F, 13.0045F, 11.5766F, 1, 1, 1, 0.0F, false));
+
+        bone100 = new ModelRenderer(this);
+        bone100.setRotationPoint(0.5F, -5.0F, 1.71F);
+        bullet1.addChild(bone100);
+        setRotationAngle(bone100, 0.0F, 0.3491F, 0.0F);
+        bone100.cubeList.add(new ModelBox(bone100, 8, 492, -6.3769F, 16.6196F, 4.5216F, 1, 1, 1, 0.0F, false));
+
+        bone101 = new ModelRenderer(this);
+        bone101.setRotationPoint(-0.5F, -5.0F, 1.71F);
+        bullet1.addChild(bone101);
+        setRotationAngle(bone101, 0.0F, -0.3491F, 0.0F);
+        bone101.cubeList.add(new ModelBox(bone101, 8, 492, -1.2121F, 16.6196F, 6.9199F, 1, 1, 1, 0.0F, false));
 
         bullet2 = new ModelRenderer(this);
         bullet2.setRotationPoint(9.85F, -3.41F, -3.3F);

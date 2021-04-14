@@ -87,11 +87,15 @@ public class AnimationProcessor {
         // movement
         Vec3d staticMove = currentFrame.getPositionStart();
         Vec3d smoothMove = currentFrame.moveTarget();
-        GlStateManager.translate(staticMove.x + smoothMove.x * pct, staticMove.y + smoothMove.y * pct, staticMove.z + smoothMove.z * pct);
-        // rotation
         Vec3d staticRotate = currentFrame.getRotationStart();
         Vec3d smoothRotate = currentFrame.rotateTarget();
-        if(!staticRotate.equals(Vec3d.ZERO) || !smoothRotate.equals(Vec3d.ZERO)) {
+        boolean shouldMove = !staticMove.equals(Vec3d.ZERO) || !smoothMove.equals(Vec3d.ZERO);
+        boolean shouldRotate = !staticRotate.equals(Vec3d.ZERO) || !smoothRotate.equals(Vec3d.ZERO);
+        if(!shouldMove && !shouldRotate)
+            return;
+        GlStateManager.translate(staticMove.x + smoothMove.x * pct, staticMove.y + smoothMove.y * pct, staticMove.z + smoothMove.z * pct);
+        // rotation
+        if(shouldRotate) {
             if(staticRotate.x != 0.0 || smoothRotate.x != 0.0) {
                 GlStateManager.rotate((float) (staticRotate.x + smoothRotate.x * pct), 1.0F, 0.0F, 0.0F);
             }
