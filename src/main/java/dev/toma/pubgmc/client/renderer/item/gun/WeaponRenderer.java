@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.ClientHooks;
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
@@ -24,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.IntHashMap;
@@ -108,7 +110,18 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
             int i = ammo == 0 ? 0 : 1;
             return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(i));
         } else {
-            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(ammo));
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            int totalAmmo = DevUtil.getItemCount(gun.getAmmoType().ammo(), player.inventory);
+            int left = gun.getMaxAmmoExtended() - ammo;
+            int reload;
+            if(ammo == 0 && reloader instanceof IReloader.StripperClip) {
+                reload = ammo;
+            } else if(left > totalAmmo) {
+                reload = gun.getMaxAmmoExtended() - totalAmmo;
+            } else {
+                reload = ammo;
+            }
+            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(reload));
         }
     }
 

@@ -293,7 +293,7 @@ public class ClientEvents {
                             }
                         }
                         if(hasAmmo) {
-                            AnimationDispatcher.dispatchReloadAnimation(gun, stack);
+                            AnimationDispatcher.dispatchReloadAnimation(gun, stack, sp);
                             ReloadInfo info = data.getReloadInfo();
                             info.startReload(sp, gun, stack);
                             PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.RELOAD));

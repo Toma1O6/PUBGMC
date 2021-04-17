@@ -829,7 +829,7 @@ public class CommonRegistry {
                         .stats(cfg.kar98k)
                         .firerate(30)
                         .recoil(2.5f, 1.25f)
-                        .reload(IReloader.stripperClip(63), 18, PMCSounds.reload_kar98k)
+                        .reload(IReloader.stripperClip(63), 24, PMCSounds.reload_kar98k)
                         .ammo(AmmoType.AMMO762, 5)
                         .firemode(GunBase.Firemode.SINGLE)
                         .weaponType(GunBase.GunType.SR)

@@ -31,10 +31,14 @@ public class AnimationProject {
         this.isSaved = false;
     }
 
+    public AnimationProject(AnimationSpec spec) {
+        this.animation = convertToMutable(spec);
+        this.isSaved = true;
+        this.workingFile = new File("./export/animations");
+    }
+
     AnimationProject() {
-        animation = new HashMap<>();
-        isSaved = true;
-        workingFile = new File("./export/animations");
+        this(new AnimationSpec(new HashMap<>()));
     }
 
     public void setAnimationProgress(float animationProgress) {

@@ -11,10 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 public class AnimatorCache {
 
@@ -29,6 +26,29 @@ public class AnimatorCache {
         }
         File file = new File("./export/animations");
         loadAnimationFile(loader, file, handler);
+        //onLoadedTemp();
+    }
+
+    // TODO remove
+    public static void onLoadedTemp() {
+        String name = "kar98k";
+        int baseReloadTime = 24;
+        int setupTime = 10;
+        AnimationSpec start = animations.get("kar_start").spec;
+        AnimationSpec bullet = animations.get("kar_bullet").spec;
+        AnimationSpec end = animations.get("kar_end").spec;
+        int repeats = 5;
+        for (int i = 0; i < repeats; i++) {
+            int bulletsInserted = i + 1;
+            int reloadTime = baseReloadTime * bulletsInserted;
+            double half = (setupTime / 2.0) / reloadTime;
+            List<GuiConnectAnimations.ConnectionSpec> specList = new ArrayList<>();
+            specList.add(new GuiConnectAnimations.ConnectionSpec((float) half, 1, start));
+            specList.add(new GuiConnectAnimations.ConnectionSpec(1.0F - (float) (half), bulletsInserted, bullet));
+            specList.add(new GuiConnectAnimations.ConnectionSpec(1.0F, 1, end));
+            AnimationProject tempProject = new AnimationProject(GuiConnectAnimations.convert(specList, false));
+            tempProject.saveAs(name + "_reload_" + (repeats - bulletsInserted));
+        }
     }
 
     static void loadAnimationFile(AnimationLoader loader, File file, IPopupHandler handler) {

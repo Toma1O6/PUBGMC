@@ -39,10 +39,10 @@ public class AnimationDispatcher {
         }
     }
 
-    public static void dispatchReloadAnimation(GunBase gun, ItemStack stack) {
+    public static void dispatchReloadAnimation(GunBase gun, ItemStack stack, EntityPlayer player) {
         WeaponRenderer renderer = (WeaponRenderer) gun.getTileEntityItemStackRenderer();
         AnimationSpec spec = renderer.getReloadAnimation(gun, stack);
-        int animTime = gun.getReloader().getReloadAnimationTime(gun, stack);
+        int animTime = gun.getReloader().getReloadAnimationTime(gun, stack, player);
         AnimationProcessor.instance().play(AnimationType.RELOAD_ANIMATION_TYPE, new MultiFrameAnimation(animTime, spec));
     }
 
@@ -51,7 +51,7 @@ public class AnimationDispatcher {
         if(stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getReloadAnimation(gun, stack);
-            int reloadTime = gun.getReloader().getReloadAnimationTime(gun, stack);
+            int reloadTime = gun.getReloader().getReloadAnimationTime(gun, stack, player);
             processor.play(type, new MultiFrameAnimation(reloadTime, spec));
         }
     }

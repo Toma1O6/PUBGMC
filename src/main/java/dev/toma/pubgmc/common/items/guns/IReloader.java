@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.guns;
 
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
@@ -42,7 +43,7 @@ public interface IReloader {
         return gun.getReloadTime(stack);
     }
 
-    default int getReloadAnimationTime(GunBase gun, ItemStack stack) {
+    default int getReloadAnimationTime(GunBase gun, ItemStack stack, EntityPlayer player) {
         return getReloadTime(gun, stack);
     }
 
@@ -138,8 +139,9 @@ public interface IReloader {
         }
 
         @Override
-        public int getReloadAnimationTime(GunBase gun, ItemStack stack) {
-            int left = gun.getWeaponAmmoLimit(stack) - gun.getAmmo(stack);
+        public int getReloadAnimationTime(GunBase gun, ItemStack stack, EntityPlayer player) {
+            int ammoInInventory = DevUtil.getItemCount(gun.getAmmoType().ammo(), player.inventory);
+            int left = Math.min(ammoInInventory, gun.getWeaponAmmoLimit(stack) - gun.getAmmo(stack));
             int reloadTime = getReloadTime(gun, stack);
             return left * reloadTime;
         }
@@ -187,8 +189,8 @@ public interface IReloader {
         }
 
         @Override
-        public int getReloadAnimationTime(GunBase gun, ItemStack stack) {
-            return gun.getAmmo(stack) == 0 ? stripperClipTime : SINGLE.getReloadAnimationTime(gun, stack);
+        public int getReloadAnimationTime(GunBase gun, ItemStack stack, EntityPlayer player) {
+            return gun.getAmmo(stack) == 0 ? stripperClipTime : SINGLE.getReloadAnimationTime(gun, stack, player);
         }
 
         @SideOnly(Side.CLIENT)

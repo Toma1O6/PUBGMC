@@ -62,16 +62,16 @@ public class GuiConnectAnimations extends GuiWidgets {
         initGui();
     }
 
-    private AnimationSpec convert() {
+    public static AnimationSpec convert(List<ConnectionSpec> specs, boolean consumeFrames) {
         Map<AnimationElement, List<KeyFrame>> map = new HashMap<>();
         float min = 0.0F;
         int j = 0;
-        for (ConnectionSpec connectionSpec : convertSpecs()) {
+        for (ConnectionSpec connectionSpec : normalize(specs)) {
             AnimationSpec animSpec = connectionSpec.animationSpec;
             float max = connectionSpec.endpoint;
             for (Map.Entry<AnimationElement, List<KeyFrame>> entry : animSpec.getFrameDefs().entrySet()) {
                 List<KeyFrame> modifiedList = map.computeIfAbsent(entry.getKey(), element -> new ArrayList<>());
-                if(consumeFrames.isSelected() && j > 0 && modifiedList.size() > 1) {
+                if(consumeFrames && j > 0 && modifiedList.size() > 1) {
                     modifiedList.remove(0);
                 }
                 for (KeyFrame frame : entry.getValue()) {
@@ -87,7 +87,11 @@ public class GuiConnectAnimations extends GuiWidgets {
         return new AnimationSpec(map);
     }
 
-    private List<ConnectionSpec> convertSpecs() {
+    private AnimationSpec convert() {
+        return convert(specs, consumeFrames.isSelected());
+    }
+
+    public static List<ConnectionSpec> normalize(List<ConnectionSpec> specs) {
         List<ConnectionSpec> list = new ArrayList<>();
         float lastEnd = 0.0F;
         for (ConnectionSpec spec : specs) {
@@ -162,13 +166,13 @@ public class GuiConnectAnimations extends GuiWidgets {
         }
     }
 
-    private static class ConnectionSpec {
+    public static class ConnectionSpec {
 
         private float endpoint;
         private int repeatCount;
         private AnimationSpec animationSpec;
 
-        private ConnectionSpec(float endpoint, int repeatCount, AnimationSpec spec) {
+        public ConnectionSpec(float endpoint, int repeatCount, AnimationSpec spec) {
             this.endpoint = endpoint;
             this.repeatCount = repeatCount;
             this.animationSpec = spec;
