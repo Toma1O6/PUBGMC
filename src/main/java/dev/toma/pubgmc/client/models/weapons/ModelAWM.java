@@ -48,7 +48,7 @@ public class ModelAWM extends ModelGun {
     private final ModelRenderer bone2;
     private final ModelRenderer bone3;
     private final ModelRenderer bolt;
-    private final ModelRenderer _catch;
+    private final ModelRenderer catch_;
     private final ModelRenderer bone7;
     private final ModelRenderer bone8;
     private final ModelRenderer bone6;
@@ -432,7 +432,7 @@ public class ModelAWM extends ModelGun {
         magazine.cubeList.add(new ModelBox(magazine, 103, 36, 0.0929F, 4.6929F, -2.5F, 5, 1, 5, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 81, 12, -2.9071F, 3.6929F, -2.5F, 8, 1, 5, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 74, 40, -5.9071F, 2.6929F, -2.5F, 11, 1, 5, 0.0F, true));
-        magazine.cubeList.add(new ModelBox(magazine, 80, 22, -8.9071F, -3.3071F, -2.5F, 14, 6, 5, 0.0F, true));
+        magazine.cubeList.add(new ModelBox(magazine, 80, 22, -8.9071F, -6.3071F, -2.5F, 14, 9, 5, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 78, 30, -8.9071F, -10.3071F, -2.5F, 14, 4, 1, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 79, 26, 4.0929F, -9.3071F, -1.5F, 1, 3, 3, 0.0F, true));
         magazine.cubeList.add(new ModelBox(magazine, 79, 26, -8.9071F, -10.3071F, 1.5F, 14, 4, 1, 0.0F, true));
@@ -550,19 +550,19 @@ public class ModelAWM extends ModelGun {
         setRotationAngle(bolt, -0.2793F, 0.0F, 0.0F);
         bolt.cubeList.add(new ModelBox(bolt, 15, 76, -3.5F, -0.5344F, 0.0F, 1, 1, 4, 0.0F, false));
 
-		_catch = new ModelRenderer(this);
-		_catch.setRotationPoint(0.0F, 21.8743F, 7.1074F);
-        bolt.addChild(_catch);
-		_catch.cubeList.add(new ModelBox(_catch, 15, 76, -3.5F, -22.4087F, -3.5074F, 1, 1, 1, 0.0F, false));
-		_catch.cubeList.add(new ModelBox(_catch, 15, 76, -3.5F, -22.4087F, -2.0932F, 1, 1, 1, 0.0F, false));
-		_catch.cubeList.add(new ModelBox(_catch, 15, 76, -2.7929F, -22.4087F, -2.8003F, 1, 1, 1, 0.0F, false));
-		_catch.cubeList.add(new ModelBox(_catch, 15, 76, -4.2071F, -22.4087F, -2.8003F, 1, 1, 1, 0.0F, true));
-		_catch.cubeList.add(new ModelBox(_catch, 15, 76, -3.5F, -23.1158F, -2.8003F, 1, 1, 1, 0.0F, false));
-		_catch.cubeList.add(new ModelBox(_catch, 15, 76, -3.5F, -21.7016F, -2.8003F, 1, 1, 1, 0.0F, false));
+        catch_ = new ModelRenderer(this);
+        catch_.setRotationPoint(0.0F, 21.8743F, 7.1074F);
+        bolt.addChild(catch_);
+        catch_.cubeList.add(new ModelBox(catch_, 15, 76, -3.5F, -22.4087F, -3.5074F, 1, 1, 1, 0.0F, false));
+        catch_.cubeList.add(new ModelBox(catch_, 15, 76, -3.5F, -22.4087F, -2.0932F, 1, 1, 1, 0.0F, false));
+        catch_.cubeList.add(new ModelBox(catch_, 15, 76, -2.7929F, -22.4087F, -2.8003F, 1, 1, 1, 0.0F, false));
+        catch_.cubeList.add(new ModelBox(catch_, 15, 76, -4.2071F, -22.4087F, -2.8003F, 1, 1, 1, 0.0F, true));
+        catch_.cubeList.add(new ModelBox(catch_, 15, 76, -3.5F, -23.1158F, -2.8003F, 1, 1, 1, 0.0F, false));
+        catch_.cubeList.add(new ModelBox(catch_, 15, 76, -3.5F, -21.7016F, -2.8003F, 1, 1, 1, 0.0F, false));
 
         bone7 = new ModelRenderer(this);
         bone7.setRotationPoint(1.5F, 3.6F, 3.6F);
-		_catch.addChild(bone7);
+        catch_.addChild(bone7);
 
 
         bone8 = new ModelRenderer(this);
@@ -576,7 +576,7 @@ public class ModelAWM extends ModelGun {
 
         bone6 = new ModelRenderer(this);
         bone6.setRotationPoint(0.0F, -0.7415F, 4.8071F);
-		_catch.addChild(bone6);
+        catch_.addChild(bone6);
         setRotationAngle(bone6, 0.0F, 0.0F, -0.7854F);
         bone6.cubeList.add(new ModelBox(bone6, 15, 76, 13.0533F, -17.5888F, -7.6074F, 1, 1, 1, 0.0F, false));
         bone6.cubeList.add(new ModelBox(bone6, 15, 76, 12.3462F, -16.8817F, -7.6074F, 1, 1, 1, 0.0F, false));

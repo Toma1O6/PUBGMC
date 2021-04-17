@@ -124,21 +124,21 @@ public class ModelAUG extends ModelGun {
         bone28.cubeList.add(new ModelBox(bone28, 37, 12, -0.4929F, -1.0876F, 19.0F, 1, 1, 2, 0.0F, true));
 
         bullet = new ModelRenderer(this);
-        bullet.setRotationPoint(0.0F, 27.0F, 0.0F);
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.5F, -20.628F, 9.8F, 1, 1, 2, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.65F, -20.778F, 6.8F, 1, 1, 3, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.35F, -20.778F, 6.8F, 1, 1, 3, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.9F, -21.028F, 1.8F, 1, 1, 5, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.1F, -21.028F, 1.8F, 1, 1, 5, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.5F, -20.628F, 1.3F, 1, 1, 1, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.1F, -21.028F, 0.3F, 1, 1, 1, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.9F, -21.028F, 0.3F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.1F, -20.228F, 0.3F, 1, 1, 1, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.9F, -20.228F, 0.3F, 1, 1, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.9F, -20.228F, 1.8F, 1, 1, 5, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.65F, -20.478F, 6.8F, 1, 1, 3, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.1F, -20.228F, 1.8F, 1, 1, 5, 0.0F, true));
-        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -0.35F, -20.478F, 6.8F, 1, 1, 3, 0.0F, true));
+        bullet.setRotationPoint(0.5F, 27.0F, 0.0F);
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.5F, -21.628F, 8.8F, 2, 2, 2, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.65F, -21.778F, 6.8F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.35F, -21.778F, 6.8F, 2, 2, 2, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.9F, -22.028F, 2.8F, 2, 2, 4, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.1F, -22.028F, 2.8F, 2, 2, 4, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.5F, -21.628F, 2.3F, 2, 2, 1, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.1F, -22.028F, 1.3F, 2, 2, 1, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.9F, -22.028F, 1.3F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.1F, -21.228F, 1.3F, 2, 2, 1, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.9F, -21.228F, 1.3F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.9F, -21.228F, 2.8F, 2, 2, 4, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.65F, -21.478F, 6.8F, 2, 2, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.1F, -21.228F, 2.8F, 2, 2, 4, 0.0F, true));
+        bullet.cubeList.add(new ModelBox(bullet, 14, 497, -1.35F, -21.478F, 6.8F, 2, 2, 2, 0.0F, true));
 
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.0F, 25.1F, 0.0F);
@@ -201,7 +201,7 @@ public class ModelAUG extends ModelGun {
         bone2.cubeList.add(new ModelBox(bone2, 76, 29, 5.9593F, -13.6782F, -1.0F, 1, 1, 2, 0.0F, true));
 
         bolt = new ModelRenderer(this);
-        bolt.setRotationPoint(0.0F, 24.0F, -9.0F);
+        bolt.setRotationPoint(0.0F, 24.0F, 0.0F);
         bolt.cubeList.add(new ModelBox(bolt, 0, 24, 1.6F, -20.0F, 1.0F, 1, 3, 10, 0.0F, false));
 
         aug = new ModelRenderer(this);

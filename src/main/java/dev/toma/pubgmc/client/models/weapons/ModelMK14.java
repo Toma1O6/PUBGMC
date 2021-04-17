@@ -815,13 +815,6 @@ public class ModelMK14 extends ModelGun {
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 32.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 28.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 30.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 24.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 22.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 20.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 18.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 16.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 14.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 12.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 26.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 2.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.436F, -3.2575F, 4.5781F, 0, 2, 1, 0.0F, true));
@@ -832,13 +825,6 @@ public class ModelMK14 extends ModelGun {
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 32.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 28.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 30.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 24.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 22.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 20.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 18.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 16.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 14.5781F, 0, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 12.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 26.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 2.5781F, 0, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.437F, -1.5255F, 4.5781F, 0, 2, 1, 0.0F, true));
@@ -849,12 +835,6 @@ public class ModelMK14 extends ModelGun {
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 27.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 33.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 29.5781F, 1, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 23.5781F, 1, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 21.5781F, 1, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 19.5781F, 1, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 17.5781F, 1, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 15.5781F, 1, 2, 1, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 13.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 25.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 1.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 3.5781F, 1, 2, 1, 0.0F, true));
@@ -863,7 +843,6 @@ public class ModelMK14 extends ModelGun {
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 9.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -19.9375F, -2.3906F, 11.5781F, 1, 2, 1, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -18.9375F, -2.8906F, 25.5781F, 1, 3, 11, 0.0F, true));
-        rail5.cubeList.add(new ModelBox(rail5, 77, 96, -18.9375F, -2.8906F, 12.5781F, 1, 3, 13, 0.0F, true));
         rail5.cubeList.add(new ModelBox(rail5, 77, 96, -18.9375F, -2.8906F, 1.5781F, 1, 3, 11, 0.0F, true));
 
         bone20 = new ModelRenderer(this);
@@ -875,13 +854,6 @@ public class ModelMK14 extends ModelGun {
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 32.0781F, 1, 0, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 28.0781F, 1, 0, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 24.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 22.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 20.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 18.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 16.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 14.0781F, 1, 0, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 12.0781F, 1, 0, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 26.0781F, 1, 0, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 2.0781F, 1, 0, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 4.0781F, 1, 0, 1, 0.0F, true));
@@ -892,12 +864,6 @@ public class ModelMK14 extends ModelGun {
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 27.0781F, 1, 1, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 33.0781F, 1, 1, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 23.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 21.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 19.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 17.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 15.0781F, 1, 1, 1, 0.0F, true));
-        bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 13.0781F, 1, 1, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 25.0781F, 1, 1, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 1.0781F, 1, 1, 1, 0.0F, true));
         bone20.cubeList.add(new ModelBox(bone20, 77, 96, -11.3155F, 11.2239F, 3.0781F, 1, 1, 1, 0.0F, true));
@@ -915,13 +881,6 @@ public class ModelMK14 extends ModelGun {
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 32.0781F, 1, 0, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 28.0781F, 1, 0, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 30.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 24.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 22.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 20.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 18.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 16.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 14.0781F, 1, 0, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 12.0781F, 1, 0, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 26.0781F, 1, 0, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 2.0781F, 1, 0, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -4.4196F, 4.0781F, 1, 0, 1, 0.0F, true));
@@ -932,12 +891,6 @@ public class ModelMK14 extends ModelGun {
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 27.0781F, 1, 1, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 33.0781F, 1, 1, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 29.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 23.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 21.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 19.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 17.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 15.0781F, 1, 1, 1, 0.0F, true));
-        bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 13.0781F, 1, 1, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 25.0781F, 1, 1, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 1.0781F, 1, 1, 1, 0.0F, true));
         bone21.cubeList.add(new ModelBox(bone21, 77, 96, -15.2439F, -5.4196F, 3.0781F, 1, 1, 1, 0.0F, true));
@@ -1228,12 +1181,12 @@ public class ModelMK14 extends ModelGun {
 
         bullet = new ModelRenderer(this);
         bullet.setRotationPoint(0.0F, 24.0F, 0.0F);
-        bullet.cubeList.add(new ModelBox(bullet, 0, 508, -1.5F, -23.4844F, -14.5F, 3, 3, 2, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 508, -1.0F, -22.9844F, -12.5F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 508, -1.5F, -23.4844F, -11.5F, 3, 3, 4, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 508, -1.0F, -23.4844F, -7.5F, 2, 3, 3, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 10, 489, -1.0F, -22.9844F, -4.5F, 2, 2, 1, 0.0F, false));
-        bullet.cubeList.add(new ModelBox(bullet, 0, 508, -1.5F, -22.9844F, -7.5F, 3, 2, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 501, -1.5F, -23.4844F, -14.5F, 3, 3, 2, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 501, -1.0F, -22.9844F, -12.5F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 501, -1.5F, -23.4844F, -11.5F, 3, 3, 4, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 501, -1.0F, -23.4844F, -7.5F, 2, 3, 3, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 501, -1.0F, -22.9844F, -4.5F, 2, 2, 1, 0.0F, false));
+        bullet.cubeList.add(new ModelBox(bullet, 11, 501, -1.5F, -22.9844F, -7.5F, 3, 2, 3, 0.0F, false));
 
         magazine = new ModelRenderer(this);
         magazine.setRotationPoint(0.5F, 17.0F, 0.0F);

@@ -5,13 +5,12 @@ import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.models.atachments.ModelAttachment;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
+import dev.toma.pubgmc.common.items.attachment.ItemStock;
 import dev.toma.pubgmc.common.items.guns.GunBase;
-import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -100,6 +99,10 @@ public abstract class ModelGun extends ModelBase {
 
     public static boolean hasQuickdrawMagazine(ItemStack stack) {
         return has(stack, AttachmentType.MAGAZINE, ItemMagazine::isQuickdraw);
+    }
+
+    public static boolean hasBulletLoops(ItemStack stack) {
+        return has(stack, AttachmentType.STOCK, ItemStock::isFasterReload);
     }
 
     public static <I extends ItemAttachment> boolean has(ItemStack stack, AttachmentType<I> type, Predicate<I> predicate) {
