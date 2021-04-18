@@ -369,7 +369,7 @@ public class CommonRegistry {
                         .stats(cfg.s1897)
                         .firerate(15)
                         .recoil(3.5f, 2f)
-                        .reload(IReloader.single(), 10, PMCSounds.reload_s1897)
+                        .reload(IReloader.single(), 20, PMCSounds.reload_s1897)
                         .ammo(AmmoType.AMMO12G, 5)
                         .firemode(GunBase.Firemode.SINGLE)
                         .weaponType(GunBase.GunType.SHOTGUN)

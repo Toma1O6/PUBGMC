@@ -31,12 +31,12 @@ public class AnimatorCache {
 
     // TODO remove
     public static void onLoadedTemp() {
-        String name = "kar98k";
-        int baseReloadTime = 24;
-        int setupTime = 10;
-        AnimationSpec start = animations.get("kar_start").spec;
-        AnimationSpec bullet = animations.get("kar_bullet").spec;
-        AnimationSpec end = animations.get("kar_end").spec;
+        String name = "s1897";
+        int baseReloadTime = 20;
+        int setupTime = 8;
+        AnimationSpec start = animations.get(name + "_reload_start").spec;
+        AnimationSpec bullet = animations.get(name + "_reload_single").spec;
+        AnimationSpec end = animations.get(name + "_reload_end").spec;
         int repeats = 5;
         for (int i = 0; i < repeats; i++) {
             int bulletsInserted = i + 1;
