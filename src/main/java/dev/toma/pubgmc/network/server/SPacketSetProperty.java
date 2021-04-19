@@ -5,11 +5,14 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.ReloadInfo;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.init.PMCSounds;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -72,7 +75,14 @@ public class SPacketSetProperty implements IMessage {
                 GunBase gun = (GunBase) stack.getItem();
                 if(aBoolean) {
                     reloadInfo.startReload(player, gun, stack);
-                    player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
+                    SoundEvent event = gun.getWeaponReloadSound();
+                    if (gun == PMCItems.KAR98K) {
+                        int ammo = gun.getAmmo(stack);
+                        if(ammo == 0) {
+                            event = PMCSounds.reload_kar98k;
+                        }
+                    }
+                    player.world.playSound(null, player.posX, player.posY + 1, player.posZ, event, SoundCategory.MASTER, 1.0F, 1.0F);
                 } else {
                     reloadInfo.interrupt(data);
                 }

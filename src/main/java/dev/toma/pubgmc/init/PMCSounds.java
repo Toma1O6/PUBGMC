@@ -71,7 +71,7 @@ public class PMCSounds {
     public static SoundEvent gun_win94, gun_m249, gun_dp28;
     public static SoundEvent airdrop_plane_fly_by;
     public static SoundEvent chute_open, chute_land;
-    public static SoundEvent bolt_win94, bolt_kar98k, bolt_m24, bolt_awm;
+    public static SoundEvent bolt_s1897, bolt_win94, bolt_kar98k, bolt_m24, bolt_awm;
 
     //vehicle
     public static SoundEvent vehicleIdle;
@@ -200,6 +200,7 @@ public class PMCSounds {
         reload_m24 = registerSound("reload.m24");
         reload_awm = registerSound("reload.awm");
 
+        bolt_s1897 = registerSound("bolt.s1897");
         bolt_win94 = registerSound("bolt.win94");
         bolt_kar98k = registerSound("bolt.kar98k");
         bolt_m24 = registerSound("bolt.m24");

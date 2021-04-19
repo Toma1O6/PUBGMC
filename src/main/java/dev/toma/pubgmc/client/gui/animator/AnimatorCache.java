@@ -30,12 +30,13 @@ public class AnimatorCache {
     }
 
     // TODO remove
+    /*
     public static void onLoadedTemp() {
-        String name = "s1897";
-        int baseReloadTime = 20;
-        int setupTime = 8;
+        String name = "kar98k";
+        int baseReloadTime = 24;
+        int setupTime = 12;
         AnimationSpec start = animations.get(name + "_reload_start").spec;
-        AnimationSpec bullet = animations.get(name + "_reload_single").spec;
+        AnimationSpec bullet = animations.get(name + "_reload_bullet").spec;
         AnimationSpec end = animations.get(name + "_reload_end").spec;
         int repeats = 5;
         for (int i = 0; i < repeats; i++) {
@@ -50,6 +51,7 @@ public class AnimatorCache {
             tempProject.saveAs(name + "_reload_" + (repeats - bulletsInserted));
         }
     }
+    */
 
     static void loadAnimationFile(AnimationLoader loader, File file, IPopupHandler handler) {
         if(file.isDirectory()) {

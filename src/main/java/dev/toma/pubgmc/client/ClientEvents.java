@@ -338,7 +338,9 @@ public class ClientEvents {
                                     tracker.add(gun);
                                     if(gun.getAction() != null) {
                                         Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                        setAiming(data, false);
+                                        if(gun.getGunType() == GunBase.GunType.SR) {
+                                            setAiming(data, false);
+                                        }
                                     }
                                     applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                                 } else {

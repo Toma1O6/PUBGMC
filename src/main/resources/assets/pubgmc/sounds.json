@@ -111,6 +111,7 @@
     "reload.m24": { "category": "player", "sounds": [{ "name": "pubgmc:reload_m24", "stream": "true" }]},
     "reload.awm": { "category": "player", "sounds": [{ "name": "pubgmc:reload_awm", "stream": "true" }]},
 
+    "bolt.s1897": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_s1897", "stream": "true" }]},
     "bolt.win94": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_win94", "stream": "true" }]},
     "bolt.kar98k": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_kar98k", "stream": "true" }]},
     "bolt.m24": { "category": "player", "sounds": [{ "name": "pubgmc:bolt_m24", "stream": "true" }]},

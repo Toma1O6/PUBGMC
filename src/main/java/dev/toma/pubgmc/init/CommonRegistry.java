@@ -378,6 +378,7 @@ public class CommonRegistry {
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.BULLET_LOOPS})
                         .build()
                         .renderer(() -> RenderS1897::new)
+                        .addBoltAction(() -> PMCSounds.bolt_s1897)
                         .build(),
                 GunBuilder.create("s686")
                         .stats(cfg.s686)
@@ -829,7 +830,7 @@ public class CommonRegistry {
                         .stats(cfg.kar98k)
                         .firerate(30)
                         .recoil(2.5f, 1.25f)
-                        .reload(IReloader.stripperClip(63), 24, PMCSounds.reload_kar98k)
+                        .reload(IReloader.stripperClip(63), 24, PMCSounds.reload_kar98k_single)
                         .ammo(AmmoType.AMMO762, 5)
                         .firemode(GunBase.Firemode.SINGLE)
                         .weaponType(GunBase.GunType.SR)
