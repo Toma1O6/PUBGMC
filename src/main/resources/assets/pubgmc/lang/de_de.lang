@@ -1,0 +1,291 @@
+item.backpack1.name=Kleiner Rucksack
+item.backpack2.name=Mittlerer Rucksack
+item.backpack3.name=Großer Rucksack
+item.bandage.name=Bandage
+item.firstaidkit.name=Erste-Hilfe-Kit
+item.medkit.name=Medizintasche
+item.energydrink.name=Energy Drink
+item.painkillers.name=Schmerzmittel
+item.adrenalinesyringe.name=Adrenalinspritze
+item.iblock.name=Inventar gesperrt
+item.crowbar.name=Brecheisen
+item.machete.name=Machete
+item.sickle.name=Sichel
+item.pan.name=Pfanne
+item.parachute.name=Fallschirm
+item.steel_dust.name=Stahlstaub
+item.steel_ingot.name=Stahlbarren
+item.copper_ingot.name=Kupferbarren
+item.fuelcan.name=Benzinkanister
+
+item.vehicle_uaz.name=UAZ
+item.vehicle_dacia.name=Dacia
+
+item.ammo_9mm.name=9mm Patrone
+item.ammo_shotgun.name=Schrotpatrone
+item.ammo_45acp.name=.45acp Patrone
+item.ammo_556.name=5.56mm Patrone
+item.ammo_762.name=7.62mm Patrone
+item.ammo_300m.name=.300 Magnum Patrone
+item.ammo_flare.name=Leuchtsignal
+
+//Guns
+item.flare_gun.name=Signalpistole
+item.p92.name=P92
+item.p1911.name=P1911
+item.r1895.name=R1895
+item.p18c.name=P18C
+item.r45.name=R45
+item.scorpion.name=Scorpion
+item.deagle.name=Deagle
+item.win94.name=Win-94
+item.sawed_off.name=Abgesägte Schrotflinte
+item.s1897.name=S1897
+item.s686.name=S686
+item.s12k.name=S12K
+item.microuzi.name=Mikro-Uzi
+item.ump45.name=UMP-45
+item.vector.name=Vector
+item.tommy_gun.name=Tommy Gun
+item.bizon.name=PP-19 Bizon
+item.mp5k.name=MP5K
+item.m16a4.name=M16A4
+item.m416.name=M416
+item.qbz.name=QBZ
+item.scar_l.name=Scar-L
+item.g36c.name=G36C
+item.aug.name=AUG
+item.akm.name=AKM
+item.beryl_m762.name=Beryl M762
+item.mk47_mutant.name=MK-47 Mutant
+item.groza.name=Groza
+item.dp28.name=DP-28
+item.m249.name=M249
+item.mini14.name=Mini-14
+item.vss.name=VSS
+item.qbu.name=QBU
+item.sks.name=SKS
+item.slr.name=SLR
+item.mk14.name=MK-14 EBR
+item.kar98k.name=Kar98K
+item.m24.name=M24
+item.awm.name=AWM
+
+item.grenade.name=Splittergranate
+item.smoke.name=Rauchgranate
+item.molotov.name=Molotov
+item.flashbang.name=Blendgranate
+
+//This will be removed in future
+item.ghilliehelmet.name=Ghillie helmet
+item.ghilliebody.name=Ghillie chestplate
+item.ghillielegs.name=Ghillie leggings
+item.ghillieboots.name=Ghillie boots
+
+item.nv_goggles.name=Nachtsichtgerät
+
+//Attachments
+item.silencer_smg.name=Schalldämpfer (Kleinkaliber)
+item.silencer_ar.name=Schalldämpfer (Mittleres kaliber)
+item.silencer_sniper.name=Schalldämpfer (Großkaliber)
+item.compensator_smg.name=Kompensator (Kleinkaliber)
+item.compensator_ar.name=Kompensator (Mittleres kaliber)
+item.compensator_sniper.name=Kompensator (Großkaliber)
+item.red_dot.name=Rotpunktvisier
+item.holographic.name=Holographisches Visier
+item.scope2x.name=Zweifachvisier
+item.scope4x.name=Vierfachvisier
+item.scope8x.name=Achtfachvisier
+item.scope15x.name=Fünfzehnfachvisier
+item.grip_vertical.name=Gerader Griff
+item.grip_angled.name=Angewinkelter Griff
+item.quickdraw_mag_smg.name=Schnellmagazin (Kleinkaliber)
+item.quickdraw_mag_ar.name=Schnellmagazin (Mittleres kaliber)
+item.quickdraw_mag_sniper.name=Schnellmagazin (Großkaliber)
+item.extended_mag_smg.name=großes Magazin (Kleinkaliber)
+item.extended_mag_ar.name=großes Magazin (Mittleres kaliber)
+item.extended_mag_sniper.name=großes Magazin (Großkaliber)
+item.extended_quickdraw_mag_smg.name=großes Schnellmagazin (Kleinkaliber)
+item.extended_quickdraw_mag_ar.name=großes Schnellmagazin (Mittleres kaliber)
+item.extended_quickdraw_mag_sniper.name=großes Schnellmagazin (Großkaliber)
+item.bullet_loops.name=Munitionshalter
+item.cheekpad.name=Präzisionsstütze
+
+//Keybinding
+key.category.pubgmc=PUBGMC
+pubgmc.key.reload=Nachladen
+pubgmc.key.firemode=Feuermodus umschalten
+pubgmc.key.nv=Nachtsicht umschalten
+pubgmc.key.attachment=Waffe Anpassen
+pubgmc.key.scopetype=Fadenkreuztyp umstellen
+pubgmc.key.scopecolor=Fadenkreuzfarbe umstellen
+
+//Items
+item.ghillie_suit.name=Scharfschützenanzug
+item.armor1helmet.name=Level 1 Helm
+item.armor1body.name=Level 1 Weste
+item.armor2helmet.name=Level 2 Helm
+item.armor2body.name=Level 2 Weste
+item.armor3helmet.name=Level 3 Helm
+item.armor3body.name=Level 3 Weste
+
+//Blocks
+tile.roadasphalt.name=Straße
+tile.schoolwall.name=Schulwand
+tile.schoolroof.name=Schuldach
+tile.ruinswall.name=Ruinenwand
+tile.chair.name=Holzstuhl
+tile.schoolwindow.name=Schulfenster
+tile.blueglass.name=Blaues Glas
+tile.target.name=Ziel
+tile.bush.name=Busch
+tile.table.name=Holzstuhl
+tile.crate.name=Kiste
+tile.crates.name=Kisten
+tile.airdrop.name=Kleine Versorgungskiste
+tile.big_airdrop.name=Große Versorgungskiste
+tile.darkwood.name=Dunkles Holz
+tile.light.name=Deckenlampe
+tile.fence.name=Metallzaun
+tile.concrete.name=Betonbarriere
+tile.electricpole.name=Holzmast
+tile.electricpoletop.name=Strommast
+tile.electriccable.name=Stromkabel
+tile.radiotower.name=Radioturm
+tile.radiotowertop.name=Radioantenne
+tile.prop1.name=PMC Snack
+tile.prop2.name=Toma Riegel
+tile.prop3.name=Energy Drinks
+tile.prop4.name=Russischer Helm
+tile.prop5.name=Erstehilfekit
+tile.prop6.name=Official Majonaise Gläser
+tile.wheat.name=Korn
+tile.loot_spawner.name=Loot Spawner
+tile.player_crate.name=Death Box
+tile.gun_workbench.name=Waffenbank
+tile.copper_ore.name=Kupfererz
+tile.landmine.name=Mine
+tile.chair1.name=Schulstuhl
+tile.desk.name=Schultisch
+tile.storagebase.name=Schrank
+tile.storagetop.name=Schrank (oben)
+tile.window1x1.name=Kleines Fenster (1x1)
+tile.window1x2.name=Hohes Fenster (1x2)
+tile.window2x1.name=Breites Fenster (2x1)
+tile.window2x2.name=Großes Fenster (2x2)
+tile.locker.name=Schließfach
+tile.screen.name=Bildschirm
+tile.box_single.name=Vorratskiste
+tile.box_double.name=Vorratskisten
+tile.sandbag.name=Sandsack
+tile.wooden_crate.name=Holzkiste
+tile.vent.name=Lüftung
+tile.big_crate_empty.name=Leere Munitionsbox
+tile.big_crate_ammo.name=Munitionsbox
+tile.big_crate_gun.name=Munitionsbox mit Waffen
+tile.wood_stairs.name=Schrottholztreppe
+tile.clean_metal.name=Metallblock
+tile.dark_wood.name=Dunkles Holz
+tile.sandbag_sand=Sandsacksand
+tile.tire.name=Reifen
+tile.tire_stack.name=Reifenstapel
+tile.metal_table.name=Metaltisch
+tile.road_blocker.name=Straßenpfosten
+tile.modern_lamp.name=Moderne Lampe
+tile.lamp_base.name=Metalsäulenbasis
+tile.lamp_post.name=Metalsäule
+tile.lamp_top.name=Metalsäulenlampe
+tile.radiator.name=Heizung
+tile.wooden_chest.name=Holzbox
+tile.wood_tile.name=Schrottholz
+tile.roadblocker_red.name=Rote Straßensperre
+tile.roadblocker_light_gray.name=Graue Straßensperre
+tile.rocks_andesite.name=Andesitsteinchen
+tile.rocks_cobblestone.name=Steinchen
+tile.rocks_diorite.name=Dioritsteinchen
+tile.rocks_granite.name=Granitsteinchen
+tile.rocks_gravel.name=Kiessteinchen
+tile.canister.name=Kanister
+tile.carrier_barrels_blue.name=Blaue Fässer
+tile.carrier_barrels_red.name=Rote Fässer
+tile.carrier_barrels_white.name=Weiße Fässer
+tile.carrier_empty_ground.name=Holzträger
+tile.flare_stick.name=Leuchtstab
+tile.metal_light.name=Metallampe
+tile.pole.name=Metalsäulenbasis
+tile.pole_base.name=Metalsäule
+tile.pole_lamp_modern.name=Moderne Lampe
+
+//Creative Tabs
+itemGroup.tab_items=PUBGMC: Gegenstände
+itemGroup.tab_blocks=PUBGMC: Blöcke
+itemGroup.tab_guns=PUBGMC: Waffen
+itemGroup.tab_accessories=PUBGMC: Zubehör
+
+//Block containers
+container.airdrop=Vorratskiste
+container.loot=Loot Spawner
+container.gun_workbench=Waffenbank
+
+//Description
+gun.desc.ammo=Munition
+gun.desc.firemode=Feuermodus
+gun.desc.damage=Schaden
+gun.desc.velocity=Geschwindigkeit
+gun.desc.gravity=Schwerkraftseinfluss
+gun.desc.firerate=Feuerrate
+gun.desc.reloadtime=Ladezeit
+gun.desc.ammotype=Kaliber
+gun.desc.maxammo=Kapazität
+gun.desc.moreinfo=Halte UMSCHALT, um mehr Informationen anzuzeigen!
+gun.desc.moreinfo2=Halte STRG, um Anpassungen anzuzeigen!
+gun.reloadtime.info=Sekunden
+gun.velocity.info=Blöcke/Sekunde
+gun.gravity.info=Blöcke/Sekunde
+gun.firerate.info=Schüsse/Sekunde
+
+ammo.9mm=9mm Patrone
+ammo.12g=Schrotpatrone
+ammo.45acp=.45acp Patrone
+ammo.556mm=5.56mm Patrone
+ammo.762mm=7.62mm Patrone
+ammo.300m=.300 Magnum Patrone
+ammo.flare=Leuchtsignal
+
+gun.firemode.single=EINZELSCHUSS
+gun.firemode.burst=SALVENFEUER
+gun.firemode.auto=AUTOMATISCH
+
+grenade.desc.info=Right-Click to throw. Run to throw further
+grenade.he.fuse=Fuse
+grenade.he.fuse.time=4 seconds
+grenade.molotov.fire=Fire
+grenade.molotov.fire.time=10 seconds
+grenade.molotov.range=Range
+grenade.molotov.range.blocks=4 blocks
+grenade.molotov.warn=Water will extinguish the fire!
+grenade.smoke.effect=Effect
+grenade.smoke.effect.duration=20 seconds
+grenade.smoke.warn=Water will cancel the effect!
+
+death.attack.vehicle=%s wurde überfahren
+death.attack.zone=%s starb außerhalb der Zone
+death.gun.headshot=%s hat %s geköpft, während er eine %s benutzte
+death.gun=%s hat %s erschossen, während er eine %s benutzte
+
+entity.pubgmc:enemyai.name=Gegner-KI
+
+// Animator
+base.hands.item=Hands,Item
+base.hands=Hands
+base.hand.right=Right Hand
+base.hand.left=Left Hand
+base.item=Item
+model.magazine=Magazine
+model.charging=Charging
+model.bolt=Bolt
+model.hammer=Hammer
+model.bullet=Bullet
+model.bullet1=Bullet 1
+model.belt=Belt
+model.top=Top
