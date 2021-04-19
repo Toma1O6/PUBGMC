@@ -1,6 +1,6 @@
 {
-    "parent": "block/orientable",
-    "credit": "Made by OfficialMajonaise using Blockbench. For more models see sketchfab.com/officialmajonaise",
+    "credit": "Made with Blockbench",
+    "parent": "block/block",
     "textures": {
         "0": "pubgmc:blocks/sandbag_side",
         "1": "pubgmc:blocks/sandbag_sand",

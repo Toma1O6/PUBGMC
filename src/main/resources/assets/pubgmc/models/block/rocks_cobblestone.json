@@ -1,0 +1,6 @@
+{
+  "parent": "pubgmc:block/rocks",
+  "textures": {
+    "variant": "blocks/cobblestone"
+  }
+}
