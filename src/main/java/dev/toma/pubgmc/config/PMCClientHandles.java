@@ -22,6 +22,6 @@ public class PMCClientHandles extends ClientHandles.DefaultClientHandles {
 
     @Override
     public int getTextColor() {
-        return 0xCBCBCB;
+        return 0xFFFFFF;
     }
 }
