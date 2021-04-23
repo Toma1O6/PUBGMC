@@ -99,7 +99,7 @@ public class EntityBullet extends Entity {
             Vec3d vec = rayTraceResult.hitVec;
             Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
             if(isHeadshot) {
-                damage *= 2.5;
+                damage *= ConfigPMC.guns().headshotMultiplier.get();
             }
             if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle) {
                 PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);

@@ -2,6 +2,7 @@ package dev.toma.pubgmc.config.common;
 
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
+import dev.toma.configuration.api.type.DoubleType;
 import dev.toma.configuration.api.type.ObjectType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -9,6 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 public final class CFGWeapons extends ObjectType implements INBTSerializable<NBTTagCompound> {
 
     final ConfigPlugin plugin;
+    public DoubleType headshotMultiplier;
     public CFGWeapon p92;
     public CFGWeapon p1911;
     public CFGWeapon p18c;
@@ -56,6 +58,7 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
+        headshotMultiplier = configCreator.createDouble("Headshot Multiplier", 2.5, 1.0, 5.0);
         p92 = configCreator.createObject(new CFGWeapon("P92", 4f, 7, 0.015f, 4), plugin);
         p1911 = configCreator.createObject(new CFGWeapon("P1911", 5f, 7.25f, 0.01f, 5), plugin);
         p18c = configCreator.createObject(new CFGWeapon("P18C", 4f, 7, 0.015f, 4), plugin);
