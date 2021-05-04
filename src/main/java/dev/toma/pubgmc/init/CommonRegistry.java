@@ -18,7 +18,7 @@ import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.items.*;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
+import dev.toma.pubgmc.common.items.armor.ItemBulletProofArmor;
 import dev.toma.pubgmc.common.items.armor.ItemGhillie;
 import dev.toma.pubgmc.common.items.armor.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.attachment.*;
@@ -202,12 +202,12 @@ public class CommonRegistry {
                 MeleeItemBuilder.create("machete").materialName("material_machete").damage(11.0F).build(),
                 MeleeItemBuilder.create("crowbar").materialName("material_crowbar").damage(9.0F).build(),
                 MeleeItemBuilder.create("sickle").materialName("material_sickle").damage(10.0F).build(),
-                new ArmorBase("armor1helmet", ToolMaterials.LVL1, 1, EntityEquipmentSlot.HEAD, ArmorBase.ArmorLevel.LEVEL_ONE),
-                new ArmorBase("armor1body", ToolMaterials.LVL1, 1, EntityEquipmentSlot.CHEST, ArmorBase.ArmorLevel.LEVEL_ONE),
-                new ArmorBase("armor2helmet", ToolMaterials.LVL2, 1, EntityEquipmentSlot.HEAD, ArmorBase.ArmorLevel.LEVEL_TWO),
-                new ArmorBase("armor2body", ToolMaterials.LVL2, 1, EntityEquipmentSlot.CHEST, ArmorBase.ArmorLevel.LEVEL_TWO),
-                new ArmorBase("armor3helmet", ToolMaterials.LVL3, 1, EntityEquipmentSlot.HEAD, ArmorBase.ArmorLevel.LEVEL_THREE),
-                new ArmorBase("armor3body", ToolMaterials.LVL3, 1, EntityEquipmentSlot.CHEST, ArmorBase.ArmorLevel.LEVEL_THREE),
+                new ItemBulletProofArmor("armor1helmet", ToolMaterials.LVL1, 1, EntityEquipmentSlot.HEAD, ItemBulletProofArmor.ArmorLevel.LEVEL_ONE),
+                new ItemBulletProofArmor("armor1body", ToolMaterials.LVL1, 1, EntityEquipmentSlot.CHEST, ItemBulletProofArmor.ArmorLevel.LEVEL_ONE),
+                new ItemBulletProofArmor("armor2helmet", ToolMaterials.LVL2, 1, EntityEquipmentSlot.HEAD, ItemBulletProofArmor.ArmorLevel.LEVEL_TWO),
+                new ItemBulletProofArmor("armor2body", ToolMaterials.LVL2, 1, EntityEquipmentSlot.CHEST, ItemBulletProofArmor.ArmorLevel.LEVEL_TWO),
+                new ItemBulletProofArmor("armor3helmet", ToolMaterials.LVL3, 1, EntityEquipmentSlot.HEAD, ItemBulletProofArmor.ArmorLevel.LEVEL_THREE),
+                new ItemBulletProofArmor("armor3body", ToolMaterials.LVL3, 1, EntityEquipmentSlot.CHEST, ItemBulletProofArmor.ArmorLevel.LEVEL_THREE),
                 new ItemMuzzle("silencer_smg", true),
                 new ItemMuzzle("silencer_ar", true),
                 new ItemMuzzle("silencer_sniper", true),

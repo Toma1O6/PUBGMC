@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client;
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.client.IIconRender;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -12,13 +13,13 @@ import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
+import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.player.*;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
@@ -41,6 +42,7 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -546,19 +548,12 @@ public class ClientEvents {
         int top = height - 19;
         int offset = 0;
 
-        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) head.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+        TextureManager manager = mc.getTextureManager();
+        if (tryDrawWearableIcon(manager, head, left, top, offset)) {
             offset += 17;
         }
 
-        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) body.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+        if (tryDrawWearableIcon(manager, body, left, top, offset)) {
             offset += 17;
         }
 
@@ -574,13 +569,22 @@ public class ClientEvents {
         }
     }
 
-    /**
-     * @deprecated render tinted texture instead
-     */
-    @Deprecated
-    private static int getDamageLevel(ItemStack stack) {
-        final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
-        return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
+    private static boolean tryDrawWearableIcon(TextureManager manager, ItemStack stack, int x, int y, int xOffset) {
+        if(!stack.isEmpty() && stack.getItem() instanceof IIconRender) {
+            IIconRender render = (IIconRender) stack.getItem();
+            ResourceLocation location = render.getTexture(stack);
+            manager.bindTexture(location);
+            int x1 = x + xOffset;
+            int x2 = x1 + 16;
+            int y2 = y + 16;
+            int color = render.getColorByDamage(1.0F - (float) stack.getMaxDamage() / stack.getItemDamage());
+            float red = ((color >> 16) & 0xFF) / 255.0F;
+            float green = ((color >> 8) & 0xFF) / 255.0F;
+            float blue = (color & 0xFF) / 255.0F;
+            Widget.drawTexturedColorShape(x1, y, x2, y2, red, green, blue, 1.0F);
+            return true;
+        }
+        return false;
     }
 
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {

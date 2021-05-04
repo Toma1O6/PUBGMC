@@ -2,13 +2,14 @@ package dev.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import dev.toma.pubgmc.api.common.IBulletproofArmor;
 import dev.toma.pubgmc.common.blocks.BlockLandMine;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
 import dev.toma.pubgmc.common.blocks.IBulletReaction;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
+import dev.toma.pubgmc.common.items.armor.ItemBulletProofArmor;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -343,35 +344,12 @@ public class EntityBullet extends Entity {
      */
     private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot) {
         float baseDamage = damage;
-
-        if (isHeadShot) {
-            ItemStack head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-
-            if (head.getItem() == PMCItems.ARMOR1HELMET) {
-                damage *= 0.7f;
-            } else if (head.getItem() == PMCItems.ARMOR2HELMET) {
-                damage *= 0.6f;
-            } else if (head.getItem() == PMCItems.ARMOR3HELMET) {
-                damage *= 0.4f;
-            }
-
-            if (entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ArmorBase) {
-                head.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.55f), entity);
-            }
-        } else {
-            ItemStack body = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-
-            if (body.getItem() == PMCItems.ARMOR1BODY) {
-                damage *= 0.7f;
-            } else if (body.getItem() == PMCItems.ARMOR2BODY) {
-                damage *= 0.6f;
-            } else if (body.getItem() == PMCItems.ARMOR3BODY) {
-                damage *= 0.5f;
-            }
-
-            if (entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ArmorBase) {
-                body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), entity);
-            }
+        ItemStack part = entity.getItemStackFromSlot(isHeadShot ? EntityEquipmentSlot.HEAD : EntityEquipmentSlot.CHEST);
+        if(!part.isEmpty() && part.getItem() instanceof IBulletproofArmor) {
+            IBulletproofArmor armor = (IBulletproofArmor) part.getItem();
+            float damageMultiplier = 1.0F - armor.getDamageMultiplier();
+            damage *= damageMultiplier;
+            part.damageItem((int) Math.ceil((baseDamage - (baseDamage - damage)) * 0.65), entity);
         }
     }
 

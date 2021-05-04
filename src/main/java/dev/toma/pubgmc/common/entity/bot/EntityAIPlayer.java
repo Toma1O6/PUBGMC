@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.entity.bot;
 import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
+import dev.toma.pubgmc.common.items.armor.ItemBulletProofArmor;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
@@ -156,8 +156,8 @@ public class EntityAIPlayer extends EntityCreature {
                 }
             }
             if (needsHelmet) {
-                if (stack.getItem() instanceof ArmorBase) {
-                    ArmorBase armorBase = (ArmorBase) stack.getItem();
+                if (stack.getItem() instanceof ItemBulletProofArmor) {
+                    ItemBulletProofArmor armorBase = (ItemBulletProofArmor) stack.getItem();
                     if (armorBase.armorType == EntityEquipmentSlot.HEAD) {
                         this.setItemStackToSlot(EntityEquipmentSlot.HEAD, stack.copy());
                         lootSpawner.removeStackFromSlot(i);
@@ -166,8 +166,8 @@ public class EntityAIPlayer extends EntityCreature {
                 }
             }
             if (needsVest) {
-                if (stack.getItem() instanceof ArmorBase) {
-                    ArmorBase armorBase = (ArmorBase) stack.getItem();
+                if (stack.getItem() instanceof ItemBulletProofArmor) {
+                    ItemBulletProofArmor armorBase = (ItemBulletProofArmor) stack.getItem();
                     if (armorBase.armorType == EntityEquipmentSlot.CHEST) {
                         this.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack.copy());
                         lootSpawner.removeStackFromSlot(i);

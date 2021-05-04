@@ -7,6 +7,7 @@ import dev.toma.pubgmc.common.capability.IWorldData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.*;
+import dev.toma.pubgmc.common.game.GameTypeRegistry;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCItems;
@@ -43,7 +44,7 @@ import java.util.Random;
 @Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION, updateJSON = Pubgmc.UPDATEURL, dependencies = Pubgmc.DEPENDENCIES)
 public class Pubgmc {
 
-    public static final String MOD_ID = "pubgmc";
+    public static final String MOD_ID = "dev/toma/pubgmc/api";
     public static final String NAME = "PUBGMC";
     public static final String VERSION = "1.7.0";
     public static final String CLIENT_PROXY_CLASS = "dev.toma.pubgmc.proxy.ClientProxy";
@@ -51,14 +52,14 @@ public class Pubgmc {
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     private static final Random RANDOM = new Random();
-    public static final Logger logger = LogManager.getLogger("pubgmc");
+    public static final Logger logger = LogManager.getLogger("dev/toma/pubgmc/api");
     public static boolean isDevEnvironment;
     @Instance
     public static Pubgmc instance;
     @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
     public static Proxy proxy;
     private static final ContentManager contentManager = new ContentManager();
-    private static Boolean earlyAccess;
+    private static final GameTypeRegistry gameTypes = new GameTypeRegistry();
 
     public static Random rng() {
         return RANDOM;
@@ -122,22 +123,15 @@ public class Pubgmc {
         return status == ForgeVersion.Status.OUTDATED || status == ForgeVersion.Status.BETA_OUTDATED;
     }
 
-    public static boolean isEarlyAccess() {
-        if(earlyAccess != null)
-            return earlyAccess;
-        ModContainer container = Loader.instance().activeModContainer();
-        if(container == null)
-            return false;
-        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
-        ForgeVersion.Status status = result.status;
-        return earlyAccess = status == ForgeVersion.Status.AHEAD;
-    }
-
     public static ResourceLocation getResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
 
     public static ContentManager getContentManager() {
         return contentManager;
+    }
+
+    public static GameTypeRegistry getGameTypes() {
+        return gameTypes;
     }
 }
