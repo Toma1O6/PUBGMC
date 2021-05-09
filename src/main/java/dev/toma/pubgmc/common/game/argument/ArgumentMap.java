@@ -2,6 +2,8 @@ package dev.toma.pubgmc.common.game.argument;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.api.common.game.IArgument;
+import dev.toma.pubgmc.common.game.GameType;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,11 @@ public class ArgumentMap {
                 map.put(key, key.getDefaultValue().copy());
             }
         });
+    }
+
+    // TODO load values
+    public static ArgumentMap parse(GameType<?> type, NBTTagCompound argMap) {
+        return new ArgumentMap(type.getArguments());
     }
 
     @SuppressWarnings("unchecked")

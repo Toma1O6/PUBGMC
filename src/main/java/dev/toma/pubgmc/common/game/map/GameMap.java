@@ -38,4 +38,8 @@ public class GameMap {
     public void removeSpawnPoint(Point point) {
         spawnPoints.remove(point);
     }
+
+    public String getMapName() {
+        return mapName;
+    }
 }

@@ -16,4 +16,8 @@ public class Area2D extends Point {
         double minZ = pos.getZ() - radius - 0.5;
         return x >= minX && x <= minX + radius && z >= minZ && z <= minZ + radius;
     }
+
+    public boolean overlaps(Area2D other) {
+
+    }
 }

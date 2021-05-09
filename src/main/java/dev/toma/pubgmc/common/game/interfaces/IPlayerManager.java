@@ -7,4 +7,6 @@ public interface IPlayerManager {
     void join(EntityPlayer player);
 
     void leave(EntityPlayer player);
+
+    void putPlayersInGame();
 }
