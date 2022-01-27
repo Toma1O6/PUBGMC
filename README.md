@@ -1,3 +1,3 @@
 # PUBGMC
 
-![](https://img.shields.io/badge/State-Discontinue-red.svg)
+![](https://img.shields.io/badge/State-Discontinued-red.svg)
