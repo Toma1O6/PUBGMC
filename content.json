@@ -2,15 +2,19 @@
     "display": [
         {
             "type": "announcement",
-            "title": "PUBGMC is now on Patreon!",
-            "text": "You can show some love by supporting me. Just one click",
-            "url": "https://www.patreon.com/pubgmc"
+            "title": "Mod EOL",
+            "text": "This mod is no longer developed. No updates are coming",
+            "url": ""
         }
     ],
     "map": [
     
     ],
     "mainMenuText": [
+        "Status update",
+        "The development of this mod has been discontinued and won't receive any new updates",
+        "",
+        "",
         "Update 1.7.0 [Animation Update]",
         "Changelog",
         "- Reworked ALL animations and added some new ones",
