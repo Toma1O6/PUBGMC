@@ -2,15 +2,29 @@
     "display": [
         {
             "type": "announcement",
-            "title": "Mod EOL",
-            "text": "This mod is no longer developed. No updates are coming",
+            "title": "Limited development",
+            "text": "Decision has been made to continue with development. Stay tuned for updates",
             "url": ""
+        },
+        {
+            "type": "announcement",
+            "title": "Version 1.7.1",
+            "text": "New patch is out. Check it out"
         }
     ],
     "map": [
     
     ],
     "mainMenuText": [
+        "Update 1.7.1",
+        "- Improvements to weapon damage sources which should improve compatibility with other mods",
+        "- New client config option for disabling main menu",
+        "",
+        "",
+        "Status update 29/3/2023",
+        "Development of this mod will continue, mostly for bugfixes and minor QoL changes",
+        "",
+        "",
         "Status update",
         "The development of this mod has been discontinued and won't receive any new updates",
         "",
