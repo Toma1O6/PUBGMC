@@ -81,7 +81,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
-        if(event.getGui() instanceof GuiMainMenu) {
+        if(ConfigPMC.client.customMainMenu.get() && event.getGui() instanceof GuiMainMenu) {
             event.setGui(new GuiMenu());
         }
     }
