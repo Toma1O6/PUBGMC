@@ -9,7 +9,8 @@
         {
             "type": "announcement",
             "title": "Version 1.7.1",
-            "text": "New patch is out. Check it out"
+            "text": "New patch is out. Check it out",
+            "url": ""
         }
     ],
     "map": [
