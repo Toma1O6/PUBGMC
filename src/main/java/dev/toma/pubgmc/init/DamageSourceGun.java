@@ -9,44 +9,27 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class DamageSourceGun extends EntityDamageSourceIndirect {
 
-    private final Random rand = new Random();
-    private ItemStack weapon;
-    private Entity source;
-    private Entity indirect;
-    private boolean headshot;
+    private final ItemStack weapon;
+    private final boolean headshot;
 
-    public DamageSourceGun(String damageType, Entity source, Entity indirect, ItemStack weapon, boolean headshot) {
-        super(damageType, source, indirect);
+    public DamageSourceGun(Entity shooter, Entity bullet, ItemStack weapon, boolean headshot) {
+        super("gun", shooter, bullet);
         this.weapon = weapon;
-        this.source = source;
-        this.indirect = indirect;
         this.headshot = headshot;
     }
 
     @Override
-    public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn) {
-        GunBase gun = (GunBase) weapon.getItem();
-        if(wasHeadshot()) {
-            return new TextComponentTranslation("death.gun.headshot", source.getName(), indirect.getName(), weapon.getDisplayName());
+    public ITextComponent getDeathMessage(EntityLivingBase victim) {
+        String label = "death.attack." + getDamageType();
+        if (damageSourceEntity == null) {
+            return new TextComponentTranslation(label + ".generic", victim.getName());
         }
-        return new TextComponentTranslation("death.gun", source.getName(), indirect.getName(), weapon.getDisplayName());
-    }
-
-    @Nullable
-    public ItemStack getGun() {
-        return weapon.getItem() instanceof GunBase ? weapon : ItemStack.EMPTY;
-    }
-
-    public boolean wasHeadshot() {
-        return headshot;
-    }
-
-    @Override
-    public Entity getTrueSource() {
-        return source;
+        if (headshot) {
+            return new TextComponentTranslation(label + ".headshot", damageSourceEntity.getName(), victim.getName(), weapon.getDisplayName());
+        }
+        return new TextComponentTranslation(label, damageSourceEntity.getName(), victim.getName(), weapon.getDisplayName());
     }
 }

@@ -241,7 +241,7 @@ public class EntityBullet extends Entity {
     }
 
     protected void onEntityHit(boolean isHeadshot, Entity entity) {
-        DamageSource gunsource = new DamageSourceGun("generic", shooter, entity, stack, isHeadshot).setDamageBypassesArmor();
+        DamageSource gunsource = new DamageSourceGun(shooter, this, stack, isHeadshot).setDamageBypassesArmor();
 
         if (entity instanceof EntityLivingBase) {
             getCalculatedDamage((EntityLivingBase) entity, isHeadshot);
