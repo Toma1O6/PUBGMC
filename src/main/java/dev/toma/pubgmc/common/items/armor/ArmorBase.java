@@ -9,7 +9,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.util.ResourceLocation;
 
 public class ArmorBase extends ItemArmor {
-    private ArmorLevel level;
+    private final ArmorLevel level;
 
     public ArmorBase(String name, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn, ArmorLevel armorLevel) {
         super(materialIn, renderIndexIn, equipmentSlotIn);

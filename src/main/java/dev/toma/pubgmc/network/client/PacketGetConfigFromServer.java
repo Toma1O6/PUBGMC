@@ -17,7 +17,8 @@ public class PacketGetConfigFromServer implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketGetConfigFromServer() {}
+    public PacketGetConfigFromServer() {
+    }
 
     public PacketGetConfigFromServer(NBTTagCompound nbt) {
         this.nbt = nbt;

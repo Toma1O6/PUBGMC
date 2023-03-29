@@ -13,11 +13,19 @@ public class DecimalInputWidget extends Widget {
     static final DecimalFormat NUMBER_FORMAT;
     static final Pattern DECIMAL_PATTERN = Pattern.compile("-?[0-9]+(\\.[0-9]+)?");
     static final Pattern CHARACTER_PATTERN = Pattern.compile("[0-9.-]");
+
+    static {
+        NUMBER_FORMAT = new DecimalFormat("#.####");
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        NUMBER_FORMAT.setDecimalFormatSymbols(symbols);
+    }
+
+    final Setter setter;
     Supplier<Double> supplier;
     MutableKeyFrame frame;
     String num;
     boolean valid;
-    final Setter setter;
 
     public DecimalInputWidget(int x, int y, int width, int height, MutableKeyFrame frame, Supplier<Double> supplier, Setter setter) {
         super(x, y, width, height);
@@ -36,7 +44,7 @@ public class DecimalInputWidget extends Widget {
     @Override
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (valid) {
-            if(focused) {
+            if (focused) {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 0.0F, 1.0F);
             } else {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 1.0F);
@@ -78,20 +86,13 @@ public class DecimalInputWidget extends Widget {
         try {
             if (DECIMAL_PATTERN.matcher(num).matches()) {
                 double d = Double.parseDouble(num);
-                if(frame != null) setter.set(frame, d);
+                if (frame != null) setter.set(frame, d);
                 valid = true;
             } else
                 valid = false;
         } catch (NumberFormatException nfe) {
             valid = false;
         }
-    }
-
-    static {
-        NUMBER_FORMAT = new DecimalFormat("#.####");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator('.');
-        NUMBER_FORMAT.setDecimalFormatSymbols(symbols);
     }
 
     public interface Setter {

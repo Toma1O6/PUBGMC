@@ -43,7 +43,7 @@ public class SPacketControllableInput implements IMessage {
             player.getServer().addScheduledTask(() -> {
                 WorldServer world = player.getServerWorld();
                 Entity entity = world.getEntityByID(message.entity);
-                if(entity.getControllingPassenger() == player && entity instanceof IControllable) {
+                if (entity.getControllingPassenger() == player && entity instanceof IControllable) {
                     ((IControllable) entity).handle((byte) message.rawInput);
                 }
             });

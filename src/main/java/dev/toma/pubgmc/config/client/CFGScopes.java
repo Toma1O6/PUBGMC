@@ -37,12 +37,12 @@ public class CFGScopes extends ObjectType {
         scope15xSensitivity = creator.createDouble("15X scope sensitivity", 0.15F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
         redDotColor = creator.createColorARGB("Red dot color", "#FFFF0000", "Manages color of red dot reticle");
         holographicColor = creator.createColorARGB("Holographic color", "#FFFF0000", "Manages color of holographic reticle");
-        redDotVariants = creator.createTextureArray("Red dot variant", 0, new TextureType.Entry[] {
+        redDotVariants = creator.createTextureArray("Red dot variant", 0, new TextureType.Entry[]{
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/red_dot_dot.png"), "Dot"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/red_dot_chevron.png"), "Chevron"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/red_dot_cross.png"), "Cross")
         }, () -> redDotColor.getColor());
-        holographicVariants = creator.createTextureArray("Holographic variant", 0, new TextureType.Entry[] {
+        holographicVariants = creator.createTextureArray("Holographic variant", 0, new TextureType.Entry[]{
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_normal.png"), "EOTech"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_large.png"), "EOTech Large"),
                 new TextureType.Entry(Pubgmc.getResource("textures/overlay/holographic_holosun.png"), "Holosun"),

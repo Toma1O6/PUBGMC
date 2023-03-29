@@ -10,9 +10,9 @@ import net.minecraft.util.NonNullList;
 
 public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ILootSpawner, ITickable {
 
+    private static LootManager manager;
     private String hash = "empty";
     private NonNullList<ItemStack> inventory;
-    private static LootManager manager;
 
     public TileEntityAirdrop() {
         this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
@@ -64,15 +64,15 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
 
     @Override
     public void update() {
-        if(world.isRemote && !this.isEmpty()) {
-            if(world.getWorldTime() % 3 == 0) {
+        if (world.isRemote && !this.isEmpty()) {
+            if (world.getWorldTime() % 3 == 0) {
                 world.spawnParticle(EnumParticleTypes.CLOUD, this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 0, 0.2, 0);
             }
         }
     }
 
     public LootManager getManager(boolean needsUpdate) {
-        if(manager == null || needsUpdate) manager = new LootManager(this.world);
+        if (manager == null || needsUpdate) manager = new LootManager(this.world);
         return manager;
     }
 }

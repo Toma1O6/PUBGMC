@@ -36,24 +36,6 @@ public class ModelR1895 extends ModelGun {
     private final ModelRenderer bone24;
     private final ModelRenderer bone23;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        GlStateManager.scale(0.7f, 0.7f, 0.7f);
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.translate(-7.1499963, -16.95, 0.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        r1895.render(1.0F);
-    }
-
     public ModelR1895() {
         textureWidth = 512;
         textureHeight = 512;
@@ -266,5 +248,23 @@ public class ModelR1895 extends ModelGun {
 
         addEntry(AnimationElement.MAGAZINE, stack -> drum);
         addEntry(AnimationElement.HAMMER, stack -> hammer);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        GlStateManager.scale(0.7f, 0.7f, 0.7f);
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-7.1499963, -16.95, 0.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        r1895.render(1.0F);
     }
 }

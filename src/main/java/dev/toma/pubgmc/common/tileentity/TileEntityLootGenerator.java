@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, ILootSpawner {
 
     public static LootManager lootManager;
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
     private String gameID = "EMPTY";
 
@@ -92,7 +92,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
     }
 
     public LootManager getLootManager(boolean requiresUpdate) {
-        if(lootManager == null || requiresUpdate) lootManager = new LootManager(world);
+        if (lootManager == null || requiresUpdate) lootManager = new LootManager(world);
         return lootManager;
     }
 }

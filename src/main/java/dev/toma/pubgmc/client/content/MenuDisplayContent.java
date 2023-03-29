@@ -20,6 +20,13 @@ public abstract class MenuDisplayContent {
         addDeserializer("announcement", Announcement::deserialize);
     }
 
+    static <C extends MenuDisplayContent> void addDeserializer(String key, EventTypeDeserializer<C> deserializer) {
+        EventTypeDeserializer<?> value = DESERIALIZERS.put(key, deserializer);
+        if (value != null) {
+            throw new IllegalStateException("Duplicate deserializer key: " + key);
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     public abstract Widget createWidget(GuiMenu parent, int x, int y, int width, int height);
 
@@ -27,19 +34,13 @@ public abstract class MenuDisplayContent {
 
         @Override
         public MenuDisplayContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if(!json.isJsonObject()) throw new JsonParseException("Couldn't parse display content, expected JsonObject");
+            if (!json.isJsonObject())
+                throw new JsonParseException("Couldn't parse display content, expected JsonObject");
             JsonObject object = json.getAsJsonObject();
             String type = JsonUtils.getString(object, "type");
             EventTypeDeserializer<?> deserializer = DESERIALIZERS.get(type);
-            if(deserializer == null) throw new JsonParseException("Unknown event type: " + type);
+            if (deserializer == null) throw new JsonParseException("Unknown event type: " + type);
             return deserializer.deserialize(object, context);
-        }
-    }
-
-    static <C extends MenuDisplayContent> void addDeserializer(String key, EventTypeDeserializer<C> deserializer) {
-        EventTypeDeserializer<?> value = DESERIALIZERS.put(key, deserializer);
-        if(value != null) {
-            throw new IllegalStateException("Duplicate deserializer key: " + key);
         }
     }
 }

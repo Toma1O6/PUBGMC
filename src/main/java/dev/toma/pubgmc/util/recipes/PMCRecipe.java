@@ -107,7 +107,7 @@ public class PMCRecipe {
 
         private final String name;
 
-        private CraftingCategory(String name) {
+        CraftingCategory(String name) {
             this.name = name;
         }
 

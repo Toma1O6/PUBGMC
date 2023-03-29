@@ -53,15 +53,14 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 new ButtonWidget(95, 5, 40, 20, "Save", (widget, mouseX, mouseY, button) -> {
                     AnimationProject project = AnimatorCache.project;
                     File file = new File(project.workingFile, project.name + ".json");
-                    if(file.exists()) {
+                    if (file.exists()) {
                         project.save();
-                        if(project.isSaved) {
+                        if (project.isSaved) {
                             sendText("Saving successful");
                         } else {
                             sendError("Saving failed");
                         }
-                    }
-                    else mc.displayGuiScreen(new GuiSaveProject(this));
+                    } else mc.displayGuiScreen(new GuiSaveProject(this));
                 })
         );
         addWidget(
@@ -134,7 +133,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             super(x, y, width, height);
             this.timelineRef = timelineRef;
             decr = new ButtonWidget(x + width - 65, y, 15, 15, "<<", (widget, mouseX, mouseY, button) -> grow(-1));
-            incr = new ButtonWidget(x + width - 15, y, 15, 15, ">>", (widget, mouseX, mouseY, button) -> grow( 1));
+            incr = new ButtonWidget(x + width - 15, y, 15, 15, ">>", (widget, mouseX, mouseY, button) -> grow(1));
         }
 
         @Override
@@ -154,9 +153,9 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
         void grow(int value) {
             int amount = 5;
-            if(isShiftKeyDown()) {
+            if (isShiftKeyDown()) {
                 amount = 20;
-            } else if(isCtrlKeyDown()) {
+            } else if (isCtrlKeyDown()) {
                 amount = 1;
             }
             amount *= value;
@@ -193,7 +192,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 Minecraft mc = Minecraft.getMinecraft();
                 Item item = mc.player.getHeldItemMainhand().getItem();
                 List<AnimationElement> list = new ArrayList<>(AnimationElement.getBaseElements());
-                if(item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
+                if (item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
                     ElementProvider provider = (ElementProvider) item.getTileEntityItemStackRenderer();
                     list.addAll(provider.getElements());
                 }
@@ -237,7 +236,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             protected void onConfirm() {
                 GuiAnimator animator = (GuiAnimator) parent;
                 AnimationElement element = widget.getSelectedElement();
-                if(element != null) {
+                if (element != null) {
                     animator.timeline.insertElement(element, MutableKeyFrame.fromImmutable(frame));
                 }
                 mc.displayGuiScreen(parent);
@@ -265,7 +264,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
             Item item = stack.getItem();
             List<AnimationElement> elements = new ArrayList<>();
-            if(item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
+            if (item.getTileEntityItemStackRenderer() instanceof ElementProvider) {
                 elements.addAll(((ElementProvider) item.getTileEntityItemStackRenderer()).getElements());
             }
             elements.addAll(AnimationElement.getBaseElements());
@@ -284,7 +283,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             AnimationProject project = AnimatorCache.project;
             Optional<AnimatorAnimation> optional = AnimationProcessor.instance().getAnimation(AnimationType.ANIMATOR_TYPE);
             optional.ifPresent(anim -> {
-                if(!anim.isPaused())
+                if (!anim.isPaused())
                     project.setAnimationProgress(anim.getProgressSmooth());
             });
             drawLine(x + 165, y + 10, x + 165, y + height, 1.0F, 0.0F, 0.0F, 0.5F, 2);
@@ -304,7 +303,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 }
                 ++j;
             }
-            int timelineX = this.x + 165 + (int)((width - 175) * project.animationProgress);
+            int timelineX = this.x + 165 + (int) ((width - 175) * project.animationProgress);
             drawColorShape(timelineX - 1, y, timelineX + 1, y + height, 1.0F, 1.0F, 1.0F, 1.0F);
             drawColorShape(timelineX - 5, y, timelineX, y + 10, timelineX + 5, y, timelineX - 5, y, 1.0F, 1.0F, 1.0F, 1.0F);
         }
@@ -315,7 +314,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             for (Map.Entry<AnimationElement, List<MutableKeyFrame>> entry : project.animation.entrySet()) {
                 List<TimelineObject> objects = new ArrayList<>();
                 for (MutableKeyFrame frame : entry.getValue()) {
-                    int ox = 165 + (int)(this.x + (this.width - this.x - 175) * frame.endPoint() - 5);
+                    int ox = 165 + (int) (this.x + (this.width - this.x - 175) * frame.endPoint() - 5);
                     TimelineObject object = new TimelineObject(ox, 0, 10, 10, this, frame);
                     objects.add(object);
                 }
@@ -330,12 +329,12 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             for (Map.Entry<AnimationElement, List<TimelineObject>> entry : timelineObjects.entrySet()) {
                 for (TimelineObject object : entry.getValue()) {
                     clickedElementTimeline = entry.getKey();
-                    if(object.handleClicked(mouseX, mouseY, button)) {
+                    if (object.handleClicked(mouseX, mouseY, button)) {
                         return false;
                     }
                 }
             }
-            if(listWidget.handleClicked(mouseX, mouseY, button)) {
+            if (listWidget.handleClicked(mouseX, mouseY, button)) {
                 return false;
             }
             return super.handleClicked(mouseX, mouseY, button);
@@ -354,7 +353,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             float f1 = f * 100;
             int i = (int) f1;
             float f2 = f1 - i;
-            if(f2 < 0.5) {
+            if (f2 < 0.5) {
                 f = i;
             } else {
                 f = i + 1;
@@ -363,7 +362,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             AnimatorCache.project.setAnimationProgress(f);
             animator.sendText("Set animation progress to {}%", DevUtil.formatToTwoDecimals(f * 100.0F));
             Optional<AnimatorAnimation> optional = AnimationProcessor.instance().getAnimation(AnimationType.ANIMATOR_TYPE);
-            if(optional.isPresent()) {
+            if (optional.isPresent()) {
                 optional.get().set(f);
             }
         }
@@ -372,7 +371,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         public boolean handleDragged(int mouseX, int mouseY, int button, long time) {
             for (Map.Entry<AnimationElement, List<TimelineObject>> entry : timelineObjects.entrySet()) {
                 for (TimelineObject object : entry.getValue()) {
-                    if(object.handleDragged(mouseX, mouseY, button, time))
+                    if (object.handleDragged(mouseX, mouseY, button, time))
                         return true;
                 }
             }
@@ -393,14 +392,14 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         public void insertElement(AnimationElement element, MutableKeyFrame frame) {
             List<TimelineObject> list = timelineObjects.getOrDefault(element, new ArrayList<>());
             float progress = frame.endpoint;
-            if(hasElementAt(progress, list)) {
+            if (hasElementAt(progress, list)) {
                 animator.sendError("Frame is already defined for this location");
                 return;
             }
             frame.setEndpoint(progress);
             AnimatorCache.project.add(element, frame);
             playAnimation();
-            int ox = 165 + (int)(this.x + (this.width - this.x - 175) * progress - 5);
+            int ox = 165 + (int) (this.x + (this.width - this.x - 175) * progress - 5);
             TimelineObject object = new TimelineObject(ox, 0, 10, 10, this, frame);
             list.add(object);
             list.sort((o1, o2) -> Float.compare(o1.frame.endpoint, o2.frame.endpoint));
@@ -417,10 +416,10 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         }
 
         boolean hasElementAt(float f, List<TimelineObject> list) {
-            if(list == null || list.isEmpty())
+            if (list == null || list.isEmpty())
                 return false;
             for (TimelineObject object : list) {
-                if(object.frame.endpoint == f)
+                if (object.frame.endpoint == f)
                     return true;
             }
             return false;
@@ -462,7 +461,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
             @Override
             public void onClick(int mouseX, int mouseY, int button) {
-                if(button == 1) {
+                if (button == 1) {
                     timeline.animator.frameWidget.setFrame(frame, timeline.clickedElementTimeline);
                 }
             }
@@ -473,7 +472,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 int x2 = timeline.x + timeline.width - 10;
                 float f = DevUtil.wrap((mouseX - x1) / (float) (x2 - x1), 0.0F, 1.0F);
                 frame.setEndpoint(f);
-                x = 165 + (int)(timeline.x + (timeline.width - timeline.x - 175) * f - 5);
+                x = 165 + (int) (timeline.x + (timeline.width - timeline.x - 175) * f - 5);
                 AnimatorCache.project.markModified();
             }
         }
@@ -513,7 +512,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
                 int j = popups.size() - i - 1;
                 Popup popup = popups.get(i);
                 float a = DevUtil.lerp(popup.getOpacity(0), popup.getOpacity(1), partialTicks);
-                int rgb = popup.color | ((int)(a * 255) << 24);
+                int rgb = popup.color | ((int) (a * 255) << 24);
                 int y = height - (j + 1) * 15;
                 float bgAlpha = 0.6F * a;
                 int x2 = width - popupWidth;
@@ -548,14 +547,14 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             while (iterator.hasNext()) {
                 Popup popup = iterator.next();
                 popup.update();
-                if(popup.ticksLeft < 0) {
+                if (popup.ticksLeft < 0) {
                     iterator.remove();
                 }
             }
         }
 
         void send(int flag, String text, Object... objects) {
-            if(objects.length != 0) {
+            if (objects.length != 0) {
                 int j = 0;
                 while (text.contains("{}") && j < objects.length) {
                     text = text.replaceFirst("[{}].", objects[j].toString());
@@ -571,7 +570,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             int max = 0;
             for (Popup popup : popups) {
                 int width = renderer.getStringWidth(popup.message);
-                if(width > max) {
+                if (width > max) {
                     max = width;
                 }
             }
@@ -580,9 +579,9 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
     }
 
     static class Popup {
-        int ticksLeft;
         final int color;
         final String message;
+        int ticksLeft;
 
         Popup(int flag, int ticksLeft, String message) {
             this.color = getFlagColor(flag);
@@ -592,7 +591,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
 
         public float getOpacity(int i) {
             int j = ticksLeft + i;
-            if(j > 40)
+            if (j > 40)
                 return 1.0F;
             return j / 40.0F;
         }
@@ -628,8 +627,8 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             super.init();
             textField = addWidget(
                     new TextFieldWidget(guiLeft + 5, guiTop + 30, xSize - 10, 20, "", 40)
-                        .withValidator(character -> PATTERN.matcher(String.valueOf(character)).matches())
-                        .ghostText("Filename")
+                            .withValidator(character -> PATTERN.matcher(String.valueOf(character)).matches())
+                            .ghostText("Filename")
             );
         }
     }
@@ -644,13 +643,13 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         protected void onConfirm() {
             AnimationProject project = AnimatorCache.project;
             String name = textField.getText();
-            if(name.isEmpty()) {
+            if (name.isEmpty()) {
                 ((IPopupHandler) parent).sendError("You must define project name");
                 return;
             }
-            if(!project.isSaved) {
+            if (!project.isSaved) {
                 GuiConfirm.display(this, "Close project without saving?", "", (confirmed, parent1) -> {
-                    if(confirmed) {
+                    if (confirmed) {
                         AnimatorCache.project = new AnimationProject().named(name);
                         mc.displayGuiScreen(((GuiConfirm) parent1).parent);
                         ((IPopupHandler) parent).sendText("Project created");
@@ -680,17 +679,17 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
         protected void onConfirm() {
             AnimationProject project = AnimatorCache.project;
             String text = textField.getText();
-            if(text.isEmpty()) {
+            if (text.isEmpty()) {
                 ((IPopupHandler) parent).sendError("You must define file name");
                 return;
             }
             File file = new File(project.workingFile, text + ".json");
-            if(file.exists()) {
+            if (file.exists()) {
                 GuiConfirm.display(this, "File already exists. Overwrite?", "", (confirmed, parent1) -> {
-                    if(confirmed) {
+                    if (confirmed) {
                         project.saveAs(text);
                         mc.displayGuiScreen(((GuiConfirm) parent1).parent);
-                        if(project.isSaved) {
+                        if (project.isSaved) {
                             ((IPopupHandler) parent).sendText("Saving successful");
                         } else {
                             ((IPopupHandler) parent).sendError("Saving failed");
@@ -702,7 +701,7 @@ public class GuiAnimator extends GuiWidgets implements IPopupHandler {
             } else {
                 project.saveAs(text);
                 mc.displayGuiScreen(parent);
-                if(project.isSaved) {
+                if (project.isSaved) {
                     ((IPopupHandler) parent).sendText("Saving successful");
                 } else {
                     ((IPopupHandler) parent).sendError("Saving failed");

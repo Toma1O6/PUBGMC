@@ -25,7 +25,7 @@ public abstract class GameObjectiveBased extends Game {
     }
 
     public final void createObjective(World world, BlockPos pos, GameArea area) {
-        if(this.addObjective(world, pos, area)) {
+        if (this.addObjective(world, pos, area)) {
             this.getObjectives().put(pos, area);
         }
     }

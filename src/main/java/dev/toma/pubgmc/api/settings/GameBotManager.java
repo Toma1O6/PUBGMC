@@ -13,7 +13,6 @@ import java.util.function.Predicate;
 
 public final class GameBotManager<T extends Game> {
 
-    public int currentBotCount;
     private final boolean botsEnabled;
     private final boolean botDeathCrates;
     private final int maxBotAmount;
@@ -22,6 +21,7 @@ public final class GameBotManager<T extends Game> {
     private final BotSpawner<T> botSpawner;
     private final Predicate<T> botSpawnValidator;
     private final Consumer<EntityDeathContex> botDeathAction;
+    public int currentBotCount;
 
     private GameBotManager(Builder<T> builder) {
         this.botsEnabled = builder.botsEnabled;
@@ -71,7 +71,8 @@ public final class GameBotManager<T extends Game> {
         private BotAIGetter botLogic;
         private BotSpawner<T> spawner = GameUtils.getDefaultSpawner();
         private Predicate<T> spawnValidator = game -> true;
-        private Consumer<EntityDeathContex> botDeath = ctx -> {};
+        private Consumer<EntityDeathContex> botDeath = ctx -> {
+        };
 
         private Builder() {
         }

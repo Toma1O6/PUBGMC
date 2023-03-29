@@ -13,6 +13,19 @@ public class ZonePos {
         this.z = z;
     }
 
+    public static NBTTagCompound toNBT(ZonePos pos) {
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setDouble("x", pos.x);
+        tag.setDouble("z", pos.z);
+        return tag;
+    }
+
+    public static ZonePos fromNBT(NBTTagCompound nbt) {
+        double x = nbt.getDouble("x");
+        double z = nbt.getDouble("z");
+        return new ZonePos(x, z);
+    }
+
     public ZonePos add(double x, double z) {
         this.x += x;
         this.z += z;
@@ -42,11 +55,11 @@ public class ZonePos {
     }
 
     public ZonePos divide(double x, double z) {
-        return multiply(1/x, 1/z);
+        return multiply(1 / x, 1 / z);
     }
 
     public ZonePos divide(double f) {
-        return multiply(1/f);
+        return multiply(1 / f);
     }
 
     public double distanceX(ZonePos pos) {
@@ -60,7 +73,7 @@ public class ZonePos {
     public double distance(ZonePos pos) {
         double x = this.distanceX(pos);
         double z = this.distanceZ(pos);
-        return MathHelper.sqrt(x*x + z*z);
+        return MathHelper.sqrt(x * x + z * z);
     }
 
     @Override
@@ -70,25 +83,12 @@ public class ZonePos {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
-        } else if(obj instanceof ZonePos) {
+        } else if (obj instanceof ZonePos) {
             ZonePos pos = (ZonePos) obj;
             return pos.x == this.x && pos.z == this.z;
         }
         return false;
-    }
-
-    public static NBTTagCompound toNBT(ZonePos pos) {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setDouble("x", pos.x);
-        tag.setDouble("z", pos.z);
-        return tag;
-    }
-
-    public static ZonePos fromNBT(NBTTagCompound nbt) {
-        double x = nbt.getDouble("x");
-        double z = nbt.getDouble("z");
-        return new ZonePos(x, z);
     }
 }

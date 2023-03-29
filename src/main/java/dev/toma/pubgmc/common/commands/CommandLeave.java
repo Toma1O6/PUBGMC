@@ -33,14 +33,14 @@ public class CommandLeave extends CommandBase {
                 EntityPlayer player = (EntityPlayer) e;
                 Lobby lobby = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getLobby();
                 BlockPos pos = null;
-                if(lobby == null) {
+                if (lobby == null) {
                     warnPlayer(player);
                     pos = lobby.center;
-                } else if(world.getSpawnPoint() == null) {
+                } else if (world.getSpawnPoint() == null) {
                     warnPlayer(player);
                     return;
                 }
-                if(pos == null) pos = world.getSpawnPoint();
+                if (pos == null) pos = world.getSpawnPoint();
                 player.attemptTeleport(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
                 player.sendMessage(new TextComponentString(TextFormatting.GREEN + "You have been teleported back to lobby."));
             }

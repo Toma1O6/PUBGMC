@@ -41,25 +41,6 @@ public class ModelVector extends ModelGun {
     private final ModelRenderer bone12;
     private final ModelRenderer bullet;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        vector.render(1.0F);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSMGTransform();
-        GlStateManager.translate(0.0, -3.025, -16.0);
-    }
-
     public ModelVector() {
         textureWidth = 512;
         textureHeight = 512;
@@ -542,5 +523,24 @@ public class ModelVector extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        vector.render(1.0F);
+        if (!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.translate(0.0, -3.025, -16.0);
     }
 }

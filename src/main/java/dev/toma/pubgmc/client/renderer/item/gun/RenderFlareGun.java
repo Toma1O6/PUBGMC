@@ -21,7 +21,7 @@ public class RenderFlareGun extends WeaponRenderer {
 
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {
-        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+        if (transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
             GlStateManager.translate(0, 0, -0.4);
         }
     }

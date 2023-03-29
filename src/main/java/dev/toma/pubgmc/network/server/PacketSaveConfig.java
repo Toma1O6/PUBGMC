@@ -13,7 +13,8 @@ public class PacketSaveConfig implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketSaveConfig() {}
+    public PacketSaveConfig() {
+    }
 
     @Override
     public void toBytes(ByteBuf buf) {

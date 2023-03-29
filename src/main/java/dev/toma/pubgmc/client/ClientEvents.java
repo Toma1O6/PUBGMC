@@ -79,9 +79,113 @@ public class ClientEvents {
     private boolean shooting;
     private int shootingTimer;
 
+    /**
+     * Method for rendering the textured boost overlays
+     * TODO improve
+     */
+    private static void renderBoost(BoostStats stats) {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+
+        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
+            int left = width / 2 - 91;
+            int top = height - 32 + 3;
+            short barWidth = 182;
+
+            //Actual drawing code
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
+            int boost = stats.getLevel();
+            if (boost > 0) {
+                double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
+                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
+            }
+
+            //This will render after these 2 above to make sure this will always be on the top
+            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
+        }
+    }
+
+    private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
+        ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+        int left = width / 2 + 93;
+        int top = height - 19;
+        int offset = 0;
+
+        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
+            ArmorBase armor = (ArmorBase) head.getItem();
+            int level = armor.armorLevel().getArmorLevel();
+            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
+            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+            offset += 17;
+        }
+
+        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
+            ArmorBase armor = (ArmorBase) body.getItem();
+            int level = armor.armorLevel().getArmorLevel();
+            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
+            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+            offset += 17;
+        }
+
+        if (data.getBackpackLevel() > 0) {
+            int level = data.getBackpackLevel() - 1;
+            ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
+            offset += 17;
+        }
+
+        if (data.getEquippedNV()) {
+            int i = data.isUsingNV() ? 1 : 0;
+            ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
+        }
+    }
+
+    /**
+     * @deprecated render tinted texture instead
+     */
+    @Deprecated
+    private static int getDamageLevel(ItemStack stack) {
+        final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
+        return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
+    }
+
+    private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
+        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
+            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
+            double speed = car.getSpeed() * 20;
+            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
+        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
+            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
+            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
+        }
+    }
+
+    private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
+        final DecimalFormat f = new DecimalFormat("#,#0.0");
+        final float useTime = (float) player.getItemInUseCount();
+        FontRenderer font = mc.fontRenderer;
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+        int left = width / 2;
+        int top = height / 2;
+        font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
+    }
+
+    private static boolean isEquipAnimationDone(Minecraft mc) {
+        ItemRenderer renderer = mc.getItemRenderer();
+        return renderer.equippedProgressMainHand == 1.0F;
+    }
+
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
-        if(ConfigPMC.client.customMainMenu.get() && event.getGui() instanceof GuiMainMenu) {
+        if (ConfigPMC.client.customMainMenu.get() && event.getGui() instanceof GuiMainMenu) {
             event.setGui(new GuiMenu());
         }
     }
@@ -92,7 +196,7 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP player = mc.player;
         float partial = event.getPartialTicks();
-        if(stack.getItem() instanceof HandAnimate) {
+        if (stack.getItem() instanceof HandAnimate) {
             HandAnimate animate = (HandAnimate) stack.getItem();
             event.setCanceled(true);
             float pitch = DevUtil.lerp(player.rotationPitch, player.prevRotationPitch, partial);
@@ -124,7 +228,7 @@ public class ClientEvents {
                     GlStateManager.popMatrix();
                 }
                 GlStateManager.popMatrix();
-                if(!processor.isItemRenderBlocked()) {
+                if (!processor.isItemRenderBlocked()) {
                     processor.process(AnimationElement.ITEM);
                     mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, 0.0F);
                 }
@@ -236,13 +340,13 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
-        if(ConfigPMC.developerMode.get()) {
+        if (ConfigPMC.developerMode.get()) {
             Minecraft mc = Minecraft.getMinecraft();
-            if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
                 mc.displayGuiScreen(new GuiGunConfig());
-            } else if(Keyboard.isKeyDown(Keyboard.KEY_M)) {
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
                 mc.displayGuiScreen(new GuiAnimator());
-            } else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
                 mc.displayGuiScreen(new GuiHandPlacer());
             }
         }
@@ -250,8 +354,8 @@ public class ClientEvents {
             IPlayerData data = PlayerData.get(sp);
             if (data != null) {
                 data.setProning(!data.isProning());
-                if(data.getAimInfo().isAiming()) this.setAiming(data, false);
-                if(data.isReloading()) {
+                if (data.getAimInfo().isAiming()) this.setAiming(data, false);
+                if (data.isReloading()) {
                     data.getReloadInfo().interrupt(data);
                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 }
@@ -260,7 +364,7 @@ public class ClientEvents {
         }
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         if (KeyBinds.ATTACHMENT.isPressed()) {
-            if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
             } else {
                 sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
@@ -270,9 +374,9 @@ public class ClientEvents {
             ItemStack stack = sp.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                if(data.isReloading()) {
+                if (data.isReloading()) {
                     IReloader reloader = gun.getReloader();
-                    if(reloader.canInterrupt(gun, stack)) {
+                    if (reloader.canInterrupt(gun, stack)) {
                         ReloadInfo info = data.getReloadInfo();
                         info.setReloading(false);
                         PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
@@ -287,12 +391,12 @@ public class ClientEvents {
                         boolean hasAmmo = false;
                         for (int i = 0; i < sp.inventory.getSizeInventory(); i++) {
                             ItemStack ammoStack = sp.inventory.getStackInSlot(i);
-                            if(!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
+                            if (!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
                                 hasAmmo = true;
                                 break;
                             }
                         }
-                        if(hasAmmo) {
+                        if (hasAmmo) {
                             AnimationDispatcher.dispatchReloadAnimation(gun, stack, sp);
                             ReloadInfo info = data.getReloadInfo();
                             info.startReload(sp, gun, stack);
@@ -329,16 +433,16 @@ public class ClientEvents {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                if(isEquipAnimationDone(mc)) {
+                if (isEquipAnimationDone(mc)) {
                     if (gs.keyBindAttack.isPressed()) {
                         if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
                             if (!isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
                                 if (gun.hasAmmo(stack)) {
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                     tracker.add(gun);
-                                    if(gun.getAction() != null) {
+                                    if (gun.getAction() != null) {
                                         Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                        if(gun.getGunType() == GunBase.GunType.SR) {
+                                        if (gun.getGunType() == GunBase.GunType.SR) {
                                             setAiming(data, false);
                                         }
                                     }
@@ -367,7 +471,7 @@ public class ClientEvents {
                         RenderHandler.fovBackup = gs.fovSetting;
                         RenderHandler.sensBackup = gs.mouseSensitivity;
                         ScopeData scopeData = gun.getScopeData(stack);
-                        if(scopeData != null && scopeData.getMouseSens() < 1.0F) {
+                        if (scopeData != null && scopeData.getMouseSens() < 1.0F) {
                             gs.mouseSensitivity *= scopeData.getMouseSens();
                         }
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
@@ -387,8 +491,8 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         GameSettings gs = mc.gameSettings;
-        if(ev.phase == Phase.END) {
-            if(mc.currentScreen instanceof ITickable) {
+        if (ev.phase == Phase.END) {
+            if (mc.currentScreen instanceof ITickable) {
                 ((ITickable) mc.currentScreen).update();
             }
             AnimationProcessor.instance().processTick();
@@ -397,7 +501,7 @@ public class ClientEvents {
         if (player != null && ev.phase == Phase.END && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             tracker.tick(mc.isGamePaused());
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
+            if (player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
                 IControllable controllable = (IControllable) player.getRidingEntity();
                 int inputs = controllable.encode(gs);
                 controllable.handle((byte) inputs);
@@ -457,15 +561,15 @@ public class ClientEvents {
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         ClientHooks.setRenderTickTime(event.renderTickTime);
-        if(event.phase == Phase.START) {
+        if (event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }
     }
 
     private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
-        if(data.isReloading()) {
-            if(reloader.canInterrupt(gun, stack)) {
+        if (data.isReloading()) {
+            if (reloader.canInterrupt(gun, stack)) {
                 ReloadInfo info = data.getReloadInfo();
                 info.setReloading(false);
                 PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
@@ -483,18 +587,18 @@ public class ClientEvents {
         float vertical = 1.0F;
         float horizontal = 1.0F;
         IPlayerData data = PlayerData.get(player);
-        if(data.isProning()) {
+        if (data.isProning()) {
             vertical *= 0.3F;
             horizontal *= 0.3F;
-        } else if(player.isSneaking()) {
+        } else if (player.isSneaking()) {
             vertical *= 0.85F;
             horizontal *= 0.85F;
         }
-        if(muzzle != null) {
+        if (muzzle != null) {
             vertical = muzzle.applyVerticalRecoilMultiplier(vertical);
             horizontal = muzzle.applyHorizontalRecoilMultiplier(horizontal);
         }
-        if(grip != null) {
+        if (grip != null) {
             vertical = grip.applyVerticalRecoilMultiplier(vertical);
             horizontal = grip.applyHorizontalRecoilMultiplier(horizontal);
         }
@@ -508,109 +612,5 @@ public class ClientEvents {
 
     private void setAiming(IPlayerData data, boolean aim) {
         PacketHandler.sendToServer(new SPacketSetProperty(aim, SPacketSetProperty.Action.AIM));
-    }
-
-    /**
-     * Method for rendering the textured boost overlays
-     * TODO improve
-     */
-    private static void renderBoost(BoostStats stats) {
-        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
-
-        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
-            int left = width / 2 - 91;
-            int top = height - 32 + 3;
-            short barWidth = 182;
-
-            //Actual drawing code
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
-            int boost = stats.getLevel();
-            if (boost > 0) {
-                double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
-                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
-            }
-
-            //This will render after these 2 above to make sure this will always be on the top
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
-        }
-    }
-
-    private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
-        ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
-        int left = width / 2 + 93;
-        int top = height - 19;
-        int offset = 0;
-
-        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) head.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
-            offset += 17;
-        }
-
-        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) body.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
-            offset += 17;
-        }
-
-        if (data.getBackpackLevel() > 0) {
-            int level = data.getBackpackLevel() - 1;
-            ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
-            offset += 17;
-        }
-
-        if (data.getEquippedNV()) {
-            int i = data.isUsingNV() ? 1 : 0;
-            ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
-        }
-    }
-
-    /**
-     * @deprecated render tinted texture instead
-     */
-    @Deprecated
-    private static int getDamageLevel(ItemStack stack) {
-        final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
-        return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
-    }
-
-    private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int)(speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
-        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
-        }
-    }
-
-    private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
-        final DecimalFormat f = new DecimalFormat("#,#0.0");
-        final float useTime = (float) player.getItemInUseCount();
-        FontRenderer font = mc.fontRenderer;
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
-        int left = width / 2;
-        int top = height / 2;
-        font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
-    }
-
-    private static boolean isEquipAnimationDone(Minecraft mc) {
-        ItemRenderer renderer = mc.getItemRenderer();
-        return renderer.equippedProgressMainHand == 1.0F;
     }
 }

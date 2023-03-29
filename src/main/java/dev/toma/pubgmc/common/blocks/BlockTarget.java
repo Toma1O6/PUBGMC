@@ -32,7 +32,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
 
     @Override
     public void onHit(EntityBullet bullet, Vec3d hit, BlockPos pos) {
-        if(bullet.getShooter() != null && bullet.getShooter() instanceof EntityPlayerMP) {
+        if (bullet.getShooter() != null && bullet.getShooter() instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) bullet.getShooter();
             IBlockState state = bullet.world.getBlockState(pos);
             double delta = hit.y - (int) hit.y;
@@ -75,15 +75,15 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
 
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-        if(!state.getValue(UPPER)) worldIn.setBlockState(pos.up(), state.withProperty(UPPER, true));
+        if (!state.getValue(UPPER)) worldIn.setBlockState(pos.up(), state.withProperty(UPPER, true));
         super.onBlockAdded(worldIn, pos, state);
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if(!worldIn.isRemote) {
+        if (!worldIn.isRemote) {
             boolean b = !state.getValue(FEEDBACK);
-            EnumFacing facing1 = state.getValue(UPPER) ? EnumFacing.DOWN: EnumFacing.UP;
+            EnumFacing facing1 = state.getValue(UPPER) ? EnumFacing.DOWN : EnumFacing.UP;
             worldIn.setBlockState(pos, state.withProperty(FEEDBACK, b));
             worldIn.setBlockState(pos.offset(facing1), worldIn.getBlockState(pos.offset(facing1)).withProperty(FEEDBACK, b));
             playerIn.sendStatusMessage(new TextComponentString(b ? "Hit information enabled" : "Hit information disabled"), true);

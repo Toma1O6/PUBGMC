@@ -32,7 +32,7 @@ public class AnimationDispatcher {
 
     public static void dispatchAimAnimationDefault(AnimationProcessor processor, AnimationType<AimAnimation> type, EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
-        if(stack.getItem() instanceof GunBase) {
+        if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getAimAnimation(stack);
             processor.play(type, new AimAnimation(spec));
@@ -48,7 +48,7 @@ public class AnimationDispatcher {
 
     public static void dispatchReloadAnimationDefault(AnimationProcessor processor, AnimationType<MultiFrameAnimation> type, EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
-        if(stack.getItem() instanceof GunBase) {
+        if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getReloadAnimation(gun, stack);
             int reloadTime = gun.getReloader().getReloadAnimationTime(gun, stack, player);
@@ -58,7 +58,7 @@ public class AnimationDispatcher {
 
     public static void dispatchShootAnimation(GunBase gun) {
         AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
-        if(gun.getAction() != null) {
+        if (gun.getAction() != null) {
             AnimationProcessor.instance().schedule(AnimationType.SHOOT_ANIMATION_TYPE, new MultiFrameAnimation(30, spec), 10);
         } else {
             AnimationProcessor.instance().play(AnimationType.SHOOT_ANIMATION_TYPE, new MultiFrameAnimation(Math.min(gun.getFireRate(), 3), spec));
@@ -67,7 +67,7 @@ public class AnimationDispatcher {
 
     public static void dispatchShootAnimationDefault(AnimationProcessor processor, AnimationType<MultiFrameAnimation> type, EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
-        if(stack.getItem() instanceof GunBase) {
+        if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             AnimationSpec spec = ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).getShootingAnimation();
             processor.play(type, new MultiFrameAnimation(Math.min(gun.getFireRate(), 3), spec));
@@ -76,7 +76,7 @@ public class AnimationDispatcher {
 
     public static void dispatchEquipAnimation(AnimationProcessor processor, AnimationType<EquipAnimation> type, EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
-        if(stack.getItem() instanceof GunBase) {
+        if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             GunBase.GunType gunType = gun.getGunType();
             ResourceLocation key = Pubgmc.getResource("equip_" + gunType.name().toLowerCase());

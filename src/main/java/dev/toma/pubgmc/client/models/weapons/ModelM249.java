@@ -125,23 +125,6 @@ public class ModelM249 extends ModelGun {
     private final ModelRenderer bone39;
     private final ModelRenderer bone27;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(0, -17.5, -14.0);
-    }
-
     public ModelM249() {
         textureWidth = 512;
         textureHeight = 512;
@@ -1381,5 +1364,22 @@ public class ModelM249 extends ModelGun {
         addEntry(AnimationElement.BULLET, stack -> bullet);
         addEntry(AnimationElement.BELT, stack -> belt);
         addEntry(AnimationElement.TOP, stack -> top);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(0, -17.5, -14.0);
     }
 }

@@ -83,19 +83,6 @@ public class ModelQBZ extends ModelGun {
     private final ModelRenderer bone2;
     private final ModelRenderer bullet;
 
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(-0.025000004, 11.875002, -11.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        if(hasScopeAtachment(stack))
-            rail.render(1f);
-    }
-
     public ModelQBZ() {
         textureWidth = 512;
         textureHeight = 512;
@@ -906,6 +893,19 @@ public class ModelQBZ extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(-0.025000004, 11.875002, -11.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        if (hasScopeAtachment(stack))
+            rail.render(1f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

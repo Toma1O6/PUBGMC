@@ -56,10 +56,10 @@ public class ListWidget<T> extends Widget {
 
     @Override
     public boolean processClicked(int mouseX, int mouseY, int button) {
-        if(mouseX >= x && mouseX <= x + width - 2) {
-            if(mouseY >= y + 15) {
+        if (mouseX >= x && mouseX <= x + width - 2) {
+            if (mouseY >= y + 15) {
                 int i = list.size();
-                if(i < displayAmount) {
+                if (i < displayAmount) {
                     return mouseY <= y + (i + 1) * 15;
                 }
                 return mouseY <= y + height;
@@ -78,8 +78,8 @@ public class ListWidget<T> extends Widget {
             ++id;
         }
         boolean requiresConfirmation = awaitConfirm.getAsBoolean();
-        if(requiresConfirmation) {
-            if(id == selected) {
+        if (requiresConfirmation) {
+            if (id == selected) {
                 GuiConfirm.display(parent, "Your last project isn't saved. Continue anyway?", list.get(selected).toString(), callback);
                 selected = -1;
                 return;
@@ -87,7 +87,7 @@ public class ListWidget<T> extends Widget {
         }
         selected = id;
         element = list.get(selected);
-        if(!requiresConfirmation) {
+        if (!requiresConfirmation) {
             callback.call(true, parent);
             selected = -1;
         }
@@ -107,7 +107,7 @@ public class ListWidget<T> extends Widget {
     @Override
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         FontRenderer renderer = mc.fontRenderer;
-        if(listName != null) {
+        if (listName != null) {
             int textSize = renderer.getStringWidth(listName);
             drawColorShape(x, y, x + textSize + 6, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
             renderer.drawString(listName, x + 3, y + 4, 0x999999);
@@ -117,16 +117,16 @@ public class ListWidget<T> extends Widget {
             int j = i - scrollIndex;
             int yStart = y + 15 + j * 15;
             int textColor = 0x999999;
-            if(i == selected) {
+            if (i == selected) {
                 textColor = 0x333333;
                 drawColorShape(x, yStart, x + width - 2, yStart + 15, 1.0F, 1.0F, 1.0F, 0.5F);
-            } else if(mouseX >= x && mouseX <= x + width - 2 && mouseY >= yStart && mouseY <= yStart + 15) {
+            } else if (mouseX >= x && mouseX <= x + width - 2 && mouseY >= yStart && mouseY <= yStart + 15) {
                 drawColorShape(x, yStart, x + width - 2, yStart + 15, 1.0F, 1.0F, 1.0F, 0.2F);
                 textColor = 0x333333;
             }
             renderer.drawString(formatter.apply(list.get(i)), x + 3, yStart + 4, textColor);
         }
-        if(list.size() > displayAmount) {
+        if (list.size() > displayAmount) {
             renderScrollbar();
         }
     }

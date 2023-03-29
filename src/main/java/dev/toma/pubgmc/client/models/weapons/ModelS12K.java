@@ -65,26 +65,6 @@ public class ModelS12K extends ModelGun {
     private final ModelRenderer cube_r13;
     private final ModelRenderer cube_r14;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        handguard.render(1.0F);
-        if(hasScopeAtachment(stack))
-            rail.render(1.0F);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultShotgunTransform();
-        GlStateManager.translate(-0.65000033, 50.0, -9.0);
-    }
-
     public ModelS12K() {
         textureWidth = 512;
         textureHeight = 512;
@@ -793,5 +773,25 @@ public class ModelS12K extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet3);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        handguard.render(1.0F);
+        if (hasScopeAtachment(stack))
+            rail.render(1.0F);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultShotgunTransform();
+        GlStateManager.translate(-0.65000033, 50.0, -9.0);
     }
 }

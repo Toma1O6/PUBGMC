@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 
 public class ButtonWidget extends Widget {
 
-    final IPressable pressable;
     protected final String text;
+    final IPressable pressable;
 
     public ButtonWidget(int x, int y, int width, int height, String text, IPressable pressable) {
         super(x, y, width, height);
@@ -22,7 +22,7 @@ public class ButtonWidget extends Widget {
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         boolean isHovered = this.isMouseOver(mouseX, mouseY);
         drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
-        if(isHovered) {
+        if (isHovered) {
             drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.5F);
         }
         int w = mc.fontRenderer.getStringWidth(text);

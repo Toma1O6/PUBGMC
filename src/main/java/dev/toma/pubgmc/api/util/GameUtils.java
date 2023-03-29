@@ -170,12 +170,12 @@ public final class GameUtils {
 
     public static void createDeathCrate(EntityPlayer player) {
         BlockPos pos = getPosForCrate(player);
-        if(pos == null) return;
+        if (pos == null) return;
         player.world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
         TileEntityPlayerCrate te = (TileEntityPlayerCrate) player.world.getTileEntity(pos);
-        for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 te.setInventorySlotContents(i, stack.copy());
             }
         }
@@ -185,18 +185,18 @@ public final class GameUtils {
 
     public static void createDeathCrate(EntityAIPlayer bot) {
         BlockPos pos = getPosForCrate(bot);
-        if(pos == null) return;
+        if (pos == null) return;
         bot.world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
         TileEntityPlayerCrate playerCrate = (TileEntityPlayerCrate) bot.world.getTileEntity(pos);
-        for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
             ItemStack stack = bot.getItemStackFromSlot(slot);
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 playerCrate.setInventorySlotContents(slot.ordinal(), stack.copy());
             }
         }
-        for(int i = 0; i < bot.inventory.size(); i++) {
+        for (int i = 0; i < bot.inventory.size(); i++) {
             ItemStack stack = bot.inventory.get(i);
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 playerCrate.setInventorySlotContents(i + 6, stack.copy());
             }
         }
@@ -204,14 +204,14 @@ public final class GameUtils {
 
     public static BlockPos getPosForCrate(EntityLivingBase entity) {
         World world = entity.getEntityWorld();
-        if(world.isAirBlock(entity.getPosition())) {
+        if (world.isAirBlock(entity.getPosition())) {
             return world.getHeight(entity.getPosition());
         }
-        for(int y = 0; y < 2; y++) {
-            for(int x = -1; x < 2; x++) {
-                for(int z = -1; z < 2; z++) {
+        for (int y = 0; y < 2; y++) {
+            for (int x = -1; x < 2; x++) {
+                for (int z = -1; z < 2; z++) {
                     BlockPos pos = new BlockPos(entity.posX + x, entity.posY + y, entity.posZ + z);
-                    if(world.isAirBlock(pos)) {
+                    if (world.isAirBlock(pos)) {
                         return world.getHeight(pos);
                     }
                 }

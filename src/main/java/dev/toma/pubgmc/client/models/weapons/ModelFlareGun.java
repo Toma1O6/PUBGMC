@@ -37,24 +37,6 @@ public class ModelFlareGun extends ModelGun {
     private final ModelRenderer bullet6;
     private final ModelRenderer bullet7;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        flaregun.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.scale(0.39999992, 0.39999992, 0.39999992);
-        GlStateManager.translate(-0.8750001, 8.4249935, 0.0);
-    }
-
     public ModelFlareGun() {
         textureWidth = 512;
         textureHeight = 512;
@@ -323,5 +305,23 @@ public class ModelFlareGun extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> barrel);
         addEntry(AnimationElement.HAMMER, stack -> hammer);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        flaregun.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.scale(0.39999992, 0.39999992, 0.39999992);
+        GlStateManager.translate(-0.8750001, 8.4249935, 0.0);
     }
 }

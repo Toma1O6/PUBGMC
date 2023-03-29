@@ -36,8 +36,8 @@ public class PUBGMCUtil {
     }
 
     public static <T> boolean contains(T object, T[] array) {
-        for(T t : array) {
-            if(object == t) {
+        for (T t : array) {
+            if (object == t) {
                 return true;
             }
         }
@@ -45,15 +45,15 @@ public class PUBGMCUtil {
     }
 
     public static int findFirstNull(Object[] array) {
-        for(int i = 0; i < array.length; i++) {
-            if(array[i] == null) return i;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == null) return i;
         }
         return -1;
     }
 
     public static void shiftElementsInArray(Object[] array) {
-        for(int i = array.length - 2; i >= 0; i--) {
-            array[i+1] = array[i];
+        for (int i = array.length - 2; i >= 0; i--) {
+            array[i + 1] = array[i];
         }
         array[0] = null;
     }

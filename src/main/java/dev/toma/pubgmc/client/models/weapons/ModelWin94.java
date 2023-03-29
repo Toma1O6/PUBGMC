@@ -38,17 +38,6 @@ public class ModelWin94 extends ModelGun {
     private final ModelRenderer bone3;
     private final ModelRenderer bullet;
 
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(-0.1, 0.85, -5.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        win94.render(1f);
-    }
-
     public ModelWin94() {
         textureWidth = 512;
         textureHeight = 512;
@@ -415,6 +404,17 @@ public class ModelWin94 extends ModelGun {
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.CHARGING, stack -> lever);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(-0.1, 0.85, -5.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        win94.render(1f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

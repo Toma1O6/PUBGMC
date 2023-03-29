@@ -4,8 +4,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ZoneBounds {
 
-    private ZonePos min;
-    private ZonePos max;
+    private final ZonePos min;
+    private final ZonePos max;
 
     public ZoneBounds(ZonePos min, ZonePos max) {
         this.min = min;
@@ -18,6 +18,19 @@ public class ZoneBounds {
 
     public ZoneBounds(ZoneBounds zone) {
         this(zone.min.x, zone.min.z, zone.max.x, zone.max.z);
+    }
+
+    public static NBTTagCompound toNBT(ZoneBounds zoneBounds) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setTag("min", ZonePos.toNBT(zoneBounds.min));
+        nbt.setTag("max", ZonePos.toNBT(zoneBounds.max));
+        return nbt;
+    }
+
+    public static ZoneBounds fromNBT(NBTTagCompound nbt) {
+        ZonePos min = ZonePos.fromNBT(nbt.getCompoundTag("min"));
+        ZonePos max = ZonePos.fromNBT(nbt.getCompoundTag("max"));
+        return new ZoneBounds(min, max);
     }
 
     public void shrink(double x, double z, double xn, double zn) {
@@ -40,25 +53,12 @@ public class ZoneBounds {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
-        } else if(obj instanceof ZoneBounds) {
+        } else if (obj instanceof ZoneBounds) {
             ZoneBounds bounds = (ZoneBounds) obj;
             return bounds.min.equals(this.min) && bounds.max.equals(this.max);
         }
         return false;
-    }
-
-    public static NBTTagCompound toNBT(ZoneBounds zoneBounds) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("min", ZonePos.toNBT(zoneBounds.min));
-        nbt.setTag("max", ZonePos.toNBT(zoneBounds.max));
-        return nbt;
-    }
-
-    public static ZoneBounds fromNBT(NBTTagCompound nbt) {
-        ZonePos min = ZonePos.fromNBT(nbt.getCompoundTag("min"));
-        ZonePos max = ZonePos.fromNBT(nbt.getCompoundTag("max"));
-        return new ZoneBounds(min, max);
     }
 }

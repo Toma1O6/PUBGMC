@@ -30,8 +30,8 @@ import java.util.Random;
 public class BlockLootSpawner extends PMCBlock {
     public static final PropertyInteger LOOT = PropertyInteger.create("loot", 0, 2);
     private static final AxisAlignedBB BB = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.25, 1.0);
-    private MapColor color;
-    private Random rand = new Random();
+    private final MapColor color;
+    private final Random rand = new Random();
 
     public BlockLootSpawner(String name, Material material, SoundType sound, MapColor color) {
         super(name, material);

@@ -39,7 +39,8 @@ public class LootOptions {
         private double chance = 0.0D;
         private GunBase.GunType[] types = new GunBase.GunType[0];
 
-        private Builder() {}
+        private Builder() {
+        }
 
         public static Builder get() {
             return new Builder();

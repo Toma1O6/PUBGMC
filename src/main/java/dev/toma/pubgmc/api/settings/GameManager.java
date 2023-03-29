@@ -12,10 +12,10 @@ import java.util.function.Supplier;
 
 public class GameManager<T extends Game> {
 
+    public final Predicate<T> gameStopVerification;
     private final int startPhaseLength;
     private final Supplier<GameObjective<T>> gameObjective;
     public boolean isSinglePlayerGame;
-    public final Predicate<T> gameStopVerification;
 
     private GameManager(Builder<T> builder) {
         this.startPhaseLength = builder.wait;
@@ -38,17 +38,17 @@ public class GameManager<T extends Game> {
     public boolean shouldStopGame(T game) {
         GameObjective<T> objective = this.gameObjective().get();
         boolean checkAll = objective.checkAllTeams();
-        if(checkAll) {
+        if (checkAll) {
             boolean endGame = false;
-            for(Team team : game.getTeamList()) {
-                if(objective.isObjectiveReached(team, game)) {
+            for (Team team : game.getTeamList()) {
+                if (objective.isObjectiveReached(team, game)) {
                     endGame = true;
                     break;
                 }
             }
             return endGame;
         } else {
-            if(game.getTeamList().isEmpty()) {
+            if (game.getTeamList().isEmpty()) {
                 return true;
             }
             Team team = game.getTeamList().get(Pubgmc.rng().nextInt(game.getTeamList().size()));
@@ -70,7 +70,8 @@ public class GameManager<T extends Game> {
                 }
                 return null;
             }
-            default: return null;
+            default:
+                return null;
         }
     }
 

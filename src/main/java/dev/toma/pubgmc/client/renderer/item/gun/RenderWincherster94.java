@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.renderer.item.gun;
 
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
-import dev.toma.pubgmc.client.models.weapons.ModelMK14;
 import dev.toma.pubgmc.client.models.weapons.ModelWin94;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.util.Pair;

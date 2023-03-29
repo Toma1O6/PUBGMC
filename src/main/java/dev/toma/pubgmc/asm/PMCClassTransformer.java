@@ -37,14 +37,14 @@ public class PMCClassTransformer implements IClassTransformer {
         ClassReader reader = new ClassReader(bytes);
         reader.accept(node, 0);
         for (MethodNode methodNode : node.methods) {
-            if(methodNode.name.equals("handleCameraTransforms") && methodNode.desc.equals("(Lnet/minecraft/client/renderer/block/model/IBakedModel;Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)Lnet/minecraft/client/renderer/block/model/IBakedModel;")) {
+            if (methodNode.name.equals("handleCameraTransforms") && methodNode.desc.equals("(Lnet/minecraft/client/renderer/block/model/IBakedModel;Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)Lnet/minecraft/client/renderer/block/model/IBakedModel;")) {
                 InsnList insnList = methodNode.instructions;
                 boolean injected = false;
                 for (int i = 0; i < insnList.size(); i++) {
                     AbstractInsnNode insnNode = insnList.get(i);
-                    if(insnNode.getOpcode() == Opcodes.INVOKEINTERFACE && insnNode instanceof MethodInsnNode) {
+                    if (insnNode.getOpcode() == Opcodes.INVOKEINTERFACE && insnNode instanceof MethodInsnNode) {
                         MethodInsnNode methodInsnNode = (MethodInsnNode) insnNode;
-                        if(methodInsnNode.name.equals("handlePerspective")) {
+                        if (methodInsnNode.name.equals("handlePerspective")) {
                             log.info("Injecting hook into {} method", methodInsnNode.name);
                             InsnList list = new InsnList();
                             list.add(new VarInsnNode(Opcodes.ALOAD, 1));
@@ -62,7 +62,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         }
                     }
                 }
-                if(!injected) {
+                if (!injected) {
                     log.fatal("Injection failed");
                 }
             }
@@ -92,12 +92,12 @@ public class PMCClassTransformer implements IClassTransformer {
         Name m_setRotationAngles = new Name("setRotationAngles", "func_78087_a");
         String d_setRotationAngles = "(FFFFFFLnet/minecraft/entity/Entity;)V";
         for (MethodNode methodNode : node.methods) {
-            if(methodNode.name.equals(m_setRotationAngles.getName(isObf)) && methodNode.desc.equals(d_setRotationAngles)) {
+            if (methodNode.name.equals(m_setRotationAngles.getName(isObf)) && methodNode.desc.equals(d_setRotationAngles)) {
                 InsnList insnList = methodNode.instructions;
                 boolean injected = false;
                 for (int i = insnList.size() - 1; i >= 0; i--) {
                     AbstractInsnNode insnNode = insnList.get(i);
-                    if(insnNode.getOpcode() == Opcodes.RETURN) {
+                    if (insnNode.getOpcode() == Opcodes.RETURN) {
                         log.info("Injecting hook into {} method", m_setRotationAngles.getName(isObf));
                         InsnList list = new InsnList();
                         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -115,7 +115,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         break;
                     }
                 }
-                if(!injected) {
+                if (!injected) {
                     log.fatal("Injection failed, this is very wrong");
                 }
                 break;
@@ -157,12 +157,12 @@ public class PMCClassTransformer implements IClassTransformer {
         Name m_preRenderCallback = new Name("preRenderCallback", "func_77041_b");
         String d_preRenderCallback = "(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V";
         for (MethodNode methodNode : node.methods) {
-            if(methodNode.name.equals(m_preRenderCallback.getName(isObf)) && methodNode.desc.equals(d_preRenderCallback)) {
+            if (methodNode.name.equals(m_preRenderCallback.getName(isObf)) && methodNode.desc.equals(d_preRenderCallback)) {
                 InsnList insnList = methodNode.instructions;
                 boolean injected = false;
                 for (int i = insnList.size() - 1; i >= 0; i--) {
                     AbstractInsnNode insnNode = insnList.get(i);
-                    if(insnNode.getOpcode() == Opcodes.RETURN) {
+                    if (insnNode.getOpcode() == Opcodes.RETURN) {
                         log.info("Injecting hook into {} method", m_preRenderCallback.getName(isObf));
                         InsnList list = new InsnList();
                         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -181,15 +181,15 @@ public class PMCClassTransformer implements IClassTransformer {
                         break;
                     }
                 }
-                if(!injected) {
+                if (!injected) {
                     log.fatal("Injection failed, this is very wrong");
                 }
-            } else if(methodNode.name.equals("<init>") && methodNode.desc.equals("(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V")) {
+            } else if (methodNode.name.equals("<init>") && methodNode.desc.equals("(Lnet/minecraft/client/renderer/entity/RenderManager;Z)V")) {
                 InsnList insnList = methodNode.instructions;
                 boolean injected = false;
                 for (int i = insnList.size() - 1; i >= 0; i--) {
                     AbstractInsnNode insnNode = insnList.get(i);
-                    if(insnNode.getOpcode() == Opcodes.RETURN) {
+                    if (insnNode.getOpcode() == Opcodes.RETURN) {
                         log.info("Injecting hook into <init> method");
                         InsnList list = new InsnList();
                         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -208,7 +208,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         break;
                     }
                 }
-                if(!injected) {
+                if (!injected) {
                     log.fatal("Injection failed, this is very wrong");
                 }
             }

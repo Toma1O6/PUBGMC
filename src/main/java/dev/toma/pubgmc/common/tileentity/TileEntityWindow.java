@@ -26,21 +26,21 @@ public class TileEntityWindow extends TileEntity implements IGameTileEntity {
     }
 
     @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
+    public String getGameHash() {
+        return hash;
     }
 
     @Override
-    public String getGameHash() {
-        return hash;
+    public void setGameHash(String hash) {
+        this.hash = hash;
     }
 
     @Nullable
     @Override
     public void onLoaded() {
         IBlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockWindow) {
-            if(state.getValue(BlockWindow.BROKEN)) {
+        if (state.getBlock() instanceof BlockWindow) {
+            if (state.getValue(BlockWindow.BROKEN)) {
                 world.scheduleBlockUpdate(pos, state.getBlock(), 5, 0);
             }
         }

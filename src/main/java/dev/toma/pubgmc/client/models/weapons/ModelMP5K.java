@@ -43,19 +43,6 @@ public class ModelMP5K extends ModelGun {
     private final ModelRenderer bone27;
     private final ModelRenderer charging_handle;
 
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1.0F);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSMGTransform();
-        GlStateManager.translate(0.32499984, 16.450008, -1.0);
-    }
-
     public ModelMP5K() {
         textureWidth = 512;
         textureHeight = 512;
@@ -482,6 +469,19 @@ public class ModelMP5K extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1.0F);
+        if (!hasScopeAtachment(stack))
+            ironsights.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.translate(0.32499984, 16.450008, -1.0);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

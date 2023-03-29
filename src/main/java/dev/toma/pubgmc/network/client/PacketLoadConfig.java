@@ -15,7 +15,8 @@ public class PacketLoadConfig implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketLoadConfig() {}
+    public PacketLoadConfig() {
+    }
 
     public PacketLoadConfig(NBTTagCompound nbt) {
         this.nbt = nbt;

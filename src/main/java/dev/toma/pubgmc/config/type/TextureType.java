@@ -31,7 +31,7 @@ public class TextureType extends FixedCollectionType<TextureType.Entry> {
         return (screen, t, x, y, width, height) -> {
             TextureType type = (TextureType) t;
             String key = type.getId();
-            if(key.isEmpty()) {
+            if (key.isEmpty()) {
                 screen.addComponent(new TextureComponent(type, x, y, 20, height));
                 screen.addComponent(new ArrayComponent<>(type, x + 20, y, width - 20, height));
             } else {

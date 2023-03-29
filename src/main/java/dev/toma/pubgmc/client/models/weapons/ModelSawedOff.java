@@ -27,24 +27,6 @@ public class ModelSawedOff extends ModelGun {
     private final ModelRenderer bullet1;
     private final ModelRenderer bullet2;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.scale(0.5, 0.5, 0.5);
-        GlStateManager.translate(-0.05, -0.6, -12);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        sawedoff.render(1f);
-    }
-
     public ModelSawedOff() {
         textureWidth = 512;
         textureHeight = 512;
@@ -275,5 +257,23 @@ public class ModelSawedOff extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> barrels);
         addEntry(AnimationElement.BULLET, stack -> bullet1);
         addEntry(AnimationElement.BULLET1, stack -> bullet2);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        GlStateManager.translate(-0.05, -0.6, -12);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        sawedoff.render(1f);
     }
 }

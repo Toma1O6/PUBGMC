@@ -2,8 +2,8 @@ package dev.toma.pubgmc.network;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.network.server.*;
 import dev.toma.pubgmc.network.client.*;
+import dev.toma.pubgmc.network.server.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;

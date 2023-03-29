@@ -8,7 +8,6 @@ import dev.toma.pubgmc.common.items.guns.FlareGun;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.*;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Pubgmc.MOD_ID)

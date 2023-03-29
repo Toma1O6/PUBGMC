@@ -21,14 +21,14 @@ public class EntityControllable extends Entity implements IControllable {
     }
 
     public void callMovementMethods() {
-        if((encodedInput & 0b1) > 0 && (encodedInput & 0b10) == 0) {
+        if ((encodedInput & 0b1) > 0 && (encodedInput & 0b10) == 0) {
             handleForward();
-        } else if((encodedInput & 0b1) == 0 && (encodedInput & 0b10) > 0) {
+        } else if ((encodedInput & 0b1) == 0 && (encodedInput & 0b10) > 0) {
             handleBackward();
         }
-        if((encodedInput & 0b100) > 0 && (encodedInput & 0b1000) == 0) {
+        if ((encodedInput & 0b100) > 0 && (encodedInput & 0b1000) == 0) {
             handleRight();
-        } else if((encodedInput & 0b100) == 0 && (encodedInput & 0b1000) > 0) {
+        } else if ((encodedInput & 0b100) == 0 && (encodedInput & 0b1000) > 0) {
             handleLeft();
         }
     }

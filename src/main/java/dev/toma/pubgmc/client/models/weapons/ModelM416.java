@@ -61,19 +61,6 @@ public class ModelM416 extends ModelGun {
     private final ModelRenderer bone36;
     private final ModelRenderer bullet;
 
-    @Override
-    public void renderModel(ItemStack stack) {
-        hk416.render(1f);
-        stock.render(1.0F);
-        ironsights.render(1.0F);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(0.1, 1.05, -22.0);
-    }
-
     public ModelM416() {
         textureWidth = 512;
         textureHeight = 512;
@@ -1026,6 +1013,19 @@ public class ModelM416 extends ModelGun {
         addEntry(AnimationElement.BOLT, stack -> slide);
         addEntry(AnimationElement.BULLET, stack -> bullet);
 
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        hk416.render(1f);
+        stock.render(1.0F);
+        ironsights.render(1.0F);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(0.1, 1.05, -22.0);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

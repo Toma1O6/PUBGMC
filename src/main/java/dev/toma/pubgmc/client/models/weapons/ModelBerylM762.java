@@ -71,24 +71,6 @@ public class ModelBerylM762 extends ModelGun {
     private final ModelRenderer bullet;
     private final ModelRenderer bullet2;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.scale(0.6, 0.6, 0.6);
-        GlStateManager.translate(0.0, 42.9, -4.0);
-    }
-
     public ModelBerylM762() {
         textureWidth = 512;
         textureHeight = 512;
@@ -966,5 +948,23 @@ public class ModelBerylM762 extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.scale(0.6, 0.6, 0.6);
+        GlStateManager.translate(0.0, 42.9, -4.0);
     }
 }

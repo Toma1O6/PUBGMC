@@ -5,7 +5,8 @@ import net.minecraft.entity.ai.EntityAITasks;
 public interface AIType {
 
     static AIType getDefaultInstance() {
-        return t -> {};
+        return t -> {
+        };
     }
 
     void addTasks(EntityAITasks tasks);

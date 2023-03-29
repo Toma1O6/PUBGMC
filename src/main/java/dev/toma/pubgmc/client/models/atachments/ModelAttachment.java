@@ -15,8 +15,6 @@ public abstract class ModelAttachment<I extends ItemAttachment> extends ModelBas
 
     public static final ResourceLocation OVERLAY = Pubgmc.getResource("textures/white_texture.png");
 
-    public abstract void render(float aimPct);
-
     public static void renderReticle(float aimPct, ModelRenderer main, ModelRenderer reticle, ResourceLocation texture, int color) {
         Minecraft mc = Minecraft.getMinecraft();
         main.render(1.0F);
@@ -54,4 +52,6 @@ public abstract class ModelAttachment<I extends ItemAttachment> extends ModelBas
         overlayRenderer.render(1.0F);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
+
+    public abstract void render(float aimPct);
 }

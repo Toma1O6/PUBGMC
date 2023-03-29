@@ -19,15 +19,15 @@ public class GuiConfirm extends GuiWidgets {
     protected int ySize;
     private ButtonWidget confirm, cancel;
 
-    public static void display(GuiScreen parent, String title, String desc, Callback callback) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiConfirm(parent, title, desc, callback));
-    }
-
     public GuiConfirm(GuiScreen parent, String title, String desc, Callback callback) {
         this.parent = parent;
         this.callback = callback;
         this.title = title;
         this.desc = desc;
+    }
+
+    public static void display(GuiScreen parent, String title, String desc, Callback callback) {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiConfirm(parent, title, desc, callback));
     }
 
     @Override

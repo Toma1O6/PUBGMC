@@ -25,14 +25,14 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
         EntityPlayer player = data.getPlayer();
         boolean server = !player.world.isRemote;
         int equippedSlot = player.inventory.currentItem;
-        if(aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.isReloading())) {
+        if (aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.isReloading())) {
             setAiming(false, STOP_AIMING_SPEED);
             data.sync();
         }
         progressPrev = progress;
-        if(aiming && progress < 1.0F) {
+        if (aiming && progress < 1.0F) {
             progress = Math.min(1.0F, progress + aimSpeed);
-        } else if(!aiming && progress > 0.0F) {
+        } else if (!aiming && progress > 0.0F) {
             progress = Math.max(0.0F, progress - aimSpeed);
         }
     }
@@ -55,7 +55,7 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
     }
 
     public void setAiming(boolean aim, float aimSpeed) {
-        if(aim) {
+        if (aim) {
             slot = data.getPlayer().inventory.currentItem;
         }
         this.aiming = aim;

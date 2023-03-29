@@ -27,7 +27,7 @@ public class SPacketFiremode implements IMessage {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 ItemStack stack = player.getHeldItemMainhand();
-                if(stack.getItem() instanceof GunBase) {
+                if (stack.getItem() instanceof GunBase) {
                     GunBase gun = (GunBase) stack.getItem();
                     gun.setFiremode(stack, gun.switchFiremode(stack));
                 }

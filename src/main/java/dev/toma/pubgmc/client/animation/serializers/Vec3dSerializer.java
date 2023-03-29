@@ -19,13 +19,13 @@ public class Vec3dSerializer implements JsonSerializer<Vec3d>, JsonDeserializer<
 
     @Override
     public Vec3d deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if(!json.isJsonObject())
+        if (!json.isJsonObject())
             throw new JsonParseException("Expected object, got: " + json.getClass().getSimpleName());
         JsonObject object = json.getAsJsonObject();
         double x = JsonUtils.getFloat(object.get("x"), "x");
         double y = JsonUtils.getFloat(object.get("y"), "y");
         double z = JsonUtils.getFloat(object.get("z"), "z");
-        if(x == 0 && y == 0 && z == 0)
+        if (x == 0 && y == 0 && z == 0)
             return Vec3d.ZERO;
         return new Vec3d(x, y, z);
     }

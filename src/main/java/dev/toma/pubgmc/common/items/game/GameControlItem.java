@@ -11,7 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -39,18 +42,14 @@ public final class GameControlItem extends PMCItem {
     }
 
     private void fixNBT(ItemStack stack) {
-        if(!stack.hasTagCompound()) {
+        if (!stack.hasTagCompound()) {
             NBTTagCompound nbt = new NBTTagCompound();
             GameArea.AreaType areaType = GameArea.Types.BOMBSITE;
             nbt.setString("areaID", "pubgmc:bombsite");
             stack.setTagCompound(nbt);
-        } else if(!stack.getTagCompound().hasKey("areaID")) {
+        } else if (!stack.getTagCompound().hasKey("areaID")) {
             stack.getTagCompound().setString("areaID", "pubgmc:bombsite");
         }
-    }
-
-    public interface RClickAction {
-        void click(World world, @Nullable BlockPos pos, ItemStack stack, EntityPlayer player, ClickContex ctx);
     }
 
     public enum ClickContex {
@@ -61,22 +60,26 @@ public final class GameControlItem extends PMCItem {
         }
     }
 
+    public interface RClickAction {
+        void click(World world, @Nullable BlockPos pos, ItemStack stack, EntityPlayer player, ClickContex ctx);
+    }
+
     public static final class Actions {
         public static final RClickAction DEBUG = ((world, pos, stack, player, ctx) -> {
-            if(!ctx.isNormal() || !world.isRemote) {
+            if (!ctx.isNormal() || !world.isRemote) {
                 return;
             }
             Game.isDebugMode = !Game.isDebugMode;
             player.sendStatusMessage(new TextComponentString("Debug mode: " + (Game.isDebugMode ? "ON" : "OFF")), true);
         });
         public static final RClickAction OBJECTIVE_ADD = ((world, pos, stack, player, ctx) -> {
-            if(!world.isRemote) {
-                if(ctx.isNormal()) {
+            if (!world.isRemote) {
+                if (ctx.isNormal()) {
                     Game g = getGame(world);
-                    if(g instanceof GameObjectiveBased) {
+                    if (g instanceof GameObjectiveBased) {
                         GameObjectiveBased game = (GameObjectiveBased) g;
                         GameArea area = new GameArea(GameArea.Types.TYPE_MAP.get(new ResourceLocation(stack.getTagCompound().getString("areaID"))), pos, 5);
-                        if(stack.hasDisplayName()) {
+                        if (stack.hasDisplayName()) {
                             area.setName(stack.getDisplayName());
                         }
                         game.createObjective(world, pos, area);
@@ -88,12 +91,12 @@ public final class GameControlItem extends PMCItem {
             }
         });
         public static final RClickAction OBJECTIVE_REMOVE = ((world, pos, stack, player, ctx) -> {
-            if(ctx.isNormal() && !world.isRemote) {
+            if (ctx.isNormal() && !world.isRemote) {
                 Game game = getGame(world);
-                if(game instanceof GameObjectiveBased) {
+                if (game instanceof GameObjectiveBased) {
                     GameObjectiveBased g = (GameObjectiveBased) game;
                     boolean found = g.getObjectives().containsKey(pos);
-                    if(!found) {
+                    if (!found) {
                         player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "Nothing found here!"), true);
                         return;
                     }
@@ -103,13 +106,13 @@ public final class GameControlItem extends PMCItem {
             }
         });
         public static final RClickAction OBJECTIVE_CHANGE_SIZE = ((world, pos, stack, player, ctx) -> {
-            if(!world.isRemote) {
+            if (!world.isRemote) {
                 int i = ctx.isNormal() ? 1 : -1;
                 Game game = getGame(world);
-                if(game instanceof GameObjectiveBased) {
+                if (game instanceof GameObjectiveBased) {
                     GameObjectiveBased gameObjectiveBased = (GameObjectiveBased) game;
                     GameArea area = gameObjectiveBased.getObjectives().get(pos);
-                    if(area == null) return;
+                    if (area == null) return;
                     area.updateSize(area.getRadius() + i);
                     player.sendStatusMessage(new TextComponentString("Area size updated to " + area.getRadius()), true);
                 }

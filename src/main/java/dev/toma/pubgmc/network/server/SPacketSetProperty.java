@@ -24,7 +24,8 @@ public class SPacketSetProperty implements IMessage {
     private Action action;
     private boolean data;
 
-    public SPacketSetProperty() {}
+    public SPacketSetProperty() {
+    }
 
     public SPacketSetProperty(boolean data, Action action) {
         this.data = data;
@@ -43,23 +44,14 @@ public class SPacketSetProperty implements IMessage {
         action = Action.values()[buf.readInt()];
     }
 
-    public static class Handler implements IMessageHandler<SPacketSetProperty, IMessage> {
-        @Override
-        public IMessage onMessage(SPacketSetProperty message, MessageContext ctx) {
-            EntityPlayerMP player = ctx.getServerHandler().player;
-            player.getServer().addScheduledTask(() -> message.action.handle(player, message.data));
-            return null;
-        }
-    }
-
     public enum Action {
         AIM((player, aBoolean) -> {
             IPlayerData data = PlayerData.get(player);
             AimInfo info = data.getAimInfo();
             float speed = AimInfo.STOP_AIMING_SPEED;
-            if(aBoolean) {
+            if (aBoolean) {
                 ItemStack stack = player.getHeldItemMainhand();
-                if(stack.getItem() instanceof GunBase) {
+                if (stack.getItem() instanceof GunBase) {
                     GunBase gunBase = (GunBase) stack.getItem();
                     speed *= gunBase.getAimSpeedMultiplier(stack);
                 }
@@ -70,15 +62,15 @@ public class SPacketSetProperty implements IMessage {
         RELOAD((player, aBoolean) -> {
             IPlayerData data = PlayerData.get(player);
             ItemStack stack = player.getHeldItemMainhand();
-            if(stack.getItem() instanceof GunBase) {
+            if (stack.getItem() instanceof GunBase) {
                 ReloadInfo reloadInfo = data.getReloadInfo();
                 GunBase gun = (GunBase) stack.getItem();
-                if(aBoolean) {
+                if (aBoolean) {
                     reloadInfo.startReload(player, gun, stack);
                     SoundEvent event = gun.getWeaponReloadSound();
                     if (gun == PMCItems.KAR98K) {
                         int ammo = gun.getAmmo(stack);
-                        if(ammo == 0) {
+                        if (ammo == 0) {
                             event = PMCSounds.reload_kar98k;
                         }
                     }
@@ -102,6 +94,15 @@ public class SPacketSetProperty implements IMessage {
 
         public void handle(EntityPlayer player, boolean data) {
             action.accept(player, data);
+        }
+    }
+
+    public static class Handler implements IMessageHandler<SPacketSetProperty, IMessage> {
+        @Override
+        public IMessage onMessage(SPacketSetProperty message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            player.getServer().addScheduledTask(() -> message.action.handle(player, message.data));
+            return null;
         }
     }
 }

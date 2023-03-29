@@ -31,7 +31,7 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
     private static List<PMCRecipe> VEHICLES;
     public CraftingCategory selectedCat = CraftingCategory.GUNS;
     public int selectedIndex = 0;
-    private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 
     /**
      * Splits all recipes from registry into it's categories
@@ -108,7 +108,7 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        this.inventory = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(compound, this.inventory);
         selectedIndex = compound.hasKey("selectedIndex") ? compound.getInteger("selectedIndex") : 0;
         selectedCat = compound.hasKey("selectedCategory") ? CraftingCategory.values()[compound.getInteger("selectedCategory")] : CraftingCategory.GUNS;

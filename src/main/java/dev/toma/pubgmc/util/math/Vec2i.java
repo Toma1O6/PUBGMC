@@ -49,7 +49,7 @@ public class Vec2i {
     }
 
     public Vec2i divide(int x, int y) {
-        if(x == 0 || y == 0) throw new IllegalArgumentException("Cannot divide by zero!");
+        if (x == 0 || y == 0) throw new IllegalArgumentException("Cannot divide by zero!");
         this.x /= x;
         this.y /= y;
         return this;

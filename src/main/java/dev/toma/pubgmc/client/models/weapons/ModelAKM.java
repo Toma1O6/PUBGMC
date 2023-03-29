@@ -65,18 +65,6 @@ public class ModelAKM extends ModelGun {
     private final ModelRenderer bullet;
     private final ModelRenderer bullet2;
 
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.scale(0.6, 0.6, 0.6);
-        GlStateManager.translate(0.0, 41.0, -13.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        akm.render(1.0F);
-    }
-
     public ModelAKM() {
         textureWidth = 512;
         textureHeight = 512;
@@ -694,6 +682,18 @@ public class ModelAKM extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.scale(0.6, 0.6, 0.6);
+        GlStateManager.translate(0.0, 41.0, -13.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        akm.render(1.0F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

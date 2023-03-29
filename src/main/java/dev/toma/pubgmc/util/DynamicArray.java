@@ -46,16 +46,16 @@ public class DynamicArray<E> {
     }
 
     private void insertElementAt(E e, int idx) {
-        for(int i = this.size() - 2; i >= idx; i--) {
+        for (int i = this.size() - 2; i >= idx; i--) {
             this.array[i + 1] = this.array[i];
         }
         this.array[idx] = e;
     }
 
     private void moveDown(E e) {
-        for(int i = 1; i < this.size(); i++) {
+        for (int i = 1; i < this.size(); i++) {
             this.array[i - 1] = this.array[i];
         }
-        this.array[this.size()-1] = e;
+        this.array[this.size() - 1] = e;
     }
 }

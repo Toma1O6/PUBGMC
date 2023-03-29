@@ -55,13 +55,13 @@ public class GuiGunConfig extends GuiWidgets {
 
     @Override
     public void init() {
-        if(gunSelector == null) {
+        if (gunSelector == null) {
             gunSelector = new SelectionWidget<>(5, 5, 150, 20, ForgeRegistries.ITEMS.getValuesCollection().stream()
                     .filter(it -> it instanceof GunBase)
                     .map(it -> (GunBase) it)
                     .collect(Collectors.toList()), gun -> gun.getRegistryName().toString(), this::updateWeapon);
         }
-        if(attachmentListWidget == null) {
+        if (attachmentListWidget == null) {
             attachmentListWidget = new AttachmentListWidget(5, 30, 80, height - 35);
         }
         addWidget(gunSelector);
@@ -79,7 +79,7 @@ public class GuiGunConfig extends GuiWidgets {
     }
 
     public void updateWeapon(GunBase prev, GunBase gun, SelectionWidget<GunBase> selector) {
-        if(!map.isEmpty()) {
+        if (!map.isEmpty()) {
             ((WeaponRenderer) prev.getTileEntityItemStackRenderer()).setRenderConfigsTempt(map);
             map.clear();
         }
@@ -88,7 +88,7 @@ public class GuiGunConfig extends GuiWidgets {
         this.displayWeapon = new ItemStack(gun);
         compatibleAttachments.clear();
         GunAttachments attachments = gun.getAttachments();
-        if(!attachments.isLoaded()) {
+        if (!attachments.isLoaded()) {
             attachments.load();
         }
         Map<AttachmentType<?>, List<ItemAttachment>> map = attachments.getCompatibilityMap();
@@ -110,14 +110,14 @@ public class GuiGunConfig extends GuiWidgets {
 
     void addAttachment(ItemAttachment attachment) {
         NBTTagCompound nbt = displayWeapon.getTagCompound();
-        if(nbt == null) {
+        if (nbt == null) {
             nbt = new NBTTagCompound();
             nbt.setTag("attachments", new NBTTagCompound());
             displayWeapon.setTagCompound(nbt);
         }
         AttachmentType<?> type = attachment.getType();
         NBTTagCompound attachments;
-        if(!nbt.hasKey("attachments")) {
+        if (!nbt.hasKey("attachments")) {
             attachments = new NBTTagCompound();
             nbt.setTag("attachments", attachments);
         } else {
@@ -125,11 +125,11 @@ public class GuiGunConfig extends GuiWidgets {
         }
         String key = type.getName();
         attachments.setString(key, attachment.getRegistryName().toString());
-        if(!map.containsKey(attachment)) {
+        if (!map.containsKey(attachment)) {
             map.put(attachment, new MutableRenderConfig());
         }
         IRenderConfig cfg = map.get(attachment);
-        if(cfg instanceof MutableRenderConfig) {
+        if (cfg instanceof MutableRenderConfig) {
             activeConfigs.add((MutableRenderConfig) cfg);
         }
         translateWidget.reset();
@@ -139,14 +139,14 @@ public class GuiGunConfig extends GuiWidgets {
 
     void removeAttachment(ItemAttachment attachment) {
         NBTTagCompound nbt = displayWeapon.getTagCompound();
-        if(nbt == null) {
+        if (nbt == null) {
             nbt = new NBTTagCompound();
             nbt.setTag("attachments", new NBTTagCompound());
             displayWeapon.setTagCompound(nbt);
         }
         AttachmentType<?> type = attachment.getType();
         NBTTagCompound attachments;
-        if(!nbt.hasKey("attachments")) {
+        if (!nbt.hasKey("attachments")) {
             attachments = new NBTTagCompound();
             nbt.setTag("attachments", attachments);
         } else {
@@ -155,7 +155,7 @@ public class GuiGunConfig extends GuiWidgets {
         String key = type.getName();
         attachments.removeTag(key);
         IRenderConfig cfg = map.get(attachment);
-        if(cfg instanceof MutableRenderConfig) {
+        if (cfg instanceof MutableRenderConfig) {
             activeConfigs.remove(cfg);
         }
         translateWidget.reset();
@@ -186,7 +186,7 @@ public class GuiGunConfig extends GuiWidgets {
     }
 
     void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float scale, float yaw, float pitch) {
-        GlStateManager.translate((float)xPosition, (float)yPosition, 400.0F + this.zLevel);
+        GlStateManager.translate((float) xPosition, (float) yPosition, 400.0F + this.zLevel);
         GlStateManager.translate(8.0F, 8.0F, 0.0F);
         GlStateManager.rotate(yaw, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-30.0F + pitch, 0.0F, 0.0F, 1.0F);
@@ -213,7 +213,7 @@ public class GuiGunConfig extends GuiWidgets {
                 ItemAttachment attachment = entry.getKey();
                 IRenderConfig config = entry.getValue();
                 String itemName = "PMCItems." + attachment.getRegistryName().getResourcePath().toUpperCase();
-                if(config instanceof MutableRenderConfig) {
+                if (config instanceof MutableRenderConfig) {
                     MutableRenderConfig mcfg = (MutableRenderConfig) config;
                     String configDef = mcfg.toString();
                     builder.append(String.format("registerRenderConfig(%s, %s);\n", itemName, configDef));
@@ -227,62 +227,8 @@ public class GuiGunConfig extends GuiWidgets {
         }
     }
 
-    class AttachmentListWidget extends Widget {
-
-        List<ItemAttachment> list = new ArrayList<>();
-        List<Widget> widgets = new ArrayList<>();
-        int displayCount;
-        int scrollIndex;
-
-        AttachmentListWidget(int x, int y, int width, int height) {
-            super(x, y, width, height);
-        }
-
-        @Override
-        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            float bgColor = GuiGunConfig.this.lightTheme ? 1.0F : 0.0F;
-            drawColorShape(x, y, x + width, y + height, bgColor, bgColor, bgColor, 0.2F);
-            for (Widget widget : widgets) {
-                widget.render(mc, mouseX, mouseY, partialTicks);
-            }
-        }
-
-        @Override
-        public boolean handleClicked(int mouseX, int mouseY, int button) {
-            for (Widget widget : widgets) {
-                if (widget.handleClicked(mouseX, mouseY, button)) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public boolean canScrollTo(int delta) {
-            int j = scrollIndex + delta;
-            return j >= 0 && j < list.size() - displayCount;
-        }
-
-        void setListAndUpdate(List<ItemAttachment> list) {
-            this.list = list;
-            this.displayCount = height / 20;
-            updateWidgets();
-        }
-
-        void updateWidgets() {
-            widgets.clear();
-            for (int i = scrollIndex; i < Math.min(scrollIndex + displayCount, list.size()); i++) {
-                int j = i - scrollIndex;
-                ItemAttachment attachment = list.get(i);
-                BooleanSupplier supplier = () -> GuiGunConfig.this.lightTheme;
-                widgets.add(new CheckboxWidget(x, y + j * 20, width, 20, I18n.format(attachment.getUnlocalizedName() + ".name"), (state, mouseX, mouseY, widget) -> {
-                    if(state) {
-                        GuiGunConfig.this.addAttachment(attachment);
-                    } else GuiGunConfig.this.removeAttachment(attachment);
-                }).lightThemeSupplier(supplier));
-            }
-        }
+    interface Setter {
+        void set(MutableRenderConfig cfg, float f1, float f2, float f3);
     }
 
     static class SelectionWidget<T> extends Widget {
@@ -322,7 +268,7 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int button) {
-            if(increment.handleClicked(mouseX, mouseY, button) || decrement.handleClicked(mouseX, mouseY, button)) {
+            if (increment.handleClicked(mouseX, mouseY, button) || decrement.handleClicked(mouseX, mouseY, button)) {
                 ClientProxy.playButtonPressSound();
                 return true;
             }
@@ -332,9 +278,9 @@ public class GuiGunConfig extends GuiWidgets {
         void incr(int i) {
             int prev = selected;
             int j = prev + i;
-            if(j < 0) {
+            if (j < 0) {
                 selected = list.size() - 1;
-            } else if(j >= list.size()) {
+            } else if (j >= list.size()) {
                 selected = 0;
             } else {
                 selected = j;
@@ -345,100 +291,6 @@ public class GuiGunConfig extends GuiWidgets {
         interface ElementChangeCallback<T> {
             void call(T previous, T current, SelectionWidget<T> widget);
         }
-    }
-
-    class GunDisplayWidget extends Widget {
-
-        float scale = 1.0F;
-        float yaw = 0.0F;
-        float pitch = 0.0F;
-        int clickX, clickY;
-
-        GunDisplayWidget(int x, int y, int width, int height) {
-            super(x, y, width, height);
-        }
-
-        @Override
-        public boolean canScrollTo(int delta) {
-            return true;
-        }
-
-        @Override
-        public void onScroll(int delta) {
-            this.scale = MathHelper.clamp(scale + 0.25F * delta, 1.0F, 5.0F);
-        }
-
-        @Override
-        public void onDrag(int mouseX, int mouseY, int button, long time) {
-            int diffX = this.clickX - mouseX;
-            int diffY = this.clickY - mouseY;
-            this.yaw -= diffX;
-            this.pitch = MathHelper.clamp(this.pitch + diffY, -90.0F, 90.0F);
-            this.clickX = mouseX;
-            this.clickY = mouseY;
-        }
-
-        @Override
-        public void onClick(int mouseX, int mouseY, int button) {
-            this.clickX = mouseX;
-            this.clickY = mouseY;
-        }
-
-        @Override
-        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            if(GuiGunConfig.this.lightTheme)
-                drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.6F);
-            else
-                drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.6F);
-            GuiGunConfig.this.renderItem(x + width / 2, y + height / 2 - 40, scale, yaw, pitch);
-        }
-    }
-
-    class PropertyArrayWidget extends Widget {
-
-        final String propertyName;
-        final Setter setter;
-        FloatFieldWidget xValue;
-        FloatFieldWidget yValue;
-        FloatFieldWidget zValue;
-
-        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float value, float f, float shiftF, float controlF) {
-            super(x, y, width, height);
-            this.propertyName = propertyName;
-            this.setter = setter;
-            FloatFieldWidget.Callback callback = val -> GuiGunConfig.this.activeConfigs.forEach(mcfg -> setter.set(mcfg, xValue.f, yValue.f, zValue.f));
-            xValue = new FloatFieldWidget(x, y + 15, width, 20, value, f, shiftF, controlF).withCallback(callback);
-            yValue = new FloatFieldWidget(x, y + 35, width, 20, value, f, shiftF, controlF).withCallback(callback);
-            zValue = new FloatFieldWidget(x, y + 55, width, 20, value, f, shiftF, controlF).withCallback(callback);
-        }
-
-        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float f) {
-            this(x, y, width, height, propertyName, setter, f, 0.1F, 0.025F, 0.01F);
-        }
-
-        void reset() {
-            xValue.reset();
-            yValue.reset();
-            zValue.reset();
-        }
-
-        @Override
-        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            FontRenderer renderer = mc.fontRenderer;
-            renderer.drawString(propertyName, x, y + 6, 0xFFFFFF);
-            xValue.render(mc, mouseX, mouseY, partialTicks);
-            yValue.render(mc, mouseX, mouseY, partialTicks);
-            zValue.render(mc, mouseX, mouseY, partialTicks);
-        }
-
-        @Override
-        public boolean handleClicked(int mouseX, int mouseY, int button) {
-            return xValue.handleClicked(mouseX, mouseY, button) || yValue.handleClicked(mouseX, mouseY, button) || zValue.handleClicked(mouseX, mouseY, button);
-        }
-    }
-
-    interface Setter {
-        void set(MutableRenderConfig cfg, float f1, float f2, float f3);
     }
 
     static class FloatFieldWidget extends Widget {
@@ -496,14 +348,14 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
-            if(!validateAndSet()) {
+            if (!validateAndSet()) {
                 value = String.valueOf(f);
             }
         }
 
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int button) {
-            if(decrease.handleClicked(mouseX, mouseY, button) || increase.handleClicked(mouseX, mouseY, button)) {
+            if (decrease.handleClicked(mouseX, mouseY, button) || increase.handleClicked(mouseX, mouseY, button)) {
                 return true;
             }
             return super.handleClicked(mouseX, mouseY, button);
@@ -516,9 +368,9 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public void onKeyPress(char character, int keycode) {
-            if(!isFocused())
+            if (!isFocused())
                 return;
-            if(Character.isDigit(character) || character == '.' || character == '-') {
+            if (Character.isDigit(character) || character == '.' || character == '-') {
                 addChar(character);
             } else {
                 if (keycode == Keyboard.KEY_BACK) {
@@ -545,9 +397,9 @@ public class GuiGunConfig extends GuiWidgets {
         }
 
         boolean validateAndSet() {
-            if(DECIMAL_PATTERN.matcher(value).matches()) {
+            if (DECIMAL_PATTERN.matcher(value).matches()) {
                 f = Float.parseFloat(value);
-                if(callback != null)
+                if (callback != null)
                     callback.onSet(f);
                 return true;
             }
@@ -555,22 +407,170 @@ public class GuiGunConfig extends GuiWidgets {
         }
 
         void increase(int mod) {
-            if(GuiScreen.isCtrlKeyDown()) {
+            if (GuiScreen.isCtrlKeyDown()) {
                 f += valueStepLControl * mod;
-            } else if(GuiScreen.isShiftKeyDown()) {
+            } else if (GuiScreen.isShiftKeyDown()) {
                 f += valueStepLShift * mod;
-            } else if(GuiScreen.isAltKeyDown()) {
+            } else if (GuiScreen.isAltKeyDown()) {
                 f += (valueStepNormal * 0.025) * mod;
             } else {
                 f += valueStepNormal * mod;
             }
             value = String.valueOf(f);
-            if(callback != null)
+            if (callback != null)
                 callback.onSet(f);
         }
 
         interface Callback {
             void onSet(float value);
+        }
+    }
+
+    class AttachmentListWidget extends Widget {
+
+        List<ItemAttachment> list = new ArrayList<>();
+        List<Widget> widgets = new ArrayList<>();
+        int displayCount;
+        int scrollIndex;
+
+        AttachmentListWidget(int x, int y, int width, int height) {
+            super(x, y, width, height);
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            float bgColor = GuiGunConfig.this.lightTheme ? 1.0F : 0.0F;
+            drawColorShape(x, y, x + width, y + height, bgColor, bgColor, bgColor, 0.2F);
+            for (Widget widget : widgets) {
+                widget.render(mc, mouseX, mouseY, partialTicks);
+            }
+        }
+
+        @Override
+        public boolean handleClicked(int mouseX, int mouseY, int button) {
+            for (Widget widget : widgets) {
+                if (widget.handleClicked(mouseX, mouseY, button)) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean canScrollTo(int delta) {
+            int j = scrollIndex + delta;
+            return j >= 0 && j < list.size() - displayCount;
+        }
+
+        void setListAndUpdate(List<ItemAttachment> list) {
+            this.list = list;
+            this.displayCount = height / 20;
+            updateWidgets();
+        }
+
+        void updateWidgets() {
+            widgets.clear();
+            for (int i = scrollIndex; i < Math.min(scrollIndex + displayCount, list.size()); i++) {
+                int j = i - scrollIndex;
+                ItemAttachment attachment = list.get(i);
+                BooleanSupplier supplier = () -> GuiGunConfig.this.lightTheme;
+                widgets.add(new CheckboxWidget(x, y + j * 20, width, 20, I18n.format(attachment.getUnlocalizedName() + ".name"), (state, mouseX, mouseY, widget) -> {
+                    if (state) {
+                        GuiGunConfig.this.addAttachment(attachment);
+                    } else GuiGunConfig.this.removeAttachment(attachment);
+                }).lightThemeSupplier(supplier));
+            }
+        }
+    }
+
+    class GunDisplayWidget extends Widget {
+
+        float scale = 1.0F;
+        float yaw = 0.0F;
+        float pitch = 0.0F;
+        int clickX, clickY;
+
+        GunDisplayWidget(int x, int y, int width, int height) {
+            super(x, y, width, height);
+        }
+
+        @Override
+        public boolean canScrollTo(int delta) {
+            return true;
+        }
+
+        @Override
+        public void onScroll(int delta) {
+            this.scale = MathHelper.clamp(scale + 0.25F * delta, 1.0F, 5.0F);
+        }
+
+        @Override
+        public void onDrag(int mouseX, int mouseY, int button, long time) {
+            int diffX = this.clickX - mouseX;
+            int diffY = this.clickY - mouseY;
+            this.yaw -= diffX;
+            this.pitch = MathHelper.clamp(this.pitch + diffY, -90.0F, 90.0F);
+            this.clickX = mouseX;
+            this.clickY = mouseY;
+        }
+
+        @Override
+        public void onClick(int mouseX, int mouseY, int button) {
+            this.clickX = mouseX;
+            this.clickY = mouseY;
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            if (GuiGunConfig.this.lightTheme)
+                drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.6F);
+            else
+                drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.6F);
+            GuiGunConfig.this.renderItem(x + width / 2, y + height / 2 - 40, scale, yaw, pitch);
+        }
+    }
+
+    class PropertyArrayWidget extends Widget {
+
+        final String propertyName;
+        final Setter setter;
+        FloatFieldWidget xValue;
+        FloatFieldWidget yValue;
+        FloatFieldWidget zValue;
+
+        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float value, float f, float shiftF, float controlF) {
+            super(x, y, width, height);
+            this.propertyName = propertyName;
+            this.setter = setter;
+            FloatFieldWidget.Callback callback = val -> GuiGunConfig.this.activeConfigs.forEach(mcfg -> setter.set(mcfg, xValue.f, yValue.f, zValue.f));
+            xValue = new FloatFieldWidget(x, y + 15, width, 20, value, f, shiftF, controlF).withCallback(callback);
+            yValue = new FloatFieldWidget(x, y + 35, width, 20, value, f, shiftF, controlF).withCallback(callback);
+            zValue = new FloatFieldWidget(x, y + 55, width, 20, value, f, shiftF, controlF).withCallback(callback);
+        }
+
+        PropertyArrayWidget(int x, int y, int width, int height, String propertyName, Setter setter, float f) {
+            this(x, y, width, height, propertyName, setter, f, 0.1F, 0.025F, 0.01F);
+        }
+
+        void reset() {
+            xValue.reset();
+            yValue.reset();
+            zValue.reset();
+        }
+
+        @Override
+        public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            FontRenderer renderer = mc.fontRenderer;
+            renderer.drawString(propertyName, x, y + 6, 0xFFFFFF);
+            xValue.render(mc, mouseX, mouseY, partialTicks);
+            yValue.render(mc, mouseX, mouseY, partialTicks);
+            zValue.render(mc, mouseX, mouseY, partialTicks);
+        }
+
+        @Override
+        public boolean handleClicked(int mouseX, int mouseY, int button) {
+            return xValue.handleClicked(mouseX, mouseY, button) || yValue.handleClicked(mouseX, mouseY, button) || zValue.handleClicked(mouseX, mouseY, button);
         }
     }
 }

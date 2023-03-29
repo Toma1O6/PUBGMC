@@ -24,7 +24,7 @@ public class GunAttachments {
 
     @SuppressWarnings("unchecked")
     public <T extends ItemAttachment> List<T> getList(AttachmentType<T> type) {
-        if(!this.isLoaded()) {
+        if (!this.isLoaded()) {
             load();
         }
         return (List<T>) initializedAttachments.get(type);
@@ -38,18 +38,18 @@ public class GunAttachments {
     public boolean supports(ItemAttachment attachment) {
         AttachmentType<?> type = attachment.getType();
         List<?> list = getList(type);
-        if(list != null && !list.isEmpty()) {
+        if (list != null && !list.isEmpty()) {
             return DevUtil.contains(attachment, list, (attachment1, o) -> o == attachment1);
         }
         return false;
     }
 
     public void attach(ItemStack gunStack, ItemAttachment attachment) {
-        if(gunStack.getItem() instanceof GunBase) {
+        if (gunStack.getItem() instanceof GunBase) {
             GunBase gunBase = (GunBase) gunStack.getItem();
             NBTTagCompound nbt = gunBase.getOrCreateGunData(gunStack);
             NBTTagCompound attachmentTag;
-            if(!nbt.hasKey("attachments")) {
+            if (!nbt.hasKey("attachments")) {
                 attachmentTag = new NBTTagCompound();
                 nbt.setTag("attachments", attachmentTag);
             } else {

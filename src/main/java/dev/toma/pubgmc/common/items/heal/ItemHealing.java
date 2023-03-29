@@ -82,6 +82,6 @@ public abstract class ItemHealing extends PMCItem {
 
     public enum Action {
         HEAL,
-        BOOST;
+        BOOST
     }
 }

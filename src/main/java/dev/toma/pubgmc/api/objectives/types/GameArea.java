@@ -45,7 +45,7 @@ public class GameArea {
         nbt.setInteger("radius", area.radius);
         nbt.setTag("center", NBTUtil.createPosTag(area.center));
         nbt.setString("type", area.areaType.toString());
-        if(area.hasName()) nbt.setString("name", area.getName());
+        if (area.hasName()) nbt.setString("name", area.getName());
         return nbt;
     }
 
@@ -54,7 +54,7 @@ public class GameArea {
         int radius = nbt.getInteger("radius");
         AreaType areaType = Types.TYPE_MAP.get(new ResourceLocation(nbt.getString("type")));
         GameArea area = new GameArea(areaType, pos, radius);
-        if(nbt.hasKey("name")) area.setName(nbt.getString("name"));
+        if (nbt.hasKey("name")) area.setName(nbt.getString("name"));
         return area;
     }
 
@@ -71,7 +71,7 @@ public class GameArea {
         while (attempts > 0) {
             --attempts;
             BlockPos pos = new BlockPos(minX + rand.nextInt(max), this.center.getY(), minZ + rand.nextInt(max));
-            if(world.isAirBlock(pos) && world.isAirBlock(pos.up())) {
+            if (world.isAirBlock(pos) && world.isAirBlock(pos.up())) {
                 return pos;
             }
         }
@@ -113,14 +113,14 @@ public class GameArea {
         bb.pos(box.maxX, box.minY + 0.0, box.maxZ).tex(0, 1).color(r, g, b, a).endVertex();
         bb.pos(box.maxX, box.minY + 0.0, box.minZ).tex(1, 1).color(r, g, b, a).endVertex();
         Entity player = Minecraft.getMinecraft().getRenderViewEntity();
-        bb.sortVertexData((float)player.posX, (float)player.posY, (float)player.posZ);
+        bb.sortVertexData((float) player.posX, (float) player.posY, (float) player.posZ);
         Tessellator.getInstance().draw();
         GlStateManager.disableBlend();
     }
 
     @SideOnly(Side.CLIENT)
     public void renderAreaName(double x, double y, double z, int height, int aarrggbb) {
-        if(!this.hasName()) {
+        if (!this.hasName()) {
             return;
         }
         Entity player = Minecraft.getMinecraft().getRenderViewEntity();
@@ -161,7 +161,7 @@ public class GameArea {
     }
 
     public void updateSize(final int size) {
-        if(size > 0 && size < 32) {
+        if (size > 0 && size < 32) {
             this.radius = size;
             this.box = this.getBox();
         }
@@ -169,10 +169,6 @@ public class GameArea {
 
     public AxisAlignedBB getBox() {
         return new AxisAlignedBB(this.center.getX() + 0.5 - this.radius, this.center.getY() + 1, this.center.getZ() + 0.5 - this.radius, this.center.getX() + 0.5 + this.radius, this.center.getY() + 5, this.center.getZ() + 0.5 + this.radius);
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public BlockPos getCenter() {
@@ -187,10 +183,14 @@ public class GameArea {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public static class AreaType {
 
         private final ResourceLocation location;
-        private String name;
+        private final String name;
 
         public AreaType(ResourceLocation registryName, String name) {
             this.location = registryName;
@@ -219,7 +219,7 @@ public class GameArea {
             @Override
             public void render(double x, double y, double z, GameArea area, BufferBuilder bufferBuilder) {
                 area.renderAreaName(x, y, z, 50, 0xFFFFFFFF);
-                if(Game.isDebugMode) {
+                if (Game.isDebugMode) {
                     bufferBuilder.setTranslation(-x, -y, -z);
                     area.renderAABB(1f, 0f, 0f, 1.0F, bufferBuilder);
                     bufferBuilder.setTranslation(0, 0, 0);

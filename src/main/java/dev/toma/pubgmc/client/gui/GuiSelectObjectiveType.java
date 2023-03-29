@@ -17,9 +17,9 @@ public class GuiSelectObjectiveType extends GuiScreenCentered {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID, "textures/gui/select_objective.png");
     private final ItemStack stack;
     private int scrollIndex = 0;
-    private int pageAmount;
-    private List<TypeButton> displayList = new ArrayList<>();
-    private List<GameArea.AreaType> types = new ArrayList<>(GameArea.Types.TYPE_MAP.values());
+    private final int pageAmount;
+    private final List<TypeButton> displayList = new ArrayList<>();
+    private final List<GameArea.AreaType> types = new ArrayList<>(GameArea.Types.TYPE_MAP.values());
 
     public GuiSelectObjectiveType(ItemStack stack) {
         this.stack = stack;
@@ -42,8 +42,8 @@ public class GuiSelectObjectiveType extends GuiScreenCentered {
     public void updateDisplayList() {
         this.displayList.clear();
         int j = 0;
-        for(int i = scrollIndex * 5; i < (scrollIndex + 1) * 5; i++) {
-            if(i >= types.size()) return;
+        for (int i = scrollIndex * 5; i < (scrollIndex + 1) * 5; i++) {
+            if (i >= types.size()) return;
             this.displayList.add(new TypeButton(j, guiLeft, guiTop, types.get(i)));
             ++j;
         }
@@ -57,7 +57,7 @@ public class GuiSelectObjectiveType extends GuiScreenCentered {
     }
 
     private void tryScroll(int i) {
-        if(this.scrollIndex + i >= 0 && this.scrollIndex + i < this.pageAmount) {
+        if (this.scrollIndex + i >= 0 && this.scrollIndex + i < this.pageAmount) {
             this.scrollIndex += i;
             this.updateDisplayList();
         }
@@ -67,12 +67,12 @@ public class GuiSelectObjectiveType extends GuiScreenCentered {
         // TODO check and improve
         double d0 = pageAmount == 1 ? 0 : 150 - 1F / pageAmount;
         double d1 = 1 / (pageAmount + 1D);
-        ImageUtil.drawImageWithUV(this.mc, TEXTURE, guiLeft + 111, guiTop + 8 + (int)(d0 == 1 ? 0 : d0), 8, 150 * d1, 125/256D, 0, 133/256D, 50/256D, false);
+        ImageUtil.drawImageWithUV(this.mc, TEXTURE, guiLeft + 111, guiTop + 8 + (int) (d0 == 1 ? 0 : d0), 8, 150 * d1, 125 / 256D, 0, 133 / 256D, 50 / 256D, false);
     }
 
     private class TypeButton extends GuiButton {
 
-        private GameArea.AreaType areaType;
+        private final GameArea.AreaType areaType;
 
         public TypeButton(int idx, int x, int y, GameArea.AreaType type) {
             super(idx, x + 8, y + 8 + idx * 30, 100, 20, type.getDisplayName());

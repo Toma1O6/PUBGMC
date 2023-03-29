@@ -42,9 +42,9 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
     public static final ResourceLocation ATTACHMENT_TEXTURES = Pubgmc.getResource("textures/weapon/attachment_textures.png");
     private final Pair<IRenderConfig, IRenderConfig> handRenderConfigs;
     private final Map<ItemScope, ResourceLocation> attachment2AimAnimationMap = new HashMap<>();
+    private final ResourceLocation shootAnimation = Pubgmc.getResource(getResourcePrefix() + "_shoot");
     private IntHashMap<ResourceLocation> reloadAnimations;
     private Map<ItemAttachment, IRenderConfig> renderConfigs = new HashMap<>();
-    private final ResourceLocation shootAnimation = Pubgmc.getResource(getResourcePrefix() + "_shoot");
 
     public WeaponRenderer() {
         this.handRenderConfigs = createHandRenderConfigs();
@@ -79,9 +79,9 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
         float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress(ClientHooks.getRenderTickTime()) : 0.0F;
         for (AttachmentType<?> type : AttachmentType.allTypes) {
             ItemAttachment attachment = gun.getAttachment(type, itemStackIn);
-            if(attachment != null) {
+            if (attachment != null) {
                 AttachmentRenderer<ItemAttachment> renderer = AttachmentRenderer.getRenderFor(attachment);
-                if(renderer == null)
+                if (renderer == null)
                     continue;
                 manager.bindTexture(ATTACHMENT_TEXTURES);
                 renderer.render(this, attachment, aimPct);
@@ -106,7 +106,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
     public AnimationSpec getReloadAnimation(GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
         int ammo = gun.getAmmo(stack);
-        if(reloader == IReloader.MAGAZINE) {
+        if (reloader == IReloader.MAGAZINE) {
             int i = ammo == 0 ? 0 : 1;
             return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(i));
         } else {
@@ -114,9 +114,9 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
             int totalAmmo = DevUtil.getItemCount(gun.getAmmoType().ammo(), player.inventory);
             int left = gun.getMaxAmmoExtended() - ammo;
             int reload;
-            if(ammo == 0 && reloader instanceof IReloader.StripperClip) {
+            if (ammo == 0 && reloader instanceof IReloader.StripperClip) {
                 reload = ammo;
-            } else if(left > totalAmmo) {
+            } else if (left > totalAmmo) {
                 reload = gun.getMaxAmmoExtended() - totalAmmo;
             } else {
                 reload = ammo;
@@ -131,13 +131,13 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
 
     public final void registerRenderConfig(ItemAttachment attachment, IRenderConfig config) {
         renderConfigs.put(attachment, config);
-        if(attachment instanceof ItemScope) {
+        if (attachment instanceof ItemScope) {
             registerAimAnimation((ItemScope) attachment);
         }
     }
 
     public final void registerRenderConfig(IRenderConfig config, ItemAttachment... attachments) {
-        if(attachments.length == 0)
+        if (attachments.length == 0)
             throw new IllegalArgumentException("Must supply atleast one attachment");
         for (ItemAttachment attachment : attachments) {
             registerRenderConfig(Objects.requireNonNull(attachment), config);
@@ -151,9 +151,10 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
 
     private void registerAimAnimation(ItemScope attachment) {
         ResourceLocation location;
-        if(attachment == null) {
+        if (attachment == null) {
             location = Pubgmc.getResource(this.getResourcePrefix() + "_aim");
-        } else location = Pubgmc.getResource(this.getResourcePrefix() + "_aim_" + attachment.getRegistryName().getResourcePath());
+        } else
+            location = Pubgmc.getResource(this.getResourcePrefix() + "_aim_" + attachment.getRegistryName().getResourcePath());
         attachment2AimAnimationMap.put(attachment, location);
         ClientProxy.getAnimationLoader().registerEntry(location);
     }

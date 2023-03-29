@@ -35,7 +35,7 @@ public class BlockPlayerCrate extends PMCBlock {
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        TileEntityPlayerCrate te = (TileEntityPlayerCrate)worldIn.getTileEntity(pos);
+        TileEntityPlayerCrate te = (TileEntityPlayerCrate) worldIn.getTileEntity(pos);
         te.clear();
         worldIn.setBlockToAir(pos);
     }

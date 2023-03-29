@@ -121,24 +121,6 @@ public class ModelG36C extends ModelGun {
     private final ModelRenderer bullet;
     private final ModelRenderer bullet2;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        g36.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.scale(0.5, 0.5, 0.5);
-        GlStateManager.translate(-1.975, 37.125, -20.0);
-    }
-
     public ModelG36C() {
         textureWidth = 512;
         textureHeight = 512;
@@ -1262,5 +1244,23 @@ public class ModelG36C extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        g36.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        GlStateManager.translate(-1.975, 37.125, -20.0);
     }
 }

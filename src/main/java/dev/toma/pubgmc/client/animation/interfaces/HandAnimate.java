@@ -13,9 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface HandAnimate {
 
     @SideOnly(Side.CLIENT)
-    void animate(EnumHandSide side);
-
-    @SideOnly(Side.CLIENT)
     static void renderHand(EnumHandSide side, IRenderConfig cfg) {
         Minecraft mc = Minecraft.getMinecraft();
         mc.getTextureManager().bindTexture(mc.player.getLocationSkin());
@@ -36,4 +33,7 @@ public interface HandAnimate {
         }
         GlStateManager.popMatrix();
     }
+
+    @SideOnly(Side.CLIENT)
+    void animate(EnumHandSide side);
 }

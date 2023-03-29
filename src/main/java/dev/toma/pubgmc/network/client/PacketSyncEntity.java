@@ -46,7 +46,7 @@ public class PacketSyncEntity implements IMessage {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 WorldClient client = Minecraft.getMinecraft().world;
                 Entity entity = client.getEntityByID(message.entityID);
-                if(entity != null) {
+                if (entity != null) {
                     entity.readFromNBT(message.nbt);
                 }
             });

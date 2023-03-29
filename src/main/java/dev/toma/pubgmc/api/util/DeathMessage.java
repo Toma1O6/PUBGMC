@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.api.util;
 
-import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.GamePlayerData;
+import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.settings.EntityDeathManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -33,7 +33,7 @@ public class DeathMessage {
 
     public void tick(int index, Game game) {
         --ticksLeft;
-        if(ticksLeft <= 0) {
+        if (ticksLeft <= 0) {
             game.displayedDeathMessages[index] = null;
         }
     }
@@ -51,11 +51,12 @@ public class DeathMessage {
     public void draw(Game game, Minecraft mc, ScaledResolution res, int x, int y) {
         EnumViewContex ctx = this.getContex(mc, game);
         float diff = ticksLeft <= 20 ? ticksLeft / 20.0F : 0.0F;
-        int alpha = (int)(0xFF * diff) << 24;
+        int alpha = (int) (0xFF * diff) << 24;
         switch (ctx) {
-            case NORMAL: default: {
+            case NORMAL:
+            default: {
                 int color = 0xFFFFFF;
-                int additional = (int)(0xFF * diff) << 24;
+                int additional = (int) (0xFF * diff) << 24;
                 mc.fontRenderer.drawStringWithShadow(this.deathMsg, x, y, 0xFFFFFF + alpha);
                 break;
             }
@@ -75,15 +76,15 @@ public class DeathMessage {
         GamePlayerData srcData = this.source() == null ? null : game.getPlayerData().get(this.source().getUniqueID());
         GamePlayerData vcmData = game.getPlayerData().get(this.victim().getUniqueID());
         UUID uuid = mc.player.getUniqueID();
-        if(srcData != null) {
+        if (srcData != null) {
             GamePlayerData localData = game.getPlayerData().get(uuid);
-            if(uuid.equals(this.source().getUniqueID()) || (localData != null && localData.getTeam() == srcData.getTeam())) {
+            if (uuid.equals(this.source().getUniqueID()) || (localData != null && localData.getTeam() == srcData.getTeam())) {
                 return EnumViewContex.SRC;
             }
         }
-        if(vcmData != null) {
+        if (vcmData != null) {
             GamePlayerData localData = game.getPlayerData().get(uuid);
-            if(uuid.equals(this.victim().getUniqueID()) || (localData != null && localData.getTeam() == vcmData.getTeam())) {
+            if (uuid.equals(this.victim().getUniqueID()) || (localData != null && localData.getTeam() == vcmData.getTeam())) {
                 return EnumViewContex.VCM;
             }
         }

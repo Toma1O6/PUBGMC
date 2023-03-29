@@ -29,9 +29,9 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     boolean isUsingNV();
 
-    void setBackpackLevel(int level);
-
     int getBackpackLevel();
+
+    void setBackpackLevel(int level);
 
     void hasEquippedNV(boolean nv);
 
@@ -56,7 +56,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public void readNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side, NBTBase nbt) {
-            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
+            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
         }
     }
 }

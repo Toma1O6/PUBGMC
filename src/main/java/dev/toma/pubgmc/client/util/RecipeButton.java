@@ -19,7 +19,7 @@ public class RecipeButton extends GuiButton {
     public boolean active;
     private boolean hasIngredients = true;
     private int renderTime;
-    private TileEntityGunWorkbench te;
+    private final TileEntityGunWorkbench te;
 
     public RecipeButton(int id, int x, int y, PMCRecipe recipe, TileEntityGunWorkbench te) {
         super(id, x, y, 99, 16, "");
@@ -43,7 +43,7 @@ public class RecipeButton extends GuiButton {
                 --renderTime;
             }
         } else {
-            renderTime = mc.getDebugFPS() * 2;
+            renderTime = Minecraft.getDebugFPS() * 2;
         }
     }
 

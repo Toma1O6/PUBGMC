@@ -858,10 +858,10 @@ public class ModelM24 extends ModelGun {
     }
 
     ModelRenderer[] getMagRenderers(ItemStack stack) {
-        if(hasExtendedMagazine(stack)) {
-            return new ModelRenderer[] {magazine, extended};
-        } else if(hasQuickdrawMagazine(stack)) {
-            return new ModelRenderer[] {magazine, quickdraw};
-        } else return new ModelRenderer[] {magazine};
+        if (hasExtendedMagazine(stack)) {
+            return new ModelRenderer[]{magazine, extended};
+        } else if (hasQuickdrawMagazine(stack)) {
+            return new ModelRenderer[]{magazine, quickdraw};
+        } else return new ModelRenderer[]{magazine};
     }
 }

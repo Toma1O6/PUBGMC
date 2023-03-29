@@ -14,7 +14,7 @@ public class GameRegistry {
     public static final HashMap<ResourceLocation, Game> REGISTRY = new HashMap<>(3);
 
     public static void registerGame(ResourceLocation registryName, Game game) {
-        if(REGISTRY.containsKey(registryName)) {
+        if (REGISTRY.containsKey(registryName)) {
             throw new IllegalArgumentException("Duplicate game ID: " + registryName + "!");
         }
 
@@ -23,12 +23,13 @@ public class GameRegistry {
 
     /**
      * Find game just by it's name
+     *
      * @param mode - the mode name
      * @return - registered game instance
      */
     public static Game findGameInRegistry(String mode) {
         for (ResourceLocation loc : REGISTRY.keySet()) {
-            if(loc.getResourcePath().equalsIgnoreCase(mode)) {
+            if (loc.getResourcePath().equalsIgnoreCase(mode)) {
                 return REGISTRY.get(loc);
             }
         }
@@ -36,8 +37,8 @@ public class GameRegistry {
     }
 
     public static Game getGame(ResourceLocation location) {
-        for(ResourceLocation loc : REGISTRY.keySet()) {
-            if(location.equals(loc)) {
+        for (ResourceLocation loc : REGISTRY.keySet()) {
+            if (location.equals(loc)) {
                 return REGISTRY.get(location);
             }
         }
@@ -59,7 +60,7 @@ public class GameRegistry {
         }
 
         public void registerAll(Game... games) {
-            for(Game game : games) register(game);
+            for (Game game : games) register(game);
         }
     }
 }

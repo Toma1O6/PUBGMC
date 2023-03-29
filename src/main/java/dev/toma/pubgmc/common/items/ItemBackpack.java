@@ -6,7 +6,6 @@ import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;

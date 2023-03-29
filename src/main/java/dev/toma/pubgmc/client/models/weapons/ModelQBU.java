@@ -55,26 +55,6 @@ public class ModelQBU extends ModelGun {
     private final ModelRenderer bone31;
     private final ModelRenderer bone32;
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
-        GlStateManager.translate(0.0, 11.0, 0.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        if(!hasScopeAtachment(stack))
-            ironsights.render(1f);
-    }
-
     public ModelQBU() {
         textureWidth = 512;
         textureHeight = 512;
@@ -677,5 +657,25 @@ public class ModelQBU extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
+        GlStateManager.translate(0.0, 11.0, 0.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        if (!hasScopeAtachment(stack))
+            ironsights.render(1f);
     }
 }

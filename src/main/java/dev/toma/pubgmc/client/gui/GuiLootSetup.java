@@ -26,12 +26,12 @@ public class GuiLootSetup extends GuiScreenCentered {
 
     public GuiLootSetup(IWorldData lootData) {
         mc = Minecraft.getMinecraft();
-        if(lootData == null) {
+        if (lootData == null) {
             mc.player.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't receive world data for gui"));
             mc.displayGuiScreen(null);
             return;
         }
-        if(mc.player.getPermissionLevel() < 2) {
+        if (mc.player.getPermissionLevel() < 2) {
             mc.displayGuiScreen(null);
             mc.player.sendMessage(new TextComponentString(TextFormatting.RED + "You don't have permission to edit loot data"));
             return;
@@ -49,9 +49,9 @@ public class GuiLootSetup extends GuiScreenCentered {
         this.buttonList.add(new ChanceModifierButton(data, 4, false, guiLeft + 145, guiTop + 85));
         label = new ChanceLabel(this, guiLeft + 110, guiTop + 85, 35, 20);
         int j = 0;
-        for(int i = 0; i < GunBase.GunType.values().length; i++) {
+        for (int i = 0; i < GunBase.GunType.values().length; i++) {
             GunBase.GunType type = GunBase.GunType.values()[i];
-            if(type == GunBase.GunType.LMG) {
+            if (type == GunBase.GunType.LMG) {
                 continue;
             }
             this.buttonList.add(new BTNWeaponType(this, type, j % 2 == 0 ? guiLeft + 10 : guiLeft + 90, guiTop + 125 + ((j / 2) * 25) + 10));
@@ -78,10 +78,10 @@ public class GuiLootSetup extends GuiScreenCentered {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button instanceof BTNWeaponType) {
-            ((BTNWeaponType)button).buttonClicked();
-        } else if(button instanceof BTNLootBool) {
-            ((BTNLootBool)button).buttonClicked();
-            switch(button.id) {
+            ((BTNWeaponType) button).buttonClicked();
+        } else if (button instanceof BTNLootBool) {
+            ((BTNLootBool) button).buttonClicked();
+            switch (button.id) {
                 case 0: {
                     data.toggleAirdropWeapons(!data.hasAirdropWeapons());
                     break;
@@ -95,7 +95,7 @@ public class GuiLootSetup extends GuiScreenCentered {
                     break;
                 }
             }
-        } else if(button instanceof BTNClickable) {
+        } else if (button instanceof BTNClickable) {
             ((BTNClickable) button).buttonClicked();
         }
     }
@@ -105,16 +105,20 @@ public class GuiLootSetup extends GuiScreenCentered {
         PacketHandler.sendToServer(new PacketUpdateLootData(data.serializeNBT()));
     }
 
+    private interface BTNClickable {
+        void buttonClicked();
+    }
+
     private static class ChanceLabel {
 
         private final int x;
         private final int y;
         private final int width;
         private final int height;
+        private final GuiLootSetup parent;
         private boolean hovered;
         private int hoverTime;
         private int fpsCounter;
-        private final GuiLootSetup parent;
 
         public ChanceLabel(GuiLootSetup parent, int x, int y, int width, int height) {
             this.parent = parent;
@@ -129,7 +133,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         public void draw(Minecraft mc, int mouseX, int mouseY) {
             this.hovered = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
             this.updateCounters();
-            ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 196/256D, hovered ? 60/256D : 40/256D, 231/256D, hovered ? 80/256D : 60/256D, false);
+            ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 196 / 256D, hovered ? 60 / 256D : 40 / 256D, 231 / 256D, hovered ? 80 / 256D : 60 / 256D, false);
             if (hovered && hoverTime < 15) {
                 this.drawHoveredText(mc, mouseX, mouseY);
             }
@@ -140,7 +144,7 @@ public class GuiLootSetup extends GuiScreenCentered {
             FontRenderer font = mc.fontRenderer;
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 1);
-            ImageUtil.drawImageWithUV(mc, TEXTURE, x, mouseY + 3, 240, 86, 176/256D, 80/256D, 251/256D, 100/256D, false);
+            ImageUtil.drawImageWithUV(mc, TEXTURE, x, mouseY + 3, 240, 86, 176 / 256D, 80 / 256D, 251 / 256D, 100 / 256D, false);
             mc.fontRenderer.drawString("Weapon spawn chances (tier 1/tier 2/tier 3)", x + 3, mouseY + 8, 0xFFFFFF);
             mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Flare gun", 0.5D), x + 3, mouseY + 18, 0xFFFFFF);
             mc.fontRenderer.drawString(this.getGunDescSpawnChanceString("Snipers", 2D), x + 3, mouseY + 28, 0xFFFFFF);
@@ -154,9 +158,9 @@ public class GuiLootSetup extends GuiScreenCentered {
 
         private String getGunDescSpawnChanceString(String className, double baseAmount) {
             double d = parent.data.getLootChanceMultiplier();
-            return className + ": " + TextFormatting.RED + parent.decFormat.format(baseAmount*d) + "%" + TextFormatting.WHITE + "/"
-                    + TextFormatting.YELLOW + parent.decFormat.format(baseAmount*1.4F*d) + "%" + TextFormatting.WHITE + "/"
-                    + TextFormatting.GREEN + parent.decFormat.format(baseAmount*2.0F*d) + "%";
+            return className + ": " + TextFormatting.RED + parent.decFormat.format(baseAmount * d) + "%" + TextFormatting.WHITE + "/"
+                    + TextFormatting.YELLOW + parent.decFormat.format(baseAmount * 1.4F * d) + "%" + TextFormatting.WHITE + "/"
+                    + TextFormatting.GREEN + parent.decFormat.format(baseAmount * 2.0F * d) + "%";
         }
 
         private void updateCounters() {
@@ -190,7 +194,7 @@ public class GuiLootSetup extends GuiScreenCentered {
                 FontRenderer fontrenderer = mc.fontRenderer;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-                ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, isLeft ? 176/256.0D : 231/256.0D, hovered ? 60/256.0D : 40/256.0D, isLeft ? 196/256.0D : 251/256.0D, hovered ? 80/256.0D : 60/256.0D, true);
+                ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, isLeft ? 176 / 256.0D : 231 / 256.0D, hovered ? 60 / 256.0D : 40 / 256.0D, isLeft ? 196 / 256.0D : 251 / 256.0D, hovered ? 80 / 256.0D : 60 / 256.0D, true);
             }
         }
 
@@ -198,7 +202,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         public void buttonClicked() {
             // decrease
             double amount = isShiftKeyDown() ? 0.25D : isCtrlKeyDown() ? 0.1D : 1.0D;
-            if(isLeft) {
+            if (isLeft) {
                 ins.setLootChanceMultiplier(this.decrease(amount));
             } else {
                 ins.setLootChanceMultiplier(this.increase(amount));
@@ -206,7 +210,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         }
 
         private double decrease(double amount) {
-            if(ins.getLootChanceMultiplier() - amount < 0) {
+            if (ins.getLootChanceMultiplier() - amount < 0) {
                 return 0;
             }
             return ins.getLootChanceMultiplier() - amount;
@@ -233,7 +237,7 @@ public class GuiLootSetup extends GuiScreenCentered {
                 FontRenderer fontrenderer = mc.fontRenderer;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-                ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 176/256.0D, hovered ? 20/256.0D : 0D, 251/256.0D, hovered ? 40/256.0D : 20/256.0D, true);
+                ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 176 / 256.0D, hovered ? 20 / 256.0D : 0D, 251 / 256.0D, hovered ? 40 / 256.0D : 20 / 256.0D, true);
                 int color = buttonState ? 0x009B00 : 0xC20000;
                 this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, color);
             }
@@ -285,7 +289,7 @@ public class GuiLootSetup extends GuiScreenCentered {
                 FontRenderer fontrenderer = mc.fontRenderer;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-                ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 176/256.0D, hovered ? 20/256.0D : 0D, 251/256.0D, hovered ? 40/256.0D : 20/256.0D, true);
+                ImageUtil.drawImageWithUV(mc, TEXTURE, this.x, this.y, this.width, this.height, 176 / 256.0D, hovered ? 20 / 256.0D : 0D, 251 / 256.0D, hovered ? 40 / 256.0D : 20 / 256.0D, true);
                 int color = buttonState ? 0x009B00 : 0xC20000;
                 this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, color);
             }
@@ -294,7 +298,7 @@ public class GuiLootSetup extends GuiScreenCentered {
         @Override
         public void buttonClicked() {
             List<GunBase.GunType> wepList = parent.data.getWeaponList();
-            if(wepList.contains(weaponType)) {
+            if (wepList.contains(weaponType)) {
                 parent.data.getWeaponList().remove(weaponType);
             } else {
                 parent.data.getWeaponList().add(weaponType);
@@ -305,9 +309,5 @@ public class GuiLootSetup extends GuiScreenCentered {
         public GunBase.GunType getWeaponType() {
             return weaponType;
         }
-    }
-
-    private interface BTNClickable {
-        void buttonClicked();
     }
 }

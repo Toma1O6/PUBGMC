@@ -5,7 +5,6 @@ import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
 import dev.toma.pubgmc.client.animation.interfaces.Animation;
-import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
 import dev.toma.pubgmc.common.capability.player.AimInfo;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import net.minecraft.client.Minecraft;
