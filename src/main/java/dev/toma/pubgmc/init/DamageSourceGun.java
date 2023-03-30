@@ -13,7 +13,7 @@ public class DamageSourceGun extends EntityDamageSourceIndirect {
     private final boolean headshot;
 
     public DamageSourceGun(Entity shooter, Entity bullet, ItemStack weapon, boolean headshot) {
-        super("gun", shooter, bullet);
+        super("gun", bullet, shooter);
         this.weapon = weapon;
         this.headshot = headshot;
     }

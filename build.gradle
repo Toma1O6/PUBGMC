@@ -89,16 +89,16 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "PUBGMC",
-                "Specification-Vendor"    : "Toma",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "Toma",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "FMLCorePlugin"           : "dev.toma.pubgmc.asm.PMCPlugin",
+                "Specification-Title"        : "PUBGMC",
+                "Specification-Vendor"       : "Toma",
+                "Specification-Version"      : "1", // We are version 1 of ourselves
+                "Implementation-Title"       : project.name,
+                "Implementation-Version"     : "${version}",
+                "Implementation-Vendor"      : "Toma",
+                "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "FMLCorePlugin"              : "dev.toma.pubgmc.asm.PMCPlugin",
                 "FMLCorePluginContainsFMLMod": "true",
-                "FMLAT": "accesstransformer.cfg"
+                "FMLAT"                      : "accesstransformer.cfg"
         ])
     }
 }
@@ -106,6 +106,25 @@ jar {
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
 jar.finalizedBy('reobfJar')
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version
+        expand 'version': project.version
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 
