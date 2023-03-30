@@ -5,19 +5,13 @@
             "title": "Limited development",
             "text": "Decision has been made to continue with development",
             "url": ""
-        },
-        {
-            "type": "announcement",
-            "title": "Version 1.7.1",
-            "text": "New patch is out. Check it out",
-            "url": ""
         }
     ],
     "map": [
     
     ],
     "mainMenuText": [
-        "Update 1.7.1",
+        "Update 1.7.1 & 1.7.2",
         "- Improvements to weapon damage sources which should improve compatibility with other mods",
         "- New client config option for disabling main menu",
         "",
