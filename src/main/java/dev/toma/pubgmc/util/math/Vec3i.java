@@ -54,7 +54,7 @@ public class Vec3i {
     }
 
     public Vec3i divide(int x, int y, int z) {
-        if (x == 0 || y == 0 || z == 0) throw new IllegalArgumentException("Cannot divide by zero!");
+        if(x == 0 || y == 0 || z == 0) throw new IllegalArgumentException("Cannot divide by zero!");
         this.x /= x;
         this.y /= y;
         this.z /= z;

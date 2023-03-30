@@ -29,6 +29,23 @@ public class ModelP92 extends ModelGun {
     private final ModelRenderer magazine;
     private final ModelRenderer bullet;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-3.0750017, -4.0750017, -13.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
     public ModelP92() {
         textureWidth = 512;
         textureHeight = 512;
@@ -217,22 +234,5 @@ public class ModelP92 extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> slide);
         addEntry(AnimationElement.HAMMER, stack -> hammer);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.translate(-3.0750017, -4.0750017, -13.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
     }
 }

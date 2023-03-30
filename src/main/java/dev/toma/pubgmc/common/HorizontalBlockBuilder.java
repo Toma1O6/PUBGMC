@@ -18,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.Collections;
 import java.util.List;
 
 public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
@@ -29,8 +28,8 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private MapColor mapColor;
     private boolean opaque, fullCube;
     private float lightValue;
-    private AxisAlignedBB[] boxes = new AxisAlignedBB[]{Block.FULL_BLOCK_AABB};
-    private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[]{Block.FULL_BLOCK_AABB};
+    private AxisAlignedBB[] boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
+    private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
     private BlockFaceShape faceShape;
     private String[] desc;
 
@@ -76,14 +75,14 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     }
 
     public HorizontalBlockBuilder aabb(AxisAlignedBB aabb) {
-        this.boxes = new AxisAlignedBB[]{aabb};
-        this.coll_boxes = new AxisAlignedBB[]{aabb};
+        this.boxes = new AxisAlignedBB[] {aabb};
+        this.coll_boxes = new AxisAlignedBB[] {aabb};
         return this;
     }
 
     public HorizontalBlockBuilder aabb(AxisAlignedBB bounding, AxisAlignedBB collision) {
-        this.boxes = new AxisAlignedBB[]{bounding};
-        this.coll_boxes = new AxisAlignedBB[]{collision};
+        this.boxes = new AxisAlignedBB[] {bounding};
+        this.coll_boxes = new AxisAlignedBB[] {collision};
         return this;
     }
 
@@ -97,7 +96,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     }
 
     public HorizontalBlockBuilder nullAABB() {
-        this.coll_boxes = new AxisAlignedBB[]{Block.NULL_AABB};
+        this.coll_boxes = new AxisAlignedBB[] {Block.NULL_AABB};
         return this;
     }
 
@@ -185,7 +184,9 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
             @Override
             public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
                 if (desc != null) {
-                    Collections.addAll(tooltip, desc);
+                    for (String s : desc) {
+                        tooltip.add(s);
+                    }
                 }
             }
         };

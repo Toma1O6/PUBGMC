@@ -47,6 +47,25 @@ public class ModelDeagle extends ModelGun {
     private final ModelRenderer bullet;
     private final ModelRenderer bullet2;
 
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        GlStateManager.translate(-0.15, 20.0, 10.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        if(hasScopeAtachment(stack)) rail.render(1f);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
     public ModelDeagle() {
         textureWidth = 512;
         textureHeight = 512;
@@ -463,24 +482,5 @@ public class ModelDeagle extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> slide);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.scale(0.5, 0.5, 0.5);
-        GlStateManager.translate(-0.15, 20.0, 10.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        if (hasScopeAtachment(stack)) rail.render(1f);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
     }
 }

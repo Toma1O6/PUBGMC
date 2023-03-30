@@ -25,28 +25,6 @@ public class ConfigPMC implements ConfigPlugin {
     public static CommonConfig common;
     public static BooleanType developerMode;
 
-    @SideOnly(Side.CLIENT)
-    public static CFGOverlaySettings overlays() {
-        return client.overlays;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static CFGOtherSettings other() {
-        return client.other;
-    }
-
-    public static CFGWorld world() {
-        return common.world;
-    }
-
-    public static CFGVehicles vehicles() {
-        return common.vehicles;
-    }
-
-    public static CFGWeapons guns() {
-        return common.weapons;
-    }
-
     @Override
     public String getModID() {
         return Pubgmc.MOD_ID;
@@ -75,5 +53,27 @@ public class ConfigPMC implements ConfigPlugin {
         PMCConfigCreator configCreator = new PMCConfigCreator();
         configCreator.assignTo(configObject);
         return configCreator;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static CFGOverlaySettings overlays() {
+        return client.overlays;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static CFGOtherSettings other() {
+        return client.other;
+    }
+
+    public static CFGWorld world() {
+        return common.world;
+    }
+
+    public static CFGVehicles vehicles() {
+        return common.vehicles;
+    }
+
+    public static CFGWeapons guns() {
+        return common.weapons;
     }
 }

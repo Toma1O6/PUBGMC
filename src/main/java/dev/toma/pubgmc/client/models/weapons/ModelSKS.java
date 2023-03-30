@@ -69,6 +69,27 @@ public class ModelSKS extends ModelGun {
     private final ModelRenderer bone54;
     private final ModelRenderer bb_main;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        sks.render(1f);
+        bb_main.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.scale(0.7, 0.7, 0.7);
+        GlStateManager.translate(0.025, 5.7, 9);
+    }
+
     public ModelSKS() {
         textureWidth = 512;
         textureHeight = 512;
@@ -895,26 +916,5 @@ public class ModelSKS extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        sks.render(1f);
-        bb_main.render(1.0F);
-        if (!hasScopeAtachment(stack))
-            ironsights.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.scale(0.7, 0.7, 0.7);
-        GlStateManager.translate(0.025, 5.7, 9);
     }
 }

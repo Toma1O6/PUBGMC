@@ -42,7 +42,7 @@ public class RenderParachute extends Render<EntityParachute> {
         GlStateManager.rotate(entityYaw, 0.0F, 1.0F, 0.0F);
         float p = DevUtil.lerp(entity.rotationPitch, entity.prevRotationPitch, partialTicks);
         GlStateManager.rotate(p, 1.0F, 0.0F, 0.0F);
-        if (entity.getEmptyTicks() > 0) {
+        if(entity.getEmptyTicks() > 0) {
             double land = entity.getEmptyTicks() / 100.0D;
             double prevLand = land - 0.01D;
             double interpolatedLand = prevLand + (land - prevLand) * partialTicks;

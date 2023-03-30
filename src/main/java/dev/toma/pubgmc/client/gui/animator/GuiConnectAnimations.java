@@ -26,6 +26,42 @@ public class GuiConnectAnimations extends GuiWidgets {
         this.parent = animator;
     }
 
+    @Override
+    public void init() {
+        int j = 0;
+        for (ConnectionSpec spec : specs) {
+            SpecWidget widget = new SpecWidget(10, 10 + j * 25, width - 20, 20, spec);
+            widget.addWidgets(this);
+            ++j;
+        }
+        if(j < 8) {
+            addWidget(new ButtonWidget(10, 10 + j * 25, 60, 20, "Add", (widget, mouseX, mouseY, button) -> {
+                ConnectionSpec spec = new ConnectionSpec(1.0F, 1, AnimationSpec.EMPTY_SPEC);
+                specs.add(spec);
+                initGui();
+            }));
+        }
+        addWidget(new ButtonWidget(75, 10 + j * 25, 80, 20, "Convert", (widget, mouseX, mouseY, button) -> {
+            AnimationSpec spec = convert();
+            String name = "converted";
+            GuiAnimator.WrappedAnimationSpec wrappedAnimationSpec = new GuiAnimator.WrappedAnimationSpec(name, spec);
+            AnimatorCache.project = new AnimationProject(wrappedAnimationSpec);
+            mc.displayGuiScreen(parent);
+        }));
+        addWidget(new ButtonWidget(160, 10 + j * 25, 60, 20, "Back", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(parent)));
+        consumeFrames = addWidget(new CheckboxWidget(225, 10 + j * 25, 80, 20, "Ignore first frames", (state, mouseX, mouseY, widget) -> {}, 20));
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawWidgets(mc, mouseX, mouseY, partialTicks);
+    }
+
+    protected void delete(ConnectionSpec spec) {
+        specs.remove(spec);
+        initGui();
+    }
+
     public static AnimationSpec convert(List<ConnectionSpec> specs, boolean consumeFrames) {
         Map<AnimationElement, List<KeyFrame>> map = new HashMap<>();
         float min = 0.0F;
@@ -35,7 +71,7 @@ public class GuiConnectAnimations extends GuiWidgets {
             float max = connectionSpec.endpoint;
             for (Map.Entry<AnimationElement, List<KeyFrame>> entry : animSpec.getFrameDefs().entrySet()) {
                 List<KeyFrame> modifiedList = map.computeIfAbsent(entry.getKey(), element -> new ArrayList<>());
-                if (consumeFrames && j > 0 && modifiedList.size() > 1) {
+                if(consumeFrames && j > 0 && modifiedList.size() > 1) {
                     modifiedList.remove(0);
                 }
                 for (KeyFrame frame : entry.getValue()) {
@@ -51,11 +87,15 @@ public class GuiConnectAnimations extends GuiWidgets {
         return new AnimationSpec(map);
     }
 
+    private AnimationSpec convert() {
+        return convert(specs, consumeFrames.isSelected());
+    }
+
     public static List<ConnectionSpec> normalize(List<ConnectionSpec> specs) {
         List<ConnectionSpec> list = new ArrayList<>();
         float lastEnd = 0.0F;
         for (ConnectionSpec spec : specs) {
-            if (spec.repeatCount > 1) {
+            if(spec.repeatCount > 1) {
                 float pool = spec.endpoint - lastEnd;
                 double modifier = 1.0 / spec.repeatCount;
                 for (int i = 1; i <= spec.repeatCount; i++) {
@@ -70,60 +110,6 @@ public class GuiConnectAnimations extends GuiWidgets {
             lastEnd = spec.endpoint;
         }
         return list;
-    }
-
-    @Override
-    public void init() {
-        int j = 0;
-        for (ConnectionSpec spec : specs) {
-            SpecWidget widget = new SpecWidget(10, 10 + j * 25, width - 20, 20, spec);
-            widget.addWidgets(this);
-            ++j;
-        }
-        if (j < 8) {
-            addWidget(new ButtonWidget(10, 10 + j * 25, 60, 20, "Add", (widget, mouseX, mouseY, button) -> {
-                ConnectionSpec spec = new ConnectionSpec(1.0F, 1, AnimationSpec.EMPTY_SPEC);
-                specs.add(spec);
-                initGui();
-            }));
-        }
-        addWidget(new ButtonWidget(75, 10 + j * 25, 80, 20, "Convert", (widget, mouseX, mouseY, button) -> {
-            AnimationSpec spec = convert();
-            String name = "converted";
-            GuiAnimator.WrappedAnimationSpec wrappedAnimationSpec = new GuiAnimator.WrappedAnimationSpec(name, spec);
-            AnimatorCache.project = new AnimationProject(wrappedAnimationSpec);
-            mc.displayGuiScreen(parent);
-        }));
-        addWidget(new ButtonWidget(160, 10 + j * 25, 60, 20, "Back", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(parent)));
-        consumeFrames = addWidget(new CheckboxWidget(225, 10 + j * 25, 80, 20, "Ignore first frames", (state, mouseX, mouseY, widget) -> {
-        }, 20));
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawWidgets(mc, mouseX, mouseY, partialTicks);
-    }
-
-    protected void delete(ConnectionSpec spec) {
-        specs.remove(spec);
-        initGui();
-    }
-
-    private AnimationSpec convert() {
-        return convert(specs, consumeFrames.isSelected());
-    }
-
-    public static class ConnectionSpec {
-
-        private float endpoint;
-        private int repeatCount;
-        private AnimationSpec animationSpec;
-
-        public ConnectionSpec(float endpoint, int repeatCount, AnimationSpec spec) {
-            this.endpoint = endpoint;
-            this.repeatCount = repeatCount;
-            this.animationSpec = spec;
-        }
     }
 
     private class SpecWidget extends Widget {
@@ -164,7 +150,7 @@ public class GuiConnectAnimations extends GuiWidgets {
 
         private void validateAnimation(InputFieldWidget<String> widget, String key) {
             GuiAnimator.WrappedAnimationSpec specContainer = AnimatorCache.animations.get(key);
-            if (specContainer == null) {
+            if(specContainer == null) {
                 widget.invalidate();
                 return;
             }
@@ -177,6 +163,19 @@ public class GuiConnectAnimations extends GuiWidgets {
 
         private void setRepeats(InputFieldWidget<Integer> field, int value) {
             this.spec.repeatCount = value;
+        }
+    }
+
+    public static class ConnectionSpec {
+
+        private float endpoint;
+        private int repeatCount;
+        private AnimationSpec animationSpec;
+
+        public ConnectionSpec(float endpoint, int repeatCount, AnimationSpec spec) {
+            this.endpoint = endpoint;
+            this.repeatCount = repeatCount;
+            this.animationSpec = spec;
         }
     }
 }

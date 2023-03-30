@@ -72,6 +72,24 @@ public class ModelGroza extends ModelGun {
     private final ModelRenderer bullet;
     private final ModelRenderer bullet2;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.scale(0.6F, 0.6F, 0.6F);
+        GlStateManager.translate(-0.15, 40.675, 11);
+    }
+
     public ModelGroza() {
         textureWidth = 512;
         textureHeight = 512;
@@ -732,23 +750,5 @@ public class ModelGroza extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.scale(0.6F, 0.6F, 0.6F);
-        GlStateManager.translate(-0.15, 40.675, 11);
     }
 }

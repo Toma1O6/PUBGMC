@@ -20,6 +20,10 @@ public class GamePlayerData {
         this.data += data;
     }
 
+    public void setData(int data) {
+        this.data = data;
+    }
+
     public int getKillCount() {
         return killCount;
     }
@@ -28,20 +32,16 @@ public class GamePlayerData {
         return data;
     }
 
-    public void setData(int data) {
-        this.data = data;
-    }
-
     public Team getTeam() {
         return team;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if(obj == this) {
             return true;
         } else {
-            if (obj instanceof GamePlayerData) {
+            if(obj instanceof GamePlayerData) {
                 GamePlayerData o = (GamePlayerData) obj;
                 return this.team.equals(o.team);
             }

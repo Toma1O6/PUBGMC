@@ -22,6 +22,17 @@ public class ModelP18C extends ModelGun {
     private final ModelRenderer magazine;
     private final ModelRenderer bullet;
 
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-0.9, -1.0, -6.0);
+    }
+
     public ModelP18C() {
         textureWidth = 512;
         textureHeight = 512;
@@ -137,17 +148,6 @@ public class ModelP18C extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> slide);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.translate(-0.9, -1.0, -6.0);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

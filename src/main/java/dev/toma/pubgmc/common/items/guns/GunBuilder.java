@@ -6,6 +6,7 @@ import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;
 import dev.toma.pubgmc.config.common.CFGWeapon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 import java.util.concurrent.Callable;
@@ -51,30 +52,6 @@ public class GunBuilder {
 
     public static GunBuilder create(String regName, Function<GunBuilder, GunBase> buildFunc) {
         return new GunBuilder(regName, buildFunc);
-    }
-
-    private static <T> void checkNotNull(T obj) throws NullPointerException {
-        if (obj == null) {
-            throw new NullPointerException();
-        }
-    }
-
-    private static void validateFloat(float floatToValidate, float min, float max) throws IllegalArgumentException {
-        if (floatToValidate < min || floatToValidate > max) {
-            throw new IllegalArgumentException("Float value must be in <" + min + ";" + max + "> range! Got: " + floatToValidate);
-        }
-    }
-
-    private static void validateDouble(double doubleToValidate, double min, double max) throws IllegalArgumentException {
-        if (doubleToValidate < min || doubleToValidate > max) {
-            throw new IllegalArgumentException("Double value must be in <" + min + ";" + max + "> range! Got: " + doubleToValidate);
-        }
-    }
-
-    private static void validateInt(int intToValidate, int min, int max) throws IllegalArgumentException {
-        if (intToValidate < min || intToValidate > max) {
-            throw new IllegalArgumentException("Int value must be in <" + min + ";" + max + "> range! Got: " + intToValidate);
-        }
     }
 
     public GunBuilder stats(CFGWeapon cfg) {
@@ -198,14 +175,38 @@ public class GunBuilder {
         validateFloat(volumeNormal, 1f, 40f);
         validateFloat(volumeSilenced, 1f, 30f);
         checkNotNull(reloadSound);
-        if (attachments == null)
+        if(attachments == null)
             attachments().build();
         validateInt(burstAmount, 0, 3);
-        if (action != null) {
+        if(action != null) {
             Preconditions.checkNotNull(action.get(), "Action cannot return null sound event");
         }
         GunBase gunBase = buildFunc.apply(this);
         gunBase.registerToGlobalLootPool(airdropOnly);
         return gunBase;
+    }
+
+    private static <T> void checkNotNull(T obj) throws NullPointerException {
+        if (obj == null) {
+            throw new NullPointerException();
+        }
+    }
+
+    private static void validateFloat(float floatToValidate, float min, float max) throws IllegalArgumentException {
+        if (floatToValidate < min || floatToValidate > max) {
+            throw new IllegalArgumentException("Float value must be in <" + min + ";" + max + "> range! Got: " + floatToValidate);
+        }
+    }
+
+    private static void validateDouble(double doubleToValidate, double min, double max) throws IllegalArgumentException {
+        if (doubleToValidate < min || doubleToValidate > max) {
+            throw new IllegalArgumentException("Double value must be in <" + min + ";" + max + "> range! Got: " + doubleToValidate);
+        }
+    }
+
+    private static void validateInt(int intToValidate, int min, int max) throws IllegalArgumentException {
+        if (intToValidate < min || intToValidate > max) {
+            throw new IllegalArgumentException("Int value must be in <" + min + ";" + max + "> range! Got: " + intToValidate);
+        }
     }
 }

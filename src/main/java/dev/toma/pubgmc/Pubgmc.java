@@ -50,52 +50,18 @@ public class Pubgmc {
     public static final String SERVER_PROXY_CLASS = "dev.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
-    public static final Logger logger = LogManager.getLogger("pubgmc");
     private static final Random RANDOM = new Random();
-    private static final ContentManager contentManager = new ContentManager();
+    public static final Logger logger = LogManager.getLogger("pubgmc");
     public static boolean isDevEnvironment;
     @Instance
     public static Pubgmc instance;
     @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
     public static Proxy proxy;
+    private static final ContentManager contentManager = new ContentManager();
     private static Boolean earlyAccess;
 
     public static Random rng() {
         return RANDOM;
-    }
-
-    private static void registerSmeltingRecipes() {
-        FurnaceRecipes rec = FurnaceRecipes.instance();
-        rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
-        rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
-    }
-
-    public static boolean isOutdated() {
-        ModContainer container = Loader.instance().activeModContainer();
-        if (container == null)
-            return false;
-        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
-        ForgeVersion.Status status = result.status;
-        return status == ForgeVersion.Status.OUTDATED || status == ForgeVersion.Status.BETA_OUTDATED;
-    }
-
-    public static boolean isEarlyAccess() {
-        if (earlyAccess != null)
-            return earlyAccess;
-        ModContainer container = Loader.instance().activeModContainer();
-        if (container == null)
-            return false;
-        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
-        ForgeVersion.Status status = result.status;
-        return earlyAccess = status == ForgeVersion.Status.AHEAD;
-    }
-
-    public static ResourceLocation getResource(String path) {
-        return new ResourceLocation(MOD_ID, path);
-    }
-
-    public static ContentManager getContentManager() {
-        return contentManager;
     }
 
     @EventHandler
@@ -139,5 +105,39 @@ public class Pubgmc {
         event.registerServerCommand(new CommandGame());
         event.registerServerCommand(new CommandPlayerData());
         event.registerServerCommand(new CommandManageGhillieVariants());
+    }
+
+    private static void registerSmeltingRecipes() {
+        FurnaceRecipes rec = FurnaceRecipes.instance();
+        rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
+        rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
+    }
+
+    public static boolean isOutdated() {
+        ModContainer container = Loader.instance().activeModContainer();
+        if(container == null)
+            return false;
+        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
+        ForgeVersion.Status status = result.status;
+        return status == ForgeVersion.Status.OUTDATED || status == ForgeVersion.Status.BETA_OUTDATED;
+    }
+
+    public static boolean isEarlyAccess() {
+        if(earlyAccess != null)
+            return earlyAccess;
+        ModContainer container = Loader.instance().activeModContainer();
+        if(container == null)
+            return false;
+        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
+        ForgeVersion.Status status = result.status;
+        return earlyAccess = status == ForgeVersion.Status.AHEAD;
+    }
+
+    public static ResourceLocation getResource(String path) {
+        return new ResourceLocation(MOD_ID, path);
+    }
+
+    public static ContentManager getContentManager() {
+        return contentManager;
     }
 }

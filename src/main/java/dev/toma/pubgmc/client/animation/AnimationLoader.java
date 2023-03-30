@@ -19,8 +19,7 @@ import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +33,8 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
             .registerTypeHierarchyAdapter(KeyFrame.class, new KeyFrameSerializer())
             .registerTypeAdapter(AnimationSpec.class, new AnimationSpecSerializer())
             .create();
-    private static final Logger log = LogManager.getLogger("Animation Loader");
     private final List<ResourceLocation> paths = new ArrayList<>();
+    private static final Logger log = LogManager.getLogger("Animation Loader");
     private final Map<ResourceLocation, AnimationSpec> animationSpecMap = new HashMap<>();
 
     public void registerEntries(ResourceLocation... locations) {
@@ -49,7 +48,7 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
 
     public AnimationSpec getAnimationSpecification(ResourceLocation location) {
         AnimationSpec spec = animationSpecMap.get(location);
-        if (spec == null) {
+        if(spec == null) {
             spec = AnimationSpec.EMPTY_SPEC;
             animationSpecMap.put(location, spec);
             log.error("Couldn't lookup animation for {} key, falling back to default animation", location);

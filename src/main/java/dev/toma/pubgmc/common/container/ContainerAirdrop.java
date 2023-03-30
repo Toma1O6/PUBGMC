@@ -47,7 +47,7 @@ public class ContainerAirdrop extends Container {
         super.detectAndSendChanges();
 
         for (int i = 0; i < this.listeners.size(); ++i) {
-            IContainerListener listener = this.listeners.get(i);
+            IContainerListener listener = (IContainerListener) this.listeners.get(i);
         }
     }
 

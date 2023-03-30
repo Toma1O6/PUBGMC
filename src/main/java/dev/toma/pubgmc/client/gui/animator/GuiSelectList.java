@@ -10,8 +10,7 @@ public class GuiSelectList<T> extends GuiConfirm {
     private final List<T> list;
     private final Callback<T> callback;
     protected ListWidget<T> widget;
-    protected Consumer<ListWidget<T>> createCallback = tListWidget -> {
-    };
+    protected Consumer<ListWidget<T>> createCallback = tListWidget -> {};
 
     public GuiSelectList(GuiAnimator parent, String title, String desc, List<T> list, Callback<T> callback) {
         super(parent, title, desc, null);
@@ -28,7 +27,7 @@ public class GuiSelectList<T> extends GuiConfirm {
     public void init() {
         super.init();
         widget = addWidget(new ListWidget<>((GuiAnimator) parent, guiLeft + 5, guiTop + 20, xSize - 10, ySize - 50, list, null, (b, s) -> {
-            if (b)
+            if(b)
                 onConfirm();
             else
                 onCancel();

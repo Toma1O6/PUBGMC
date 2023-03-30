@@ -4,6 +4,7 @@ import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.models.weapons.ModelVSS;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.util.Pair;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderVSS extends WeaponRenderer {
 

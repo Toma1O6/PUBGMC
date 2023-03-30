@@ -5,9 +5,9 @@ import net.minecraft.item.ItemStack;
 
 public class BlockOre extends PMCBlock {
     private ItemStack drop;
-    private final int quantity = 1;
-    private final boolean isDropRandom = false;
-    private final int dropScale = 1;
+    private int quantity = 1;
+    private boolean isDropRandom = false;
+    private int dropScale = 1;
 
     public BlockOre(String name) {
         super(name, Material.ROCK);

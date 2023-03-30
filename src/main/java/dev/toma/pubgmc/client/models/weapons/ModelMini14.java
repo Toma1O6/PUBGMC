@@ -60,6 +60,25 @@ public class ModelMini14 extends ModelGun {
     private final ModelRenderer bone10;
     private final ModelRenderer bullet;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        if(!hasScopeAtachment(stack)) ironsights.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.translate(47.64998, 6.8749995, -26.0);
+    }
+
     public ModelMini14() {
         textureWidth = 512;
         textureHeight = 512;
@@ -739,24 +758,5 @@ public class ModelMini14 extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> slide);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        if (!hasScopeAtachment(stack)) ironsights.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.translate(47.64998, 6.8749995, -26.0);
     }
 }

@@ -21,9 +21,9 @@ public class CommunityEvent extends MenuDisplayContent {
     private final String host;
     @Nullable
     private final String[] description;
-    private final DateComparationContext ctx;
     @Nullable
     private String ip;
+    private final DateComparationContext ctx;
 
     private CommunityEvent(@Nullable String name, LocalDateTime dateTime, @Nullable String host, @Nullable String[] description, @Nullable String ip) {
         this.name = name != null && !name.isEmpty() ? name : "Unnamed event";

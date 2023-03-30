@@ -16,15 +16,6 @@ public class MapLocation implements INBTSerializable<NBTTagCompound> {
         this.pos = pos;
     }
 
-    public static MapLocation findLocation(String name, IGameData gameData) {
-        for (MapLocation location : gameData.getSpawnLocations()) {
-            if (location.name().equalsIgnoreCase(name)) {
-                return location;
-            }
-        }
-        return null;
-    }
-
     public String name() {
         return name;
     }
@@ -49,11 +40,20 @@ public class MapLocation implements INBTSerializable<NBTTagCompound> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MapLocation) {
-            MapLocation map = (MapLocation) obj;
+        if(obj instanceof MapLocation) {
+            MapLocation map = (MapLocation)obj;
             return this.name.equalsIgnoreCase(map.name) && pos.getX() == map.pos.getX() && pos.getZ() == map.pos.getZ();
         }
         return false;
+    }
+
+    public static MapLocation findLocation(String name, IGameData gameData) {
+        for (MapLocation location : gameData.getSpawnLocations()) {
+            if(location.name().equalsIgnoreCase(name)) {
+                return location;
+            }
+        }
+        return null;
     }
 
     @Override

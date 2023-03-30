@@ -56,6 +56,24 @@ public class ModelDP28 extends ModelGun {
     private final ModelRenderer bone23;
     private final ModelRenderer charging_handle;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        dp28.render(1f);
+        if(!hasScopeAtachment(stack)) ironsights.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(-0.075, -10.85, -10.0);
+    }
+
     public ModelDP28() {
         textureWidth = 512;
         textureHeight = 512;
@@ -622,23 +640,5 @@ public class ModelDP28 extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        dp28.render(1f);
-        if (!hasScopeAtachment(stack)) ironsights.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(-0.075, -10.85, -10.0);
     }
 }

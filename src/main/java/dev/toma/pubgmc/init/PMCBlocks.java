@@ -1,6 +1,9 @@
 package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.common.blocks.BlockLootCrate;
+import dev.toma.pubgmc.common.blocks.PMCBlock;
+import dev.toma.pubgmc.common.blocks.PMCBlockHorizontal;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 

@@ -19,7 +19,7 @@ public class ImageButtonWidget extends Widget {
         mc.getTextureManager().bindTexture(texture);
         drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.4F);
         drawTexturedShape(x + 2, y + 2, x + width - 2, y + height - 2);
-        if (isMouseOver(mouseX, mouseY)) {
+        if(isMouseOver(mouseX, mouseY)) {
             drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.5F);
         }
     }

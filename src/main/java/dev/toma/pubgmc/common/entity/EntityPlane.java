@@ -26,13 +26,13 @@ import java.util.List;
 
 public class EntityPlane extends Entity {
     public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap();
-    public List<EntityPlayer> pendingPlayers = new ArrayList<>();
     protected IGameData gameData;
     protected BlockPos endPos;
     protected BlockPos startPos;
     private boolean hasReachedDestination;
     private short timeSinceDestination;
     private boolean canFly;
+    public List<EntityPlayer> pendingPlayers = new ArrayList<>();
 
     public EntityPlane(World world) {
         super(world);
@@ -75,7 +75,7 @@ public class EntityPlane extends Entity {
                 int id = this.getPassengers().indexOf(passenger);
                 float x = id >= 16 ? -6 + (id - 16) * 3 : -6 + id * 3;
                 float z = id < 16 ? 3 : -3;
-                Vec3d vec3d = (new Vec3d(x, 0.0D, z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+                Vec3d vec3d = (new Vec3d((double) x, 0.0D, (double) z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
                 passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
             }
         }

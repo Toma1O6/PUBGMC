@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.common.blocks;
 
-import dev.toma.pubgmc.common.tileentity.TileEntityWindow;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketParticle;
+import dev.toma.pubgmc.common.tileentity.TileEntityWindow;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -28,8 +28,8 @@ public class BlockWindow extends PMCBlock {
     public static final PropertyEnum<EnumWindowAxis> AXIS = PropertyEnum.create("axis", EnumWindowAxis.class);
     public static final PropertyEnum<EnumWindowPart> PART = PropertyEnum.create("part", EnumWindowPart.class);
     public static final PropertyBool BROKEN = PropertyBool.create("broken");
-    private static final AxisAlignedBB[] BOUNDING_BOX = {new AxisAlignedBB(0.35, 0, 0, 0.65, 1, 1), new AxisAlignedBB(0, 0, 0.35, 1, 1, 0.65)};
-    private static final AxisAlignedBB[] COLLISION_BOX = {new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1), new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6)};
+    private static final AxisAlignedBB[] BOUNDING_BOX = {new AxisAlignedBB(0.35, 0, 0, 0.65, 1, 1),new AxisAlignedBB(0, 0, 0.35, 1, 1, 0.65)};
+    private static final AxisAlignedBB[] COLLISION_BOX = {new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1),new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6)};
     private final WindowType windowType;
 
     public BlockWindow(String name, WindowType windowType) {
@@ -47,11 +47,11 @@ public class BlockWindow extends PMCBlock {
     }
 
     public void neighborBroken(EnumFacing side, World world, BlockPos pos, IBlockState state) {
-        if (!state.getValue(BROKEN)) {
+        if(!state.getValue(BROKEN)) {
             world.setBlockState(pos, state.withProperty(BROKEN, true));
             this.notifyNeighboringWindows(pos, world);
-            if (!world.isRemote) {
-                if (state.getValue(PART).ordinal() < 2) {
+            if(!world.isRemote) {
+                if(state.getValue(PART).ordinal() < 2) {
                     int axis = state.getValue(AXIS).ordinal();
                     PacketParticle packet = new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 15, pos.getX(), pos.getY(), pos.getZ(), this, PacketParticle.ParticleAction.CREATE_LINE, axis);
                     PacketHandler.sendToAllClients(packet);
@@ -61,7 +61,7 @@ public class BlockWindow extends PMCBlock {
     }
 
     public void breakWindow(IBlockState state, BlockPos pos, World world) {
-        if (!state.getValue(BROKEN)) {
+        if(!state.getValue(BROKEN)) {
             world.setBlockState(pos, state.withProperty(BROKEN, true));
             this.notifyNeighboringWindows(pos, world);
             world.playSound(null, pos, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
@@ -115,14 +115,14 @@ public class BlockWindow extends PMCBlock {
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        if (state.getValue(BROKEN)) {
+        if(state.getValue(BROKEN)) {
             worldIn.setBlockState(pos, state.withProperty(BROKEN, false));
         }
     }
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        switch (windowType) {
+        switch(windowType) {
             case WINDOW_1X2: {
                 EnumWindowPart part = state.getValue(PART);
                 if (part.ordinal() > 1) {
@@ -134,16 +134,16 @@ public class BlockWindow extends PMCBlock {
                 break;
             }
             case WINDOW_2X1: {
-                if (state.getValue(AXIS) == EnumWindowAxis.WE) {
+                if(state.getValue(AXIS) == EnumWindowAxis.WE) {
                     EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.WEST : EnumFacing.EAST;
                     IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
-                    if (state1.getBlock() instanceof BlockWindow) {
+                    if(state1.getBlock() instanceof BlockWindow) {
                         worldIn.setBlockToAir(pos.offset(offset));
                     }
                 } else {
                     EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.SOUTH : EnumFacing.NORTH;
                     IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
-                    if (state1.getBlock() instanceof BlockWindow) {
+                    if(state1.getBlock() instanceof BlockWindow) {
                         worldIn.setBlockToAir(pos.offset(offset));
                     }
                 }
@@ -151,36 +151,36 @@ public class BlockWindow extends PMCBlock {
                 break;
             }
             case WINDOW_2X2: {
-                if (state.getValue(PART).isLower()) {
+                if(state.getValue(PART).isLower()) {
                     worldIn.setBlockToAir(pos.up());
-                    if (state.getValue(AXIS) == EnumWindowAxis.NS) {
+                    if(state.getValue(AXIS) == EnumWindowAxis.NS) {
                         EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.SOUTH : EnumFacing.NORTH;
                         IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
-                        if (state1.getBlock() instanceof BlockWindow) {
+                        if(state1.getBlock() instanceof BlockWindow) {
                             worldIn.setBlockToAir(pos.offset(offset));
                             worldIn.setBlockToAir(pos.offset(offset).up());
                         }
                     } else {
                         EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.WEST : EnumFacing.EAST;
                         IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
-                        if (state1.getBlock() instanceof BlockWindow) {
+                        if(state1.getBlock() instanceof BlockWindow) {
                             worldIn.setBlockToAir(pos.offset(offset));
                             worldIn.setBlockToAir(pos.offset(offset).up());
                         }
                     }
                 } else {
                     worldIn.setBlockToAir(pos.down());
-                    if (state.getValue(AXIS) == EnumWindowAxis.NS) {
+                    if(state.getValue(AXIS) == EnumWindowAxis.NS) {
                         EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.SOUTH : EnumFacing.NORTH;
                         IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
-                        if (state1.getBlock() instanceof BlockWindow) {
+                        if(state1.getBlock() instanceof BlockWindow) {
                             worldIn.setBlockToAir(pos.offset(offset));
                             worldIn.setBlockToAir(pos.offset(offset).down());
                         }
                     } else {
                         EnumFacing offset = state.getValue(PART) == EnumWindowPart.LOWER_LEFT ? EnumFacing.WEST : EnumFacing.EAST;
                         IBlockState state1 = worldIn.getBlockState(pos.offset(offset));
-                        if (state1.getBlock() instanceof BlockWindow) {
+                        if(state1.getBlock() instanceof BlockWindow) {
                             worldIn.setBlockToAir(pos.offset(offset));
                             worldIn.setBlockToAir(pos.offset(offset).down());
                         }
@@ -189,8 +189,7 @@ public class BlockWindow extends PMCBlock {
                 super.breakBlock(worldIn, pos, state);
                 break;
             }
-            default:
-            case WINDOW_1X1: {
+            default: case WINDOW_1X1: {
                 super.breakBlock(worldIn, pos, state);
                 break;
             }
@@ -216,7 +215,7 @@ public class BlockWindow extends PMCBlock {
             case WINDOW_2X1: {
                 BlockPos neighbor = pos.offset(f.rotateY());
 
-                if (world.getBlockState(neighbor).getBlock().isReplaceable(world, neighbor)) {
+                if(world.getBlockState(neighbor).getBlock().isReplaceable(world, neighbor)) {
                     world.setBlockState(neighbor, iBlockState.withProperty(PART, flag ? EnumWindowPart.LOWER_LEFT : EnumWindowPart.LOWER_RIGHT));
                     return iBlockState;
                 }
@@ -227,9 +226,9 @@ public class BlockWindow extends PMCBlock {
                 IBlockState lr = world.getBlockState(neighbor);
                 IBlockState ul = world.getBlockState(pos.up());
                 IBlockState ur = world.getBlockState(neighbor.up());
-                if (world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()) &&
-                        world.getBlockState(neighbor).getBlock().isReplaceable(world, neighbor) &&
-                        world.getBlockState(neighbor.up()).getBlock().isReplaceable(world, neighbor.up())) {
+                if(world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()) &&
+                    world.getBlockState(neighbor).getBlock().isReplaceable(world, neighbor) &&
+                    world.getBlockState(neighbor.up()).getBlock().isReplaceable(world, neighbor.up())) {
                     world.setBlockState(pos.up(), iBlockState.withProperty(PART, flag ? EnumWindowPart.UPPER_RIGHT : EnumWindowPart.UPPER_LEFT));
                     world.setBlockState(neighbor, iBlockState.withProperty(PART, flag ? EnumWindowPart.LOWER_LEFT : EnumWindowPart.LOWER_RIGHT));
                     world.setBlockState(neighbor.up(), iBlockState.withProperty(PART, flag ? EnumWindowPart.UPPER_LEFT : EnumWindowPart.UPPER_RIGHT));
@@ -237,8 +236,7 @@ public class BlockWindow extends PMCBlock {
                 }
                 return Blocks.AIR.getDefaultState();
             }
-            default:
-                return Blocks.AIR.getDefaultState();
+            default: return Blocks.AIR.getDefaultState();
         }
     }
 
@@ -252,7 +250,7 @@ public class BlockWindow extends PMCBlock {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(PART, EnumWindowPart.values()[meta % 4]).withProperty(BROKEN, (meta & 4) > 0).withProperty(AXIS, EnumWindowAxis.values()[meta >> 3]);
+        return this.getDefaultState().withProperty(PART, EnumWindowPart.values()[meta%4]).withProperty(BROKEN, (meta & 4) > 0).withProperty(AXIS, EnumWindowAxis.values()[meta >> 3]);
     }
 
     @Override
@@ -261,10 +259,10 @@ public class BlockWindow extends PMCBlock {
     }
 
     private void notifyNeighboringWindows(BlockPos pos, World world) {
-        for (EnumFacing facing : EnumFacing.values()) {
+        for(EnumFacing facing : EnumFacing.values()) {
             BlockPos neighborPos = pos.offset(facing);
             IBlockState neighbor = world.getBlockState(neighborPos);
-            if (neighbor.getBlock() instanceof BlockWindow) {
+            if(neighbor.getBlock() instanceof BlockWindow) {
                 neighborBroken(facing, world, neighborPos, neighbor);
             }
         }
@@ -281,21 +279,16 @@ public class BlockWindow extends PMCBlock {
         NS,
         WE;
 
-        public static EnumWindowAxis getAxisFromFacing(EnumFacing facing) {
-            switch (facing) {
-                case EAST:
-                case WEST:
-                    return NS;
-                case NORTH:
-                case SOUTH:
-                default:
-                    return WE;
-            }
-        }
-
         @Override
         public String getName() {
             return this.name().toLowerCase();
+        }
+
+        public static EnumWindowAxis getAxisFromFacing(EnumFacing facing) {
+            switch (facing) {
+                case EAST: case WEST: return NS;
+                case NORTH: case SOUTH: default: return WE;
+            }
         }
     }
 
@@ -304,20 +297,6 @@ public class BlockWindow extends PMCBlock {
         UPPER_LEFT,
         LOWER_RIGHT,
         LOWER_LEFT;
-
-        public static EnumWindowPart getOpposite(EnumWindowPart part) {
-            switch (part) {
-                case LOWER_LEFT:
-                    return LOWER_RIGHT;
-                case LOWER_RIGHT:
-                default:
-                    return LOWER_LEFT;
-                case UPPER_LEFT:
-                    return UPPER_RIGHT;
-                case UPPER_RIGHT:
-                    return UPPER_LEFT;
-            }
-        }
 
         @Override
         public String getName() {
@@ -330,6 +309,15 @@ public class BlockWindow extends PMCBlock {
 
         public EnumWindowPart getOpposite() {
             return getOpposite(this);
+        }
+
+        public static EnumWindowPart getOpposite(EnumWindowPart part) {
+            switch (part) {
+                case LOWER_LEFT: return LOWER_RIGHT;
+                case LOWER_RIGHT: default: return LOWER_LEFT;
+                case UPPER_LEFT: return UPPER_RIGHT;
+                case UPPER_RIGHT: return UPPER_LEFT;
+            }
         }
     }
 }

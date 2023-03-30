@@ -18,8 +18,8 @@ import java.util.List;
 
 public class ItemGhillie extends ItemArmor {
 
-    public static final int DEFAULT_COLOR = 0x52D900;
     private static final ResourceLocation texture = new ResourceLocation(Pubgmc.MOD_ID + ":textures/empty_texture.png");
+    public static final int DEFAULT_COLOR = 0x52D900;
 
     public ItemGhillie(String name) {
         super(ToolMaterials.GHILLIE_SUIT, 1, EntityEquipmentSlot.LEGS);

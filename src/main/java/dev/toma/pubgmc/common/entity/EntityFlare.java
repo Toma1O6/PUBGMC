@@ -24,7 +24,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
     private int timer;
     private double height;
     private EntityLivingBase shooter;
-    private final ItemStack item = ItemStack.EMPTY;
+    private ItemStack item = ItemStack.EMPTY;
 
     public EntityFlare(World worldIn) {
         super(worldIn);
@@ -53,7 +53,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
     private void updateHeading() {
         float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, f) * (180D / Math.PI));
+        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f) * (180D / Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }

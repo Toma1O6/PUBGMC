@@ -1,10 +1,7 @@
 package dev.toma.pubgmc.config.client;
 
 import dev.toma.configuration.api.ConfigCreator;
-import dev.toma.configuration.api.type.BooleanType;
-import dev.toma.configuration.api.type.FixedCollectionType;
-import dev.toma.configuration.api.type.IntType;
-import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.configuration.api.type.*;
 import dev.toma.configuration.api.util.Nameable;
 
 import java.util.concurrent.TimeUnit;

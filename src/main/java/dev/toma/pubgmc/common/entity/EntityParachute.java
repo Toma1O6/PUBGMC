@@ -32,25 +32,25 @@ public class EntityParachute extends EntityControllable {
 
     @Override
     public void updatePre() {
-        if (!this.hasTurnInput()) {
+        if(!this.hasTurnInput()) {
             float rotationSpeedDrop = 1.0F;
             turningSpeed = Math.abs(turningSpeed - rotationSpeedDrop) <= rotationSpeedDrop ? 0.0F : turningSpeed > 0 ? turningSpeed - rotationSpeedDrop : turningSpeed < 0 ? turningSpeed + rotationSpeedDrop : 0.0F;
         }
-        if (!this.hasMovementInput()) {
+        if(!this.hasMovementInput()) {
             rotationPitch = Math.abs(rotationPitch - 1.0F) <= 1.0F ? 0.0F : rotationPitch > 0 ? rotationPitch - 1.0F : rotationPitch < 0 ? rotationPitch + 1.0F : 0.0F;
         }
-        if (!this.isBeingRidden()) {
-            if (++emptyTicks >= 100) {
+        if(!this.isBeingRidden()) {
+            if(++emptyTicks >= 100) {
                 setDead();
             }
         }
         this.rotationYaw += turningSpeed;
-        if (isBeingRidden()) {
-            if (onGround || collided) {
+        if(isBeingRidden()) {
+            if(onGround || collided) {
                 removePassengers();
                 return;
             }
-            if (!isDeployed())
+            if(!isDeployed())
                 return;
             this.fallDistance = 0.0F;
             Vec3d look = this.getLookVec();
@@ -70,29 +70,29 @@ public class EntityParachute extends EntityControllable {
     @Override
     public void updatePost() {
         move(MoverType.SELF, motionX, motionY, motionZ);
-        if (!isBeingRidden()) {
+        if(!isBeingRidden()) {
             reset();
         }
     }
 
     @Override
     public void handleForward() {
-        if (isDeployed()) rotationPitch = DevUtil.wrap(rotationPitch + 1.5F, -15.0F, 30.0F);
+        if(isDeployed()) rotationPitch = DevUtil.wrap(rotationPitch + 1.5F, -15.0F, 30.0F);
     }
 
     @Override
     public void handleBackward() {
-        if (isDeployed()) rotationPitch = DevUtil.wrap(rotationPitch - 1F, -15.0F, 30.0F);
+        if(isDeployed())  rotationPitch = DevUtil.wrap(rotationPitch - 1F, -15.0F, 30.0F);
     }
 
     @Override
     public void handleRight() {
-        if (isDeployed()) turningSpeed = DevUtil.wrap(turningSpeed + 1F, -5F, 5F);
+        if(isDeployed()) turningSpeed = DevUtil.wrap(turningSpeed + 1F, -5F, 5F);
     }
 
     @Override
     public void handleLeft() {
-        if (isDeployed()) turningSpeed = DevUtil.wrap(turningSpeed - 1F, -5F, +5F);
+        if(isDeployed()) turningSpeed = DevUtil.wrap(turningSpeed - 1F, -5F, +5F);
     }
 
     @Override

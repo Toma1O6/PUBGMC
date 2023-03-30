@@ -51,6 +51,25 @@ public class ModelVSS extends ModelGun {
     private final ModelRenderer reticle;
     private final ModelRenderer overlay;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.scale(1.1F, 1.1F, 1.1F);
+        GlStateManager.translate(0.0, 13.0, -6.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        vss.render(1f);
+        renderBuiltInScope(scope, reticle, overlay, TEXTURE);
+    }
+
     public ModelVSS() {
         textureWidth = 512;
         textureHeight = 512;
@@ -429,24 +448,5 @@ public class ModelVSS extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.scale(1.1F, 1.1F, 1.1F);
-        GlStateManager.translate(0.0, 13.0, -6.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        vss.render(1f);
-        renderBuiltInScope(scope, reticle, overlay, TEXTURE);
     }
 }

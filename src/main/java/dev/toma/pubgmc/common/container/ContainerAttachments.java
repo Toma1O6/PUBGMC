@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerAttachments extends Container {
 
-    public final ItemStack stack;
     final InventoryAttachments inventory;
+    public final ItemStack stack;
 
     public ContainerAttachments(EntityPlayer player) {
         this.inventory = new InventoryAttachments(player);
@@ -50,46 +50,46 @@ public class ContainerAttachments extends Container {
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
         ItemStack itemStack;
         Slot slot = inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
+        if(slot != null && slot.getHasStack()) {
             ItemStack itemStack1 = slot.getStack();
             itemStack = itemStack1.copy();
-            if (index <= 4) {
-                if (!this.mergeItemStack(itemStack1, 5, 41, false)) {
+            if(index <= 4) {
+                if(!this.mergeItemStack(itemStack1, 5, 41, false)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onSlotChange(itemStack, itemStack1);
             } else {
                 boolean handleInventoryTransfer = true;
-                if (itemStack1.getItem() instanceof ItemAttachment) {
+                if(itemStack1.getItem() instanceof ItemAttachment) {
                     ItemAttachment item = (ItemAttachment) itemStack1.getItem();
                     int id = item.getType().getIndex();
-                    if (!(stack.getItem() instanceof GunBase)) {
+                    if(!(stack.getItem() instanceof GunBase)) {
                         return ItemStack.EMPTY;
                     }
                     GunAttachments attachments = ((GunBase) stack.getItem()).getAttachments();
-                    if (attachments.supports(item)) {
+                    if(attachments.supports(item)) {
                         handleInventoryTransfer = false;
                         Slot target = inventorySlots.get(id);
-                        if (target != null) {
+                        if(target != null) {
                             ItemStack copy = null;
-                            if (target.getHasStack()) {
+                            if(target.getHasStack()) {
                                 copy = target.getStack();
                             }
                             target.putStack(itemStack1.copy());
                             slot.getStack().setCount(0);
-                            if (copy != null) slot.putStack(copy);
+                            if(copy != null) slot.putStack(copy);
                             return ItemStack.EMPTY;
                         }
                     }
                 }
-                if (handleInventoryTransfer) {
-                    if (index > 4 && index < 32) {
-                        if (!mergeItemStack(itemStack1, 32, 41, false)) {
+                if(handleInventoryTransfer) {
+                    if(index > 4 && index < 32) {
+                        if(!mergeItemStack(itemStack1, 32, 41, false)) {
                             return ItemStack.EMPTY;
                         }
                         slot.onSlotChange(itemStack1, itemStack);
-                    } else if (index >= 32) {
-                        if (!mergeItemStack(itemStack1, 5, 32, false)) {
+                    } else if(index >= 32) {
+                        if(!mergeItemStack(itemStack1, 5, 32, false)) {
                             return ItemStack.EMPTY;
                         }
                         slot.onSlotChange(itemStack1, itemStack);
@@ -112,7 +112,7 @@ public class ContainerAttachments extends Container {
         }
 
         boolean isSupported() {
-            if (stack.getItem() instanceof GunBase) {
+            if(stack.getItem() instanceof GunBase) {
                 return ((GunBase) stack.getItem()).getAttachments().supportsType(type);
             }
             return false;
@@ -125,7 +125,7 @@ public class ContainerAttachments extends Container {
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            if (this.stack.getItem() instanceof GunBase && stack.getItem() instanceof ItemAttachment) {
+            if(this.stack.getItem() instanceof GunBase && stack.getItem() instanceof ItemAttachment) {
                 GunAttachments attachments = ((GunBase) this.stack.getItem()).getAttachments();
                 ItemAttachment attachment = (ItemAttachment) stack.getItem();
                 return attachment.getType() == this.type && attachments.supports(attachment);

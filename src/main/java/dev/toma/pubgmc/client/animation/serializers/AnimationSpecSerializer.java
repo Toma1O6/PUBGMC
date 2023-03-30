@@ -36,7 +36,7 @@ public class AnimationSpecSerializer implements JsonSerializer<AnimationSpec>, J
         Map<AnimationElement, List<KeyFrame>> defs = new HashMap<>();
         for (AnimationElement element : AnimationElement.values()) {
             String key = String.valueOf(element.getIndex());
-            if (object.has(key)) {
+            if(object.has(key)) {
                 List<KeyFrame> list = new ArrayList<>();
                 defs.put(element, list);
                 JsonArray array = JsonUtils.getJsonArray(object, key);

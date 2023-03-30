@@ -41,7 +41,7 @@ public class PacketClientCapabilitySync implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        if (Minecraft.getMinecraft().player == null)
+        if(Minecraft.getMinecraft().player == null)
             return;
         nbt = ByteBufUtils.readTag(buf);
         player = Minecraft.getMinecraft().player.world.getPlayerEntityByUUID(UUID.fromString(ByteBufUtils.readUTF8String(buf)));
@@ -57,10 +57,10 @@ public class PacketClientCapabilitySync implements IMessage {
                 IPlayerData data = PlayerData.get(m.player);
                 data.deserializeNBT(m.nbt);
 
-                if (!data.isReloading()) {
+                if(!data.isReloading()) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 }
-                if (!data.getAimInfo().isAiming()) {
+                if(!data.getAimInfo().isAiming()) {
                     mc.gameSettings.fovSetting = RenderHandler.fovBackup;
                     mc.gameSettings.mouseSensitivity = RenderHandler.sensBackup;
                 }

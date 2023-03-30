@@ -23,7 +23,7 @@ public class Announcement extends MenuDisplayContent {
         String title = object.get("title").getAsString();
         String text = object.get("text").getAsString();
         String url = null;
-        if (object.has("url")) {
+        if(object.has("url")) {
             url = object.get("url").getAsString();
         }
         return new Announcement(title, url, text);

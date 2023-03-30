@@ -21,11 +21,11 @@ public class MutableRenderConfig implements IRenderConfig {
     public void applyTransforms() {
         GlStateManager.translate(x, y, z);
         GlStateManager.scale(scaleX, scaleY, scaleZ);
-        if (rx != 0)
+        if(rx != 0)
             GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
-        if (ry != 0)
+        if(ry != 0)
             GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
-        if (rz != 0)
+        if(rz != 0)
             GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
 
     }
@@ -84,15 +84,15 @@ public class MutableRenderConfig implements IRenderConfig {
         boolean scaled = hasModifiedScale();
         boolean positioned = x != 0.0 || y != 0.0 || z != 0;
         int flag = 0b000;
-        if (!scaled && !rotated) {
-            if (!positioned) {
+        if(!scaled && !rotated) {
+            if(!positioned) {
                 return "IRenderConfig.empty()";
             }
             return String.format("IRenderConfig.positioned(%sF, %sF, %sF)", df.format(x), df.format(y), df.format(z));
         } else {
-            if (scaled && !rotated) {
+            if(scaled && !rotated) {
                 return String.format("IRenderConfig.positionedScaled(%sF, %sF, %sF, %sF, %sF, %sF)", df.format(x), df.format(y), df.format(z), df.format(scaleX), df.format(scaleY), df.format(scaleZ));
-            } else if (scaled && rotated) {
+            } else if(scaled && rotated) {
                 return String.format("IRenderConfig.rotatedScaled(%sF, %sF, %sF, %sF, %sF, %sF, %sF, %sF, %sF)", df.format(x), df.format(y), df.format(z), df.format(scaleX), df.format(scaleY), df.format(scaleZ), df.format(rx), df.format(ry), df.format(rz));
             } else {
                 return String.format("IRenderConfig.rotated(%sF, %sF, %sF, %sF, %sF, %sF)", df.format(x), df.format(y), df.format(z), df.format(rx), df.format(ry), df.format(rz));

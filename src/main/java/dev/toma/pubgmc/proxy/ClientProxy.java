@@ -51,47 +51,7 @@ import java.util.concurrent.Callable;
 
 public class ClientProxy extends Proxy {
 
-    private static final AnimationLoader animationLoader = new AnimationLoader();
-
-    public static AnimationLoader getAnimationLoader() {
-        return animationLoader;
-    }
-
-    static void registerWeaponRenderers() {
-        AttachmentRenderer.registerRenderer(PMCItems.RED_DOT, new RedDotRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.HOLOGRAPHIC, new HolographicRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.SCOPE2X, new Scope2xRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.SCOPE4X, new Scope4xRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.SCOPE8X, new Scope8xRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.SCOPE15X, new Scope15xRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.GRIP_VERTICAL, new VerticalGripRenderer());
-        AttachmentRenderer.registerRenderer(PMCItems.GRIP_ANGLED, new AngledGripRenderer());
-        AttachmentRenderer<ItemMuzzle> suppressors = new SuppressorRenderer();
-        AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SMG, suppressors);
-        AttachmentRenderer.registerRenderer(PMCItems.SILENCER_AR, suppressors);
-        AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SNIPER, suppressors);
-        ForgeRegistries.ITEMS.getValuesCollection().stream()
-                .filter(it -> it instanceof GunBase)
-                .map(it -> (GunBase) it)
-                .forEach(gun -> ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).init(gun));
-    }
-
-    static void registerEntityRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityFragGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.GRENADE));
-        RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.SMOKE));
-        RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, manager -> new RenderThrowable<>(manager, PMCItems.MOLOTOV));
-        RenderingRegistry.registerEntityRenderingHandler(EntityFlashBang.class, manager -> new RenderThrowable<>(manager, PMCItems.FLASHBANG));
-        RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleDacia.class, RenderDacia::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
-    }
-
-    public static void playButtonPressSound() {
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-    }
+    private static AnimationLoader animationLoader = new AnimationLoader();
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -153,5 +113,45 @@ public class ClientProxy extends Proxy {
         } catch (Exception e) {
             Pubgmc.logger.fatal(e);
         }
+    }
+
+    public static AnimationLoader getAnimationLoader() {
+        return animationLoader;
+    }
+
+    static void registerWeaponRenderers() {
+        AttachmentRenderer.registerRenderer(PMCItems.RED_DOT, new RedDotRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.HOLOGRAPHIC, new HolographicRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.SCOPE2X, new Scope2xRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.SCOPE4X, new Scope4xRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.SCOPE8X, new Scope8xRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.SCOPE15X, new Scope15xRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.GRIP_VERTICAL, new VerticalGripRenderer());
+        AttachmentRenderer.registerRenderer(PMCItems.GRIP_ANGLED, new AngledGripRenderer());
+        AttachmentRenderer<ItemMuzzle> suppressors = new SuppressorRenderer();
+        AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SMG, suppressors);
+        AttachmentRenderer.registerRenderer(PMCItems.SILENCER_AR, suppressors);
+        AttachmentRenderer.registerRenderer(PMCItems.SILENCER_SNIPER, suppressors);
+        ForgeRegistries.ITEMS.getValuesCollection().stream()
+                .filter(it -> it instanceof GunBase)
+                .map(it -> (GunBase) it)
+                .forEach(gun -> ((WeaponRenderer) gun.getTileEntityItemStackRenderer()).init(gun));
+    }
+
+    static void registerEntityRenderers() {
+        RenderingRegistry.registerEntityRenderingHandler(EntityFragGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.GRENADE));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, manager -> new RenderThrowable<>(manager, PMCItems.SMOKE));
+        RenderingRegistry.registerEntityRenderingHandler(EntityMolotov.class, manager -> new RenderThrowable<>(manager, PMCItems.MOLOTOV));
+        RenderingRegistry.registerEntityRenderingHandler(EntityFlashBang.class, manager -> new RenderThrowable<>(manager, PMCItems.FLASHBANG));
+        RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleDacia.class, RenderDacia::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
+    }
+
+    public static void playButtonPressSound() {
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 }

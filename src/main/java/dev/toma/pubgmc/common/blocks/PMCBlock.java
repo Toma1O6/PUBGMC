@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 public class PMCBlock extends Block {
@@ -32,9 +31,11 @@ public class PMCBlock extends Block {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
-        if (desc == null) {
+        if(desc == null) {
             return;
         }
-        Collections.addAll(tooltip, desc);
+        for(int i = 0; i < desc.length; i++) {
+            tooltip.add(desc[i]);
+        }
     }
 }

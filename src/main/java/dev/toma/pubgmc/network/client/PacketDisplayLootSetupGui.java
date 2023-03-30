@@ -16,8 +16,7 @@ public class PacketDisplayLootSetupGui implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketDisplayLootSetupGui() {
-    }
+    public PacketDisplayLootSetupGui() {}
 
     public PacketDisplayLootSetupGui(NBTTagCompound nbt) {
         this.nbt = nbt;

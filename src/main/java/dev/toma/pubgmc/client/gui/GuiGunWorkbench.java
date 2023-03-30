@@ -4,10 +4,10 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.util.PageButton;
 import dev.toma.pubgmc.client.util.RecipeButton;
 import dev.toma.pubgmc.common.container.ContainerGunWorkbench;
-import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.server.PacketCraft;
 import dev.toma.pubgmc.network.server.PacketUpdateWorkbench;
+import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.util.recipes.PMCRecipe;
 import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import dev.toma.pubgmc.util.recipes.RecipeRegistry;
@@ -41,7 +41,7 @@ public class GuiGunWorkbench extends GuiContainer {
     }
 
     public void updateButtons() {
-        List<PMCRecipe> list = TileEntityGunWorkbench.RECIPES.get(tileentity.selectedCat.ordinal());
+        List<PMCRecipe> list = tileentity.RECIPES.get(tileentity.selectedCat.ordinal());
         this.buttonList.clear();
         this.buttonList.add(createPageButton(0, guiLeft + 8, guiTop + 85, false));
         this.buttonList.add(createPageButton(1, guiLeft + 90, guiTop + 85, true));

@@ -783,7 +783,7 @@ public class ModelSLR extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         slr.render(1.0F);
-        if (hasScopeAtachment(stack))
+        if(hasScopeAtachment(stack))
             toprail.render(1.0F);
         else
             ironsights.render(1.0F);

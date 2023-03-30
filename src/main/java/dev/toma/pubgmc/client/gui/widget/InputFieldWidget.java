@@ -12,9 +12,9 @@ public abstract class InputFieldWidget<T> extends Widget {
 
     private final Callback<T> callback;
     private final Parser<T> parser;
+    private String backgroundText = "Enter value";
     protected String text = "";
     protected boolean validState;
-    private String backgroundText = "Enter value";
 
     public InputFieldWidget(int x, int y, int width, int height, String text, Callback<T> callback) {
         super(x, y, width, height);
@@ -39,7 +39,7 @@ public abstract class InputFieldWidget<T> extends Widget {
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         drawColorShape(x, y, x + width, y + height, 1.0F, validState ? 1.0F : 0.0F, validState ? focused ? 0.0F : 1.0F : 0.0F, 1.0F);
         drawColorShape(x + 1, y + 1, x + width - 1, y + height - 1, 0.0F, 0.0F, 0.0F, 1.0F);
-        if (text.isEmpty()) {
+        if(text.isEmpty()) {
             mc.fontRenderer.drawString(backgroundText, x + 3, y + (height - mc.fontRenderer.FONT_HEIGHT) / 2, 0xAAAAAA);
         } else {
             mc.fontRenderer.drawString(text, x + 3, y + (height - mc.fontRenderer.FONT_HEIGHT) / 2, 0xFFFFFF);
@@ -57,18 +57,18 @@ public abstract class InputFieldWidget<T> extends Widget {
 
     @Override
     public void onKeyPress(char character, int keycode) {
-        if (keycode == 1) {
+        if(keycode == 1) {
             unfocus();
-        } else if (keycode == 14) {
-            if (!text.isEmpty()) {
+        } else if(keycode == 14) {
+            if(!text.isEmpty()) {
                 text = text.substring(0, text.length() - 1);
                 validate();
             }
         } else {
-            if (isValid(character)) {
+            if(isValid(character)) {
                 FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
                 String newText = text + character;
-                if (renderer.getStringWidth(newText) < width - 6) {
+                if(renderer.getStringWidth(newText) < width - 6) {
                     text = newText;
                     validate();
                 }
@@ -78,10 +78,10 @@ public abstract class InputFieldWidget<T> extends Widget {
 
     protected void validate() {
         validState = isValid(text);
-        if (validState) {
+        if(validState) {
             try {
                 T t = parser.parse(text);
-                if (isValidValue(t)) {
+                if(isValidValue(t)) {
                     callback.onValueChanged(this, t);
                 } else validState = false;
             } catch (Exception e) {
@@ -145,8 +145,8 @@ public abstract class InputFieldWidget<T> extends Widget {
 
     public static abstract class NumberField<N extends Number> extends InputFieldWidget<N> implements Ranged<N> {
 
-        private final N min;
-        private final N max;
+        private N min;
+        private N max;
 
         public NumberField(int x, int y, int width, int height, N text, N min, N max, Callback<N> callback) {
             super(x, y, width, height, String.valueOf(text), callback);

@@ -25,10 +25,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class GameBombDefuse extends GameObjectiveBased {
 
@@ -41,8 +38,8 @@ public class GameBombDefuse extends GameObjectiveBased {
     private final EntityDeathManager deathManager;
 
     // TODO
-    private final TeamStats teamStats = new TeamStats();
-    private final int roundsLeft = 30;
+    private TeamStats teamStats = new TeamStats();
+    private int roundsLeft = 30;
     private BombStats bombStats;
     private GameArea ctSpawn, tSpawn;
     private GameArea bombsiteA, bombsiteB;
@@ -55,8 +52,7 @@ public class GameBombDefuse extends GameObjectiveBased {
                 .verification(game -> game.roundsLeft <= 0 || game.teamStats.getHighestScore() >= 16)
                 .build();
         this.gameBotManager = GameBotManager.Builder.create(this)
-                .lootFactory(entityAIPlayer -> {
-                })
+                .lootFactory(entityAIPlayer -> {})
                 .spawnValidator(game -> true)
                 .addBotLogic(GameUtils::addBaseTasks)
                 .build();
@@ -71,18 +67,18 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     @Override
     public boolean addObjective(World world, BlockPos pos, GameArea area) {
-        if (area.getAreaType() == GameArea.Types.BOMBSITE) {
-            if (bombsiteA == null) {
+        if(area.getAreaType() == GameArea.Types.BOMBSITE) {
+            if(bombsiteA == null) {
                 bombsiteA = area;
                 return true;
-            } else if (bombsiteB == null) {
+            } else if(bombsiteB == null) {
                 bombsiteB = area;
                 return true;
             }
-        } else if (area.getAreaType() == GameArea.Types.CT_SPAWN && ctSpawn == null) {
+        } else if(area.getAreaType() == GameArea.Types.CT_SPAWN && ctSpawn == null) {
             this.ctSpawn = area;
             return true;
-        } else if (area.getAreaType() == GameArea.Types.T_SPAWN && tSpawn == null) {
+        } else if(area.getAreaType() == GameArea.Types.T_SPAWN && tSpawn == null) {
             this.tSpawn = area;
             return true;
         }
@@ -127,9 +123,9 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     @Override
     public void onGameStart(World world) {
-        for (EntityPlayer player : this.getOnlinePlayers(world)) {
+        for(EntityPlayer player : this.getOnlinePlayers(world)) {
             GamePlayerData data = this.getPlayerData().get(player.getUniqueID());
-            if (data == null) continue;
+            if(data == null) continue;
             boolean t = data.getTeam().name.equals("t");
             GameArea area = t ? tSpawn : ctSpawn;
             BlockPos pos = area.getRandomPos(world);
@@ -150,9 +146,9 @@ public class GameBombDefuse extends GameObjectiveBased {
     @Nullable
     @Override
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        if (this.bombsiteA == null || this.bombsiteB == null) return new CommandException("You have to add bomsite!");
-        if (this.ctSpawn == null) return new CommandException("You have to add CT Spawn");
-        if (this.tSpawn == null) return new CommandException("You have to add T Spawn");
+        if(this.bombsiteA == null || this.bombsiteB == null) return new CommandException("You have to add bomsite!");
+        if(this.ctSpawn == null) return new CommandException("You have to add CT Spawn");
+        if(this.tSpawn == null) return new CommandException("You have to add T Spawn");
         return null;
     }
 
@@ -170,10 +166,10 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     private void getTeamFillFactory(Iterator<UUID> players, Iterator<Team> teams, GameBombDefuse game) {
         boolean t = Pubgmc.rng().nextBoolean();
-        while (players.hasNext()) {
+        while(players.hasNext()) {
             UUID uuid = players.next();
             Team team = this.getTeamList().get(t ? 1 : 0);
-            if (!team.add(uuid)) {
+            if(!team.add(uuid)) {
                 Pubgmc.logger.fatal("Couldn't add player with UUID {}, team is full!", uuid);
                 return;
             }
@@ -184,10 +180,10 @@ public class GameBombDefuse extends GameObjectiveBased {
     @Override
     public void writeDataToNBT(NBTTagCompound compound) {
         super.writeDataToNBT(compound);
-        if (this.ctSpawn != null) compound.setTag("ctSpawn", NBTUtil.createPosTag(this.ctSpawn.getCenter()));
-        if (this.tSpawn != null) compound.setTag("tSpawn", NBTUtil.createPosTag(this.tSpawn.getCenter()));
-        if (this.bombsiteA != null) compound.setTag("bombsiteA", NBTUtil.createPosTag(this.bombsiteA.getCenter()));
-        if (this.bombsiteB != null) compound.setTag("bombsiteB", NBTUtil.createPosTag(this.bombsiteB.getCenter()));
+        if(this.ctSpawn != null) compound.setTag("ctSpawn", NBTUtil.createPosTag(this.ctSpawn.getCenter()));
+        if(this.tSpawn != null) compound.setTag("tSpawn", NBTUtil.createPosTag(this.tSpawn.getCenter()));
+        if(this.bombsiteA != null) compound.setTag("bombsiteA", NBTUtil.createPosTag(this.bombsiteA.getCenter()));
+        if(this.bombsiteB != null) compound.setTag("bombsiteB", NBTUtil.createPosTag(this.bombsiteB.getCenter()));
     }
 
     @Override
@@ -207,7 +203,7 @@ public class GameBombDefuse extends GameObjectiveBased {
         public int ctWins;
 
         public int getScore(Team team) {
-            if (team.name.equals("t")) {
+            if(team.name.equals("t")) {
                 return tWins;
             } else return ctWins;
         }
@@ -252,8 +248,8 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     private class PlayerStats extends GamePlayerData {
 
-        private final int deaths = 0;
-        private final int mvps = 0;
+        private int deaths = 0;
+        private int mvps = 0;
 
         public PlayerStats(final Team team) {
             super(team);
@@ -266,7 +262,7 @@ public class GameBombDefuse extends GameObjectiveBased {
 
         public void addMoney(int amount) {
             this.addData(amount);
-            if (this.getData() > 16000) this.setData(16000);
+            if(this.getData() > 16000) this.setData(16000);
         }
 
         public void removeMoney(int amount) {

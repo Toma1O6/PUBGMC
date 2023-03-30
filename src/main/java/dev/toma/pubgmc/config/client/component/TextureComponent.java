@@ -19,8 +19,8 @@ public class TextureComponent extends ConfigComponent<TextureType> {
         int color = configType.getColorForRender();
         float a = ((color >> 24) & 0xff) / 255F;
         float r = ((color >> 16) & 0xff) / 255F;
-        float g = ((color >> 8) & 0xff) / 255F;
-        float b = (color & 0xff) / 255F;
+        float g = ((color >>  8) & 0xff) / 255F;
+        float b = ( color        & 0xff) / 255F;
         Minecraft mc = Minecraft.getMinecraft();
         TextureManager textureManager = mc.getTextureManager();
         drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 1.0F);

@@ -34,6 +34,23 @@ public class ModelP1911 extends ModelGun {
     private final ModelRenderer bone6;
     private final ModelRenderer bullet;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(-0.03, -8.94, -15.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        p1911.render(1f);
+    }
+
     public ModelP1911() {
         textureWidth = 512;
         textureHeight = 512;
@@ -259,22 +276,5 @@ public class ModelP1911 extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> slide);
         addEntry(AnimationElement.HAMMER, stack -> hammer);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.translate(-0.03, -8.94, -15.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        p1911.render(1f);
     }
 }

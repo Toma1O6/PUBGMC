@@ -39,8 +39,8 @@ public class ObjectiveReachScore<T extends Game> implements GameObjective<T> {
 
     @Override
     public Team getWinner(T game) {
-        for (Team team : game.getTeamList()) {
-            if (this.winningScore <= this.scoreGetter.apply(team)) {
+        for(Team team : game.getTeamList()) {
+            if(this.winningScore <= this.scoreGetter.apply(team)) {
                 return team;
             }
         }

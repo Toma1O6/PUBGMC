@@ -42,6 +42,23 @@ public class ModelScorpion extends ModelGun {
     private final ModelRenderer bone19;
     private final ModelRenderer bone;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultPistolTransform();
+        GlStateManager.translate(0.0, 9.499992, -9.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
     public ModelScorpion() {
         textureWidth = 512;
         textureHeight = 512;
@@ -325,22 +342,5 @@ public class ModelScorpion extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultPistolTransform();
-        GlStateManager.translate(0.0, 9.499992, -9.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
     }
 }

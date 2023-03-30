@@ -6,18 +6,6 @@ public interface KeyFrame {
 
     KeyFrame EMPTY_FRAME = () -> 0.0F;
 
-    static KeyFrame empty(float endpoint) {
-        return new Empty(endpoint);
-    }
-
-    static KeyFrame move(float endpoint, Vec3d move) {
-        return new Basic(endpoint, move);
-    }
-
-    static KeyFrame rotate(float endpoint, Vec3d move, Vec3d rotate) {
-        return new Rotate(endpoint, move, rotate);
-    }
-
     float endPoint();
 
     default Vec3d moveTarget() {
@@ -32,14 +20,26 @@ public interface KeyFrame {
         return Vec3d.ZERO;
     }
 
-    default void setPositionStart(Vec3d positionStart) {
-    }
-
     default Vec3d getRotationStart() {
         return Vec3d.ZERO;
     }
 
+    default void setPositionStart(Vec3d positionStart) {
+    }
+
     default void setRotationStart(Vec3d rotationStart) {
+    }
+
+    static KeyFrame empty(float endpoint) {
+        return new Empty(endpoint);
+    }
+
+    static KeyFrame move(float endpoint, Vec3d move) {
+        return new Basic(endpoint, move);
+    }
+
+    static KeyFrame rotate(float endpoint, Vec3d move, Vec3d rotate) {
+        return new Rotate(endpoint, move, rotate);
     }
 
     class Empty implements KeyFrame {
@@ -63,13 +63,13 @@ public interface KeyFrame {
         }
 
         @Override
-        public void setRotationStart(Vec3d rotationStart) {
-            this.rotationStart = rotationStart;
+        public Vec3d getPositionStart() {
+            return positionStart;
         }
 
         @Override
-        public Vec3d getPositionStart() {
-            return positionStart;
+        public void setRotationStart(Vec3d rotationStart) {
+            this.rotationStart = rotationStart;
         }
 
         @Override

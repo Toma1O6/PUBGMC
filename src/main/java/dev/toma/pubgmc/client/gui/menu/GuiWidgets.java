@@ -37,7 +37,7 @@ public class GuiWidgets extends GuiScreen implements ITickable {
 
     public <W extends Widget> W addWidget(W widget) {
         widgets.add(widget);
-        if (widget instanceof ITickable) {
+        if(widget instanceof ITickable) {
             this.addTickListener((ITickable) widget);
         }
         return widget;
@@ -57,7 +57,7 @@ public class GuiWidgets extends GuiScreen implements ITickable {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         unfocusWidgets();
         for (Widget widget : widgets) {
-            if (widget.handleClicked(mouseX, mouseY, mouseButton)) {
+            if(widget.handleClicked(mouseX, mouseY, mouseButton)) {
                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 break;
             }
@@ -67,7 +67,7 @@ public class GuiWidgets extends GuiScreen implements ITickable {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         for (Widget widget : widgets) {
-            if (widget.handleDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
+            if(widget.handleDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
                 break;
             }
         }
@@ -76,7 +76,7 @@ public class GuiWidgets extends GuiScreen implements ITickable {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         for (Widget widget : widgets) {
-            if (widget.handleKeyPressed(typedChar, keyCode)) {
+            if(widget.handleKeyPressed(typedChar, keyCode)) {
                 break;
             }
         }
@@ -89,7 +89,7 @@ public class GuiWidgets extends GuiScreen implements ITickable {
         int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
         for (Widget widget : widgets) {
-            if (widget.handleMouseScrolled(mouseX, mouseY, delta)) {
+            if(widget.handleMouseScrolled(mouseX, mouseY, delta)) {
                 break;
             }
         }

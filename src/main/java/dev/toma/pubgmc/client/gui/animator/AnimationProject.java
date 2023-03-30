@@ -41,18 +41,6 @@ public class AnimationProject {
         this(new AnimationSpec(new HashMap<>()));
     }
 
-    private static Map<AnimationElement, List<MutableKeyFrame>> convertToMutable(AnimationSpec spec) {
-        Map<AnimationElement, List<MutableKeyFrame>> def = new HashMap<>();
-        for (Map.Entry<AnimationElement, List<KeyFrame>> entry : spec.getFrameDefs().entrySet()) {
-            List<MutableKeyFrame> list = entry.getValue().stream()
-                    .map(MutableKeyFrame::fromImmutable)
-                    .sorted((o1, o2) -> Float.compare(o1.endpoint, o2.endpoint))
-                    .collect(Collectors.toList());
-            def.put(entry.getKey(), list);
-        }
-        return def;
-    }
-
     public void setAnimationProgress(float animationProgress) {
         this.animationProgress = animationProgress;
     }
@@ -69,7 +57,7 @@ public class AnimationProject {
     public void save() {
         try {
             File file = new File(workingFile, name + ".json");
-            if (file.exists()) {
+            if(file.exists()) {
                 AnimationSpec spec = new AnimationSpec(toImmutable());
                 String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class).replaceAll("\\s", "");
                 FileWriter writer = new FileWriter(file);
@@ -84,10 +72,10 @@ public class AnimationProject {
 
     public void saveAs(String path) {
         try {
-            if (!workingFile.exists())
+            if(!workingFile.exists())
                 workingFile.mkdirs();
             File file = new File(workingFile, path + ".json");
-            if (!file.exists())
+            if(!file.exists())
                 file.createNewFile();
             AnimationSpec spec = new AnimationSpec(toImmutable());
             String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class).replaceAll("\\s", "");
@@ -109,10 +97,10 @@ public class AnimationProject {
 
     public void remove(AnimationElement element, MutableKeyFrame frame) {
         List<MutableKeyFrame> frameList = animation.get(element);
-        if (frameList != null) {
+        if(frameList != null) {
             frameList.remove(frame);
         }
-        if (frameList.isEmpty())
+        if(frameList.isEmpty())
             animation.remove(element);
         markModified();
     }
@@ -130,6 +118,10 @@ public class AnimationProject {
         });
     }
 
+    public void setLength(int length) {
+        this.length = DevUtil.wrap(length, 1, 1200);
+    }
+
     public void addLength(int amount) {
         setLength(length + amount);
     }
@@ -138,7 +130,15 @@ public class AnimationProject {
         return length;
     }
 
-    public void setLength(int length) {
-        this.length = DevUtil.wrap(length, 1, 1200);
+    private static Map<AnimationElement, List<MutableKeyFrame>> convertToMutable(AnimationSpec spec) {
+        Map<AnimationElement, List<MutableKeyFrame>> def = new HashMap<>();
+        for (Map.Entry<AnimationElement, List<KeyFrame>> entry : spec.getFrameDefs().entrySet()) {
+            List<MutableKeyFrame> list = entry.getValue().stream()
+                    .map(MutableKeyFrame::fromImmutable)
+                    .sorted((o1, o2) -> Float.compare(o1.endpoint, o2.endpoint))
+                    .collect(Collectors.toList());
+            def.put(entry.getKey(), list);
+        }
+        return def;
     }
 }

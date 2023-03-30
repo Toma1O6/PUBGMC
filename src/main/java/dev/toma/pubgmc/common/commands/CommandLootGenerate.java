@@ -3,13 +3,13 @@ package dev.toma.pubgmc.common.commands;
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
 import dev.toma.pubgmc.common.capability.IGameData;
 import dev.toma.pubgmc.common.capability.IWorldData;
-import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketDisplayLootSetupGui;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.game.loot.ILootSpawner;
+import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -146,7 +146,7 @@ public class CommandLootGenerate extends CommandBase {
                 sender.sendMessage(new TextComponentString("Cleared loot inside all loaded loot spawners"));
         } else if (args[0].equalsIgnoreCase("show")) {
             int counter = 0;
-            ItemStack[] stack = new ItemStack[]{new ItemStack(Items.DYE, 1, 1), new ItemStack(Items.DYE, 1, 11), new ItemStack(Items.DYE, 1, 10)};
+            ItemStack[] stack = new ItemStack[] {new ItemStack(Items.DYE, 1, 1), new ItemStack(Items.DYE, 1, 11), new ItemStack(Items.DYE, 1, 10)};
             for (TileEntity te : sender.getEntityWorld().loadedTileEntityList) {
                 if (te instanceof TileEntityLootGenerator) {
                     counter++;
@@ -161,8 +161,8 @@ public class CommandLootGenerate extends CommandBase {
             if (shouldSendCommandFeedback(world.getGameRules()))
                 sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Currently showing " + TextFormatting.YELLOW + counter + TextFormatting.GREEN + " loot spawners"));
         } else if (args[0].equalsIgnoreCase("setup")) {
-            if (sender instanceof EntityPlayerMP) {
-                PacketHandler.sendToClient(new PacketDisplayLootSetupGui(data.serializeNBT()), (EntityPlayerMP) sender);
+            if(sender instanceof EntityPlayerMP) {
+                PacketHandler.sendToClient(new PacketDisplayLootSetupGui(data.serializeNBT()), (EntityPlayerMP)sender);
             }
         } else if (args[0].equalsIgnoreCase("count")) {
             int total = 0;
@@ -177,8 +177,8 @@ public class CommandLootGenerate extends CommandBase {
             Iterator<TileEntity> iterator = world.loadedTileEntityList.iterator();
             while (iterator.hasNext()) {
                 TileEntity tileEntity = iterator.next();
-                if (tileEntity instanceof ILootSpawner) {
-                    if (((ILootSpawner) tileEntity).generateLootOnCommand()) {
+                if(tileEntity instanceof ILootSpawner) {
+                    if(((ILootSpawner) tileEntity).generateLootOnCommand()) {
                         iterator.remove();
                         world.destroyBlock(tileEntity.getPos(), false);
                         count++;

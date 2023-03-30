@@ -55,7 +55,7 @@ public class MultiFrameAnimation extends TickableAnimation {
             int index = elementIndexCache.get(element);
             KeyFrame frame = keyFrames.get(index);
             float endpoint = frame.endPoint();
-            if (progress > endpoint && index + 1 < keyFrames.size())
+            if(progress > endpoint && index + 1 < keyFrames.size())
                 elementIndexCache.put(element, index + 1);
         }
     }

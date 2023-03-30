@@ -71,6 +71,28 @@ public class ModelAWM extends ModelGun {
     private final ModelRenderer bone40;
     private final ModelRenderer bone43;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.rotate(-90f, 0f, 1f, 0f);
+        GlStateManager.scale(0.9, 0.9, 0.9);
+        GlStateManager.translate(-7.0, 8.699999, 0.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        awm.render(1f);
+        stock.render(1.0F);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
+    }
+
     public ModelAWM() {
         textureWidth = 512;
         textureHeight = 512;
@@ -674,27 +696,5 @@ public class ModelAWM extends ModelGun {
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.CHARGING, stack -> bolt_case);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.rotate(-90f, 0f, 1f, 0f);
-        GlStateManager.scale(0.9, 0.9, 0.9);
-        GlStateManager.translate(-7.0, 8.699999, 0.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        awm.render(1f);
-        stock.render(1.0F);
-        if (!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
     }
 }

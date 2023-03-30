@@ -71,6 +71,21 @@ public class ModelMicroUzi extends ModelGun {
     private final ModelRenderer bone8;
     private final ModelRenderer bullet;
 
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1.0F);
+        stock.render(1.0F);
+        if(hasScopeAtachment(stack))
+            toprail.render(1.0F);
+        botrail.render(1.0F);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.translate(0.0, 0.85, -14.0);
+    }
+
     public ModelMicroUzi() {
         textureWidth = 512;
         textureHeight = 512;
@@ -653,21 +668,6 @@ public class ModelMicroUzi extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1.0F);
-        stock.render(1.0F);
-        if (hasScopeAtachment(stack))
-            toprail.render(1.0F);
-        botrail.render(1.0F);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSMGTransform();
-        GlStateManager.translate(0.0, 0.85, -14.0);
     }
 
     public void setRotationAngle(ModelRenderer r, float x, float y, float z) {

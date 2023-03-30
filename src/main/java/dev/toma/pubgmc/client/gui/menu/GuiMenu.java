@@ -26,12 +26,12 @@ import java.util.Optional;
 
 public class GuiMenu extends GuiWidgets implements RefreshListener {
 
-    public static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
     static final ResourceLocation DISCORD_ICON = Pubgmc.getResource("textures/gui/menu/discord.png");
     static final ResourceLocation CF_ICON = Pubgmc.getResource("textures/gui/menu/curseforge.png");
     static final ResourceLocation PATREON_ICON = Pubgmc.getResource("textures/gui/menu/patreon.png");
     static final ResourceLocation VIP_ICON = Pubgmc.getResource("textures/gui/menu/vip.png");
     static final ResourceLocation TITLE = Pubgmc.getResource("textures/gui/menu/title.png");
+    public static final ResourceLocation BACKGROUND_TEXTURE = Pubgmc.getResource("textures/gui/menu/main_menu.png");
     public String clickedUrl;
 
     @Override
@@ -204,17 +204,17 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
     public static class EventPanelComponent extends Widget implements ITickable {
 
         final GuiMenu parent;
-        private final List<Widget> msgComponents = new ArrayList<>();
-        private final List<Widget> children = new ArrayList<>();
         int count;
         short timer = 100;
         int currentMsg = 0;
+        private final List<Widget> msgComponents = new ArrayList<>();
+        private final List<Widget> children = new ArrayList<>();
 
         public EventPanelComponent(GuiMenu parent, int x, int y, int width, int height) {
             super(x, y, width, height);
             this.parent = parent;
             this.count = getMessageCount();
-            if (Pubgmc.isOutdated()) {
+            if(Pubgmc.isOutdated()) {
                 msgComponents.add(new UpdatePromptWidget(parent, x + 4, y + 15, width - 8, 40));
                 ++count;
             }
@@ -235,7 +235,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
                 }
             }
             for (Widget widget : children) {
-                if (widget.handleClicked(mouseX, mouseY, mouseButton)) {
+                if(widget.handleClicked(mouseX, mouseY, mouseButton)) {
                     return true;
                 }
             }
@@ -301,14 +301,14 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             } else return Optional.ofNullable(result.getMenuDisplayContents());
         }
 
-        public int getCurrentMsg() {
-            return currentMsg;
-        }
-
         public void setCurrentMsg(int i) {
             timer = 100;
             currentMsg = i;
             updateChilds();
+        }
+
+        public int getCurrentMsg() {
+            return currentMsg;
         }
 
         static class MessageIndicatorComponent extends Widget {
@@ -386,7 +386,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
-            if (trusted) {
+            if(trusted) {
                 parent.openWebLink(link);
             } else {
                 Minecraft mc = Minecraft.getMinecraft();
@@ -424,8 +424,8 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
     static class UpdatePromptWidget extends Widget {
 
-        static final String link = "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files";
         final GuiMenu parent;
+        static final String link = "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files";
 
         public UpdatePromptWidget(GuiMenu parent, int x, int y, int w, int h) {
             super(x, y, w, h);
@@ -436,7 +436,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             boolean hovered = isMouseOver(mouseX, mouseY);
             drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.25F);
-            if (hovered) {
+            if(hovered) {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.2F);
             }
             FontRenderer renderer = mc.fontRenderer;

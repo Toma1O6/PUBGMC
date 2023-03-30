@@ -50,6 +50,24 @@ public class ModelTommyGun extends ModelGun {
     private final ModelRenderer bone8;
     private final ModelRenderer bullet;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.scale(0.7, 0.7, 0.7);
+        GlStateManager.translate(-0.05, 15.975, 0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        thompson.render(1f);
+    }
+
     public ModelTommyGun() {
         textureWidth = 512;
         textureHeight = 512;
@@ -425,23 +443,5 @@ public class ModelTommyGun extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> hasExtendedMagazine(stack) ? magazine2 : magazine1);
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSMGTransform();
-        GlStateManager.scale(0.7, 0.7, 0.7);
-        GlStateManager.translate(-0.05, 15.975, 0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        thompson.render(1f);
     }
 }

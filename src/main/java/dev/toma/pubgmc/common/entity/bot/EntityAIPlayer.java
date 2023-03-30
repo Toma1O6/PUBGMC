@@ -30,7 +30,7 @@ public class EntityAIPlayer extends EntityCreature {
     private String hash;
     private int variant;
     @Nullable
-    private final Game game;
+    private Game game;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -57,8 +57,8 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
-            if (ticksExisted % 20 == 0 && !world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getGameID().equals(hash)) {
+        if(!world.isRemote) {
+            if(ticksExisted % 20 == 0 && !world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getGameID().equals(hash)) {
                 this.setDead();
             }
         }
@@ -86,7 +86,7 @@ public class EntityAIPlayer extends EntityCreature {
 
     @Override
     protected void initEntityAI() {
-        if (game == null) {
+        if(game == null) {
             GameUtils.addBaseTasks(this.tasks, this.targetTasks, this);
         } else {
             game.getBotManager().getBotLogic().apply(this.tasks, this.targetTasks, this);

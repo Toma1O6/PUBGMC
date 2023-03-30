@@ -14,7 +14,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public interface IWorldData extends INBTSerializable<NBTTagCompound> {
@@ -44,9 +43,9 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
 
     void resetWeaponLootGeneration();
 
-    List<Integer> getGhillieSuitsColorVariants();
-
     void setGhillieSuitsColorVariants(List<Integer> list);
+
+    List<Integer> getGhillieSuitsColorVariants();
 
     void addColorVariant(int color);
 
@@ -60,16 +59,16 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public void readNBT(Capability<IWorldData> capability, IWorldData instance, EnumFacing side, NBTBase nbt) {
-            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
         }
     }
 
     class WorldData implements IWorldData {
 
-        List<Integer> ghillieColors = new ArrayList<>(1);
         private boolean airdropWep = false, ammoLoot = true, randomAmmoCount = false;
         private double chance = 1;
-        private final List<GunBase.GunType> weaponTypes = new ArrayList<GunBase.GunType>(GunBase.GunType.toCollection());
+        private List<GunBase.GunType> weaponTypes = new ArrayList<GunBase.GunType>(GunBase.GunType.toCollection());
+        List<Integer> ghillieColors = new ArrayList<>(1);
 
         public WorldData() {
             ghillieColors.add(0x00FF00);
@@ -123,7 +122,8 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public void removeWeaponTypeFromLootGeneration(GunBase.GunType typeToRemove) {
-            weaponTypes.remove(typeToRemove);
+            if (weaponTypes.contains(typeToRemove))
+                weaponTypes.remove(typeToRemove);
         }
 
         @Override
@@ -147,7 +147,9 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
         @Override
         public void resetWeaponLootGeneration() {
             weaponTypes.clear();
-            Collections.addAll(weaponTypes, GunBase.GunType.values());
+            for (int i = 0; i < GunBase.GunType.values().length; i++) {
+                weaponTypes.add(GunBase.GunType.values()[i]);
+            }
 
             //serves no purpose for loot gen
             if (weaponTypes.contains(GunBase.GunType.LMG))
@@ -155,13 +157,13 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
         }
 
         @Override
-        public List<Integer> getGhillieSuitsColorVariants() {
-            return ghillieColors;
+        public void setGhillieSuitsColorVariants(List<Integer> list) {
+            this.ghillieColors = list;
         }
 
         @Override
-        public void setGhillieSuitsColorVariants(List<Integer> list) {
-            this.ghillieColors = list;
+        public List<Integer> getGhillieSuitsColorVariants() {
+            return ghillieColors;
         }
 
         @Override
@@ -182,11 +184,11 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
             c.setBoolean("randomAmmo", this.randomAmmoCount);
             c.setDouble("chance", this.chance);
             NBTTagList weaponlist = new NBTTagList();
-            for (int i = 0; i < this.weaponTypes.size(); i++) {
+            for(int i = 0; i < this.weaponTypes.size(); i++) {
                 weaponlist.appendTag(new NBTTagInt(weaponTypes.get(i).ordinal()));
             }
             NBTTagList colors = new NBTTagList();
-            for (int i = 0; i < this.ghillieColors.size(); i++) {
+            for(int i = 0; i < this.ghillieColors.size(); i++) {
                 colors.appendTag(new NBTTagInt(this.ghillieColors.get(i)));
             }
             c.setTag("list", weaponlist);
@@ -202,12 +204,12 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
             this.randomAmmoCount = nbt.getBoolean("randomAmmo");
             this.chance = nbt.getDouble("chance");
             NBTTagList list = nbt.getTagList("list", Constants.NBT.TAG_INT);
-            for (int i = 0; i < list.tagCount(); i++) {
+            for(int i = 0; i < list.tagCount(); i++) {
                 this.weaponTypes.add(GunBase.GunType.values()[list.getIntAt(i)]);
             }
             NBTTagList colors = nbt.getTagList("colors", Constants.NBT.TAG_INT);
             this.ghillieColors = new ArrayList<>();
-            for (int i = 0; i < colors.tagCount(); i++) {
+            for(int i = 0; i < colors.tagCount(); i++) {
                 this.ghillieColors.add(colors.getIntAt(i));
             }
         }
@@ -217,7 +219,7 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
         @CapabilityInject(IWorldData.class)
         public static final Capability<IWorldData> WORLD_DATA = null;
 
-        private final IWorldData instance = WORLD_DATA.getDefaultInstance();
+        private IWorldData instance = WORLD_DATA.getDefaultInstance();
 
         @Override
         public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -226,7 +228,7 @@ public interface IWorldData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-            return capability == WORLD_DATA ? WORLD_DATA.cast(instance) : null;
+            return capability == WORLD_DATA ? WORLD_DATA.<T>cast(instance) : null;
         }
 
         @Override

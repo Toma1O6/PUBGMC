@@ -36,6 +36,17 @@ public class ModelS1897 extends ModelGun {
     private final ModelRenderer bone3;
     private final ModelRenderer bullet;
 
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultShotgunTransform();
+        GlStateManager.translate(-0.050000004, -2.8250031, -19.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+    }
+
     public ModelS1897() {
         textureWidth = 512;
         textureHeight = 512;
@@ -332,17 +343,6 @@ public class ModelS1897 extends ModelGun {
 
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultShotgunTransform();
-        GlStateManager.translate(-0.050000004, -2.8250031, -19.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

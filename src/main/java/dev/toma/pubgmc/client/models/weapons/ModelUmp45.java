@@ -716,7 +716,7 @@ public class ModelUmp45 extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1.0F);
-        if (hasScopeAtachment(stack))
+        if(hasScopeAtachment(stack))
             return;
         ironsights.render(1.0F);
     }

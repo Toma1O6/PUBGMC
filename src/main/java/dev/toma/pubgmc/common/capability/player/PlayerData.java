@@ -42,10 +42,6 @@ public class PlayerData implements IPlayerData {
         return player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
     }
 
-    static void deserialize(INBTSerializable<NBTTagCompound> serializable, String key, NBTTagCompound nbt) {
-        serializable.deserializeNBT(nbt.hasKey(key) ? nbt.getCompoundTag(key) : new NBTTagCompound());
-    }
-
     @Override
     public void tick() {
         boostStats.onTick(player);
@@ -79,13 +75,13 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public int getBackpackLevel() {
-        return this.level;
+    public void setBackpackLevel(int level) {
+        this.level = level;
     }
 
     @Override
-    public void setBackpackLevel(int level) {
-        this.level = level;
+    public int getBackpackLevel() {
+        return this.level;
     }
 
     @Override
@@ -160,12 +156,16 @@ public class PlayerData implements IPlayerData {
         PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
     }
 
+    static void deserialize(INBTSerializable<NBTTagCompound> serializable, String key, NBTTagCompound nbt) {
+        serializable.deserializeNBT(nbt.hasKey(key) ? nbt.getCompoundTag(key) : new NBTTagCompound());
+    }
+
     @Mod.EventBusSubscriber
     public static class Events {
 
         @SubscribeEvent
         public static void attach(AttachCapabilitiesEvent<Entity> e) {
-            if (e.getObject() instanceof EntityPlayer) {
+            if(e.getObject() instanceof EntityPlayer) {
                 e.addCapability(new ResourceLocation(Pubgmc.MOD_ID, "playerdata"), new PlayerDataProvider((EntityPlayer) e.getObject()));
             }
         }
@@ -192,14 +192,14 @@ public class PlayerData implements IPlayerData {
 
         @SubscribeEvent
         public static void onStartTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event) {
-            if (event.getTarget() instanceof EntityPlayerMP) {
+            if(event.getTarget() instanceof EntityPlayerMP) {
                 EntityPlayer player = (EntityPlayer) event.getTarget();
                 PacketHandler.sendToClient(new PacketClientCapabilitySync(player, PlayerData.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
             }
         }
 
         public static IPlayerData getCap(EntityPlayer p) {
-            if (p.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
+            if(p.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
                 return p.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             } else throw new IllegalStateException("[PUBGMC] Couldn't get player data for " + p.getName());
         }

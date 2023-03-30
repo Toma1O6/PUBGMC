@@ -11,12 +11,12 @@ public class WeaponCooldownTracker {
     private final Map<GunBase, Integer> map = new HashMap<>();
 
     public void tick(boolean paused) {
-        if (!paused) {
+        if(!paused) {
             Iterator<Map.Entry<GunBase, Integer>> itr = map.entrySet().iterator();
             while (itr.hasNext()) {
                 Map.Entry<GunBase, Integer> entry = itr.next();
                 int i = entry.getValue() - 1;
-                if (i <= 0) {
+                if(i <= 0) {
                     itr.remove();
                     continue;
                 }
@@ -31,7 +31,7 @@ public class WeaponCooldownTracker {
     }
 
     public void add(GunBase gun) {
-        if (map.put(gun, gun.getFireRate()) != null) {
+        if(map.put(gun, gun.getFireRate()) != null) {
             throw new IllegalStateException("Illegal cooldown insertion");
         }
     }

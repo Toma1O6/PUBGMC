@@ -20,7 +20,7 @@ public class GuiWIP extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 0) {
+        if(button.id == 0) {
             mc.displayGuiScreen(lastScreen);
         }
     }

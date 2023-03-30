@@ -22,7 +22,7 @@ public class AnimatorAnimation extends MultiFrameAnimation {
         this.actualTickLength = (int) (initialTickLength * progress);
         int max = 0;
         for (List<KeyFrame> list : spec.getFrameDefs().values()) {
-            if (list.size() > max)
+            if(list.size() > max)
                 max = list.size();
         }
         resetCache();
@@ -40,7 +40,7 @@ public class AnimatorAnimation extends MultiFrameAnimation {
     public void tick() {
         if (!paused)
             super.tick();
-        if (actualTickLength < 0) {
+        if(actualTickLength < 0) {
             set(0.0F);
             actualTickLength = initialTickLength;
             resetCache();

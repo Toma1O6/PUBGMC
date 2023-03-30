@@ -58,6 +58,26 @@ public class ModelKar98K extends ModelGun {
     private final ModelRenderer bullets;
     private final ModelRenderer bullet;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        kar98k.render(1f);
+        if(hasBulletLoops(stack))
+            stock.render(1.0F);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultSRTransform();
+        GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
+        GlStateManager.translate(0.0, -18, 3.0);
+    }
+
     public ModelKar98K() {
         textureWidth = 512;
         textureHeight = 512;
@@ -610,25 +630,5 @@ public class ModelKar98K extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> boltcarrier);
         addEntry(AnimationElement.BULLET, stack -> bullet);
 
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        kar98k.render(1f);
-        if (hasBulletLoops(stack))
-            stock.render(1.0F);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultSRTransform();
-        GlStateManager.scale(0.6999999, 0.6999999, 0.6999999);
-        GlStateManager.translate(0.0, -18, 3.0);
     }
 }

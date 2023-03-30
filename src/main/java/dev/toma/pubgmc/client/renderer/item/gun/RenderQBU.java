@@ -5,6 +5,7 @@ import dev.toma.pubgmc.client.models.weapons.ModelQBU;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.Pair;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class RenderQBU extends WeaponRenderer {
 

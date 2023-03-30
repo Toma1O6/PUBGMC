@@ -23,7 +23,8 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData {
+public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData
+{
     private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
     private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
 
@@ -63,10 +64,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         Vec3d look = this.getLookVec();
         motionX = look.x * currentSpeed;
         motionZ = look.z * currentSpeed;
-        if (currentSpeed != 0) {
+        if(currentSpeed != 0) {
             rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
         }
-        if (!isBeingRidden() && (!hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken)) {
+        if(!isBeingRidden() && (!hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken)) {
             reset();
         }
         this.handleEntityCollisions();
@@ -85,7 +86,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     protected void handleEmptyInputs() {
         CFGVehicle stats = this.getVehicleConfiguration();
-        if (!hasMovementInput() || !hasFuel()) {
+        if(!hasMovementInput() || !hasFuel()) {
             if (Math.abs(currentSpeed) < 0.01)
                 currentSpeed = 0f;
 
@@ -101,7 +102,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
                 turnModifier = turnModifier > 0 ? turnModifier - 0.5f : turnModifier + 0.5f;
             }
         }
-        if (!onGround) {
+        if(!onGround) {
             motionY -= 0.1;
         }
     }
@@ -121,10 +122,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void handleForward() {
-        if (!isBroken) {
+        if(!isBroken) {
             CFGVehicle cfg = getVehicleConfiguration();
             float max = cfg.maxSpeed.getAsFloat();
-            if (hasFuel() || currentSpeed < 0) {
+            if(hasFuel() || currentSpeed < 0) {
                 burnFuel();
                 currentSpeed = currentSpeed < max ? currentSpeed + cfg.acceleration.getAsFloat() : max;
             }
@@ -133,11 +134,11 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void handleBackward() {
-        if (!isBroken) {
+        if(!isBroken) {
             CFGVehicle cfg = getVehicleConfiguration();
-            if (currentSpeed > 0) {
+            if(currentSpeed > 0) {
                 currentSpeed -= cfg.acceleration.getAsFloat();
-            } else if (hasFuel()) {
+            } else if(hasFuel()) {
                 burnFuel();
                 float reverseMax = -cfg.maxSpeed.getAsFloat() * 0.3F;
                 currentSpeed = currentSpeed > reverseMax ? currentSpeed - 0.02F : reverseMax;
@@ -147,7 +148,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void handleRight() {
-        if (!isBroken) {
+        if(!isBroken) {
             CFGVehicle cfg = getVehicleConfiguration();
             float max = cfg.maxTurningAngle.getAsFloat();
             float partial = cfg.turningSpeed.getAsFloat();
@@ -157,7 +158,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void handleLeft() {
-        if (!isBroken) {
+        if(!isBroken) {
             CFGVehicle cfg = getVehicleConfiguration();
             float max = cfg.maxTurningAngle.getAsFloat();
             float partial = cfg.turningSpeed.getAsFloat();
@@ -276,7 +277,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
                 z = getPassengerZOffset(i);
             }
 
-            Vec3d vec3d = (new Vec3d(x, 0.0D, z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+            Vec3d vec3d = (new Vec3d((double) x, 0.0D, (double) z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
             passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
 
             if (passenger instanceof EntityAnimal && this.getPassengers().size() > 1) {

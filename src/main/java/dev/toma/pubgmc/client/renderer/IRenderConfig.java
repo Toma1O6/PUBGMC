@@ -4,8 +4,9 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public interface IRenderConfig {
 
-    IRenderConfig EMPTY = () -> {
-    };
+    IRenderConfig EMPTY = () -> {};
+
+    void applyTransforms();
 
     static IRenderConfig empty() {
         return EMPTY;
@@ -26,8 +27,6 @@ public interface IRenderConfig {
     static IRenderConfig rotatedScaled(float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rx, float ry, float rz) {
         return new RotatedRenderConfig(x, y, z, scaleX, scaleY, scaleZ, rx, ry, rz);
     }
-
-    void applyTransforms();
 
     class PositionedRenderConfig implements IRenderConfig {
 
@@ -77,11 +76,11 @@ public interface IRenderConfig {
         @Override
         public void applyTransforms() {
             super.applyTransforms();
-            if (rx != 0)
+            if(rx != 0)
                 GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
-            if (ry != 0)
+            if(ry != 0)
                 GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
-            if (rz != 0)
+            if(rz != 0)
                 GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
         }
     }
@@ -100,11 +99,11 @@ public interface IRenderConfig {
         @Override
         public void applyTransforms() {
             super.applyTransforms();
-            if (rx != 0)
+            if(rx != 0)
                 GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
-            if (ry != 0)
+            if(ry != 0)
                 GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
-            if (rz != 0)
+            if(rz != 0)
                 GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
         }
     }

@@ -36,6 +36,26 @@ public class ModelPP19Bizon extends ModelGun {
     private final ModelRenderer bone;
     private final ModelRenderer bolt;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1f);
+    }
+
+    @Override
+    public void transformModel() {
+        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+        ModelTransformationHelper.defaultSMGTransform();
+        GlStateManager.translate(33.05, 2.275001, -38.0);
+    }
+
     public ModelPP19Bizon() {
         textureWidth = 512;
         textureHeight = 512;
@@ -521,25 +541,5 @@ public class ModelPP19Bizon extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        if (!hasScopeAtachment(stack))
-            ironsights.render(1f);
-    }
-
-    @Override
-    public void transformModel() {
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-        ModelTransformationHelper.defaultSMGTransform();
-        GlStateManager.translate(33.05, 2.275001, -38.0);
     }
 }

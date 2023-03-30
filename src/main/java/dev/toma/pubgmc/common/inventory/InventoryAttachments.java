@@ -28,11 +28,11 @@ public class InventoryAttachments extends InventoryBasic {
     public void openInventory(EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
         this.displayItem = stack.copy();
-        if (validate(player, stack)) {
+        if(validate(player, stack)) {
             GunBase gun = (GunBase) stack.getItem();
             NBTTagCompound nbt = gun.getOrCreateGunData(stack);
             NBTTagCompound att;
-            if (!nbt.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
+            if(!nbt.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
                 att = new NBTTagCompound();
                 nbt.setTag("attachments", att);
             } else {
@@ -40,9 +40,9 @@ public class InventoryAttachments extends InventoryBasic {
             }
             for (AttachmentType<?> type : AttachmentType.allTypes) {
                 ItemStack itemStack = detach(att, type);
-                if (itemStack.getItem() instanceof ItemAttachment) {
+                if(itemStack.getItem() instanceof ItemAttachment) {
                     ItemAttachment attachment = (ItemAttachment) itemStack.getItem();
-                    if (attachment.getType() == type) {
+                    if(attachment.getType() == type) {
                         setInventorySlotContents(type.getIndex(), itemStack);
                     }
                 }
@@ -53,12 +53,12 @@ public class InventoryAttachments extends InventoryBasic {
     @Override
     public void closeInventory(EntityPlayer player) {
         ItemStack stack = player.getHeldItemMainhand();
-        if (validate(player, stack)) {
+        if(validate(player, stack)) {
             GunBase gun = (GunBase) stack.getItem();
             GunAttachments attachments = gun.getAttachments();
             NBTTagCompound tag = gun.getOrCreateGunData(stack);
             NBTTagCompound nbt;
-            if (!tag.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
+            if(!tag.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
                 nbt = new NBTTagCompound();
                 tag.setTag("attachments", nbt);
             } else {
@@ -66,7 +66,7 @@ public class InventoryAttachments extends InventoryBasic {
             }
             for (AttachmentType<?> type : AttachmentType.allTypes) {
                 ItemStack itemStack = this.getStackInSlot(type.getIndex());
-                if (!itemStack.isEmpty()) {
+                if(!itemStack.isEmpty()) {
                     attach(nbt, itemStack, attachments, false);
                 }
             }
@@ -76,7 +76,7 @@ public class InventoryAttachments extends InventoryBasic {
     @Override
     public void markDirty() {
         ItemStack held = player.getHeldItemMainhand();
-        if (validate(player, held)) {
+        if(validate(player, held)) {
             GunAttachments attachments = ((GunBase) held.getItem()).getAttachments();
             NBTTagCompound att = new NBTTagCompound();
             NBTTagCompound nbt = new NBTTagCompound();
@@ -84,7 +84,7 @@ public class InventoryAttachments extends InventoryBasic {
             displayItem.setTagCompound(nbt);
             for (AttachmentType<?> type : AttachmentType.allTypes) {
                 ItemStack stack = this.getStackInSlot(type.getIndex());
-                if (!stack.isEmpty()) {
+                if(!stack.isEmpty()) {
                     attach(att, stack, attachments, true);
                 }
             }
@@ -98,7 +98,7 @@ public class InventoryAttachments extends InventoryBasic {
 
     ItemStack detach(NBTTagCompound nbt, AttachmentType<?> type) {
         String key = type.getName();
-        if (nbt.hasKey(key, Constants.NBT.TAG_STRING)) {
+        if(nbt.hasKey(key, Constants.NBT.TAG_STRING)) {
             ResourceLocation location = new ResourceLocation(nbt.getString(key));
             nbt.removeTag(key);
             Item item = ForgeRegistries.ITEMS.getValue(location);
@@ -108,27 +108,27 @@ public class InventoryAttachments extends InventoryBasic {
     }
 
     void attach(NBTTagCompound nbt, ItemStack stack, GunAttachments attachments, boolean simulate) {
-        if (stack.getItem() instanceof ItemAttachment) {
+        if(stack.getItem() instanceof ItemAttachment) {
             ItemAttachment attachment = (ItemAttachment) stack.getItem();
             AttachmentType<?> type = attachment.getType();
             String key = type.getName();
-            if (!attachments.supports(attachment)) {
-                if (!simulate) {
+            if(!attachments.supports(attachment)) {
+                if(!simulate) {
                     dropItem(stack);
                 }
                 return;
             }
             nbt.setString(key, attachment.getRegistryName().toString());
-        } else if (!simulate) {
+        } else if(!simulate) {
             dropItem(stack);
         }
     }
 
     boolean validate(EntityPlayer player, ItemStack stack) {
-        if (!(stack.getItem() instanceof GunBase)) {
+        if(!(stack.getItem() instanceof GunBase)) {
             for (int i = 0; i < getSizeInventory(); i++) {
                 ItemStack itemStack = getStackInSlot(i);
-                if (!itemStack.isEmpty()) {
+                if(!itemStack.isEmpty()) {
                     dropItem(itemStack);
                 }
             }
@@ -138,8 +138,8 @@ public class InventoryAttachments extends InventoryBasic {
     }
 
     void dropItem(ItemStack stack) {
-        if (!player.world.isRemote) {
-            EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, stack.copy());
+        if(!player.world.isRemote) {
+            EntityItem item = new EntityItem(player.world, player.posX, player. posY, player.posZ, stack.copy());
             stack.setCount(0);
             item.setPickupDelay(40);
             player.world.spawnEntity(item);

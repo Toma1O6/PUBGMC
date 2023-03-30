@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.common.capability;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.Lobby;
 import dev.toma.pubgmc.api.games.Game;
+import dev.toma.pubgmc.api.Lobby;
 import dev.toma.pubgmc.init.GameRegistry;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.world.MapLocation;
@@ -49,9 +49,9 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
     Game getCurrentGame();
 
-    Lobby getLobby();
-
     void setLobby(Lobby lobby);
+
+    Lobby getLobby();
 
     boolean isInactiveGame();
 
@@ -59,7 +59,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
     class GameDataStorage implements IStorage<IGameData> {
         @Override
         public void readNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side, NBTBase nbt) {
-            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
         }
 
         @Override
@@ -86,7 +86,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         @Override
         public boolean removeSpawnLocation(String name) {
             MapLocation location = this.findLocationByName(name);
-            if (location == null) {
+            if(location == null) {
                 Pubgmc.logger.error("Attempted to remove location with name {} which doesn't exist!", name);
                 return false;
             }
@@ -137,20 +137,20 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
         @Override
         public Game getCurrentGame() {
-            if (game == null) {
+            if(game == null) {
                 this.setGame(GameRegistry.findGameInRegistry("inactive"));
             }
             return game;
         }
 
         @Override
-        public Lobby getLobby() {
-            return lobby;
+        public void setLobby(Lobby lobby) {
+            this.lobby = lobby;
         }
 
         @Override
-        public void setLobby(Lobby lobby) {
-            this.lobby = lobby;
+        public Lobby getLobby() {
+            return lobby;
         }
 
         @Override
@@ -189,7 +189,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
             gameZoneCenter = new BlockPos(nbt.getInteger("mapCenterX"), 0, nbt.getInteger("mapCenterZ"));
             mapSize = nbt.getInteger("mapSize");
             NBTTagList locList = nbt.getTagList("list", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < locList.tagCount(); i++) {
+            for(int i = 0; i < locList.tagCount(); i++) {
                 MapLocation location = new MapLocation(null, null);
                 location.deserializeNBT(locList.getCompoundTagAt(i));
                 this.addSpawnLocation(location);
@@ -203,8 +203,8 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         }
 
         private MapLocation findLocationByName(String name) {
-            for (MapLocation mapLocation : locations) {
-                if (mapLocation.name().equalsIgnoreCase(name)) {
+            for(MapLocation mapLocation : locations) {
+                if(mapLocation.name().equalsIgnoreCase(name)) {
                     return mapLocation;
                 }
             }
@@ -216,7 +216,7 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
         @CapabilityInject(IGameData.class)
         public static final Capability<IGameData> GAMEDATA = null;
 
-        private final IGameData instance = GAMEDATA.getDefaultInstance();
+        private IGameData instance = GAMEDATA.getDefaultInstance();
 
         @Override
         public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

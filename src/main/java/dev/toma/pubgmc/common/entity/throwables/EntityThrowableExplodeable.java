@@ -46,7 +46,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public EntityThrowableExplodeable(World world, EntityLivingBase thrower, EnumEntityThrowState state, int time) {
         super(world);
         this.setSize(0.2F, 0.2F);
-        if (thrower != null) this.setPosition(thrower.posX, thrower.posY + thrower.getEyeHeight(), thrower.posZ);
+        if(thrower != null) this.setPosition(thrower.posX, thrower.posY + thrower.getEyeHeight(), thrower.posZ);
         this.fuse = time;
 
         this.setInitialMotion(state, thrower);
@@ -57,7 +57,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     @Override
     public void onUpdate() {
         --this.fuse;
-        if (fuse < 0) {
+        if(fuse < 0) {
             this.onExplode();
         }
         this.prevPosX = this.posX;
@@ -66,41 +66,41 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         double prevMotionX = motionX;
         double prevMotionY = motionY;
         double prevMotionZ = motionZ;
-        if (!world.isRemote) {
+        if(!world.isRemote) {
             Vec3d from = PUBGMCUtil.getPositionVec(this);
             Vec3d to = PUBGMCUtil.getMotionVec(this);
             RayTraceResult rayTraceResult = this.world.rayTraceBlocks(from, to, false, true, false);
-            if (rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+            if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
                 this.onCollide(from, to, rayTraceResult);
             }
         }
         this.move(MoverType.SELF, motionX, motionY, motionZ);
-        if (motionX != prevMotionX) {
+        if(motionX != prevMotionX) {
             this.motionX = -BOUNCE_MODIFIER * prevMotionX;
             this.onGrenadeBounce(BounceAxis.X);
         }
-        if (motionY != prevMotionY) {
+        if(motionY != prevMotionY) {
             this.motionY = -BOUNCE_MODIFIER * prevMotionY;
             this.onGrenadeBounce(BounceAxis.Y);
         }
-        if (motionZ != prevMotionZ) {
+        if(motionZ != prevMotionZ) {
             this.motionZ = -BOUNCE_MODIFIER * prevMotionZ;
             this.onGrenadeBounce(BounceAxis.Z);
         }
-        if (!this.hasNoGravity()) {
+        if(!this.hasNoGravity()) {
             this.motionY -= 0.039D;
         }
         this.motionX *= AIR_DRAG_MODIFIER;
         this.motionY *= AIR_DRAG_MODIFIER;
         this.motionZ *= AIR_DRAG_MODIFIER;
-        if (this.onGround) {
+        if(this.onGround) {
             this.motionX *= GROUND_DRAG_MODIFIER;
             this.motionY *= GROUND_DRAG_MODIFIER;
             this.motionZ *= GROUND_DRAG_MODIFIER;
         }
         this.lastRotation = this.rotation;
-        if (world.isRemote && !this.onGround) {
-            if (this.motionX != 0 && this.motionY != 0 && this.motionZ != 0) {
+        if(world.isRemote && !this.onGround) {
+            if(this.motionX != 0 && this.motionY != 0 && this.motionZ != 0) {
                 this.rotation += 45F;
             }
         }
@@ -112,22 +112,22 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         BlockPos pos = result.getBlockPos();
         IBlockState state = this.world.getBlockState(pos);
         boolean flag = ConfigPMC.world().weaponGriefing.get();
-        if (flag) {
+        if(flag) {
             boolean hasBrokenGlass = false;
-            if (state.getBlock() instanceof BlockWindow) {
+            if(state.getBlock() instanceof BlockWindow) {
                 BlockWindow window = (BlockWindow) state.getBlock();
                 boolean isBroken = state.getValue(BlockWindow.BROKEN);
-                if (!isBroken) {
+                if(!isBroken) {
                     window.breakWindow(state, pos, this.world);
                     hasBrokenGlass = true;
                 }
-            } else if (state.getMaterial() == Material.GLASS) {
+            } else if(state.getMaterial() == Material.GLASS) {
                 world.destroyBlock(pos, false);
                 hasBrokenGlass = true;
             }
-            if (hasBrokenGlass) {
+            if(hasBrokenGlass) {
                 RayTraceResult rayTraceResult = this.world.rayTraceBlocks(from, to, false, true, false);
-                if (rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+                if(rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
                     this.onCollide(from, to, rayTraceResult);
                 }
             }
@@ -194,7 +194,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         int i = state.ordinal();
         float sprintModifier = 1.25F;
         float modifier = i == 2 ? 0 : i == 1 ? 0.6F : 1.4F;
-        if (thrower.isSprinting()) modifier *= sprintModifier;
+        if(thrower.isSprinting()) modifier *= sprintModifier;
         Vec3d viewVec = thrower.getLookVec();
         this.motionX = viewVec.x * modifier;
         this.motionY = viewVec.y * modifier / sprintModifier;
@@ -206,17 +206,17 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.motionY = 0;
         this.motionZ = 0;
         // to make sure it won't get accidentally called twice
-        if (isFrozen) return;
+        if(isFrozen) return;
         this.isFrozen = true;
         this.onEntityFrozen();
     }
 
     private void onGrenadeBounce(BounceAxis axis) {
-        if (Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ) >= 0.2) {
+        if(Math.sqrt(motionX*motionX+motionY*motionY+motionZ*motionZ) >= 0.2) {
             this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_ANVIL_BREAK, SoundCategory.MASTER, 1.0F, 1.8F);
         }
         this.timesBounced++;
-        if (!canBounce()) {
+        if(!canBounce()) {
             this.freezeEntity();
         }
         this.bounce();

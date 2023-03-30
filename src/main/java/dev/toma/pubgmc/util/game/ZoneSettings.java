@@ -15,13 +15,10 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
     public boolean isStatic;
     public boolean alwaysCentered;
     public int customSize = 0;
-    /**
-     * Array of zone size modifiers per different stage. Has have length of 7!
-     **/
+    /** Array of zone size modifiers per different stage. Has have length of 7! **/
     public float[] shrinkModifiers = new float[7];
 
-    public ZoneSettings() {
-    }
+    public ZoneSettings() {}
 
     @Override
     public NBTTagCompound serializeNBT() {
@@ -31,7 +28,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
         nbt.setBoolean("isStatic", isStatic);
         nbt.setBoolean("centered", alwaysCentered);
         NBTTagList list = new NBTTagList();
-        for (int i = 0; i < shrinkModifiers.length; i++) {
+        for(int i = 0; i < shrinkModifiers.length; i++) {
             list.appendTag(new NBTTagFloat(shrinkModifiers[i]));
         }
         nbt.setTag("modifiers", list);
@@ -46,7 +43,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
         alwaysCentered = nbt.getBoolean("centered");
         shrinkModifiers = new float[7];
         NBTTagList list = nbt.getTagList("modifiers", Constants.NBT.TAG_FLOAT);
-        for (int i = 0; i < list.tagCount(); i++) {
+        for(int i = 0; i < list.tagCount(); i++) {
             shrinkModifiers[i] = list.getFloatAt(i);
         }
     }
@@ -57,10 +54,9 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
         float dmg;
         float speed;
         boolean keepStatic = false, centered = false;
-        float[] floats = new float[]{0.7f, 0.4f, 0.24f, 0.1f, 0.036f, 0.016f, 0.002f};
+        float[] floats = new float[] {0.7f, 0.4f, 0.24f, 0.1f, 0.036f, 0.016f, 0.002f};
 
-        private Builder() {
-        }
+        private Builder(){}
 
         public static Builder create() {
             return new Builder();
@@ -109,7 +105,7 @@ public final class ZoneSettings implements INBTSerializable<NBTTagCompound> {
 
         @Override
         public ZoneSettings build() {
-            if (keepStatic) speed = 0.1F;
+            if(keepStatic) speed = 0.1F;
             checkFloat(dmg, 0.1F, 15.0F);
             checkFloat(speed, 0.1F, 1.0F);
             checkBoolean(floats.length == 7);

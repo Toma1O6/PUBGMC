@@ -38,11 +38,11 @@ public class GuiOpenAnimation extends GuiWidgets {
 
     class FilteredStringSelectionWidget extends Widget {
 
-        protected final List<String> filteredPaths = new ArrayList<>();
-        final Set<String> paths;
         String filter = "";
         int scrollIndex;
         int displayAmount;
+        final Set<String> paths;
+        protected final List<String> filteredPaths = new ArrayList<>();
 
         public FilteredStringSelectionWidget(int x, int y, int width, int height) {
             super(x, y, width, height);
@@ -55,22 +55,22 @@ public class GuiOpenAnimation extends GuiWidgets {
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.3F);
             String string = GuiOpenAnimation.this.textField.getText();
-            if (!filter.equals(string)) {
+            if(!filter.equals(string)) {
                 filter = string;
                 requestUpdate();
             }
             FontRenderer renderer = mc.fontRenderer;
             for (int i = scrollIndex; i < scrollIndex + displayAmount; i++) {
-                if (i >= filteredPaths.size()) break;
+                if(i >= filteredPaths.size()) break;
                 String path = filteredPaths.get(i);
                 int j = i - scrollIndex;
                 renderer.drawString(path, x + 3, 3 + y + j * 15, 0xFFFFFF);
             }
-            if (isMouseOver(mouseX, mouseY)) {
+            if(isMouseOver(mouseX, mouseY)) {
                 int clamped = (mouseY - y) / 15;
                 int idx = clamped + scrollIndex;
                 if (idx < filteredPaths.size()) {
-                    if (clamped < displayAmount) {
+                    if(clamped < displayAmount) {
                         drawColorShape(x, y + clamped * 15, x + width, y + clamped * 15 + 15, 1.0F, 1.0F, 1.0F, 0.3F);
                     }
                 }
@@ -90,11 +90,11 @@ public class GuiOpenAnimation extends GuiWidgets {
         public void onClick(int mouseX, int mouseY, int button) {
             int clamped = (mouseY - y) / 15;
             int idx = clamped + scrollIndex;
-            if (idx < filteredPaths.size() && clamped < displayAmount) {
+            if(idx < filteredPaths.size() && clamped < displayAmount) {
                 IPopupHandler handler = GuiOpenAnimation.this.parent;
                 String key = filteredPaths.get(idx);
                 GuiAnimator.WrappedAnimationSpec spec = AnimatorCache.animations.get(key);
-                if (spec == null) {
+                if(spec == null) {
                     AnimatorCache.refreshAnimations(ClientProxy.getAnimationLoader(), handler);
                     mc.displayGuiScreen(GuiOpenAnimation.this.parent);
                     handler.sendError("File {} not found!", key);
@@ -120,11 +120,11 @@ public class GuiOpenAnimation extends GuiWidgets {
         void requestUpdate() {
             filteredPaths.clear();
             scrollIndex = 0;
-            if (filter.isEmpty()) {
+            if(filter.isEmpty()) {
                 filteredPaths.addAll(paths);
             } else {
                 for (String str : paths) {
-                    if (str.contains(filter)) {
+                    if(str.contains(filter)) {
                         filteredPaths.add(str);
                     }
                 }

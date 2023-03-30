@@ -58,9 +58,9 @@ public class EntityFlashBang extends EntityThrowableExplodeable {
         }
         BlockPos current = new BlockPos(from);
         IBlockState stateAtStart = this.world.getBlockState(current);
-        if (stateAtStart.getCollisionBoundingBox(this.world, current) != Block.NULL_AABB && stateAtStart.getBlock().canCollideCheck(stateAtStart, false) && predicate.test(stateAtStart)) {
+        if(stateAtStart.getCollisionBoundingBox(this.world, current) != Block.NULL_AABB && stateAtStart.getBlock().canCollideCheck(stateAtStart, false) && predicate.test(stateAtStart)) {
             RayTraceResult rayTraceResult = stateAtStart.collisionRayTrace(world, current, from, to);
-            if (rayTraceResult != null) {
+            if(rayTraceResult != null) {
                 return rayTraceResult;
             }
         }
@@ -68,13 +68,13 @@ public class EntityFlashBang extends EntityThrowableExplodeable {
         double x = (to.x - from.x) / checks;
         double y = (to.y - from.y) / checks;
         double z = (to.z - from.z) / checks;
-        for (int i = 1; i <= checks; i++) {
+        for(int i = 1; i <= checks; i++) {
             BlockPos pos = new BlockPos(from.x + x * i, from.y + y * i, from.z + z * i);
             IBlockState state = this.world.getBlockState(pos);
             Block block = state.getBlock();
-            if (predicate.test(state) && state.getCollisionBoundingBox(this.world, pos) != Block.NULL_AABB && block.canCollideCheck(state, false)) {
+            if(predicate.test(state) && state.getCollisionBoundingBox(this.world, pos) != Block.NULL_AABB && block.canCollideCheck(state, false)) {
                 RayTraceResult rayTraceResult = state.collisionRayTrace(world, pos, new Vec3d(from.x + x, from.y + y, from.z + z), to);
-                if (rayTraceResult != null) {
+                if(rayTraceResult != null) {
                     return rayTraceResult;
                 }
             }

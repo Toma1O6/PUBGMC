@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.api.settings;
 
 import com.google.common.base.Preconditions;
-import dev.toma.pubgmc.api.GamePlayerData;
 import dev.toma.pubgmc.api.games.Game;
+import dev.toma.pubgmc.api.GamePlayerData;
 import dev.toma.pubgmc.api.interfaces.TeamFillFactory;
 import dev.toma.pubgmc.api.teams.Team;
 import dev.toma.pubgmc.api.teams.TeamSettings;
@@ -24,22 +24,6 @@ public final class TeamManager<T extends Game> {
         this.teamCreator = builder.creator;
     }
 
-    public static <T extends Game> void getDefaultFillFactory(Iterator<UUID> players, Iterator<Team> teams, T game) {
-        while (players.hasNext()) {
-            boolean foundTeam = false;
-            UUID uuid = players.next();
-            while (teams.hasNext() && !foundTeam) {
-                Team team = teams.next();
-                foundTeam = team.add(uuid);
-                if (!foundTeam) {
-                    teams.remove();
-                } else {
-                    game.getPlayerData().put(uuid, new GamePlayerData(team));
-                }
-            }
-        }
-    }
-
     public TeamSettings getTeamSettings() {
         return gameTeamSettings;
     }
@@ -54,6 +38,22 @@ public final class TeamManager<T extends Game> {
 
     public void updateSize(int teamSize) {
         this.getTeamSettings().maxSize = teamSize;
+    }
+
+    public static <T extends Game> void getDefaultFillFactory(Iterator<UUID> players, Iterator<Team> teams, T game) {
+        while(players.hasNext()) {
+            boolean foundTeam = false;
+            UUID uuid = players.next();
+            while(teams.hasNext() && !foundTeam) {
+                Team team = teams.next();
+                foundTeam = team.add(uuid);
+                if(!foundTeam) {
+                    teams.remove();
+                } else {
+                    game.getPlayerData().put(uuid, new GamePlayerData(team));
+                }
+            }
+        }
     }
 
     public static class Builder<T extends Game> {

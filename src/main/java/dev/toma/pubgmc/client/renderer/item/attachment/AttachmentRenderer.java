@@ -13,6 +13,24 @@ public abstract class AttachmentRenderer<I extends ItemAttachment> {
 
     private static final Map<ItemAttachment, AttachmentRenderer<?>> RENDERERS = new HashMap<>();
 
+    public abstract ModelAttachment<I> getModel();
+
+    public void preRenderCallback() {}
+
+    public final void render(WeaponRenderer renderer, I item, float aimPct) {
+        GlStateManager.pushMatrix();
+        IRenderConfig config = renderer.getRenderConfig(item);
+        if(config != null) {
+            config.applyTransforms();
+        }
+        this.preRenderCallback();
+        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.scale(0.2F, 0.2F, 0.2F);
+        this.getModel().render(aimPct);
+        GlStateManager.popMatrix();
+    }
+
     public static <I extends ItemAttachment> void registerRenderer(I item, AttachmentRenderer<I> renderer) {
         RENDERERS.put(item, renderer);
     }
@@ -24,24 +42,5 @@ public abstract class AttachmentRenderer<I extends ItemAttachment> {
 
     public static boolean hasRender(ItemAttachment attachment) {
         return RENDERERS.containsKey(attachment);
-    }
-
-    public abstract ModelAttachment<I> getModel();
-
-    public void preRenderCallback() {
-    }
-
-    public final void render(WeaponRenderer renderer, I item, float aimPct) {
-        GlStateManager.pushMatrix();
-        IRenderConfig config = renderer.getRenderConfig(item);
-        if (config != null) {
-            config.applyTransforms();
-        }
-        this.preRenderCallback();
-        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.scale(0.2F, 0.2F, 0.2F);
-        this.getModel().render(aimPct);
-        GlStateManager.popMatrix();
     }
 }

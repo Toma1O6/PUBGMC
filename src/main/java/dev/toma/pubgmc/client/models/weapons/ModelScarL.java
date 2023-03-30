@@ -59,6 +59,19 @@ public class ModelScarL extends ModelGun {
     private final ModelRenderer bone41;
     private final ModelRenderer bone42;
 
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(0.0, -1.1999998, -15.0);
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        scar.render(1f);
+        if(!hasScopeAtachment(stack))
+            ironsights.render(1.0F);
+    }
+
     public ModelScarL() {
         textureWidth = 512;
         textureHeight = 512;
@@ -829,19 +842,6 @@ public class ModelScarL extends ModelGun {
         addEntry(AnimationElement.MAGAZINE, stack -> magazine);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(0.0, -1.1999998, -15.0);
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        scar.render(1f);
-        if (!hasScopeAtachment(stack))
-            ironsights.render(1.0F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

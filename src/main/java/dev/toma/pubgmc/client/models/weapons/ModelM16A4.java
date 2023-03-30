@@ -82,6 +82,28 @@ public class ModelM16A4 extends ModelGun {
     private final ModelRenderer bone63;
     private final ModelRenderer bullet;
 
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void renderModel(ItemStack stack) {
+        gun.render(1f);
+        barrel.render(1.0F);
+        stock.render(1.0F);
+        if(hasScopeAtachment(stack))
+            railTop.render(1.0F);
+        railBot.render(1.0F);
+    }
+
+    @Override
+    public void transformModel() {
+        ModelTransformationHelper.defaultARTransform();
+        GlStateManager.translate(21.0, 1.975, -4.6000023);
+    }
+
     public ModelM16A4() {
         textureWidth = 512;
         textureHeight = 512;
@@ -1019,27 +1041,5 @@ public class ModelM16A4 extends ModelGun {
         addEntry(AnimationElement.CHARGING, stack -> charging_handle);
         addEntry(AnimationElement.BOLT, stack -> bolt);
         addEntry(AnimationElement.BULLET, stack -> bullet);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void renderModel(ItemStack stack) {
-        gun.render(1f);
-        barrel.render(1.0F);
-        stock.render(1.0F);
-        if (hasScopeAtachment(stack))
-            railTop.render(1.0F);
-        railBot.render(1.0F);
-    }
-
-    @Override
-    public void transformModel() {
-        ModelTransformationHelper.defaultARTransform();
-        GlStateManager.translate(21.0, 1.975, -4.6000023);
     }
 }

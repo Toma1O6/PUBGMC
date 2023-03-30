@@ -51,7 +51,7 @@ public class Vec4i {
     }
 
     public Vec4i divide(int x, int y, int w, int h) {
-        if (x == 0 || y == 0 || w == 0 || h == 0) throw new IllegalArgumentException("Cannot divide by zero!");
+        if(x == 0 || y == 0 || w == 0 || h == 0) throw new IllegalArgumentException("Cannot divide by zero!");
         this.x /= x;
         this.y /= y;
         this.w /= w;

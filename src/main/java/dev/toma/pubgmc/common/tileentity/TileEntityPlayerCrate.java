@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
 import dev.toma.pubgmc.api.util.GameUtils;
+import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
 import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -148,13 +148,13 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
     }
 
     @Override
-    public String getGameHash() {
-        return hash;
+    public void setGameHash(String hash) {
+        this.hash = hash;
     }
 
     @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
+    public String getGameHash() {
+        return hash;
     }
 
     @Override

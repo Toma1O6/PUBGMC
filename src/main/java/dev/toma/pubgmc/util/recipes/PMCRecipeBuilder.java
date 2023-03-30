@@ -14,7 +14,7 @@ public class PMCRecipeBuilder {
     private Item result = null;
     private int amount = 1;
     private Item returnItem = Items.AIR;
-    private final ArrayList<PMCIngredient> ingredients = new ArrayList<>();
+    private ArrayList<PMCIngredient> ingredients = new ArrayList<>();
     private CraftingCategory category;
     private int slotIndex = 0;
 

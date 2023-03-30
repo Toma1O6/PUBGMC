@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -49,9 +50,9 @@ public class GameHandler {
 
         @SubscribeEvent
         public static void onRenderOverlay(RenderGameOverlayEvent.Post e) {
-            if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
                 IGameData gameData = Minecraft.getMinecraft().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-                if (gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame()) {
+                if(gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame()) {
                     gameData.getCurrentGame().renderGameOverlay(Minecraft.getMinecraft(), e.getResolution());
                 }
             }
@@ -61,15 +62,15 @@ public class GameHandler {
         public static void renderGameObjects(RenderWorldLastEvent e) {
             World world = Minecraft.getMinecraft().world;
             Game g = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getCurrentGame();
-            if (g instanceof GameObjectiveBased) {
+            if(g instanceof GameObjectiveBased) {
                 GameObjectiveBased game = (GameObjectiveBased) g;
                 Collection<GameArea> areas = game.getObjectives().values();
-                for (GameArea area : areas) {
-                    if (area.isLoaded(world)) {
+                for(GameArea area : areas) {
+                    if(area.isLoaded(world)) {
                         Entity player = Minecraft.getMinecraft().getRenderViewEntity();
-                        double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) e.getPartialTicks();
-                        double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) e.getPartialTicks();
-                        double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) e.getPartialTicks();
+                        double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)e.getPartialTicks();
+                        double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)e.getPartialTicks();
+                        double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)e.getPartialTicks();
                         area.renderGameArea(x, y, z);
                     }
                 }
@@ -82,23 +83,23 @@ public class GameHandler {
 
         @SubscribeEvent
         public static void onTick(TickEvent.WorldTickEvent e) {
-            if (e.phase == TickEvent.Phase.END) {
+            if(e.phase == TickEvent.Phase.END) {
                 return;
             }
             IGameData gameData = e.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-            if (!gameData.getCurrentGame().isRunning()) {
+            if(!gameData.getCurrentGame().isRunning()) {
                 return;
             }
             Game game = gameData.getCurrentGame();
-            if (gameData.isInactiveGame()) {
+            if(gameData.isInactiveGame()) {
                 return;
             }
             game.tickGame(e.world);
-            if (game.gameTimer % 200 == 0) {
+            if(game.gameTimer % 200 == 0) {
                 GameBotManager botManager = game.getBotManager();
-                if (botManager.areBotsEnabled() && botManager.currentBotCount < botManager.maxBotAmount() && botManager.getBotSpawnVerification().test(game)) {
+                if(botManager.areBotsEnabled() && botManager.currentBotCount < botManager.maxBotAmount() && botManager.getBotSpawnVerification().test(game)) {
                     BlockPos pos = botManager.getBotSpawner().getSpawnPosition(e.world, game);
-                    if (pos == null) return;
+                    if(pos == null) return;
                     game.botsInGame++;
                     EntityAIPlayer aiPlayer = new EntityAIPlayer(e.world, pos);
                     e.world.spawnEntity(aiPlayer);
@@ -111,14 +112,14 @@ public class GameHandler {
         public static void onChunkLoaded(ChunkEvent.Load e) {
             IGameData gameData = e.getWorld().getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = gameData.getCurrentGame();
-            if (gameData == null || !gameData.isInactiveGame() || !game.shouldUpdateTileEntities()) {
+            if(gameData == null || !gameData.isInactiveGame() || !game.shouldUpdateTileEntities()) {
                 return;
             }
             Map<BlockPos, TileEntity> map = e.getChunk().getTileEntityMap();
-            for (TileEntity tileEntity : map.values()) {
-                if (tileEntity instanceof IGameTileEntity) {
-                    IGameTileEntity te = (IGameTileEntity) tileEntity;
-                    if (!te.getGameHash().equals(gameData.getGameID())) {
+            for(TileEntity tileEntity : map.values()) {
+                if(tileEntity instanceof IGameTileEntity) {
+                    IGameTileEntity te = (IGameTileEntity)tileEntity;
+                    if(!te.getGameHash().equals(gameData.getGameID())) {
                         te.setGameHash(gameData.getGameID());
                         try {
                             te.onLoaded();
@@ -134,22 +135,22 @@ public class GameHandler {
         public static void onPlayerKilled(LivingDeathEvent e) {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
-            if (!data.isInactiveGame() && e.getEntity() instanceof EntityLivingBase) {
+            if(!data.isInactiveGame() && e.getEntity() instanceof EntityLivingBase) {
                 EntityDeathContex ctx = EntityDeathContex.getDeathContex(e, game);
                 EntityDeathManager manager = game.getEntityDeathManager();
                 manager.getDeathAction().accept(ctx);
-                if (!e.getEntity().world.isRemote) {
+                if(!e.getEntity().world.isRemote) {
                     game.addDeathMessage(ctx);
                     TeamManager teamManager = game.getTeamManager();
-                    if (teamManager.getTeamSettings().eliminateOnDeath) {
-                        if (e.getEntity() instanceof EntityPlayer || e.getEntity() instanceof EntityAIPlayer) {
+                    if(teamManager.getTeamSettings().eliminateOnDeath) {
+                        if(e.getEntity() instanceof EntityPlayer || e.getEntity() instanceof EntityAIPlayer) {
                             eliminatePlayerAndTeam(game, e.getEntity().getUniqueID());
                         }
                     }
-                    if (game.shouldCreateDeathCrate()) {
-                        if (e.getEntity() instanceof EntityPlayer) {
+                    if(game.shouldCreateDeathCrate()) {
+                        if(e.getEntity() instanceof EntityPlayer) {
                             GameUtils.createDeathCrate((EntityPlayer) e.getEntity());
-                        } else if (e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
+                        } else if(e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
                             GameUtils.createDeathCrate((EntityAIPlayer) e.getEntity());
                             game.onBotDeath((EntityAIPlayer) e.getEntity());
                         }
@@ -163,57 +164,57 @@ public class GameHandler {
             IGameData gameData = e.player.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = gameData.getCurrentGame();
             boolean canRespawnIntoGame = game.respawnPlayer(e.player);
-            if (canRespawnIntoGame) {
+            if(canRespawnIntoGame) {
                 game.getJoinedPlayers().add(e.player.getUniqueID());
                 game.updateDataToClients(e.player.world);
                 ZonePos startPos = game.zone.currentBounds.min();
-                int max = (int) Math.abs(startPos.x - game.zone.currentBounds.max().x);
-                int x = (int) startPos.x + Pubgmc.rng().nextInt(max);
-                int z = (int) startPos.z + Pubgmc.rng().nextInt(max);
+                int max = (int)Math.abs(startPos.x - game.zone.currentBounds.max().x);
+                int x = (int)startPos.x + Pubgmc.rng().nextInt(max);
+                int z = (int)startPos.z + Pubgmc.rng().nextInt(max);
                 int y = e.player.world.getHeight(x, z);
                 e.player.setPositionAndUpdate(x, y, z);
             }
         }
 
         public static void createAndFillDeathCrate(World world, BlockPos pos, EntityPlayer player) {
-            if (pos == null) {
+            if(pos == null) {
                 Pubgmc.logger.warn("Couldn't create death crate for {}", player.getDisplayName());
                 return;
             }
             world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
-            TileEntityPlayerCrate te = (TileEntityPlayerCrate) world.getTileEntity(pos);
-            if (te == null) {
+            TileEntityPlayerCrate te = (TileEntityPlayerCrate)world.getTileEntity(pos);
+            if(te == null) {
                 Pubgmc.logger.fatal("Exception occurred when creating player crate, tile entity is null!");
                 return;
             }
-            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+            for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack stack = player.inventory.getStackInSlot(i);
                 te.setInventorySlotContents(i, stack.copy());
             }
             IPlayerData data = PlayerData.get(player);
             int backpack = data.getBackpackLevel();
-            if (backpack > 0) {
+            if(backpack > 0) {
                 te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCItems.BACKPACK1 : backpack == 2 ? PMCItems.BACKPACK2 : PMCItems.BACKPACK3));
             }
-            if (data.getEquippedNV()) {
+            if(data.getEquippedNV()) {
                 te.setInventorySlotContents(42, new ItemStack(PMCItems.NV_GOGGLES));
             }
             player.inventory.clear();
         }
 
         private static void eliminatePlayerAndTeam(Game game, UUID uuid) {
-            Team team = null;
+                Team team = null;
             // TODO remove
             try {
-                for (Team t : game.getTeamList()) {
-                    if (PUBGMCUtil.contains(uuid, t.players)) {
+                for(Team t : game.getTeamList()) {
+                    if(PUBGMCUtil.contains(uuid, t.players)) {
                         team = t;
                         break;
                     }
                 }
-                if (team != null) {
+                if(team != null) {
                     team.remove(uuid);
-                    if (team.isEmpty()) {
+                    if(team.isEmpty()) {
                         game.getTeamList().remove(team);
                     }
                 }

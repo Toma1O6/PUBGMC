@@ -13,10 +13,11 @@ import java.util.List;
 
 public class EntityAISearchLoot extends EntityAIBase {
 
+    private EntityAIPlayer aiPlayer;
     private final float chance;
-    private final List<BlockPos> checkedLootSpawners = new ArrayList<>();
-    private final EntityAIPlayer aiPlayer;
     private float modifier;
+    private final List<BlockPos> checkedLootSpawners = new ArrayList<>();
+
     @Nullable
     private BlockPos pos;
 
@@ -30,20 +31,20 @@ public class EntityAISearchLoot extends EntityAIBase {
     public BlockPos findNearestUncheckedSpawner() {
         int smallestDist = Integer.MAX_VALUE;
         TileEntityLootGenerator closest = null;
-        for (TileEntity tileEntity : this.aiPlayer.world.loadedTileEntityList) {
+        for(TileEntity tileEntity : this.aiPlayer.world.loadedTileEntityList) {
             if (tileEntity instanceof TileEntityLootGenerator) {
                 TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
-                if (lootSpawner == null || lootSpawner.getPos() == null) continue;
+                if(lootSpawner == null || lootSpawner.getPos() == null) continue;
                 boolean flag = checkedLootSpawners.contains(lootSpawner.getPos());
-                if (flag) continue;
+                if(flag) continue;
                 int distance = (int) PUBGMCUtil.getDistanceToBlockPos3D(this.aiPlayer.getPosition(), lootSpawner.getPos());
-                if (distance < smallestDist) {
+                if(distance < smallestDist) {
                     smallestDist = distance;
                     closest = lootSpawner;
                 }
             }
         }
-        if (closest == null) {
+        if(closest == null) {
             // disable this task completely
             this.modifier = 0.0F;
             return null;
@@ -54,9 +55,9 @@ public class EntityAISearchLoot extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         float f = this.aiPlayer.getRNG().nextFloat();
-        if (f <= modifier) {
+        if(f <= modifier) {
             BlockPos pos = this.findNearestUncheckedSpawner();
-            if (pos == null) {
+            if(pos == null) {
                 return false;
             }
             this.pos = pos;
@@ -73,17 +74,17 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Override
     public void startExecuting() {
-        if (pos == null) return;
+        if(pos == null) return;
         this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), 1.0D);
     }
 
     @Override
     public void resetTask() {
-        if (PUBGMCUtil.getDistanceToBlockPos(this.aiPlayer.getPosition(), this.pos) > 10) {
+        if(PUBGMCUtil.getDistanceToBlockPos(this.aiPlayer.getPosition(), this.pos) > 10) {
             return;
         }
         TileEntity tileEntity = this.aiPlayer.world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityLootGenerator) {
+        if(tileEntity instanceof TileEntityLootGenerator) {
             TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
             int i = this.aiPlayer.lootFromLootSpawner(lootSpawner);
             this.modifier = i == 0 ? 0 : i < 5 ? this.chance * 0.1F : i >= 10 ? this.chance * 2.5F : modifier;

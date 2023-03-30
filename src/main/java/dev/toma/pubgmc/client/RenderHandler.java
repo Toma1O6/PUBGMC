@@ -31,15 +31,15 @@ public class RenderHandler {
     public static float fovBackup;
     public static float sensBackup;
 
+    private double interpolate(double current, double previous, double partial) {
+        return previous + (current - previous) * partial;
+    }
+
     public RenderHandler() {
         Minecraft mc = Minecraft.getMinecraft();
         GameSettings settings = mc.gameSettings;
         fovBackup = settings.fovSetting;
         sensBackup = settings.mouseSensitivity;
-    }
-
-    private double interpolate(double current, double previous, double partial) {
-        return previous + (current - previous) * partial;
     }
 
     @SubscribeEvent
@@ -52,7 +52,7 @@ public class RenderHandler {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gunBase = (GunBase) stack.getItem();
                 ScopeData scopeData = gunBase.getScopeData(stack);
-                if (scopeData != null && scopeData.getZoom() > 0) {
+                if(scopeData != null && scopeData.getZoom() > 0) {
                     settings.fovSetting = scopeData.getZoom();
                 }
             }
@@ -70,10 +70,10 @@ public class RenderHandler {
         double interpolatedPlayerX = interpolate(player.posX, player.lastTickPosX, partialTicks);
         double interpolatedPlayerY = interpolate(player.posY, player.lastTickPosY, partialTicks);
         double interpolatedPlayerZ = interpolate(player.posZ, player.lastTickPosZ, partialTicks);
-        if (Game.isDebugMode && player.getHeldItemMainhand().getItem() instanceof GameControlItem) {
-            if (game instanceof GameObjectiveBased) {
-                for (GameArea area : ((GameObjectiveBased) game).getObjectives().values()) {
-                    if (area.isLoaded(world)) {
+        if(Game.isDebugMode && player.getHeldItemMainhand().getItem() instanceof GameControlItem) {
+            if(game instanceof GameObjectiveBased) {
+                for(GameArea area : ((GameObjectiveBased) game).getObjectives().values()) {
+                    if(area.isLoaded(world)) {
                         BlockPos pos = area.getCenter();
                         Tessellator tessellator = Tessellator.getInstance();
                         BufferBuilder bb = tessellator.getBuffer();
@@ -102,7 +102,7 @@ public class RenderHandler {
                         bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1).color(1f, 1f, 1f, a).endVertex();
                         bb.pos(pos.getX() + 1, pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
                         bb.pos(pos.getX(), pos.getY() + 2, pos.getZ()).color(1f, 1f, 1f, a).endVertex();
-                        bb.sortVertexData(-(float) player.posX, -(float) player.posY, -(float) player.posZ);
+                        bb.sortVertexData(-(float)player.posX, -(float)player.posY, -(float)player.posZ);
                         tessellator.draw();
                         bb.setTranslation(0, 0, 0);
                         GlStateManager.enableTexture2D();
@@ -160,7 +160,7 @@ public class RenderHandler {
                 bufferBuilder.pos(maxRenderPosX, 0D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
                 bufferBuilder.pos(minRenderPosX, 0D, zone.minZ(partialTicks)).color(r, g, b, a).endVertex();
             }
-            bufferBuilder.sortVertexData((float) player.posX, (float) player.posY, (float) player.posZ);
+            bufferBuilder.sortVertexData((float)player.posX, (float)player.posY, (float)player.posZ);
             tessellator.draw();
             bufferBuilder.setTranslation(0, 0, 0);
             GlStateManager.enableTexture2D();

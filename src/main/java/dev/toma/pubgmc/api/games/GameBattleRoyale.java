@@ -67,13 +67,13 @@ public class GameBattleRoyale extends Game {
     public final EntityDeathManager deathManager;
 
     private int zoneTimer;
-    private final List<BlockPos> scheduledAirdrops = new ArrayList<>();
+    private List<BlockPos> scheduledAirdrops = new ArrayList<>();
     private boolean hadRegenActive = false;
     private int botsLeft = 0;
 
     public GameBattleRoyale(String name) {
         super(name, TEXTURE);
-        this.setGameInfo(new GameInfo("Toma", new String[]{"size: int - Team size"}, "- Classic BR mode", "- One life per game", "- Shrinking zone"));
+        this.setGameInfo(new GameInfo("Toma", new String[] {"size: int - Team size"}, "- Classic BR mode", "- One life per game", "- Shrinking zone"));
         this.gameManager = GameManager.Builder.create(this)
                 .waitTime(200)
                 .objective(() -> new ObjectiveLastTeamStanding(this))
@@ -97,7 +97,7 @@ public class GameBattleRoyale extends Game {
                 .build();
         this.deathManager = EntityDeathManager.Builder.create()
                 .onDeath(ctx -> {
-                    if (ctx.hasSource() && ctx.getSource() instanceof EntityPlayer) {
+                    if(ctx.hasSource() && ctx.getSource() instanceof EntityPlayer) {
                         this.getPlayerData().get(ctx.getSource().getUniqueID()).addKill();
                     }
                 })
@@ -108,15 +108,15 @@ public class GameBattleRoyale extends Game {
     @Nullable
     @Override
     public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        if (additionalArgs.length > 0)
-            try {
-                int x = Integer.parseInt(additionalArgs[0]);
-                x = Math.abs(x);
-                x = x > 10 ? 10 : x;
-                this.getTeamManager().updateSize(x);
-            } catch (NumberFormatException e) {
-                return new CommandException("Invalid number! (" + additionalArgs[0] + ")");
-            }
+        if(additionalArgs.length > 0)
+        try {
+            int x = Integer.parseInt(additionalArgs[0]);
+            x = Math.abs(x);
+            x = x > 10 ? 10 : x;
+            this.getTeamManager().updateSize(x);
+        } catch (NumberFormatException e) {
+            return new CommandException("Invalid number! (" + additionalArgs[0] + ")");
+        }
         return null;
     }
 
@@ -148,7 +148,7 @@ public class GameBattleRoyale extends Game {
     public List<Team> getTeamCreator(Game game) {
         int size = this.getTeamManager().getTeamSettings().maxSize;
         List<Team> teamList = new ArrayList<>();
-        for (int i = 0; i < this.onlinePlayers; i++) {
+        for(int i = 0; i < this.onlinePlayers; i++) {
             teamList.add(new Team(size, 0xFFFFFF));
         }
         return teamList;
@@ -162,7 +162,7 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public void onGameStart(World world) {
-        if (world.isRemote) return;
+        if(world.isRemote) return;
         GameUtils.createAndFillPlanes(world);
         IGameData gameData = this.getGameData(world);
         zoneTimer = 0;
@@ -173,13 +173,13 @@ public class GameBattleRoyale extends Game {
             p.setHealth(20.0F);
             p.getFoodStats().setFoodLevel(20);
             p.sendMessage(new TextComponentString("Choose one drop location"));
-            for (MapLocation location : gameData.getSpawnLocations()) {
+            for(MapLocation location : gameData.getSpawnLocations()) {
                 TextComponentString msg = new TextComponentString("- " + location.name());
                 msg.setStyle(msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "") {
                     @Override
                     public Action getAction() {
                         PacketHandler.sendToServer(new PacketChooseLocation(location.pos(), p.getRidingEntity().getEntityId()));
-                        for (int i = 0; i < 50; i++) {
+                        for(int i = 0; i < 50; i++) {
                             p.sendMessage(new TextComponentString(""));
                         }
                         p.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully selected drop location, you will be dropped automatically"));
@@ -198,7 +198,7 @@ public class GameBattleRoyale extends Game {
     public void onBotDeath(EntityAIPlayer bot) {
         super.onBotDeath(bot);
         this.botsLeft--;
-        if (onlinePlayers <= 1 && botsLeft <= 0) {
+        if(onlinePlayers <= 1 && botsLeft <= 0) {
             notifyAllPlayers(bot.world, "Game has ended");
             this.gameTimer = 0;
             this.setGamePhase(GamePhase.POST);
@@ -207,7 +207,7 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public void onGameStopped(World world) {
-        if (hadRegenActive) {
+        if(hadRegenActive) {
             world.getGameRules().setOrCreateGameRule("naturalRegeneration", "true");
         }
     }
@@ -231,23 +231,24 @@ public class GameBattleRoyale extends Game {
 
     @Override
     public void onGameTick(World world) {
-        if (!zone.isShrinking()) {
+        if(!zone.isShrinking()) {
             zoneTimer++;
-            if (zone.currentStage == 0) {
-                if (zoneTimer >= 2400) {
+            if(zone.currentStage == 0) {
+                if(zoneTimer >= 2400) {
                     zone.notifyFirstZoneCreation(world);
                     this.scheduleAirdrop(world);
                     zoneTimer = 0;
                 }
-            } else if (zoneTimer >= 2000) {
+            }
+            else if(zoneTimer >= 2000) {
                 zone.shrink();
-                if (zone.currentStage < 5) {
+                if(zone.currentStage < 5) {
                     this.scheduleAirdrop(world);
                 }
                 zoneTimer = 0;
             }
         }
-        if (gameTimer % 20 == 0) {
+        if(gameTimer % 20 == 0) {
             this.tickScheduledDrops(world);
         }
     }
@@ -255,18 +256,18 @@ public class GameBattleRoyale extends Game {
     @SideOnly(Side.CLIENT)
     @Override
     public void renderGameInfo(Minecraft mc, ScaledResolution res) {
-        if (this.getGamePhase() == GamePhase.PREPARATION) {
+        if(this.getGamePhase() == GamePhase.PREPARATION) {
             mc.fontRenderer.drawString("Game is starting in " + (this.getGameManager().getStartPhaseLength() - this.gameTimer) / 20, 10, 10, 0xFFFFFF);
             return;
-        } else if (this.getGamePhase() == GamePhase.POST) {
+        } else if(this.getGamePhase() == GamePhase.POST) {
             Team team = this.getGameManager().getWinningTeam(this);
-            mc.fontRenderer.drawStringWithShadow("Game is ending! " + ((160 - this.gameTimer) / 20) + "s left!", 10, 10, 0xFFFFFF);
-            if (team != null) {
+            mc.fontRenderer.drawStringWithShadow("Game is ending! " + ((160 - this.gameTimer)/20) + "s left!", 10, 10, 0xFFFFFF);
+            if(team != null) {
                 mc.fontRenderer.drawStringWithShadow("Winners:", 10, 22, 0xFFFFFF);
                 int idx = 0;
-                for (int i = 0; i < team.players.length; i++) {
+                for(int i = 0; i < team.players.length; i++) {
                     EntityPlayer player = mc.world.getPlayerEntityByUUID(team.players[i]);
-                    if (player == null) continue;
+                    if(player == null) continue;
                     mc.fontRenderer.drawStringWithShadow("    " + player.getName(), 10, 34 + idx * 12, 0xFFFFFF);
                     ++idx;
                 }
@@ -276,7 +277,7 @@ public class GameBattleRoyale extends Game {
         mc.fontRenderer.drawStringWithShadow("Players left: " + (onlinePlayers + botsLeft), res.getScaledWidth() - 85, 10, 0xFFFFFF);
         boolean shrink = zone.isShrinking();
         int ticksLeft = zone.currentStage == 0 ? 2400 : 2000;
-        int secs = (ticksLeft - zoneTimer) / 20;
+        int secs = (ticksLeft-zoneTimer)/20;
         mc.fontRenderer.drawStringWithShadow("Zone: ", 10, 10, 0xFFFFFF);
         mc.fontRenderer.drawStringWithShadow(shrink ? "Shrinking.." : (zone.currentStage > 0 ? "Shrinking in " + secs + "s" : "-"), 40, 10, shrink ? 0xFF2323 : 0x23FF23);
     }
@@ -306,12 +307,12 @@ public class GameBattleRoyale extends Game {
         ZonePos max = zone.nextBounds.max();
         // to allow multiple airdrops
         boolean hasDroppedOnce = false;
-        while (world.rand.nextFloat() <= 0.01F || !hasDroppedOnce) {
-            int x = Pubgmc.rng().nextInt(Math.abs((int) max.distanceX(min)));
-            int z = Pubgmc.rng().nextInt(Math.abs((int) max.distanceZ(min)));
+        while(world.rand.nextFloat() <= 0.01F || !hasDroppedOnce) {
+            int x = Pubgmc.rng().nextInt(Math.abs((int)max.distanceX(min)));
+            int z = Pubgmc.rng().nextInt(Math.abs((int)max.distanceZ(min)));
             int y = world.getTopSolidOrLiquidBlock(new BlockPos(min.x + x, 250, min.z + z)).getY();
             y += 100;
-            if (y > 255) y = 255;
+            if(y > 255) y = 255;
             BlockPos airdrop = new BlockPos(min.x + x, y, min.z + z);
             scheduledAirdrops.add(airdrop);
             this.notifyAllPlayers(world, TextFormatting.BOLD + "Airdrop is appearing at [ " + airdrop.getX() + " ; " + airdrop.getZ() + " ]! Hurry up!");
@@ -323,7 +324,7 @@ public class GameBattleRoyale extends Game {
         Iterator<BlockPos> it = this.scheduledAirdrops.iterator();
         while (it.hasNext()) {
             BlockPos pos = it.next();
-            if (world.isBlockLoaded(pos)) {
+            if(world.isBlockLoaded(pos)) {
                 PUBGMCUtil.spawnAirdrop(world, pos, false);
                 it.remove();
             }
@@ -332,24 +333,22 @@ public class GameBattleRoyale extends Game {
 
     private void addLootByZone(EntityAIPlayer player) {
         switch (zone.currentStage) {
-            case 0:
-                return;
+            case 0: return;
             case 1: {
-                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[]{GunBase.GunType.PISTOL, GunBase.GunType.SHOTGUN, GunBase.GunType.SMG}, (byte) 0);
+                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.PISTOL, GunBase.GunType.SHOTGUN, GunBase.GunType.SMG}, (byte) 0);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
                 player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCItems.PAINKILLERS : PMCItems.ENERGYDRINK));
                 Item ammo = gun.getAmmoType().ammo();
                 player.inventory.set(1, new ItemStack(ammo, 30));
                 player.inventory.set(2, new ItemStack(ammo, 30));
-                if (player.getRNG().nextInt(2) == 0) {
+                if(player.getRNG().nextInt(2) == 0) {
                     player.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(PMCItems.ARMOR1HELMET));
                 } else player.setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(PMCItems.ARMOR1BODY));
                 player.world.spawnEntity(item);
                 break;
             }
-            case 2:
-            case 3: {
-                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[]{GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SMG}, (byte) 0);
+            case 2: case 3: {
+                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SMG}, (byte) 0);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
                 player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCItems.FIRSTAIDKIT : PMCItems.BANDAGE));
                 Item ammo = gun.getAmmoType().ammo();
@@ -361,7 +360,7 @@ public class GameBattleRoyale extends Game {
                 break;
             }
             default: {
-                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[]{GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SR}, (byte) 1);
+                GunBase gun = (GunBase) LootManager.getRandomObject(LootType.GUN, new GunBase.GunType[] {GunBase.GunType.AR, GunBase.GunType.DMR, GunBase.GunType.SR}, (byte) 1);
                 EntityItem item = new EntityItem(player.world, player.posX, player.posY, player.posZ, new ItemStack(gun));
                 player.inventory.set(0, new ItemStack(player.getRNG().nextInt(2) == 0 ? PMCItems.FIRSTAIDKIT : PMCItems.MEDKIT));
                 Item ammo = gun.getAmmoType().ammo();

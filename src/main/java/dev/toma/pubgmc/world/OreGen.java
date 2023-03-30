@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 import java.util.Random;
 
 public class OreGen implements IWorldGenerator {
-    private final WorldGenerator copper;
+    private WorldGenerator copper;
 
     public OreGen() {
         copper = new WorldGenMinable(PMCBlocks.COPPER_ORE.getDefaultState(), 4, BlockMatcher.forBlock(Blocks.STONE));

@@ -73,7 +73,7 @@ public class EntityBullet extends Entity {
         stack = new ItemStack(gun);
 
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
-        if (shooter instanceof EntityPlayer) {
+        if(shooter instanceof EntityPlayer) {
             IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             calculateBulletHeading(direct, (EntityPlayer) shooter, data.isAiming());
             this.setPosition(shooter.posX, data.isProning() ? shooter.posY + 0.5f : shooter.posY + shooter.getEyeHeight(), shooter.posZ);
@@ -90,69 +90,69 @@ public class EntityBullet extends Entity {
     }
 
     public void onBulletCollided(RayTraceResult rayTraceResult) {
-        if (rayTraceResult == null) {
+        if(rayTraceResult == null) {
             return;
         }
         Entity entity = rayTraceResult.entityHit;
-        if (entity != null && !world.isRemote) {
+        if(entity != null && !world.isRemote) {
             boolean isHeadshot = this.canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
             Vec3d vec = rayTraceResult.hitVec;
             Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
-            if (isHeadshot) {
+            if(isHeadshot) {
                 damage *= 2.5;
             }
-            if (entity instanceof EntityLivingBase || entity instanceof EntityVehicle) {
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);
+            if(entity instanceof EntityLivingBase || entity instanceof EntityVehicle) {
+                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2*Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);
             }
             this.onEntityHit(isHeadshot, entity);
             entity.hurtResistantTime = 0;
             this.setDead();
-        } else if (rayTraceResult.getBlockPos() != null && !world.isRemote) {
+        } else if(rayTraceResult.getBlockPos() != null && !world.isRemote) {
             BlockPos pos = rayTraceResult.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            if (block instanceof IBulletReaction) {
+            if(block instanceof IBulletReaction) {
                 IBulletReaction reaction = (IBulletReaction) block;
-                if (reaction.allowBulletInteraction(world, pos, state)) {
+                if(reaction.allowBulletInteraction(world, pos, state)) {
                     reaction.onHit(this, rayTraceResult.hitVec, pos);
                 }
             }
             boolean griefingFlag = ConfigPMC.world().weaponGriefing.get();
             boolean canBePenetrated = false;
-            if (block instanceof BlockWindow) {
+            if(block instanceof BlockWindow) {
                 canBePenetrated = true;
-                ((BlockWindow) block).breakWindow(state, pos, world);
-            } else if (state.getMaterial() == Material.GLASS) {
-                if (griefingFlag) {
+                ((BlockWindow)block).breakWindow(state, pos, world);
+            } else if(state.getMaterial() == Material.GLASS) {
+                if(griefingFlag) {
                     world.setBlockToAir(pos);
                     world.playSound(null, posX, posY, posZ, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
                 }
                 canBePenetrated = griefingFlag;
-            } else if (!block.isReplaceable(world, pos)) {
+            } else if(!block.isReplaceable(world, pos)) {
                 Vec3d vec = rayTraceResult.hitVec;
                 PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
-                if (block instanceof BlockLandMine) {
+                if(block instanceof BlockLandMine) {
                     ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);
                 }
                 this.setDead();
             }
 
-            if (canBePenetrated && damage > 0) {
+            if(canBePenetrated && damage > 0) {
                 Vec3d startVec = PUBGMCUtil.getPositionVec(this);
                 Vec3d nextPos = PUBGMCUtil.getMotionVec(this);
                 RayTraceResult trace = world.rayTraceBlocks(nextPos, startVec, false, true, false);
                 Entity e = this.findEntityOnPath(nextPos, startVec, trace);
-                if (e != null) {
+                if(e != null) {
                     trace = new RayTraceResult(e);
                 }
-                if (trace != null && rayTraceResult.entityHit instanceof EntityPlayer) {
+                if(trace != null && rayTraceResult.entityHit instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) rayTraceResult.entityHit;
-                    if (shooter instanceof EntityPlayer && !((EntityPlayer) shooter).canAttackPlayer(player)) {
+                    if(shooter instanceof EntityPlayer && !((EntityPlayer)shooter).canAttackPlayer(player)) {
                         trace = null;
                     }
                 }
-                if (trace != null) {
+                if(trace != null) {
                     // allows shooting through multiple objects
                     this.onBulletCollided(trace);
                 }
@@ -313,7 +313,7 @@ public class EntityBullet extends Entity {
     }
 
     private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, int accuracy) {
-        if (accuracy == 0) accuracy = 1;
+        if(accuracy == 0) accuracy = 1;
         this.motionX = rotVec.x * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
         this.motionY = rotVec.y * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
         this.motionZ = rotVec.z * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
@@ -322,7 +322,7 @@ public class EntityBullet extends Entity {
     private void updateHeading() {
         float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, f) * (180D / Math.PI));
+        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f) * (180D / Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }

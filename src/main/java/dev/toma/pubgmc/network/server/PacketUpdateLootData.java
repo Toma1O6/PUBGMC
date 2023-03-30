@@ -13,8 +13,7 @@ public class PacketUpdateLootData implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public PacketUpdateLootData() {
-    }
+    public PacketUpdateLootData() {}
 
     public PacketUpdateLootData(NBTTagCompound nbt) {
         this.nbt = nbt;

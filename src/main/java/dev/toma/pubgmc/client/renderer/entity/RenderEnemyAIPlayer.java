@@ -59,7 +59,7 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
         @Override
         public void doRenderLayer(EntityAIPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             ItemStack stack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
-            if (!stack.isEmpty() && stack.getItem() == PMCItems.GHILLIE_SUIT) {
+            if(!stack.isEmpty() && stack.getItem() == PMCItems.GHILLIE_SUIT) {
                 this.baseLayer.setModelAttributes(this.renderLivingBase.getMainModel());
                 this.overlay.setModelAttributes(this.renderLivingBase.getMainModel());
                 this.baseLayer.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);

@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.api.util;
 
-import dev.toma.pubgmc.api.GamePlayerData;
 import dev.toma.pubgmc.api.games.Game;
+import dev.toma.pubgmc.api.GamePlayerData;
 import dev.toma.pubgmc.api.teams.Team;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -29,7 +29,7 @@ public class EntityDeathContex {
         this.deadEntity = deadEntity;
         this.source = source;
         this.isBot = deadEntity instanceof EntityAIPlayer;
-        this.isTeamKill = source != null && source instanceof EntityPlayer && deadEntity instanceof EntityPlayer && this.checkSameTeams((EntityPlayer) deadEntity, (EntityPlayer) source, game);
+        this.isTeamKill = source != null && source instanceof EntityPlayer && deadEntity instanceof EntityPlayer ? this.checkSameTeams((EntityPlayer) deadEntity, (EntityPlayer) source, game) : false;
         this.stack = source != null ? source.getHeldItemMainhand() : ItemStack.EMPTY;
     }
 
@@ -38,30 +38,6 @@ public class EntityDeathContex {
      */
     public static EntityDeathContex getDeathContex(LivingDeathEvent event, Game game) {
         return new EntityDeathContex((EntityLivingBase) event.getEntity(), (EntityLivingBase) event.getSource().getTrueSource(), game);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static int getIDFor(EntityLivingBase source, EntityLivingBase victim, Game game) {
-        if (!(source instanceof EntityPlayer)) {
-            return 0;
-        }
-        GamePlayerData srcData = game.getPlayerData().get(source.getUniqueID());
-        if (srcData == null) return 0;
-        GamePlayerData vcData = game.getPlayerData().get(victim.getUniqueID());
-        if (vcData == null) {
-            Minecraft mc = Minecraft.getMinecraft();
-            if (mc.player.getName().equals(source.getName())) {
-                return 1;
-            }
-            return 0;
-        }
-        if (victim instanceof EntityPlayer) {
-            if (victim == Minecraft.getMinecraft().player) {
-                return 2;
-            }
-            return 0;
-        }
-        return 0;
     }
 
     public boolean hasSource() {
@@ -93,6 +69,30 @@ public class EntityDeathContex {
     @Nullable
     public EntityLivingBase getSource() {
         return source;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static int getIDFor(EntityLivingBase source, EntityLivingBase victim, Game game) {
+        if(!(source instanceof EntityPlayer)) {
+            return 0;
+        }
+        GamePlayerData srcData = game.getPlayerData().get(source.getUniqueID());
+        if(srcData == null) return 0;
+        GamePlayerData vcData = game.getPlayerData().get(victim.getUniqueID());
+        if(vcData == null) {
+            Minecraft mc = Minecraft.getMinecraft();
+            if(mc.player.getName().equals(source.getName())) {
+                return 1;
+            }
+            return 0;
+        }
+        if(victim instanceof EntityPlayer) {
+            if(victim == Minecraft.getMinecraft().player) {
+                return 2;
+            }
+            return 0;
+        }
+        return 0;
     }
 
     private boolean checkSameTeams(EntityPlayer player0, EntityPlayer player1, Game game) {

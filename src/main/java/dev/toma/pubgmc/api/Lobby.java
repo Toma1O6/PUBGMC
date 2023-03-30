@@ -15,8 +15,13 @@ public final class Lobby {
         this.radius = size;
     }
 
+    public boolean isInLobby(EntityPlayer player) {
+        BlockPos playerPos = player.getPosition();
+        return Math.abs(center.getX() - playerPos.getX()) <= radius && Math.abs(center.getZ() - playerPos.getZ()) <= radius;
+    }
+
     public static NBTTagCompound toNBT(Lobby lobby) {
-        if (lobby == null) {
+        if(lobby == null) {
             return new NBTTagCompound();
         }
         NBTTagCompound nbt = new NBTTagCompound();
@@ -28,14 +33,9 @@ public final class Lobby {
     public static Lobby fromNBT(NBTTagCompound nbt) {
         BlockPos center = NBTUtil.getPosFromTag(nbt.getCompoundTag("pos"));
         int range = nbt.getInteger("rad");
-        if (center.getY() < 1 && range < 1) {
+        if(center.getY() < 1 && range < 1) {
             return null;
         }
         return new Lobby(center, range);
-    }
-
-    public boolean isInLobby(EntityPlayer player) {
-        BlockPos playerPos = player.getPosition();
-        return Math.abs(center.getX() - playerPos.getX()) <= radius && Math.abs(center.getZ() - playerPos.getZ()) <= radius;
     }
 }

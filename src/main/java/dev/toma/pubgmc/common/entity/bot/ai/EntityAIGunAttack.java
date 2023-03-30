@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.entity.bot.ai;
 
-import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -29,7 +29,7 @@ public class EntityAIGunAttack extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if (!this.aiPlayer.hasGun()) {
+        if(!this.aiPlayer.hasGun()) {
             return false;
         }
         this.target = this.aiPlayer.getAttackTarget();
@@ -51,25 +51,25 @@ public class EntityAIGunAttack extends EntityAIBase {
 
     @Override
     public void updateTask() {
-        if (target == null) return;
+        if(target == null) return;
         double distanceToTarget = Math.sqrt(this.aiPlayer.getDistanceSq(this.target));
         boolean flag = this.aiPlayer.getEntitySenses().canSee(this.target);
-        if (flag) {
+        if(flag) {
             this.timeWatching++;
         } else timeWatching = 0;
-        if (!this.aiPlayer.hasGun()) {
+        if(!this.aiPlayer.hasGun()) {
             return;
         }
         ItemStack stack = aiPlayer.getHeldItemMainhand();
-        if (stack.getItem() instanceof GunBase) {
+        if(stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             int tableIndex = gun.getGunType().ordinal();
-            if (distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] * 1.5 && this.timeWatching >= 20) {
+            if(distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] * 1.5 && this.timeWatching >= 20) {
                 this.aiPlayer.getNavigator().clearPath();
             } else this.aiPlayer.getNavigator().tryMoveToEntityLiving(this.target, 1.0D);
             this.aiPlayer.getLookHelper().setLookPositionWithEntity(this.target, 30, 30);
-            if (--this.timeRemaining <= 0) {
-                if (!flag) {
+            if(--this.timeRemaining <= 0) {
+                if(!flag) {
                     return;
                 }
                 this.shoot(gun, stack, distanceToTarget);
@@ -78,7 +78,7 @@ public class EntityAIGunAttack extends EntityAIBase {
     }
 
     private void shoot(GunBase gun, ItemStack stack, double distanceToTarget) {
-        if (distanceToTarget > MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
+        if(distanceToTarget > MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
             return;
         }
         ++this.shotsFired;
@@ -88,10 +88,10 @@ public class EntityAIGunAttack extends EntityAIBase {
         SoundEvent event = isSilenced ? gun.getGunSilencedSound() : gun.getGunSound();
         float volume = isSilenced ? gun.getGunSilencedVolume() : gun.getGunVolume();
         PacketHandler.sendToDimension(new PacketDelayedSound(event, volume, this.aiPlayer.posX, this.aiPlayer.posY, this.aiPlayer.posZ), this.aiPlayer.dimension);
-        for (int i = 0; i < shotAmount; i++) {
+        for(int i = 0; i < shotAmount; i++) {
             EntityBullet bullet = new EntityBullet(this.aiPlayer.world, this.aiPlayer, gun);
             bullet.setPosition(bullet.posX, bullet.posY - 0.5, bullet.posZ);
-            if (shotAmount > 1) {
+            if(shotAmount > 1) {
                 double d0 = distanceToTarget / 150;
                 bullet.motionY += d0;
             }
@@ -99,7 +99,7 @@ public class EntityAIGunAttack extends EntityAIBase {
         }
         boolean effectiveRange = distanceToTarget < MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()];
         this.timeRemaining = gun.getFireRate() + (effectiveRange ? 6 : 18);
-        if (shotsFired >= gun.getWeaponAmmoLimit(stack)) {
+        if(shotsFired >= gun.getWeaponAmmoLimit(stack)) {
             this.shotsFired = 0;
             this.timeRemaining = 80;
         }

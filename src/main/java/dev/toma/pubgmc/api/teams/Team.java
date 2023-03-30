@@ -7,8 +7,8 @@ public class Team {
 
     public final String name;
     public final int maxSize;
-    public final int color;
     public UUID[] players;
+    public final int color;
 
     public Team(int maxSize, int color) {
         this(maxSize, color, "");
@@ -23,7 +23,7 @@ public class Team {
 
     public boolean add(@Nonnull UUID uuid) {
         int index = this.getEntityCount();
-        if (index >= this.maxSize) {
+        if(index >= this.maxSize) {
             return false;
         }
         players[index] = uuid;
@@ -32,13 +32,13 @@ public class Team {
 
     public boolean remove(@Nonnull UUID uuid) {
         int index = -1;
-        for (int i = 0; i < players.length; i++) {
-            if (players[i].equals(uuid)) {
+        for(int i = 0; i < players.length; i++) {
+            if(players[i].equals(uuid)) {
                 index = i;
                 break;
             }
         }
-        if (index < 0) return false;
+        if(index < 0) return false;
         this.players[index] = null;
         return true;
     }
@@ -53,8 +53,8 @@ public class Team {
 
     public int getEntityCount() {
         int count = 0;
-        for (UUID uuid : players) {
-            if (uuid != null) ++count;
+        for(UUID uuid : players) {
+            if(uuid != null) ++count;
         }
         return count;
     }
@@ -62,8 +62,8 @@ public class Team {
     @Override
     public int hashCode() {
         int i = 0;
-        for (UUID uuid : this.players) {
-            if (uuid == null) continue;
+        for(UUID uuid : this.players) {
+            if(uuid == null) continue;
             i += uuid.hashCode();
         }
         return i;
@@ -71,19 +71,19 @@ public class Team {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if(obj == this) {
             return true;
         } else {
-            if (obj instanceof Team) {
+            if(obj instanceof Team) {
                 Team team = (Team) obj;
-                if (this.getEntityCount() != team.getEntityCount()) {
+                if(this.getEntityCount() != team.getEntityCount()) {
                     return false;
                 }
-                for (int i = 0; i < team.players.length; i++) {
+                for(int i = 0; i < team.players.length; i++) {
                     UUID uuid0 = this.players[i];
                     UUID uuid1 = team.players[i];
-                    if (uuid0 != null && uuid1 != null) {
-                        if (!uuid0.equals(uuid1)) {
+                    if(uuid0 != null && uuid1 != null) {
+                        if(!uuid0.equals(uuid1)) {
                             return false;
                         }
                     }

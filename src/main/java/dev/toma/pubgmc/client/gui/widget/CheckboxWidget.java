@@ -21,7 +21,7 @@ public class CheckboxWidget extends Widget {
         super(x, y, width, height);
         FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
         int tw = renderer.getStringWidth(text);
-        if (tw > width - height - 5) {
+        if(tw > width - height - 5) {
             this.renderText = text.substring(0, Math.min(characterCount, text.length())) + "...";
         } else {
             this.renderText = text;
@@ -50,12 +50,12 @@ public class CheckboxWidget extends Widget {
         int x2 = Math.min(x + width, x + height);
         drawColorShape(x, y, x2, y + height, 1.0F, 1.0F, 1.0F, 1.0F);
         drawColorShape(x + 1, y + 1, x2 - 1, y + height - 1, 0.0F, 0.0F, 0.0F, 1.0F);
-        if (selected) {
+        if(selected) {
             drawColorShape(x + 3, y + 3, x2 - 3, y + height - 3, 1.0F, 1.0F, 1.0F, 1.0F);
         }
         FontRenderer fr = mc.fontRenderer;
         fr.drawString(renderText, x2 + 3, y + (height - fr.FONT_HEIGHT) / 2f, light ? 0x333333 : 0xFFFFFF, false);
-        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+        if(mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
             int tw = fr.getStringWidth(text);
             drawColorShape(x + width / 2 - 5, y - 11, x + width / 2 + tw + 5, y, 0.0F, 0.0F, 0.0F, 1.0F);
             fr.drawStringWithShadow(text, x + width / 2.0F, y - 9.5F, 0xFFFFFF);

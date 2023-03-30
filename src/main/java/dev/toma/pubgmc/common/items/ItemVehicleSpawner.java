@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class ItemVehicleSpawner extends PMCItem {
-    private final Vehicles car;
+    private Vehicles car;
 
     public ItemVehicleSpawner(String name, Vehicles vehicle) {
         super(name);
