@@ -298,6 +298,11 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         ((WeaponRenderer) getTileEntityItemStackRenderer()).renderArm(side);
     }
 
+    @Override
+    public boolean cancelShieldRender() {
+        return true;
+    }
+
     @Deprecated
     public void registerToGlobalLootPool(boolean airdropOnly) {
         LootManager.register(LootType.GUN, new LootManager.LootEntry(this, gunType.getWeight(), airdropOnly));

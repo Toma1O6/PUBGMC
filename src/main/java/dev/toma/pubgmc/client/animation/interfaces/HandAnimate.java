@@ -15,6 +15,10 @@ public interface HandAnimate {
     @SideOnly(Side.CLIENT)
     void animate(EnumHandSide side);
 
+    default boolean cancelShieldRender() {
+        return false;
+    }
+
     @SideOnly(Side.CLIENT)
     static void renderHand(EnumHandSide side, IRenderConfig cfg) {
         Minecraft mc = Minecraft.getMinecraft();

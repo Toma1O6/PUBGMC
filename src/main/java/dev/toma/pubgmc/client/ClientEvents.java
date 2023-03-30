@@ -44,8 +44,10 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -92,44 +94,54 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP player = mc.player;
         float partial = event.getPartialTicks();
-        if(stack.getItem() instanceof HandAnimate) {
-            HandAnimate animate = (HandAnimate) stack.getItem();
-            event.setCanceled(true);
-            float pitch = DevUtil.lerp(player.rotationPitch, player.prevRotationPitch, partial);
-            float swing = event.getSwingProgress();
-            AnimationProcessor processor = AnimationProcessor.instance();
-            GlStateManager.pushMatrix();
-            {
-                processor.process(AnimationElement.ITEM_AND_HANDS);
+        EnumHand hand = event.getHand();
+        if (hand == EnumHand.MAIN_HAND) {
+            if(stack.getItem() instanceof HandAnimate) {
+                HandAnimate animate = (HandAnimate) stack.getItem();
+                event.setCanceled(true);
+                float pitch = DevUtil.lerp(player.rotationPitch, player.prevRotationPitch, partial);
+                float swing = event.getSwingProgress();
+                AnimationProcessor processor = AnimationProcessor.instance();
                 GlStateManager.pushMatrix();
                 {
-                    processor.process(AnimationElement.HANDS);
+                    processor.process(AnimationElement.ITEM_AND_HANDS);
                     GlStateManager.pushMatrix();
                     {
-                        GlStateManager.disableCull();
+                        processor.process(AnimationElement.HANDS);
                         GlStateManager.pushMatrix();
                         {
-                            processor.process(AnimationElement.RIGHT_HAND);
-                            animate.animate(EnumHandSide.RIGHT);
+                            GlStateManager.disableCull();
+                            GlStateManager.pushMatrix();
+                            {
+                                processor.process(AnimationElement.RIGHT_HAND);
+                                animate.animate(EnumHandSide.RIGHT);
+                            }
+                            GlStateManager.popMatrix();
+                            GlStateManager.pushMatrix();
+                            {
+                                processor.process(AnimationElement.LEFT_HAND);
+                                animate.animate(EnumHandSide.LEFT);
+                            }
+                            GlStateManager.popMatrix();
+                            GlStateManager.enableCull();
                         }
                         GlStateManager.popMatrix();
-                        GlStateManager.pushMatrix();
-                        {
-                            processor.process(AnimationElement.LEFT_HAND);
-                            animate.animate(EnumHandSide.LEFT);
-                        }
-                        GlStateManager.popMatrix();
-                        GlStateManager.enableCull();
                     }
                     GlStateManager.popMatrix();
+                    if(!processor.isItemRenderBlocked()) {
+                        processor.process(AnimationElement.ITEM);
+                        mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, 0.0F);
+                    }
                 }
                 GlStateManager.popMatrix();
-                if(!processor.isItemRenderBlocked()) {
-                    processor.process(AnimationElement.ITEM);
-                    mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, 0.0F);
+            }
+        } else if (hand == EnumHand.OFF_HAND) {
+            ItemStack mainHandItemStack = player.getHeldItemMainhand();
+            if (mainHandItemStack.getItem() instanceof HandAnimate) {
+                if (((HandAnimate) mainHandItemStack.getItem()).cancelShieldRender()) {
+                    event.setCanceled(true);
                 }
             }
-            GlStateManager.popMatrix();
         }
     }
 
