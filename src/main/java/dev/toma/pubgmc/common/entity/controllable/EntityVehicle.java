@@ -175,7 +175,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         for (int i = 0; i < entityList.size(); i++) {
             Entity entity = entityList.get(i);
 
-            if (entity != this) {
+            if (entity != this && !isPassenger(entity)) {
                 AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
 
