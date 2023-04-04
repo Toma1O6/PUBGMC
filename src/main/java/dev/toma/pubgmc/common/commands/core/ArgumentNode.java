@@ -9,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class ArgumentNode<T> extends AbstractNode {
     @Override
     public void process(ArgumentReader reader, Map<String, Object> argumentMap) throws CommandException {
         ArgumentParser<T> parser = type.getParser();
-        T value = parser.parse(reader);
+        T value = parser.parse(reader, type);
         argumentMap.put(key(), value);
     }
 

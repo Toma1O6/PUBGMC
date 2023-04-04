@@ -23,7 +23,7 @@ public class BooleanArgument extends ArgumentType<Boolean> {
         return Arrays.asList("true", "false");
     }
 
-    private static boolean parse(ArgumentReader reader) throws CommandException {
+    private static boolean parse(ArgumentReader reader, ArgumentType<Boolean> argumentType) throws CommandException {
         String value = reader.read();
         return Boolean.parseBoolean(value);
     }

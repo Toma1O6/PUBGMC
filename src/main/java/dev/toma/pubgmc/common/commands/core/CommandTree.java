@@ -4,11 +4,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class CommandTree implements ChildNodeProvider {
 
@@ -110,12 +110,16 @@ public final class CommandTree implements ChildNodeProvider {
             return usage(sender -> usageString);
         }
 
+        public Builder usage(ITextComponent component) {
+            return usage(sender -> component.getFormattedText());
+        }
+
         public Builder permissionLevel(int permissionLevel) {
             this.permissionLevel = permissionLevel;
             return this;
         }
 
-        public Builder defaultExecutor(CommandNodeExecutor executor) {
+        public Builder executes(CommandNodeExecutor executor) {
             this.defaultExecutor = executor;
             return this;
         }

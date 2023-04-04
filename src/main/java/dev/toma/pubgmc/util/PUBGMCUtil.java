@@ -17,6 +17,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+
 public class PUBGMCUtil {
 
     public static void sendSoundPacket(SoundEvent event, float volume, BlockPos pos, TargetPoint target) {
@@ -169,5 +173,13 @@ public class PUBGMCUtil {
 
     public static double interpolate(double prev, double current, double partial) {
         return prev + partial * (current - prev);
+    }
+
+    @Nullable
+    public static <T> T randomListElement(List<T> list, Random random) {
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(random.nextInt(list.size()));
     }
 }

@@ -101,7 +101,7 @@ public class Pubgmc {
         event.registerServerCommand(new CommandLeave());
         event.registerServerCommand(new CommandLootGenerate());
         event.registerServerCommand(new CommandClearPlayerCrates());
-        event.registerServerCommand(new CommandAirdrop());
+        event.registerServerCommand(new AirdropCommand());
         event.registerServerCommand(new CommandGame());
         event.registerServerCommand(new CommandPlayerData());
         event.registerServerCommand(new CommandManageGhillieVariants());
