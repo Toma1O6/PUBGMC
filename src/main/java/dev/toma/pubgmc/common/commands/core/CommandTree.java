@@ -51,18 +51,22 @@ public final class CommandTree implements ChildNodeProvider {
     public List<String> suggest(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos lookingAt) {
         int maxDepth = args.length - 1;
         int depth = 0;
+        int treeDepth = 0;
         ChildNodeProvider childNodeProvider = this;
         while (depth < maxDepth) {
-            String value = args[depth];
+            String value = args[depth++];
             CommandNode commandNode = childNodeProvider.getChildNode(value);
             if (commandNode == null)
                 break;
+            if (commandNode.getChildNode(value) == null)
+                break;
             childNodeProvider = commandNode;
-            ++depth;
+            ++treeDepth;
         }
+        int offset = maxDepth - treeDepth;
         List<String> values = new ArrayList<>();
         for (CommandNode commandNode : childNodeProvider.listNodes()) {
-            values.addAll(commandNode.suggest(server, sender, lookingAt));
+            values.addAll(commandNode.suggest(server, sender, lookingAt, offset));
         }
         return values;
     }

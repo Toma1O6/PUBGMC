@@ -2,7 +2,6 @@ package dev.toma.pubgmc.common.commands.core;
 
 import com.google.common.collect.ImmutableMap;
 import dev.toma.pubgmc.common.commands.core.arg.ArgumentReader;
-import dev.toma.pubgmc.common.commands.core.arg.ArgumentType;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
@@ -40,7 +39,7 @@ public final class CommandContext {
             if (commandNode == null) {
                 throw new SyntaxErrorException(String.format("Unknown command argument: %s", value));
             }
-            commandNode.process(reader, argumentMap);
+            commandNode.process(reader, argumentMap, server, sender);
             node = commandNode;
         }
         return new CommandContext(tree, server, sender, node, argumentMap);

@@ -17,11 +17,13 @@ public interface SuggestionProvider {
         private final MinecraftServer server;
         private final ICommandSender sender;
         private final @Nullable BlockPos lookingAt;
+        private final int cursor;
 
-        public Context(MinecraftServer server, ICommandSender sender, @Nullable BlockPos lookingAt) {
+        public Context(MinecraftServer server, ICommandSender sender, @Nullable BlockPos lookingAt, int cursor) {
             this.server = server;
             this.sender = sender;
             this.lookingAt = lookingAt;
+            this.cursor = cursor;
         }
 
         public MinecraftServer getServer() {
@@ -35,6 +37,10 @@ public interface SuggestionProvider {
         @Nullable
         public BlockPos getTargettedPosition() {
             return lookingAt;
+        }
+
+        public int getCursor() {
+            return cursor;
         }
     }
 }

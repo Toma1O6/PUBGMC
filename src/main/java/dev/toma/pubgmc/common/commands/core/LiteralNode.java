@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.commands.core;
 
 import dev.toma.pubgmc.common.commands.core.arg.ArgumentReader;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.Map;
 
@@ -11,7 +13,7 @@ public final class LiteralNode extends AbstractNode {
     }
 
     @Override
-    public void process(ArgumentReader reader, Map<String, Object> argumentMap) {
+    public void process(ArgumentReader reader, Map<String, Object> argumentMap, MinecraftServer server, ICommandSender sender) {
         reader.read(); // make sure to skip to next value
     }
 

@@ -10,7 +10,7 @@ public class StringArgument extends ArgumentType<String> {
         return new StringArgument();
     }
 
-    private static String parse(ArgumentReader reader, ArgumentType<String> argumentType) {
-        return reader.read();
+    private static String parse(ArgumentContext<String> context) {
+        return context.getReader().read();
     }
 }

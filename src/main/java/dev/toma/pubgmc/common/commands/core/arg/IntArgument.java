@@ -41,11 +41,12 @@ public class IntArgument extends ArgumentType<Integer> {
         }
     }
 
-    private static int parse(ArgumentReader reader, ArgumentType<Integer> argument) throws CommandException {
+    private static int parse(ArgumentContext<Integer> context) throws CommandException {
+        ArgumentReader reader = context.getReader();
         String value = reader.read();
         try {
             int intValue = Integer.parseInt(value);
-            IntArgument intArgument = (IntArgument) argument;
+            IntArgument intArgument = context.castArgument();
             intArgument.performRangeValidation(intValue);
             return intValue;
         } catch (NumberFormatException e) {

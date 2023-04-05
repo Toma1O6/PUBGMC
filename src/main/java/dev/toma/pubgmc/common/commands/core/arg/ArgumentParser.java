@@ -4,5 +4,5 @@ import net.minecraft.command.CommandException;
 
 public interface ArgumentParser<T> {
 
-    T parse(ArgumentReader reader, ArgumentType<T> argumentType) throws CommandException;
+    T parse(ArgumentContext<T> context) throws CommandException;
 }

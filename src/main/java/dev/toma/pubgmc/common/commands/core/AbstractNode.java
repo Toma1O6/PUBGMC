@@ -37,11 +37,11 @@ public abstract class AbstractNode implements CommandNode {
     }
 
     @Override
-    public List<String> suggest(MinecraftServer server, ICommandSender sender, @Nullable BlockPos targetPos) {
+    public List<String> suggest(MinecraftServer server, ICommandSender sender, @Nullable BlockPos targetPos, int cursor) {
         List<String> suggestions = new ArrayList<>();
         suggestions.add(key);
         if (suggestionProvider != null) {
-            suggestions.addAll(suggestionProvider.suggest(new SuggestionProvider.Context(server, sender, targetPos)));
+            suggestions.addAll(suggestionProvider.suggest(new SuggestionProvider.Context(server, sender, targetPos, cursor)));
         }
         return suggestions;
     }

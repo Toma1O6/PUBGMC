@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.common.commands.core.arg;
 
 import dev.toma.pubgmc.common.commands.core.SuggestionProvider;
-import net.minecraft.command.CommandException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +22,8 @@ public class BooleanArgument extends ArgumentType<Boolean> {
         return Arrays.asList("true", "false");
     }
 
-    private static boolean parse(ArgumentReader reader, ArgumentType<Boolean> argumentType) throws CommandException {
-        String value = reader.read();
+    private static boolean parse(ArgumentContext<Boolean> context) {
+        String value = context.getReader().read();
         return Boolean.parseBoolean(value);
     }
 }

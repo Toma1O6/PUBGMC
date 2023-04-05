@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.commands.core;
 
+import dev.toma.pubgmc.common.commands.core.arg.ArgumentContext;
 import dev.toma.pubgmc.common.commands.core.arg.ArgumentParser;
 import dev.toma.pubgmc.common.commands.core.arg.ArgumentReader;
 import dev.toma.pubgmc.common.commands.core.arg.ArgumentType;
@@ -22,15 +23,15 @@ public class ArgumentNode<T> extends AbstractNode {
     }
 
     @Override
-    public void process(ArgumentReader reader, Map<String, Object> argumentMap) throws CommandException {
+    public void process(ArgumentReader reader, Map<String, Object> argumentMap, MinecraftServer server, ICommandSender sender) throws CommandException {
         ArgumentParser<T> parser = type.getParser();
-        T value = parser.parse(reader, type);
+        T value = parser.parse(new ArgumentContext<>(type, reader, server, sender));
         argumentMap.put(key(), value);
     }
 
     @Override
-    public List<String> suggest(MinecraftServer server, ICommandSender sender, @Nullable BlockPos targetPos) {
-        SuggestionProvider.Context context = new SuggestionProvider.Context(server, sender, targetPos);
+    public List<String> suggest(MinecraftServer server, ICommandSender sender, @Nullable BlockPos targetPos, int cursor) {
+        SuggestionProvider.Context context = new SuggestionProvider.Context(server, sender, targetPos, cursor);
         return getSuggestionProvider() != null ? getSuggestionProvider().suggest(context) : type.suggest(context);
     }
 
