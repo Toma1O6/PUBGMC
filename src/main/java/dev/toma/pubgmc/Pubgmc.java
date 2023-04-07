@@ -98,13 +98,12 @@ public class Pubgmc {
 
     @EventHandler
     public void serverInit(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandLeave());
-        event.registerServerCommand(new CommandLootGenerate());
-        event.registerServerCommand(new CommandClearPlayerCrates());
+        event.registerServerCommand(new LeaveCommand());
+        event.registerServerCommand(new LootCommand());
+        event.registerServerCommand(new ClearPlayerCratesCommand());
         event.registerServerCommand(new AirdropCommand());
-        event.registerServerCommand(new CommandGame());
-        event.registerServerCommand(new CommandPlayerData());
-        event.registerServerCommand(new CommandManageGhillieVariants());
+        event.registerServerCommand(new GameCommand());
+        event.registerServerCommand(new ManageGhillieVariantsCommand());
     }
 
     private static void registerSmeltingRecipes() {

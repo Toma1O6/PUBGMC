@@ -11,7 +11,7 @@ public interface CommandNodeProvider {
         return new LiteralNode.Builder(literal);
     }
 
-    static <T> ArgumentNode.Builder<T> arg(String key, ArgumentType<T> type) {
+    static <T> ArgumentNode.Builder<T> argument(String key, ArgumentType<T> type) {
         return new ArgumentNode.Builder<>(key, type);
     }
 }

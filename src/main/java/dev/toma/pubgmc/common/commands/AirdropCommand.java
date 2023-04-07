@@ -32,13 +32,13 @@ public class AirdropCommand extends AbstractCommand {
             .permissionLevel(2)
             .executes(AirdropCommand::spawnAirdrop)
             .node(
-                    CommandNodeProvider.arg(ARG_FLARE, BooleanArgument.booleanArgument())
+                    CommandNodeProvider.argument(ARG_FLARE, BooleanArgument.booleanArgument())
                             .executes(AirdropCommand::spawnAirdrop)
                             .node(
-                                    CommandNodeProvider.arg(ARG_COUNT, IntArgument.range(1, 16))
+                                    CommandNodeProvider.argument(ARG_COUNT, IntArgument.range(1, 16))
                                             .executes(AirdropCommand::spawnAirdrop)
                                             .node(
-                                                    CommandNodeProvider.arg(ARG_SPREAD, IntArgument.range(1, 96))
+                                                    CommandNodeProvider.argument(ARG_SPREAD, IntArgument.range(1, 96))
                                                             .executes(AirdropCommand::spawnAirdrop)
                                             )
                             )
@@ -46,7 +46,7 @@ public class AirdropCommand extends AbstractCommand {
                                     CommandNodeProvider.literal("player")
                                             .executes(AirdropCommand::spawnAtPlayer)
                                             .node(
-                                                    CommandNodeProvider.arg(ARG_PLAYER, StringArgument.stringArgument())
+                                                    CommandNodeProvider.argument(ARG_PLAYER, StringArgument.stringArgument())
                                                             .executes(AirdropCommand::spawnAtPlayer)
                                                             .suggests(AbstractCommand::suggestPlayer)
                                             )
@@ -55,7 +55,7 @@ public class AirdropCommand extends AbstractCommand {
                                     CommandNodeProvider.literal("position")
                                             .executes(AirdropCommand::spawnAtPosition)
                                             .node(
-                                                    CommandNodeProvider.arg(ARG_POS, BlockPosArgument.blockpos())
+                                                    CommandNodeProvider.argument(ARG_POS, BlockPosArgument.blockpos())
                                                             .executes(AirdropCommand::spawnAtPosition)
                                             )
                             )

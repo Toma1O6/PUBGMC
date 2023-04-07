@@ -17,10 +17,8 @@ item.steel_dust.name=Steel Dust
 item.steel_ingot.name=Steel Ingot
 item.copper_ingot.name=Copper Ingot
 item.fuelcan.name=Fuel Can
-
 item.vehicle_uaz.name=Spawn UAZ
 item.vehicle_dacia.name=Spawn Dacia
-
 item.ammo_9mm.name=9mm Bullet
 item.ammo_shotgun.name=Shotgun Ammo
 item.ammo_45acp.name=.45acp Bullet
@@ -28,8 +26,6 @@ item.ammo_556.name=5.56mm Bullet
 item.ammo_762.name=7.62mm Bullet
 item.ammo_300m.name=.300 Magnum Bullet
 item.ammo_flare.name=Flare
-
-//Guns
 item.flare_gun.name=Flare Gun
 item.p92.name=P92
 item.p1911.name=P1911
@@ -70,21 +66,15 @@ item.mk14.name=MK-14 EBR
 item.kar98k.name=Kar98K
 item.m24.name=M24
 item.awm.name=AWM
-
 item.grenade.name=Grenade
 item.smoke.name=Smoke Grenade
 item.molotov.name=Molotov
 item.flashbang.name=Flashbang
-
-//This will be removed in future
 item.ghilliehelmet.name=Ghillie helmet
 item.ghilliebody.name=Ghillie chestplate
 item.ghillielegs.name=Ghillie leggings
 item.ghillieboots.name=Ghillie boots
-
 item.nv_goggles.name=Night Vision Goggles
-
-//Attachments
 item.silencer_smg.name=Suppressor (Pistol, SMG)
 item.silencer_ar.name=Suppressor (AR, DMR)
 item.silencer_sniper.name=Suppressor (DMR,SR)
@@ -110,17 +100,6 @@ item.extended_quickdraw_mag_ar.name=Extended Quickdraw Magazine (AR, DMR)
 item.extended_quickdraw_mag_sniper.name=Extended Quickdraw Magazine (DMR, SR)
 item.bullet_loops.name=Bullet Loops
 item.cheekpad.name=Cheekpad
-
-//Keybinding
-key.category.pubgmc=PUBGMC
-pubgmc.key.reload=Reload
-pubgmc.key.firemode=Firemode
-pubgmc.key.nv=Night Vision
-pubgmc.key.attachment=Attachment GUI
-pubgmc.key.scopetype=Change Scope Type
-pubgmc.key.scopecolor=Change Scope Color
-
-//Items
 item.ghillie_suit.name=Ghillie Suit
 item.armor1helmet.name=Level 1 helmet
 item.armor1body.name=Level 1 vest
@@ -129,7 +108,14 @@ item.armor2body.name=Level 2 vest
 item.armor3helmet.name=Level 3 helmet
 item.armor3body.name=Level 3 vest
 
-//Blocks
+key.category.pubgmc=PUBGMC
+pubgmc.key.reload=Reload
+pubgmc.key.firemode=Firemode
+pubgmc.key.nv=Night Vision
+pubgmc.key.attachment=Attachment GUI
+pubgmc.key.scopetype=Change Scope Type
+pubgmc.key.scopecolor=Change Scope Color
+
 tile.roadasphalt.name=Asphalt road
 tile.schoolwall.name=School wall
 tile.schoolroof.name=School roof
@@ -216,18 +202,15 @@ tile.pole.name=Pole
 tile.pole_base.name=Pole Base
 tile.pole_lamp_modern.name=Modern Lamp
 
-//Creative Tabs
 itemGroup.tab_items=PUBGMC: Items
 itemGroup.tab_blocks=PUBGMC: Blocks
 itemGroup.tab_guns=PUBGMC: Guns
 itemGroup.tab_accessories=PUBGMC: Accessories
 
-//Block containers
 container.airdrop=Airdrop
 container.loot=Loot Spawner
 container.gun_workbench=Gun Workbench
 
-//Description
 gun.desc.ammo=Ammo
 gun.desc.firemode=Firemode
 gun.desc.damage=Damage
@@ -276,7 +259,6 @@ death.attack.gun.generic=%s was shot
 
 entity.pubgmc:enemyai.name=Enemy AI
 
-// Animator
 base.hands.item=Hands,Item
 base.hands=Hands
 base.hand.right=Right Hand
@@ -290,3 +272,49 @@ model.bullet=Bullet
 model.bullet1=Bullet 1
 model.belt=Belt
 model.top=Top
+
+commands.pubgmc.leave.success=You have been teleported back to lobby
+commands.pubgmc.ghillie_colors.added=New color has been registered: %s
+commands.pubgmc.ghillie_colors.removed=Color at index %s has been removed: %s
+commands.pubgmc.ghillie_colors.list_header=Registered variants: ([index] - hex color code)
+commands.pubgmc.loot.no_loot_spawner=No loot spawners have been located!
+commands.pubgmc.loot.generated=Generated loot inside %s loot spawners
+commands.pubgmc.loot.cleared=Cleared loot inside %s loot spawners
+commands.pubgmc.loot.configuration_reset=Loot configuration has been reset to default values
+commands.pubgmc.loot.destroyed=Destroyed %s loot spawners
+commands.pubgmc.loot.found=Found %s available loot spawners
+commands.pubgmc.loot.help.header==== Loot command parameters ===
+commands.pubgmc.loot.help.generate=- generate optional:[Blockpos] optional*:[Range] >> generates loot in loaded loot spawners within specified range
+commands.pubgmc.loot.help.clear=- clear optional:[Blockpos] optional*:[Range] >> clears loot in loaded loot spawners within specified range
+commands.pubgmc.loot.help.show=- show >> will fill available loot spawners with dyes for easier spotting
+commands.pubgmc.loot.help.reset=- reset >> will revert to default loot configuration
+commands.pubgmc.loot.help.setup=- setup >> will open loot configuration UI
+commands.pubgmc.loot.help.destroy=- destroy optional:[Blockpos] optional*:[Range] >> will destroy all loot spawners within specified range
+commands.pubgmc.loot.help.count=- count optional:[Blockpos] optional*:[Range] >> will display amount of currently loaded loot spawners which would generate loot
+commands.pubgmc.clearplayercrates.success=Removed %s player crates
+commands.pubgmc.game.help.header==== Game command parameters ===
+commands.pubgmc.game.help.start=start >> Starts new game
+commands.pubgmc.game.help.stop=stop >> Stops current game
+commands.pubgmc.game.help.type=type [gameTypeId] >> Selects game type
+commands.pubgmc.game.help.lobby=lobby <x> <y> <z> <size> >> Creates new lobby on specified position with specified size
+commands.pubgmc.game.help.map=map <x> <z> <size> >> Creates new map bounds with center on specified coordinates with specified size
+commands.pubgmc.game.started=New game has been started
+commands.pubgmc.game.stopped=Game has been stopped
+commands.pubgmc.game.type_selected=Game type has been changed
+commands.pubgmc.game.map_created=New map area has been created
+commands.pubgmc.game.lobby_created=New lobby area has assigned
+commands.pubgmc.game.location_added=New game spawn location has been added
+commands.pubgmc.game.location_removed=Game spawn location has been removed
+commands.pubgmc.game.location_list=Game locations:
+commands.pubgmc.game.map.header=Current map area:
+commands.pubgmc.game.map.center=Center: %sx %sz (Click to teleport)
+commands.pubgmc.game.map.size=Size [blocks]: %s
+commands.pubgmc.game.lobby.header=Current lobby:
+commands.pubgmc.game.lobby.center=Center: %sx %sy %sz (Click to teleport)
+commands.pubgmc.game.lobby.size=Size [blocks]: %s
+
+label.pubgmc.false=False
+label.pubgmc.true=True
+label.pubgmc.no=No
+label.pubgmc.yes=Yes
+label.pubgmc.undefined=Not defined

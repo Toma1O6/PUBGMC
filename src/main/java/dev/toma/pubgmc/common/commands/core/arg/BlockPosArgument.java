@@ -44,6 +44,11 @@ public class BlockPosArgument extends ArgumentType<BlockPos> {
         return values;
     }
 
+    @Override
+    public int getArgumentCount() {
+        return 3;
+    }
+
     private static BlockPos parse(ArgumentContext<BlockPos> context) throws CommandException {
         ArgumentReader reader = context.getReader();
         BlockPos senderPosition = context.getSender().getPosition();

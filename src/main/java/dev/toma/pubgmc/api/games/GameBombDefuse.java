@@ -15,6 +15,7 @@ import dev.toma.pubgmc.util.game.ZoneSettings;
 import dev.toma.pubgmc.world.BlueZone;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -25,7 +26,10 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 public class GameBombDefuse extends GameObjectiveBased {
 
@@ -145,11 +149,10 @@ public class GameBombDefuse extends GameObjectiveBased {
 
     @Nullable
     @Override
-    public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        if(this.bombsiteA == null || this.bombsiteB == null) return new CommandException("You have to add bomsite!");
-        if(this.ctSpawn == null) return new CommandException("You have to add CT Spawn");
-        if(this.tSpawn == null) return new CommandException("You have to add T Spawn");
-        return null;
+    public void onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) throws CommandException {
+        if(this.bombsiteA == null || this.bombsiteB == null) throw new WrongUsageException("You have to add bomsite!");
+        if(this.ctSpawn == null) throw new WrongUsageException("You have to add CT Spawn");
+        if(this.tSpawn == null) throw new WrongUsageException("You have to add T Spawn");
     }
 
     @Override

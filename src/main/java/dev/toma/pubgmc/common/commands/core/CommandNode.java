@@ -38,4 +38,8 @@ public interface CommandNode extends ChildNodeProvider {
     default int getSortOrder() {
         return 0;
     }
+
+    default boolean shouldUseChildNodesForSuggestions(int cursorOffset) {
+        return true;
+    }
 }

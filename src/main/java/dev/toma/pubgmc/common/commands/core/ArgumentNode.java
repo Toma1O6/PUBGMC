@@ -45,6 +45,12 @@ public class ArgumentNode<T> extends AbstractNode {
         return 1;
     }
 
+    @Override
+    public boolean shouldUseChildNodesForSuggestions(int cursorOffset) {
+        int argumentCount = type.getArgumentCount();
+        return cursorOffset >= argumentCount;
+    }
+
     public static final class Builder<T> extends AbstractBuilder<Builder<T>> {
 
         private final ArgumentType<T> type;

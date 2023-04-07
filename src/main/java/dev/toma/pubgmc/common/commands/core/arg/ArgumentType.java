@@ -20,4 +20,8 @@ public class ArgumentType<T> {
     public List<String> suggest(SuggestionProvider.Context context) {
         return Collections.emptyList();
     }
+
+    public int getArgumentCount() {
+        return 1;
+    }
 }

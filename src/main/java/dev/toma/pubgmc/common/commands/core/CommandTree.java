@@ -17,6 +17,7 @@ public final class CommandTree implements ChildNodeProvider {
     private final int permissionLevel;
     private final CommandNodeExecutor defaultExecutor;
     private final Map<String, CommandNode> children;
+    private final DefaultExecutorPropagationStrategy executorPropagationStrategy;
 
     private CommandTree(Builder builder) {
         name = builder.name;
@@ -24,6 +25,7 @@ public final class CommandTree implements ChildNodeProvider {
         permissionLevel = builder.permissionLevel;
         defaultExecutor = builder.defaultExecutor;
         children = builder.children;
+        executorPropagationStrategy = builder.executorPropagationStrategy;
     }
 
     public String getName() {
@@ -41,7 +43,7 @@ public final class CommandTree implements ChildNodeProvider {
     public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         CommandContext context = CommandContext.parse(this, server, sender, args);
         CommandNode node = context.getNode();
-        CommandNodeExecutor executor = defaultExecutor;
+        CommandNodeExecutor executor = context.getDefaultExecutor();
         if (node != null && node.getExecutor() != null) {
             executor = node.getExecutor();
         }
@@ -59,6 +61,8 @@ public final class CommandTree implements ChildNodeProvider {
             if (commandNode == null)
                 break;
             if (commandNode.getChildNode(value) == null)
+                break;
+            if (!commandNode.shouldUseChildNodesForSuggestions(maxDepth - treeDepth))
                 break;
             childNodeProvider = commandNode;
             ++treeDepth;
@@ -89,12 +93,21 @@ public final class CommandTree implements ChildNodeProvider {
                 .orElse(null);
     }
 
+    CommandNodeExecutor getDefaultExecutor() {
+        return defaultExecutor;
+    }
+
+    DefaultExecutorPropagationStrategy getExecutorPropagationStrategy() {
+        return executorPropagationStrategy;
+    }
+
     public static final class Builder {
 
         private final String name;
         private Function<ICommandSender, String> usageProvider;
         private int permissionLevel = 4;
         private CommandNodeExecutor defaultExecutor;
+        private DefaultExecutorPropagationStrategy executorPropagationStrategy = DefaultExecutorPropagationStrategy.ROOT;
         private final Map<String, CommandNode> children = new HashMap<>();
 
         private Builder(String name) {
@@ -134,6 +147,11 @@ public final class CommandTree implements ChildNodeProvider {
             return this;
         }
 
+        public Builder defaultExecutorPropagationStrategy(DefaultExecutorPropagationStrategy strategy) {
+            this.executorPropagationStrategy = strategy;
+            return this;
+        }
+
         public CommandTree build() {
             if (name == null || name.isEmpty()) {
                 throw new IllegalArgumentException("Name must be defined");
@@ -143,6 +161,9 @@ public final class CommandTree implements ChildNodeProvider {
             }
             if (defaultExecutor == null) {
                 throw new IllegalArgumentException("Default command executor must be defined");
+            }
+            if (executorPropagationStrategy == null) {
+                throw new IllegalArgumentException("Default executor propagation strategy must be defined");
             }
             return new CommandTree(this);
         }

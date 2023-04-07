@@ -8,6 +8,7 @@ import java.util.List;
 public class BooleanArgument extends ArgumentType<Boolean> {
 
     private static final BooleanArgument INSTANCE = new BooleanArgument();
+    private static final List<String> VALUES = Arrays.asList("true", "false");
 
     private BooleanArgument() {
         super(BooleanArgument::parse);
@@ -19,7 +20,7 @@ public class BooleanArgument extends ArgumentType<Boolean> {
 
     @Override
     public List<String> suggest(SuggestionProvider.Context context) {
-        return Arrays.asList("true", "false");
+        return VALUES;
     }
 
     private static boolean parse(ArgumentContext<Boolean> context) {

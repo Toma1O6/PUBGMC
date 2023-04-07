@@ -107,17 +107,17 @@ public class GameBattleRoyale extends Game {
 
     @Nullable
     @Override
-    public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        if(additionalArgs.length > 0)
-        try {
-            int x = Integer.parseInt(additionalArgs[0]);
-            x = Math.abs(x);
-            x = x > 10 ? 10 : x;
-            this.getTeamManager().updateSize(x);
-        } catch (NumberFormatException e) {
-            return new CommandException("Invalid number! (" + additionalArgs[0] + ")");
+    public void onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) throws CommandException {
+        if(additionalArgs.length > 0) {
+            try {
+                int x = Integer.parseInt(additionalArgs[0]);
+                x = Math.abs(x);
+                x = Math.min(x, 10);
+                this.getTeamManager().updateSize(x);
+            } catch (NumberFormatException e) {
+                throw new CommandException("Invalid number! (" + additionalArgs[0] + ")");
+            }
         }
-        return null;
     }
 
     @Override

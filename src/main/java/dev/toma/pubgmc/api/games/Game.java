@@ -289,8 +289,7 @@ public abstract class Game {
      * @param additionalArgs - all arguments after the 'start' keyword in command
      */
     @Nullable
-    public CommandException onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) {
-        return null;
+    public void onGameStartCommandExecuted(ICommandSender sender, MinecraftServer server, String[] additionalArgs) throws CommandException {
     }
 
     /**

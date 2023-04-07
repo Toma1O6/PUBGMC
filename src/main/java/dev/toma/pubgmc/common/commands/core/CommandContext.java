@@ -8,30 +8,32 @@ import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public final class CommandContext {
 
-    private final CommandTree tree;
     private final MinecraftServer server;
     private final ICommandSender sender;
     private final CommandNode node;
     private final Map<String, Object> argumentMap;
+    private final @Nullable CommandNodeExecutor defaultExecutor;
 
-    public CommandContext(CommandTree tree, MinecraftServer server, ICommandSender sender, CommandNode node, Map<String, Object> argumentMap) {
-        this.tree = tree;
+    public CommandContext(MinecraftServer server, ICommandSender sender, CommandNode node, Map<String, Object> argumentMap, CommandNodeExecutor executor) {
         this.server = server;
         this.sender = sender;
         this.node = node;
         this.argumentMap = ImmutableMap.copyOf(argumentMap);
+        this.defaultExecutor = executor;
     }
 
     public static CommandContext parse(CommandTree tree, MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         ArgumentReader reader = new ArgumentReader(args);
         Map<String, Object> argumentMap = new HashMap<>();
         CommandNode node = null;
+        CommandNodeExecutor executor = tree.getDefaultExecutor();
         String value;
         while ((value = reader.peek()) != null) {
             ChildNodeProvider provider = node != null ? node : tree;
@@ -39,10 +41,14 @@ public final class CommandContext {
             if (commandNode == null) {
                 throw new SyntaxErrorException(String.format("Unknown command argument: %s", value));
             }
+            CommandNodeExecutor nodeExecutor = commandNode.getExecutor();
+            if (tree.getExecutorPropagationStrategy().shouldReadNodeExecutors() && nodeExecutor != null) {
+                executor = nodeExecutor;
+            }
             commandNode.process(reader, argumentMap, server, sender);
             node = commandNode;
         }
-        return new CommandContext(tree, server, sender, node, argumentMap);
+        return new CommandContext(server, sender, node, argumentMap, executor);
     }
 
     @SuppressWarnings("unchecked")
@@ -77,5 +83,9 @@ public final class CommandContext {
 
     CommandNode getNode() {
         return node;
+    }
+
+    CommandNodeExecutor getDefaultExecutor() {
+        return defaultExecutor;
     }
 }
