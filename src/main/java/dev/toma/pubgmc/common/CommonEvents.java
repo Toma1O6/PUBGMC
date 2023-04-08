@@ -46,6 +46,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -236,19 +237,12 @@ public class CommonEvents {
         }
     }
 
-    /**
-     * Event used for disabling block destruction when player is
-     * holding weapon/grenade
-     *
-     * @param e - event
-     */
     @SubscribeEvent
-    public void onBreakBlock(BlockEvent.BreakEvent e) {
-        EntityPlayer player = e.getPlayer();
-        ItemStack heldStack = player.getHeldItemMainhand();
-
-        if (heldStack.getItem() instanceof GunBase || heldStack.getItem() instanceof ItemExplodeable) {
-            e.setCanceled(true);
+    public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        EntityPlayer player = event.getEntityPlayer();
+        ItemStack stack = player.getHeldItemMainhand();
+        if (stack.getItem() instanceof GunBase || stack.getItem() instanceof ItemExplodeable) {
+            event.setCanceled(true);
         }
     }
 
