@@ -318,7 +318,9 @@ public class ClientEvents {
         //Same as above, we just send packet to server and everything else will be done in the rendering method above
         if (KeyBinds.NV.isPressed()) {
             if (data.getEquippedNV()) {
-                PacketHandler.sendToServer(new SPacketSetProperty(!data.isUsingNV(), SPacketSetProperty.Action.NIGHT_VISION));
+                boolean status = !data.isUsingNV();
+                data.setNV(status);
+                PacketHandler.sendToServer(new SPacketSetProperty(status, SPacketSetProperty.Action.NIGHT_VISION));
             }
         }
 
