@@ -212,7 +212,7 @@ public final class GameUtils {
                 for(int z = -1; z < 2; z++) {
                     BlockPos pos = new BlockPos(entity.posX + x, entity.posY + y, entity.posZ + z);
                     if(world.isAirBlock(pos)) {
-                        return world.getHeight(pos);
+                        return world.getHeight(pos).up();
                     }
                 }
             }
