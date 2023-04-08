@@ -28,6 +28,7 @@ import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.client.CFG2DCoords;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
@@ -44,7 +45,6 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -69,9 +69,6 @@ import java.text.DecimalFormat;
 public class ClientEvents {
 
     private static final ResourceLocation NV = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nv.png");
-    private static final ResourceLocation BOOST = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_empty.png");
-    private static final ResourceLocation BOOST_FULL = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_full.png");
-    private static final ResourceLocation BOOST_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/boost_overlay.png");
     private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
     private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
@@ -535,19 +532,19 @@ public class ClientEvents {
 
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             int left = width / 2 - 91;
-            int top = height - 32 + 3;
+            int top = height - 32 + 4;
             short barWidth = 182;
 
-            //Actual drawing code
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, false);
+            CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgBoostOverlayPos;
+            int leftPos = left + overlayPos.getX();
+            int topPos = top + overlayPos.getY();
+            float color = 0.75F;
+            ImageUtil.drawShape(leftPos, topPos, leftPos + barWidth, topPos + 3, color, color, color, 1.0F);
             int boost = stats.getLevel();
             if (boost > 0) {
                 double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
-                ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_FULL, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), sizeX, 5, false);
+                ImageUtil.drawShape(leftPos, topPos, leftPos + (int) sizeX, topPos + 3, 1.0F, 0.8F, 0.0F, 1.0F);
             }
-
-            //This will render after these 2 above to make sure this will always be on the top
-            ImageUtil.drawCustomSizedImage(Minecraft.getMinecraft(), BOOST_OVERLAY, left + ConfigPMC.client.overlays.imgBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.imgBoostOverlayPos.getY(), barWidth, 5, true);
         }
     }
 
