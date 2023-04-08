@@ -2,6 +2,7 @@ package dev.toma.pubgmc.api.games;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.GamePhase;
+import dev.toma.pubgmc.api.GamePlayerData;
 import dev.toma.pubgmc.api.Lobby;
 import dev.toma.pubgmc.api.objectives.ObjectiveLastTeamStanding;
 import dev.toma.pubgmc.api.settings.EntityDeathManager;
@@ -98,7 +99,10 @@ public class GameBattleRoyale extends Game {
         this.deathManager = EntityDeathManager.Builder.create()
                 .onDeath(ctx -> {
                     if(ctx.hasSource() && ctx.getSource() instanceof EntityPlayer) {
-                        this.getPlayerData().get(ctx.getSource().getUniqueID()).addKill();
+                        GamePlayerData playerData = getPlayerData().get(ctx.getSource().getUniqueID());
+                        if (playerData != null) {
+                            playerData.addKill();
+                        }
                     }
                 })
                 .deathIcons(5, 200)
