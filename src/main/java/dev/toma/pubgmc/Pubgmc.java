@@ -50,6 +50,7 @@ public class Pubgmc {
     public static final String SERVER_PROXY_CLASS = "dev.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
+    public static final int CONTENT_DATA_VERSION = 1;
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");
     public static boolean isDevEnvironment;

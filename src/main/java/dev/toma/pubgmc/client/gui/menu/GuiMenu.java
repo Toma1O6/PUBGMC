@@ -214,12 +214,13 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             super(x, y, width, height);
             this.parent = parent;
             this.count = getMessageCount();
-            if(Pubgmc.isOutdated()) {
+            Optional<ContentResult> optional = allContent();
+            if(Pubgmc.isOutdated() || (optional.isPresent() && !optional.get().isSupportedVersion())) {
                 msgComponents.add(new UpdatePromptWidget(parent, x + 4, y + 15, width - 8, 40));
                 ++count;
             }
-            Optional<MenuDisplayContent[]> optional = allContent();
-            optional.ifPresent(arr -> {
+
+            optional.map(ContentResult::getMenuDisplayContents).ifPresent(arr -> {
                 for (MenuDisplayContent mdc : arr) {
                     msgComponents.add(mdc.createWidget(parent, x + 4, y + 15, width - 8, 40));
                 }
@@ -293,12 +294,10 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             return 0;
         }
 
-        Optional<MenuDisplayContent[]> allContent() {
+        Optional<ContentResult> allContent() {
             ContentManager contentManager = Pubgmc.getContentManager();
             ContentResult result = contentManager.getCachedResult();
-            if (result == null) {
-                return Optional.empty();
-            } else return Optional.ofNullable(result.getMenuDisplayContents());
+            return Optional.ofNullable(result);
         }
 
         public void setCurrentMsg(int i) {
