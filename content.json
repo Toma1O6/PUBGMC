@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "display": [
         {
             "type": "announcement",
@@ -8,9 +9,21 @@
         }
     ],
     "map": [
-    
     ],
     "mainMenuText": [
+        "Update 1.7.3",
+        "- Fixed issue where you could get run over by your own car while driving",
+        "- Fixed issues which could cause crashing while playing BattleRoyale game type",
+        "- Fixed deathcrate spawning logic which could previously cause replacement of existing blocks",
+        "- Fixed issues with night vision overlay not being properly synchronized",
+        "- Reworked all commands - this means more options, better tab completions etc.",
+        "- Shields are no longer rendered when holding gun",
+        "- Vehicle lighting improvements",
+        "- Scope shader compatibility improvements",
+        "- Item texture improvements",
+        "- Boost overlay texture improvements",
+        "",
+        "",
         "Update 1.7.1 & 1.7.2",
         "- Improvements to weapon damage sources which should improve compatibility with other mods",
         "- New client config option for disabling main menu",
@@ -19,9 +32,6 @@
         "Status update 29/3/2023",
         "Development of this mod will continue, mostly for bugfixes and minor QoL changes",
         "",
-        "",
-        "Status update",
-        "The development of this mod has been discontinued and won't receive any new updates",
         "",
         "",
         "Update 1.7.0 [Animation Update]",
@@ -83,6 +93,5 @@
         "- Fixed unstable burst fire"
     ],
     "vips": [
-    
     ]
 }
