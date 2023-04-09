@@ -61,7 +61,7 @@ public class EntityBullet extends Entity {
 
     public EntityBullet(World worldIn, EntityLivingBase shooter, GunBase gun) {
         this(worldIn);
-        this.setSize(0.1f, 0.1f);
+        this.setSize(0.01f, 0.01f);
         this.noClip = true;
         this.shooter = shooter;
         WeaponStats stats = gun.getWeaponStats();
