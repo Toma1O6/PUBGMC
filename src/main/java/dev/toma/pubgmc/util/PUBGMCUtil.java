@@ -27,10 +27,6 @@ public class PUBGMCUtil {
         PacketHandler.INSTANCE.sendToAllAround(new PacketDelayedSound(event, volume, pos.getX(), pos.getY(), pos.getZ()), target);
     }
 
-    public static boolean shouldSendCommandFeedback(World world) {
-        return world.getGameRules().getBoolean("sendCommandFeedback");
-    }
-
     public static boolean isPlayerDrivingVehicle(EntityPlayer player) {
         return player.getRidingEntity() instanceof EntityVehicle;
     }
@@ -62,44 +58,6 @@ public class PUBGMCUtil {
         array[0] = null;
     }
 
-    public static boolean isValidNumber(String text) {
-        char[] num = text.toCharArray();
-        boolean valid = true;
-        if (num[0] == '-' || Character.isDigit(num[0])) {
-            for (int i = 0; i < num.length; i++) {
-                if (i > 0) {
-                    if (Character.isDigit(num[i])) {
-                        continue;
-                    } else valid = false;
-                }
-            }
-        }
-        return valid;
-    }
-
-    public static boolean isStringDoubleOrFloat(String text) {
-        char[] c = text.toCharArray();
-        boolean valid = true;
-        boolean alreadyUsedDot = false;
-        for (int i = 0; i < c.length; i++) {
-            if (Character.isDigit(c[i]) || c[i] == '.') {
-                if (alreadyUsedDot && c[i] == '.') {
-                    valid = false;
-                }
-
-                if (c[i] == '.' && !alreadyUsedDot) {
-                    alreadyUsedDot = true;
-                }
-
-                continue;
-            } else {
-                valid = false;
-            }
-        }
-
-        return valid;
-    }
-
     /**
      * Position calculated between X and Z coordinate of given positions
      **/
@@ -114,23 +72,12 @@ public class PUBGMCUtil {
         return Math.sqrt(sqr(pos1.getX() - pos2.getX()) + sqr(pos1.getY() - pos2.getY()) + sqr(pos1.getZ() - pos2.getZ()));
     }
 
-    public static boolean isMapSetupProperly(IGameData data) {
-        boolean properSize = data.getMapSize() > 0;
-        boolean hasLocations = !data.getSpawnLocations().isEmpty();
-
-        if (!properSize) Pubgmc.logger.error("Ivalid map size, setup your map!");
-        if (!hasLocations) Pubgmc.logger.warn("No locations, add some! (Plane won't spawn)");
-
-        return properSize;
-    }
-
     public static float getAngleBetween2Points(Entity entityToRotate, BlockPos targetPos) {
         return (float) (MathHelper.atan2(entityToRotate.posZ - targetPos.getZ(), entityToRotate.posX - targetPos.getX()) * (180D / Math.PI)) - 90f;
     }
 
     public static float updateRotation(float prevRotation, float additionalRotation) {
-        float f = MathHelper.wrapDegrees(additionalRotation - prevRotation);
-        return f;
+        return MathHelper.wrapDegrees(additionalRotation - prevRotation);
     }
 
     public static void updateEntityRotation(Entity entity, BlockPos targetPos) {
@@ -152,12 +99,6 @@ public class PUBGMCUtil {
 
     public static String generateID(int length) {
         return RandomStringUtils.random(length, true, true);
-    }
-
-    public static void setModelPosition(ModelRenderer model, float x, float y, float z) {
-        model.offsetX = x;
-        model.offsetY = y;
-        model.offsetZ = z;
     }
 
     public static void spawnAirdrop(World world, BlockPos pos, boolean bigDrop) {

@@ -80,7 +80,7 @@ public class BlockPlayerCrate extends PMCBlock {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-        return BOX;
+        return NULL_AABB;
     }
 
     @Override

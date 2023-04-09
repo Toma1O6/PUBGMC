@@ -26,6 +26,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -104,10 +105,8 @@ public final class GameUtils {
                     }
                 }
                 plane.pendingPlayers = null;
-                if (flag) {
-                    plane = new EntityPlane(world, gameData);
-                    joined = 0;
-                }
+                plane = new EntityPlane(world, gameData);
+                joined = 0;
             }
         }
     }
@@ -179,6 +178,7 @@ public final class GameUtils {
                 te.setInventorySlotContents(i, stack.copy());
             }
         }
+        player.inventory.clear();
         IPlayerData data = PlayerData.get(player);
         // TODO add backpack and night vision
     }
@@ -204,20 +204,34 @@ public final class GameUtils {
 
     public static BlockPos getPosForCrate(EntityLivingBase entity) {
         World world = entity.getEntityWorld();
-        if(world.isAirBlock(entity.getPosition())) {
-            return world.getHeight(entity.getPosition());
+        BlockPos.MutableBlockPos possiblePosition = new BlockPos.MutableBlockPos(entity.getPosition());
+        if (world.isAirBlock(possiblePosition)) {
+            return findGround(entity.world, possiblePosition);
         }
-        for(int y = 0; y < 2; y++) {
-            for(int x = -1; x < 2; x++) {
-                for(int z = -1; z < 2; z++) {
-                    BlockPos pos = new BlockPos(entity.posX + x, entity.posY + y, entity.posZ + z);
-                    if(world.isAirBlock(pos)) {
-                        return world.getHeight(pos).up();
-                    }
+        int y = possiblePosition.getY() - 1;
+        while (y < 255) {
+            possiblePosition.setY(y);
+            if (world.isAirBlock(possiblePosition)) {
+                return findGround(entity.world, possiblePosition);
+            }
+            for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+                BlockPos withOffset = possiblePosition.offset(facing);
+                if (world.isAirBlock(withOffset)) {
+                    return findGround(entity.world, withOffset);
                 }
             }
+            ++y;
         }
+        Pubgmc.logger.error("Failed to find valid position for death crate from entity: " + entity);
         return null;
+    }
+
+    public static BlockPos findGround(World world, BlockPos pos) {
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
+        while (world.isAirBlock(mutableBlockPos.down()) && mutableBlockPos.getY() > 0) {
+            mutableBlockPos.setY(mutableBlockPos.getY() - 1);
+        }
+        return mutableBlockPos.toImmutable();
     }
 
     public static void addBaseTasks(EntityAITasks n, EntityAITasks t, EntityAIPlayer b) {
