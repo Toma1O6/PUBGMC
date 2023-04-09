@@ -4,7 +4,9 @@ import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.game.loot.ILootSpawner;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
@@ -75,5 +77,20 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
                 world.spawnParticle(EnumParticleTypes.CLOUD, this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 0, 0.2, 0);
             }
         }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+        ItemStackHelper.saveAllItems(compound, inventory);
+        compound.setString("game", hash);
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        ItemStackHelper.loadAllItems(compound, inventory);
+        hash = compound.getString("hash");
     }
 }

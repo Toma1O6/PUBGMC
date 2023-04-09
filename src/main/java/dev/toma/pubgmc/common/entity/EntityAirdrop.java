@@ -3,11 +3,13 @@ package dev.toma.pubgmc.common.entity;
 import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.util.TileEntityUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -46,8 +48,10 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
         IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
         world.setBlockState(this.getPosition(), state, 3);
 
-        if (world.getTileEntity(this.getPosition()) instanceof TileEntityAirdrop) {
-            ((TileEntityAirdrop) world.getTileEntity(getPosition())).onLanded();
+        TileEntity tileEntity = world.getTileEntity(getPosition());
+        if (tileEntity instanceof TileEntityAirdrop) {
+            ((TileEntityAirdrop) tileEntity).onLanded();
+            TileEntityUtil.syncToClient(tileEntity);
         }
     }
 
