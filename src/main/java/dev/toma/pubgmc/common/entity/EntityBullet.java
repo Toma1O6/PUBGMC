@@ -10,9 +10,9 @@ import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.common.items.guns.WeaponStats;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
@@ -64,11 +64,11 @@ public class EntityBullet extends Entity {
         this.setSize(0.1f, 0.1f);
         this.noClip = true;
         this.shooter = shooter;
-        CFGWeapon cfg = gun.getConfigurableStats(); // TODO causes crash with flare gun
-        gravitystart = cfg.gravityEffectStart.get();
-        gravity = cfg.gravityModifier.getAsFloat();
-        velocity = cfg.velocity.getAsFloat();
-        damage = cfg.damage.getAsFloat();
+        WeaponStats stats = gun.getWeaponStats();
+        gravitystart = stats.getGravityEffectStart();
+        gravity = stats.getGravityModifier();
+        velocity = stats.getVelocity();
+        damage = stats.getDamage();
         type = gun.getGunType();
         stack = new ItemStack(gun);
 

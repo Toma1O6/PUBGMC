@@ -5,8 +5,6 @@ import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;
-import dev.toma.pubgmc.config.common.CFGWeapon;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
 import java.util.concurrent.Callable;
@@ -34,7 +32,7 @@ public class GunBuilder {
     SoundEvent shootNormal;
     SoundEvent shootSilenced;
     SoundEvent reloadSound;
-    CFGWeapon cfgStats;
+    WeaponStats weaponStats;
     GunAttachments attachments;
     Supplier<SoundEvent> action;
     ScopeData customScope;
@@ -54,8 +52,8 @@ public class GunBuilder {
         return new GunBuilder(regName, buildFunc);
     }
 
-    public GunBuilder stats(CFGWeapon cfg) {
-        this.cfgStats = cfg;
+    public GunBuilder stats(WeaponStats weaponStats) {
+        this.weaponStats = weaponStats;
         return this;
     }
 
@@ -158,7 +156,7 @@ public class GunBuilder {
     }
 
     public GunBase build() {
-        checkNotNull(cfgStats);
+        checkNotNull(weaponStats);
         validateFloat(vertical, 0.1f, 10f);
         validateFloat(horizontal, 0.1f, 10f);
         checkNotNull(reloader);

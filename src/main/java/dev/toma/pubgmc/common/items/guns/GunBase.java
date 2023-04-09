@@ -11,7 +11,6 @@ import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.*;
-import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketDelayedSound;
 import dev.toma.pubgmc.util.game.loot.LootManager;
@@ -53,7 +52,7 @@ import java.util.stream.Collectors;
 public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
 
     protected final Supplier<SoundEvent> action;
-    private final CFGWeapon wepStats;
+    private final WeaponStats wepStats;
     private final float horizontalRecoil;
     private final float verticalRecoil;
     private final int reloadTime;
@@ -76,7 +75,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         setMaxStackSize(1);
         this.action = builder.action;
         this.gunType = builder.weaponType;
-        this.wepStats = builder.cfgStats;
+        this.wepStats = builder.weaponStats;
         this.verticalRecoil = builder.vertical;
         this.horizontalRecoil = builder.horizontal;
         this.reloader = builder.reloader;
@@ -169,10 +168,10 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         tooltip.add(I18n.format("gun.desc.ammo") + ": " + TextFormatting.RED + getAmmo(stack));
         tooltip.add(I18n.format("gun.desc.firemode") + ": " + getFiremode(stack).translatedName());
         if(GuiScreen.isShiftKeyDown()) {
-            if(wepStats.damage == null)
+            if(!wepStats.shouldDisplayStatistics())
                 return;
-            tooltip.add(I18n.format("gun.desc.damage") + ": " + TextFormatting.RED + DevUtil.formatToTwoDecimals(wepStats.damage.getAsFloat()));
-            tooltip.add(I18n.format("gun.desc.velocity") + ": " + TextFormatting.AQUA + DevUtil.formatToTwoDecimals(wepStats.velocity.getAsFloat() * 20) + " m/s");
+            tooltip.add(I18n.format("gun.desc.damage") + ": " + TextFormatting.RED + DevUtil.formatToTwoDecimals(wepStats.getDamage()));
+            tooltip.add(I18n.format("gun.desc.velocity") + ": " + TextFormatting.AQUA + DevUtil.formatToTwoDecimals(wepStats.getVelocity() * 20) + " m/s");
             tooltip.add(I18n.format("gun.desc.ammotype") + ": " + TextFormatting.GREEN + ammoType.translatedName());
             tooltip.add(I18n.format("gun.desc.firerate") + ": " + TextFormatting.GOLD + DevUtil.formatToTwoDecimals(20.0D / firerate) + " shots per second");
         } else if(GuiScreen.isCtrlKeyDown()) {
@@ -274,7 +273,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         return attachments;
     }
 
-    public CFGWeapon getConfigurableStats() {
+    public WeaponStats getWeaponStats() {
         return wepStats;
     }
 
@@ -337,11 +336,11 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     public float getHorizontalRecoil() {
-        return horizontalRecoil * wepStats.horizontalRecoilMultiplier.getAsFloat();
+        return horizontalRecoil * wepStats.getHorizontalRecoil();
     }
 
     public float getVerticalRecoil() {
-        return verticalRecoil * wepStats.verticalRecoilMultiplier.getAsFloat();
+        return verticalRecoil * wepStats.getVerticalRecoil();
     }
 
     public int getAmmo(ItemStack stack) {

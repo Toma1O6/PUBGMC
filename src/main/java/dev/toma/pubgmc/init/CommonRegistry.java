@@ -26,7 +26,6 @@ import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.common.CFGWeapon;
 import dev.toma.pubgmc.config.common.CFGWeapons;
 import dev.toma.pubgmc.util.Constants;
 import dev.toma.pubgmc.util.helper.AttachmentHelper;
@@ -241,7 +240,7 @@ public class CommonRegistry {
                 new ItemVehicleSpawner("vehicle_uaz", ItemVehicleSpawner.Vehicles.UAZ),
                 new ItemVehicleSpawner("vehicle_dacia", ItemVehicleSpawner.Vehicles.DACIA),
                 GunBuilder.create("flare_gun", FlareGun::new)
-                        .stats(new CFGWeapon("Flare gun", 0f, 0f, 0f, 0))
+                        .stats(WeaponStats.empty())
                         .firerate(110)
                         .recoil(1.0F, 0.1F)
                         .reload(IReloader.magazine(), 70, PMCSounds.reload_flare)

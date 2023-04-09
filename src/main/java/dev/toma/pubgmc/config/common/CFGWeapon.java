@@ -5,12 +5,13 @@ import dev.toma.configuration.api.type.DoubleType;
 import dev.toma.configuration.api.type.IntType;
 import dev.toma.configuration.api.type.ObjectType;
 import dev.toma.configuration.api.util.NumberDisplayType;
+import dev.toma.pubgmc.common.items.guns.WeaponStats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.text.DecimalFormat;
 
-public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTTagCompound> {
+public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTTagCompound>, WeaponStats {
 
     public DoubleType damage;
     public DoubleType velocity;
@@ -53,5 +54,35 @@ public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTT
     public void deserializeNBT(NBTTagCompound nbt) {
         horizontalRecoilMultiplier.set((double) nbt.getFloat("horizontal"));
         verticalRecoilMultiplier.set((double) nbt.getFloat("vertical"));
+    }
+
+    @Override
+    public float getDamage() {
+        return damage.getAsFloat();
+    }
+
+    @Override
+    public float getVelocity() {
+        return velocity.getAsFloat();
+    }
+
+    @Override
+    public float getGravityModifier() {
+        return gravityModifier.getAsFloat();
+    }
+
+    @Override
+    public int getGravityEffectStart() {
+        return gravityEffectStart.get();
+    }
+
+    @Override
+    public float getVerticalRecoil() {
+        return verticalRecoilMultiplier.getAsFloat();
+    }
+
+    @Override
+    public float getHorizontalRecoil() {
+        return horizontalRecoilMultiplier.getAsFloat();
     }
 }
