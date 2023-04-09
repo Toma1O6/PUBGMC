@@ -1,11 +1,7 @@
 package dev.toma.pubgmc.common.capability.player;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
@@ -23,40 +19,42 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
     @Deprecated
     boolean isAiming();
 
+    @Deprecated
     boolean isReloading();
 
+    @Deprecated
     void setNV(boolean nv);
 
+    @Deprecated
     boolean isUsingNV();
 
+    @Deprecated
     void setBackpackLevel(int level);
 
+    @Deprecated
     int getBackpackLevel();
 
+    @Deprecated
     void hasEquippedNV(boolean nv);
 
+    @Deprecated
     boolean getEquippedNV();
 
-    boolean isProning();
+    boolean isProne();
 
-    void setProning(boolean proning);
+    void setProne(boolean proning);
 
+    /**
+     * @deprecated Rework the distance logic, move out of player data
+     */
+    @Deprecated
     double getDistance();
 
+    /**
+     * @deprecated Rework the distance logic, move out of player data
+     */
+    @Deprecated
     void setDistance(double dist);
 
     void sync();
-
-    class PlayerDataStorage implements IStorage<IPlayerData> {
-
-        @Override
-        public NBTBase writeNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side) {
-            return instance.serializeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<IPlayerData> capability, IPlayerData instance, EnumFacing side, NBTBase nbt) {
-            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
-        }
-    }
 }

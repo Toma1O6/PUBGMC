@@ -60,6 +60,10 @@ public class ReloadInfo implements INBTSerializable<NBTTagCompound> {
         this.reloading = reloading;
     }
 
+    public boolean isReloading() {
+        return reloading;
+    }
+
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();

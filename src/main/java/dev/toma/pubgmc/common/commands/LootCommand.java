@@ -1,20 +1,17 @@
 package dev.toma.pubgmc.common.commands;
 
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
-import dev.toma.pubgmc.common.capability.IWorldData;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.BlockPosArgument;
 import dev.toma.pubgmc.common.commands.core.arg.IntArgument;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketDisplayLootSetupGui;
+import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.game.loot.ILootSpawner;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -40,14 +37,13 @@ public class LootCommand extends AbstractCommand {
         new TextComponentTranslation("commands.pubgmc.loot.help.generate"),
         new TextComponentTranslation("commands.pubgmc.loot.help.clear"),
         new TextComponentTranslation("commands.pubgmc.loot.help.show"),
-        new TextComponentTranslation("commands.pubgmc.loot.help.reset"),
-        new TextComponentTranslation("commands.pubgmc.loot.help.setup"),
+        new TextComponentTranslation("commands.pubgmc.loot.help.reload"),
         new TextComponentTranslation("commands.pubgmc.loot.help.destroy"),
         new TextComponentTranslation("commands.pubgmc.loot.help.count"),
     };
 
     private static final CommandTree COMMAND = CommandTree.Builder.command("loot")
-            .usage("/loot [generate|clear|show|info|reset|setup|destroy|count|help]")
+            .usage("/loot [generate|clear|show|info|reload|destroy|count|help]")
             .permissionLevel(2)
             .defaultExecutorPropagationStrategy(DefaultExecutorPropagationStrategy.LAST_NODE)
             .executes(LootCommand::executeDefault)
@@ -76,12 +72,8 @@ public class LootCommand extends AbstractCommand {
                             .executes(LootCommand::showLootGenerators)
             )
             .node(
-                    CommandNodeProvider.literal("reset")
-                            .executes(LootCommand::resetLootConfiguration)
-            )
-            .node(
-                    CommandNodeProvider.literal("setup")
-                            .executes(LootCommand::setupLootConfiguration)
+                    CommandNodeProvider.literal("reload")
+                            .executes(LootCommand::reloadLootConfiguration)
             )
             .node(
                     CommandNodeProvider.literal("destroy")
@@ -156,21 +148,13 @@ public class LootCommand extends AbstractCommand {
         }, (tile, spawner) -> tile instanceof TileEntityLootGenerator);
     }
 
-    private static void resetLootConfiguration(CommandContext context) throws CommandException {
-        IWorldData worldData = getWorldData(context);
-        worldData.toggleAirdropWeapons(false);
-        worldData.toggleAmmoLoot(true);
-        worldData.toggleRandomAmmoCount(false);
-        worldData.resetWeaponLootGeneration();
-        worldData.setLootChanceMultiplier(1.0D);
-        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.configuration_reset"));
-    }
-
-    private static void setupLootConfiguration(CommandContext context) throws CommandException {
-        IWorldData worldData = getWorldData(context);
-        if (context.getSender() instanceof EntityPlayerMP) {
-            PacketHandler.sendToClient(new PacketDisplayLootSetupGui(worldData.serializeNBT()), (EntityPlayerMP) context.getSender());
+    private static void reloadLootConfiguration(CommandContext context) throws CommandException {
+        try {
+            LootManager.load();
+        } catch (Exception e) {
+            throw new WrongUsageException("Loot reload failed", e);
         }
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.configuration_reload"));
     }
 
     private static void destroyLootGenerators(CommandContext context) throws CommandException {

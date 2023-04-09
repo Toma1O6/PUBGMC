@@ -2,7 +2,7 @@ package dev.toma.pubgmc.world;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.games.Game;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.util.PUBGMCUtil;

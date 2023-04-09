@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.capability;
+package dev.toma.pubgmc.common.capability.game;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.games.Game;
@@ -13,7 +13,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
@@ -22,9 +21,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Preparation for customizable map zone etc
- */
+// TODO rewrite completely
 public interface IGameData extends INBTSerializable<NBTTagCompound> {
 
     void addSpawnLocation(MapLocation location);
@@ -54,19 +51,6 @@ public interface IGameData extends INBTSerializable<NBTTagCompound> {
     Lobby getLobby();
 
     boolean isInactiveGame();
-
-
-    class GameDataStorage implements IStorage<IGameData> {
-        @Override
-        public void readNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side, NBTBase nbt) {
-            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
-        }
-
-        @Override
-        public NBTBase writeNBT(Capability<IGameData> capability, IGameData instance, EnumFacing side) {
-            return instance.serializeNBT();
-        }
-    }
 
     class GameData implements IGameData {
 

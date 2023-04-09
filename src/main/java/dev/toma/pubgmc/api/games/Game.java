@@ -12,7 +12,7 @@ import dev.toma.pubgmc.api.teams.Team;
 import dev.toma.pubgmc.api.util.DeathMessage;
 import dev.toma.pubgmc.api.util.EntityDeathContex;
 import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketSyncGameData;

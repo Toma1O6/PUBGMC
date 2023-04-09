@@ -1,9 +1,8 @@
 package dev.toma.pubgmc.common.entity;
 
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.init.PMCBlocks;
-import dev.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

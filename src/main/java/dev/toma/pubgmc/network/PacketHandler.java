@@ -2,8 +2,8 @@ package dev.toma.pubgmc.network;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.network.server.*;
 import dev.toma.pubgmc.network.client.*;
+import dev.toma.pubgmc.network.server.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler {
+
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Pubgmc.MOD_ID);
     private static int ID = 0;
 
@@ -29,7 +30,6 @@ public class PacketHandler {
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
         registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
-        registerServerPacket(PacketUpdateLootData.Handler.class, PacketUpdateLootData.class);
         registerServerPacket(SPacketControllableInput.Handler.class, SPacketControllableInput.class);
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
@@ -42,7 +42,6 @@ public class PacketHandler {
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
         registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
         registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
-        registerClientPacket(PacketDisplayLootSetupGui.Handler.class, PacketDisplayLootSetupGui.class);
         registerClientPacket(PacketSyncGameData.Handler.class, PacketSyncGameData.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
         registerClientPacket(PacketOpenObjectiveGui.Handler.class, PacketOpenObjectiveGui.class);

@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.network.client;
 
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;

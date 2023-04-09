@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.items.game;
 import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.games.GameObjectiveBased;
 import dev.toma.pubgmc.api.objectives.types.GameArea;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketOpenObjectiveGui;

@@ -1,18 +1,20 @@
 package dev.toma.pubgmc.common.tileentity;
 
+import dev.toma.pubgmc.data.loot.LootConfigurations;
+import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.game.loot.ILootSpawner;
-import dev.toma.pubgmc.util.game.loot.LootManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 
+import java.util.List;
+
 public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ILootSpawner, ITickable {
 
     private String hash = "empty";
     private NonNullList<ItemStack> inventory;
-    private static LootManager manager;
 
     public TileEntityAirdrop() {
         this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
@@ -24,7 +26,11 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     }
 
     public void onLanded() {
-        this.getManager(false).generateLootIn(this, this.getInventory().size() / 9);
+        String configuration = inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
+        List<ItemStack> generatedItems = LootManager.getInstance().generateFromConfiguration(configuration, world, this, pos);
+        for (int i = 0; i < Math.min(inventory.size(), generatedItems.size()); i++) {
+            setInventorySlotContents(i, generatedItems.get(i));
+        }
     }
 
     @Override
@@ -69,10 +75,5 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
                 world.spawnParticle(EnumParticleTypes.CLOUD, this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 0, 0.2, 0);
             }
         }
-    }
-
-    public LootManager getManager(boolean needsUpdate) {
-        if(manager == null || needsUpdate) manager = new LootManager(this.world);
-        return manager;
     }
 }

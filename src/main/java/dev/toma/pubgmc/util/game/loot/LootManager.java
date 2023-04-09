@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.util.game.loot;
 
-import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.items.armor.ItemGhillie;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -9,7 +9,7 @@ import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketSyncTileEntity;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.math.IWeight;
-import dev.toma.pubgmc.util.math.WeightedRandom;
+import dev.toma.pubgmc.util.math.WeightedRandomUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// TODO remove and replace by data driven loot system
+@Deprecated
 public class LootManager {
 
     private static final HashMap<LootType, List<LootEntry>> MAP = new HashMap<>();
@@ -54,7 +56,7 @@ public class LootManager {
         int currentIndex = 0;
         while (generatorRuns > 0 && currentIndex < maxIndex) {
             --generatorRuns;
-            LootType type = WeightedRandom.getRandom(MAP.keySet());
+            LootType type = WeightedRandomUtil.getRandom(MAP.keySet());
             List<LootEntry> entryList = new ArrayList<>(MAP.get(type));
             if (!loot.isSpecialLoot) {
                 entryList = entryList.stream().filter(lootEntry -> !lootEntry.isSpecialLoot).collect(Collectors.toList());
@@ -63,7 +65,7 @@ public class LootManager {
             if(flag) {
                 entryList = entryList.stream().filter(lootEntry -> lootEntry.stack.getItem() instanceof GunBase && PUBGMCUtil.contains(((GunBase) lootEntry.stack.getItem()).getGunType(), loot.validWeaponTypes)).collect(Collectors.toList());
             }
-            inventory.set(currentIndex, WeightedRandom.getRandom(entryList, WeightedRandom.getTotalWeight(entryList), loot.chanceModifier).get());
+            inventory.set(currentIndex, WeightedRandomUtil.getRandom(entryList, WeightedRandomUtil.getTotalWeight(entryList), loot.chanceModifier).get());
             ++currentIndex;
             if(flag && loot.genAmmo) {
                 AmmoType ammoType = ((GunBase) inventory.get(currentIndex - 1).getItem()).getAmmoType();
@@ -136,7 +138,7 @@ public class LootManager {
             entries = entries.stream().filter(e -> e.stack.getItem() instanceof GunBase && PUBGMCUtil.contains(((GunBase) e.stack.getItem()).getGunType(), allowedTypes)).collect(Collectors.toList());
         }
         entries = entries.stream().filter(e -> flag == 0 ? !e.isSpecialLoot : flag == 2 ? e.isSpecialLoot : e != null).collect(Collectors.toList());
-        return WeightedRandom.getRandom(entries).stack.getItem();
+        return WeightedRandomUtil.getRandom(entries).stack.getItem();
     }
 
     public static void register(LootType type, LootEntry entry) {

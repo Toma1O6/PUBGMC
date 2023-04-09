@@ -258,13 +258,13 @@ public class ClientEvents {
         if (KeyBinds.PRONE.isPressed()) {
             IPlayerData data = PlayerData.get(sp);
             if (data != null) {
-                data.setProning(!data.isProning());
+                data.setProne(!data.isProne());
                 if(data.getAimInfo().isAiming()) this.setAiming(data, false);
                 if(data.isReloading()) {
                     data.getReloadInfo().interrupt(data);
                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 }
-                PacketHandler.sendToServer(new PacketProne(data.isProning()));
+                PacketHandler.sendToServer(new PacketProne(data.isProne()));
             }
         }
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -494,7 +494,7 @@ public class ClientEvents {
         float vertical = 1.0F;
         float horizontal = 1.0F;
         IPlayerData data = PlayerData.get(player);
-        if(data.isProning()) {
+        if(data.isProne()) {
             vertical *= 0.3F;
             horizontal *= 0.3F;
         } else if(player.isSneaking()) {

@@ -5,7 +5,7 @@ import dev.toma.pubgmc.api.Lobby;
 import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.interfaces.BotSpawner;
 import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityPlane;

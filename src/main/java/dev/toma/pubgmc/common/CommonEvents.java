@@ -2,8 +2,8 @@ package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationType;
-import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
+import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
@@ -14,7 +14,6 @@ import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
-import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.CPacketAnimation;
 import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
@@ -22,6 +21,7 @@ import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -46,8 +46,8 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -139,11 +139,17 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public void cancelKnockback(LivingKnockBackEvent event) {
+        // TODO config option/find way to restrict weapon damage sources only
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
     public void onTick(PlayerTickEvent ev) {
         EntityPlayer player = ev.player;
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         player.eyeHeight = player.getDefaultEyeHeight();
-        if(data.isProning()) {
+        if(data.isProne()) {
             AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
             player.setEntityBoundingBox(proneBB);
             player.height = 0.9F;
@@ -152,8 +158,8 @@ public class CommonEvents {
         if(ev.phase == Phase.END)
             return;
         data.tick();
-        if((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProning() && !player.world.isRemote) {
-            data.setProning(false);
+        if((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProne() && !player.world.isRemote) {
+            data.setProne(false);
             data.sync();
         }
         if (!player.world.isRemote) {
@@ -213,7 +219,7 @@ public class CommonEvents {
             EntityPlayer player = (EntityPlayer) e.getEntity();
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(PRONE_MODIFIER);
-            if(data.isProning()) {
+            if(data.isProne()) {
                 player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(PRONE_MODIFIER);
             }
 

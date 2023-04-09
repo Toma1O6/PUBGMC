@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.util.game.loot;
 
 import com.google.common.base.Preconditions;
-import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 
 public class LootOptions {

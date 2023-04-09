@@ -34,7 +34,7 @@ public class ClientHooks {
         if(data == null)
             return;
         boolean isHoldingWeapon = player.getHeldItemMainhand().getItem() instanceof GunBase;
-        boolean isProne = data.isProning();
+        boolean isProne = data.isProne();
         boolean playerModel = model instanceof ModelPlayer;
         if(isProne) {
             float f0 = (float) Math.toRadians(180.0F);
@@ -89,7 +89,7 @@ public class ClientHooks {
 
     public static void player_preRenderCallback(RenderPlayer render, AbstractClientPlayer abstractClientPlayer, float partialTicks) {
         IPlayerData data = PlayerData.get(abstractClientPlayer);
-        if(data != null && data.isProning()) {
+        if(data != null && data.isProne()) {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 0.9F, 0.12F);
         }

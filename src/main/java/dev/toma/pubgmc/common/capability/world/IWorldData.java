@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.capability;
+package dev.toma.pubgmc.common.capability.world;
 
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.nbt.NBTBase;
@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
@@ -16,52 +15,60 @@ import net.minecraftforge.common.util.INBTSerializable;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO this can be possibly completely removed
 public interface IWorldData extends INBTSerializable<NBTTagCompound> {
+
+    // TODO to be removed with implementation of dynamic data driven loot config
+    @Deprecated
     void toggleAirdropWeapons(boolean enable);
 
+    @Deprecated
     boolean hasAirdropWeapons();
 
+    @Deprecated
     void toggleAmmoLoot(boolean enableAmmo);
 
+    @Deprecated
     boolean isAmmoLootEnabled();
 
+    @Deprecated
     void toggleRandomAmmoCount(boolean randomAmmo);
 
+    @Deprecated
     boolean isRandomAmmoCountEnabled();
 
+    @Deprecated
     double getLootChanceMultiplier();
 
+    @Deprecated
     void setLootChanceMultiplier(double chance);
 
+    @Deprecated
     void addWeaponTypeToLootGeneration(GunBase.GunType typeToAdd);
 
+    @Deprecated
     void removeWeaponTypeFromLootGeneration(GunBase.GunType typeToRemove);
 
+    @Deprecated
     List<GunBase.GunType> getWeaponList();
 
+    @Deprecated
     void setWeaponList(int[] enumIDs);
 
+    @Deprecated
     void resetWeaponLootGeneration();
 
+    @Deprecated
     void setGhillieSuitsColorVariants(List<Integer> list);
 
+    @Deprecated
     List<Integer> getGhillieSuitsColorVariants();
 
+    @Deprecated
     void addColorVariant(int color);
 
+    @Deprecated
     void removeColorVariant(int color);
-
-    class WorldDataStorage implements IStorage<IWorldData> {
-        @Override
-        public NBTBase writeNBT(Capability<IWorldData> cap, IWorldData i, EnumFacing side) {
-            return i.serializeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<IWorldData> capability, IWorldData instance, EnumFacing side, NBTBase nbt) {
-            instance.deserializeNBT(nbt instanceof NBTTagCompound ? (NBTTagCompound)nbt : new NBTTagCompound());
-        }
-    }
 
     class WorldData implements IWorldData {
 

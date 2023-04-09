@@ -274,21 +274,17 @@ model.belt=Belt
 model.top=Top
 
 commands.pubgmc.leave.success=You have been teleported back to lobby
-commands.pubgmc.ghillie_colors.added=New color has been registered: %s
-commands.pubgmc.ghillie_colors.removed=Color at index %s has been removed: %s
-commands.pubgmc.ghillie_colors.list_header=Registered variants: ([index] - hex color code)
 commands.pubgmc.loot.no_loot_spawner=No loot spawners have been located!
 commands.pubgmc.loot.generated=Generated loot inside %s loot spawners
 commands.pubgmc.loot.cleared=Cleared loot inside %s loot spawners
-commands.pubgmc.loot.configuration_reset=Loot configuration has been reset to default values
+commands.pubgmc.loot.configuration_reload=Loot configuration has been reloaded
 commands.pubgmc.loot.destroyed=Destroyed %s loot spawners
 commands.pubgmc.loot.found=Found %s available loot spawners
 commands.pubgmc.loot.help.header==== Loot command parameters ===
 commands.pubgmc.loot.help.generate=- generate optional:[Blockpos] optional*:[Range] >> generates loot in loaded loot spawners within specified range
 commands.pubgmc.loot.help.clear=- clear optional:[Blockpos] optional*:[Range] >> clears loot in loaded loot spawners within specified range
 commands.pubgmc.loot.help.show=- show >> will fill available loot spawners with dyes for easier spotting
-commands.pubgmc.loot.help.reset=- reset >> will revert to default loot configuration
-commands.pubgmc.loot.help.setup=- setup >> will open loot configuration UI
+commands.pubgmc.loot.help.reload=- reload >> will reload all loot configurations
 commands.pubgmc.loot.help.destroy=- destroy optional:[Blockpos] optional*:[Range] >> will destroy all loot spawners within specified range
 commands.pubgmc.loot.help.count=- count optional:[Blockpos] optional*:[Range] >> will display amount of currently loaded loot spawners which would generate loot
 commands.pubgmc.clearplayercrates.success=Removed %s player crates

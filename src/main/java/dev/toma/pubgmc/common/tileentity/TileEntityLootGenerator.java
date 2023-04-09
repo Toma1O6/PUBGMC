@@ -1,9 +1,10 @@
 package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
+import dev.toma.pubgmc.data.loot.LootConfigurations;
+import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.game.loot.ILootSpawner;
-import dev.toma.pubgmc.util.game.loot.LootManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -15,10 +16,11 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 // TODO stop using IInventory
 public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, ILootSpawner {
 
-    public static LootManager lootManager;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
     private String gameID = "EMPTY";
@@ -78,7 +80,13 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
 
     @Override
     public void onLoaded() {
-        this.getLootManager(false).generateLootIn(this, 2 * (world.getBlockState(pos).getValue(BlockLootSpawner.LOOT) + 1));
+        clear();
+        int tier = world.getBlockState(pos).getValue(BlockLootSpawner.LOOT);
+        String configurationKey = LootConfigurations.LOOT_SPAWNER[tier];
+        List<ItemStack> generated = LootManager.getInstance().generateFromConfiguration(configurationKey, world, this, pos);
+        for (int i = 0; i < Math.min(generated.size(), inventory.size()); i++) {
+            setInventorySlotContents(i, generated.get(i));
+        }
     }
 
     @Override
@@ -89,10 +97,5 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
     @Override
     public boolean isAirdropContainer() {
         return false;
-    }
-
-    public LootManager getLootManager(boolean requiresUpdate) {
-        if(lootManager == null || requiresUpdate) lootManager = new LootManager(world);
-        return lootManager;
     }
 }

@@ -1,50 +1,73 @@
 package dev.toma.pubgmc.util.math;
 
-import dev.toma.pubgmc.Pubgmc;
+import com.google.gson.JsonObject;
+import net.minecraft.util.JsonUtils;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
-public final class WeightedRandom {
+public class WeightedRandom<T> {
 
-    public static int getTotalWeight(Collection<? extends IWeight> collection) {
-        int total = 0;
-        for (IWeight weight : collection) {
-            total += weight.getWeight();
-        }
-        return total;
+    private final Random random = new Random();
+    private final List<T> values;
+    private final ToIntFunction<T> weightProvider;
+    private final int sum;
+
+    public WeightedRandom(ToIntFunction<T> weightProvider, List<T> values) {
+        this.values = values;
+        this.weightProvider = weightProvider;
+        this.sum = values.stream()
+                .mapToInt(weightProvider)
+                .sum();
     }
 
-    public static <T extends IWeight> T getRandom(Collection<T> collection) {
-        return getRandom(collection, getTotalWeight(collection));
-    }
-
-    public static <T extends IWeight> T getRandom(Collection<T> collection, int totalWeight) {
-        if(totalWeight <= 0) {
-            throw new IllegalArgumentException("Total weight must be > 0!");
-        }
-        int weight = Pubgmc.rng().nextInt(totalWeight);
-        for(T t : collection) {
-            weight -= t.getWeight();
-            if(weight < 0.0D) {
-                return t;
+    public T getElement() {
+        int value = random.nextInt(sum);
+        for (int i = values.size() - 1; i >= 0; i--) {
+            T element = values.get(i);
+            value -= weightProvider.applyAsInt(element);
+            if (value < 0) {
+                return element;
             }
         }
         return null;
     }
 
-    public static <T extends IWeight> T getRandom(List<T> collection, int totalWeight, double modifier) {
-        if(totalWeight <= 0) {
-            throw new IllegalArgumentException("Total weight must be > 0!");
+    public List<T> getValues() {
+        return values;
+    }
+
+    public static final class Entry<T> {
+
+        private final int weight;
+        private final T element;
+
+        public Entry(int weight, T element) {
+            this.weight = weight;
+            this.element = element;
         }
-        double weight = Pubgmc.rng().nextInt(totalWeight);
-        for(int i = collection.size() - 1; i >= 0; i--) {
-            T t = collection.get(i);
-            weight -= t.getWeight() * modifier;
-            if(weight < 0.0D) {
-                return t;
-            }
+
+        public int getWeight() {
+            return weight;
         }
-        return null;
+
+        public T getElement() {
+            return element;
+        }
+
+        public JsonObject serializeJson(Function<T, JsonObject> serializer) {
+            JsonObject object = new JsonObject();
+            object.addProperty("weight", weight);
+            object.add("entry", serializer.apply(element));
+            return object;
+        }
+
+        public static <T> Entry<T> deserializeJson(JsonObject object, Function<JsonObject, T> deserializer) {
+            int weight = JsonUtils.getInt(object, "weight", 1);
+            T t = deserializer.apply(JsonUtils.getJsonObject(object, "entry"));
+            return new Entry<>(weight, t);
+        }
     }
 }

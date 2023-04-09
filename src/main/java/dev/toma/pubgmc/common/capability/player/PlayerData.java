@@ -120,12 +120,12 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public boolean isProning() {
+    public boolean isProne() {
         return isProne;
     }
 
     @Override
-    public void setProning(boolean proning) {
+    public void setProne(boolean proning) {
         this.isProne = proning;
     }
 

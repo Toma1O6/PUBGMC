@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.entity.bot;
 
 import dev.toma.pubgmc.api.games.Game;
 import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;

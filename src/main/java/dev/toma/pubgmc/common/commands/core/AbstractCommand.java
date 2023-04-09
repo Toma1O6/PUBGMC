@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.commands.core;
 
-import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
+import dev.toma.pubgmc.common.capability.world.IWorldData;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,14 +1,11 @@
 package dev.toma.pubgmc.init;
 
-import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-
-import javax.annotation.Nullable;
 
 public class DamageSourceGun extends EntityDamageSourceIndirect {
 

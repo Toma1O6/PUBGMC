@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.commands;
 
 import dev.toma.pubgmc.api.Lobby;
 import dev.toma.pubgmc.api.games.Game;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.*;
 import dev.toma.pubgmc.init.GameRegistry;

@@ -12,7 +12,7 @@ import dev.toma.pubgmc.api.settings.TeamManager;
 import dev.toma.pubgmc.api.teams.Team;
 import dev.toma.pubgmc.api.teams.TeamSettings;
 import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.common.capability.IGameData;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;

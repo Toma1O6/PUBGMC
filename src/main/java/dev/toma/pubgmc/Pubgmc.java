@@ -2,11 +2,18 @@ package dev.toma.pubgmc;
 
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
-import dev.toma.pubgmc.common.capability.IGameData;
-import dev.toma.pubgmc.common.capability.IWorldData;
+import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
+import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.commands.*;
+import dev.toma.pubgmc.data.SimpleObjectRegistry;
+import dev.toma.pubgmc.data.loot.LootManager;
+import dev.toma.pubgmc.data.loot.LootProviderType;
+import dev.toma.pubgmc.data.loot.LootProviders;
+import dev.toma.pubgmc.data.loot.processor.LootProcessorType;
+import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCItems;
@@ -51,8 +58,13 @@ public class Pubgmc {
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     public static final int CONTENT_DATA_VERSION = 1;
+
+    public static final SimpleObjectRegistry<LootProviderType<?>> LOOT_PROVIDER_TYPE_REGISTRY = new SimpleObjectRegistry<>(LootProviderType::getProviderId);
+    public static final SimpleObjectRegistry<LootProcessorType<?>> LOOT_PROCESSOR_TYPE_REGISTRY = new SimpleObjectRegistry<>(LootProcessorType::getIdentifier);
+
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");
+
     public static boolean isDevEnvironment;
     @Instance
     public static Pubgmc instance;
@@ -73,11 +85,14 @@ public class Pubgmc {
 
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
-        CapabilityManager.INSTANCE.register(IWorldData.class, new IWorldData.WorldDataStorage(), IWorldData.WorldData::new);
-        CapabilityManager.INSTANCE.register(IPlayerData.class, new IPlayerData.PlayerDataStorage(), PlayerData::new);
-        CapabilityManager.INSTANCE.register(IGameData.class, new IGameData.GameDataStorage(), IGameData.GameData::new);
+        CapabilityManager.INSTANCE.register(IWorldData.class, SimpleStorageImpl.instance(), IWorldData.WorldData::new);
+        CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
+        CapabilityManager.INSTANCE.register(IGameData.class, SimpleStorageImpl.instance(), IGameData.GameData::new);
 
         dev.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
+
+        LootProviders.registerLootProviders();
+        LootProcessors.registerLootProcessors();
 
         proxy.preInit(event);
     }
@@ -89,6 +104,7 @@ public class Pubgmc {
         registerSmeltingRecipes();
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
+        LootManager.load();
     }
 
     @EventHandler
@@ -104,7 +120,6 @@ public class Pubgmc {
         event.registerServerCommand(new ClearPlayerCratesCommand());
         event.registerServerCommand(new AirdropCommand());
         event.registerServerCommand(new GameCommand());
-        event.registerServerCommand(new ManageGhillieVariantsCommand());
     }
 
     private static void registerSmeltingRecipes() {
@@ -120,17 +135,6 @@ public class Pubgmc {
         ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
         ForgeVersion.Status status = result.status;
         return status == ForgeVersion.Status.OUTDATED || status == ForgeVersion.Status.BETA_OUTDATED;
-    }
-
-    public static boolean isEarlyAccess() {
-        if(earlyAccess != null)
-            return earlyAccess;
-        ModContainer container = Loader.instance().activeModContainer();
-        if(container == null)
-            return false;
-        ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
-        ForgeVersion.Status status = result.status;
-        return earlyAccess = status == ForgeVersion.Status.AHEAD;
     }
 
     public static ResourceLocation getResource(String path) {
