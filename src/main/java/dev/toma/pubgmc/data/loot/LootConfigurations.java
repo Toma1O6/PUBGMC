@@ -30,7 +30,7 @@ public final class LootConfigurations {
     }
 
     private static void generateLootTier1(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap) {
-        LootProvider pool = new CountLootProvider(1, 2, new WeightedLootProvider(Arrays.asList(
+        LootProvider pool = new CountLootProvider(0, 2, new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(7, getMeds(10, 7, 5, 1)),
                 new WeightedRandom.Entry<>(10, getArmor(30, 17, 3)),
                 new WeightedRandom.Entry<>(15, getAttachments(40, 15, 2)),
