@@ -73,7 +73,7 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     @Override
     public void update() {
         if(world.isRemote && !this.isEmpty()) {
-            if(world.getWorldTime() % 3 == 0) {
+            if(world.getTotalWorldTime() % 3 == 0) {
                 world.spawnParticle(EnumParticleTypes.CLOUD, this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 0, 0.2, 0);
             }
         }

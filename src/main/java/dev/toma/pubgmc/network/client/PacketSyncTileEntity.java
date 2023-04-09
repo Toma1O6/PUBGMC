@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.network.client;
 
+import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.PacketHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
