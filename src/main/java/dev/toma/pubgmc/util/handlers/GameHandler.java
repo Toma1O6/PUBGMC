@@ -165,10 +165,10 @@ public class GameHandler {
                 IPlayerData playerData = PlayerData.get(player);
                 if (!player.world.isRemote) {
                     for (SpecialEquipmentSlot slot : SpecialEquipmentSlot.values()) {
-                        ItemStack stack = playerData.getEquipmentItem(slot);
+                        ItemStack stack = playerData.getSpecialItemFromSlot(slot);
                         if (!stack.isEmpty()) {
                             player.dropItem(stack, true, false);
-                            playerData.setEquipmentItem(slot, ItemStack.EMPTY);
+                            playerData.setSpecialItemToSlot(slot, ItemStack.EMPTY);
                         }
                     }
                 }

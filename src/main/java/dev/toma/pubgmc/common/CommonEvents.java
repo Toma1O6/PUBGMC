@@ -277,7 +277,7 @@ public class CommonEvents {
         if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
             return;
         }
-        ItemStack backpackStack = data.getEquipmentItem(SpecialEquipmentSlot.BACKPACK);
+        ItemStack backpackStack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.BACKPACK);
         int slotCount = 9;
         if (!backpackStack.isEmpty() && backpackStack.getItem() instanceof Backpack) {
             Backpack backpack = (Backpack) backpackStack.getItem();

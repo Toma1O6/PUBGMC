@@ -1,12 +1,12 @@
 package dev.toma.pubgmc.common.capability.player;
 
+import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
+public interface IPlayerData extends INBTSerializable<NBTTagCompound>, SpecialInventoryProvider {
 
     BoostStats getBoostStats();
 
@@ -17,10 +17,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
     void tick();
 
     EntityPlayer getPlayer();
-
-    void setEquipmentItem(SpecialEquipmentSlot slot, ItemStack stack);
-
-    ItemStack getEquipmentItem(SpecialEquipmentSlot slot);
 
     IInventory getEquipmentInventory();
 

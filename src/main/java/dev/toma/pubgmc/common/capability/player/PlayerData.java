@@ -80,12 +80,12 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public ItemStack getEquipmentItem(SpecialEquipmentSlot slot) {
+    public ItemStack getSpecialItemFromSlot(SpecialEquipmentSlot slot) {
         return inventory.getStackInSlot(slot.ordinal());
     }
 
     @Override
-    public void setEquipmentItem(SpecialEquipmentSlot slot, ItemStack stack) {
+    public void setSpecialItemToSlot(SpecialEquipmentSlot slot, ItemStack stack) {
         inventory.setInventorySlotContents(slot.ordinal(), stack);
     }
 
@@ -116,7 +116,7 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public void setNightVisionActive(boolean status) {
-        if (!getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
+        if (!getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
             areNightVisionGogglesActive = status;
         } else {
             areNightVisionGogglesActive = false;
@@ -125,7 +125,7 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public boolean isNightVisionActive() {
-        return !getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION).isEmpty() && areNightVisionGogglesActive;
+        return !getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty() && areNightVisionGogglesActive;
     }
 
     @Override

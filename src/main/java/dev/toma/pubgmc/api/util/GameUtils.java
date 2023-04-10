@@ -20,7 +20,6 @@ import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.math.ZonePos;
 import dev.toma.pubgmc.world.BlueZone;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -186,7 +185,7 @@ public final class GameUtils {
         player.inventory.clear();
         IPlayerData data = PlayerData.get(player);
         for (SpecialEquipmentSlot slot : SpecialEquipmentSlot.values()) {
-            ItemStack stack = data.getEquipmentItem(slot);
+            ItemStack stack = data.getSpecialItemFromSlot(slot);
             if (!stack.isEmpty()) {
                 te.setInventorySlotContents(42 + slot.ordinal(), stack);
             }

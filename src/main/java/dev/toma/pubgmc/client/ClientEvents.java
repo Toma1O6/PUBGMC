@@ -250,7 +250,7 @@ public class ClientEvents {
 
         if (e.getType() == ElementType.ALL) {
             if (data.isNightVisionActive()) {
-                ItemStack nightVisionItem = data.getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION);
+                ItemStack nightVisionItem = data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION);
                 if (nightVisionItem.getItem() instanceof NightVisionGoggles) {
                     NightVisionGoggles goggles = (NightVisionGoggles) nightVisionItem.getItem();
                     ImageUtil.drawFullScreenImage(mc, res, goggles.getOverlayTexture(), true);
@@ -344,7 +344,7 @@ public class ClientEvents {
 
         //Same as above, we just send packet to server and everything else will be done in the rendering method above
         if (KeyBinds.NV.isPressed()) {
-            if (!data.getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
+            if (!data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
                 boolean status = !data.isNightVisionActive();
                 data.setNightVisionActive(status);
                 PacketHandler.sendToServer(new SPacketSetProperty(status, SPacketSetProperty.Action.NIGHT_VISION));
@@ -611,14 +611,14 @@ public class ClientEvents {
             offset += 17;
         }
 
-        ItemStack backpackStack = data.getEquipmentItem(SpecialEquipmentSlot.BACKPACK);
+        ItemStack backpackStack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.BACKPACK);
         if (!backpackStack.isEmpty() && backpackStack.getItem() instanceof Backpack) {
             Backpack backpack = (Backpack) backpackStack.getItem();
             renderIconWithBackground(mc, backpack.getHotbarIconPath(), left + offset, top, 16, 16, shade, shade, shade, 1.0F);
             offset += 17;
         }
 
-        ItemStack nightvisionStack = data.getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION);
+        ItemStack nightvisionStack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION);
         if (!nightvisionStack.isEmpty() && nightvisionStack.getItem() instanceof NightVisionGoggles) {
             NightVisionGoggles goggles = (NightVisionGoggles) nightvisionStack.getItem();
             boolean activeNightvision = data.isNightVisionActive();

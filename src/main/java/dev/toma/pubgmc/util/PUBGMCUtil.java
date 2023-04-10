@@ -1,14 +1,17 @@
 package dev.toma.pubgmc.util;
 
-import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.game.IGameData;
+import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketDelayedSound;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -122,5 +125,23 @@ public class PUBGMCUtil {
             return null;
         }
         return list.get(random.nextInt(list.size()));
+    }
+
+    public static boolean tryQuickEquip(EntityPlayer player, SpecialEquipmentSlot slot, ItemStack stack) {
+        IPlayerData data = PlayerData.get(player);
+        if (data == null)
+            return false;
+        ItemStack oldStack = data.getSpecialItemFromSlot(slot);
+        if (!oldStack.isEmpty())
+            return false;
+        ItemStack insert = stack.copy();
+        insert.setCount(1);
+        data.setSpecialItemToSlot(slot, insert);
+        data.sync();
+        player.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        if (!player.isCreative()) {
+            stack.shrink(1);
+        }
+        return true;
     }
 }

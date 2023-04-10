@@ -34,7 +34,7 @@ public final class ASMHooks {
         }
         IPlayerData data = PlayerData.get(playerInventory.player);
         if (data != null) {
-            ItemStack stack = data.getEquipmentItem(SpecialEquipmentSlot.BACKPACK);
+            ItemStack stack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.BACKPACK);
             if (stack.getItem() instanceof Backpack) {
                 Backpack backpack = (Backpack) stack.getItem();
                 int unlockedSlotCount = backpack.unlockSlotCount();
