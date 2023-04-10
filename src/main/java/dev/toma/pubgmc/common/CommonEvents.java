@@ -6,11 +6,13 @@ import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
 import dev.toma.pubgmc.common.items.MainHandOnly;
+import dev.toma.pubgmc.common.items.equipment.Backpack;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
@@ -44,6 +46,7 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -260,5 +263,52 @@ public class CommonEvents {
                 explodeable.getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, explodeable.getMaxFuse() - explodeable.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onItemPickup(EntityItemPickupEvent event) {
+        EntityPlayer player = event.getEntityPlayer();
+        ItemStack stack = event.getItem().getItem();
+        IPlayerData data = PlayerData.get(player);
+        if (data == null) {
+            return;
+        }
+        // TODO configuration toggle
+        ItemStack backpackStack = data.getEquipmentItem(SpecialEquipmentSlot.BACKPACK);
+        int slotCount = 9;
+        if (!backpackStack.isEmpty() && backpackStack.getItem() instanceof Backpack) {
+            Backpack backpack = (Backpack) backpackStack.getItem();
+            slotCount += backpack.unlockSlotCount();
+        }
+        boolean canInsert = false;
+        for (int i = 0; i < 36; i++) {
+            ItemStack inventoryItem = player.inventory.getStackInSlot(i);
+            if (i >= slotCount) {
+                break;
+            }
+            if (inventoryItem.isEmpty()) {
+                canInsert = true;
+                break;
+            }
+            if (areItemsSameTypeAndNbt(stack, inventoryItem)) {
+                if (inventoryItem.getCount() + stack.getCount() <= inventoryItem.getMaxStackSize()) {
+                    canInsert = true;
+                    break;
+                }
+            }
+        }
+        if (!canInsert) {
+            event.setCanceled(true);
+        }
+    }
+
+    private static boolean areItemsSameTypeAndNbt(ItemStack stack1, ItemStack stack2) {
+        if (!ItemStack.areItemsEqual(stack1, stack2)) {
+            return false;
+        }
+        if (stack1.getTagCompound() == null && stack2.getTagCompound() != null) {
+            return false;
+        }
+        return (stack1.getTagCompound() == null || stack1.getTagCompound().equals(stack2.getTagCompound())) && stack1.areCapsCompatible(stack2);
     }
 }

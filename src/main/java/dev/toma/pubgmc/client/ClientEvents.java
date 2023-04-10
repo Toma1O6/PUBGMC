@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client;
 import dev.toma.pubgmc.ClientHooks;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.asm.ASMHooks;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -47,6 +48,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,11 +60,8 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -502,6 +501,12 @@ public class ClientEvents {
         if(event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }
+    }
+
+    @SubscribeEvent
+    public void stitchTextures(TextureStitchEvent.Pre event) {
+        TextureMap map = event.getMap();
+        map.registerSprite(ASMHooks.LOCKED_SLOT_ICON);
     }
 
     private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {

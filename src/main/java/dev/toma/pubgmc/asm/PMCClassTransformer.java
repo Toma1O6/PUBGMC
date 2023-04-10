@@ -10,18 +10,21 @@ import org.objectweb.asm.tree.*;
 
 public class PMCClassTransformer implements IClassTransformer {
 
+    public static boolean isObfuscated = false;
     static final Logger log = LogManager.getLogger("pubgmc-core");
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        boolean isObfEnv = !name.equals(transformedName);
+        isObfuscated = !name.equals(transformedName);
         switch (transformedName) {
             case "net.minecraft.client.model.ModelBiped":
-                return this.injectPlayerSetupAngles(basicClass, isObfEnv);
+                return this.injectPlayerSetupAngles(basicClass);
             case "net.minecraft.client.renderer.entity.RenderPlayer":
-                return this.injectRenderPlayer(basicClass, isObfEnv);
+                return this.injectRenderPlayer(basicClass);
             case "net.minecraftforge.client.ForgeHooksClient":
                 return this.injectHandleCameraTransforms(basicClass);
+            case "net.minecraft.inventory.Slot":
+                return SlotClassTransformer.transform(basicClass);
         }
         return basicClass;
     }
@@ -84,7 +87,7 @@ public class PMCClassTransformer implements IClassTransformer {
     MAXSTACK = 8
     MAXLOCALS = 8
      */
-    byte[] injectPlayerSetupAngles(byte[] bytes, boolean isObf) {
+    byte[] injectPlayerSetupAngles(byte[] bytes) {
         log.info("Preparing injection into 'net.minecraft.client.model.ModelBiped'");
         ClassNode node = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
@@ -92,13 +95,13 @@ public class PMCClassTransformer implements IClassTransformer {
         Name m_setRotationAngles = new Name("setRotationAngles", "func_78087_a");
         String d_setRotationAngles = "(FFFFFFLnet/minecraft/entity/Entity;)V";
         for (MethodNode methodNode : node.methods) {
-            if(methodNode.name.equals(m_setRotationAngles.getName(isObf)) && methodNode.desc.equals(d_setRotationAngles)) {
+            if(methodNode.name.equals(m_setRotationAngles.getName(isObfuscated)) && methodNode.desc.equals(d_setRotationAngles)) {
                 InsnList insnList = methodNode.instructions;
                 boolean injected = false;
                 for (int i = insnList.size() - 1; i >= 0; i--) {
                     AbstractInsnNode insnNode = insnList.get(i);
                     if(insnNode.getOpcode() == Opcodes.RETURN) {
-                        log.info("Injecting hook into {} method", m_setRotationAngles.getName(isObf));
+                        log.info("Injecting hook into {} method", m_setRotationAngles.getName(isObfuscated));
                         InsnList list = new InsnList();
                         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
                         list.add(new VarInsnNode(Opcodes.ALOAD, 7));
@@ -149,7 +152,7 @@ public class PMCClassTransformer implements IClassTransformer {
     MAXSTACK = 6
     MAXLOCALS = 3
      */
-    byte[] injectRenderPlayer(byte[] bytes, boolean isObf) {
+    byte[] injectRenderPlayer(byte[] bytes) {
         log.info("Preparing injection into 'net.minecraft.client.renderer.entity.RenderPlayer'");
         ClassNode node = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
@@ -157,13 +160,13 @@ public class PMCClassTransformer implements IClassTransformer {
         Name m_preRenderCallback = new Name("preRenderCallback", "func_77041_b");
         String d_preRenderCallback = "(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V";
         for (MethodNode methodNode : node.methods) {
-            if(methodNode.name.equals(m_preRenderCallback.getName(isObf)) && methodNode.desc.equals(d_preRenderCallback)) {
+            if(methodNode.name.equals(m_preRenderCallback.getName(isObfuscated)) && methodNode.desc.equals(d_preRenderCallback)) {
                 InsnList insnList = methodNode.instructions;
                 boolean injected = false;
                 for (int i = insnList.size() - 1; i >= 0; i--) {
                     AbstractInsnNode insnNode = insnList.get(i);
                     if(insnNode.getOpcode() == Opcodes.RETURN) {
-                        log.info("Injecting hook into {} method", m_preRenderCallback.getName(isObf));
+                        log.info("Injecting hook into {} method", m_preRenderCallback.getName(isObfuscated));
                         InsnList list = new InsnList();
                         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
                         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
