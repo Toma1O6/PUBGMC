@@ -5,6 +5,7 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.items.equipment.Backpack;
+import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -24,9 +25,11 @@ public final class ASMHooks {
         return isSlotLockedByBackpackLimit(slot) ? LOCKED_SLOT_ICON.toString() : texture;
     }
 
-    // TODO configuration toggle
     public static boolean isSlotLocked(int slotIndex, InventoryPlayer playerInventory) {
         if (slotIndex < 9) {
+            return false;
+        }
+        if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
             return false;
         }
         IPlayerData data = PlayerData.get(playerInventory.player);

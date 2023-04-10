@@ -140,8 +140,9 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void cancelKnockback(LivingKnockBackEvent event) {
-        // TODO config option/find way to restrict weapon damage sources only
-        event.setCanceled(true);
+        if (!ConfigPMC.common.players.knockbackEnabled.get()) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -273,7 +274,9 @@ public class CommonEvents {
         if (data == null) {
             return;
         }
-        // TODO configuration toggle
+        if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
+            return;
+        }
         ItemStack backpackStack = data.getEquipmentItem(SpecialEquipmentSlot.BACKPACK);
         int slotCount = 9;
         if (!backpackStack.isEmpty() && backpackStack.getItem() instanceof Backpack) {
