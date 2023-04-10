@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.common.entity;
 
+import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -46,9 +48,14 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
 
     public void onEntityLanded() {
         IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
-        world.setBlockState(this.getPosition(), state, 3);
+        BlockPos landingPosition = GameUtils.getEmptyGroundPositionAt(world, this.getPosition());
+        if (landingPosition == null) {
+            Pubgmc.logger.warn("Failed to find valid ground position for airdrop " + this);
+            return;
+        }
+        world.setBlockState(landingPosition, state, 3);
 
-        TileEntity tileEntity = world.getTileEntity(getPosition());
+        TileEntity tileEntity = world.getTileEntity(landingPosition);
         if (tileEntity instanceof TileEntityAirdrop) {
             ((TileEntityAirdrop) tileEntity).onLanded();
             TileEntityUtil.syncToClient(tileEntity);

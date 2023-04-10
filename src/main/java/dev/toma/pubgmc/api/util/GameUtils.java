@@ -31,6 +31,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -169,8 +170,11 @@ public final class GameUtils {
     }
 
     public static void createDeathCrate(EntityPlayer player) {
-        BlockPos pos = getPosForCrate(player);
-        if(pos == null) return;
+        BlockPos pos = getEmptyGroundPositionAt(player.world, player.getPosition());
+        if(pos == null) {
+            Pubgmc.logger.warn("Failed to find position for player death crate: " + player);
+            return;
+        }
         player.world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
         TileEntityPlayerCrate te = (TileEntityPlayerCrate) player.world.getTileEntity(pos);
         for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
@@ -191,8 +195,11 @@ public final class GameUtils {
     }
 
     public static void createDeathCrate(EntityAIPlayer bot) {
-        BlockPos pos = getPosForCrate(bot);
-        if(pos == null) return;
+        BlockPos pos = getEmptyGroundPositionAt(bot.world, bot.getPosition());
+        if(pos == null) {
+            Pubgmc.logger.warn("Failed to find position for death crate for entity " + bot);
+            return;
+        }
         bot.world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
         TileEntityPlayerCrate playerCrate = (TileEntityPlayerCrate) bot.world.getTileEntity(pos);
         for(EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
@@ -209,27 +216,26 @@ public final class GameUtils {
         }
     }
 
-    public static BlockPos getPosForCrate(EntityLivingBase entity) {
-        World world = entity.getEntityWorld();
-        BlockPos.MutableBlockPos possiblePosition = new BlockPos.MutableBlockPos(entity.getPosition());
+    @Nullable
+    public static BlockPos getEmptyGroundPositionAt(World world, BlockPos pos) {
+        BlockPos.MutableBlockPos possiblePosition = new BlockPos.MutableBlockPos(pos);
         if (world.isAirBlock(possiblePosition)) {
-            return findGround(entity.world, possiblePosition);
+            return findGround(world, possiblePosition);
         }
         int y = possiblePosition.getY() - 1;
         while (y < 255) {
             possiblePosition.setY(y);
             if (world.isAirBlock(possiblePosition)) {
-                return findGround(entity.world, possiblePosition);
+                return findGround(world, possiblePosition);
             }
             for (EnumFacing facing : EnumFacing.HORIZONTALS) {
                 BlockPos withOffset = possiblePosition.offset(facing);
                 if (world.isAirBlock(withOffset)) {
-                    return findGround(entity.world, withOffset);
+                    return findGround(world, withOffset);
                 }
             }
             ++y;
         }
-        Pubgmc.logger.error("Failed to find valid position for death crate from entity: " + entity);
         return null;
     }
 
