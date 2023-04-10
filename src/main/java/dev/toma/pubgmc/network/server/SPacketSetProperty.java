@@ -90,7 +90,7 @@ public class SPacketSetProperty implements IMessage {
         }),
         NIGHT_VISION((player, aBoolean) -> {
             IPlayerData data = PlayerData.get(player);
-            data.setNV(aBoolean);
+            data.setNightVisionActive(aBoolean);
             data.sync();
         });
 

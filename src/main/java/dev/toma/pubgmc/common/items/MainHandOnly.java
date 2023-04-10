@@ -5,5 +5,5 @@ import net.minecraft.item.ItemStack;
 
 public interface MainHandOnly {
 
-    void block(ItemStack stack, EntityPlayer player);
+    void dropItemFromInvalidSlot(ItemStack stack, EntityPlayer player);
 }

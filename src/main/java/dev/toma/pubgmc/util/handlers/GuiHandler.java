@@ -22,6 +22,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUI_ATTACHMENTS = 3;
     public static final int GUI_GUNCRAFTINGTABLE = 4;
     public static final int GUI_BIG_AIRDROP = 5;
+    public static final int GUI_PLAYER_EQUIPMENT = 6;
 
     public static void update(World world, EntityPlayer player, int x, int y, int z) {
         if (player instanceof EntityPlayerMP) {
@@ -47,6 +48,8 @@ public class GuiHandler implements IGuiHandler {
                 return c;
             case GUI_BIG_AIRDROP:
                 return new ContainerBigAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
+            case GUI_PLAYER_EQUIPMENT:
+                return new ContainerPlayerEquipment(player.inventory);
             default:
                 return null;
         }
@@ -67,6 +70,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiGunWorkbench((TileEntityGunWorkbench) world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
             case GUI_BIG_AIRDROP:
                 return new GuiBigAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
+            case GUI_PLAYER_EQUIPMENT:
+                return new GuiPlayerEquipment(new ContainerPlayerEquipment(player.inventory));
             default:
                 return null;
         }

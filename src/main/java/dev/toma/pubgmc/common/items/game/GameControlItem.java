@@ -7,6 +7,7 @@ import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketOpenObjectiveGui;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public final class GameControlItem extends PMCItem {
 
@@ -26,8 +28,14 @@ public final class GameControlItem extends PMCItem {
     public GameControlItem(String name, RClickAction action) {
         super(name);
         this.action = action;
-        this.addDescription("Used for game objectives", "Right click on ground in order to use", "Crouch for secondary function");
         this.setMaxStackSize(1);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.add("Used for game objectives");
+        tooltip.add("Right click on ground in order to use");
+        tooltip.add("Crouch for secondary function");
     }
 
     @Override

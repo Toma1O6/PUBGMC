@@ -12,17 +12,20 @@ import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
+import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.player.*;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
+import dev.toma.pubgmc.common.items.equipment.Backpack;
+import dev.toma.pubgmc.common.items.equipment.BulletproofArmor;
+import dev.toma.pubgmc.common.items.equipment.NightVisionGoggles;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
@@ -38,8 +41,10 @@ import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.settings.GameSettings;
@@ -54,6 +59,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
@@ -68,10 +74,11 @@ import java.text.DecimalFormat;
 
 public class ClientEvents {
 
-    private static final ResourceLocation NV = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nv.png");
-    private static final ResourceLocation[] BACKPACK_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack1.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack2.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/backpack3.png")};
-    private static final ResourceLocation[] NIGHT_VISION_OVERLAY = {new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_off.png"), new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/nightvision_on.png")};
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
+    private static final EntityEquipmentSlot[] ARMOR_SLOTS = {
+            EntityEquipmentSlot.HEAD,
+            EntityEquipmentSlot.CHEST
+    };
 
     private final WeaponCooldownTracker tracker = new WeaponCooldownTracker();
     private int shotsFired;
@@ -82,6 +89,26 @@ public class ClientEvents {
     public void openGui(GuiOpenEvent event) {
         if(ConfigPMC.client.customMainMenu.get() && event.getGui() instanceof GuiMainMenu) {
             event.setGui(new GuiMenu());
+        }
+    }
+
+    @SubscribeEvent
+    public void addAdditionalGuiButtons(GuiScreenEvent.InitGuiEvent.Post event) {
+        Gui gui = event.getGui();
+        if (gui instanceof GuiInventory) {
+            GuiInventory inventoryGui = (GuiInventory) gui;
+            event.getButtonList().add(new EquipmentInventoryButton(inventoryGui.getGuiLeft() + 66, inventoryGui.getGuiTop() + 9, "+"));
+        }
+    }
+
+    @SubscribeEvent
+    public void handleAddedButtonActions(GuiScreenEvent.ActionPerformedEvent.Post event) {
+        Gui gui = event.getGui();
+        if (gui instanceof GuiInventory) {
+            int eventId = event.getButton().id;
+            if (eventId == EquipmentInventoryButton.SPECIAL_INVENTORY_BUTTON_ID) {
+                PacketHandler.sendToServer(new C2S_PacketOpenPlayerEquipment());
+            }
         }
     }
 
@@ -223,8 +250,12 @@ public class ClientEvents {
         }
 
         if (e.getType() == ElementType.ALL) {
-            if (data.isUsingNV()) {
-                ImageUtil.drawFullScreenImage(mc, res, NV, true);
+            if (data.isNightVisionActive()) {
+                ItemStack nightVisionItem = data.getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION);
+                if (nightVisionItem.getItem() instanceof NightVisionGoggles) {
+                    NightVisionGoggles goggles = (NightVisionGoggles) nightVisionItem.getItem();
+                    ImageUtil.drawFullScreenImage(mc, res, goggles.getOverlayTexture(), true);
+                }
             }
 
             if (!sp.capabilities.isCreativeMode && !sp.isSpectator() && !data.getBoostStats().isEmpty()) {
@@ -314,9 +345,9 @@ public class ClientEvents {
 
         //Same as above, we just send packet to server and everything else will be done in the rendering method above
         if (KeyBinds.NV.isPressed()) {
-            if (data.getEquippedNV()) {
-                boolean status = !data.isUsingNV();
-                data.setNV(status);
+            if (!data.getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
+                boolean status = !data.isNightVisionActive();
+                data.setNightVisionActive(status);
                 PacketHandler.sendToServer(new SPacketSetProperty(status, SPacketSetProperty.Action.NIGHT_VISION));
             }
         }
@@ -549,40 +580,54 @@ public class ClientEvents {
     }
 
     private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
-        ItemStack head = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        ItemStack body = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
         int left = width / 2 + 93;
         int top = height - 19;
         int offset = 0;
+        float shade = 0.4F;
 
-        if (!head.isEmpty() && head.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) head.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(true, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+        for (EntityEquipmentSlot slot : ARMOR_SLOTS) {
+            ItemStack stack = player.getItemStackFromSlot(slot);
+            if (stack.isEmpty())
+                continue;
+            if (!(stack.getItem() instanceof BulletproofArmor))
+                continue;
+            BulletproofArmor armor = (BulletproofArmor) stack.getItem();
+            BulletproofArmor.ProtectionArea protectionArea = slot == EntityEquipmentSlot.HEAD ? BulletproofArmor.ProtectionArea.HEAD : BulletproofArmor.ProtectionArea.OTHER;
+            float durability = 1.0F - (stack.getItemDamage() / (float) stack.getMaxDamage());
+            ResourceLocation image = armor.getArmorIcon(protectionArea, durability);
+            float shadeDiff = 1.0F - shade;
+            float white = shade + (1.0F - ((durability - 0.5F) / 0.5F)) * shadeDiff;
+            float red = durability < 0.5F ? 1.0F : white;
+            float green = durability < 0.5F ? durability / 0.5F : white;
+            float blue = durability < 0.5F ? durability / 0.5F : white;
+            renderIconWithBackground(mc, image, left + offset, top, 16, 16, red, green, blue, 1.0F);
             offset += 17;
         }
 
-        if (!body.isEmpty() && body.getItem() instanceof ArmorBase) {
-            ArmorBase armor = (ArmorBase) body.getItem();
-            int level = armor.armorLevel().getArmorLevel();
-            ResourceLocation img = armor.armorLevel().getIcon(false, level, getDamageLevel(body));
-            ImageUtil.drawCustomSizedImage(mc, img, left + offset, top, 16, 16, true);
+        ItemStack backpackStack = data.getEquipmentItem(SpecialEquipmentSlot.BACKPACK);
+        if (!backpackStack.isEmpty() && backpackStack.getItem() instanceof Backpack) {
+            Backpack backpack = (Backpack) backpackStack.getItem();
+            renderIconWithBackground(mc, backpack.getHotbarIconPath(), left + offset, top, 16, 16, shade, shade, shade, 1.0F);
             offset += 17;
         }
 
-        if (data.getBackpackLevel() > 0) {
-            int level = data.getBackpackLevel() - 1;
-            ImageUtil.drawCustomSizedImage(mc, BACKPACK_OVERLAY[level], left + offset, top, 16, 16, true);
-            offset += 17;
+        ItemStack nightvisionStack = data.getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION);
+        if (!nightvisionStack.isEmpty() && nightvisionStack.getItem() instanceof NightVisionGoggles) {
+            NightVisionGoggles goggles = (NightVisionGoggles) nightvisionStack.getItem();
+            boolean activeNightvision = data.isNightVisionActive();
+            ResourceLocation iconPath = goggles.getHotbarIconPath(activeNightvision);
+            float overlayRed = activeNightvision ? 0.0F : shade;
+            float overlayGreen = activeNightvision ? 1.0F : shade;
+            float overlayBlue = activeNightvision ? 0.0F : shade;
+            renderIconWithBackground(mc, iconPath, left + offset, top, 16, 16, overlayRed, overlayGreen, overlayBlue, 1.0F);
         }
+    }
 
-        if (data.getEquippedNV()) {
-            int i = data.isUsingNV() ? 1 : 0;
-            ImageUtil.drawCustomSizedImage(mc, NIGHT_VISION_OVERLAY[i], left + offset, top, 16, 16, true);
-        }
+    private static void renderIconWithBackground(Minecraft minecraft, ResourceLocation texture, int left, int top, int width, int height, float r, float g, float b, float a) {
+        ImageUtil.drawShape(left, top, left + width, top + height, 0.0F, 0.0F, 0.0F, 0.6902F);
+        ImageUtil.drawTintedImage(minecraft, texture, left, top, width, height, r, g, b, a);
     }
 
     /**

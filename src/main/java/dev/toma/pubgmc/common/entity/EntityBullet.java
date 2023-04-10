@@ -8,7 +8,8 @@ import dev.toma.pubgmc.common.blocks.IBulletReaction;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
+import dev.toma.pubgmc.common.items.equipment.BulletproofArmor;
+import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.WeaponStats;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
@@ -332,47 +333,28 @@ public class EntityBullet extends Entity {
         return PUBGMCUtil.getDistanceToBlockPos3D(new BlockPos(start), new BlockPos(vec));
     }
 
-    /**
-     * Calculates damage based on player armor and applies damage to the right part of the armor
-     * Damage reduction:
-     * <ul>
-     * <li> 30% For level 1 armor
-     * <li> 40% For level 2 armor
-     * <li> 60% For level 3 armor
-     * </ul>
-     */
     private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot) {
-        float baseDamage = damage;
-
         if (isHeadShot) {
             ItemStack head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-
-            if (head.getItem() == PMCItems.ARMOR1HELMET) {
-                damage *= 0.7f;
-            } else if (head.getItem() == PMCItems.ARMOR2HELMET) {
-                damage *= 0.6f;
-            } else if (head.getItem() == PMCItems.ARMOR3HELMET) {
-                damage *= 0.4f;
-            }
-
-            if (entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem() instanceof ArmorBase) {
-                head.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.55f), entity);
-            }
+            processArmorDamage(head, BulletproofArmor.ProtectionArea.HEAD, entity);
         } else {
             ItemStack body = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-
-            if (body.getItem() == PMCItems.ARMOR1BODY) {
-                damage *= 0.7f;
-            } else if (body.getItem() == PMCItems.ARMOR2BODY) {
-                damage *= 0.6f;
-            } else if (body.getItem() == PMCItems.ARMOR3BODY) {
-                damage *= 0.5f;
-            }
-
-            if (entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ArmorBase) {
-                body.damageItem(Math.round((baseDamage - (baseDamage - damage)) * 0.8f), entity);
-            }
+            processArmorDamage(body, BulletproofArmor.ProtectionArea.OTHER, entity);
         }
+    }
+
+    private void processArmorDamage(ItemStack stack, BulletproofArmor.ProtectionArea area, EntityLivingBase target) {
+        if (stack.isEmpty())
+            return;
+        if (!(stack.getItem() instanceof BulletproofArmor)) {
+            return;
+        }
+        BulletproofArmor armor = (BulletproofArmor) stack.getItem();
+        float baseDamage = damage;
+        damage *= armor.getDamageMultiplier(area, stack, target);
+        float itemDamageMultiplier = armor.getItemDamageMultiplier(area, stack, target);
+        int damageAmount = Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier);
+        stack.damageItem(damageAmount, target);
     }
 
     public float getDamage() {

@@ -8,6 +8,7 @@ import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
 import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
@@ -180,7 +181,13 @@ public final class GameUtils {
         }
         player.inventory.clear();
         IPlayerData data = PlayerData.get(player);
-        // TODO add backpack and night vision
+        for (SpecialEquipmentSlot slot : SpecialEquipmentSlot.values()) {
+            ItemStack stack = data.getEquipmentItem(slot);
+            if (!stack.isEmpty()) {
+                te.setInventorySlotContents(42 + slot.ordinal(), stack);
+            }
+        }
+        data.getEquipmentInventory().clear();
     }
 
     public static void createDeathCrate(EntityAIPlayer bot) {

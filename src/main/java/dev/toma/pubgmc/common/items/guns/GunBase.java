@@ -152,7 +152,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     @Override
-    public void block(ItemStack stack, EntityPlayer player) {
+    public void dropItemFromInvalidSlot(ItemStack stack, EntityPlayer player) {
         EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, stack.copy());
         Vec3d vec = player.getLookVec();
         item.motionX = vec.x * 0.3;

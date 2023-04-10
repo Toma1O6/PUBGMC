@@ -4,9 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class ImageUtil {
     public static void drawFullScreenImage(Minecraft minecraft, ScaledResolution resolution, ResourceLocation imageLocation, boolean transparent) {
@@ -96,6 +98,23 @@ public class ImageUtil {
             GlStateManager.disableBlend();
             GlStateManager.disableAlpha();
         } else tessellator.draw();
+    }
+
+    public static void drawTintedImage(Minecraft minecraft, ResourceLocation location, int startX, int startY, int width, int height, float r, float g, float b, float a) {
+        minecraft.getTextureManager().bindTexture(location);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        builder.pos(startX, startY + height, 0).tex(0.0, 1.0).color(r, g, b, a).endVertex();
+        builder.pos(startX + width, startY + height, 0).tex(1.0, 1.0).color(r, g, b, a).endVertex();
+        builder.pos(startX + width, startY, 0).tex(1.0, 0.0).color(r, g, b, a).endVertex();
+        builder.pos(startX, startY, 0).tex(0.0, 0.0).color(r, g, b, a).endVertex();
+        tessellator.draw();
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
     }
 
     public static void drawShape(int startX, int startY, int endX, int endY, float r, float g, float b, float a) {

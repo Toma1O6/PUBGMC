@@ -3,10 +3,10 @@ package dev.toma.pubgmc.common;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.common.capability.game.IGameData;
-import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
+import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
@@ -21,7 +21,6 @@ import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -29,11 +28,9 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.Style;
@@ -165,7 +162,7 @@ public class CommonEvents {
         if (!player.world.isRemote) {
             ItemStack offHandStack = player.getHeldItemOffhand();
             if (offHandStack.getItem() instanceof MainHandOnly) {
-                ((MainHandOnly) offHandStack.getItem()).block(offHandStack, player);
+                ((MainHandOnly) offHandStack.getItem()).dropItemFromInvalidSlot(offHandStack, player);
             }
         }
     }
@@ -221,24 +218,6 @@ public class CommonEvents {
             player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(PRONE_MODIFIER);
             if(data.isProne()) {
                 player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(PRONE_MODIFIER);
-            }
-
-            if (data.getEquippedNV()) {
-                if (data.isUsingNV() && !data.getEquippedNV()) {
-                    data.setNV(false);
-                }
-
-                if (data.isUsingNV()) {
-                    if (!player.world.isRemote) {
-                        player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 220, 0, false, false));
-                    }
-                } else {
-                    if (!player.world.isRemote) {
-                        if (player.isPotionActive(MobEffects.NIGHT_VISION)) {
-                            player.removePotionEffect(MobEffects.NIGHT_VISION);
-                        }
-                    }
-                }
             }
         }
     }

@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.items;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.util.game.loot.LootManager;
 import dev.toma.pubgmc.util.game.loot.LootType;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -11,6 +12,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemFuelCan extends PMCItem {
     public ItemFuelCan() {
@@ -54,6 +57,12 @@ public class ItemFuelCan extends PMCItem {
                 return new ActionResult<>(EnumActionResult.PASS, stack);
             } else warnPlayer(playerIn, "Vehicle must be stationary!");
         } else warnPlayer(playerIn, "You must sit inside vehicle to refill fuel!");
-        return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+        return new ActionResult(EnumActionResult.FAIL, stack);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.add("Hold right click while driving vehicle");
+        tooltip.add("Vehicle must be stationary!");
     }
 }

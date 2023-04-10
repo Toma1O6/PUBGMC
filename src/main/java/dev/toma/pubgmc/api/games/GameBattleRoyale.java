@@ -229,7 +229,6 @@ public class GameBattleRoyale extends Game {
         IPlayerData data = PlayerData.get(player);
         data.getBoostStats().reset();
         data.setBackpackLevel(0);
-        data.hasEquippedNV(false);
         return super.respawnPlayer(player);
     }
 

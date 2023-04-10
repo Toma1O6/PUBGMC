@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.util.game.loot;
 
 import dev.toma.pubgmc.common.capability.world.IWorldData;
-import dev.toma.pubgmc.common.items.armor.ItemGhillie;
+import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;

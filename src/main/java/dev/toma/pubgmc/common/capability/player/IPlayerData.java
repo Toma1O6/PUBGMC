@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.capability.player;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -16,26 +18,27 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound> {
 
     EntityPlayer getPlayer();
 
+    void setEquipmentItem(SpecialEquipmentSlot slot, ItemStack stack);
+
+    ItemStack getEquipmentItem(SpecialEquipmentSlot slot);
+
+    IInventory getEquipmentInventory();
+
     @Deprecated
     boolean isAiming();
 
     @Deprecated
     boolean isReloading();
 
-    @Deprecated
-    void setNV(boolean nv);
+    void setNightVisionActive(boolean status);
 
-    @Deprecated
-    boolean isUsingNV();
+    boolean isNightVisionActive();
 
     @Deprecated
     void setBackpackLevel(int level);
 
     @Deprecated
     int getBackpackLevel();
-
-    @Deprecated
-    void hasEquippedNV(boolean nv);
 
     @Deprecated
     boolean getEquippedNV();

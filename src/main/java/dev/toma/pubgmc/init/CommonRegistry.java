@@ -18,9 +18,10 @@ import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.items.*;
-import dev.toma.pubgmc.common.items.armor.ArmorBase;
-import dev.toma.pubgmc.common.items.armor.ItemGhillie;
-import dev.toma.pubgmc.common.items.armor.ItemNVGoggles;
+import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
+import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
+import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
+import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
@@ -175,9 +176,9 @@ public class CommonRegistry {
         CFGWeapons cfg = ConfigPMC.guns();
         IForgeRegistry<Item> registry = event.getRegistry();
         registry.registerAll(
-                new ItemBackpack("backpack1").addDescription("Right Click to equip"),
-                new ItemBackpack("backpack2").addDescription("Right Click to equip"),
-                new ItemBackpack("backpack3").addDescription("Right Click to equip"),
+                new ItemBackpack("backpack1", 1),
+                new ItemBackpack("backpack2", 2),
+                new ItemBackpack("backpack3", 3),
                 new ItemBandage("bandage"),
                 new ItemFirstAidKit("firstaidkit"),
                 new ItemMedkit("medkit"),
@@ -185,7 +186,7 @@ public class CommonRegistry {
                 new ItemPainkiller("painkillers"),
                 new ItemAdrenalineSyringe("adrenalinesyringe"),
                 new ItemGhillie("ghillie_suit"),
-                new ItemNVGoggles("nv_goggles").addDescription("Right Click to equip"),
+                new ItemNVGoggles("nv_goggles"),
                 new ItemExplodeable("grenade", 110, ItemExplodeable.Helper::onFragRemoved),
                 new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved).addAditionalDescription("Effect duration: 20s", TextFormatting.RED + "Water will cancel the effect!"),
                 new ItemExplodeable("molotov", -1, ItemExplodeable.Helper::onMolotovRemoved).addAditionalDescription("Effect duration: 10s", TextFormatting.RED + "Water will cancel the effect!"),
@@ -201,12 +202,12 @@ public class CommonRegistry {
                 MeleeItemBuilder.create("machete").materialName("material_machete").damage(11.0F).build(),
                 MeleeItemBuilder.create("crowbar").materialName("material_crowbar").damage(9.0F).build(),
                 MeleeItemBuilder.create("sickle").materialName("material_sickle").damage(10.0F).build(),
-                new ArmorBase("armor1helmet", ToolMaterials.LVL1, 1, EntityEquipmentSlot.HEAD, ArmorBase.ArmorLevel.LEVEL_ONE),
-                new ArmorBase("armor1body", ToolMaterials.LVL1, 1, EntityEquipmentSlot.CHEST, ArmorBase.ArmorLevel.LEVEL_ONE),
-                new ArmorBase("armor2helmet", ToolMaterials.LVL2, 1, EntityEquipmentSlot.HEAD, ArmorBase.ArmorLevel.LEVEL_TWO),
-                new ArmorBase("armor2body", ToolMaterials.LVL2, 1, EntityEquipmentSlot.CHEST, ArmorBase.ArmorLevel.LEVEL_TWO),
-                new ArmorBase("armor3helmet", ToolMaterials.LVL3, 1, EntityEquipmentSlot.HEAD, ArmorBase.ArmorLevel.LEVEL_THREE),
-                new ArmorBase("armor3body", ToolMaterials.LVL3, 1, EntityEquipmentSlot.CHEST, ArmorBase.ArmorLevel.LEVEL_THREE),
+                new ItemBulletproofArmor("armor1helmet", ToolMaterials.LVL1, 1, EntityEquipmentSlot.HEAD, ItemBulletproofArmor.ArmorLevel.LEVEL_ONE),
+                new ItemBulletproofArmor("armor1body", ToolMaterials.LVL1, 1, EntityEquipmentSlot.CHEST, ItemBulletproofArmor.ArmorLevel.LEVEL_ONE),
+                new ItemBulletproofArmor("armor2helmet", ToolMaterials.LVL2, 1, EntityEquipmentSlot.HEAD, ItemBulletproofArmor.ArmorLevel.LEVEL_TWO),
+                new ItemBulletproofArmor("armor2body", ToolMaterials.LVL2, 1, EntityEquipmentSlot.CHEST, ItemBulletproofArmor.ArmorLevel.LEVEL_TWO),
+                new ItemBulletproofArmor("armor3helmet", ToolMaterials.LVL3, 1, EntityEquipmentSlot.HEAD, ItemBulletproofArmor.ArmorLevel.LEVEL_THREE),
+                new ItemBulletproofArmor("armor3body", ToolMaterials.LVL3, 1, EntityEquipmentSlot.CHEST, ItemBulletproofArmor.ArmorLevel.LEVEL_THREE),
                 new ItemMuzzle("silencer_smg", true),
                 new ItemMuzzle("silencer_ar", true),
                 new ItemMuzzle("silencer_sniper", true),
@@ -236,7 +237,7 @@ public class CommonRegistry {
                 new PMCItem("steel_dust"),
                 new PMCItem("steel_ingot"),
                 new PMCItem("copper_ingot"),
-                new ItemFuelCan().addDescription("Hold right click while driving vehicle", "Vehicle must be stationary!"),
+                new ItemFuelCan(),
                 new ItemVehicleSpawner("vehicle_uaz", ItemVehicleSpawner.Vehicles.UAZ),
                 new ItemVehicleSpawner("vehicle_dacia", ItemVehicleSpawner.Vehicles.DACIA),
                 GunBuilder.create("flare_gun", FlareGun::new)

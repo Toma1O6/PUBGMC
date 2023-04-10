@@ -44,7 +44,7 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     }
 
     @Override
-    public void block(ItemStack stack, EntityPlayer player) {
+    public void dropItemFromInvalidSlot(ItemStack stack, EntityPlayer player) {
         if(isCooking(stack)) {
             getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, maxFuse - getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
         } else {
@@ -62,14 +62,6 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
-    }
-
-    public void startCooking(ItemStack stack, EntityPlayer player) {
-        if (!stack.hasTagCompound()) {
-            this.attachNBT(stack, player);
-        }
-        stack.getTagCompound().setBoolean("isCooking", true);
-        boolean cooking = this.isCooking(stack);
     }
 
     public boolean isCooking(ItemStack stack) {

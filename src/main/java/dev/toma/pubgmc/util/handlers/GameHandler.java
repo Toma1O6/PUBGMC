@@ -14,6 +14,7 @@ import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -134,24 +135,40 @@ public class GameHandler {
         public static void onPlayerKilled(LivingDeathEvent e) {
             IGameData data = e.getEntity().world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
             Game game = data.getCurrentGame();
-            if(!data.isInactiveGame() && e.getEntity() instanceof EntityLivingBase) {
-                EntityDeathContex ctx = EntityDeathContex.getDeathContex(e, game);
-                EntityDeathManager manager = game.getEntityDeathManager();
-                manager.getDeathAction().accept(ctx);
-                if(!e.getEntity().world.isRemote) {
-                    game.addDeathMessage(ctx);
-                    TeamManager teamManager = game.getTeamManager();
-                    if(teamManager.getTeamSettings().eliminateOnDeath) {
-                        if(e.getEntity() instanceof EntityPlayer || e.getEntity() instanceof EntityAIPlayer) {
-                            eliminatePlayerAndTeam(game, e.getEntity().getUniqueID());
+            if (e.isCanceled())
+                return;
+            if (!data.isInactiveGame()) {
+                if (e.getEntity() instanceof EntityLivingBase) {
+                    EntityDeathContex ctx = EntityDeathContex.getDeathContex(e, game);
+                    EntityDeathManager manager = game.getEntityDeathManager();
+                    manager.getDeathAction().accept(ctx);
+                    if(!e.getEntity().world.isRemote) {
+                        game.addDeathMessage(ctx);
+                        TeamManager teamManager = game.getTeamManager();
+                        if(teamManager.getTeamSettings().eliminateOnDeath) {
+                            if(e.getEntity() instanceof EntityPlayer || e.getEntity() instanceof EntityAIPlayer) {
+                                eliminatePlayerAndTeam(game, e.getEntity().getUniqueID());
+                            }
+                        }
+                        if(game.shouldCreateDeathCrate()) {
+                            if(e.getEntity() instanceof EntityPlayer) {
+                                GameUtils.createDeathCrate((EntityPlayer) e.getEntity());
+                            } else if(e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
+                                GameUtils.createDeathCrate((EntityAIPlayer) e.getEntity());
+                                game.onBotDeath((EntityAIPlayer) e.getEntity());
+                            }
                         }
                     }
-                    if(game.shouldCreateDeathCrate()) {
-                        if(e.getEntity() instanceof EntityPlayer) {
-                            GameUtils.createDeathCrate((EntityPlayer) e.getEntity());
-                        } else if(e.getEntity() instanceof EntityAIPlayer && game.getBotManager().allowBotCrates()) {
-                            GameUtils.createDeathCrate((EntityAIPlayer) e.getEntity());
-                            game.onBotDeath((EntityAIPlayer) e.getEntity());
+                }
+            } else if (e.getEntity() instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) e.getEntity();
+                IPlayerData playerData = PlayerData.get(player);
+                if (!player.world.isRemote) {
+                    for (SpecialEquipmentSlot slot : SpecialEquipmentSlot.values()) {
+                        ItemStack stack = playerData.getEquipmentItem(slot);
+                        if (!stack.isEmpty()) {
+                            player.dropItem(stack, true, false);
+                            playerData.setEquipmentItem(slot, ItemStack.EMPTY);
                         }
                     }
                 }

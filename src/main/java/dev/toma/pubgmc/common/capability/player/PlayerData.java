@@ -3,13 +3,17 @@ package dev.toma.pubgmc.common.capability.player;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketClientCapabilitySync;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,15 +21,15 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 public class PlayerData implements IPlayerData {
 
-    final EntityPlayer player;
-    final BoostStats boostStats;
-    final AimInfo aimInfo;
-    final ReloadInfo reloadInfo;
-    private boolean nv;
+    private final InventoryBasic inventory;
+    private final EntityPlayer player;
+    private final BoostStats boostStats;
+    private final AimInfo aimInfo;
+    private final ReloadInfo reloadInfo;
     private boolean isProne;
-    private int level;
-    private boolean eqNV;
-    private double dist;
+    private int level; // TODO remove
+    private boolean areNightVisionGogglesActive;
+    private double dist; // TODO remove
 
     public PlayerData() {
         this(null);
@@ -36,6 +40,7 @@ public class PlayerData implements IPlayerData {
         this.boostStats = new BoostStats(this);
         this.aimInfo = new AimInfo(this);
         this.reloadInfo = new ReloadInfo();
+        this.inventory = new InventoryBasic("pubgmc.equipment_inventory", false, SpecialEquipmentSlot.values().length);
     }
 
     public static IPlayerData get(EntityPlayer player) {
@@ -70,6 +75,21 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
+    public IInventory getEquipmentInventory() {
+        return inventory;
+    }
+
+    @Override
+    public ItemStack getEquipmentItem(SpecialEquipmentSlot slot) {
+        return inventory.getStackInSlot(slot.ordinal());
+    }
+
+    @Override
+    public void setEquipmentItem(SpecialEquipmentSlot slot, ItemStack stack) {
+        inventory.setInventorySlotContents(slot.ordinal(), stack);
+    }
+
+    @Override
     public boolean isAiming() {
         return aimInfo.isAiming();
     }
@@ -85,13 +105,8 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public void hasEquippedNV(boolean nv) {
-        this.eqNV = nv;
-    }
-
-    @Override
     public boolean getEquippedNV() {
-        return this.eqNV;
+        return this.areNightVisionGogglesActive;
     }
 
     @Override
@@ -100,13 +115,17 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public boolean isUsingNV() {
-        return this.nv;
+    public void setNightVisionActive(boolean status) {
+        if (!getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
+            areNightVisionGogglesActive = status;
+        } else {
+            areNightVisionGogglesActive = false;
+        }
     }
 
     @Override
-    public void setNV(boolean nv) {
-        this.nv = nv;
+    public boolean isNightVisionActive() {
+        return !getEquipmentItem(SpecialEquipmentSlot.NIGHT_VISION).isEmpty() && areNightVisionGogglesActive;
     }
 
     @Override
@@ -135,29 +154,29 @@ public class PlayerData implements IPlayerData {
         c.setTag("boostStats", boostStats.serializeNBT());
         c.setTag("aimInfo", aimInfo.serializeNBT());
         c.setTag("reloadInfo", reloadInfo.serializeNBT());
+        c.setTag("inventory", SerializationHelper.inventoryToNbt(inventory));
         c.setInteger("level", level);
-        c.setBoolean("eqnv", eqNV);
+        c.setBoolean("activeNightVision", areNightVisionGogglesActive);
         c.setBoolean("prone", this.isProne);
         return c;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        deserialize(boostStats, "boostStats", nbt);
-        deserialize(aimInfo, "aimInfo", nbt);
-        deserialize(reloadInfo, "reloadInfo", nbt);
+        boostStats.deserializeNBT(nbt.getCompoundTag("boostStats"));
+        aimInfo.deserializeNBT(nbt.getCompoundTag("aimInfo"));
+        reloadInfo.deserializeNBT(nbt.getCompoundTag("reloadInfo"));
+        SerializationHelper.inventoryFromNbt(inventory, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
         level = nbt.getInteger("level");
-        eqNV = nbt.getBoolean("eqnv");
+        areNightVisionGogglesActive = nbt.getBoolean("activeNightVision");
         isProne = nbt.getBoolean("prone");
     }
 
     @Override
     public void sync() {
-        PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
-    }
-
-    static void deserialize(INBTSerializable<NBTTagCompound> serializable, String key, NBTTagCompound nbt) {
-        serializable.deserializeNBT(nbt.hasKey(key) ? nbt.getCompoundTag(key) : new NBTTagCompound());
+        if (!player.world.isRemote) {
+            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
+        }
     }
 
     @Mod.EventBusSubscriber
@@ -172,7 +191,9 @@ public class PlayerData implements IPlayerData {
 
         @SubscribeEvent
         public static void onRespawn(PlayerEvent.PlayerRespawnEvent e) {
-            getCap(e.player).sync();
+            IPlayerData data = getCap(e.player);
+            data.getEquipmentInventory().clear();
+            data.sync();
         }
 
         @SubscribeEvent

@@ -31,6 +31,7 @@ public class PacketHandler {
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
         registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
         registerServerPacket(SPacketControllableInput.Handler.class, SPacketControllableInput.class);
+        registerServerPacket(C2S_PacketOpenPlayerEquipment.Handler.class, C2S_PacketOpenPlayerEquipment.class);
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
