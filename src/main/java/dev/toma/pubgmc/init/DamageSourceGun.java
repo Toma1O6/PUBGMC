@@ -21,12 +21,13 @@ public class DamageSourceGun extends EntityDamageSourceIndirect {
     @Override
     public ITextComponent getDeathMessage(EntityLivingBase victim) {
         String label = "death.attack." + getDamageType();
-        if (damageSourceEntity == null) {
+        Entity trueSource = getTrueSource();
+        if (trueSource == null) {
             return new TextComponentTranslation(label + ".generic", victim.getName());
         }
         if (headshot) {
-            return new TextComponentTranslation(label + ".headshot", damageSourceEntity.getName(), victim.getName(), weapon.getDisplayName());
+            return new TextComponentTranslation(label + ".headshot", trueSource.getName(), victim.getName(), weapon.getDisplayName());
         }
-        return new TextComponentTranslation(label, damageSourceEntity.getName(), victim.getName(), weapon.getDisplayName());
+        return new TextComponentTranslation(label, trueSource.getName(), victim.getName(), weapon.getDisplayName());
     }
 }
