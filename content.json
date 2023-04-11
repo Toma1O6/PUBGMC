@@ -11,6 +11,29 @@
     "map": [
     ],
     "mainMenuText": [
+        "Update 1.8.0 [Backpack, NightVision and Loot update]",
+        "- Fully configurable loot - all block loot pools are now located in pubgmc folder in gamedata. This is currently done for loot spawners and airdrops",
+        "- Custom inventory (Accessible by + sign from survival inventory) for backpacks, ghillie suit and night vision",
+        "- Backpack functionality implementation - inventory is now blocked depending on your backpack level",
+        "- Full rework of night vision goggles - now rendered on player, no longer relies on vanilla's night vision potion effect",
+        "- Backpacks are now rendered on players",
+        "- Added more backpack variants - Forest, Desert and Snow",
+        "- Added config option to disable backpack inventory blocking",
+        "- Added config option to enable weapon knockback",
+        "- Reloading no longer blocks sprinting",
+        "- Decreased S1897 firerate",
+        "- Weapon balancing - increased velocity of most weapons",
+        "- Fixed issue with left click interactions which could prevent shooting in some cases",
+        "- Fixed issue which could cause crash when AI shot flare",
+        "- Fixed issue with airdrop inventory saving and synchonization to client",
+        "- Fixed issue with death crate placements",
+        "- Fixed issue with airdrop crate placements",
+        "- Fixed issue with death messages when player got shot by weapon",
+        "- Fixed issue with missing window particles when broken",
+        "- Fixed issue which allowed you to initiate reload when already reloading",
+        "- Fixed shooting animation synchronization issues for win94, s1897 and kar98k",
+        "",
+        "",
         "Update 1.7.3",
         "- Fixed issue where you could get run over by your own car while driving",
         "- Fixed issues which could cause crashing while playing BattleRoyale game type",
@@ -93,5 +116,6 @@
         "- Fixed unstable burst fire"
     ],
     "vips": [
+        "Tapio"
     ]
 }
