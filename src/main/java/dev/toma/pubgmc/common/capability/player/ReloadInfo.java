@@ -17,7 +17,6 @@ public class ReloadInfo implements INBTSerializable<NBTTagCompound> {
     public void tick(IPlayerData data) {
         if(reloading) {
             EntityPlayer player = data.getPlayer();
-            player.setSprinting(false);
             ItemStack stack = player.getHeldItemMainhand();
             int slot = player.inventory.currentItem;
             if(stack.getItem() instanceof GunBase) {
