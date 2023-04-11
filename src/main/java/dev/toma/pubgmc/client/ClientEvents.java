@@ -308,13 +308,13 @@ public class ClientEvents {
         }
         if (KeyBinds.RELOAD.isPressed()) {
             ItemStack stack = sp.getHeldItemMainhand();
+            ReloadInfo reloadInfo = data.getReloadInfo();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                if(data.isReloading()) {
+                if(reloadInfo.isReloading()) {
                     IReloader reloader = gun.getReloader();
                     if(reloader.canInterrupt(gun, stack)) {
-                        ReloadInfo info = data.getReloadInfo();
-                        info.setReloading(false);
+                        reloadInfo.setReloading(false);
                         PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                         AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                         return;
@@ -332,10 +332,9 @@ public class ClientEvents {
                                 break;
                             }
                         }
-                        if(hasAmmo) {
+                        if(hasAmmo && !reloadInfo.isReloading()) {
                             AnimationDispatcher.dispatchReloadAnimation(gun, stack, sp);
-                            ReloadInfo info = data.getReloadInfo();
-                            info.startReload(sp, gun, stack);
+                            reloadInfo.startReload(sp, gun, stack);
                             PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.RELOAD));
                         }
                     }
