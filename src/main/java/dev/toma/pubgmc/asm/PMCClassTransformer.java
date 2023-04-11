@@ -25,6 +25,8 @@ public class PMCClassTransformer implements IClassTransformer {
                 return this.injectHandleCameraTransforms(basicClass);
             case "net.minecraft.inventory.Slot":
                 return SlotClassTransformer.transform(basicClass);
+            case "net.minecraft.client.renderer.EntityRenderer":
+                return EntityRendererClassTransformer.transform(basicClass);
         }
         return basicClass;
     }
@@ -53,7 +55,7 @@ public class PMCClassTransformer implements IClassTransformer {
                             list.add(new VarInsnNode(Opcodes.ALOAD, 1));
                             list.add(new MethodInsnNode(
                                     Opcodes.INVOKESTATIC,
-                                    "dev/toma/pubgmc/ClientHooks",
+                                    "dev/toma/pubgmc/asm/ASMHooksClient",
                                     "preRenderItem",
                                     "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V",
                                     false
@@ -107,7 +109,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         list.add(new VarInsnNode(Opcodes.ALOAD, 7));
                         list.add(new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                "dev/toma/pubgmc/ClientHooks",
+                                "dev/toma/pubgmc/asm/ASMHooksClient",
                                 "model_setupModelAngles",
                                 "(Lnet/minecraft/client/model/ModelBiped;Lnet/minecraft/entity/Entity;)V",
                                 false
@@ -173,7 +175,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         list.add(new VarInsnNode(Opcodes.FLOAD, 2));
                         list.add(new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                "dev/toma/pubgmc/ClientHooks",
+                                "dev/toma/pubgmc/asm/ASMHooksClient",
                                 "player_preRenderCallback",
                                 "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/client/entity/AbstractClientPlayer;F)V",
                                 false
@@ -200,7 +202,7 @@ public class PMCClassTransformer implements IClassTransformer {
                         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
                         list.add(new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                "dev/toma/pubgmc/ClientHooks",
+                                "dev/toma/pubgmc/asm/ASMHooksClient",
                                 "player_constructRender",
                                 "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/client/renderer/entity/RenderManager;Z)V",
                                 false

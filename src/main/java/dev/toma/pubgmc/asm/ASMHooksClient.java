@@ -1,24 +1,28 @@
-package dev.toma.pubgmc;
+package dev.toma.pubgmc.asm;
 
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.common.items.equipment.NightVisionGoggles;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
-public class ClientHooks {
+public class ASMHooksClient {
 
     private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND;
     private static float renderTickTime;
@@ -110,12 +114,39 @@ public class ClientHooks {
          transformType = renderingType;
     }
 
+    public static void updateLightmap(int[] lightmapColors) {
+        Minecraft mc = Minecraft.getMinecraft();
+        WorldClient client = mc.world;
+
+        IPlayerData data = PlayerData.get(mc.player);
+        if (data == null)
+            return;
+        ItemStack stack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION);
+        float lightAmplifier = 1.0F;
+        if (stack.getItem() instanceof NightVisionGoggles && data.isNightVisionActive()) {
+            lightAmplifier = ((NightVisionGoggles) stack.getItem()).getBrightnessValue();
+        }
+        float gammaSetting = mc.gameSettings.gammaSetting;
+        float sunLight = client.getSunBrightness(1.0F) + 0.2F - gammaSetting * 0.10F;
+        float amplifier = sunLight * lightAmplifier;
+        for (int i = 0; i < 256; i++) {
+            int value = lightmapColors[i];
+            float r = ((value >> 16) & 255) / 255.0F;
+            float g = ((value >>  8) & 255) / 255.0F;
+            float b =  (value        & 255) / 255.0F;
+            r = Math.min(1.0F, r * amplifier);
+            g = Math.min(1.0F, g * amplifier);
+            b = Math.min(1.0F, b * amplifier);
+            lightmapColors[i] = 0xFF << 24 | ((int) (r * 255.0F)) << 16 | ((int) (g * 255.0F)) << 8 | ((int) (b * 255.0F));
+        }
+    }
+
     public static ItemCameraTransforms.TransformType getTransformType() {
         return transformType;
     }
 
     public static void setRenderTickTime(float renderTickTime) {
-        ClientHooks.renderTickTime = renderTickTime;
+        ASMHooksClient.renderTickTime = renderTickTime;
     }
 
     public static float getRenderTickTime() {

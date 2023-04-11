@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client;
 
-import dev.toma.pubgmc.ClientHooks;
+import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.asm.ASMHooks;
@@ -59,8 +59,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -254,6 +257,16 @@ public class ClientEvents {
                 ItemStack nightVisionItem = data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION);
                 if (nightVisionItem.getItem() instanceof NightVisionGoggles) {
                     NightVisionGoggles goggles = (NightVisionGoggles) nightVisionItem.getItem();
+                    World world = mc.world;
+                    BlockPos playerPosition = mc.player.getPosition();
+                    float sunBrightness = Math.max(world.getSunBrightness(1.0F) - 0.2F, 0.0F);
+                    int rawSkylight = world.getLightFor(EnumSkyBlock.SKY, playerPosition);
+                    int light = (int) (rawSkylight * sunBrightness);
+                    int blockLight = world.getLightFor(EnumSkyBlock.BLOCK, playerPosition);
+                    float exposure = Math.max(light, blockLight) / 15.0F;
+                    if (exposure > 0.0F) {
+                        ImageUtil.drawShape(0, 0, res.getScaledWidth(), res.getScaledWidth(), 0.3F, 1.0F, 0.3F, exposure);
+                    }
                     ImageUtil.drawFullScreenImage(mc, res, goggles.getOverlayTexture(), true);
                 }
             }
@@ -497,7 +510,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        ClientHooks.setRenderTickTime(event.renderTickTime);
+        ASMHooksClient.setRenderTickTime(event.renderTickTime);
         if(event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }

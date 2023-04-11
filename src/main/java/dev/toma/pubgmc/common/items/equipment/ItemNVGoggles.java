@@ -47,6 +47,6 @@ public class ItemNVGoggles extends PMCItem implements NightVisionGoggles {
 
     @Override
     public float getBrightnessValue() {
-        return 1.0F;
+        return 15.0F;
     }
 }

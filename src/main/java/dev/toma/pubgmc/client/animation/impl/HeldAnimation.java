@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.animation.impl;
 
-import dev.toma.pubgmc.ClientHooks;
+import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -31,7 +31,7 @@ public class HeldAnimation implements Animation {
                 return;
             }
             if(element == AnimationElement.ITEM_AND_HANDS) {
-                float partialTicks = ClientHooks.getRenderTickTime();
+                float partialTicks = ASMHooksClient.getRenderTickTime();
                 AnimationProcessor.processKeyFrame(bigWeaponSprintFrame, progressSmooth);
                 IPlayerData data = PlayerData.get(player);
                 float bobbingScale = 0.4F;

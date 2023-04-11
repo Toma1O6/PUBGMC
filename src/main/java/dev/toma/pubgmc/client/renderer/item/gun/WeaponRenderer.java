@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.renderer.item.gun;
 
-import dev.toma.pubgmc.ClientHooks;
+import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationElement;
@@ -70,13 +70,13 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
     @Override
     public final void renderByItem(ItemStack itemStackIn) {
         TextureManager manager = Minecraft.getMinecraft().getTextureManager();
-        ItemCameraTransforms.TransformType transformType = ClientHooks.getTransformType();
+        ItemCameraTransforms.TransformType transformType = ASMHooksClient.getTransformType();
         preRender(transformType);
         manager.bindTexture(GUN_TEXTURES);
         getWeaponModel().render(itemStackIn, transformType);
         GunBase gun = (GunBase) itemStackIn.getItem();
         IPlayerData data = PlayerData.get(Minecraft.getMinecraft().player);
-        float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress(ClientHooks.getRenderTickTime()) : 0.0F;
+        float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress(ASMHooksClient.getRenderTickTime()) : 0.0F;
         for (AttachmentType<?> type : AttachmentType.allTypes) {
             ItemAttachment attachment = gun.getAttachment(type, itemStackIn);
             if(attachment != null) {
