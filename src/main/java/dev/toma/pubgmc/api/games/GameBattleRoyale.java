@@ -180,7 +180,7 @@ public class GameBattleRoyale extends Game {
             IPlayerData data = PlayerData.get(p);
             if (data != null) {
                 BoostStats stats = data.getBoostStats();
-                stats.setLevel(0);
+                stats.reset();
                 data.getEquipmentInventory().clear();
                 data.sync();
             }

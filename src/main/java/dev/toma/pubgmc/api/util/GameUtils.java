@@ -191,6 +191,7 @@ public final class GameUtils {
             }
         }
         data.getEquipmentInventory().clear();
+        data.getBoostStats().reset();
     }
 
     public static void createDeathCrate(EntityAIPlayer bot) {
