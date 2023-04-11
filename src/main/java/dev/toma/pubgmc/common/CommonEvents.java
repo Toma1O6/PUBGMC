@@ -2,7 +2,6 @@ package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationType;
-import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
@@ -135,7 +134,6 @@ public class CommonEvents {
     @SubscribeEvent
     public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new IWorldData.WorldDataProvider());
-        e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new IGameData.GameDataProvider());
     }
 
     @SubscribeEvent
@@ -184,7 +182,7 @@ public class CommonEvents {
 
         if (e.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) e.player;
-            if (player != null && !player.world.isRemote) {
+            if (!player.world.isRemote) {
                 PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
                 //We get the last player data and later sync it to client
                 player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -192,11 +190,6 @@ public class CommonEvents {
                 data.getAimInfo().setAiming(false, 1.0F);
                 //Sync some data from capability to client for overlay rendering
                 PacketHandler.syncPlayerDataToClient(data, player);
-
-                IGameData gameData = player.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-                if(gameData != null) {
-                    gameData.getCurrentGame().updateDataToClient(player.world, player);
-                }
             }
         }
     }

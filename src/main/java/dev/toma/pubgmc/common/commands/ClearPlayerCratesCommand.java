@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO rework to clear all game objects
 public class ClearPlayerCratesCommand extends AbstractCommand {
 
     private static final CommandTree COMMAND = CommandTree.Builder.command("clearplayercrates")

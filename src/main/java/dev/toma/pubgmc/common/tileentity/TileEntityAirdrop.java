@@ -3,7 +3,6 @@ package dev.toma.pubgmc.common.tileentity;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
-import dev.toma.pubgmc.util.game.loot.ILootSpawner;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,9 +12,8 @@ import net.minecraft.util.NonNullList;
 
 import java.util.List;
 
-public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ILootSpawner, ITickable {
+public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable {
 
-    private String hash = "empty";
     private NonNullList<ItemStack> inventory;
 
     public TileEntityAirdrop() {
@@ -46,31 +44,6 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     }
 
     @Override
-    public String getGameHash() {
-        return hash;
-    }
-
-    @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
-    }
-
-    @Override
-    public void onLoaded() {
-        this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(pos).getBlock(), 2, 1);
-    }
-
-    @Override
-    public boolean isAirdropContainer() {
-        return true;
-    }
-
-    @Override
-    public boolean generateLootOnCommand() {
-        return false;
-    }
-
-    @Override
     public void update() {
         if(world.isRemote && !this.isEmpty()) {
             if(world.getTotalWorldTime() % 3 == 0) {
@@ -83,7 +56,6 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, inventory);
-        compound.setString("game", hash);
         return compound;
     }
 
@@ -91,6 +63,5 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         ItemStackHelper.loadAllItems(compound, inventory);
-        hash = compound.getString("hash");
     }
 }

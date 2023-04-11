@@ -4,20 +4,16 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketDelayedSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nullable;
@@ -25,41 +21,6 @@ import java.util.List;
 import java.util.Random;
 
 public class PUBGMCUtil {
-
-    public static void sendSoundPacket(SoundEvent event, float volume, BlockPos pos, TargetPoint target) {
-        PacketHandler.INSTANCE.sendToAllAround(new PacketDelayedSound(event, volume, pos.getX(), pos.getY(), pos.getZ()), target);
-    }
-
-    public static boolean isPlayerDrivingVehicle(EntityPlayer player) {
-        return player.getRidingEntity() instanceof EntityVehicle;
-    }
-
-    public static boolean isPlayerDriverOfVehicle(EntityPlayer player) {
-        return player.getRidingEntity() instanceof EntityVehicle && player.getRidingEntity().getPassengers().get(0) == player;
-    }
-
-    public static <T> boolean contains(T object, T[] array) {
-        for(T t : array) {
-            if(object == t) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int findFirstNull(Object[] array) {
-        for(int i = 0; i < array.length; i++) {
-            if(array[i] == null) return i;
-        }
-        return -1;
-    }
-
-    public static void shiftElementsInArray(Object[] array) {
-        for(int i = array.length - 2; i >= 0; i--) {
-            array[i+1] = array[i];
-        }
-        array[0] = null;
-    }
 
     /**
      * Position calculated between X and Z coordinate of given positions
@@ -143,5 +104,36 @@ public class PUBGMCUtil {
             stack.shrink(1);
         }
         return true;
+    }
+
+    @Nullable
+    public static BlockPos getEmptyGroundPositionAt(World world, BlockPos pos) {
+        BlockPos.MutableBlockPos possiblePosition = new BlockPos.MutableBlockPos(pos);
+        if (world.isAirBlock(possiblePosition)) {
+            return findGround(world, possiblePosition);
+        }
+        int y = possiblePosition.getY() - 1;
+        while (y < 255) {
+            possiblePosition.setY(y);
+            if (world.isAirBlock(possiblePosition)) {
+                return findGround(world, possiblePosition);
+            }
+            for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+                BlockPos withOffset = possiblePosition.offset(facing);
+                if (world.isAirBlock(withOffset)) {
+                    return findGround(world, withOffset);
+                }
+            }
+            ++y;
+        }
+        return null;
+    }
+
+    public static BlockPos findGround(World world, BlockPos pos) {
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
+        while (world.isAirBlock(mutableBlockPos.down()) && mutableBlockPos.getY() > 0) {
+            mutableBlockPos.setY(mutableBlockPos.getY() - 1);
+        }
+        return mutableBlockPos.toImmutable();
     }
 }

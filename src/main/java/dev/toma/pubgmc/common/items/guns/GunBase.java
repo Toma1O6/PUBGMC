@@ -13,8 +13,6 @@ import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketDelayedSound;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -300,11 +298,6 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     @Override
     public boolean cancelShieldRender() {
         return true;
-    }
-
-    @Deprecated
-    public void registerToGlobalLootPool(boolean airdropOnly) {
-        LootManager.register(LootType.GUN, new LootManager.LootEntry(this, gunType.getWeight(), airdropOnly));
     }
 
     public AmmoType getAmmoType() {

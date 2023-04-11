@@ -3,8 +3,6 @@ package dev.toma.pubgmc.common.items.heal;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.PMCItem;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -21,7 +19,6 @@ public abstract class ItemHealing extends PMCItem {
     public ItemHealing(String name, final int weight, final int amount) {
         super(name);
         setMaxStackSize(1);
-        LootManager.register(LootType.HEAL, new LootManager.LootEntry(this, weight, false, amount));
     }
 
     public abstract Action getAction();

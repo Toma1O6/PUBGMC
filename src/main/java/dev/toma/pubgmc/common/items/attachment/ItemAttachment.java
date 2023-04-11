@@ -2,8 +2,6 @@ package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.common.items.PMCItem;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -21,7 +19,6 @@ public abstract class ItemAttachment extends PMCItem {
         super(name);
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         setMaxStackSize(1);
-        LootManager.register(LootType.ATTACHMENT, new LootManager.LootEntry(this, 1, airdropOnly));
     }
 
     public abstract AttachmentType<?> getType();

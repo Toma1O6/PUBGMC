@@ -3,11 +3,11 @@ package dev.toma.pubgmc;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
-import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.world.IWorldData;
-import dev.toma.pubgmc.common.commands.*;
+import dev.toma.pubgmc.common.commands.AirdropCommand;
+import dev.toma.pubgmc.common.commands.ClearPlayerCratesCommand;
 import dev.toma.pubgmc.data.SimpleObjectRegistry;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.data.loot.LootProviderType;
@@ -87,9 +87,6 @@ public class Pubgmc {
 
         CapabilityManager.INSTANCE.register(IWorldData.class, SimpleStorageImpl.instance(), IWorldData.WorldData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
-        CapabilityManager.INSTANCE.register(IGameData.class, SimpleStorageImpl.instance(), IGameData.GameData::new);
-
-        dev.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
 
         LootProviders.registerLootProviders();
         LootProcessors.registerLootProcessors();
@@ -115,11 +112,8 @@ public class Pubgmc {
 
     @EventHandler
     public void serverInit(FMLServerStartingEvent event) {
-        event.registerServerCommand(new LeaveCommand());
-        event.registerServerCommand(new LootCommand());
         event.registerServerCommand(new ClearPlayerCratesCommand());
         event.registerServerCommand(new AirdropCommand());
-        event.registerServerCommand(new GameCommand());
     }
 
     private static void registerSmeltingRecipes() {

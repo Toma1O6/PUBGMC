@@ -25,7 +25,6 @@ public class PacketHandler {
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
-        registerServerPacket(PacketChooseLocation.Handler.class, PacketChooseLocation.class);
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
@@ -43,9 +42,7 @@ public class PacketHandler {
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
         registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
         registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
-        registerClientPacket(PacketSyncGameData.Handler.class, PacketSyncGameData.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
-        registerClientPacket(PacketOpenObjectiveGui.Handler.class, PacketOpenObjectiveGui.class);
         registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
     }
 

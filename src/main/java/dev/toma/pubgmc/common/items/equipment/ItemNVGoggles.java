@@ -4,8 +4,6 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.util.PUBGMCUtil;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -23,7 +21,6 @@ public class ItemNVGoggles extends PMCItem implements NightVisionGoggles {
     public ItemNVGoggles(String name) {
         super(name);
         this.setMaxStackSize(1);
-        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 15, false));
     }
 
     @Override

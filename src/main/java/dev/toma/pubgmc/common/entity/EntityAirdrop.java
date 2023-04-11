@@ -1,10 +1,9 @@
 package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
@@ -17,15 +16,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData {
+
     private boolean isBigDrop;
-    private String hash;
 
     public EntityAirdrop(World world) {
         super(world);
         this.setSize(1f, 1f);
         this.isBigDrop = false;
-        IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-        this.hash = gameData == null ? "empty" : gameData.getGameID();
     }
 
     public EntityAirdrop(World world, BlockPos pos, boolean type) {
@@ -39,16 +36,11 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
         super.onUpdate();
         this.handleMotion(0.15);
         this.move(MoverType.SELF, motionX, motionY, motionZ);
-        if(!world.isRemote && ticksExisted % 20 == 0) {
-            if(!world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getGameID().equals(hash)) {
-                this.setDead();
-            }
-        }
     }
 
     public void onEntityLanded() {
         IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
-        BlockPos landingPosition = GameUtils.getEmptyGroundPositionAt(world, this.getPosition());
+        BlockPos landingPosition = PUBGMCUtil.getEmptyGroundPositionAt(world, this.getPosition());
         if (landingPosition == null) {
             Pubgmc.logger.warn("Failed to find valid ground position for airdrop " + this);
             return;
@@ -74,13 +66,11 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
         isBigDrop = compound.getBoolean("dropType");
-        hash = compound.hasKey("hash") ? compound.getString("hash") : "empty";
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setBoolean("dropType", isBigDrop);
-        compound.setString("hash", this.hash);
     }
 
     @Override

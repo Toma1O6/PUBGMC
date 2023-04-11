@@ -1,9 +1,6 @@
 package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
-import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -15,10 +12,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGameTileEntity {
+public class TileEntityPlayerCrate extends TileEntity implements IInventory {
+
     private NonNullList<ItemStack> inv = NonNullList.withSize(45, ItemStack.EMPTY);
     private String customName;
-    private String hash = "EMPTY";
 
     @Override
     public String getName() {
@@ -145,20 +142,5 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
-    }
-
-    @Override
-    public String getGameHash() {
-        return hash;
-    }
-
-    @Override
-    public void onLoaded() {
-        GameUtils.markBlockForRemoval(world, pos, PMCBlocks.PLAYER_CRATE);
     }
 }

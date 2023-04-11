@@ -2,8 +2,6 @@ package dev.toma.pubgmc.common.items.equipment;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -19,7 +17,6 @@ public class ItemBulletproofArmor extends ItemArmor implements BulletproofArmor 
         setUnlocalizedName(name);
         setRegistryName(name);
         setCreativeTab(PMCTabs.TAB_ITEMS);
-        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, (3 - armorLevel.ordinal()) * 30, false));
         this.armorLevel = armorLevel;
     }
 

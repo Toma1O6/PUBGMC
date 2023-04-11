@@ -179,9 +179,7 @@ public class GunBuilder {
         if(action != null) {
             Preconditions.checkNotNull(action.get(), "Action cannot return null sound event");
         }
-        GunBase gunBase = buildFunc.apply(this);
-        gunBase.registerToGlobalLootPool(airdropOnly);
-        return gunBase;
+        return buildFunc.apply(this);
     }
 
     private static <T> void checkNotNull(T obj) throws NullPointerException {

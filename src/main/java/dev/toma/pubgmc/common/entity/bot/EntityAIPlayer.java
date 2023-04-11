@@ -1,8 +1,5 @@
 package dev.toma.pubgmc.common.entity.bot;
 
-import dev.toma.pubgmc.api.games.Game;
-import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -22,15 +19,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
 public class EntityAIPlayer extends EntityCreature {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
-    private String hash;
     private int variant;
-    @Nullable
-    private Game game;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -38,10 +30,7 @@ public class EntityAIPlayer extends EntityCreature {
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
         this.setCanPickUpLoot(true);
-        IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-        this.hash = gameData == null ? "empty" : gameData.getGameID();
         this.variant = worldIn.rand.nextInt(4);
-        this.game = gameData.getCurrentGame().isRunning() && !gameData.isInactiveGame() ? gameData.getCurrentGame() : null;
         this.initEntityAI();
     }
 
@@ -57,11 +46,6 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if(!world.isRemote) {
-            if(ticksExisted % 20 == 0 && !world.getCapability(IGameData.GameDataProvider.GAMEDATA, null).getGameID().equals(hash)) {
-                this.setDead();
-            }
-        }
     }
 
     @Override
@@ -86,11 +70,6 @@ public class EntityAIPlayer extends EntityCreature {
 
     @Override
     protected void initEntityAI() {
-        if(game == null) {
-            GameUtils.addBaseTasks(this.tasks, this.targetTasks, this);
-        } else {
-            game.getBotManager().getBotLogic().apply(this.tasks, this.targetTasks, this);
-        }
     }
 
     @Override
@@ -103,14 +82,12 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
-        compound.setString("hash", this.hash);
         compound.setInteger("variant", this.variant);
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
-        this.hash = compound.hasKey("hash") ? compound.getString("hash") : "empty";
         this.variant = compound.getInteger("variant");
     }
 

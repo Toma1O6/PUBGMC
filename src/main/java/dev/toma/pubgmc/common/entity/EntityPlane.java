@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -25,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class EntityPlane extends Entity {
-    public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap();
-    protected IGameData gameData;
+
+    public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap<>();
     protected BlockPos endPos;
     protected BlockPos startPos;
     private boolean hasReachedDestination;
@@ -38,13 +37,6 @@ public class EntityPlane extends Entity {
         super(world);
         setSize(15f, 5f);
         this.ignoreFrustumCheck = true;
-    }
-
-    public EntityPlane(World world, IGameData data) {
-        this(world);
-        gameData = data;
-
-        this.onCreated();
     }
 
     protected static void setPlayerFaceTheirDropLocation(EntityPlayer player, BlockPos finalDest) {
@@ -91,81 +83,11 @@ public class EntityPlane extends Entity {
         return true;
     }
 
-    //Responsible for setting right position and facing direction
-    public void onCreated() {
-        dropLoc.clear();
-        BlockPos mapCenter = gameData.getMapCenter();
-        short startSide = (short) rand.nextInt(4);
-
-        int startX = 0;
-        int startZ = 0;
-        int endX = 0;
-        int endZ = 0;
-
-        switch (startSide) {
-            //NORTH side of map
-            case 0: {
-                startX = edgeCoordinate(mapCenter.getX(), false);
-                startZ = generateRandomPosition(mapCenter.getZ());
-                endX = edgeCoordinate(mapCenter.getX(), true);
-                endZ = generateRandomPosition(mapCenter.getZ());
-                break;
-            }
-
-            //WEST side of map
-            case 1: {
-                startZ = edgeCoordinate(mapCenter.getZ(), true);
-                endZ = edgeCoordinate(mapCenter.getZ(), false);
-                startX = generateRandomPosition(mapCenter.getX());
-                endX = generateRandomPosition(mapCenter.getX());
-                break;
-            }
-
-            //SOUTH side of map
-            case 2: {
-                startX = edgeCoordinate(mapCenter.getX(), true);
-                startZ = generateRandomPosition(mapCenter.getZ());
-                endX = edgeCoordinate(mapCenter.getX(), false);
-                endZ = generateRandomPosition(mapCenter.getZ());
-                break;
-            }
-
-            //EAST side of map
-            case 3: {
-                startZ = edgeCoordinate(mapCenter.getZ(), false);
-                endZ = edgeCoordinate(mapCenter.getZ(), true);
-                startX = generateRandomPosition(mapCenter.getX());
-                endX = generateRandomPosition(mapCenter.getX());
-                break;
-            }
-        }
-
-        endPos = new BlockPos(endX, ConfigPMC.common.world.planeHeight.get(), endZ);
-        setPosition(startX, ConfigPMC.common.world.planeHeight.get(), startZ);
-        startPos = new BlockPos(startX, ConfigPMC.common.world.planeHeight.get(), startZ);
-        rotationYaw = 180f;
-        updateHeading(startX, startZ, endPos);
-
-        for (EntityPlayer player : world.playerEntities) {
-            if (player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-                player.getCapability(PlayerDataProvider.PLAYER_DATA, null).setDistance(Double.MAX_VALUE);
-            }
-        }
-
-        Pubgmc.logger.info("Spawning plane with start position of " + startX + ", 256, " + startZ
-                + " and end position of " + endX + ", 256, " + endZ + ".");
-    }
-
     @Override
     public void onUpdate() {
         super.onUpdate();
 
         canFly = this.ticksExisted >= (ConfigPMC.common.world.planeDelay.get() * 20);
-
-        if (gameData == null) {
-            Pubgmc.logger.debug("Couldn't load gamedata for plane, getting new instance...");
-            gameData = world.hasCapability(IGameData.GameDataProvider.GAMEDATA, null) ? world.getCapability(IGameData.GameDataProvider.GAMEDATA, null) : null;
-        }
 
         if (canFly) {
             if (!world.isRemote) {
@@ -182,8 +104,6 @@ public class EntityPlane extends Entity {
                         setDead();
                     }
                 }
-
-                if (!gameData.getCurrentGame().isRunning()) setDead();
 
                 if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.world.planeDelay.get() * 20 + 15) {
                     setDead();
@@ -226,9 +146,7 @@ public class EntityPlane extends Entity {
     }
 
     private float getMovementMultiplier() {
-        float f = gameData.getMapSize() / 300f;
-        f = f < 1 ? 1f : f;
-        return f;
+        return 1.0F;
     }
 
     @Override
@@ -264,21 +182,5 @@ public class EntityPlane extends Entity {
         hasReachedDestination = compound.getBoolean("reachedDest");
         timeSinceDestination = compound.getShort("timeSinceDest");
         setUniqueId(compound.getUniqueId("UUID"));
-    }
-
-    private void updateHeading(int x, int z, BlockPos endPos) {
-        PUBGMCUtil.updateEntityRotation(this, endPos);
-    }
-
-    private int edgeCoordinate(int center, boolean endPos) {
-        return endPos ? center + gameData.getMapSize() - 15 : center - gameData.getMapSize() + 15;
-    }
-
-    private int generateRandomPosition(int center) {
-        return center - gameData.getMapSize() + 15 + rand.nextInt(gameData.getMapSize() * 2 - 30);
-    }
-
-    public BlockPos getStartingPosition() {
-        return startPos;
     }
 }

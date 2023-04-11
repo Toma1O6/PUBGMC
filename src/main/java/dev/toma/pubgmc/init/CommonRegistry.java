@@ -1,9 +1,6 @@
 package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.games.GameBattleRoyale;
-import dev.toma.pubgmc.api.games.GameBombDefuse;
-import dev.toma.pubgmc.api.games.GameInactive;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
@@ -18,11 +15,11 @@ import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.items.*;
-import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
+import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
+import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
-import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
 import dev.toma.pubgmc.common.tileentity.*;
@@ -911,15 +908,6 @@ public class CommonRegistry {
                 registerEntity("molotov", EntityMolotov.class, 64, 1),
                 registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
                 registerEntity("flashbang", EntityFlashBang.class, 64, 1)
-        );
-    }
-
-    @SubscribeEvent
-    public static void registerGameModes(GameRegistry.GameRegisterEvent e) {
-        e.registerAll(
-                new GameInactive("inactive"),
-                new GameBattleRoyale("battleroyale"),
-                new GameBombDefuse("bombDefuse")
         );
     }
 
