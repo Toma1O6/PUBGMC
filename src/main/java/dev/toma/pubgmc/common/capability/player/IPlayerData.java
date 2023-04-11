@@ -31,12 +31,6 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound>, SpecialIn
     boolean isNightVisionActive();
 
     @Deprecated
-    void setBackpackLevel(int level);
-
-    @Deprecated
-    int getBackpackLevel();
-
-    @Deprecated
     boolean getEquippedNV();
 
     boolean isProne();

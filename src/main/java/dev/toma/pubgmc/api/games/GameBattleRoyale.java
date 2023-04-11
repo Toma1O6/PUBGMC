@@ -236,7 +236,6 @@ public class GameBattleRoyale extends Game {
         player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         IPlayerData data = PlayerData.get(player);
         data.getBoostStats().reset();
-        data.setBackpackLevel(0);
         return super.respawnPlayer(player);
     }
 

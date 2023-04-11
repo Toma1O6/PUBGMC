@@ -27,7 +27,6 @@ public class PlayerData implements IPlayerData {
     private final AimInfo aimInfo;
     private final ReloadInfo reloadInfo;
     private boolean isProne;
-    private int level; // TODO remove
     private boolean areNightVisionGogglesActive;
     private double dist; // TODO remove
 
@@ -95,16 +94,6 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public void setBackpackLevel(int level) {
-        this.level = level;
-    }
-
-    @Override
-    public int getBackpackLevel() {
-        return this.level;
-    }
-
-    @Override
     public boolean getEquippedNV() {
         return this.areNightVisionGogglesActive;
     }
@@ -155,7 +144,6 @@ public class PlayerData implements IPlayerData {
         c.setTag("aimInfo", aimInfo.serializeNBT());
         c.setTag("reloadInfo", reloadInfo.serializeNBT());
         c.setTag("inventory", SerializationHelper.inventoryToNbt(inventory));
-        c.setInteger("level", level);
         c.setBoolean("activeNightVision", areNightVisionGogglesActive);
         c.setBoolean("prone", this.isProne);
         return c;
@@ -167,7 +155,6 @@ public class PlayerData implements IPlayerData {
         aimInfo.deserializeNBT(nbt.getCompoundTag("aimInfo"));
         reloadInfo.deserializeNBT(nbt.getCompoundTag("reloadInfo"));
         SerializationHelper.inventoryFromNbt(inventory, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
-        level = nbt.getInteger("level");
         areNightVisionGogglesActive = nbt.getBoolean("activeNightVision");
         isProne = nbt.getBoolean("prone");
     }

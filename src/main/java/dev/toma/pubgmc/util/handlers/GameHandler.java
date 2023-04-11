@@ -16,9 +16,6 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
-import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
-import dev.toma.pubgmc.init.PMCBlocks;
-import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.math.ZonePos;
 import net.minecraft.client.Minecraft;
@@ -190,32 +187,6 @@ public class GameHandler {
                 int y = e.player.world.getHeight(x, z);
                 e.player.setPositionAndUpdate(x, y, z);
             }
-        }
-
-        public static void createAndFillDeathCrate(World world, BlockPos pos, EntityPlayer player) {
-            if(pos == null) {
-                Pubgmc.logger.warn("Couldn't create death crate for {}", player.getDisplayName());
-                return;
-            }
-            world.setBlockState(pos, PMCBlocks.PLAYER_CRATE.getDefaultState());
-            TileEntityPlayerCrate te = (TileEntityPlayerCrate)world.getTileEntity(pos);
-            if(te == null) {
-                Pubgmc.logger.fatal("Exception occurred when creating player crate, tile entity is null!");
-                return;
-            }
-            for(int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                ItemStack stack = player.inventory.getStackInSlot(i);
-                te.setInventorySlotContents(i, stack.copy());
-            }
-            IPlayerData data = PlayerData.get(player);
-            int backpack = data.getBackpackLevel();
-            if(backpack > 0) {
-                te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCItems.SMALL_BACKPACK_FOREST : backpack == 2 ? PMCItems.MEDIUM_BACKPACK_FOREST : PMCItems.LARGE_BACKPACK_FOREST));
-            }
-            if(data.getEquippedNV()) {
-                te.setInventorySlotContents(42, new ItemStack(PMCItems.NV_GOGGLES));
-            }
-            player.inventory.clear();
         }
 
         private static void eliminatePlayerAndTeam(Game game, UUID uuid) {

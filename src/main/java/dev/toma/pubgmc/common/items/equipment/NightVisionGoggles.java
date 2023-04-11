@@ -8,6 +8,7 @@ public interface NightVisionGoggles {
 
     ResourceLocation getHotbarIconPath(boolean active);
 
-    // TODO implement
     float getBrightnessValue();
+
+    float getLightExposureSensitivity();
 }
