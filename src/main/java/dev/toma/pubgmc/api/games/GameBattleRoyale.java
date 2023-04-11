@@ -13,6 +13,7 @@ import dev.toma.pubgmc.api.teams.Team;
 import dev.toma.pubgmc.api.teams.TeamSettings;
 import dev.toma.pubgmc.api.util.GameUtils;
 import dev.toma.pubgmc.common.capability.game.IGameData;
+import dev.toma.pubgmc.common.capability.player.BoostStats;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
@@ -176,6 +177,13 @@ public class GameBattleRoyale extends Game {
         joinedPlayers.forEach(p -> {
             p.setHealth(20.0F);
             p.getFoodStats().setFoodLevel(20);
+            IPlayerData data = PlayerData.get(p);
+            if (data != null) {
+                BoostStats stats = data.getBoostStats();
+                stats.setLevel(0);
+                data.getEquipmentInventory().clear();
+                data.sync();
+            }
             p.sendMessage(new TextComponentString("Choose one drop location"));
             for(MapLocation location : gameData.getSpawnLocations()) {
                 TextComponentString msg = new TextComponentString("- " + location.name());
