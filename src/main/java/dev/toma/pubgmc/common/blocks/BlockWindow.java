@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.blocks;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketParticle;
 import dev.toma.pubgmc.common.tileentity.TileEntityWindow;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -19,6 +20,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -52,9 +54,7 @@ public class BlockWindow extends PMCBlock {
             this.notifyNeighboringWindows(pos, world);
             if(!world.isRemote) {
                 if(state.getValue(PART).ordinal() < 2) {
-                    int axis = state.getValue(AXIS).ordinal();
-                    PacketParticle packet = new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 15, pos.getX(), pos.getY(), pos.getZ(), this, PacketParticle.ParticleAction.CREATE_LINE, axis);
-                    PacketHandler.sendToAllClients(packet);
+                    world.playEvent(Constants.WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
                 }
             }
         }
@@ -62,6 +62,7 @@ public class BlockWindow extends PMCBlock {
 
     public void breakWindow(IBlockState state, BlockPos pos, World world) {
         if(!state.getValue(BROKEN)) {
+            world.playEvent(2001, pos, Block.getStateId(state));
             world.setBlockState(pos, state.withProperty(BROKEN, true));
             this.notifyNeighboringWindows(pos, world);
             world.playSound(null, pos, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 3.0F, 1.0F);
