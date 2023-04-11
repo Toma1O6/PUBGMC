@@ -378,7 +378,7 @@ public class CommonRegistry {
                         .build(),
                 GunBuilder.create("s1897")
                         .stats(cfg.s1897)
-                        .firerate(15)
+                        .firerate(25)
                         .recoil(3.5f, 2f)
                         .reload(IReloader.single(), 20, PMCSounds.reload_s1897)
                         .ammo(AmmoType.AMMO12G, 5)
