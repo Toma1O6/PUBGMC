@@ -16,6 +16,7 @@ import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.capability.player.*;
+import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
@@ -507,6 +508,9 @@ public class ClientEvents {
     public void stitchTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
         map.registerSprite(ASMHooks.LOCKED_SLOT_ICON);
+        map.registerSprite(ContainerPlayerEquipment.SLOT_NIGHT_VISION);
+        map.registerSprite(ContainerPlayerEquipment.SLOT_BACKPACK);
+        map.registerSprite(ContainerPlayerEquipment.SLOT_GHILLIE);
     }
 
     private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {

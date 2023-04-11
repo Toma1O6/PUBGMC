@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.container;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
@@ -14,9 +15,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
 
 public class ContainerPlayerEquipment extends Container {
 
+    public static final ResourceLocation SLOT_NIGHT_VISION = Pubgmc.getResource("slot/night_vision");
+    public static final ResourceLocation SLOT_BACKPACK = Pubgmc.getResource("slot/backpack");
+    public static final ResourceLocation SLOT_GHILLIE = Pubgmc.getResource("slot/ghillie");
     private final IInventory equipmentInventory;
 
     public ContainerPlayerEquipment(InventoryPlayer playerInventory) {
@@ -31,17 +38,35 @@ public class ContainerPlayerEquipment extends Container {
             public boolean isItemValid(ItemStack stack) {
                 return stack.getItem() instanceof NightVisionGoggles;
             }
+
+            @Nullable
+            @Override
+            public String getSlotTexture() {
+                return SLOT_NIGHT_VISION.toString();
+            }
         });
         addSlotToContainer(new Slot(equipmentInventory, 1, 97, 26) {
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return stack.getItem() instanceof Backpack;
             }
+
+            @Nullable
+            @Override
+            public String getSlotTexture() {
+                return SLOT_BACKPACK.toString();
+            }
         });
         addSlotToContainer(new Slot(equipmentInventory, 2, 97, 44) {
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return stack.getItem() instanceof GhillieSuit;
+            }
+
+            @Nullable
+            @Override
+            public String getSlotTexture() {
+                return SLOT_GHILLIE.toString();
             }
         });
 
