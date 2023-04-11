@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class LayerBackpack implements LayerRenderer<EntityLivingBase> {
 
-    private static final Map<Item, BackpackRenderData> RENDER_DATA_MAP = new IdentityHashMap<>();
+    private static final Map<Item, ModelRenderData<?>> RENDER_DATA_MAP = new IdentityHashMap<>();
     private final RenderLivingBase<?> renderer;
     private final Function<EntityLivingBase, SpecialInventoryProvider> inventoryProvider;
 
@@ -27,7 +27,7 @@ public class LayerBackpack implements LayerRenderer<EntityLivingBase> {
     }
 
     public static <T extends Item & Backpack> void registerRenderer(T item, ModelBase model, ResourceLocation texture) {
-        RENDER_DATA_MAP.put(item, new BackpackRenderData(model, texture));
+        RENDER_DATA_MAP.put(item, new ModelRenderData<>(model, texture));
     }
 
     @Override
@@ -44,27 +44,16 @@ public class LayerBackpack implements LayerRenderer<EntityLivingBase> {
         if (backpackSlot.isEmpty()) {
             return;
         }
-        BackpackRenderData renderData = RENDER_DATA_MAP.get(backpackSlot.getItem());
+        ModelRenderData<?> renderData = RENDER_DATA_MAP.get(backpackSlot.getItem());
         if (renderData == null) {
             return;
         }
-        renderer.bindTexture(renderData.texture);
-        renderData.model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        renderer.bindTexture(renderData.getTexture());
+        renderData.getModel().render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
     @Override
     public boolean shouldCombineTextures() {
         return false;
-    }
-
-    private static final class BackpackRenderData {
-
-        private final ModelBase model;
-        private final ResourceLocation texture;
-
-        public BackpackRenderData(ModelBase model, ResourceLocation texture) {
-            this.model = model;
-            this.texture = texture;
-        }
     }
 }

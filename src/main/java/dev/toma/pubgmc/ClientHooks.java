@@ -2,6 +2,7 @@ package dev.toma.pubgmc;
 
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
+import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -102,6 +103,7 @@ public class ClientHooks {
             EntityPlayer player = (EntityPlayer) entity;
             return PlayerData.get(player);
         }));
+        renderPlayer.addLayer(new LayerNightVision<>(renderPlayer, PlayerData::get, player -> PlayerData.get(player).isNightVisionActive()));
     }
 
     public static void preRenderItem(ItemCameraTransforms.TransformType renderingType) {

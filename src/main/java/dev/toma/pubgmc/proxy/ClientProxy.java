@@ -6,8 +6,10 @@ import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
+import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.client.models.equipment.LargeBackpackModel;
 import dev.toma.pubgmc.client.models.equipment.MediumBackpackModel;
+import dev.toma.pubgmc.client.models.equipment.NightVisionModel;
 import dev.toma.pubgmc.client.models.equipment.SmallBackpackModel;
 import dev.toma.pubgmc.client.renderer.entity.*;
 import dev.toma.pubgmc.client.renderer.item.attachment.*;
@@ -80,6 +82,7 @@ public class ClientProxy extends Proxy {
         registerWeaponRenderers();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(animationLoader);
 
+        LayerNightVision.registerRenderer(PMCItems.NV_GOGGLES, new NightVisionModel(), WeaponRenderer.ATTACHMENT_TEXTURES);
         registerBackpackModels();
     }
 
