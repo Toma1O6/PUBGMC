@@ -263,7 +263,7 @@ public class ClientEvents {
                     int rawSkylight = world.getLightFor(EnumSkyBlock.SKY, playerPosition);
                     int light = (int) (rawSkylight * sunBrightness);
                     int blockLight = world.getLightFor(EnumSkyBlock.BLOCK, playerPosition);
-                    float exposure = Math.max(light, blockLight) / 15.0F;
+                    float exposure = Math.max(light, blockLight) / 15.0F * goggles.getLightExposureSensitivity();
                     if (exposure > 0.0F) {
                         ImageUtil.drawShape(0, 0, res.getScaledWidth(), res.getScaledWidth(), 0.3F, 1.0F, 0.3F, exposure);
                     }
