@@ -21,11 +21,13 @@ public final class ItemBackpack extends PMCItem implements Backpack {
             Pubgmc.getResource("textures/overlay/backpack2.png"),
             Pubgmc.getResource("textures/overlay/backpack3.png")
     };
+    private final Variant variant;
     private final int backpackLevel;
 
-    public ItemBackpack(String name, int backpackLevel) {
+    public ItemBackpack(String name, int backpackLevel, Variant variant) {
         super(name);
         this.backpackLevel = backpackLevel;
+        this.variant = variant;
         this.setMaxStackSize(1);
         LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 10, false));
     }
@@ -47,5 +49,26 @@ public final class ItemBackpack extends PMCItem implements Backpack {
     @Override
     public ResourceLocation getHotbarIconPath() {
         return ICONS[backpackLevel - 1];
+    }
+
+    public Variant getVariant() {
+        return variant;
+    }
+
+    public enum Variant {
+
+        FOREST,
+        DESERT,
+        SNOW;
+
+        private final ResourceLocation texture;
+
+        Variant() {
+            this.texture = Pubgmc.getResource("textures/models/backpack_" + name().toLowerCase() + ".png");
+        }
+
+        public ResourceLocation getTexture() {
+            return texture;
+        }
     }
 }

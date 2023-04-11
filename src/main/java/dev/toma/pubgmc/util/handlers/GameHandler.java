@@ -210,7 +210,7 @@ public class GameHandler {
             IPlayerData data = PlayerData.get(player);
             int backpack = data.getBackpackLevel();
             if(backpack > 0) {
-                te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCItems.BACKPACK1 : backpack == 2 ? PMCItems.BACKPACK2 : PMCItems.BACKPACK3));
+                te.setInventorySlotContents(41, new ItemStack(backpack == 1 ? PMCItems.SMALL_BACKPACK_FOREST : backpack == 2 ? PMCItems.MEDIUM_BACKPACK_FOREST : PMCItems.LARGE_BACKPACK_FOREST));
             }
             if(data.getEquippedNV()) {
                 te.setInventorySlotContents(42, new ItemStack(PMCItems.NV_GOGGLES));

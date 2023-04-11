@@ -2,6 +2,7 @@ package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
+import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.FlareGun;
@@ -12,9 +13,15 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Pubgmc.MOD_ID)
 public final class PMCItems {
-    public static final Item BACKPACK1 = null;
-    public static final Item BACKPACK2 = null;
-    public static final Item BACKPACK3 = null;
+    public static final ItemBackpack SMALL_BACKPACK_FOREST = null;
+    public static final ItemBackpack SMALL_BACKPACK_DESERT = null;
+    public static final ItemBackpack SMALL_BACKPACK_SNOW = null;
+    public static final ItemBackpack MEDIUM_BACKPACK_FOREST = null;
+    public static final ItemBackpack MEDIUM_BACKPACK_DESERT = null;
+    public static final ItemBackpack MEDIUM_BACKPACK_SNOW = null;
+    public static final ItemBackpack LARGE_BACKPACK_FOREST = null;
+    public static final ItemBackpack LARGE_BACKPACK_DESERT = null;
+    public static final ItemBackpack LARGE_BACKPACK_SNOW = null;
     public static final ItemBandage BANDAGE = null;
     public static final ItemFirstAidKit FIRSTAIDKIT = null;
     public static final ItemMedkit MEDKIT = null;

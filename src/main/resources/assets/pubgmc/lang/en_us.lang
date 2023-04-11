@@ -1,6 +1,12 @@
-item.backpack1.name=Small backpack
-item.backpack2.name=Medium backpack
-item.backpack3.name=Large backpack
+item.small_backpack_forest.name=Small backpack
+item.small_backpack_desert.name=Small backpack
+item.small_backpack_snow.name=Small backpack
+item.medium_backpack_forest.name=Medium backpack
+item.medium_backpack_desert.name=Medium backpack
+item.medium_backpack_snow.name=Medium backpack
+item.large_backpack_forest.name=Large backpack
+item.large_backpack_desert.name=Large backpack
+item.large_backpack_snow.name=Large backpack
 item.bandage.name=Bandage
 item.firstaidkit.name=First aid kit
 item.medkit.name=Medkit

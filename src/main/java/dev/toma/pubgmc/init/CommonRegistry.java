@@ -176,9 +176,15 @@ public class CommonRegistry {
         CFGWeapons cfg = ConfigPMC.guns();
         IForgeRegistry<Item> registry = event.getRegistry();
         registry.registerAll(
-                new ItemBackpack("backpack1", 1),
-                new ItemBackpack("backpack2", 2),
-                new ItemBackpack("backpack3", 3),
+                new ItemBackpack("small_backpack_forest", 1, ItemBackpack.Variant.FOREST),
+                new ItemBackpack("small_backpack_desert", 1, ItemBackpack.Variant.DESERT),
+                new ItemBackpack("small_backpack_snow", 1, ItemBackpack.Variant.SNOW),
+                new ItemBackpack("medium_backpack_forest", 2, ItemBackpack.Variant.FOREST),
+                new ItemBackpack("medium_backpack_desert", 2, ItemBackpack.Variant.DESERT),
+                new ItemBackpack("medium_backpack_snow", 2, ItemBackpack.Variant.SNOW),
+                new ItemBackpack("large_backpack_forest", 3, ItemBackpack.Variant.FOREST),
+                new ItemBackpack("large_backpack_desert", 3, ItemBackpack.Variant.DESERT),
+                new ItemBackpack("large_backpack_snow", 3, ItemBackpack.Variant.SNOW),
                 new ItemBandage("bandage"),
                 new ItemFirstAidKit("firstaidkit"),
                 new ItemMedkit("medkit"),

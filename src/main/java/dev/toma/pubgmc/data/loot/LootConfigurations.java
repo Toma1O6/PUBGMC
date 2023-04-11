@@ -76,7 +76,7 @@ public final class LootConfigurations {
                 getAirdropWeapons(),
                 new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3HELMET)),
                 new RandomChanceLootProvider(0.7F, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3BODY))),
-                new RandomChanceLootProvider(0.6F, new ItemStackLootProvider(new ItemStack(PMCItems.BACKPACK3))),
+                new RandomChanceLootProvider(0.6F, getLargeBackpacks()),
                 new RandomChanceLootProvider(0.25F, new ItemStackLootProvider(
                         new ItemStack(PMCItems.GHILLIE_SUIT),
                         Collections.singletonList(new GhillieColorProcessor(GhillieColorProcessor.ColorProvider.BIOME, new int[0]))
@@ -94,7 +94,7 @@ public final class LootConfigurations {
                         getAirdropWeapons(),
                         new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3HELMET)),
                         new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3BODY)),
-                        new ItemStackLootProvider(new ItemStack(PMCItems.BACKPACK3))
+                        getLargeBackpacks()
                 ))),
                 new RandomChanceLootProvider(0.5F, new ItemStackLootProvider(
                         new ItemStack(PMCItems.GHILLIE_SUIT),
@@ -111,12 +111,12 @@ public final class LootConfigurations {
         return new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(lvl1, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1HELMET))),
                 new WeightedRandom.Entry<>(lvl1, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1BODY))),
-                new WeightedRandom.Entry<>(lvl1, new ItemStackLootProvider(new ItemStack(PMCItems.BACKPACK1))),
+                new WeightedRandom.Entry<>(lvl1, getSmallBackpacks()),
                 new WeightedRandom.Entry<>(lvl2, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2HELMET))),
                 new WeightedRandom.Entry<>(lvl2, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2BODY))),
-                new WeightedRandom.Entry<>(lvl2, new ItemStackLootProvider(new ItemStack(PMCItems.BACKPACK2))),
+                new WeightedRandom.Entry<>(lvl2, getMediumBackpacks()),
                 new WeightedRandom.Entry<>(lvl3, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3BODY))),
-                new WeightedRandom.Entry<>(lvl3, new ItemStackLootProvider(new ItemStack(PMCItems.BACKPACK3)))
+                new WeightedRandom.Entry<>(lvl3, getLargeBackpacks())
         ));
     }
 
@@ -292,6 +292,30 @@ public final class LootConfigurations {
                 new ItemStackLootProvider(new ItemStack(PMCItems.MEDKIT)),
                 new ItemStackLootProvider(new ItemStack(PMCItems.FIRSTAIDKIT)),
                 new ItemStackLootProvider(new ItemStack(PMCItems.ADRENALINESYRINGE))
+        ));
+    }
+
+    private static LootProvider getSmallBackpacks() {
+        return new RandomLootProvider(Arrays.asList(
+                new ItemStackLootProvider(new ItemStack(PMCItems.SMALL_BACKPACK_FOREST)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.SMALL_BACKPACK_DESERT)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.SMALL_BACKPACK_SNOW))
+        ));
+    }
+
+    private static LootProvider getMediumBackpacks() {
+        return new RandomLootProvider(Arrays.asList(
+                new ItemStackLootProvider(new ItemStack(PMCItems.MEDIUM_BACKPACK_FOREST)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.MEDIUM_BACKPACK_DESERT)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.MEDIUM_BACKPACK_SNOW))
+        ));
+    }
+
+    private static LootProvider getLargeBackpacks() {
+        return new RandomLootProvider(Arrays.asList(
+                new ItemStackLootProvider(new ItemStack(PMCItems.LARGE_BACKPACK_FOREST)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.LARGE_BACKPACK_DESERT)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.LARGE_BACKPACK_SNOW))
         ));
     }
 

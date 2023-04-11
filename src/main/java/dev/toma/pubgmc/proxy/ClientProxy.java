@@ -5,6 +5,10 @@ import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
+import dev.toma.pubgmc.client.layers.LayerBackpack;
+import dev.toma.pubgmc.client.models.equipment.LargeBackpackModel;
+import dev.toma.pubgmc.client.models.equipment.MediumBackpackModel;
+import dev.toma.pubgmc.client.models.equipment.SmallBackpackModel;
 import dev.toma.pubgmc.client.renderer.entity.*;
 import dev.toma.pubgmc.client.renderer.item.attachment.*;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
@@ -24,6 +28,7 @@ import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
+import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.GunBuilder;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
@@ -32,6 +37,7 @@ import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.init.SoundEvents;
@@ -73,6 +79,8 @@ public class ClientProxy extends Proxy {
         itemColors.registerItemColorHandler((stack, tintIndex) -> stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : 0x359E35, PMCItems.GHILLIE_SUIT);
         registerWeaponRenderers();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(animationLoader);
+
+        registerBackpackModels();
     }
 
     @Override
@@ -153,5 +161,21 @@ public class ClientProxy extends Proxy {
 
     public static void playButtonPressSound() {
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+    }
+
+    private static void registerBackpackModels() {
+        registerBackpackModel(PMCItems.SMALL_BACKPACK_FOREST, SmallBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.SMALL_BACKPACK_DESERT, SmallBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.SMALL_BACKPACK_SNOW, SmallBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.MEDIUM_BACKPACK_FOREST, MediumBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.MEDIUM_BACKPACK_DESERT, MediumBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.MEDIUM_BACKPACK_SNOW, MediumBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.LARGE_BACKPACK_FOREST, LargeBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.LARGE_BACKPACK_DESERT, LargeBackpackModel.MODEL);
+        registerBackpackModel(PMCItems.LARGE_BACKPACK_SNOW, LargeBackpackModel.MODEL);
+    }
+
+    private static void registerBackpackModel(ItemBackpack item, ModelBase model) {
+        LayerBackpack.registerRenderer(item, model, item.getVariant().getTexture());
     }
 }

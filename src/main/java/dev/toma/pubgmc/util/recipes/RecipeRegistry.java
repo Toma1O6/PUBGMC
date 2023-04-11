@@ -350,18 +350,18 @@ public final class RecipeRegistry {
                 .ingredient(Blocks.WOOL, 2)
                 .build());
         registerRecipe(PMCRecipeBuilder.createWearable()
-                .result(PMCItems.BACKPACK1)
+                .result(PMCItems.SMALL_BACKPACK_FOREST)
                 .ingredient(Blocks.CHEST, 1)
                 .ingredient(Items.LEATHER, 10)
                 .build());
         registerRecipe(PMCRecipeBuilder.createWearable()
-                .result(PMCItems.BACKPACK2)
-                .ingredient(PMCItems.BACKPACK1, 1)
+                .result(PMCItems.MEDIUM_BACKPACK_FOREST)
+                .ingredient(PMCItems.SMALL_BACKPACK_FOREST, 1)
                 .ingredient(Items.LEATHER, 20)
                 .build());
         registerRecipe(PMCRecipeBuilder.createWearable()
-                .result(PMCItems.BACKPACK3)
-                .ingredient(PMCItems.BACKPACK2, 1)
+                .result(PMCItems.LARGE_BACKPACK_FOREST)
+                .ingredient(PMCItems.MEDIUM_BACKPACK_FOREST, 1)
                 .ingredient(Items.LEATHER, 30)
                 .build());
         registerRecipe(PMCRecipeBuilder.createWearable()

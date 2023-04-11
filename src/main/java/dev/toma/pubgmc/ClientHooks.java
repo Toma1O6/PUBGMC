@@ -1,5 +1,6 @@
 package dev.toma.pubgmc;
 
+import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -97,6 +98,10 @@ public class ClientHooks {
 
     public static void player_constructRender(RenderPlayer renderPlayer, RenderManager manager, boolean useSmallArms) {
         renderPlayer.addLayer(new LayerGhillie(renderPlayer));
+        renderPlayer.addLayer(new LayerBackpack(renderPlayer, entity -> {
+            EntityPlayer player = (EntityPlayer) entity;
+            return PlayerData.get(player);
+        }));
     }
 
     public static void preRenderItem(ItemCameraTransforms.TransformType renderingType) {
