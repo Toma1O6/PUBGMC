@@ -27,6 +27,8 @@ public class PMCClassTransformer implements IClassTransformer {
                 return SlotClassTransformer.transform(basicClass);
             case "net.minecraft.client.renderer.EntityRenderer":
                 return EntityRendererClassTransformer.transform(basicClass);
+            case "net.minecraft.client.Minecraft":
+                return MinecraftClassTransformer.transform(basicClass);
         }
         return basicClass;
     }

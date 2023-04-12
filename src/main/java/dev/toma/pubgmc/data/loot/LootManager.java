@@ -2,6 +2,7 @@ package dev.toma.pubgmc.data.loot;
 
 import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.PubgmcRegistries;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -35,6 +36,8 @@ public final class LootManager {
 
     public static void load() {
         try {
+            PubgmcRegistries.LOOT_PROVIDERS.lock();
+            PubgmcRegistries.LOOT_PROCESSORS.lock();
             INSTANCE.loadData();
         } catch (IOException e) {
             Pubgmc.logger.fatal(MARKER, "Loot initialization failed!");

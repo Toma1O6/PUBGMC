@@ -8,11 +8,8 @@ import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.ClearPlayerCratesCommand;
-import dev.toma.pubgmc.data.SimpleObjectRegistry;
 import dev.toma.pubgmc.data.loot.LootManager;
-import dev.toma.pubgmc.data.loot.LootProviderType;
 import dev.toma.pubgmc.data.loot.LootProviders;
-import dev.toma.pubgmc.data.loot.processor.LootProcessorType;
 import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -58,9 +55,6 @@ public class Pubgmc {
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     public static final int CONTENT_DATA_VERSION = 1;
-
-    public static final SimpleObjectRegistry<LootProviderType<?>> LOOT_PROVIDER_TYPE_REGISTRY = new SimpleObjectRegistry<>(LootProviderType::getProviderId);
-    public static final SimpleObjectRegistry<LootProcessorType<?>> LOOT_PROCESSOR_TYPE_REGISTRY = new SimpleObjectRegistry<>(LootProcessorType::getIdentifier);
 
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");

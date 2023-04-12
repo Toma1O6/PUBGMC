@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.data.loot.processor;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.PubgmcRegistries;
 import net.minecraft.util.ResourceLocation;
 
 public final class LootProcessors {
@@ -14,7 +15,7 @@ public final class LootProcessors {
     }
 
     private static void register(LootProcessorType<?> type) {
-        Pubgmc.LOOT_PROCESSOR_TYPE_REGISTRY.register(type);
+        PubgmcRegistries.LOOT_PROCESSORS.register(type);
     }
 
     private static <P extends LootProcessor> LootProcessorType<P> create(String id, LootProcessorSerializer<P> serializer) {

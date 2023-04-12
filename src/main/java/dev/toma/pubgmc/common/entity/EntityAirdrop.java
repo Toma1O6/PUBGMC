@@ -1,10 +1,12 @@
 package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.TileEntityUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -15,9 +17,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData {
+import java.util.UUID;
+
+public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData, GameObject {
 
     private boolean isBigDrop;
+    private UUID gameId;
 
     public EntityAirdrop(World world) {
         super(world);
@@ -34,23 +39,27 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (ticksExisted % 20L == 0) {
+            GameHelper.performActiveGameIdValidations(world, gameId, this::onNewGameDetected);
+        }
         this.handleMotion(0.15);
         this.move(MoverType.SELF, motionX, motionY, motionZ);
     }
 
     public void onEntityLanded() {
-        IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
-        BlockPos landingPosition = PUBGMCUtil.getEmptyGroundPositionAt(world, this.getPosition());
-        if (landingPosition == null) {
-            Pubgmc.logger.warn("Failed to find valid ground position for airdrop " + this);
-            return;
-        }
-        world.setBlockState(landingPosition, state, 3);
-
-        TileEntity tileEntity = world.getTileEntity(landingPosition);
-        if (tileEntity instanceof TileEntityAirdrop) {
-            ((TileEntityAirdrop) tileEntity).onLanded();
-            TileEntityUtil.syncToClient(tileEntity);
+        if (GameHelper.performActiveGameIdValidations(world, gameId, this::onNewGameDetected)) {
+            IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
+            BlockPos landingPosition = PUBGMCUtil.getEmptyGroundPositionAt(world, this.getPosition());
+            if (landingPosition == null) {
+                Pubgmc.logger.warn("Failed to find valid ground position for airdrop " + this);
+                return;
+            }
+            world.setBlockState(landingPosition, state, 3);
+            TileEntity tileEntity = world.getTileEntity(landingPosition);
+            if (tileEntity instanceof TileEntityAirdrop) {
+                ((TileEntityAirdrop) tileEntity).onLanded(); // TODO rework
+                TileEntityUtil.syncToClient(tileEntity);
+            }
         }
     }
 
@@ -85,6 +94,21 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void entityInit() {
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void onNewGameDetected() {
+        setDead();
     }
 
     private void handleMotion(double motion) {

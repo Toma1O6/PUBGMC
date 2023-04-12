@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.data.loot;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.PubgmcRegistries;
 import net.minecraft.util.ResourceLocation;
 
 public final class LootProviders {
@@ -22,7 +23,7 @@ public final class LootProviders {
     }
 
     private static void register(LootProviderType<?> type) {
-        Pubgmc.LOOT_PROVIDER_TYPE_REGISTRY.register(type);
+        PubgmcRegistries.LOOT_PROVIDERS.register(type);
     }
 
     private static <P extends LootProvider> LootProviderType<P> create(String id, LootProviderSerializer<P> serializer) {

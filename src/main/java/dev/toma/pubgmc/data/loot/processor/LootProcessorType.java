@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
@@ -32,7 +32,7 @@ public class LootProcessorType<P extends LootProcessor> {
 
     public static <P extends LootProcessor> P parse(JsonObject object) throws JsonParseException {
         ResourceLocation type = new ResourceLocation(JsonUtils.getString(object, "type"));
-        LootProcessorType<P> processorType = Pubgmc.LOOT_PROCESSOR_TYPE_REGISTRY.getGenericValue(type);
+        LootProcessorType<P> processorType = PubgmcRegistries.LOOT_PROCESSORS.getUnsafeGenericValue(type);
         if (processorType == null) {
             throw new JsonSyntaxException("Unknown loot provider type: " + type);
         }
