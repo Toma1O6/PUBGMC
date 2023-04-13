@@ -1,5 +1,6 @@
 package dev.toma.pubgmc;
 
+import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
@@ -8,6 +9,7 @@ import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.ClearPlayerCratesCommand;
+import dev.toma.pubgmc.common.games.area.GameAreaTypes;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.data.loot.LootProviders;
 import dev.toma.pubgmc.data.loot.processor.LootProcessors;
@@ -84,6 +86,7 @@ public class Pubgmc {
 
         LootProviders.registerLootProviders();
         LootProcessors.registerLootProcessors();
+        GameAreaTypes.register();
 
         proxy.preInit(event);
     }
@@ -101,6 +104,7 @@ public class Pubgmc {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         RecipeRegistry.registerWorkbenchRecipes();
+        PubgmcRegistries.GAME_AREA_TYPES.lock();
         proxy.postInit(event);
     }
 
