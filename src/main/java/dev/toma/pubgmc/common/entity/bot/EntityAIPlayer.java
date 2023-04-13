@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.bot;
 
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -7,6 +8,7 @@ import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.TileEntityUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -19,10 +21,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
-public class EntityAIPlayer extends EntityCreature {
+import java.util.UUID;
+
+public class EntityAIPlayer extends EntityCreature implements GameObject {
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private int variant;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -46,6 +51,9 @@ public class EntityAIPlayer extends EntityCreature {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (ticksExisted % 20 == 0) {
+            GameHelper.validateGameEntityStillValid(this);
+        }
     }
 
     @Override
@@ -83,12 +91,14 @@ public class EntityAIPlayer extends EntityCreature {
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("variant", this.variant);
+        compound.setUniqueId("gameId", gameId);
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
         this.variant = compound.getInteger("variant");
+        gameId = compound.getUniqueId("gameId");
     }
 
     public int getVariant() {
@@ -98,6 +108,7 @@ public class EntityAIPlayer extends EntityCreature {
     /**
      * Return value if still needs to loot something (Bigger value = Bigger chance to loot more), >= 10 = needs to loot
      **/
+    // TODO rework for loadout system
     public int lootFromLootSpawner(TileEntityLootGenerator lootSpawner) {
         boolean needsGun = !this.hasGun();
         boolean needsHelmet = this.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
@@ -187,5 +198,20 @@ public class EntityAIPlayer extends EntityCreature {
 
     public GunBase getGun() {
         return (GunBase) this.getHeldItemMainhand().getItem();
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        setDead();
     }
 }

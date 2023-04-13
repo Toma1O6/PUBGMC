@@ -1,6 +1,10 @@
 package dev.toma.pubgmc.common.tileentity;
 
+import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
+import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.util.TileEntitySync;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -12,10 +16,14 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity {
+import java.util.List;
+import java.util.UUID;
+
+public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, LootGenerator {
 
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     @Override
     public String getName() {
@@ -61,5 +69,36 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
     @Override
     public NonNullList<ItemStack> getInventory() {
         return inventory;
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+        markDirty();
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        assignGameId(newGameId);
+        clear();
+    }
+
+    @Override
+    public String getLootConfigurationId() {
+        int tier = world.getBlockState(pos).getValue(BlockLootSpawner.LOOT);
+        return LootConfigurations.LOOT_SPAWNER[tier];
+    }
+
+    @Override
+    public void fillWithLoot(List<ItemStack> items) {
+        clear();
+        for (int i = 0; i < Math.min(items.size(), getSizeInventory()); i++) {
+            setInventorySlotContents(i, items.get(i));
+        }
     }
 }

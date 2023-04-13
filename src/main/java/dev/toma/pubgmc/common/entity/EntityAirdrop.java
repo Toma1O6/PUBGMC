@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.entity;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
+import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.TileEntityUtil;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData, GameObject {
 
     private boolean isBigDrop;
-    private UUID gameId;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityAirdrop(World world) {
         super(world);
@@ -40,14 +41,14 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData,
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted % 20L == 0) {
-            GameHelper.performActiveGameIdValidations(world, gameId, this::onNewGameDetected);
+            GameHelper.validateGameEntityStillValid(this);
         }
         this.handleMotion(0.15);
         this.move(MoverType.SELF, motionX, motionY, motionZ);
     }
 
     public void onEntityLanded() {
-        if (GameHelper.performActiveGameIdValidations(world, gameId, this::onNewGameDetected)) {
+        if (GameHelper.validateGameEntityStillValid(this)) {
             IBlockState state = isBigDrop ? PMCBlocks.BIG_AIRDROP.getDefaultState() : PMCBlocks.AIRDROP.getDefaultState();
             BlockPos landingPosition = PUBGMCUtil.getEmptyGroundPositionAt(world, this.getPosition());
             if (landingPosition == null) {
@@ -57,7 +58,8 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData,
             world.setBlockState(landingPosition, state, 3);
             TileEntity tileEntity = world.getTileEntity(landingPosition);
             if (tileEntity instanceof TileEntityAirdrop) {
-                ((TileEntityAirdrop) tileEntity).onLanded(); // TODO rework
+                TileEntityAirdrop airdrop = (TileEntityAirdrop) tileEntity;
+                LootManager.generateLootInGenerator(airdrop, world, landingPosition);
                 TileEntityUtil.syncToClient(tileEntity);
             }
         }
@@ -107,7 +109,7 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData,
     }
 
     @Override
-    public void onNewGameDetected() {
+    public void onNewGameDetected(UUID newGameId) {
         setDead();
     }
 

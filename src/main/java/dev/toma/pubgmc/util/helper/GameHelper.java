@@ -1,11 +1,13 @@
 package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,7 @@ import java.util.UUID;
 public final class GameHelper {
 
     public static final Marker MARKER = MarkerManager.getMarker("GameEngine");
-    public static final UUID NIL_UUID = new UUID(0L, 0L);
+    public static final UUID DEFAULT_UUID = new UUID(0L, 0L);
 
     public static void spawnPlayerDeathCrate(UUID gameId, EntityPlayer player) {
         World world = player.world;
@@ -53,13 +55,19 @@ public final class GameHelper {
         }
         TileEntityPlayerCrate playerCrate = (TileEntityPlayerCrate) tileEntity;
         playerCrate.assignGameId(gameId);
+        int inventorySize = playerCrate.getSizeInventory();
         for (InventoryProvider provider : inventories) {
             int index = provider.getSlotOffset();
             IInventory inventory = provider.getInventory();
             for (int i = 0; i < inventory.getSizeInventory(); i++) {
                 ItemStack stack = inventory.getStackInSlot(i);
                 if (!stack.isEmpty()) {
-                    playerCrate.setInventorySlotContents(index + i, stack.copy());
+                    int crateSlotIndex = index + i;
+                    if (crateSlotIndex >= inventorySize) {
+                        Pubgmc.logger.error(MARKER, "Attempted to insert item at slot index outside of crate inventory range. Index {}, max {}", crateSlotIndex, inventorySize);
+                        break;
+                    }
+                    playerCrate.setInventorySlotContents(crateSlotIndex, stack.copy());
                 }
             }
             inventory.clear();
@@ -67,12 +75,12 @@ public final class GameHelper {
         Pubgmc.logger.debug(MARKER, "Death crate generated at {}", ground);
     }
 
-    public static boolean performActiveGameIdValidations(World world, UUID storedGameId, Runnable onInvalidGameAction) {
-        UUID currentGameId = NIL_UUID; // TODO implement
-        if (currentGameId.equals(storedGameId)) {
+    public static <E extends Entity & GameObject> boolean validateGameEntityStillValid(E entity) {
+        UUID currentGameId = DEFAULT_UUID; // TODO implement
+        if (currentGameId.equals(entity.getCurrentGameId())) {
             return true;
         }
-        onInvalidGameAction.run();
+        entity.onNewGameDetected(currentGameId);
         return false;
     }
 

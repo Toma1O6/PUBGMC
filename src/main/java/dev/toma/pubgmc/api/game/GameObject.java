@@ -8,5 +8,5 @@ public interface GameObject {
 
     void assignGameId(UUID gameId);
 
-    void onNewGameDetected();
+    void onNewGameDetected(UUID newGameId);
 }

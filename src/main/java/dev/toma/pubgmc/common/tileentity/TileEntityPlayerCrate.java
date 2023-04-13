@@ -20,7 +20,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, Gam
 
     private NonNullList<ItemStack> inv = NonNullList.withSize(45, ItemStack.EMPTY);
     private String customName;
-    private UUID gameId = GameHelper.NIL_UUID;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     @Override
     public String getName() {
@@ -157,7 +157,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, Gam
     }
 
     @Override
-    public void onNewGameDetected() {
+    public void onNewGameDetected(UUID newGameId) {
         world.destroyBlock(pos, false);
     }
 }

@@ -3,6 +3,7 @@ package dev.toma.pubgmc.data.loot;
 import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.game.LootGenerator;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -43,6 +44,13 @@ public final class LootManager {
             Pubgmc.logger.fatal(MARKER, "Loot initialization failed!");
             throw new RuntimeException("Loot load failed", e);
         }
+    }
+
+    public static <G extends IInventory & LootGenerator> void generateLootInGenerator(G object, World world, BlockPos pos) {
+        LootManager manager = getInstance();
+        String configuration = object.getLootConfigurationId();
+        List<ItemStack> items = manager.generateFromConfiguration(configuration, world, object, pos);
+        object.fillWithLoot(items);
     }
 
     public List<ItemStack> generateFromConfiguration(String configurationKey, World world, IInventory inventory, BlockPos pos) {

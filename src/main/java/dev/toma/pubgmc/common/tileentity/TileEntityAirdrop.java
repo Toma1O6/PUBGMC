@@ -1,8 +1,9 @@
 package dev.toma.pubgmc.common.tileentity;
 
+import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
-import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,10 +12,12 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 
 import java.util.List;
+import java.util.UUID;
 
-public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable {
+public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable, LootGenerator {
 
     private NonNullList<ItemStack> inventory;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public TileEntityAirdrop() {
         this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
@@ -23,14 +26,6 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public TileEntityAirdrop withInventory(int size) {
         this.inventory = NonNullList.withSize(size, ItemStack.EMPTY);
         return this;
-    }
-
-    public void onLanded() {
-        String configuration = inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
-        List<ItemStack> generatedItems = LootManager.getInstance().generateFromConfiguration(configuration, world, this, pos);
-        for (int i = 0; i < Math.min(inventory.size(), generatedItems.size()); i++) {
-            setInventorySlotContents(i, generatedItems.get(i));
-        }
     }
 
     @Override
@@ -56,6 +51,7 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, inventory);
+        compound.setUniqueId("gameId", gameId);
         return compound;
     }
 
@@ -63,5 +59,35 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         ItemStackHelper.loadAllItems(compound, inventory);
+        gameId = compound.getUniqueId("gameId");
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+        markDirty();
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        world.scheduleBlockUpdate(pos, world.getBlockState(pos).getBlock(), 2, 0);
+    }
+
+    @Override
+    public String getLootConfigurationId() {
+        return inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
+    }
+
+    @Override
+    public void fillWithLoot(List<ItemStack> items) {
+        clear();
+        for (int i = 0; i < Math.min(getSizeInventory(), items.size()); i++) {
+            setInventorySlotContents(i, items.get(i));
+        }
     }
 }
