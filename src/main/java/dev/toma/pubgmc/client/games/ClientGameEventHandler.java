@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.client.games;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.client.event.ClientWorldTickEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
@@ -15,7 +17,8 @@ public final class ClientGameEventHandler {
     public static void onClientWorldTick(ClientWorldTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             World world = event.getWorld();
-            // TODO get active game and tick
+            GameDataProvider.getGameData(world)
+                    .ifPresent(GameData::tick);
         }
     }
 }

@@ -39,6 +39,7 @@ public class TileEntityWindow extends TileEntity implements GameObject {
 
     @Override
     public void onNewGameDetected(UUID newGameId) {
+        assignGameId(newGameId);
         IBlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof BlockWindow) {
             if (state.getValue(BlockWindow.BROKEN)) {

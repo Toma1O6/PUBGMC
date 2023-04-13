@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -18,8 +19,13 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class GameHelper {
 
@@ -75,13 +81,45 @@ public final class GameHelper {
         Pubgmc.logger.debug(MARKER, "Death crate generated at {}", ground);
     }
 
+    public static void updateLoadedGameObjects(World world) {
+        List<GameObject> loadedGameObjects = mergeTileEntitiesAndEntitiesByRule(world, t -> t instanceof GameObject, t -> (GameObject) t)
+                .collect(Collectors.toList());
+        updateGameObjects(loadedGameObjects, world);
+    }
+
+    public static void updateGameObjects(Collection<GameObject> collection, World world) {
+        UUID currentGameId = getGameUUID(world);
+        collection.forEach(object -> {
+            UUID objectId = object.getCurrentGameId();
+            if (!objectId.equals(currentGameId)) {
+                object.onNewGameDetected(currentGameId);
+            }
+        });
+    }
+
+    public static <T> Stream<T> mergeTileEntitiesAndEntitiesByRule(World world, Predicate<Object> filter, Function<Object, T> mapper) {
+        Stream<T> entityObjects = world.loadedEntityList.stream()
+                .filter(filter)
+                .map(mapper);
+        Stream<T> blockObjects = world.loadedTileEntityList.stream()
+                .filter(filter)
+                .map(mapper);
+        return Stream.concat(entityObjects, blockObjects);
+    }
+
     public static <E extends Entity & GameObject> boolean validateGameEntityStillValid(E entity) {
-        UUID currentGameId = DEFAULT_UUID; // TODO implement
+        UUID currentGameId = getGameUUID(entity.world);
         if (currentGameId.equals(entity.getCurrentGameId())) {
             return true;
         }
         entity.onNewGameDetected(currentGameId);
         return false;
+    }
+
+    public static UUID getGameUUID(World world) {
+        return GameDataProvider.getGameData(world)
+                .map(data -> data.getCurrentGame().getGameId())
+                .orElse(DEFAULT_UUID);
     }
 
     public interface InventoryProvider {

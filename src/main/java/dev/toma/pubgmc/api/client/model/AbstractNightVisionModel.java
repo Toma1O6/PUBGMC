@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.api.model;
+package dev.toma.pubgmc.api.client.model;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.EntityLivingBase;

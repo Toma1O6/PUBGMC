@@ -4,6 +4,7 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -61,13 +62,10 @@ public class PUBGMCUtil {
         return new Vec3d(base.x + entity.motionX, base.y + entity.motionY, base.z + entity.motionZ);
     }
 
-    public static String generateID(int length) {
-        return RandomStringUtils.random(length, true, true);
-    }
-
     public static void spawnAirdrop(World world, BlockPos pos, boolean bigDrop) {
         if (!world.isRemote && world.isBlockLoaded(pos)) {
             EntityAirdrop drop = new EntityAirdrop(world, pos, bigDrop);
+            drop.assignGameId(GameHelper.getGameUUID(world));
             world.spawnEntity(drop);
         }
     }

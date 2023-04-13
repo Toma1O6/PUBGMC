@@ -1,19 +1,19 @@
 package dev.toma.pubgmc.api.game.area;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.util.RegistryObject;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public final class GameAreaType<A extends GameArea> {
+public final class GameAreaType<A extends GameArea> extends RegistryObject {
 
-    private final ResourceLocation gameAreaTypeId;
     private final GameAreaSerializer<A> serializer;
 
-    private GameAreaType(ResourceLocation gameAreaTypeId, GameAreaSerializer<A> serializer) {
-        this.gameAreaTypeId = gameAreaTypeId;
+    private GameAreaType(ResourceLocation identifier, GameAreaSerializer<A> serializer) {
+        super(identifier);
         this.serializer = serializer;
     }
 
@@ -21,15 +21,11 @@ public final class GameAreaType<A extends GameArea> {
         return new GameAreaType<>(Objects.requireNonNull(gameAreaTypeId), Objects.requireNonNull(serializer));
     }
 
-    public ResourceLocation getGameAreaTypeId() {
-        return gameAreaTypeId;
-    }
-
     @SuppressWarnings("unchecked")
     public static <A extends GameArea> NBTTagCompound serialize(A area) {
         NBTTagCompound nbt = new NBTTagCompound();
         GameAreaType<A> areaType = (GameAreaType<A>) area.getAreaType();
-        nbt.setString("areaType", areaType.gameAreaTypeId.toString());
+        nbt.setString("areaType", areaType.getIdentifier().toString());
         GameAreaSerializer<A> serializer = areaType.serializer;
         nbt.setTag("area", serializer.serializeArea(area));
         return nbt;

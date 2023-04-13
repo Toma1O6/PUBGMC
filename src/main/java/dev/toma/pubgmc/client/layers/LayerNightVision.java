@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.layers;
 
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
-import dev.toma.pubgmc.api.model.AbstractNightVisionModel;
+import dev.toma.pubgmc.api.client.model.AbstractNightVisionModel;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.items.equipment.NightVisionGoggles;
 import net.minecraft.client.renderer.entity.RenderLivingBase;

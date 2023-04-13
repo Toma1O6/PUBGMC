@@ -1,9 +1,8 @@
 package dev.toma.pubgmc.client.models.equipment;
 
-import dev.toma.pubgmc.api.model.AbstractNightVisionModel;
+import dev.toma.pubgmc.api.client.model.AbstractNightVisionModel;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 public class NightVisionModel extends AbstractNightVisionModel {

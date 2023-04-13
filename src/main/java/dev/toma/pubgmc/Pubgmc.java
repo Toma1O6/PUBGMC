@@ -1,18 +1,18 @@
 package dev.toma.pubgmc;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
+import dev.toma.pubgmc.common.capability.game.GameDataImpl;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.ClearPlayerCratesCommand;
-import dev.toma.pubgmc.common.games.area.GameAreaTypes;
 import dev.toma.pubgmc.data.loot.LootManager;
-import dev.toma.pubgmc.data.loot.LootProviders;
-import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCItems;
@@ -83,10 +83,7 @@ public class Pubgmc {
 
         CapabilityManager.INSTANCE.register(IWorldData.class, SimpleStorageImpl.instance(), IWorldData.WorldData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
-
-        LootProviders.registerLootProviders();
-        LootProcessors.registerLootProcessors();
-        GameAreaTypes.register();
+        CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
 
         proxy.preInit(event);
     }
@@ -97,6 +94,7 @@ public class Pubgmc {
         CommonRegistry.initTileEntities();
         registerSmeltingRecipes();
         proxy.init(event);
+        dispatchRegistryEvents();
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
         LootManager.load();
     }
@@ -118,6 +116,17 @@ public class Pubgmc {
         FurnaceRecipes rec = FurnaceRecipes.instance();
         rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
         rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
+    }
+
+    private static void dispatchRegistryEvents() {
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.LootProvider());
+        PubgmcRegistries.LOOT_PROVIDERS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.LootProcessor());
+        PubgmcRegistries.LOOT_PROCESSORS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Game());
+        PubgmcRegistries.GAME_TYPES.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Area());
+        PubgmcRegistries.GAME_AREA_TYPES.lock();
     }
 
     public static boolean isOutdated() {

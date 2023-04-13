@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.util.RegistryObject;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
@@ -12,22 +13,17 @@ import net.minecraft.util.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LootProcessorType<P extends LootProcessor> {
+public class LootProcessorType<P extends LootProcessor> extends RegistryObject {
 
-    private final ResourceLocation identifier;
     private final LootProcessorSerializer<P> serializer;
 
     private LootProcessorType(ResourceLocation identifier, LootProcessorSerializer<P> serializer) {
-        this.identifier = identifier;
+        super(identifier);
         this.serializer = serializer;
     }
 
     public static <P extends LootProcessor> LootProcessorType<P> create(ResourceLocation identifier, LootProcessorSerializer<P> serializer) {
         return new LootProcessorType<>(identifier, serializer);
-    }
-
-    public ResourceLocation getIdentifier() {
-        return identifier;
     }
 
     public static <P extends LootProcessor> P parse(JsonObject object) throws JsonParseException {
@@ -43,7 +39,7 @@ public class LootProcessorType<P extends LootProcessor> {
     public static <P extends LootProcessor> JsonObject serialize(P processor) {
         LootProcessorType<P> type = (LootProcessorType<P>) processor.getType();
         JsonObject object = new JsonObject();
-        object.addProperty("type", type.identifier.toString());
+        object.addProperty("type", type.getIdentifier().toString());
         type.serializer.serialize(object, processor);
         return object;
     }

@@ -59,6 +59,7 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData,
             TileEntity tileEntity = world.getTileEntity(landingPosition);
             if (tileEntity instanceof TileEntityAirdrop) {
                 TileEntityAirdrop airdrop = (TileEntityAirdrop) tileEntity;
+                airdrop.assignGameId(GameHelper.getGameUUID(world));
                 LootManager.generateLootInGenerator(airdrop, world, landingPosition);
                 TileEntityUtil.syncToClient(tileEntity);
             }

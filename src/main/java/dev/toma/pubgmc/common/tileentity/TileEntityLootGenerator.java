@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.tileentity;
 import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
+import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
@@ -85,7 +86,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
     @Override
     public void onNewGameDetected(UUID newGameId) {
         assignGameId(newGameId);
-        clear();
+        LootManager.generateLootInGenerator(this, world, pos);
     }
 
     @Override

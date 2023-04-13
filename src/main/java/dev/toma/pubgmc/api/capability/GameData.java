@@ -7,6 +7,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface GameData extends INBTSerializable<NBTTagCompound> {
 
+    void tick();
+
     Game getCurrentGame();
 
     GameType<?> getSelectedGameType();

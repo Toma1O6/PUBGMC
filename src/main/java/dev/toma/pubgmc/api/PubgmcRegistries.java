@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.api;
 
+import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.area.GameAreaType;
+import dev.toma.pubgmc.api.util.RegistryObject;
 import dev.toma.pubgmc.data.loot.LootProviderType;
 import dev.toma.pubgmc.data.loot.processor.LootProcessorType;
 import net.minecraft.util.ResourceLocation;
@@ -15,12 +17,13 @@ import java.util.function.Function;
 public final class PubgmcRegistries {
 
     public static final PubgmcRegistry<LootProviderType<?>> LOOT_PROVIDERS = new Registry<LootProviderType<?>>()
-            .withKeyExtractor(LootProviderType::getProviderId);
+            .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<LootProcessorType<?>> LOOT_PROCESSORS = new Registry<LootProcessorType<?>>()
-            .withKeyExtractor(LootProcessorType::getIdentifier);
-
+            .withKeyExtractor(RegistryObject::getIdentifier);
+    public static final PubgmcRegistry<GameType<?>> GAME_TYPES = new Registry<GameType<?>>()
+            .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<GameAreaType<?>> GAME_AREA_TYPES = new Registry<GameAreaType<?>>()
-            .withKeyExtractor(GameAreaType::getGameAreaTypeId);
+            .withKeyExtractor(RegistryObject::getIdentifier);
 
     private static final class Registry<V> implements PubgmcRegistry<V> {
 

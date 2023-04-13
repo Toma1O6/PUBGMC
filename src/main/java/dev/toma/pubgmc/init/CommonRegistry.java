@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
@@ -14,6 +15,8 @@ import dev.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.common.games.area.GameAreaTypes;
 import dev.toma.pubgmc.common.items.*;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
@@ -25,6 +28,8 @@ import dev.toma.pubgmc.common.items.heal.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
+import dev.toma.pubgmc.data.loot.LootProviders;
+import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.util.Constants;
 import dev.toma.pubgmc.util.helper.AttachmentHelper;
 import net.minecraft.block.Block;
@@ -907,8 +912,36 @@ public class CommonRegistry {
                 registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
                 registerEntity("molotov", EntityMolotov.class, 64, 1),
                 registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
-                registerEntity("flashbang", EntityFlashBang.class, 64, 1)
+                registerEntity("flashbang", EntityFlashBang.class, 64, 1),
+                registerEntity("item", EntityGameItem.class, 64, 20)
         );
+    }
+
+    @SubscribeEvent
+    public static void registerLootProviders(PubgmcRegistryEvent.LootProvider event) {
+        event.register(LootProviders.ITEM);
+        event.register(LootProviders.RANDOM_CHANCE);
+        event.register(LootProviders.COUNT);
+        event.register(LootProviders.MULTI_VALUE);
+        event.register(LootProviders.RANDOM_ITEM);
+        event.register(LootProviders.WEIGHTED_ITEM);
+    }
+
+    @SubscribeEvent
+    public static void registerLootProcessors(PubgmcRegistryEvent.LootProcessor event) {
+        event.register(LootProcessors.AMMO_PROCESSOR);
+        event.register(LootProcessors.GHILLIE_COLOR_PROCESSOR);
+    }
+
+    @SubscribeEvent
+    public static void registerGameTypes(PubgmcRegistryEvent.Game event) {
+        event.register(GameTypes.NO_GAME);
+    }
+
+    @SubscribeEvent
+    public static void registerAreaTypes(PubgmcRegistryEvent.Area event) {
+        event.register(GameAreaTypes.STATIC_AREA);
+        event.register(GameAreaTypes.DYNAMIC_AREA);
     }
 
     public static void registerItemBlock(Block block) {

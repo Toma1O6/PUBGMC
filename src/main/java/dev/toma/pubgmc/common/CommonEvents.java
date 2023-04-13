@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.client.animation.AnimationType;
+import dev.toma.pubgmc.common.capability.game.GameDataImpl;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
@@ -134,6 +136,7 @@ public class CommonEvents {
     @SubscribeEvent
     public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
         e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new IWorldData.WorldDataProvider());
+        e.addCapability(Pubgmc.getResource("games"), new GameDataProvider(e.getObject()));
     }
 
     @SubscribeEvent
