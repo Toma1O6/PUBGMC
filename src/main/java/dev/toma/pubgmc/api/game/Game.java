@@ -42,4 +42,7 @@ public interface Game<CFG extends GameConfiguration> {
     default void onEntityDeath(EntityLivingBase entity, DamageSource source) {}
 
     default void onPlayerRespawn(EntityPlayer player) {}
+
+    // Called when player leaves via lobby command
+    default void onPlayerLeft(EntityPlayer player) {}
 }

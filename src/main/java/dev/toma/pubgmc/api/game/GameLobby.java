@@ -19,6 +19,12 @@ public final class GameLobby {
         return center.distanceSqToCenter(player.posX, player.posY, player.posZ) <= (range * range);
     }
 
+    public void teleport(EntityPlayer player) {
+        if (player.world.isRemote)
+            return;
+        player.attemptTeleport(center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
+    }
+
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("center", NBTUtil.createPosTag(center));
