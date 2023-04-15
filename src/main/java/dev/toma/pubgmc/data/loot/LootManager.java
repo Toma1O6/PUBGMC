@@ -4,7 +4,6 @@ import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.game.LootGenerator;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -46,20 +45,20 @@ public final class LootManager {
         }
     }
 
-    public static <G extends IInventory & LootGenerator> void generateLootInGenerator(G object, World world, BlockPos pos) {
+    public static void generateLootInGenerator(LootGenerator generator, World world, BlockPos pos) {
         LootManager manager = getInstance();
-        String configuration = object.getLootConfigurationId();
-        List<ItemStack> items = manager.generateFromConfiguration(configuration, world, object, pos);
-        object.fillWithLoot(items);
+        String configuration = generator.getLootConfigurationId();
+        List<ItemStack> items = manager.generateFromConfiguration(configuration, world, pos);
+        generator.fillWithLoot(items);
     }
 
-    public List<ItemStack> generateFromConfiguration(String configurationKey, World world, IInventory inventory, BlockPos pos) {
+    public List<ItemStack> generateFromConfiguration(String configurationKey, World world, BlockPos pos) {
         LootConfiguration configuration = lootConfigurations.get(configurationKey);
         if (configuration == null) {
             Pubgmc.logger.error("Attempted to generate loot with non-existent loot configuration: " + configurationKey);
             return Collections.emptyList();
         }
-        LootGenerationContext context = new LootGenerationContext(world, inventory, pos, configuration.getGroups());
+        LootGenerationContext context = new LootGenerationContext(world, pos, configuration.getGroups());
         LootProvider provider = configuration.getPool();
         return provider.generateItems(context);
     }

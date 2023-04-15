@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.tileentity;
 import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.util.TileEntitySync;
+import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -89,5 +90,6 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
         for (int i = 0; i < Math.min(getSizeInventory(), items.size()); i++) {
             setInventorySlotContents(i, items.get(i));
         }
+        TileEntityUtil.syncToClient(this);
     }
 }

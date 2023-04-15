@@ -279,41 +279,11 @@ model.bullet1=Bullet 1
 model.belt=Belt
 model.top=Top
 
-commands.pubgmc.leave.success=You have been teleported back to lobby
-commands.pubgmc.loot.no_loot_spawner=No loot spawners have been located!
-commands.pubgmc.loot.generated=Generated loot inside %s loot spawners
-commands.pubgmc.loot.cleared=Cleared loot inside %s loot spawners
-commands.pubgmc.loot.configuration_reload=Loot configuration has been reloaded
-commands.pubgmc.loot.destroyed=Destroyed %s loot spawners
-commands.pubgmc.loot.found=Found %s available loot spawners
-commands.pubgmc.loot.help.header==== Loot command parameters ===
-commands.pubgmc.loot.help.generate=- generate optional:[Blockpos] optional*:[Range] >> generates loot in loaded loot spawners within specified range
-commands.pubgmc.loot.help.clear=- clear optional:[Blockpos] optional*:[Range] >> clears loot in loaded loot spawners within specified range
-commands.pubgmc.loot.help.show=- show >> will fill available loot spawners with dyes for easier spotting
-commands.pubgmc.loot.help.reload=- reload >> will reload all loot configurations
-commands.pubgmc.loot.help.destroy=- destroy optional:[Blockpos] optional*:[Range] >> will destroy all loot spawners within specified range
-commands.pubgmc.loot.help.count=- count optional:[Blockpos] optional*:[Range] >> will display amount of currently loaded loot spawners which would generate loot
+commands.pubgmc.loot.generate=Generated %2$s items inside %1$s loot generators
+commands.pubgmc.loot.clear=Cleared items inside %s loot generators
+commands.pubgmc.loot.remove=Removed %s loot generators
+commands.pubgmc.loot.info=Found %s loaded loot generators:
 commands.pubgmc.clearplayercrates.success=Removed %s player crates
-commands.pubgmc.game.help.header==== Game command parameters ===
-commands.pubgmc.game.help.start=start >> Starts new game
-commands.pubgmc.game.help.stop=stop >> Stops current game
-commands.pubgmc.game.help.type=type [gameTypeId] >> Selects game type
-commands.pubgmc.game.help.lobby=lobby <x> <y> <z> <size> >> Creates new lobby on specified position with specified size
-commands.pubgmc.game.help.map=map <x> <z> <size> >> Creates new map bounds with center on specified coordinates with specified size
-commands.pubgmc.game.started=New game has been started
-commands.pubgmc.game.stopped=Game has been stopped
-commands.pubgmc.game.type_selected=Game type has been changed
-commands.pubgmc.game.map_created=New map area has been created
-commands.pubgmc.game.lobby_created=New lobby area has assigned
-commands.pubgmc.game.location_added=New game spawn location has been added
-commands.pubgmc.game.location_removed=Game spawn location has been removed
-commands.pubgmc.game.location_list=Game locations:
-commands.pubgmc.game.map.header=Current map area:
-commands.pubgmc.game.map.center=Center: %sx %sz (Click to teleport)
-commands.pubgmc.game.map.size=Size [blocks]: %s
-commands.pubgmc.game.lobby.header=Current lobby:
-commands.pubgmc.game.lobby.center=Center: %sx %sy %sz (Click to teleport)
-commands.pubgmc.game.lobby.size=Size [blocks]: %s
 
 label.pubgmc.false=False
 label.pubgmc.true=True

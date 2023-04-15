@@ -5,6 +5,7 @@ import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
+import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
@@ -101,5 +102,6 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
         for (int i = 0; i < Math.min(items.size(), getSizeInventory()); i++) {
             setInventorySlotContents(i, items.get(i));
         }
+        TileEntityUtil.syncToClient(this);
     }
 }

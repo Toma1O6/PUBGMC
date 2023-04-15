@@ -33,7 +33,7 @@ public abstract class PubgmcRegistryEvent<T extends RegistryObject> extends Even
         }
     }
 
-    public static final class Game extends PubgmcRegistryEvent<GameType<?>> {
+    public static final class Game extends PubgmcRegistryEvent<GameType<?, ?>> {
         public Game() {
             super(PubgmcRegistries.GAME_TYPES::register);
         }
