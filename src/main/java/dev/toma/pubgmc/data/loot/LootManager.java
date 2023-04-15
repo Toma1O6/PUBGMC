@@ -2,11 +2,13 @@ package dev.toma.pubgmc.data.loot;
 
 import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.event.LootEvent;
 import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.util.EventDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -36,8 +38,6 @@ public final class LootManager {
 
     public static void load() {
         try {
-            PubgmcRegistries.LOOT_PROVIDERS.lock();
-            PubgmcRegistries.LOOT_PROCESSORS.lock();
             INSTANCE.loadData();
         } catch (IOException e) {
             Pubgmc.logger.fatal(MARKER, "Loot initialization failed!");
@@ -49,7 +49,7 @@ public final class LootManager {
         LootManager manager = getInstance();
         String configuration = generator.getLootConfigurationId();
         List<ItemStack> items = manager.generateFromConfiguration(configuration, world, pos);
-        generator.fillWithLoot(items);
+        generator.fillWithLoot(EventDispatcher.getModifiedLoot(generator, items));
     }
 
     public List<ItemStack> generateFromConfiguration(String configurationKey, World world, BlockPos pos) {
@@ -61,6 +61,10 @@ public final class LootManager {
         LootGenerationContext context = new LootGenerationContext(world, pos, configuration.getGroups());
         LootProvider provider = configuration.getPool();
         return provider.generateItems(context);
+    }
+
+    public LootConfiguration getConfigurationById(String key) {
+        return lootConfigurations.get(key);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -88,7 +92,10 @@ public final class LootManager {
                 JsonParser parser = new JsonParser();
                 JsonElement element = parser.parse(reader);
                 LootConfiguration configuration = LootConfiguration.parse(element);
-                lootConfigurations.put(file.getName().replaceAll("\\.json$", ""), configuration);
+                String fileName = file.getName().replaceAll("\\.json$", "");
+                LootEvent.Loaded event = new LootEvent.Loaded(fileName, configuration, false);
+                MinecraftForge.EVENT_BUS.post(event);
+                lootConfigurations.put(fileName, event.getConfiguration());
             } catch (JsonParseException e) {
                 Pubgmc.logger.error(MARKER, "Error loading loot configuration file: " + file.getAbsolutePath() + " due to error: " + e.getMessage());
             }
@@ -96,6 +103,12 @@ public final class LootManager {
     }
 
     private boolean registerDefaultLootConfiguration(String key, LootConfiguration configuration) {
-        return lootConfigurations.putIfAbsent(key, configuration) == null;
+        boolean result = lootConfigurations.putIfAbsent(key, configuration) == null;
+        if (result) {
+            LootEvent.Loaded event = new LootEvent.Loaded(key, configuration, true);
+            MinecraftForge.EVENT_BUS.post(event);
+            lootConfigurations.put(key, event.getConfiguration());
+        }
+        return result;
     }
 }

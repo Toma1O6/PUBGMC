@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.IntArgument;
 import dev.toma.pubgmc.data.loot.LootManager;
+import dev.toma.pubgmc.util.EventDispatcher;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -82,7 +83,7 @@ public class LootCommand extends AbstractCommand {
             String configId = generator.getLootConfigurationId();
             BlockPos pos = accept(generator, Entity::getPosition, TileEntity::getPos);
             List<ItemStack> loot = manager.generateFromConfiguration(configId, world, pos);
-            generator.fillWithLoot(loot);
+            generator.fillWithLoot(EventDispatcher.getModifiedLoot(generator, loot));
             itemCount += loot.stream()
                     .mapToInt(ItemStack::getCount)
                     .sum();
