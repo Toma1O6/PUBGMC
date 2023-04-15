@@ -15,7 +15,7 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     private NoGame() {}
 
     @Override
-    public GameType<?> getGameType() {
+    public GameType<NoConfiguration, ?> getGameType() {
         return GameTypes.NO_GAME;
     }
 

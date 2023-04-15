@@ -15,7 +15,7 @@ public interface Game<CFG extends GameConfiguration> {
     UUID getGameId();
 
     // Game type used for serialization of data
-    GameType<?> getGameType();
+    GameType<CFG, ?> getGameType();
 
     CFG getConfiguration();
 

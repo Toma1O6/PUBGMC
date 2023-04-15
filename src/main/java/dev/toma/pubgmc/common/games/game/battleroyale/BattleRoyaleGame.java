@@ -5,6 +5,7 @@ import dev.toma.pubgmc.api.game.GameDataSerializer;
 import dev.toma.pubgmc.api.game.GameStartException;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.common.games.GameTypes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -15,9 +16,9 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
     private final UUID gameId;
     private final BattleRoyaleGameConfiguration configuration;
 
-    public BattleRoyaleGame(UUID gameId) {
+    public BattleRoyaleGame(UUID gameId, BattleRoyaleGameConfiguration configuration) {
         this.gameId = gameId;
-        this.configuration = new BattleRoyaleGameConfiguration(); // TODO
+        this.configuration = configuration;
     }
 
     @Override
@@ -26,8 +27,8 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
     }
 
     @Override
-    public GameType<?> getGameType() {
-        return null; // TODO
+    public GameType<BattleRoyaleGameConfiguration, ?> getGameType() {
+        return GameTypes.BATTLE_ROYALE;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
         public BattleRoyaleGame deserializeGameData(NBTTagCompound nbt) {
             UUID gameId = nbt.getUniqueId("gameId");
 
-            return new BattleRoyaleGame(gameId);
+            return new BattleRoyaleGame(gameId, new BattleRoyaleGameConfiguration());
         }
     }
 }

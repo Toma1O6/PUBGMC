@@ -11,9 +11,9 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
 
     Game<?> getCurrentGame();
 
-    GameType<?> getSelectedGameType();
+    GameType<?, ?> getSelectedGameType();
 
-    void setSelectedGameType(GameType<?> gameType);
+    void setSelectedGameType(GameType<?, ?> gameType);
 
     void sendGameDataToClients();
 }

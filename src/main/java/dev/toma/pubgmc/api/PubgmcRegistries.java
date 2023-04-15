@@ -21,7 +21,7 @@ public final class PubgmcRegistries {
             .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<LootProcessorType<?>> LOOT_PROCESSORS = new Registry<LootProcessorType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
-    public static final PubgmcRegistry<GameType<?>> GAME_TYPES = new Registry<GameType<?>>()
+    public static final PubgmcRegistry<GameType<?, ?>> GAME_TYPES = new Registry<GameType<?, ?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<GameAreaType<?>> GAME_AREA_TYPES = new Registry<GameAreaType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);

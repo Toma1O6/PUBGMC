@@ -14,7 +14,7 @@ public class GameDataImpl implements GameData {
 
     private final World world;
     private Game<?> gameInstance;
-    private GameType<?> selectedGameType;
+    private GameType<?, ?> selectedGameType;
 
     public GameDataImpl() {
         this(null);
@@ -37,12 +37,12 @@ public class GameDataImpl implements GameData {
     }
 
     @Override
-    public GameType<?> getSelectedGameType() {
+    public GameType<?, ?> getSelectedGameType() {
         return selectedGameType;
     }
 
     @Override
-    public void setSelectedGameType(GameType<?> gameType) {
+    public void setSelectedGameType(GameType<?, ?> gameType) {
         this.selectedGameType = gameType;
     }
 
@@ -62,7 +62,7 @@ public class GameDataImpl implements GameData {
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         ResourceLocation gameType = new ResourceLocation(nbt.getString("selectedGameType"));
-        GameType<?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
+        GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
         gameInstance = GameType.deserialize(nbt.getCompoundTag("game"));
         if (gameInstance == null) {
