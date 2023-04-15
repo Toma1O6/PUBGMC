@@ -9,7 +9,7 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
 
     void tick();
 
-    Game getCurrentGame();
+    Game<?> getCurrentGame();
 
     GameType<?> getSelectedGameType();
 

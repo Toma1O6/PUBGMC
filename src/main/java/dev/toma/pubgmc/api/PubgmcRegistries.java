@@ -2,6 +2,7 @@ package dev.toma.pubgmc.api;
 
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.area.GameAreaType;
+import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.util.RegistryObject;
 import dev.toma.pubgmc.data.loot.LootProviderType;
 import dev.toma.pubgmc.data.loot.processor.LootProcessorType;
@@ -23,6 +24,8 @@ public final class PubgmcRegistries {
     public static final PubgmcRegistry<GameType<?>> GAME_TYPES = new Registry<GameType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<GameAreaType<?>> GAME_AREA_TYPES = new Registry<GameAreaType<?>>()
+            .withKeyExtractor(RegistryObject::getIdentifier);
+    public static final PubgmcRegistry<GameMapPointType<?>> GAME_MAP_POINTS = new Registry<GameMapPointType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
 
     private static final class Registry<V> implements PubgmcRegistry<V> {

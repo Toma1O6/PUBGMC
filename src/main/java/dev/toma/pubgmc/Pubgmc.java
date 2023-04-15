@@ -127,6 +127,8 @@ public class Pubgmc {
         PubgmcRegistries.GAME_TYPES.lock();
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Area());
         PubgmcRegistries.GAME_AREA_TYPES.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.PointType());
+        PubgmcRegistries.GAME_MAP_POINTS.lock();
     }
 
     public static boolean isOutdated() {

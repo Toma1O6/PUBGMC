@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game;
 
+import dev.toma.pubgmc.api.game.map.GameMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -8,13 +9,17 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public interface Game {
+public interface Game<CFG extends GameConfiguration> {
 
     // Unique game identifier
     UUID getGameId();
 
     // Game type used for serialization of data
     GameType<?> getGameType();
+
+    CFG getConfiguration();
+
+    void performGameMapValidations(World world, GameMap map) throws GameStartException;
 
     // Call when /game prepare command is executed. Should teleport all players to lobby etc
     void onGameInit(World world);
@@ -28,7 +33,7 @@ public interface Game {
     // Call when /game stop command is executed. Should stop the game and return everyone to lobby, reset world options and more
     void onGameStopped(World world);
 
-    // TODO game event listeners
+    // TODO more game event listeners
 
     default void onPlayerLoggedIn(EntityPlayerMP player) {}
 

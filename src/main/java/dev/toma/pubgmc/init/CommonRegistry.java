@@ -17,6 +17,7 @@ import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.area.GameAreaTypes;
+import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.items.*;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
@@ -55,7 +56,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
 public class CommonRegistry {
 
     private static int entityID = 0;
@@ -936,12 +937,18 @@ public class CommonRegistry {
     @SubscribeEvent
     public static void registerGameTypes(PubgmcRegistryEvent.Game event) {
         event.register(GameTypes.NO_GAME);
+        event.register(GameTypes.BATTLE_ROYALE);
     }
 
     @SubscribeEvent
     public static void registerAreaTypes(PubgmcRegistryEvent.Area event) {
         event.register(GameAreaTypes.STATIC_AREA);
         event.register(GameAreaTypes.DYNAMIC_AREA);
+    }
+
+    @SubscribeEvent
+    public static void registerPointTypes(PubgmcRegistryEvent.PointType event) {
+        event.register(GameMapPoints.SPAWNER);
     }
 
     public static void registerItemBlock(Block block) {

@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 public class GameDataImpl implements GameData {
 
     private final World world;
-    private Game gameInstance;
+    private Game<?> gameInstance;
     private GameType<?> selectedGameType;
 
     public GameDataImpl() {
@@ -32,7 +32,7 @@ public class GameDataImpl implements GameData {
     }
 
     @Override
-    public Game getCurrentGame() {
+    public Game<?> getCurrentGame() {
         return gameInstance;
     }
 

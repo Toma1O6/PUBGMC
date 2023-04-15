@@ -3,6 +3,7 @@ package dev.toma.pubgmc.api.event;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.area.GameAreaType;
+import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.util.RegistryObject;
 import dev.toma.pubgmc.data.loot.LootProviderType;
 import dev.toma.pubgmc.data.loot.processor.LootProcessorType;
@@ -41,6 +42,12 @@ public abstract class PubgmcRegistryEvent<T extends RegistryObject> extends Even
     public static final class Area extends PubgmcRegistryEvent<GameAreaType<?>> {
         public Area() {
             super(PubgmcRegistries.GAME_AREA_TYPES::register);
+        }
+    }
+
+    public static final class PointType extends PubgmcRegistryEvent<GameMapPointType<?>> {
+        public PointType() {
+            super(PubgmcRegistries.GAME_MAP_POINTS::register);
         }
     }
 
