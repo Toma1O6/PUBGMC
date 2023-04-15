@@ -70,7 +70,7 @@ public class LootCommand extends AbstractCommand {
     }
 
     private static void executeDefault(CommandContext context) throws CommandException {
-        throw new WrongUsageException("Not enought arguments. See /help loot for more details");
+        throw new WrongUsageException("Not enough arguments. See /help loot for more details");
     }
 
     private static void generateLoot(CommandContext context) throws CommandException {
