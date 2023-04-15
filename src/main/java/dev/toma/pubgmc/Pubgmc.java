@@ -9,7 +9,6 @@ import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
 import dev.toma.pubgmc.common.capability.game.GameDataImpl;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.LootCommand;
 import dev.toma.pubgmc.data.loot.LootManager;
@@ -81,7 +80,6 @@ public class Pubgmc {
 
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
-        CapabilityManager.INSTANCE.register(IWorldData.class, SimpleStorageImpl.instance(), IWorldData.WorldData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
         CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
 

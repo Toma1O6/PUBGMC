@@ -33,7 +33,8 @@ public abstract class GameMapPoint {
         }
 
         @Override
-        public void serializePointData(P point, NBTTagCompound nbt) {
+        public NBTTagCompound serializePointData(P point) {
+            return new NBTTagCompound();
         }
 
         @Override

@@ -3,12 +3,10 @@ package dev.toma.pubgmc.common;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.client.animation.AnimationType;
-import dev.toma.pubgmc.common.capability.game.GameDataImpl;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.capability.world.IWorldData;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
@@ -34,7 +32,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -134,9 +131,9 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
-        e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new IWorldData.WorldDataProvider());
-        e.addCapability(Pubgmc.getResource("games"), new GameDataProvider(e.getObject()));
+    public void attachWorldCapability(AttachCapabilitiesEvent<World> event) {
+        World world = event.getObject();
+        event.addCapability(Pubgmc.getResource("games"), new GameDataProvider(world));
     }
 
     @SubscribeEvent
@@ -174,27 +171,23 @@ public class CommonEvents {
 
     //Once player logs in
     @SubscribeEvent
-    public void onPlayerLoggedIn(PlayerLoggedInEvent e) {
+    public void onPlayerLoggedIn(PlayerLoggedInEvent event) {
+        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        if (player == null)
+            return;
         if (ConfigPMC.client.other.messagesOnJoin.get()) {
-            if (e.player instanceof EntityPlayer) {
-                ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
-                handleUpdateResults(version, e.player);
-            }
+            ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
+            handleUpdateResults(version, player);
         }
-        selectedSlotCache.put(e.player.getUniqueID(), e.player.inventory.currentItem);
-
-        if (e.player instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) e.player;
-            if (!player.world.isRemote) {
-                PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
-                //We get the last player data and later sync it to client
-                player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                data.getAimInfo().setAiming(false, 1.0F);
-                //Sync some data from capability to client for overlay rendering
-                PacketHandler.syncPlayerDataToClient(data, player);
-            }
-        }
+        selectedSlotCache.put(event.player.getUniqueID(), event.player.inventory.currentItem);
+        PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
+        //We get the last player data and later sync it to client
+        player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        data.getAimInfo().setAiming(false, 1.0F);
+        //Sync some data from capability to client for overlay rendering
+        PacketHandler.syncPlayerDataToClient(data, player);
+        PacketHandler.syncGameDataToClient(player);
     }
 
     @SubscribeEvent

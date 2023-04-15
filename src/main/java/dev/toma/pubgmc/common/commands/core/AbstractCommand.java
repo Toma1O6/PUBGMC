@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.commands.core;
 
-import dev.toma.pubgmc.common.capability.world.IWorldData;
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -65,13 +66,13 @@ public abstract class AbstractCommand extends CommandBase {
                 .collect(Collectors.toList());
     }
 
-    public static IWorldData getWorldData(CommandContext context) throws CommandException {
+    public static GameData getGameData(CommandContext context) throws CommandException {
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        IWorldData worldData = world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
-        if (worldData == null) {
-            throw new WrongUsageException("No world data are loaded. Report this issue.");
+        GameData gameData = GameDataProvider.getGameData(world).orElse(null);
+        if (gameData == null) {
+            throw new WrongUsageException("No game data are loaded. Report this issue.");
         }
-        return worldData;
+        return gameData;
     }
 }

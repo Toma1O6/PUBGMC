@@ -1,12 +1,14 @@
 package dev.toma.pubgmc.network;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.network.client.*;
 import dev.toma.pubgmc.network.server.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -44,6 +46,7 @@ public class PacketHandler {
         registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
         registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
+        registerClientPacket(S2C_SendGameData.Handler.class, S2C_SendGameData.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {
@@ -88,6 +91,10 @@ public class PacketHandler {
 
     public static void syncPlayerDataToClient(IPlayerData data, EntityPlayerMP player) {
         sendToClient(new PacketClientCapabilitySync(player, data.serializeNBT()), player);
+    }
+
+    public static void syncGameDataToClient(EntityPlayerMP player) {
+        GameDataProvider.getGameData(player.world).ifPresent(data -> sendToClient(new S2C_SendGameData(data.serializeNBT()), player));
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerClientPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {

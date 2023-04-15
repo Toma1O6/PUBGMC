@@ -7,7 +7,10 @@ import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
 import dev.toma.pubgmc.common.games.area.StaticGameArea;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +74,9 @@ public final class GameMap implements Bounds {
         nbt.setString("name", mapName);
         nbt.setTag("min", min.toNbt());
         nbt.setTag("max", max.toNbt());
-        // TODO pois
+        NBTTagList poiList = new NBTTagList();
+        pointsByPosition.values().forEach(point -> poiList.appendTag(GameMapPointType.serializePointData(point)));
+        nbt.setTag("pois", poiList);
         return nbt;
     }
 
@@ -79,8 +84,17 @@ public final class GameMap implements Bounds {
         String name = nbt.getString("name");
         Position2 min = new Position2(nbt.getCompoundTag("min"));
         Position2 max = new Position2(nbt.getCompoundTag("max"));
-        // TODO pois
-        return new GameMap(name, min, max);
+        GameMap map = new GameMap(name, min, max);
+        NBTTagList list = nbt.getTagList("pois", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < list.tagCount(); i++) {
+            NBTTagCompound poiData = list.getCompoundTagAt(i);
+            GameMapPoint point = GameMapPointType.deserializePointData(poiData);
+            if (point == null)
+                continue;
+            map.pointsByPosition.put(point.getPointPosition(), point);
+        }
+        map.remapPointsByType();
+        return map;
     }
 
     private void remapPointsByType() {
