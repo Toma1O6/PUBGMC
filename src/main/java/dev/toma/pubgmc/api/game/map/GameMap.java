@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public final class GameMap implements Bounds {
 
-    public static final Pattern ALLOWED_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9_]+");
+    public static final Pattern ALLOWED_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9_]*");
     private final String mapName;
     private final Position2 min;
     private final Position2 max;
@@ -41,6 +41,11 @@ public final class GameMap implements Bounds {
             pointsByPosition.put(pos, point);
         }
         remapPointsByType();
+    }
+
+    public void deletePoints() {
+        pointsByPosition.clear();
+        pointsByType.clear();
     }
 
     public String getMapName() {

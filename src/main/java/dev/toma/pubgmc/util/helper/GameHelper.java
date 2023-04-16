@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -120,6 +122,15 @@ public final class GameHelper {
         return GameDataProvider.getGameData(world)
                 .map(data -> data.getCurrentGame().getGameId())
                 .orElse(DEFAULT_UUID);
+    }
+
+    public static void stopGame(World world) {
+        GameDataProvider.getGameData(world).ifPresent(data -> {
+            Game<?> game = data.getCurrentGame();
+            game.onGameStopped(world);
+            data.setActiveGame(null);
+            data.sendGameDataToClients();
+        });
     }
 
     public interface InventoryProvider {

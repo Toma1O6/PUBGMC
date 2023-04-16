@@ -30,8 +30,8 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     }
 
     @Override
-    public void performGameMapValidations(World world, GameMap map) throws GameStartException {
-        throw new GameStartException("This type of game cannot be started");
+    public void performGameMapValidations(World world, GameMap map) throws GameException {
+        throw new GameException("This type of game cannot be started");
     }
 
     @Override
@@ -50,7 +50,7 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     public void onGameTick(World world) {
     }
 
-    public static final class Serializer implements GameDataSerializer<NoGame> {
+    public static final class Serializer implements GameDataSerializer<NoConfiguration, NoGame> {
 
         @Override
         public NBTTagCompound serializeGameData(NoGame game) {
@@ -60,6 +60,16 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
         @Override
         public NoGame deserializeGameData(NBTTagCompound nbt) {
             return (NoGame) INSTANCE;
+        }
+
+        @Override
+        public NBTTagCompound serializeGameConfiguration(NoConfiguration configuration) {
+            return new NBTTagCompound();
+        }
+
+        @Override
+        public NoConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
+            return NoConfiguration.INSTANCE;
         }
     }
 

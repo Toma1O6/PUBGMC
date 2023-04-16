@@ -7,27 +7,34 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> extends RegistryObject {
 
-    private final GameDataSerializer<G> serializer;
+    private final GameConstructor<CFG, G> constructor;
+    private final GameDataSerializer<CFG, G> serializer;
     @Nullable
     private final Supplier<CFG> defaultConfigurationProvider;
 
-    private GameType(ResourceLocation registryId, GameDataSerializer<G> serializer, @Nullable Supplier<CFG> defaultConfigurationProvider) {
+    private GameType(ResourceLocation registryId, GameConstructor<CFG, G> constructor, GameDataSerializer<CFG, G> serializer, @Nullable Supplier<CFG> defaultConfigurationProvider) {
         super(registryId);
+        this.constructor = constructor;
         this.serializer = serializer;
         this.defaultConfigurationProvider = defaultConfigurationProvider;
     }
 
-    public static <CFG extends GameConfiguration, G extends Game<CFG>> GameType<CFG, G> create(ResourceLocation identifier, GameDataSerializer<G> serializer) {
-        return create(identifier, serializer, null);
+    public static <CFG extends GameConfiguration, G extends Game<CFG>> GameType<CFG, G> create(ResourceLocation identifier, GameConstructor<CFG, G> constructor, GameDataSerializer<CFG, G> serializer) {
+        return create(identifier, constructor, serializer, null);
     }
 
     @SuppressWarnings("unchecked")
-    public static <CFG extends GameConfiguration, G extends Game<CFG>> GameType<CFG, G> create(ResourceLocation identifier, GameDataSerializer<G> serializer, @Nullable Supplier<CFG> configurationProvider) {
-        return new GameType<>(identifier, Objects.requireNonNull(serializer), configurationProvider);
+    public static <CFG extends GameConfiguration, G extends Game<CFG>> GameType<CFG, G> create(ResourceLocation identifier, GameConstructor<CFG, G> constructor, GameDataSerializer<CFG, G> serializer, @Nullable Supplier<CFG> configurationProvider) {
+        return new GameType<>(identifier, constructor, Objects.requireNonNull(serializer), configurationProvider);
+    }
+
+    public GameConstructor<CFG, G> getConstructor() {
+        return constructor;
     }
 
     @Nullable
@@ -52,5 +59,18 @@ public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> 
             return null;
         }
         return gameType.serializer.deserializeGameData(nbt.getCompoundTag("game"));
+    }
+
+    public static <CFG extends GameConfiguration> NBTTagCompound serializeConfiguration(GameType<CFG, ?> gameType, CFG config) {
+        return gameType.serializer.serializeGameConfiguration(config);
+    }
+
+    public static <CFG extends GameConfiguration> CFG deserializeConfiguration(GameType<CFG, ?> gameType, NBTTagCompound nbt) {
+        return gameType.serializer.deserializeGameConfiguration(nbt);
+    }
+
+    @FunctionalInterface
+    public interface GameConstructor<CFG extends GameConfiguration, G extends Game<CFG>> {
+        G constructGameInstance(UUID gameId, CFG config) throws GameException;
     }
 }

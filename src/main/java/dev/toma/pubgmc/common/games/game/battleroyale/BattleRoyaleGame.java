@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.games.game.battleroyale;
 
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameDataSerializer;
-import dev.toma.pubgmc.api.game.GameStartException;
+import dev.toma.pubgmc.api.game.GameException;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.common.games.GameTypes;
@@ -37,7 +37,7 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
     }
 
     @Override
-    public void performGameMapValidations(World world, GameMap map) throws GameStartException {
+    public void performGameMapValidations(World world, GameMap map) throws GameException {
     }
 
     @Override
@@ -60,7 +60,7 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
 
     }
 
-    public static final class Serializer implements GameDataSerializer<BattleRoyaleGame> {
+    public static final class Serializer implements GameDataSerializer<BattleRoyaleGameConfiguration, BattleRoyaleGame> {
 
         @Override
         public NBTTagCompound serializeGameData(BattleRoyaleGame game) {
@@ -75,6 +75,16 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
             UUID gameId = nbt.getUniqueId("gameId");
 
             return new BattleRoyaleGame(gameId, new BattleRoyaleGameConfiguration());
+        }
+
+        @Override
+        public NBTTagCompound serializeGameConfiguration(BattleRoyaleGameConfiguration configuration) {
+            return null;
+        }
+
+        @Override
+        public BattleRoyaleGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
+            return null;
         }
     }
 }

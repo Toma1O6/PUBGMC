@@ -19,7 +19,7 @@ public interface Game<CFG extends GameConfiguration> {
 
     CFG getConfiguration();
 
-    void performGameMapValidations(World world, GameMap map) throws GameStartException;
+    void performGameMapValidations(World world, GameMap map) throws GameException;
 
     // Call when /game prepare command is executed. Should teleport all players to lobby etc
     void onGameInit(World world);
