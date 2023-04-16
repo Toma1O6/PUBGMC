@@ -52,13 +52,13 @@ public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> 
     }
 
     @Nullable
-    public static <CFG extends GameConfiguration, G extends Game<CFG>> G deserialize(NBTTagCompound nbt) {
+    public static <CFG extends GameConfiguration, G extends Game<CFG>> G deserialize(NBTTagCompound nbt, CFG usedConfiguration) {
         ResourceLocation location = new ResourceLocation(nbt.getString("type"));
         GameType<CFG, G> gameType = PubgmcRegistries.GAME_TYPES.getUnsafeGenericValue(location);
         if (gameType == null) {
             return null;
         }
-        return gameType.serializer.deserializeGameData(nbt.getCompoundTag("game"));
+        return gameType.serializer.deserializeGameData(nbt.getCompoundTag("game"), usedConfiguration);
     }
 
     public static <CFG extends GameConfiguration> NBTTagCompound serializeConfiguration(GameType<CFG, ?> gameType, CFG config) {

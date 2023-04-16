@@ -48,7 +48,9 @@ public class GameDataImpl implements GameData {
 
     @Override
     public void tick() {
-        gameInstance.onGameTick(world);
+        if (gameInstance.isStarted()) {
+            gameInstance.onGameTick(world);
+        }
     }
 
     @Override
@@ -143,7 +145,9 @@ public class GameDataImpl implements GameData {
         ResourceLocation gameType = new ResourceLocation(nbt.getString("selectedGameType"));
         GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
-        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"));
+        NBTTagCompound configs = new NBTTagCompound();
+        deserializeConfigs(configs);
+        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), getGameConfiguration(type));
         if (gameInstance == null) {
             gameInstance = NoGame.INSTANCE;
         }
@@ -157,8 +161,6 @@ public class GameDataImpl implements GameData {
             GameMap map = GameMap.deserialize(mapData);
             maps.put(map.getMapName(), map);
         }
-        NBTTagCompound configs = new NBTTagCompound();
-        deserializeConfigs(configs);
     }
 
     @SuppressWarnings("unchecked")

@@ -124,6 +124,11 @@ public final class GameHelper {
                 .orElse(DEFAULT_UUID);
     }
 
+    public static void requestClientGameDataSynchronization(World world) {
+        GameDataProvider.getGameData(world)
+                .ifPresent(GameData::sendGameDataToClients);
+    }
+
     public static void stopGame(World world) {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();

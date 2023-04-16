@@ -17,8 +17,16 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -26,6 +34,7 @@ import java.util.function.Function;
 
 public class GameCommand extends AbstractCommand {
 
+    private static final ITextComponent TEXT_EXECUTE_CMD = new TextComponentTranslation("commands.pubgmc.game.leave.confirm.hover_cmd_text");
     private static final String ARG_GAME_TYPE = "gameType";
     private static final String ARG_MAP_NAME = "mapName";
     private static final String ARG_MAP_CENTER_X = "mapCreateCenterX";
@@ -138,6 +147,15 @@ public class GameCommand extends AbstractCommand {
                                             .executes(GameCommand::createLobby)
                             )
             )
+            .node(
+                    CommandNodeProvider.literal("leave")
+                            .permissionLevel(0)
+                            .executes(context -> leaveGame(context, false))
+                            .node(
+                                    CommandNodeProvider.literal("confirm")
+                                            .executes(context -> leaveGame(context, true))
+                            )
+            )
             .build();
 
     public GameCommand() {
@@ -168,7 +186,7 @@ public class GameCommand extends AbstractCommand {
             throw new WrongUsageException("You must first select game type. Use /game select <gameType>");
         }
         Game<?> current = data.getCurrentGame();
-        if (current != NoGame.INSTANCE) {
+        if (current != NoGame.INSTANCE && !current.isStarted()) {
             throw new WrongUsageException("There is already active game");
         }
         validateGameLobbyDefined(data);
@@ -205,6 +223,9 @@ public class GameCommand extends AbstractCommand {
         if (game == NoGame.INSTANCE) {
             throw new WrongUsageException("No game is currenly prepared for starting. Use '/game init' command");
         }
+        if (game.isStarted()) {
+            throw new WrongUsageException("Game is already started");
+        }
         if (actualMapName == null) {
             throw new WrongUsageException("You must specify game map. Use /game start <mapName>");
         }
@@ -226,7 +247,7 @@ public class GameCommand extends AbstractCommand {
     private static void stopGame(CommandContext context) throws CommandException {
         GameData data = getGameData(context);
         Game<?> game = data.getCurrentGame();
-        if (game == null) {
+        if (!game.isStarted()) {
             throw new WrongUsageException("There is no active game");
         }
         ICommandSender sender = context.getSender();
@@ -314,6 +335,40 @@ public class GameCommand extends AbstractCommand {
         data.setGameLobby(lobby);
         data.sendGameDataToClients();
         // TODO send feedback
+    }
+
+    private static void leaveGame(CommandContext context, boolean confirmed) throws CommandException {
+        GameData gameData = getGameData(context);
+        Game<?> game = gameData.getCurrentGame();
+        if (game == NoGame.INSTANCE || !game.isStarted()) {
+            throw new WrongUsageException("There is no active game");
+        }
+        ICommandSender sender = context.getSender();
+        Entity entity = sender.getCommandSenderEntity();
+        if (!(entity instanceof EntityPlayer)) {
+            throw new WrongUsageException("This subcommand can be only executed by player");
+        }
+        EntityPlayer player = (EntityPlayer) entity;
+        if (confirmed) {
+            GameLobby lobby = gameData.getGameLobby();
+            if (lobby == null) {
+                throw new WrongUsageException("There is no lobby defined");
+            }
+            if (game.onPlayerLeft(player)) {
+                lobby.teleport(player);
+                player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.leave.success"));
+            } else {
+                // TODO send failure msg
+            }
+        } else {
+            String command = "/game leave confirm";
+            String commandText = TextFormatting.GREEN + command;
+            ITextComponent component = new TextComponentTranslation("commands.pubgmc.game.leave.confirm", commandText);
+            Style style = component.getStyle();
+            style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TEXT_EXECUTE_CMD));
+            player.sendMessage(component);
+        }
     }
 
     private static List<String> suggestCurrentX(SuggestionProvider.Context context) {

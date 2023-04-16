@@ -6,7 +6,7 @@ public interface GameDataSerializer<CFG extends GameConfiguration, G extends Gam
 
     NBTTagCompound serializeGameData(G game);
 
-    G deserializeGameData(NBTTagCompound nbt);
+    G deserializeGameData(NBTTagCompound nbt, CFG configuration);
 
     NBTTagCompound serializeGameConfiguration(CFG configuration);
 

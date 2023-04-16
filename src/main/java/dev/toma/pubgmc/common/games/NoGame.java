@@ -30,6 +30,11 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     }
 
     @Override
+    public boolean isStarted() {
+        return false;
+    }
+
+    @Override
     public void performGameMapValidations(World world, GameMap map) throws GameException {
         throw new GameException("This type of game cannot be started");
     }
@@ -58,7 +63,7 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
         }
 
         @Override
-        public NoGame deserializeGameData(NBTTagCompound nbt) {
+        public NoGame deserializeGameData(NBTTagCompound nbt, NoConfiguration configuration) {
             return (NoGame) INSTANCE;
         }
 

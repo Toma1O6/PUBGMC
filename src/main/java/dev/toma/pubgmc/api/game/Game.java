@@ -21,6 +21,8 @@ public interface Game<CFG extends GameConfiguration> {
 
     void performGameMapValidations(World world, GameMap map) throws GameException;
 
+    boolean isStarted();
+
     // Call when /game prepare command is executed. Should teleport all players to lobby etc
     void onGameInit(World world);
 
@@ -44,5 +46,7 @@ public interface Game<CFG extends GameConfiguration> {
     default void onPlayerRespawn(EntityPlayer player) {}
 
     // Called when player leaves via lobby command
-    default void onPlayerLeft(EntityPlayer player) {}
+    default boolean onPlayerLeft(EntityPlayer player) {
+        return true;
+    }
 }

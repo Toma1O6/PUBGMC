@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
-import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameDataSerializer;
 import dev.toma.pubgmc.api.game.GameException;
 import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.TeamGame;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.common.games.GameTypes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,10 +11,12 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
+public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
 
     private final UUID gameId;
     private final BattleRoyaleGameConfiguration configuration;
+
+    private boolean started;
 
     public BattleRoyaleGame(UUID gameId, BattleRoyaleGameConfiguration configuration) {
         this.gameId = gameId;
@@ -37,6 +39,11 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
     }
 
     @Override
+    public boolean isStarted() {
+        return started;
+    }
+
+    @Override
     public void performGameMapValidations(World world, GameMap map) throws GameException {
     }
 
@@ -47,7 +54,7 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
 
     @Override
     public void onGameStart(World world) {
-
+        started = true;
     }
 
     @Override
@@ -66,25 +73,28 @@ public class BattleRoyaleGame implements Game<BattleRoyaleGameConfiguration> {
         public NBTTagCompound serializeGameData(BattleRoyaleGame game) {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setUniqueId("gameId", game.gameId);
+            nbt.setBoolean("started", game.started);
 
             return nbt;
         }
 
         @Override
-        public BattleRoyaleGame deserializeGameData(NBTTagCompound nbt) {
+        public BattleRoyaleGame deserializeGameData(NBTTagCompound nbt, BattleRoyaleGameConfiguration configuration) {
             UUID gameId = nbt.getUniqueId("gameId");
-
-            return new BattleRoyaleGame(gameId, new BattleRoyaleGameConfiguration());
+            boolean started = nbt.getBoolean("started");
+            BattleRoyaleGame game = new BattleRoyaleGame(gameId, configuration);
+            game.started = started;
+            return game;
         }
 
         @Override
         public NBTTagCompound serializeGameConfiguration(BattleRoyaleGameConfiguration configuration) {
-            return null;
+            return new NBTTagCompound(); // TODO
         }
 
         @Override
         public BattleRoyaleGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return null;
+            return new BattleRoyaleGameConfiguration(); // TODO
         }
     }
 }

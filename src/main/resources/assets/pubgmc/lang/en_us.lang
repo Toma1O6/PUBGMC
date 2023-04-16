@@ -283,8 +283,9 @@ commands.pubgmc.loot.generate=Generated %2$s items inside %1$s loot generators
 commands.pubgmc.loot.clear=Cleared items inside %s loot generators
 commands.pubgmc.loot.remove=Removed %s loot generators
 commands.pubgmc.loot.info=Found %s loaded loot generators:
-commands.pubgmc.lobby.success=You have been teleported back to lobby
-commands.pubgmc.lobby.confirm=Returning back to lobby will also cause you to leave game. If you want to continue, click on this message or execute command %s
+commands.pubgmc.game.leave.success=You have been teleported back to lobby
+commands.pubgmc.game.leave.confirm=Returning back to lobby will also cause you to leave game. If you want to continue, click on this message or execute command %s
+commands.pubgmc.game.leave.confirm.hover_cmd_text=Click here to execute the command
 
 label.pubgmc.false=False
 label.pubgmc.true=True
