@@ -20,13 +20,15 @@ public final class CommandContext {
     private final CommandNode node;
     private final Map<String, Object> argumentMap;
     private final @Nullable CommandNodeExecutor defaultExecutor;
+    private final int permissionLevel;
 
-    public CommandContext(MinecraftServer server, ICommandSender sender, CommandNode node, Map<String, Object> argumentMap, CommandNodeExecutor executor) {
+    public CommandContext(MinecraftServer server, ICommandSender sender, CommandNode node, Map<String, Object> argumentMap, CommandNodeExecutor executor, int permissionLevel) {
         this.server = server;
         this.sender = sender;
         this.node = node;
         this.argumentMap = ImmutableMap.copyOf(argumentMap);
         this.defaultExecutor = executor;
+        this.permissionLevel = permissionLevel;
     }
 
     public static CommandContext parse(CommandTree tree, MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -35,6 +37,7 @@ public final class CommandContext {
         CommandNode node = null;
         CommandNodeExecutor executor = tree.getDefaultExecutor();
         String value;
+        int permissionLevel = tree.getPermissionLevel();
         while ((value = reader.peek()) != null) {
             ChildNodeProvider provider = node != null ? node : tree;
             CommandNode commandNode = provider.getChildNode(value);
@@ -42,13 +45,18 @@ public final class CommandContext {
                 throw new SyntaxErrorException(String.format("Unknown command argument: %s", value));
             }
             CommandNodeExecutor nodeExecutor = commandNode.getExecutor();
-            if (tree.getExecutorPropagationStrategy().shouldReadNodeExecutors() && nodeExecutor != null) {
-                executor = nodeExecutor;
+            if (tree.getExecutorPropagationStrategy().shouldReadNodeExecutors()) {
+                if (nodeExecutor != null) {
+                    executor = nodeExecutor;
+                }
+                if (commandNode.getPermissionLevel() >= 0) {
+                    permissionLevel = commandNode.getPermissionLevel();
+                }
             }
             commandNode.process(reader, argumentMap, server, sender);
             node = commandNode;
         }
-        return new CommandContext(server, sender, node, argumentMap, executor);
+        return new CommandContext(server, sender, node, argumentMap, executor, permissionLevel);
     }
 
     @SuppressWarnings("unchecked")
@@ -87,5 +95,9 @@ public final class CommandContext {
 
     CommandNodeExecutor getDefaultExecutor() {
         return defaultExecutor;
+    }
+
+    int getPermissionLevel() {
+        return permissionLevel;
     }
 }

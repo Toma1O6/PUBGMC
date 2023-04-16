@@ -33,7 +33,7 @@ public class LootCommand extends AbstractCommand {
     private static final CommandTree COMMAND = CommandTree.Builder.command("loot")
             .usage("/loot [generate|clear|delete|info] <range>")
             .permissionLevel(2)
-            .defaultExecutorPropagationStrategy(DefaultExecutorPropagationStrategy.LAST_NODE)
+            .defaultExecutorPropagationStrategy(NodePropagationStrategy.LAST_NODE)
             .executes(LootCommand::executeDefault)
             .node(
                     CommandNodeProvider.literal("generate")

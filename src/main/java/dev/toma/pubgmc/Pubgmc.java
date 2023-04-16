@@ -10,6 +10,7 @@ import dev.toma.pubgmc.common.capability.game.GameDataImpl;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
+import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.LobbyCommand;
 import dev.toma.pubgmc.common.commands.LootCommand;
 import dev.toma.pubgmc.data.loot.LootManager;
@@ -110,6 +111,7 @@ public class Pubgmc {
         event.registerServerCommand(new AirdropCommand());
         event.registerServerCommand(new LootCommand());
         event.registerServerCommand(new LobbyCommand());
+        event.registerServerCommand(new GameCommand());
     }
 
     private static void registerSmeltingRecipes() {

@@ -57,8 +57,8 @@ public class GameDataImpl implements GameData {
     }
 
     @Override
-    public void setActiveGame(Game<?> game) {
-        gameInstance = game;
+    public void setActiveGame(@Nullable Game<?> game) {
+        gameInstance = game != null ? game : NoGame.INSTANCE;
     }
 
     @Override

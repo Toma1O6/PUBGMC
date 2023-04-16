@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.commands.core;
 
-public enum DefaultExecutorPropagationStrategy {
+public enum NodePropagationStrategy {
 
     ROOT,
     LAST_NODE;

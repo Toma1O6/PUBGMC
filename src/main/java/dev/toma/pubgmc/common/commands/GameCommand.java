@@ -39,11 +39,12 @@ public class GameCommand extends AbstractCommand {
     // TODO config
     private static final CommandTree COMMAND = CommandTree.Builder.command("game")
             .usage("/game ") // TODO
-            .permissionLevel(2)
-            .defaultExecutorPropagationStrategy(DefaultExecutorPropagationStrategy.LAST_NODE)
+            .permissionLevel(0)
+            .defaultExecutorPropagationStrategy(NodePropagationStrategy.LAST_NODE)
             .executes(GameCommand::executeDefault)
             .node(
                     CommandNodeProvider.literal("select")
+                            .permissionLevel(2)
                             .executes(GameCommand::selectGameType)
                             .node(
                                     CommandNodeProvider.argument(ARG_GAME_TYPE, PubgmcRegistryArgument.registry(PubgmcRegistries.GAME_TYPES))
@@ -51,13 +52,16 @@ public class GameCommand extends AbstractCommand {
             )
             .node(
                     CommandNodeProvider.literal("configure")
+                            .permissionLevel(2)
             )
             .node(
                     CommandNodeProvider.literal("init")
+                            .permissionLevel(2)
                             .executes(GameCommand::initGame)
             )
             .node(
                     CommandNodeProvider.literal("start")
+                            .permissionLevel(2)
                             .executes(GameCommand::startGame)
                             .node(
                                     CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
@@ -65,10 +69,12 @@ public class GameCommand extends AbstractCommand {
             )
             .node(
                     CommandNodeProvider.literal("stop")
+                            .permissionLevel(2)
                             .executes(GameCommand::stopGame)
             )
             .node(
                     CommandNodeProvider.literal("map")
+                            .permissionLevel(2)
                             .executes(GameCommand::executeMapNoArguments)
                             .node(
                                     CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
@@ -125,6 +131,7 @@ public class GameCommand extends AbstractCommand {
             )
             .node(
                     CommandNodeProvider.literal("lobby")
+                            .permissionLevel(2)
                             .executes(GameCommand::printLobbyInformation)
                             .node(
                                     CommandNodeProvider.argument(ARG_LOBBY_CENTER, BlockPosArgument.blockpos())
@@ -160,6 +167,10 @@ public class GameCommand extends AbstractCommand {
         if (type == GameTypes.NO_GAME) {
             throw new WrongUsageException("You must first select game type. Use /game select <gameType>");
         }
+        Game<?> current = data.getCurrentGame();
+        if (current != NoGame.INSTANCE) {
+            throw new WrongUsageException("There is already active game");
+        }
         validateGameLobbyDefined(data);
         CFG config = data.getGameConfiguration(type);
         if (config == null) {
@@ -191,7 +202,7 @@ public class GameCommand extends AbstractCommand {
             return null;
         });
         Game<?> game = data.getCurrentGame();
-        if (game == null || game == NoGame.INSTANCE) {
+        if (game == NoGame.INSTANCE) {
             throw new WrongUsageException("No game is currenly prepared for starting. Use '/game init' command");
         }
         if (actualMapName == null) {
