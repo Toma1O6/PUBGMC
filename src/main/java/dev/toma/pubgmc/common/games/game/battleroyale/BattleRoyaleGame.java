@@ -26,6 +26,7 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
 
@@ -99,13 +100,15 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         GameHelper.updateLoadedGameObjects(world);
         if (!world.isRemote) {
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
+            List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
             EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapArea, 1200);
             plane.setMovementSpeedMultiplier(configuration.planeSpeed);
             plane.setFlightHeight(configuration.planeFlightHeight);
+            playerList.forEach(player -> player.setPositionAndUpdate(plane.posX, plane.posY, plane.posZ));
             world.spawnEntity(plane);
-            teamManager.getAllActivePlayers(world).forEach(player -> {
+            playerList.forEach(player -> {
                 GameHelper.resetPlayerData(player);
-                plane.board(player);
+                player.startRiding(plane);
                 player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
             });
             ruleStorage.storeValueAndSet(world, "naturalRegeneration", "false");

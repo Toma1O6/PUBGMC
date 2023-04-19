@@ -35,11 +35,6 @@ public class EntityPlane extends Entity implements GameObject, IEntityAdditional
         this.ignoreFrustumCheck = true;
     }
 
-    public void board(EntityPlayer player) {
-        player.setPositionAndUpdate(posX, posY, posZ);
-        player.startRiding(this, true);
-    }
-
     public void setPath(Position2 from, Position2 to) {
         this.from = Objects.requireNonNull(from);
         this.to = Objects.requireNonNull(to);
