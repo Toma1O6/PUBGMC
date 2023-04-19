@@ -15,6 +15,8 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
 
     public boolean automaticGameJoining = true;
     public int teamSize = 1;
+    public float planeSpeed = 1.0F;
+    public int planeFlightHeight = 256;
     public int areaGenerationDelay = 2400;
     public ZonePhaseConfiguration[] zonePhases = {
             new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000),
@@ -29,6 +31,9 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setBoolean("autoJoin", automaticGameJoining);
         nbt.setInteger("teamSize", teamSize);
+        nbt.setInteger("areaGenerationDelay", areaGenerationDelay);
+        nbt.setFloat("planeSpeed", planeSpeed);
+        nbt.setInteger("planeFlightHeight", planeFlightHeight);
         NBTTagList zones = new NBTTagList();
         for (ZonePhaseConfiguration configuration : zonePhases) {
             zones.appendTag(configuration.serialize());
@@ -41,6 +46,9 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
         BattleRoyaleGameConfiguration configuration = new BattleRoyaleGameConfiguration();
         configuration.automaticGameJoining = nbt.getBoolean("autoJoin");
         configuration.teamSize = nbt.getInteger("teamSize");
+        configuration.areaGenerationDelay = nbt.getInteger("areaGenerationDelay");
+        configuration.planeSpeed = nbt.getFloat("planeSpeed");
+        configuration.planeFlightHeight = nbt.getInteger("planeFlightHeight");
         NBTTagList zones = nbt.getTagList("zonePhases", Constants.NBT.TAG_COMPOUND);
         configuration.zonePhases = new ZonePhaseConfiguration[zones.tagCount()];
         for (int i = 0; i < zones.tagCount(); i++) {

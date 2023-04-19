@@ -8,7 +8,6 @@ import dev.toma.pubgmc.network.server.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -38,7 +37,6 @@ public class PacketHandler {
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
         registerClientPacket(PacketParticle.Handler.class, PacketParticle.class);
         registerClientPacket(PacketClientCapabilitySync.Handler.class, PacketClientCapabilitySync.class);
-        registerClientPacket(PacketUpdatePlayerRotation.Handler.class, PacketUpdatePlayerRotation.class);
         registerClientPacket(PacketVehicleData.Handler.class, PacketVehicleData.class);
         registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);

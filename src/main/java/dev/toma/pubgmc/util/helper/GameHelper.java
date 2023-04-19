@@ -4,8 +4,11 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -15,7 +18,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.FoodStats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -172,6 +174,12 @@ public final class GameHelper {
         }
     }
 
+    public static void moveToLobby(EntityPlayer player) {
+        World world = player.world;
+        GameDataProvider.getGameData(world).map(GameData::getGameLobby)
+                .ifPresent(lobby -> lobby.teleport(player));
+    }
+
     public static void stopGame(World world) {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
@@ -179,6 +187,45 @@ public final class GameHelper {
             data.setActiveGame(null);
             data.sendGameDataToClients();
         });
+    }
+
+    // Doesn't actually spawn the plane
+    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, GameArea area, int approximateFlightTime) {
+        Position2 min = area.getPositionMin(1.0F);
+        Position2 max = area.getPositionMax(1.0F);
+        double xDiff = max.getX() - min.getX();
+        double zDiff = max.getZ() - min.getZ();
+        Position2 start;
+        Position2 end;
+        Random random = world.rand;
+        double mult0 = random.nextDouble();
+        double mult1 = 1.0 - mult0;
+        switch (random.nextInt(4)) {
+            default:
+            case 0:
+                start = new Position2(min.getX() + mult0 * xDiff, min.getZ());
+                end = new Position2(min.getX() + mult1 * xDiff, max.getZ());
+                break;
+            case 1:
+                start = new Position2(min.getX() + mult0 * xDiff, max.getZ());
+                end = new Position2(min.getX() + mult1 * xDiff, min.getZ());
+                break;
+            case 2:
+                start = new Position2(min.getX(), min.getZ() + mult0 * zDiff);
+                end = new Position2(max.getX(), min.getZ() + mult1 * zDiff);
+                break;
+            case 3:
+                start = new Position2(max.getX(), min.getZ() + mult0 * zDiff);
+                end = new Position2(min.getX(), min.getZ() + mult1 * zDiff);
+                break;
+        }
+        double flightPathLength = start.length(end);
+        float movementSpeed = (float) (flightPathLength / approximateFlightTime);
+        EntityPlane plane = new EntityPlane(world);
+        plane.assignGameId(gameId);
+        plane.setPath(start, end);
+        plane.setMovementSpeed(movementSpeed);
+        return plane;
     }
 
     public interface InventoryProvider {

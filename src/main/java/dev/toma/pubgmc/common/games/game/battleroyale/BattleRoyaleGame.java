@@ -7,13 +7,19 @@ import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.area.GameAreaType;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.util.GameRuleStorage;
+import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
 import dev.toma.pubgmc.common.games.area.DynamicGameArea;
 import dev.toma.pubgmc.common.games.area.StaticGameArea;
+import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -28,7 +34,6 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private final BattleRoyaleGameConfiguration configuration;
     private final BattleRoyaleTeamManager teamManager;
     private final GameRuleStorage ruleStorage;
-
     private boolean started;
     private StaticGameArea mapArea;
     private DynamicGameArea zone;
@@ -76,7 +81,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public void onGameInit(World world) {
         if (configuration.automaticGameJoining) {
             List<EntityPlayer> playerList = world.playerEntities;
-            if (playerList.size() <= 50) {
+            if (playerList.size() <= EntityPlane.PLANE_CAPACITY) {
                 // TODO rework to add players to existing teams
                 GameDataProvider.getGameData(world)
                         .map(GameData::getGameLobby)
@@ -94,16 +99,18 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         GameHelper.updateLoadedGameObjects(world);
         if (!world.isRemote) {
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
+            EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapArea, 1200);
+            plane.setMovementSpeedMultiplier(configuration.planeSpeed);
+            plane.setFlightHeight(configuration.planeFlightHeight);
+            world.spawnEntity(plane);
+            teamManager.getAllActivePlayers(world).forEach(player -> {
+                GameHelper.resetPlayerData(player);
+                plane.board(player);
+                player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
+            });
+            ruleStorage.storeValueAndSet(world, "naturalRegeneration", "false");
+            GameHelper.requestClientGameDataSynchronization(world);
         }
-        // TODO check teams and prepare plane
-        teamManager.getAllActivePlayers(world).forEach(player -> {
-            GameHelper.resetPlayerData(player);
-            // TODO teleport to plane
-            // TODO board plane
-            // TODO give parachute
-        });
-        ruleStorage.storeValueAndSet(world, "naturalRegeneration", "false");
-        GameHelper.requestClientGameDataSynchronization(world);
     }
 
     @Override
@@ -129,6 +136,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             zone.hurtAllOutsideArea(worldServer, teamManager);
         } else {
             // client only tick
+            // TODO player count updates, zone time updates and more
         }
         // TODO run ai spawner tick
         // TODO run airdrop tick
@@ -161,7 +169,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     @Override
     public boolean playerJoinGame(EntityPlayer player) {
-        if (!started && teamManager.getAllActivePlayers(player.world).count() < 50) {
+        if (!started && teamManager.getAllActivePlayers(player.world).count() < EntityPlane.PLANE_CAPACITY) {
             teamManager.createNewTeam(player);
             return true;
         }
@@ -175,6 +183,43 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     public DynamicGameArea getZone() {
         return zone;
+    }
+
+    @Override
+    public void onPlayerLoggedIn(EntityPlayerMP player) {
+        boolean joined = false;
+        if (configuration.automaticGameJoining && !started) {
+            if (playerJoinGame(player)) {
+                joined = true;
+                GameHelper.requestClientGameDataSynchronization(player.world);
+            }
+        }
+        if (joined || mapArea.isWithin(player)) {
+            GameHelper.moveToLobby(player);
+        }
+    }
+
+    @Override
+    public void onPlayerLoggedOut(EntityPlayerMP player) {
+        if (player != null && started) {
+            teamManager.eliminate(player);
+            GameHelper.requestClientGameDataSynchronization(player.world);
+        }
+    }
+
+    @Override
+    public void onEntityDeath(EntityLivingBase entity, DamageSource source) {
+        World world = entity.world;
+        if (world.isRemote)
+            return;
+        teamManager.eliminate(entity);
+        // TODO death message
+        GameHelper.requestClientGameDataSynchronization(world);
+    }
+
+    @Override
+    public void onPlayerRespawn(EntityPlayer player) {
+        GameHelper.moveToLobby(player);
     }
 
     private void gameAreaResizeCompleted(DynamicGameArea gameArea, World world) {

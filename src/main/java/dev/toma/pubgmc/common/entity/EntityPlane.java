@@ -1,37 +1,33 @@
 package dev.toma.pubgmc.common.entity;
 
-import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketUpdatePlayerRotation;
+import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-public class EntityPlane extends Entity {
+public class EntityPlane extends Entity implements GameObject, IEntityAdditionalSpawnData {
 
-    public HashMap<EntityPlayer, BlockPos> dropLoc = new HashMap<>();
-    protected BlockPos endPos;
-    protected BlockPos startPos;
-    private boolean hasReachedDestination;
-    private short timeSinceDestination;
-    private boolean canFly;
-    public List<EntityPlayer> pendingPlayers = new ArrayList<>();
+    public static final int PLANE_CAPACITY = 32;
+    private int flightDelay = 20;
+    private int flightHeight = 256;
+    private Position2 from = Position2.ORIGIN;
+    private Position2 to = Position2.ORIGIN;
+    private float movementSpeed;
+    private float movementSpeedMultiplier;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityPlane(World world) {
         super(world);
@@ -39,14 +35,33 @@ public class EntityPlane extends Entity {
         this.ignoreFrustumCheck = true;
     }
 
-    protected static void setPlayerFaceTheirDropLocation(EntityPlayer player, BlockPos finalDest) {
-        player.rotationYaw = 0f;
-        PUBGMCUtil.updateEntityRotation(player, finalDest);
-        player.rotationYaw += 180f;
+    public void board(EntityPlayer player) {
+        player.setPositionAndUpdate(posX, posY, posZ);
+        player.startRiding(this, true);
+    }
 
-        if (player instanceof EntityPlayerMP) {
-            PacketHandler.sendToClient(new PacketUpdatePlayerRotation(player.rotationYaw), (EntityPlayerMP) player);
-        }
+    public void setPath(Position2 from, Position2 to) {
+        this.from = Objects.requireNonNull(from);
+        this.to = Objects.requireNonNull(to);
+        recalculatePosition();
+        updateHeading();
+    }
+
+    public void setFlightDelay(int flightDelay) {
+        this.flightDelay = flightDelay;
+    }
+
+    public void setFlightHeight(int flightHeight) {
+        this.flightHeight = flightHeight;
+        recalculatePosition();
+    }
+
+    public void setMovementSpeed(float movementSpeed) {
+        this.movementSpeed = movementSpeed;
+    }
+
+    public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
+        this.movementSpeedMultiplier = movementSpeedMultiplier;
     }
 
     @Override
@@ -56,18 +71,18 @@ public class EntityPlane extends Entity {
 
     @Override
     protected boolean canFitPassenger(Entity passenger) {
-        return this.getPassengers().size() < 32;
+        return this.getPassengers().size() < PLANE_CAPACITY;
     }
 
     @Override
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger)) {
             if (!this.getPassengers().isEmpty()) {
-                float f1 = (float) ((this.isDead ? 0.009999999776482582D : this.getMountedYOffset()) + passenger.getYOffset());
+                float f1 = (float) ((this.isDead ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
                 int id = this.getPassengers().indexOf(passenger);
                 float x = id >= 16 ? -6 + (id - 16) * 3 : -6 + id * 3;
                 float z = id < 16 ? 3 : -3;
-                Vec3d vec3d = (new Vec3d((double) x, 0.0D, (double) z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+                Vec3d vec3d = (new Vec3d(x, 0.0D, z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
                 passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
             }
         }
@@ -87,66 +102,28 @@ public class EntityPlane extends Entity {
     public void onUpdate() {
         super.onUpdate();
 
-        canFly = this.ticksExisted >= (ConfigPMC.common.world.planeDelay.get() * 20);
-
-        if (canFly) {
-            if (!world.isRemote) {
-                hasReachedDestination = Math.abs(posX - endPos.getX()) < 10 && Math.abs(posZ - endPos.getZ()) < 10;
-
-                if (hasReachedDestination) {
-                    ++timeSinceDestination;
-
-                    if (this.isBeingRidden()) {
-                        removePassengers();
-                    }
-
-                    if (timeSinceDestination >= 50) {
-                        setDead();
-                    }
-                }
-
-                if (motionX == 0 && motionZ == 0 && ticksExisted >= ConfigPMC.common.world.planeDelay.get() * 20 + 15) {
-                    setDead();
-                    Pubgmc.logger.error("Plane is in invalid position, despawning...");
-                }
-
-                if (!this.getPassengers().isEmpty() && ticksExisted % 10 == 0 && !this.dropLoc.isEmpty()) {
-                    for (Entity e : this.getPassengers()) {
-                        if (e instanceof EntityPlayer) {
-                            EntityPlayer player = (EntityPlayer) e;
-
-                            if (dropLoc.containsKey(player)) {
-                                BlockPos pos = dropLoc.get(player);
-                                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-                                if (PUBGMCUtil.getDistanceToBlockPos(getPosition(), pos) < data.getDistance()) {
-                                    data.setDistance(PUBGMCUtil.getDistanceToBlockPos(getPosition(), pos));
-                                } else {
-                                    final DecimalFormat num = new DecimalFormat("####.##");
-                                    dropLoc.remove(player);
-                                    player.dismountRidingEntity();
-                                    setPlayerFaceTheirDropLocation(player, pos);
-                                    player.sendMessage(new TextComponentString(TextFormatting.BOLD + "" + TextFormatting.GREEN + "You have been dropped closest to your selected location."));
-                                    player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Distance on map to your location: " + num.format(PUBGMCUtil.getDistanceToBlockPos(player.getPosition(), pos)) + " m"));
-                                    player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Actual distance: " + num.format(PUBGMCUtil.getDistanceToBlockPos3D(player.getPosition(), pos)) + " m"));
-                                }
-                            }
-                        }
-                    }
-                }
+        double currentDistance = getDestinationDistanceSqr();
+        if (currentDistance <= 16.0F) {
+            if (isBeingRidden()) {
+                removePassengers();
             }
+            setDead();
+        }
 
+        if (ticksExisted % 20L == 0) {
+            GameHelper.validateGameEntityStillValid(this);
+        }
+
+        if (flightDelay <= 0) {
+            updateHeading();
             Vec3d look = getLookVec();
-            float f = this.getMovementMultiplier();
-            motionX = look.x * 0.4d * f;
-            motionZ = look.z * 0.4d * f;
+            motionX = look.x * movementSpeed * movementSpeedMultiplier;
+            motionZ = look.z * movementSpeed * movementSpeedMultiplier;
 
             move(MoverType.SELF, motionX, motionY, motionZ);
+        } else {
+            --flightDelay;
         }
-    }
-
-    private float getMovementMultiplier() {
-        return 1.0F;
     }
 
     @Override
@@ -154,33 +131,68 @@ public class EntityPlane extends Entity {
     }
 
     @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        setDead();
+    }
+
+    @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setDouble("posX", posX);
-        compound.setDouble("posY", posY);
-        compound.setDouble("posZ", posZ);
-        compound.setDouble("motX", motionX);
-        compound.setDouble("motY", motionY);
-        compound.setDouble("motZ", motionZ);
-        compound.setFloat("rotYaw", rotationYaw);
-        compound.setDouble("endX", endPos.getX());
-        compound.setDouble("endZ", endPos.getZ());
-        compound.setBoolean("reachedDest", hasReachedDestination);
-        compound.setShort("timeSinceDest", timeSinceDestination);
-        compound.setUniqueId("UUID", getUniqueID());
+        compound.setInteger("flightDelay", flightDelay);
+        compound.setInteger("flightHeight", flightHeight);
+        compound.setTag("fromDest", from.toNbt());
+        compound.setTag("toDest", to.toNbt());
+        compound.setFloat("flightMovementSpeed", movementSpeed);
+        compound.setFloat("flightMovementSpeedMultiplier", movementSpeedMultiplier);
+        compound.setUniqueId("gameId", gameId);
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
-        posX = compound.getDouble("posX");
-        posY = compound.getDouble("posY");
-        posZ = compound.getDouble("posZ");
-        motionX = compound.getDouble("motX");
-        motionY = compound.getDouble("motY");
-        motionZ = compound.getDouble("motZ");
-        rotationYaw = compound.getFloat("rotYaw");
-        endPos = new BlockPos(compound.getDouble("endX"), ConfigPMC.common.world.planeHeight.get(), compound.getDouble("endZ"));
-        hasReachedDestination = compound.getBoolean("reachedDest");
-        timeSinceDestination = compound.getShort("timeSinceDest");
-        setUniqueId(compound.getUniqueId("UUID"));
+        flightDelay = compound.getInteger("flightDelay");
+        flightHeight = compound.getInteger("flightHeight");
+        from = new Position2(compound.getCompoundTag("fromDest"));
+        to = new Position2(compound.getCompoundTag("toDest"));
+        movementSpeed = compound.getFloat("flightMovementSpeed");
+        movementSpeedMultiplier = compound.getFloat("flightMovementSpeedMultiplier");
+        gameId = compound.getUniqueId("gameId");
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        NBTTagCompound extraData = new NBTTagCompound();
+        writeEntityToNBT(extraData);
+        ByteBufUtils.writeTag(buffer, extraData);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf buffer) {
+        NBTTagCompound extraData = ByteBufUtils.readTag(buffer);
+        readEntityFromNBT(extraData);
+    }
+
+    private void recalculatePosition() {
+        setPosition(from.getX(), flightHeight, from.getZ());
+    }
+
+    private double getDestinationDistanceSqr() {
+        double x = to.getX() - posX;
+        double z = to.getZ() - posZ;
+        return x * x + z * z;
+    }
+
+    private void updateHeading() {
+        double a = PUBGMCUtil.getAngleBetween2Points(posX, posZ, to.getX(), to.getZ());
+        this.rotationYaw = this.rotationYaw + (float) MathHelper.wrapDegrees(a - rotationYaw);
+        this.prevRotationYaw = this.rotationYaw;
     }
 }

@@ -37,16 +37,8 @@ public class PUBGMCUtil {
         return Math.sqrt(sqr(pos1.getX() - pos2.getX()) + sqr(pos1.getY() - pos2.getY()) + sqr(pos1.getZ() - pos2.getZ()));
     }
 
-    public static float getAngleBetween2Points(Entity entityToRotate, BlockPos targetPos) {
-        return (float) (MathHelper.atan2(entityToRotate.posZ - targetPos.getZ(), entityToRotate.posX - targetPos.getX()) * (180D / Math.PI)) - 90f;
-    }
-
-    public static float updateRotation(float prevRotation, float additionalRotation) {
-        return MathHelper.wrapDegrees(additionalRotation - prevRotation);
-    }
-
-    public static void updateEntityRotation(Entity entity, BlockPos targetPos) {
-        entity.rotationYaw = updateRotation(entity.rotationYaw, getAngleBetween2Points(entity, targetPos));
+    public static float getAngleBetween2Points(double x1, double z1, double x2, double z2) {
+        return (float) (MathHelper.atan2(z2 - z1, x2 - x1) * (180D / Math.PI)) - 90.0F;
     }
 
     public static double sqr(double num) {

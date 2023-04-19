@@ -385,7 +385,22 @@ public class GameCommand extends AbstractCommand {
     }
 
     private static void joinGame(CommandContext context) throws CommandException {
-
+        GameData gameData = getGameData(context);
+        Game<?> game = gameData.getCurrentGame();
+        if (game == NoGame.INSTANCE) {
+            throw new WrongUsageException("There is no active game");
+        }
+        ICommandSender sender = context.getSender();
+        Entity entity = sender.getCommandSenderEntity();
+        if (!(entity instanceof EntityPlayer)) {
+            throw new WrongUsageException("This subcommand can be only executed by player");
+        }
+        EntityPlayer player = (EntityPlayer) entity;
+        if (game.playerJoinGame(player)) {
+            player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.join.success"));
+        } else {
+            player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.join.fail"));
+        }
     }
 
     private static List<String> suggestCurrentX(SuggestionProvider.Context context) {

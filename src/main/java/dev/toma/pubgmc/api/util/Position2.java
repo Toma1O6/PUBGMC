@@ -34,6 +34,12 @@ public final class Position2 {
         this.z = z;
     }
 
+    public double length(Position2 other) {
+        double dx = x - other.x;
+        double dz = z - other.z;
+        return Math.sqrt(dx * dx + dz * dz);
+    }
+
     public NBTTagCompound toNbt() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setDouble("x", x);
