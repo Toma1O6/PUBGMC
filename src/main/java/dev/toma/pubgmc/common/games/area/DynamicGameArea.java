@@ -24,6 +24,10 @@ public class DynamicGameArea extends AbstractDamagingArea {
         this.max = max;
     }
 
+    public DynamicGameArea(AbstractDamagingArea area) {
+        this(area.getDamageOptions(), area.getPositionMin(1.0F), area.getPositionMax(1.0F));
+    }
+
     public void onResizeCompleted(ResizeCompletedCallback callback) {
         this.resizeCompletedCallback = callback;
     }
@@ -45,7 +49,7 @@ public class DynamicGameArea extends AbstractDamagingArea {
                 }
                 target = null;
                 if (resizeCompletedCallback != null) {
-                    resizeCompletedCallback.onResizeCompleted(this);
+                    resizeCompletedCallback.onResizeCompleted(this, world);
                 }
             }
         }
@@ -165,7 +169,7 @@ public class DynamicGameArea extends AbstractDamagingArea {
 
     @FunctionalInterface
     public interface ResizeCompletedCallback {
-        void onResizeCompleted(DynamicGameArea area);
+        void onResizeCompleted(DynamicGameArea area, World world);
     }
 
     public static final class Serializer implements GameAreaSerializer<DynamicGameArea> {

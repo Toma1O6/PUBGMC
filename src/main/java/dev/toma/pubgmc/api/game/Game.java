@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game;
 
+import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface Game<CFG extends GameConfiguration> {
@@ -33,7 +35,13 @@ public interface Game<CFG extends GameConfiguration> {
     void onGameTick(World world);
 
     // Call when /game stop command is executed. Should stop the game and return everyone to lobby, reset world options and more
-    void onGameStopped(World world);
+    void onGameStopped(World world, GameData data);
+
+    // Called when player leaves via /game leave command. Return false when player is not between active participants
+    boolean playerLeaveGame(EntityPlayer player);
+
+    // Called when player attempts to join via /game join command. Return false to decline join request
+    boolean playerJoinGame(EntityPlayer player);
 
     // TODO more game event listeners
 
@@ -44,9 +52,4 @@ public interface Game<CFG extends GameConfiguration> {
     default void onEntityDeath(EntityLivingBase entity, DamageSource source) {}
 
     default void onPlayerRespawn(EntityPlayer player) {}
-
-    // Called when player leaves via lobby command
-    default boolean onPlayerLeft(EntityPlayer player) {
-        return true;
-    }
 }

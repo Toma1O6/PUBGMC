@@ -16,6 +16,10 @@ public class StaticGameArea extends AbstractDamagingArea {
         this.max = max;
     }
 
+    public StaticGameArea(AbstractDamagingArea area) {
+        this(area.getDamageOptions(), area.getPositionMin(1.0F), area.getPositionMax(1.0F));
+    }
+
     @Override
     public GameAreaType<?> getAreaType() {
         return GameAreaTypes.STATIC_AREA;

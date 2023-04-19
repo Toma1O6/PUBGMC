@@ -147,7 +147,7 @@ public class GameDataImpl implements GameData {
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
         NBTTagCompound configs = new NBTTagCompound();
         deserializeConfigs(configs);
-        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), getGameConfiguration(type));
+        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), this::getGameConfiguration);
         if (gameInstance == null) {
             gameInstance = NoGame.INSTANCE;
         }

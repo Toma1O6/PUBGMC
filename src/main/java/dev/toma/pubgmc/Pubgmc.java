@@ -92,8 +92,8 @@ public class Pubgmc {
         NetworkRegistry.INSTANCE.registerGuiHandler(Pubgmc.instance, new GuiHandler());
         CommonRegistry.initTileEntities();
         registerSmeltingRecipes();
-        proxy.init(event);
         dispatchRegistryEvents();
+        proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
         LootManager.load();
     }

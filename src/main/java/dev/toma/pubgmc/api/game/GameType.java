@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> extends RegistryObject {
@@ -52,13 +53,13 @@ public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> 
     }
 
     @Nullable
-    public static <CFG extends GameConfiguration, G extends Game<CFG>> G deserialize(NBTTagCompound nbt, CFG usedConfiguration) {
+    public static <CFG extends GameConfiguration, G extends Game<CFG>> G deserialize(NBTTagCompound nbt, Function<GameType<CFG, G>, CFG> configurationProvider) {
         ResourceLocation location = new ResourceLocation(nbt.getString("type"));
         GameType<CFG, G> gameType = PubgmcRegistries.GAME_TYPES.getUnsafeGenericValue(location);
         if (gameType == null) {
             return null;
         }
-        return gameType.serializer.deserializeGameData(nbt.getCompoundTag("game"), usedConfiguration);
+        return gameType.serializer.deserializeGameData(nbt.getCompoundTag("game"), configurationProvider.apply(gameType));
     }
 
     public static <CFG extends GameConfiguration> NBTTagCompound serializeConfiguration(GameType<CFG, ?> gameType, CFG config) {

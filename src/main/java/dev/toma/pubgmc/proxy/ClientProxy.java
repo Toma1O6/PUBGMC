@@ -1,9 +1,11 @@
 package dev.toma.pubgmc.proxy;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
 import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
+import dev.toma.pubgmc.client.games.GameRendererManager;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
@@ -84,6 +86,8 @@ public class ClientProxy extends Proxy {
 
         LayerNightVision.registerRenderer(PMCItems.NV_GOGGLES, new NightVisionModel(), WeaponRenderer.ATTACHMENT_TEXTURES);
         registerBackpackModels();
+
+        MinecraftForge.EVENT_BUS.post(new RegisterGameRendererEvent(GameRendererManager.INSTANCE::registerGameRenderer));
     }
 
     @Override

@@ -3,8 +3,7 @@ package dev.toma.pubgmc.util.helper;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
@@ -14,16 +13,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -125,14 +124,58 @@ public final class GameHelper {
     }
 
     public static void requestClientGameDataSynchronization(World world) {
+        if (world.isRemote)
+            return;
         GameDataProvider.getGameData(world)
                 .ifPresent(GameData::sendGameDataToClients);
+    }
+
+    public static void fillPlayerHunger(EntityPlayer player) {
+        player.getFoodStats().addStats(20, 0.5F);
+    }
+
+    public static void resetPlayerData(EntityPlayer player) {
+        player.inventory.clear();
+        Collection<PotionEffect> effects = player.getActivePotionEffects();
+        for (PotionEffect effect : effects) {
+            player.removeActivePotionEffect(effect.getPotion());
+        }
+        fillPlayerHunger(player);
+        IPlayerData playerData = PlayerData.get(player);
+        if (playerData != null) {
+            playerData.setNightVisionActive(false);
+            playerData.setProne(false);
+            playerData.getBoostStats().reset();
+            playerData.getEquipmentInventory().clear();
+            playerData.sync();
+        }
+    }
+
+    public static void clearEmptyTeams(WorldServer world, TeamManager manager) {
+        Iterator<Team> iterator = manager.getTeams().iterator();
+        while (iterator.hasNext()) {
+            Team team = iterator.next();
+            if (team.isTeamEliminated()) {
+                iterator.remove();
+                continue;
+            }
+            boolean hasMember = false;
+            for (Team.Member member : team.getAllMembers().values()) {
+                if (member.getEntity(world) != null) {
+                    hasMember = true;
+                    break;
+                }
+            }
+            if (!hasMember) {
+                iterator.remove();
+            }
+        }
     }
 
     public static void stopGame(World world) {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.onGameStopped(world);
+            game.onGameStopped(world, data);
             data.setActiveGame(null);
             data.sendGameDataToClients();
         });

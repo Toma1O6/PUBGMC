@@ -2,45 +2,46 @@ package dev.toma.pubgmc.api.game;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.Constants;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public final class Team {
 
     private final Member owner;
     private final Map<UUID, Member> members;
-    private final Map<UUID, Member> activeMembers;
+    private final Set<UUID> activeMembers;
     private final Map<UUID, String> usernames;
 
-    public Team(Member owner) {
-        this.owner = owner;
+    public Team(Entity entity) {
+        this.owner = Member.of(entity);
         this.members = new HashMap<>();
-        this.activeMembers = new HashMap<>();
+        this.activeMembers = new HashSet<>();
         this.usernames = new HashMap<>();
+        add(entity);
+    }
+
+    private Team(Member owner, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
+        this.owner = owner;
+        this.members = members;
+        this.activeMembers = activeMembers;
+        this.usernames = usernames;
     }
 
     public UUID getTeamId() {
         return owner.getId();
     }
 
-    public void addPlayer(EntityPlayer player) {
-        UUID uuid = player.getUniqueID();
-        Member member = new Member(uuid, MemberType.PLAYER);
-        members.put(uuid, member);
-        activeMembers.put(uuid, member);
-    }
-
-    public void addAI(Entity entity) {
+    public void add(Entity entity) {
         UUID uuid = entity.getUniqueID();
-        Member member = new Member(uuid, MemberType.AI);
+        Member member = Member.of(entity);
         members.put(uuid, member);
-        activeMembers.put(uuid, member);
+        activeMembers.add(uuid);
+        saveUsername(entity);
     }
 
     public void eliminate(UUID uuid) {
@@ -48,11 +49,11 @@ public final class Team {
     }
 
     public boolean isMember(UUID uuid) {
-        return activeMembers.containsKey(uuid);
+        return activeMembers.contains(uuid);
     }
 
-    public Optional<Member> getMemberOptionally(UUID uuid) {
-        return Optional.ofNullable(activeMembers.get(uuid));
+    public Optional<Member> getMember(UUID uuid) {
+        return isMember(uuid) ? Optional.ofNullable(members.get(uuid)) : Optional.empty();
     }
 
     public boolean isTeamEliminated() {
@@ -71,6 +72,49 @@ public final class Team {
         usernames.put(entity.getUniqueID(), entity.getName());
     }
 
+    public NBTTagCompound serialize() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setUniqueId("owner", owner.uuid);
+        NBTTagList members = new NBTTagList();
+        this.members.values().forEach(member -> members.appendTag(member.serialize()));
+        nbt.setTag("members", members);
+        NBTTagList active = new NBTTagList();
+        this.activeMembers.forEach(uuid -> active.appendTag(new NBTTagString(uuid.toString())));
+        nbt.setTag("active", active);
+        NBTTagCompound usernameTag = new NBTTagCompound();
+        for (Map.Entry<UUID, String> entry : usernames.entrySet()) {
+            usernameTag.setString(entry.getKey().toString(), entry.getValue());
+        }
+        nbt.setTag("usernames", usernameTag);
+        return nbt;
+    }
+
+    public static Team deserialize(NBTTagCompound nbt) {
+        UUID ownerId = nbt.getUniqueId("owner");
+        NBTTagList memberList = nbt.getTagList("members", Constants.NBT.TAG_COMPOUND);
+        Map<UUID, Member> memberMap = new HashMap<>();
+        for (int i = 0; i < memberList.tagCount(); i++) {
+            NBTTagCompound memberTag = memberList.getCompoundTagAt(i);
+            Member member = Member.deserialize(memberTag);
+            memberMap.put(member.uuid, member);
+        }
+        Member owner = memberMap.get(ownerId);
+        Set<UUID> activeMembers = new HashSet<>();
+        NBTTagList activeList = nbt.getTagList("active", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < activeList.tagCount(); i++) {
+            activeMembers.add(UUID.fromString(activeList.getStringTagAt(i)));
+        }
+        Map<UUID, String> usernameMap = new HashMap<>();
+        NBTTagCompound usernamesTag = nbt.getCompoundTag("usernames");
+        Set<String> ids = usernamesTag.getKeySet();
+        for (String key : ids) {
+            UUID memberId = UUID.fromString(key);
+            String name = usernamesTag.getString(key);
+            usernameMap.put(memberId, name);
+        }
+        return new Team(owner, memberMap, activeMembers, usernameMap);
+    }
+
     public static final class Member {
 
         private final UUID uuid;
@@ -81,12 +125,41 @@ public final class Team {
             this.memberType = memberType;
         }
 
+        public static Member of(Entity entity) {
+            return new Member(entity.getUniqueID(), entity instanceof EntityPlayer ? MemberType.PLAYER : MemberType.AI);
+        }
+
         public UUID getId() {
             return uuid;
         }
 
         public MemberType getMemberType() {
             return memberType;
+        }
+
+        public Entity getEntity(WorldServer server) {
+            return memberType.isPlayer() ? server.getPlayerEntityByUUID(uuid) : server.getEntityFromUuid(uuid);
+        }
+
+        public EntityPlayer getPlayer(World world) {
+            if (!memberType.isPlayer()) {
+                throw new UnsupportedOperationException("Invalid member type");
+            }
+            return world.getPlayerEntityByUUID(uuid);
+        }
+
+        public NBTTagCompound serialize() {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setUniqueId("id", uuid);
+            nbt.setInteger("type", memberType.ordinal());
+            return nbt;
+        }
+
+        public static Member deserialize(NBTTagCompound nbt) {
+            UUID uuid = nbt.getUniqueId("id");
+            int type = nbt.getInteger("type");
+            MemberType memberType = MemberType.values()[type % MemberType.values().length];
+            return new Member(uuid, memberType);
         }
     }
 

@@ -16,7 +16,11 @@ public final class GameLobby {
     public void teleport(EntityPlayer player) {
         if (player.world.isRemote)
             return;
-        player.attemptTeleport(center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
+        player.setPositionAndUpdate(center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
+    }
+
+    public BlockPos get() {
+        return center;
     }
 
     public NBTTagCompound serialize() {

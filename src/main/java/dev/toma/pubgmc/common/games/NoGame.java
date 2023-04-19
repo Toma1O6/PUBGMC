@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.common.games;
 
+import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -48,11 +50,21 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     }
 
     @Override
-    public void onGameStopped(World world) {
+    public void onGameStopped(World world, GameData data) {
     }
 
     @Override
     public void onGameTick(World world) {
+    }
+
+    @Override
+    public boolean playerLeaveGame(EntityPlayer player) {
+        return false;
+    }
+
+    @Override
+    public boolean playerJoinGame(EntityPlayer player) {
+        return false;
     }
 
     public static final class Serializer implements GameDataSerializer<NoConfiguration, NoGame> {

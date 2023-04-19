@@ -13,6 +13,7 @@ import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
@@ -156,6 +157,11 @@ public class GameCommand extends AbstractCommand {
                                             .executes(context -> leaveGame(context, true))
                             )
             )
+            .node(
+                    CommandNodeProvider.literal("join")
+                            .permissionLevel(0)
+                            .executes(GameCommand::joinGame)
+            )
             .build();
 
     public GameCommand() {
@@ -175,7 +181,7 @@ public class GameCommand extends AbstractCommand {
         GameData gameData = getGameData(context);
         gameData.setSelectedGameType(gameType);
         gameData.sendGameDataToClients();
-        // TODO feedback
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.type_selected", gameType.getIdentifier()));
     }
 
     @SuppressWarnings("unchecked")
@@ -186,7 +192,7 @@ public class GameCommand extends AbstractCommand {
             throw new WrongUsageException("You must first select game type. Use /game select <gameType>");
         }
         Game<?> current = data.getCurrentGame();
-        if (current != NoGame.INSTANCE && !current.isStarted()) {
+        if (current != NoGame.INSTANCE && current.isStarted()) {
             throw new WrongUsageException("There is already active game");
         }
         validateGameLobbyDefined(data);
@@ -206,7 +212,7 @@ public class GameCommand extends AbstractCommand {
         game.onGameInit(world);
         data.setActiveGame(game);
         data.sendGameDataToClients();
-        // TODO send feedback
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.initialized"));
     }
 
     private static void startGame(CommandContext context) throws CommandException {
@@ -241,7 +247,7 @@ public class GameCommand extends AbstractCommand {
         } catch (GameException e) {
             throw new WrongUsageException("Unable to start game: " + e.getMessage());
         }
-        // TODO feedback
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.started"));
     }
 
     private static void stopGame(CommandContext context) throws CommandException {
@@ -252,7 +258,7 @@ public class GameCommand extends AbstractCommand {
         }
         ICommandSender sender = context.getSender();
         GameHelper.stopGame(sender.getEntityWorld());
-        // TODO feedback
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.stopped"));
     }
 
     private static void registerMapByCenter(CommandContext context) throws CommandException {
@@ -291,7 +297,7 @@ public class GameCommand extends AbstractCommand {
         GameMap gameMap = new GameMap(name, min, max);
         data.registerGameMap(gameMap);
         data.sendGameDataToClients();
-        // TODO feedback
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.created", name));
     }
 
     private static void deleteMapByName(CommandContext context) throws CommandException {
@@ -303,7 +309,7 @@ public class GameCommand extends AbstractCommand {
         }
         data.deleteGameMap(mapName);
         data.sendGameDataToClients();
-        // TODO feedback
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.deleted", mapName));
     }
 
     private static void deleteMapPoints(CommandContext context) throws CommandException {
@@ -315,16 +321,22 @@ public class GameCommand extends AbstractCommand {
         }
         map.deletePoints();
         data.sendGameDataToClients();
-        // TODO feedback
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.pois_deleted", mapName));
     }
 
     private static void printLobbyInformation(CommandContext context) throws CommandException {
         GameData data = getGameData(context);
         GameLobby lobby = data.getGameLobby();
+        ICommandSender sender = context.getSender();
         if (lobby == null) {
-            // TODO no lobby info
+            sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.lobby.not_created"));
         } else {
-            // TODO send feedback with possibility to teleport to lobby position
+            BlockPos pos = lobby.get();
+            ITextComponent component = new TextComponentTranslation("commands.pubgmc.game.lobby.info", pos.getX(), pos.getY(), pos.getZ());
+            Style style = component.getStyle();
+            style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp @p " + pos.getX() + " " + pos.getY() + " " + pos.getZ()));
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentHelper.CLICK_TO_TELEPORT));
+            sender.sendMessage(component);
         }
     }
 
@@ -334,7 +346,7 @@ public class GameCommand extends AbstractCommand {
         GameLobby lobby = new GameLobby(pos);
         data.setGameLobby(lobby);
         data.sendGameDataToClients();
-        // TODO send feedback
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.lobby.created"));
     }
 
     private static void leaveGame(CommandContext context, boolean confirmed) throws CommandException {
@@ -354,11 +366,12 @@ public class GameCommand extends AbstractCommand {
             if (lobby == null) {
                 throw new WrongUsageException("There is no lobby defined");
             }
-            if (game.onPlayerLeft(player)) {
+            if (game.playerLeaveGame(player)) {
+                GameHelper.resetPlayerData(player);
                 lobby.teleport(player);
                 player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.leave.success"));
             } else {
-                // TODO send failure msg
+                player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.leave.fail"));
             }
         } else {
             String command = "/game leave confirm";
@@ -369,6 +382,10 @@ public class GameCommand extends AbstractCommand {
             style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TEXT_EXECUTE_CMD));
             player.sendMessage(component);
         }
+    }
+
+    private static void joinGame(CommandContext context) throws CommandException {
+
     }
 
     private static List<String> suggestCurrentX(SuggestionProvider.Context context) {

@@ -1,7 +1,12 @@
 package dev.toma.pubgmc.common.games.area;
 
+import dev.toma.pubgmc.api.game.TeamManager;
 import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.init.PMCDamageSources;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import java.util.Objects;
 
@@ -32,6 +37,19 @@ public abstract class AbstractDamagingArea implements GameArea {
         this.visible = visible;
     }
 
+    public void hurtEntity(Entity entity) {
+        entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
+    }
+
+    public void hurtAllOutsideArea(WorldServer world, TeamManager manager) {
+        int interval = damageOptions.getDamageInterval();
+        if (interval >= 0 && (interval == 0 || world.getTotalWorldTime() % interval == 0)) {
+            manager.getAllActiveEntities(world)
+                    .filter(entity -> !isWithin(entity))
+                    .forEach(this::hurtEntity);
+        }
+    }
+
     public static final class DamageOptions {
 
         public static final DamageOptions NONE = new DamageOptions(0.0F, -1);
@@ -59,7 +77,7 @@ public abstract class AbstractDamagingArea implements GameArea {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setFloat("amount", damageAmount);
             nbt.setInteger("interval", damageInterval);
-            return new NBTTagCompound();
+            return nbt;
         }
 
         public static DamageOptions fromNbt(NBTTagCompound nbt) {
