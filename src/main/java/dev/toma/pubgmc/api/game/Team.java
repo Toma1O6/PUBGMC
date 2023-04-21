@@ -115,6 +115,19 @@ public final class Team {
         return new Team(owner, memberMap, activeMembers, usernameMap);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return owner.equals(team.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        return owner.hashCode();
+    }
+
     public static final class Member {
 
         private final UUID uuid;
@@ -160,6 +173,19 @@ public final class Team {
             int type = nbt.getInteger("type");
             MemberType memberType = MemberType.values()[type % MemberType.values().length];
             return new Member(uuid, memberType);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Member member = (Member) o;
+            return uuid.equals(member.uuid);
+        }
+
+        @Override
+        public int hashCode() {
+            return uuid.hashCode();
         }
     }
 

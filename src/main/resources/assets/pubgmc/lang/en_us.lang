@@ -300,9 +300,16 @@ commands.pubgmc.game.lobby.not_created=There is no lobby defined
 commands.pubgmc.game.lobby.info=Lobby is currently at position [%s;%s;%s]
 commands.pubgmc.game.lobby.created=Lobby has been successfully created
 
+pubgmc.game_area.label=Zone:
+pubgmc.game_area.status.time_remaining=Will resize after: %s
+pubgmc.game_area.status.shrinking=Shrinking...
+
 label.pubgmc.false=False
 label.pubgmc.true=True
 label.pubgmc.no=No
 label.pubgmc.yes=Yes
 label.pubgmc.undefined=Not defined
 label.pubgmc.click_to_teleport=Click here to teleport
+label.pubgmc.death_message.generic=DEATH
+label.pubgmc.death_message.generic.entity=KILLED
+label.pubgmc.death_message.zone=PLAYZONE

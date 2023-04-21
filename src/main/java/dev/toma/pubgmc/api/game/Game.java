@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public interface Game<CFG extends GameConfiguration> {
 
@@ -43,13 +44,7 @@ public interface Game<CFG extends GameConfiguration> {
     // Called when player attempts to join via /game join command. Return false to decline join request
     boolean playerJoinGame(EntityPlayer player);
 
-    // TODO more game event listeners
+    void addListener(GameEventListener listener);
 
-    default void onPlayerLoggedIn(EntityPlayerMP player) {}
-
-    default void onPlayerLoggedOut(EntityPlayerMP player) {}
-
-    default void onEntityDeath(EntityLivingBase entity, DamageSource source) {}
-
-    default void onPlayerRespawn(EntityPlayer player) {}
+    void invokeEvent(Consumer<GameEventListener> consumer);
 }

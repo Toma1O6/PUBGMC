@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -35,7 +36,7 @@ public final class CommonGameEventHandler {
     public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.onPlayerLoggedIn((EntityPlayerMP) event.player);
+            game.invokeEvent(listener -> listener.onPlayerLoggedIn((EntityPlayerMP) event.player));
         });
     }
 
@@ -43,7 +44,7 @@ public final class CommonGameEventHandler {
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.onPlayerLoggedOut((EntityPlayerMP) event.player);
+            game.invokeEvent(listener -> listener.onPlayerLoggedOut((EntityPlayerMP) event.player));
         });
     }
 
@@ -54,7 +55,8 @@ public final class CommonGameEventHandler {
             GameDataProvider.getGameData(entity.world).ifPresent(data -> {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    game.onEntityDeath(entity, event.getSource());
+                    DamageSource source = event.getSource();
+                    game.invokeEvent(listener -> listener.onEntityDeath(entity, source));
                 }
             });
         }
@@ -65,7 +67,7 @@ public final class CommonGameEventHandler {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             if (game.isStarted()) {
-                game.onPlayerRespawn(event.player);
+                game.invokeEvent(listener -> listener.onPlayerRespawn(event.player));
             }
         });
     }

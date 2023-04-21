@@ -69,6 +69,14 @@ public class DynamicGameArea extends AbstractDamagingArea {
         this.target = target;
     }
 
+    public boolean isResizing() {
+        return target != null && target.getResizeProgress(1.0F) > 0.0F;
+    }
+
+    public int getRemainingStationaryTime() {
+        return target == null ? -1 : target.initiationDelay - target.startTimer;
+    }
+
     public static final class AreaTarget {
 
         private final Position2 nextMin, nextMax;
@@ -93,7 +101,6 @@ public class DynamicGameArea extends AbstractDamagingArea {
             }
             if (resizeTimer < resizeTimeTotal) {
                 ++resizeTimer;
-
             }
         }
 
@@ -138,7 +145,7 @@ public class DynamicGameArea extends AbstractDamagingArea {
         private NBTTagCompound serialize() {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setTag("nextMin", nextMin.toNbt());
-            nbt.setTag("nextMax", nextMin.toNbt());
+            nbt.setTag("nextMax", nextMax.toNbt());
             if (newDamageOptions != null) {
                 nbt.setTag("damageOpt", newDamageOptions.toNbt());
             }

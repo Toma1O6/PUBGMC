@@ -25,7 +25,6 @@ public final class GameAreaRenderer {
         Entity entity = minecraft.getRenderViewEntity();
 
         if (entity.posX >= maxX - maxRenderDistance || entity.posX <= minX + maxRenderDistance || entity.posZ >= maxZ - maxRenderDistance || entity.posZ <= minZ + maxRenderDistance) {
-            GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.disableTexture2D();
@@ -74,7 +73,6 @@ public final class GameAreaRenderer {
             GlStateManager.enableCull();
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();
-            GlStateManager.disableAlpha();
             GlStateManager.depthMask(true);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }

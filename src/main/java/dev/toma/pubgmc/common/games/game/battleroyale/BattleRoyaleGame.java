@@ -24,9 +24,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
 
@@ -35,6 +36,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private final BattleRoyaleGameConfiguration configuration;
     private final BattleRoyaleTeamManager teamManager;
     private final GameRuleStorage ruleStorage;
+    private final DeathMessageContainer deathMessages;
+    private final List<GameEventListener> listeners;
     private boolean started;
     private StaticGameArea mapArea;
     private DynamicGameArea zone;
@@ -47,7 +50,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         this.configuration = configuration;
         this.teamManager = new BattleRoyaleTeamManager(this, configuration.teamSize);
         this.ruleStorage = new GameRuleStorage();
+        this.deathMessages = new DeathMessageContainer(5, 100);
+        this.listeners = new ArrayList<>();
         this.firstShrinkDelay = configuration.areaGenerationDelay;
+
+        this.addListener(new EventListener(this));
     }
 
     @Override
@@ -100,15 +107,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         GameHelper.updateLoadedGameObjects(world);
         if (!world.isRemote) {
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
-            List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
             EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapArea, 1200);
             plane.setMovementSpeedMultiplier(configuration.planeSpeed);
             plane.setFlightHeight(configuration.planeFlightHeight);
-            playerList.forEach(player -> player.setPositionAndUpdate(plane.posX, plane.posY, plane.posZ));
-            world.spawnEntity(plane);
-            playerList.forEach(player -> {
+            GameHelper.spawnPlaneWithPlayers(plane, teamManager, world, player -> {
                 GameHelper.resetPlayerData(player);
-                player.startRiding(plane);
                 player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
             });
             ruleStorage.storeValueAndSet(world, "naturalRegeneration", "false");
@@ -121,7 +124,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (world.getTotalWorldTime() % 200L == 0) {
             teamManager.getAllActivePlayers(world).forEach(GameHelper::fillPlayerHunger);
         }
-        // TODO tick death messages
+        deathMessages.tick();
         if (!areaReady && --firstShrinkDelay <= 0) {
             areaReady = true;
             gameAreaResizeCompleted(zone, world);
@@ -180,6 +183,16 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     }
 
     @Override
+    public void addListener(GameEventListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void invokeEvent(Consumer<GameEventListener> consumer) {
+        listeners.forEach(consumer);
+    }
+
+    @Override
     public TeamManager getTeamManager() {
         return teamManager;
     }
@@ -188,41 +201,16 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return zone;
     }
 
-    @Override
-    public void onPlayerLoggedIn(EntityPlayerMP player) {
-        boolean joined = false;
-        if (configuration.automaticGameJoining && !started) {
-            if (playerJoinGame(player)) {
-                joined = true;
-                GameHelper.requestClientGameDataSynchronization(player.world);
-            }
-        }
-        if (joined || mapArea.isWithin(player)) {
-            GameHelper.moveToLobby(player);
-        }
+    public DeathMessageContainer getDeathMessageContainer() {
+        return deathMessages;
     }
 
-    @Override
-    public void onPlayerLoggedOut(EntityPlayerMP player) {
-        if (player != null && started) {
-            teamManager.eliminate(player);
-            GameHelper.requestClientGameDataSynchronization(player.world);
-        }
+    public boolean isZoneShrinking() {
+        return areaReady && zone.isResizing();
     }
 
-    @Override
-    public void onEntityDeath(EntityLivingBase entity, DamageSource source) {
-        World world = entity.world;
-        if (world.isRemote)
-            return;
-        teamManager.eliminate(entity);
-        // TODO death message
-        GameHelper.requestClientGameDataSynchronization(world);
-    }
-
-    @Override
-    public void onPlayerRespawn(EntityPlayer player) {
-        GameHelper.moveToLobby(player);
+    public int getRemainingTimeBeforeShrinking() {
+        return areaReady ? zone.getRemainingStationaryTime() : -1;
     }
 
     private void gameAreaResizeCompleted(DynamicGameArea gameArea, World world) {
@@ -232,6 +220,54 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             gameArea.setTarget(target);
         }
         GameHelper.requestClientGameDataSynchronization(world);
+    }
+
+    private static final class EventListener implements GameEventListener {
+
+        private final BattleRoyaleGame game;
+
+        public EventListener(BattleRoyaleGame game) {
+            this.game = game;
+        }
+
+        @Override
+        public void onPlayerLoggedIn(EntityPlayerMP player) {
+            boolean joined = false;
+            if (game.configuration.automaticGameJoining && !game.started) {
+                if (game.playerJoinGame(player)) {
+                    joined = true;
+                    GameHelper.requestClientGameDataSynchronization(player.world);
+                }
+            }
+            if (joined || game.mapArea.isWithin(player)) {
+                GameHelper.moveToLobby(player);
+            }
+        }
+
+        @Override
+        public void onPlayerLoggedOut(EntityPlayerMP player) {
+            if (player != null && game.started) {
+                game.teamManager.eliminate(player);
+                GameHelper.requestClientGameDataSynchronization(player.world);
+            }
+        }
+
+        @Override
+        public void onEntityDeath(EntityLivingBase entity, DamageSource source) {
+            World world = entity.world;
+            if (world.isRemote)
+                return;
+            game.teamManager.eliminate(entity);
+            DeathMessage deathMessage = GameHelper.createDefaultDeathMessage(entity, source);
+            deathMessage.setType(DeathMessage.Type.getType(source, entity, world, game.teamManager));
+            game.deathMessages.push(deathMessage);
+            GameHelper.requestClientGameDataSynchronization(world);
+        }
+
+        @Override
+        public void onPlayerRespawn(EntityPlayer player) {
+            GameHelper.moveToLobby(player);
+        }
     }
 
     public static final class Serializer implements GameDataSerializer<BattleRoyaleGameConfiguration, BattleRoyaleGame> {

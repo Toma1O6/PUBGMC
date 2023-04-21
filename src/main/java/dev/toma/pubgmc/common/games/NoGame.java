@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public final class NoGame implements Game<NoGame.NoConfiguration> {
 
@@ -65,6 +66,14 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     @Override
     public boolean playerJoinGame(EntityPlayer player) {
         return false;
+    }
+
+    @Override
+    public void addListener(GameEventListener listener) {
+    }
+
+    @Override
+    public void invokeEvent(Consumer<GameEventListener> consumer) {
     }
 
     public static final class Serializer implements GameDataSerializer<NoConfiguration, NoGame> {

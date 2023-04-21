@@ -7,6 +7,7 @@ import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
 import dev.toma.pubgmc.common.games.area.DynamicGameArea;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
@@ -17,9 +18,9 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
     public int teamSize = 1;
     public float planeSpeed = 1.0F;
     public int planeFlightHeight = 256;
-    public int areaGenerationDelay = 2400;
+    public int areaGenerationDelay = 200;
     public ZonePhaseConfiguration[] zonePhases = {
-            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000),
+            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 200),
             new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600),
             new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400),
             new ZonePhaseConfiguration(0.50F, 2.0F, 20,  800, 1800),
@@ -67,7 +68,7 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
         private final int shrinkDelay;
 
         public ZonePhaseConfiguration(float shrinkScale, float damage, int damageInterval, int shrinkTime, int shrinkDelay) {
-            this.shrinkScale = shrinkScale;
+            this.shrinkScale = MathHelper.clamp(shrinkScale, 0.0F, 1.0F);
             this.damage = damage;
             this.damageInterval = damageInterval;
             this.shrinkTime = shrinkTime;

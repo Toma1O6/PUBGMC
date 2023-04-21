@@ -10,21 +10,28 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
+import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -226,6 +233,36 @@ public final class GameHelper {
         plane.setPath(start, end);
         plane.setMovementSpeed(movementSpeed);
         return plane;
+    }
+
+    public static void spawnPlaneWithPlayers(EntityPlane plane, TeamManager teamManager, World world, Consumer<EntityPlayer> playerConsumer) {
+        List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
+        playerList.forEach(player -> player.setPositionAndUpdate(plane.posX, plane.posY, plane.posZ));
+        world.spawnEntity(plane);
+        playerList.forEach(player -> {
+            player.startRiding(plane);
+            playerConsumer.accept(player);
+        });
+    }
+
+    public static DeathMessage createDefaultDeathMessage(EntityLivingBase victim, DamageSource source) {
+        Entity sourceEntity = source.getTrueSource();
+        if (sourceEntity instanceof EntityLivingBase) {
+            EntityLivingBase killer = (EntityLivingBase) sourceEntity;
+            ItemStack killWeapon = killer.getHeldItemMainhand();
+            if (source instanceof DamageSourceGun) {
+                killWeapon = ((DamageSourceGun) source).getWeapon();
+            }
+            ITextComponent label = killWeapon.isEmpty() ? TextComponentHelper.GENERIC_DEATH_BY_ENTITY : new TextComponentString(killWeapon.getDisplayName());
+            if (source == PMCDamageSources.VEHICLE && killer.getRidingEntity() != null) {
+                label = killer.getRidingEntity().getDisplayName();
+            }
+            return new DeathMessage(killer, victim, label);
+        }
+        if (source == PMCDamageSources.ZONE) {
+            return new DeathMessage(null, victim, TextComponentHelper.GENERIC_ZONE);
+        }
+        return new DeathMessage(null, victim, TextComponentHelper.GENERIC_DEATH);
     }
 
     public interface InventoryProvider {
