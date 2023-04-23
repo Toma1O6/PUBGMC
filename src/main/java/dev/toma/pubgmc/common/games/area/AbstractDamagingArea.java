@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractDamagingArea implements GameArea {
@@ -41,10 +42,10 @@ public abstract class AbstractDamagingArea implements GameArea {
         entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
     }
 
-    public void hurtAllOutsideArea(WorldServer world, TeamManager manager) {
+    public void hurtAllOutsideArea(WorldServer world, List<Entity> entities) {
         int interval = damageOptions.getDamageInterval();
         if (interval >= 0 && (interval == 0 || world.getTotalWorldTime() % interval == 0)) {
-            manager.getAllActiveEntities(world)
+            entities.stream()
                     .filter(entity -> !isWithin(entity))
                     .forEach(this::hurtEntity);
         }

@@ -1,9 +1,11 @@
 package dev.toma.pubgmc.api.game;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.World;
 
 public interface GameEventListener {
 
@@ -18,4 +20,9 @@ public interface GameEventListener {
 
     // Called when player respawns, only when game is in started state
     default void onPlayerRespawn(EntityPlayer player) {}
+
+    // Called when LivingGameEntity joins world from EntityJoinWorldEvent. Return false to cancel spawning
+    default boolean onEntitySpawnInWorld(Entity entity, World world) {
+        return true;
+    }
 }

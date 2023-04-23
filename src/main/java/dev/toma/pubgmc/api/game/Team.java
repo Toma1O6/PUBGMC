@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.Constants;
 import java.util.*;
 import java.util.function.BiFunction;
 
-public final class Team {
+public final class Team implements Iterable<Team.Member> {
 
     private final Member owner;
     private final Map<UUID, Member> members;
@@ -23,6 +23,15 @@ public final class Team {
         this.activeMembers = new HashSet<>();
         this.usernames = new HashMap<>();
         add(entity);
+    }
+
+    public Team(Member member) {
+        this.owner = member;
+        this.members = new HashMap<>();
+        this.activeMembers = new HashSet<>();
+        this.usernames = new HashMap<>();
+
+        addMember(member);
     }
 
     private Team(Member owner, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
@@ -42,6 +51,18 @@ public final class Team {
         members.put(uuid, member);
         activeMembers.add(uuid);
         saveUsername(entity);
+    }
+
+    public void addMember(Member member) {
+        this.members.put(member.uuid, member);
+    }
+
+    public void addActiveMember(UUID memberId) {
+        this.activeMembers.add(memberId);
+    }
+
+    public void addUsername(UUID memberId, String username) {
+        this.usernames.put(memberId, username);
     }
 
     public void eliminate(UUID uuid) {
@@ -66,6 +87,23 @@ public final class Team {
 
     public Map<UUID, Member> getAllMembers() {
         return members;
+    }
+
+    // Useful for game AI despawning
+    public void removeMemberById(UUID memberId) {
+        if (owner.uuid.equals(memberId) && members.size() > 1) {
+            throw new UnsupportedOperationException("Cannot remove owner of non-empty team");
+        }
+        members.remove(memberId);
+        usernames.remove(memberId);
+        activeMembers.remove(memberId);
+    }
+
+    @Override
+    public Iterator<Member> iterator() {
+        return members.values().stream()
+                .filter(member -> isMember(member.uuid))
+                .iterator();
     }
 
     private void saveUsername(Entity entity) {
@@ -100,7 +138,7 @@ public final class Team {
         }
         Member owner = memberMap.get(ownerId);
         Set<UUID> activeMembers = new HashSet<>();
-        NBTTagList activeList = nbt.getTagList("active", Constants.NBT.TAG_COMPOUND);
+        NBTTagList activeList = nbt.getTagList("active", Constants.NBT.TAG_STRING);
         for (int i = 0; i < activeList.tagCount(); i++) {
             activeMembers.add(UUID.fromString(activeList.getStringTagAt(i)));
         }

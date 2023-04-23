@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.games.area;
 
+import dev.toma.pubgmc.api.game.area.GameArea;
 import dev.toma.pubgmc.api.game.area.GameAreaSerializer;
 import dev.toma.pubgmc.api.game.area.GameAreaType;
 import dev.toma.pubgmc.api.util.Position2;
@@ -75,6 +76,10 @@ public class DynamicGameArea extends AbstractDamagingArea {
 
     public int getRemainingStationaryTime() {
         return target == null ? -1 : target.initiationDelay - target.startTimer;
+    }
+
+    public GameArea getResultingGameArea() {
+        return target != null ? new StaticGameArea(target.newDamageOptions, target.nextMin, target.nextMax) : this;
     }
 
     public static final class AreaTarget {

@@ -2,7 +2,7 @@ package dev.toma.pubgmc.client.games;
 
 import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.GameAreaRenderer;
-import dev.toma.pubgmc.api.game.DeathMessage;
+import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.area.GameArea;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -20,13 +20,13 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
 
     private static final ITextComponent ZONE_LABEL = new TextComponentTranslation("pubgmc.game_area.label");
     private static final ITextComponent SHRINKING = new TextComponentTranslation("pubgmc.game_area.status.shrinking");
+    private static final ITextComponent PLAYERS = new TextComponentTranslation("pubgmc.game.label.alive_players");
 
     @Override
     public boolean renderHudOverlay(EntityPlayer player, BattleRoyaleGame game, ScaledResolution resolution, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
         if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft minecraft = Minecraft.getMinecraft();
             FontRenderer font = minecraft.fontRenderer;
-            // TODO render player count
             String zoneText = ZONE_LABEL.getFormattedText();
             int zoneTextWidth = font.getStringWidth(zoneText);
             font.drawStringWithShadow(zoneText, 5, 5, 0xFFFFFF);
@@ -39,12 +39,19 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
             } else {
                 font.drawStringWithShadow(" -", 5 + zoneTextWidth, 5, 0x00CC00);
             }
+            int playerCount = game.getAlivePlayerCount(player.world);
+            String playersText = PLAYERS.getFormattedText();
+            font.drawStringWithShadow(playersText, 5, 16, 0xFFFFFF);
+            font.drawStringWithShadow(" " + playerCount, 5 + font.getStringWidth(playersText), 16, 0x00FFFF);
             DeathMessage[] deathMessages = game.getDeathMessageContainer().getDeathMessages();
             for (int i = 0; i < deathMessages.length; i++) {
                 DeathMessage deathMessage = deathMessages[i];
-                DeathMessage.Type deathMessageType = deathMessage.getDeathMessageType();
-                int messageColor = deathMessageType.getColor();
-                font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 30 + i * 11, messageColor);
+                DeathMessage.Type type = deathMessage.getType();
+                if (type == null) {
+                    type = DeathMessage.Type.getType(deathMessage, player.world, game.getTeamManager());
+                    deathMessage.setType(type);
+                }
+                font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 35 + i * 11, type.getColor());
             }
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }

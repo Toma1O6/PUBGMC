@@ -1,4 +1,8 @@
-package dev.toma.pubgmc.api.game;
+package dev.toma.pubgmc.api.game.util;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -18,6 +22,7 @@ public class DeathMessageContainer {
             renderingMessages[i + 1] = renderingMessages[i];
         }
         renderingMessages[0] = new Value(messageLifetime, message);
+        System.out.println(this);
     }
 
     public void tick() {
@@ -40,6 +45,27 @@ public class DeathMessageContainer {
                 .toArray(DeathMessage[]::new);
     }
 
+    public NBTTagCompound serialize() {
+        NBTTagCompound compound = new NBTTagCompound();
+        NBTTagList messages = new NBTTagList();
+        for (Value value : renderingMessages) {
+            if (value != null) {
+                messages.appendTag(value.serialize());
+            }
+        }
+        compound.setTag("messages", messages);
+        return compound;
+    }
+
+    public void deserialize(NBTTagCompound nbt) {
+        Arrays.fill(renderingMessages, null);
+        NBTTagList messages = nbt.getTagList("messages", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < Math.min(messages.tagCount(), renderingMessages.length); i++) {
+            NBTTagCompound compound = messages.getCompoundTagAt(i);
+            renderingMessages[i] = Value.deserialize(compound);
+        }
+    }
+
     private static final class Value {
 
         private int timeRemaining;
@@ -56,6 +82,19 @@ public class DeathMessageContainer {
 
         private void tick() {
             --timeRemaining;
+        }
+
+        private NBTTagCompound serialize() {
+            NBTTagCompound nbt = new NBTTagCompound();
+            nbt.setInteger("time", timeRemaining);
+            nbt.setTag("message", deathMessage.serialize());
+            return nbt;
+        }
+
+        private static Value deserialize(NBTTagCompound nbt) {
+            int time = nbt.getInteger("time");
+            DeathMessage deathMessage = DeathMessage.deserialize(nbt.getCompoundTag("message"));
+            return new Value(time, deathMessage);
         }
     }
 }

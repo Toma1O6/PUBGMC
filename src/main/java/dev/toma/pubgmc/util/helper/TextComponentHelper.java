@@ -15,6 +15,7 @@ public class TextComponentHelper {
     public static final ITextComponent GENERIC_DEATH= new TextComponentTranslation("label.pubgmc.death_message.generic");
     public static final ITextComponent GENERIC_DEATH_BY_ENTITY = new TextComponentTranslation("label.pubgmc.death_message.generic.entity");
     public static final ITextComponent GENERIC_ZONE = new TextComponentTranslation("label.pubgmc.death_message.zone");
+    public static final ITextComponent GAME_WON = applyColor(new TextComponentTranslation("pubgmc.game.won.label"), TextFormatting.GREEN);
 
     public static <T extends ITextComponent> T applyColor(T component, TextFormatting color) {
         component.getStyle().setColor(color);

@@ -6,10 +6,15 @@ import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -136,6 +141,23 @@ public class PUBGMCUtil {
             return String.format("%d:%02d:%02d", hours, minutes, seconds);
         } else {
             return String.format("%d:%02d", minutes, seconds);
+        }
+    }
+
+    public static IInventory asInventory(EntityLiving living) {
+        IInventory inventory = new InventoryBasic(living.getName(), false, EntityEquipmentSlot.values().length);
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            ItemStack stack = living.getItemStackFromSlot(slot);
+            if (!stack.isEmpty()) {
+                inventory.setInventorySlotContents(slot.getSlotIndex(), stack.copy());
+            }
+        }
+        return inventory;
+    }
+
+    public static void clearEntityInventory(EntityLiving living) {
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            living.setItemStackToSlot(slot, ItemStack.EMPTY);
         }
     }
 }

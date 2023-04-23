@@ -300,9 +300,11 @@ commands.pubgmc.game.lobby.not_created=There is no lobby defined
 commands.pubgmc.game.lobby.info=Lobby is currently at position [%s;%s;%s]
 commands.pubgmc.game.lobby.created=Lobby has been successfully created
 
+pubgmc.game.won.label=You have won the game!
 pubgmc.game_area.label=Zone:
 pubgmc.game_area.status.time_remaining=Will resize after: %s
 pubgmc.game_area.status.shrinking=Shrinking...
+pubgmc.game.label.alive_players=Alive:
 
 label.pubgmc.false=False
 label.pubgmc.true=True

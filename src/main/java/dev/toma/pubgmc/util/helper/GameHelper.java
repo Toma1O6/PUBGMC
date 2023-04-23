@@ -5,18 +5,22 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityPlane;
+import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -30,6 +34,7 @@ import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -51,9 +56,21 @@ public final class GameHelper {
             inventoryProviders.add(InventoryProvider.inventory(41, data.getEquipmentInventory()));
         }
         spawnDeathCrate(gameId, world, player.getPosition(), inventoryProviders);
+        player.inventory.clear();
         if (data != null) {
+            data.getEquipmentInventory().clear();
             data.sync();
         }
+    }
+
+    public static void spawnAiPlayerDeathCrate(UUID gameId, EntityAIPlayer player) {
+        World world = player.world;
+        List<InventoryProvider> providers = new ArrayList<>();
+        providers.add(InventoryProvider.wrappedEquipment(0, player));
+        providers.add(InventoryProvider.inventory(EntityEquipmentSlot.values().length, player.getInventory()));
+        spawnDeathCrate(gameId, world, player.getPosition(), providers);
+        player.getInventory().clear();
+        PUBGMCUtil.clearEntityInventory(player);
     }
 
     public static void spawnDeathCrate(UUID gameId, World world, BlockPos pos, List<InventoryProvider> inventories) {
@@ -118,6 +135,9 @@ public final class GameHelper {
     }
 
     public static <E extends Entity & GameObject> boolean validateGameEntityStillValid(E entity) {
+        if (entity.world.isRemote) {
+            return true;
+        }
         UUID currentGameId = getGameUUID(entity.world);
         if (currentGameId.equals(entity.getCurrentGameId())) {
             return true;
@@ -265,6 +285,47 @@ public final class GameHelper {
         return new DeathMessage(null, victim, TextComponentHelper.GENERIC_DEATH);
     }
 
+    @Nullable
+    public static Position2 findLoadedPositionWithinArea(GameArea area, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset) {
+        return findLoadedPositionWithinArea(area, world, playerList, minAllowedPlayerDistance, maxDistanceOffset, false);
+    }
+
+    @Nullable
+    public static Position2 findLoadedPositionWithinArea(GameArea area, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset, boolean ignorePlayzone) {
+        Random random = world.rand;
+        if (playerList.isEmpty()) {
+            return null;
+        }
+        int attempts = 0;
+        BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
+        while (attempts < 100) {
+            ++attempts;
+            EntityPlayer player = PUBGMCUtil.randomListElement(playerList, random);
+            boolean xn = random.nextBoolean();
+            boolean zn = random.nextBoolean();
+            int minX = xn ? -minAllowedPlayerDistance : minAllowedPlayerDistance;
+            int minZ = zn ? -minAllowedPlayerDistance : minAllowedPlayerDistance;
+            int x = xn ? -random.nextInt(maxDistanceOffset) : random.nextInt(maxDistanceOffset);
+            int z = zn ? -random.nextInt(maxDistanceOffset) : random.nextInt(maxDistanceOffset);
+            double xPosition = player.posX + minX + x;
+            double zPosition = player.posZ + minZ + z;
+            if (!ignorePlayzone && !area.isWithin(xPosition, zPosition)) {
+                continue;
+            }
+            position.setPos(xPosition, player.posY, zPosition);
+            EntityPlayer nearest = world.getNearestAttackablePlayer(position, maxDistanceOffset * maxDistanceOffset, 128);
+            if (nearest == null) {
+                return new Position2(xPosition, zPosition);
+            }
+            double xDiff = nearest.posX - xPosition;
+            double zDiff = nearest.posZ - zPosition;
+            if ((xDiff * xDiff + zDiff * zDiff) <= maxDistanceOffset * maxDistanceOffset) {
+                return new Position2(xPosition, zPosition);
+            }
+        }
+        return null;
+    }
+
     public interface InventoryProvider {
 
         int getSlotOffset();
@@ -281,6 +342,20 @@ public final class GameHelper {
                 @Override
                 public IInventory getInventory() {
                     return inventory;
+                }
+            };
+        }
+
+        static InventoryProvider wrappedEquipment(int index, EntityLiving living) {
+            return new InventoryProvider() {
+                @Override
+                public int getSlotOffset() {
+                    return index;
+                }
+
+                @Override
+                public IInventory getInventory() {
+                    return PUBGMCUtil.asInventory(living);
                 }
             };
         }

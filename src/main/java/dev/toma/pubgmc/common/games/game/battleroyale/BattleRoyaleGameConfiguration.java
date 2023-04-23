@@ -18,9 +18,12 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
     public int teamSize = 1;
     public float planeSpeed = 1.0F;
     public int planeFlightHeight = 256;
-    public int areaGenerationDelay = 200;
+    public int areaGenerationDelay = 2400;
+    public int entityCount = 50;
+    public boolean allowAi = true;
+    public int aiSpawnInterval = 400;
     public ZonePhaseConfiguration[] zonePhases = {
-            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 200),
+            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000),
             new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600),
             new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400),
             new ZonePhaseConfiguration(0.50F, 2.0F, 20,  800, 1800),

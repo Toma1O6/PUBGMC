@@ -18,11 +18,21 @@ public interface TeamManager {
 
     void removeTeam(UUID teamId);
 
-    Team getEntityTeam(Entity entity);
+    Team getEntityTeamByEntityId(UUID entityId);
 
-    void createNewTeam(Entity entity);
+    Team createNewTeam(Entity entity);
 
     void eliminate(Entity entity);
+
+    void disbandAndTransferMembers(Team team);
+
+    default Team getEntityTeam(Entity entity) {
+        return getEntityTeamByEntityId(entity.getUniqueID());
+    }
+
+    default boolean shouldRemoveFreshlyLoadedEntity(Entity entity) {
+        return true;
+    }
 
     default Stream<Entity> getAllActiveEntities(WorldServer worldServer) {
         return getTeams().stream()

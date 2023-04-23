@@ -39,15 +39,16 @@ public class BattleRoyaleTeamManager implements TeamManager {
     }
 
     @Override
-    public Team getEntityTeam(Entity entity) {
-        return entityTeamMap.get(entity.getUniqueID());
+    public Team getEntityTeamByEntityId(UUID entityId) {
+        return entityTeamMap.get(entityId);
     }
 
     @Override
-    public void createNewTeam(Entity entity) {
+    public Team createNewTeam(Entity entity) {
         Team team = new Team(entity);
         teamById.put(team.getTeamId(), team);
         entityTeamMap.put(entity.getUniqueID(), team);
+        return team;
     }
 
     @Override
@@ -60,6 +61,31 @@ public class BattleRoyaleTeamManager implements TeamManager {
                 teamById.remove(team.getTeamId());
             }
         }
+    }
+
+    @Override
+    public void disbandAndTransferMembers(Team oldTeam) {
+        Map<UUID, Team.Member> memberMap = new HashMap<>(oldTeam.getAllMembers());
+        memberMap.remove(oldTeam.getTeamId());
+        Team team = null;
+        for (Map.Entry<UUID, Team.Member> entry : memberMap.entrySet()) {
+            UUID memberId = entry.getKey();
+            Team.Member member = entry.getValue();
+            if (team == null) {
+                team = new Team(member);
+                teamById.put(team.getTeamId(), team);
+            }
+            if (oldTeam.isMember(memberId)) {
+                team.addActiveMember(memberId);
+            }
+            team.addUsername(memberId, oldTeam.getUsername(memberId));
+            entityTeamMap.put(memberId, team);
+        }
+    }
+
+    @Override
+    public boolean shouldRemoveFreshlyLoadedEntity(Entity entity) {
+        return true;
     }
 
     public NBTTagCompound serialize() {

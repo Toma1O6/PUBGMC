@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.entity.bot;
 
-import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -9,23 +9,28 @@ import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import java.util.UUID;
 
-public class EntityAIPlayer extends EntityCreature implements GameObject {
+public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData {
 
-    public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final InventoryBasic inventory = new InventoryBasic("container.aiPlayer", false, 9);
     private int variant;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
@@ -34,18 +39,7 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
         this.preventEntitySpawning = true;
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
-        this.setCanPickUpLoot(true);
         this.variant = worldIn.rand.nextInt(4);
-        this.initEntityAI();
-    }
-
-    public EntityAIPlayer(World world, BlockPos pos) {
-        this(world);
-        this.setPosition(pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    public static NonNullList<ItemStack> getBasicInventory() {
-        return NonNullList.withSize(9, ItemStack.EMPTY);
     }
 
     @Override
@@ -54,6 +48,10 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
         if (ticksExisted % 20 == 0) {
             GameHelper.validateGameEntityStillValid(this);
         }
+    }
+
+    public void clearAI() {
+        // TODO implement
     }
 
     @Override
@@ -78,6 +76,7 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
 
     @Override
     protected void initEntityAI() {
+        // Add Default tasks such as move, loot and shoot
     }
 
     @Override
@@ -92,13 +91,29 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
         super.writeEntityToNBT(compound);
         compound.setInteger("variant", this.variant);
         compound.setUniqueId("gameId", gameId);
+        compound.setTag("inventory", SerializationHelper.inventoryToNbt(inventory));
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
-        this.variant = compound.getInteger("variant");
+        variant = compound.getInteger("variant");
         gameId = compound.getUniqueId("gameId");
+        SerializationHelper.inventoryFromNbt(inventory, compound.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        buffer.writeInt(variant);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf additionalData) {
+        variant = additionalData.readInt();
+    }
+
+    public InventoryBasic getInventory() {
+        return inventory;
     }
 
     public int getVariant() {
@@ -113,7 +128,7 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
         boolean needsGun = !this.hasGun();
         boolean needsHelmet = this.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
         boolean needsVest = this.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty();
-        boolean needsMeds = !(this.inventory.get(0).getItem() instanceof ItemHealing);
+        boolean needsMeds = !(this.inventory.getStackInSlot(0).getItem() instanceof ItemHealing);
         boolean needsAmmo = false;
         GunBase lootedGun = null;
         int needToLoot = 0;
@@ -135,8 +150,8 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
                 GunBase gun = lootedGun != null ? lootedGun : this.getGun();
                 if (gun.getAmmoType().ammo() == stack.getItem()) {
                     for (int j = 1; j < 6; j++) {
-                        if (inventory.get(j).isEmpty()) {
-                            inventory.set(j, stack.copy());
+                        if (inventory.getStackInSlot(j).isEmpty()) {
+                            inventory.setInventorySlotContents(j, stack.copy());
                             lootSpawner.removeStackFromSlot(i);
                             break;
                         }
@@ -165,7 +180,7 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
             }
             if (needsMeds) {
                 if (stack.getItem() instanceof ItemHealing) {
-                    this.inventory.set(0, stack.copy());
+                    this.inventory.setInventorySlotContents(0, stack.copy());
                     lootSpawner.removeStackFromSlot(i);
                     needsMeds = false;
                 }
@@ -184,7 +199,7 @@ public class EntityAIPlayer extends EntityCreature implements GameObject {
         int totalAmmoCount = 0;
         AmmoType ammoType = this.getGun().getAmmoType();
         for (int i = 1; i < 6; i++) {
-            ItemStack stack = this.inventory.get(i);
+            ItemStack stack = this.inventory.getStackInSlot(i);
             if (ammoType.ammo() == stack.getItem()) {
                 totalAmmoCount += stack.getCount();
             }

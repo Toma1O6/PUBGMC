@@ -252,10 +252,6 @@ public class ClientEvents {
             }
         }
 
-        GameRendererManager.INSTANCE.renderCurrentGameHUDOverlay(e);
-        if (e.isCanceled())
-            return;
-
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             if (e.getType() == ElementType.EXPERIENCE) {
                 if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty()) {
@@ -296,6 +292,8 @@ public class ClientEvents {
                 }
             }
         }
+
+        GameRendererManager.INSTANCE.renderCurrentGameHUDOverlay(e);
     }
 
     @SubscribeEvent
