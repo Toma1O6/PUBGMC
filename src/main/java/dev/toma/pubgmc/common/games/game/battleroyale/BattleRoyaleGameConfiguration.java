@@ -1,18 +1,24 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.game.GameConfiguration;
 import dev.toma.pubgmc.api.game.area.GameArea;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
 import dev.toma.pubgmc.common.games.area.DynamicGameArea;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
 
 public class BattleRoyaleGameConfiguration implements GameConfiguration {
+
 
     public boolean automaticGameJoining = true;
     public int teamSize = 1;
@@ -26,10 +32,20 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
             new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000),
             new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600),
             new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400),
-            new ZonePhaseConfiguration(0.50F, 2.0F, 20,  800, 1800),
-            new ZonePhaseConfiguration(0.25F, 3.5F, 20,  450, 1200),
+            new ZonePhaseConfiguration(0.50F, 2.0F, 20, 800, 1800),
+            new ZonePhaseConfiguration(0.25F, 3.5F, 20, 450, 1200),
             new ZonePhaseConfiguration(0.00F, 5.0F, 20, 1200, 3600)
     };
+
+    @Override
+    public void performCorrections() {
+        teamSize = Math.max(1, teamSize);
+        planeSpeed = MathHelper.clamp(planeSpeed, 0.1F, 10.0F);
+        planeFlightHeight = MathHelper.clamp(planeFlightHeight, 15, 270);
+        areaGenerationDelay = Math.max(0, areaGenerationDelay);
+        entityCount = Math.max(1, entityCount);
+        aiSpawnInterval = Math.max(100, aiSpawnInterval);
+    }
 
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
@@ -62,6 +78,37 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
         return configuration;
     }
 
+    public JsonObject jsonSerialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("autoJoin", automaticGameJoining);
+        object.addProperty("teamSize", teamSize);
+        object.addProperty("areaGenerationDelay", areaGenerationDelay);
+        object.addProperty("planeSpeed", planeSpeed);
+        object.addProperty("planeFlightHeight", planeFlightHeight);
+        JsonArray zones = new JsonArray();
+        for (ZonePhaseConfiguration configuration : zonePhases) {
+            zones.add(configuration.jsonSerialize());
+        }
+        object.add("zonePhases", zones);
+        return object;
+    }
+
+    public static BattleRoyaleGameConfiguration jsonDeserialize(JsonObject object) {
+        BattleRoyaleGameConfiguration configuration = new BattleRoyaleGameConfiguration();
+        configuration.automaticGameJoining = JsonUtils.getBoolean(object, "autoJoin", true);
+        configuration.teamSize = JsonUtils.getInt(object, "teamSize", 1);
+        configuration.areaGenerationDelay = JsonUtils.getInt(object, "areaGenerationDelay", 2400);
+        configuration.planeSpeed = JsonUtils.getFloat(object, "planeSpeed", 1.0F);
+        configuration.planeFlightHeight = JsonUtils.getInt(object, "planeFlightHeight", 255);
+        JsonArray zones = JsonUtils.getJsonArray(object, "zonePhases", new JsonArray());
+        configuration.zonePhases = new ZonePhaseConfiguration[zones.size()];
+        int i = 0;
+        for (JsonElement element : zones) {
+            configuration.zonePhases[i++] = ZonePhaseConfiguration.jsonDeserialize(element);
+        }
+        return configuration;
+    }
+
     public static final class ZonePhaseConfiguration {
 
         private final float shrinkScale;
@@ -72,10 +119,10 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
 
         public ZonePhaseConfiguration(float shrinkScale, float damage, int damageInterval, int shrinkTime, int shrinkDelay) {
             this.shrinkScale = MathHelper.clamp(shrinkScale, 0.0F, 1.0F);
-            this.damage = damage;
-            this.damageInterval = damageInterval;
-            this.shrinkTime = shrinkTime;
-            this.shrinkDelay = shrinkDelay;
+            this.damage = Math.max(damage, 0.0F);
+            this.damageInterval = Math.max(-1, damageInterval);
+            this.shrinkTime = Math.max(0, shrinkTime);
+            this.shrinkDelay = Math.max(0, shrinkDelay);
         }
 
         public AbstractDamagingArea.DamageOptions getDamageOptions() {
@@ -114,6 +161,26 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
             int interval = nbt.getInteger("interval");
             int shrinkTime = nbt.getInteger("shrinkTime");
             int shrinkDelay = nbt.getInteger("shrinkDelay");
+            return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay);
+        }
+
+        private JsonObject jsonSerialize() {
+            JsonObject object = new JsonObject();
+            object.addProperty("scale", shrinkScale);
+            object.addProperty("damage", damage);
+            object.addProperty("interval", damageInterval);
+            object.addProperty("shrinkTime", shrinkTime);
+            object.addProperty("shrinkDelay", shrinkDelay);
+            return object;
+        }
+
+        private static ZonePhaseConfiguration jsonDeserialize(JsonElement json) {
+            JsonObject object = SerializationHelper.asObject(json);
+            float scale = JsonUtils.getFloat(object, "scale");
+            float damage = JsonUtils.getFloat(object, "damage");
+            int interval = JsonUtils.getInt(object, "interval");
+            int shrinkTime = JsonUtils.getInt(object, "shrinkTime");
+            int shrinkDelay = JsonUtils.getInt(object, "shrinkDelay");
             return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay);
         }
     }

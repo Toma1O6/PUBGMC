@@ -1,14 +1,17 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
+import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.area.GameArea;
 import dev.toma.pubgmc.api.game.area.GameAreaType;
+import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
+import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.GameRuleStorage;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityPlane;
@@ -107,13 +110,18 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (configuration.automaticGameJoining) {
             List<EntityPlayer> playerList = world.playerEntities;
             if (playerList.size() <= EntityPlane.PLANE_CAPACITY) {
-                // TODO rework to add players to existing teams
                 GameDataProvider.getGameData(world)
                         .map(GameData::getGameLobby)
-                        .ifPresent(lobby -> playerList.forEach(player -> {
-                            playerJoinGame(player);
-                            lobby.teleport(player);
-                        }));
+                        .ifPresent(lobby -> {
+                            Team team = null;
+                            for (EntityPlayer player : playerList) {
+                                if (team == null || team.getSize() >= configuration.teamSize) {
+                                    team = teamManager.createNewTeam(player);
+                                    continue;
+                                }
+                                teamManager.join(team, player);
+                            }
+                        });
             }
         }
     }
@@ -456,6 +464,16 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         @Override
         public BattleRoyaleGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
             return BattleRoyaleGameConfiguration.deserialize(nbt);
+        }
+
+        @Override
+        public JsonObject serializeConfigurationToJson(BattleRoyaleGameConfiguration configuration) {
+            return configuration.jsonSerialize();
+        }
+
+        @Override
+        public BattleRoyaleGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
+            return BattleRoyaleGameConfiguration.jsonDeserialize(object);
         }
     }
 }

@@ -12,6 +12,7 @@ import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.LootCommand;
+import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -101,7 +102,6 @@ public class Pubgmc {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         RecipeRegistry.registerWorkbenchRecipes();
-        PubgmcRegistries.GAME_AREA_TYPES.lock();
         proxy.postInit(event);
     }
 
@@ -129,6 +129,8 @@ public class Pubgmc {
         PubgmcRegistries.GAME_AREA_TYPES.lock();
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.PointType());
         PubgmcRegistries.GAME_MAP_POINTS.lock();
+
+        GameConfigurationManager.loadConfigurations();
     }
 
     public static boolean isOutdated() {

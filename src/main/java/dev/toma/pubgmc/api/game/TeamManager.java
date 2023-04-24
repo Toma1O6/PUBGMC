@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game;
 
+import dev.toma.pubgmc.api.game.util.Team;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -21,6 +22,8 @@ public interface TeamManager {
     Team getEntityTeamByEntityId(UUID entityId);
 
     Team createNewTeam(Entity entity);
+
+    void join(Team team, Entity entity);
 
     void eliminate(Entity entity);
 

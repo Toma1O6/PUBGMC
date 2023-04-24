@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.api.game;
+package dev.toma.pubgmc.api.game.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,6 +51,10 @@ public final class Team implements Iterable<Team.Member> {
         members.put(uuid, member);
         activeMembers.add(uuid);
         saveUsername(entity);
+    }
+
+    public int getSize() {
+        return members.size();
     }
 
     public void addMember(Member member) {

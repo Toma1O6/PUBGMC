@@ -2,7 +2,11 @@ package dev.toma.pubgmc.common.commands;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.Game;
+import dev.toma.pubgmc.api.game.GameConfiguration;
+import dev.toma.pubgmc.api.game.GameException;
+import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.commands.core.*;
@@ -12,6 +16,7 @@ import dev.toma.pubgmc.common.commands.core.arg.PubgmcRegistryArgument;
 import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.command.CommandException;
@@ -37,6 +42,7 @@ public class GameCommand extends AbstractCommand {
 
     private static final ITextComponent TEXT_EXECUTE_CMD = new TextComponentTranslation("commands.pubgmc.game.leave.confirm.hover_cmd_text");
     private static final String ARG_GAME_TYPE = "gameType";
+
     private static final String ARG_MAP_NAME = "mapName";
     private static final String ARG_MAP_CENTER_X = "mapCreateCenterX";
     private static final String ARG_MAP_CENTER_Z = "mapCreateCenterZ";
@@ -46,9 +52,9 @@ public class GameCommand extends AbstractCommand {
     private static final String ARG_MAP_CORNER_BX = "mapCreateCornerBX";
     private static final String ARG_MAP_CORNER_BZ = "mapCreateCornerBZ";
     private static final String ARG_LOBBY_CENTER = "lobbyCenter";
-    // TODO config
+
     private static final CommandTree COMMAND = CommandTree.Builder.command("game")
-            .usage("/game ") // TODO
+            .usage("/game [join|leave|select|init|start|stop|map|lobby]")
             .permissionLevel(0)
             .defaultExecutorPropagationStrategy(NodePropagationStrategy.LAST_NODE)
             .executes(GameCommand::executeDefault)
@@ -59,10 +65,6 @@ public class GameCommand extends AbstractCommand {
                             .node(
                                     CommandNodeProvider.argument(ARG_GAME_TYPE, PubgmcRegistryArgument.registry(PubgmcRegistries.GAME_TYPES))
                             )
-            )
-            .node(
-                    CommandNodeProvider.literal("configure")
-                            .permissionLevel(2)
             )
             .node(
                     CommandNodeProvider.literal("init")
@@ -196,7 +198,7 @@ public class GameCommand extends AbstractCommand {
             throw new WrongUsageException("There is already active game");
         }
         validateGameLobbyDefined(data);
-        CFG config = data.getGameConfiguration(type);
+        CFG config = GameConfigurationManager.getConfiguration(type);
         if (config == null) {
             throw new WrongUsageException("Selected game type has no configuration. Create one by command '/game configure " + type.getIdentifier().toString() + "'");
         }

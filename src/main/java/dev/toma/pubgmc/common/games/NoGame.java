@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.games;
 
+import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -97,6 +98,16 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
         public NoConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
             return NoConfiguration.INSTANCE;
         }
+
+        @Override
+        public JsonObject serializeConfigurationToJson(NoConfiguration configuration) {
+            return new JsonObject();
+        }
+
+        @Override
+        public NoConfiguration deserializeConfigurationFromJson(JsonObject object) {
+            return NoConfiguration.INSTANCE;
+        }
     }
 
     public static final class NoConfiguration implements GameConfiguration {
@@ -104,5 +115,9 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
         public static final NoConfiguration INSTANCE = new NoConfiguration();
 
         private NoConfiguration() {}
+
+        @Override
+        public void performCorrections() {
+        }
     }
 }

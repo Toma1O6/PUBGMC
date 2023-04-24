@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game;
 
+import com.google.gson.JsonObject;
 import net.minecraft.nbt.NBTTagCompound;
 
 public interface GameDataSerializer<CFG extends GameConfiguration, G extends Game<CFG>> {
@@ -11,4 +12,8 @@ public interface GameDataSerializer<CFG extends GameConfiguration, G extends Gam
     NBTTagCompound serializeGameConfiguration(CFG configuration);
 
     CFG deserializeGameConfiguration(NBTTagCompound nbt);
+
+    JsonObject serializeConfigurationToJson(CFG configuration);
+
+    CFG deserializeConfigurationFromJson(JsonObject object);
 }

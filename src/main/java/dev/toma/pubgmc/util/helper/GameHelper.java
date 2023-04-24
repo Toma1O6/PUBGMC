@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.area.GameArea;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
+import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;

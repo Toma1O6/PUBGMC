@@ -1,9 +1,8 @@
 package dev.toma.pubgmc.api.capability;
 
 import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameConfiguration;
-import dev.toma.pubgmc.api.game.GameLobby;
 import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -36,10 +35,6 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
     void setSelectedGameType(GameType<?, ?> gameType);
 
     void setActiveGame(Game<?> game);
-
-    <CFG extends GameConfiguration, G extends Game<CFG>> CFG getGameConfiguration(GameType<CFG, G> type);
-
-    <CFG extends GameConfiguration, G extends Game<CFG>> void saveGameConfiguration(GameType<CFG, G> type, CFG config);
 
     void sendGameDataToClients();
 }

@@ -1,12 +1,9 @@
 package dev.toma.pubgmc.api.game.util;
 
-import dev.toma.pubgmc.api.game.Team;
 import dev.toma.pubgmc.api.game.TeamManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;

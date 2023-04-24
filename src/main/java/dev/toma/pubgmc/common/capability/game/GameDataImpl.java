@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameConfiguration;
-import dev.toma.pubgmc.api.game.GameLobby;
 import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.S2C_SendGameData;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,9 +20,7 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class GameDataImpl implements GameData {
 
@@ -32,7 +30,6 @@ public class GameDataImpl implements GameData {
     @Nullable
     private GameLobby lobby;
     private final Map<String, GameMap> maps;
-    private final Map<GameType<?, ?>, GameConfiguration> configurationMap;
 
     public GameDataImpl() {
         this(null);
@@ -43,7 +40,6 @@ public class GameDataImpl implements GameData {
         this.gameInstance = NoGame.INSTANCE;
         this.selectedGameType = gameInstance.getGameType();
         this.maps = new HashMap<>();
-        this.configurationMap = new IdentityHashMap<>();
     }
 
     @Override
@@ -105,17 +101,6 @@ public class GameDataImpl implements GameData {
         return ImmutableMap.copyOf(maps);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <CFG extends GameConfiguration, G extends Game<CFG>> CFG getGameConfiguration(GameType<CFG, G> type) {
-        return (CFG) configurationMap.getOrDefault(type, type.getGameConfiguration());
-    }
-
-    @Override
-    public <CFG extends GameConfiguration, G extends Game<CFG>> void saveGameConfiguration(GameType<CFG, G> type, CFG config) {
-        configurationMap.put(type, config);
-    }
-
     @Override
     public void sendGameDataToClients() {
         if (!world.isRemote) {
@@ -134,9 +119,6 @@ public class GameDataImpl implements GameData {
         NBTTagList mapsNbt = new NBTTagList();
         maps.values().forEach(map -> mapsNbt.appendTag(map.serialize()));
         nbt.setTag("maps", mapsNbt);
-        NBTTagCompound configs = new NBTTagCompound();
-        serializeConfigs(configs);
-        nbt.setTag("configs", configs);
         return nbt;
     }
 
@@ -145,9 +127,7 @@ public class GameDataImpl implements GameData {
         ResourceLocation gameType = new ResourceLocation(nbt.getString("selectedGameType"));
         GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
-        NBTTagCompound configs = new NBTTagCompound();
-        deserializeConfigs(configs);
-        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), this::getGameConfiguration);
+        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), GameConfigurationManager::getConfiguration);
         if (gameInstance == null) {
             gameInstance = NoGame.INSTANCE;
         }
@@ -160,31 +140,6 @@ public class GameDataImpl implements GameData {
             NBTTagCompound mapData = mapsNbt.getCompoundTagAt(i);
             GameMap map = GameMap.deserialize(mapData);
             maps.put(map.getMapName(), map);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <CFG extends GameConfiguration> void serializeConfigs(NBTTagCompound nbt) {
-        for (Map.Entry<GameType<?, ?>, GameConfiguration> entry : configurationMap.entrySet()) {
-            GameType<CFG, ?> type = (GameType<CFG, ?>) entry.getKey();
-            ResourceLocation identifier = type.getIdentifier();
-            CFG config = (CFG) entry.getValue();
-            nbt.setTag(identifier.toString(), GameType.serializeConfiguration(type, config));
-        }
-    }
-
-    private void deserializeConfigs(NBTTagCompound nbt) {
-        configurationMap.clear();
-        Set<String> keys = nbt.getKeySet();
-        for (String key : keys) {
-            ResourceLocation gameTypeId = new ResourceLocation(key);
-            GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameTypeId);
-            if (type == null) {
-                continue;
-            }
-            NBTTagCompound compound = nbt.getCompoundTag(key);
-            GameConfiguration configuration = GameType.deserializeConfiguration(type, compound);
-            configurationMap.put(type, configuration);
         }
     }
 }

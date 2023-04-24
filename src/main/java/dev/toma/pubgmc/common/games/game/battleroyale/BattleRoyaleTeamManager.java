@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
-import dev.toma.pubgmc.api.game.Team;
+import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.game.TeamManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,6 +49,14 @@ public class BattleRoyaleTeamManager implements TeamManager {
         teamById.put(team.getTeamId(), team);
         entityTeamMap.put(entity.getUniqueID(), team);
         return team;
+    }
+
+    @Override
+    public void join(Team team, Entity entity) {
+        if (getTeamById(team.getTeamId()) == null)
+            return;
+        team.add(entity);
+        entityTeamMap.put(entity.getUniqueID(), team);
     }
 
     @Override

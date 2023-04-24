@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.api.game;
+package dev.toma.pubgmc.api.game.map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
