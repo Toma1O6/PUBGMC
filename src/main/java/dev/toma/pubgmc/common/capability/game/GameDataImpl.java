@@ -9,7 +9,6 @@ import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
-import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.S2C_SendGameData;
 import net.minecraft.nbt.NBTTagCompound;
@@ -127,7 +126,7 @@ public class GameDataImpl implements GameData {
         ResourceLocation gameType = new ResourceLocation(nbt.getString("selectedGameType"));
         GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
-        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), GameConfigurationManager::getConfiguration);
+        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"));
         if (gameInstance == null) {
             gameInstance = NoGame.INSTANCE;
         }

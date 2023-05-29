@@ -1,7 +1,6 @@
-package dev.toma.pubgmc.common.games.game.battleroyale;
+package dev.toma.pubgmc.api.game;
 
 import dev.toma.pubgmc.api.game.util.Team;
-import dev.toma.pubgmc.api.game.TeamManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -9,23 +8,14 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 
-public class BattleRoyaleTeamManager implements TeamManager {
+public class SimpleTeamManager implements TeamManager {
 
-    private final BattleRoyaleGame game;
-    private final int teamSize;
-    private final Map<UUID, Team> teamById;
-    private final Map<UUID, Team> entityTeamMap;
+    protected final Map<UUID, Team> teamById;
+    protected final Map<UUID, Team> teamByEntityId;
 
-    public BattleRoyaleTeamManager(BattleRoyaleGame game, int teamSize) {
-        this.game = game;
+    public SimpleTeamManager() {
         this.teamById = new HashMap<>();
-        this.entityTeamMap = new HashMap<>();
-        this.teamSize = teamSize;
-    }
-
-    @Override
-    public Collection<Team> getTeams() {
-        return teamById.values();
+        this.teamByEntityId = new HashMap<>();
     }
 
     @Override
@@ -40,23 +30,24 @@ public class BattleRoyaleTeamManager implements TeamManager {
 
     @Override
     public Team getEntityTeamByEntityId(UUID entityId) {
-        return entityTeamMap.get(entityId);
+        return teamByEntityId.get(entityId);
     }
 
     @Override
     public Team createNewTeam(Entity entity) {
         Team team = new Team(entity);
         teamById.put(team.getTeamId(), team);
-        entityTeamMap.put(entity.getUniqueID(), team);
+        teamByEntityId.put(entity.getUniqueID(), team);
         return team;
     }
 
     @Override
     public void join(Team team, Entity entity) {
-        if (getTeamById(team.getTeamId()) == null)
+        if (getTeamById(team.getTeamId()) == null) {
             return;
+        }
         team.add(entity);
-        entityTeamMap.put(entity.getUniqueID(), team);
+        teamByEntityId.put(entity.getUniqueID(), team);
     }
 
     @Override
@@ -87,13 +78,13 @@ public class BattleRoyaleTeamManager implements TeamManager {
                 team.addActiveMember(memberId);
             }
             team.addUsername(memberId, oldTeam.getUsername(memberId));
-            entityTeamMap.put(memberId, team);
+            teamByEntityId.put(memberId, team);
         }
     }
 
     @Override
-    public boolean shouldRemoveFreshlyLoadedEntity(Entity entity) {
-        return true;
+    public Collection<Team> getTeams() {
+        return teamById.values();
     }
 
     public NBTTagCompound serialize() {
@@ -107,7 +98,7 @@ public class BattleRoyaleTeamManager implements TeamManager {
         }
         nbt.setTag("teams", teamByIdTag);
         NBTTagCompound entityTeams = new NBTTagCompound();
-        for (Map.Entry<UUID, Team> entry : entityTeamMap.entrySet()) {
+        for (Map.Entry<UUID, Team> entry : teamByEntityId.entrySet()) {
             entityTeams.setString(entry.getKey().toString(), entry.getValue().getTeamId().toString());
         }
         nbt.setTag("entityTeams", entityTeams);
@@ -116,7 +107,7 @@ public class BattleRoyaleTeamManager implements TeamManager {
 
     public void deserialize(NBTTagCompound nbt) {
         teamById.clear();
-        entityTeamMap.clear();
+        teamByEntityId.clear();
         NBTTagList teamList = nbt.getTagList("teams", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < teamList.tagCount(); i++) {
             NBTTagCompound tag = teamList.getCompoundTagAt(i);
@@ -131,7 +122,7 @@ public class BattleRoyaleTeamManager implements TeamManager {
             UUID teamId = UUID.fromString(entityTag.getString(key));
             Team team = teamById.get(teamId);
             if (team != null) {
-                entityTeamMap.put(entityId, team);
+                teamByEntityId.put(entityId, team);
             }
         }
     }

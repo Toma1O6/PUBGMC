@@ -171,7 +171,7 @@ public class GameCommand extends AbstractCommand {
     }
 
     private static void executeDefault(CommandContext context) throws CommandException {
-        throw new WrongUsageException("Not enough arguments. See /help game for more details"); // TODO open gui
+        throw new WrongUsageException("Not enough arguments. See /help game for more details");
     }
 
     private static void executeMapNoArguments(CommandContext context) throws CommandException {

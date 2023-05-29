@@ -299,6 +299,8 @@ commands.pubgmc.game.map.pois_deleted=All map points have been removed from map 
 commands.pubgmc.game.lobby.not_created=There is no lobby defined
 commands.pubgmc.game.lobby.info=Lobby is currently at position [%s;%s;%s]
 commands.pubgmc.game.lobby.created=Lobby has been successfully created
+commands.pubgmc.team.invite.sent=You have invited %s to join your team
+commands.pubgmc.team.invite.received=You have been invited to join %s team
 
 pubgmc.game.won.label=You have won the game!
 pubgmc.game_area.label=Zone:
@@ -315,3 +317,5 @@ label.pubgmc.click_to_teleport=Click here to teleport
 label.pubgmc.death_message.generic=DEATH
 label.pubgmc.death_message.generic.entity=KILLED
 label.pubgmc.death_message.zone=PLAYZONE
+label.pubgmc.accept=Accept
+label.pubgmc.decline=Decline

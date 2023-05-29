@@ -89,6 +89,14 @@ public final class Team implements Iterable<Team.Member> {
         return usernames.getOrDefault(memberId, "<none>");
     }
 
+    public boolean isTeamLeader(UUID memberId) {
+        return owner.uuid.equals(memberId);
+    }
+
+    public boolean isTeamLeader(Entity entity) {
+        return isTeamLeader(entity.getUniqueID());
+    }
+
     public Map<UUID, Member> getAllMembers() {
         return members;
     }

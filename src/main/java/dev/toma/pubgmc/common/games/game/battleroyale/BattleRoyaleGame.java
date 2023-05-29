@@ -49,7 +49,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public static final AbstractDamagingArea.DamageOptions OUT_OF_BOUNDS_DAMAGE = new AbstractDamagingArea.DamageOptions(5.0F, 20);
     private final UUID gameId;
     private final BattleRoyaleGameConfiguration configuration;
-    private final BattleRoyaleTeamManager teamManager;
+    private final SimpleTeamManager teamManager;
+    private final SimpleTeamInviteManager inviteManager;
     private final TeamAIManager aiManager;
     private final GameRuleStorage ruleStorage;
     private final DeathMessageContainer deathMessages;
@@ -66,7 +67,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public BattleRoyaleGame(UUID gameId, BattleRoyaleGameConfiguration configuration) {
         this.gameId = gameId;
         this.configuration = configuration;
-        this.teamManager = new BattleRoyaleTeamManager(this, configuration.teamSize);
+        this.teamManager = new SimpleTeamManager();
+        this.inviteManager = new SimpleTeamInviteManager(teamManager);
         this.ruleStorage = new GameRuleStorage();
         this.aiManager = new TeamAIManager(teamManager);
         this.deathMessages = new DeathMessageContainer(5, 100);
@@ -242,6 +244,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     @Override
     public TeamManager getTeamManager() {
         return teamManager;
+    }
+
+    @Override
+    public TeamInviteManager getInviteHandler() {
+        return inviteManager;
     }
 
     public DynamicGameArea getZone() {

@@ -59,6 +59,14 @@ public abstract class AbstractCommand extends CommandBase {
         return player;
     }
 
+    public static EntityPlayer getSenderAsPlayer(CommandContext context) throws CommandException {
+        ICommandSender sender = context.getSender();
+        if (!(sender.getCommandSenderEntity() instanceof EntityPlayer)) {
+            throw new WrongUsageException("This command can be executed only by player");
+        }
+        return (EntityPlayer) sender.getCommandSenderEntity();
+    }
+
     public static List<String> suggestPlayer(SuggestionProvider.Context context) {
         MinecraftServer server = context.getServer();
         return server.getPlayerList().getPlayers().stream()
