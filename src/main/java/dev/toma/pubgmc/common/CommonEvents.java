@@ -2,6 +2,8 @@ package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.animation.AnimationType;
+import dev.toma.pubgmc.client.content.ContentResult;
+import dev.toma.pubgmc.client.content.ExternalLinks;
 import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -66,6 +68,7 @@ public class CommonEvents {
     Map<UUID, Integer> selectedSlotCache = new HashMap<>();
 
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
+        ExternalLinks links = Pubgmc.getContentManager().getResultOptionally().map(ContentResult::getExternalLinks).orElse(ExternalLinks.DEFAULT);
         switch (result.status) {
             case AHEAD: {
                 sendMessage(player, "[PUBGMC] It appears you're using early access version, bugs might occur. Report them please", TextFormatting.LIGHT_PURPLE);
@@ -74,7 +77,7 @@ public class CommonEvents {
             case UP_TO_DATE: {
                 sendMessage(player, "You have the newest version of PUBGMC!", TextFormatting.GREEN);
                 TextComponentString discordNotification = new TextComponentString(TextFormatting.GREEN + "Join my official " + TextFormatting.AQUA + "DISCORD" + TextFormatting.GREEN + ". Click HERE");
-                discordNotification.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/WmdUKZz")));
+                discordNotification.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, links.getDiscordLink())));
                 player.sendMessage(discordNotification);
                 break;
             }
@@ -82,7 +85,7 @@ public class CommonEvents {
             case OUTDATED: case BETA_OUTDATED: {
                 sendMessage(player, "[PUBGMC] You are using old version! Get a new one.", TextFormatting.YELLOW);
                 TextComponentString comp = new TextComponentString(TextFormatting.YELLOW + "New version is available! You can get it " + TextFormatting.ITALIC + "HERE");
-                comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files")));
+                comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, links.getHomepageLink())));
                 player.sendMessage(comp);
                 break;
             }

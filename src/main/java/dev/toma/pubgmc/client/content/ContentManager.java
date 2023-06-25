@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,6 +26,7 @@ public class ContentManager {
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(ContentResult.class, new ContentResult.Deserializer())
             .registerTypeAdapter(MenuDisplayContent.class, new MenuDisplayContent.Deserializer())
+            .registerTypeAdapter(ExternalLinks.class, new ExternalLinks.Deserializer())
             .create();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread thread = new Thread(r);
@@ -50,6 +52,10 @@ public class ContentManager {
 
     public ContentResult getCachedResult() {
         return cache;
+    }
+
+    public Optional<ContentResult> getResultOptionally() {
+        return Optional.ofNullable(cache);
     }
 
     synchronized void start() {
