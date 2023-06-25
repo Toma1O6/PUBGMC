@@ -15,14 +15,16 @@ public class ContentResult {
     private MenuDisplayContent[] menuDisplayContents;
     private String[] news;
     private String[] vipPatrons;
+    private ExternalLinks externalLinks;
     private int version;
     private boolean changed;
 
-    public ContentResult(MenuDisplayContent[] menuDisplayContents, String[] news, String[] vipPatrons, int version) {
+    public ContentResult(MenuDisplayContent[] menuDisplayContents, String[] news, String[] vipPatrons, int version, ExternalLinks externalLinks) {
         this.menuDisplayContents = menuDisplayContents;
         this.news = news;
         this.vipPatrons = vipPatrons;
         this.version = version;
+        this.externalLinks = externalLinks;
     }
 
     public void updateModifiable(ContentResult other) {
@@ -31,6 +33,7 @@ public class ContentResult {
         this.news = other.news;
         this.vipPatrons = other.vipPatrons;
         this.version = other.version;
+        this.externalLinks = other.externalLinks;
         Minecraft mc = Minecraft.getMinecraft();
         if(changed && mc.currentScreen instanceof RefreshListener) {
             synchronized (Minecraft.getMinecraft()) {
@@ -57,6 +60,10 @@ public class ContentResult {
 
     public String[] getVipPatrons() {
         return vipPatrons;
+    }
+
+    public ExternalLinks getExternalLinks() {
+        return externalLinks;
     }
 
     public static class Deserializer implements JsonDeserializer<ContentResult> {
@@ -91,9 +98,10 @@ public class ContentResult {
                 for (int i = 0; i < vipPatronArray.size(); i++) {
                     vips[i] = vipPatronArray.get(i).getAsString();
                 }
-                return new ContentResult(menuDisplayContentList.toArray(new MenuDisplayContent[0]), stringList.toArray(new String[0]), vips, version);
+                ExternalLinks extLinks = context.deserialize(JsonUtils.getJsonObject(object, "urls"), ExternalLinks.class);
+                return new ContentResult(menuDisplayContentList.toArray(new MenuDisplayContent[0]), stringList.toArray(new String[0]), vips, version, extLinks);
             }
-            return new ContentResult(new MenuDisplayContent[0], new String[0], new String[0], version);
+            return new ContentResult(new MenuDisplayContent[0], new String[0], new String[0], version, ExternalLinks.DEFAULT);
         }
     }
 }

@@ -1,10 +1,7 @@
 package dev.toma.pubgmc.client.gui.menu;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.client.content.ContentManager;
-import dev.toma.pubgmc.client.content.ContentResult;
-import dev.toma.pubgmc.client.content.MenuDisplayContent;
-import dev.toma.pubgmc.client.content.RefreshListener;
+import dev.toma.pubgmc.client.content.*;
 import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.ImageButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
@@ -73,9 +70,10 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
                 Widget.drawTexturedShape(x, y, x + width, y + height);
             }
         });
-        addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, "https://discord.gg/WmdUKZz", this, true).withInfo("Official discord server"));
-        addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod", this, true).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
-        addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, "https://www.patreon.com/pubgmc", this, true).withInfo("Become a patron"));
+        ExternalLinks links = Pubgmc.getContentManager().getResultOptionally().map(ContentResult::getExternalLinks).orElse(ExternalLinks.DEFAULT);
+        addWidget(new LinkImageComponent(0, height - 20, 20, 20, DISCORD_ICON, links.getDiscordLink(), this, true).withInfo("Official discord server"));
+        addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, links.getHomepageLink(), this, true).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
+        addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, links.getPatreonLink(), this, true).withInfo("Become a patron"));
         addWidget(new VipListWidget(60, height - 20, 20, 20, this));
     }
 
@@ -424,11 +422,15 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
     static class UpdatePromptWidget extends Widget {
 
         final GuiMenu parent;
-        static final String link = "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod/files";
+        final String link;
 
         public UpdatePromptWidget(GuiMenu parent, int x, int y, int w, int h) {
             super(x, y, w, h);
             this.parent = parent;
+            this.link = Pubgmc.getContentManager().getResultOptionally()
+                    .map(ContentResult::getExternalLinks)
+                    .orElse(ExternalLinks.DEFAULT)
+                    .getHomepageLink();
         }
 
         @Override
