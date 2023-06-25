@@ -11,6 +11,10 @@
     "map": [
     ],
     "mainMenuText": [
+        "Update 1.8.1",
+        "- Added support to dynamically change external links in main menu / update prompts",
+        "",
+        "",
         "Update 1.8.0 [Backpack, NightVision and Loot update]",
         "- Fully configurable loot - all block loot pools are now located in pubgmc folder in gamedata. This is currently done for loot spawners and airdrops",
         "- Custom inventory (Accessible by + sign from survival inventory) for backpacks, ghillie suit and night vision",
@@ -116,6 +120,12 @@
         "- Fixed unstable burst fire"
     ],
     "vips": [
-        "Tapio"
-    ]
+        "Tapio",
+        "Cash"
+    ],
+    "urls": {
+        "discord": "https://discord.gg/WEFYxwS8E3",
+        "patreon": "https://www.patreon.com/tnt_team",
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/pubgmc-mod"
+    }
 }
