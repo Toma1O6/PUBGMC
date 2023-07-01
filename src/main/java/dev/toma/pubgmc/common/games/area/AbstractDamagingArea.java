@@ -1,11 +1,11 @@
 package dev.toma.pubgmc.common.games.area;
 
-import dev.toma.pubgmc.api.game.TeamManager;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import java.util.List;
@@ -39,7 +39,10 @@ public abstract class AbstractDamagingArea implements GameArea {
     }
 
     public void hurtEntity(Entity entity) {
-        entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
+        Entity vehicle = entity.getRidingEntity();
+        if (!(vehicle instanceof EntityPlane)) { // TODO check agains itf to support extensibility
+            entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
+        }
     }
 
     public void hurtAllOutsideArea(WorldServer world, List<Entity> entities) {

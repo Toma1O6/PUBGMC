@@ -420,7 +420,7 @@ public class GameCommand extends AbstractCommand {
 
     private static void validateGameLobbyDefined(GameData data) throws CommandException {
         if (data.getGameLobby() == null) {
-            throw new WrongUsageException("You must first create game lobby. Use /game lobby <position> <radius>");
+            throw new WrongUsageException("You must first create game lobby. Use /game lobby <position>");
         }
     }
 }

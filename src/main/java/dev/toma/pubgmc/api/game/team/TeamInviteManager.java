@@ -1,13 +1,13 @@
-package dev.toma.pubgmc.api.game;
+package dev.toma.pubgmc.api.game.team;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-public interface TeamInviteManager {
+public interface TeamInviteManager extends INBTSerializable<NBTTagCompound> {
 
     @Nullable
     TeamInvite invite(EntityPlayer sender, EntityPlayer invitee);
@@ -17,9 +17,7 @@ public interface TeamInviteManager {
 
     void inviteDeclined(TeamInvite invite, EntityPlayer player);
 
+    void cancelInvite(TeamInvite invite);
+
     List<TeamInvite> getPlayerInvites(EntityPlayer player);
-
-    Optional<TeamInvite> getInviteByTeamId(EntityPlayer player, UUID teamId);
-
-    Optional<TeamInvite> getInviteByTeamName(EntityPlayer player, String teamName);
 }

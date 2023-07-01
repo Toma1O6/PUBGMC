@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.games.util;
 
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.util.Team;
-import dev.toma.pubgmc.api.game.TeamManager;
+import dev.toma.pubgmc.api.game.team.TeamManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -65,6 +65,7 @@ public class TeamAIManager {
                 if (team.getTeamId().equals(memberId)) {
                     // unloaded entity was team leader, new team needs to be created and original members transferred
                     teamManager.disbandAndTransferMembers(team);
+                    continue;
                 }
                 team.removeMemberById(memberId);
                 if (team.isTeamEliminated()) {

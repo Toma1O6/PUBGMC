@@ -3,8 +3,9 @@ package dev.toma.pubgmc.common.games.game.battleroyale;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.toma.pubgmc.api.game.GameConfiguration;
+import dev.toma.pubgmc.api.game.GameWorldConfiguration;
 import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
 import dev.toma.pubgmc.common.games.area.DynamicGameArea;
@@ -17,11 +18,11 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
 
-public class BattleRoyaleGameConfiguration implements GameConfiguration {
+public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
 
-
+    public final GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
     public boolean automaticGameJoining = true;
-    public int teamSize = 1;
+    public int teamSize = 4;
     public float planeSpeed = 1.0F;
     public int planeFlightHeight = 256;
     public int areaGenerationDelay = 2400;
@@ -45,6 +46,7 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
         areaGenerationDelay = Math.max(0, areaGenerationDelay);
         entityCount = Math.max(1, entityCount);
         aiSpawnInterval = Math.max(100, aiSpawnInterval);
+        worldConfiguration.correct();
     }
 
     public NBTTagCompound serialize() {
@@ -59,6 +61,7 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
             zones.appendTag(configuration.serialize());
         }
         nbt.setTag("zonePhases", zones);
+        nbt.setTag("worldCfg", worldConfiguration.serialize());
         return nbt;
     }
 
@@ -75,6 +78,7 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
             NBTTagCompound zoneTag = zones.getCompoundTagAt(i);
             configuration.zonePhases[i] = ZonePhaseConfiguration.deserialize(zoneTag);
         }
+        configuration.worldConfiguration.deserialize(nbt.getCompoundTag("worldCfg"));
         return configuration;
     }
 
@@ -90,6 +94,7 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
             zones.add(configuration.jsonSerialize());
         }
         object.add("zonePhases", zones);
+        object.add("worldConfig", worldConfiguration.jsonSerialize());
         return object;
     }
 
@@ -106,6 +111,7 @@ public class BattleRoyaleGameConfiguration implements GameConfiguration {
         for (JsonElement element : zones) {
             configuration.zonePhases[i++] = ZonePhaseConfiguration.jsonDeserialize(element);
         }
+        configuration.worldConfiguration.jsonDeserialize(JsonUtils.getJsonObject(object, "worldConfig"));
         return configuration;
     }
 

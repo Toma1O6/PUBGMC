@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.api.game;
+package dev.toma.pubgmc.api.game.team;
 
 import dev.toma.pubgmc.api.game.util.Team;
 import net.minecraft.entity.Entity;
@@ -87,7 +87,8 @@ public class SimpleTeamManager implements TeamManager {
         return teamById.values();
     }
 
-    public NBTTagCompound serialize() {
+    @Override
+    public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagList teamByIdTag = new NBTTagList();
         for (Map.Entry<UUID, Team> entry : teamById.entrySet()) {
@@ -105,7 +106,8 @@ public class SimpleTeamManager implements TeamManager {
         return nbt;
     }
 
-    public void deserialize(NBTTagCompound nbt) {
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
         teamById.clear();
         teamByEntityId.clear();
         NBTTagList teamList = nbt.getTagList("teams", Constants.NBT.TAG_COMPOUND);

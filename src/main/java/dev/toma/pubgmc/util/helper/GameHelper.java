@@ -3,8 +3,10 @@ package dev.toma.pubgmc.util.helper;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.Game;
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
@@ -258,12 +260,17 @@ public final class GameHelper {
 
     public static void spawnPlaneWithPlayers(EntityPlane plane, TeamManager teamManager, World world, Consumer<EntityPlayer> playerConsumer) {
         List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
-        playerList.forEach(player -> player.setPositionAndUpdate(plane.posX, plane.posY, plane.posZ));
+        playerList.forEach(player -> teleport(player, plane.posX, plane.posY, plane.posZ));
         world.spawnEntity(plane);
         playerList.forEach(player -> {
             player.startRiding(plane);
             playerConsumer.accept(player);
         });
+    }
+
+    public static void teleport(Entity entity, double x, double y, double z) {
+        entity.dismountRidingEntity();
+        entity.setPositionAndUpdate(x, y, z);
     }
 
     public static DeathMessage createDefaultDeathMessage(EntityLivingBase victim, DamageSource source) {

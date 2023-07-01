@@ -22,7 +22,6 @@ public class DeathMessageContainer {
             renderingMessages[i + 1] = renderingMessages[i];
         }
         renderingMessages[0] = new Value(messageLifetime, message);
-        System.out.println(this);
     }
 
     public void tick() {

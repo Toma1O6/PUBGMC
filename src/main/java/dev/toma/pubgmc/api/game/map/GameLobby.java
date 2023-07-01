@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game.map;
 
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -16,7 +17,7 @@ public final class GameLobby {
     public void teleport(EntityPlayer player) {
         if (player.world.isRemote)
             return;
-        player.setPositionAndUpdate(center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
+        GameHelper.teleport(player, center.getX() + 0.5, center.getY() + 1.0, center.getZ() + 0.5);
     }
 
     public BlockPos get() {

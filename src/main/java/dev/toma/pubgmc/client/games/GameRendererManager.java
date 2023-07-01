@@ -41,7 +41,7 @@ public final class GameRendererManager {
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.world;
         G game = getActiveGame(world);
-        if (game != null && game.isStarted()) {
+        if (game != null) {
             GameType<?, G> type = (GameType<?, G>) game.getGameType();
             GameRenderer<G> renderer = getGameRendererForType(type);
             if (renderer == null)
@@ -59,7 +59,7 @@ public final class GameRendererManager {
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.world;
         G game = getActiveGame(world);
-        if (game != null && game.isStarted()) {
+        if (game != null) {
             GameType<?, G> type = (GameType<?, G>) game.getGameType();
             GameRenderer<G> renderer = getGameRendererForType(type);
             if (renderer == null)

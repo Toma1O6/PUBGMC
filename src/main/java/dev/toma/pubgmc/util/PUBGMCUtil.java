@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.util;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
@@ -61,6 +62,7 @@ public class PUBGMCUtil {
 
     public static void spawnAirdrop(World world, BlockPos pos, boolean bigDrop) {
         if (!world.isRemote && world.isBlockLoaded(pos)) {
+            Pubgmc.logger.debug("Generating aidrop at {}. Large: {}", pos, bigDrop);
             EntityAirdrop drop = new EntityAirdrop(world, pos, bigDrop);
             drop.assignGameId(GameHelper.getGameUUID(world));
             world.spawnEntity(drop);

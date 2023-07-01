@@ -162,7 +162,7 @@ public class PlayerData implements IPlayerData {
     @Override
     public void sync() {
         if (!player.world.isRemote) {
-            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player, this.serializeNBT()));
+            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player.getUniqueID(), this.serializeNBT()));
         }
     }
 
@@ -202,7 +202,7 @@ public class PlayerData implements IPlayerData {
         public static void onStartTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event) {
             if(event.getTarget() instanceof EntityPlayerMP) {
                 EntityPlayer player = (EntityPlayer) event.getTarget();
-                PacketHandler.sendToClient(new PacketClientCapabilitySync(player, PlayerData.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
+                PacketHandler.sendToClient(new PacketClientCapabilitySync(player.getUniqueID(), PlayerData.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
             }
         }
 

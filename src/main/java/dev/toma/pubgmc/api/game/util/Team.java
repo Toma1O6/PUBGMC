@@ -2,13 +2,16 @@ package dev.toma.pubgmc.api.game.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 public final class Team implements Iterable<Team.Member> {
 
@@ -20,7 +23,7 @@ public final class Team implements Iterable<Team.Member> {
     public Team(Entity entity) {
         this.owner = Member.of(entity);
         this.members = new HashMap<>();
-        this.activeMembers = new HashSet<>();
+        this.activeMembers = new LinkedHashSet<>();
         this.usernames = new HashMap<>();
         add(entity);
     }
@@ -99,6 +102,11 @@ public final class Team implements Iterable<Team.Member> {
 
     public Map<UUID, Member> getAllMembers() {
         return members;
+    }
+
+    public Stream<Member> getActiveMemberStream() {
+        return members.values().stream()
+                .filter(member -> isMember(member.uuid));
     }
 
     // Useful for game AI despawning

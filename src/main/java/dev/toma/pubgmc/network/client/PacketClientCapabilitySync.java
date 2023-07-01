@@ -21,14 +21,14 @@ import java.util.UUID;
 // TODO improve player serialization
 public class PacketClientCapabilitySync implements IMessage {
 
-    private EntityPlayer player;
+    private UUID player;
     private NBTTagCompound nbt;
 
     public PacketClientCapabilitySync() {
 
     }
 
-    public PacketClientCapabilitySync(EntityPlayer player, NBTTagCompound nbt) {
+    public PacketClientCapabilitySync(UUID player, NBTTagCompound nbt) {
         this.player = player;
         this.nbt = nbt;
     }
@@ -36,15 +36,13 @@ public class PacketClientCapabilitySync implements IMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         ByteBufUtils.writeTag(buf, nbt);
-        ByteBufUtils.writeUTF8String(buf, player.getGameProfile().getId().toString());
+        ByteBufUtils.writeUTF8String(buf, player.toString());
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        if(Minecraft.getMinecraft().player == null)
-            return;
         nbt = ByteBufUtils.readTag(buf);
-        player = Minecraft.getMinecraft().player.world.getPlayerEntityByUUID(UUID.fromString(ByteBufUtils.readUTF8String(buf)));
+        player = UUID.fromString(ByteBufUtils.readUTF8String(buf));
     }
 
     public static class Handler implements IMessageHandler<PacketClientCapabilitySync, IMessage> {
@@ -54,10 +52,13 @@ public class PacketClientCapabilitySync implements IMessage {
         public IMessage onMessage(PacketClientCapabilitySync m, MessageContext ctx) {
             Minecraft mc = Minecraft.getMinecraft();
             mc.addScheduledTask(() -> {
-                IPlayerData data = PlayerData.get(m.player);
+                EntityPlayer target = mc.world.getPlayerEntityByUUID(m.player);
+                if (target == null)
+                    return;
+                IPlayerData data = PlayerData.get(target);
                 data.deserializeNBT(m.nbt);
 
-                if(!data.isReloading()) {
+                if(!data.getReloadInfo().isReloading()) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 }
                 if(!data.getAimInfo().isAiming()) {

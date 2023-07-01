@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.api.game.util;
 
-import dev.toma.pubgmc.api.game.TeamManager;
+import dev.toma.pubgmc.api.game.team.TeamManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -77,7 +77,9 @@ public final class DeathMessage {
             nbt.setString("killer", ITextComponent.Serializer.componentToJson(killer.getDisplayName()));
             nbt.setUniqueId("killerUUID", killerId);
         }
-        nbt.setString("victim", ITextComponent.Serializer.componentToJson(victim.getDisplayName()));
+        if (victim != null) {
+            nbt.setString("victim", ITextComponent.Serializer.componentToJson(victim.getDisplayName()));
+        }
         nbt.setString("cause", ITextComponent.Serializer.componentToJson(cause));
         nbt.setUniqueId("victimUUID", victimId);
         return nbt;
@@ -90,14 +92,17 @@ public final class DeathMessage {
             killer = ITextComponent.Serializer.jsonToComponent(nbt.getString("killer"));
             killerId = nbt.getUniqueId("killerUUID");
         }
-        ITextComponent victim = ITextComponent.Serializer.jsonToComponent(nbt.getString("victim"));
+        ITextComponent victim = null;
+        if (nbt.hasKey("victim")) {
+            victim = ITextComponent.Serializer.jsonToComponent(nbt.getString("victim"));
+        }
         ITextComponent cause = ITextComponent.Serializer.jsonToComponent(nbt.getString("cause"));
         UUID victimId = nbt.getUniqueId("victimUUID");
         return new DeathMessage(killer, victim, cause, killerId, victimId);
     }
 
     private ITextComponent combine(@Nullable ITextComponent killer, ITextComponent victim, ITextComponent cause) {
-        return killer != null
+        return victim == null ? new TextComponentString("") : killer != null
                 ? new TextComponentString(String.format("%s [%s] %s", killer.getFormattedText(), cause.getFormattedText(), victim.getFormattedText()))
                 : new TextComponentString(String.format("[%s] %s", cause.getFormattedText(), victim.getFormattedText()));
     }
