@@ -5,7 +5,7 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
-import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.Team;
@@ -220,9 +220,9 @@ public final class GameHelper {
     }
 
     // Doesn't actually spawn the plane
-    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, GameArea area, int approximateFlightTime) {
-        Position2 min = area.getPositionMin(1.0F);
-        Position2 max = area.getPositionMax(1.0F);
+    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, Playzone playzone, int approximateFlightTime) {
+        Position2 min = playzone.getPositionMin(1.0F);
+        Position2 max = playzone.getPositionMax(1.0F);
         double xDiff = max.getX() - min.getX();
         double zDiff = max.getZ() - min.getZ();
         Position2 start;
@@ -294,12 +294,12 @@ public final class GameHelper {
     }
 
     @Nullable
-    public static Position2 findLoadedPositionWithinArea(GameArea area, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset) {
-        return findLoadedPositionWithinArea(area, world, playerList, minAllowedPlayerDistance, maxDistanceOffset, false);
+    public static Position2 findLoadedPositionWithinPlayzone(Playzone playzone, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset) {
+        return findLoadedPositionWithinPlayzone(playzone, world, playerList, minAllowedPlayerDistance, maxDistanceOffset, false);
     }
 
     @Nullable
-    public static Position2 findLoadedPositionWithinArea(GameArea area, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset, boolean ignorePlayzone) {
+    public static Position2 findLoadedPositionWithinPlayzone(Playzone playzone, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset, boolean ignorePlayzone) {
         Random random = world.rand;
         if (playerList.isEmpty()) {
             return null;
@@ -317,7 +317,7 @@ public final class GameHelper {
             int z = zn ? -random.nextInt(maxDistanceOffset) : random.nextInt(maxDistanceOffset);
             double xPosition = player.posX + minX + x;
             double zPosition = player.posZ + minZ + z;
-            if (!ignorePlayzone && !area.isWithin(xPosition, zPosition)) {
+            if (!ignorePlayzone && !playzone.isWithin(xPosition, zPosition)) {
                 continue;
             }
             position.setPos(xPosition, player.posY, zPosition);

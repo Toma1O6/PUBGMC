@@ -4,11 +4,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import dev.toma.pubgmc.api.util.Bounds;
 import dev.toma.pubgmc.api.util.Position2;
-import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
-import dev.toma.pubgmc.common.games.area.StaticGameArea;
+import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
+import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
@@ -52,8 +51,8 @@ public final class GameMap implements Bounds {
         return mapName;
     }
 
-    public StaticGameArea bounds() {
-        return new StaticGameArea(AbstractDamagingArea.DamageOptions.NONE, min, max);
+    public StaticPlayzone bounds() {
+        return new StaticPlayzone(AbstractDamagingPlayzone.DamageOptions.NONE, min, max);
     }
 
     @Override

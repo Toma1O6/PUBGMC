@@ -1,14 +1,14 @@
-package dev.toma.pubgmc.api.game.area;
+package dev.toma.pubgmc.api.game.playzone;
 
 import dev.toma.pubgmc.api.util.Bounds;
 import dev.toma.pubgmc.api.util.Position2;
 import net.minecraft.world.World;
 
-public interface GameArea extends Bounds {
+public interface Playzone extends Bounds {
 
-    GameAreaType<?> getAreaType();
+    PlayzoneType<?> getPlayzoneType();
 
-    void tickGameArea(World world);
+    void tickPlayzone(World world);
 
     Position2 getPositionMin(float partialTicks);
 

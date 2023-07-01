@@ -16,7 +16,7 @@ import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.games.GameTypes;
-import dev.toma.pubgmc.common.games.area.GameAreaTypes;
+import dev.toma.pubgmc.common.games.playzone.PlayzoneTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.items.*;
 import dev.toma.pubgmc.common.items.attachment.*;
@@ -941,9 +941,9 @@ public class CommonRegistry {
     }
 
     @SubscribeEvent
-    public static void registerAreaTypes(PubgmcRegistryEvent.Area event) {
-        event.register(GameAreaTypes.STATIC_AREA);
-        event.register(GameAreaTypes.DYNAMIC_AREA);
+    public static void registerPlayzoneTypes(PubgmcRegistryEvent.Playzone event) {
+        event.register(PlayzoneTypes.STATIC_PLAYZONE);
+        event.register(PlayzoneTypes.DYNAMIC_PLAYZONE);
     }
 
     @SubscribeEvent

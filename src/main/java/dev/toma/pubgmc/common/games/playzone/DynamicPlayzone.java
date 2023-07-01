@@ -1,8 +1,8 @@
-package dev.toma.pubgmc.common.games.area;
+package dev.toma.pubgmc.common.games.playzone;
 
-import dev.toma.pubgmc.api.game.area.GameArea;
-import dev.toma.pubgmc.api.game.area.GameAreaSerializer;
-import dev.toma.pubgmc.api.game.area.GameAreaType;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneSerializer;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,22 +11,22 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
-public class DynamicGameArea extends AbstractDamagingArea {
+public class DynamicPlayzone extends AbstractDamagingPlayzone {
 
     private Position2 min, max;
     @Nullable
-    private AreaTarget target;
+    private ResizeTarget target;
     @Nullable
     private ResizeCompletedCallback resizeCompletedCallback;
 
-    public DynamicGameArea(DamageOptions damageOptions, Position2 min, Position2 max) {
+    public DynamicPlayzone(DamageOptions damageOptions, Position2 min, Position2 max) {
         super(damageOptions);
         this.min = min;
         this.max = max;
     }
 
-    public DynamicGameArea(AbstractDamagingArea area) {
-        this(area.getDamageOptions(), area.getPositionMin(1.0F), area.getPositionMax(1.0F));
+    public DynamicPlayzone(AbstractDamagingPlayzone playzone) {
+        this(playzone.getDamageOptions(), playzone.getPositionMin(1.0F), playzone.getPositionMax(1.0F));
     }
 
     public void onResizeCompleted(ResizeCompletedCallback callback) {
@@ -34,12 +34,12 @@ public class DynamicGameArea extends AbstractDamagingArea {
     }
 
     @Override
-    public GameAreaType<?> getAreaType() {
-        return GameAreaTypes.DYNAMIC_AREA;
+    public PlayzoneType<?> getPlayzoneType() {
+        return PlayzoneTypes.DYNAMIC_PLAYZONE;
     }
 
     @Override
-    public void tickGameArea(World world) {
+    public void tickPlayzone(World world) {
         if (target != null) {
             target.tick();
             if (target.isCompleted()) {
@@ -66,7 +66,7 @@ public class DynamicGameArea extends AbstractDamagingArea {
         return target != null ? target.getAdjustedMaxPosition(max, partialTicks) : max;
     }
 
-    public void setTarget(@Nullable AreaTarget target) {
+    public void setTarget(@Nullable ResizeTarget target) {
         this.target = target;
     }
 
@@ -78,11 +78,16 @@ public class DynamicGameArea extends AbstractDamagingArea {
         return target == null ? -1 : target.initiationDelay - target.startTimer;
     }
 
-    public GameArea getResultingGameArea() {
-        return target != null ? new StaticGameArea(target.newDamageOptions, target.nextMin, target.nextMax) : this;
+    public Playzone getResultingPlayzone() {
+        return target != null ? new StaticPlayzone(target.newDamageOptions, target.nextMin, target.nextMax) : this;
     }
 
-    public static final class AreaTarget {
+    @Override
+    public String toString() {
+        return String.format("DynamicPlayzone: [%s] -> [%s], DamageSettings: %s, ResizeTarget: %s", min, max, getDamageOptions(), target);
+    }
+
+    public static final class ResizeTarget {
 
         private final Position2 nextMin, nextMax;
         private final DamageOptions newDamageOptions;
@@ -91,7 +96,7 @@ public class DynamicGameArea extends AbstractDamagingArea {
         private int resizeTimer;
         private int startTimer;
 
-        public AreaTarget(Position2 nextMin, Position2 nextMax, DamageOptions newDamageOptions, int resizeTimeTotal, int initiationDelay) {
+        public ResizeTarget(Position2 nextMin, Position2 nextMax, DamageOptions newDamageOptions, int resizeTimeTotal, int initiationDelay) {
             this.nextMin = nextMin;
             this.nextMax = nextMax;
             this.newDamageOptions = newDamageOptions;
@@ -161,7 +166,7 @@ public class DynamicGameArea extends AbstractDamagingArea {
             return nbt;
         }
 
-        private static AreaTarget deserialize(NBTTagCompound nbt) {
+        private static ResizeTarget deserialize(NBTTagCompound nbt) {
             Position2 nextMin = new Position2(nbt.getCompoundTag("nextMin"));
             Position2 nextMax = new Position2(nbt.getCompoundTag("nextMax"));
             DamageOptions options = null;
@@ -172,46 +177,51 @@ public class DynamicGameArea extends AbstractDamagingArea {
             int delayTimeTotal = nbt.getInteger("delayTimeTotal");
             int resizeTime = nbt.getInteger("resizeTime");
             int delayTime = nbt.getInteger("delayTime");
-            AreaTarget target = new AreaTarget(nextMin, nextMax, options, resizeTimeTotal, delayTimeTotal);
+            ResizeTarget target = new ResizeTarget(nextMin, nextMax, options, resizeTimeTotal, delayTimeTotal);
             target.resizeTimer = resizeTime;
             target.startTimer = delayTime;
             return target;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[Bounds: [%s] -> [%s], DamageSettings: %s]", nextMin, nextMax, newDamageOptions);
         }
     }
 
     @FunctionalInterface
     public interface ResizeCompletedCallback {
-        void onResizeCompleted(DynamicGameArea area, World world);
+        void onResizeCompleted(DynamicPlayzone playzone, World world);
     }
 
-    public static final class Serializer implements GameAreaSerializer<DynamicGameArea> {
+    public static final class Serializer implements PlayzoneSerializer<DynamicPlayzone> {
 
         @Override
-        public NBTTagCompound serializeArea(DynamicGameArea area) {
+        public NBTTagCompound serializePlayzone(DynamicPlayzone playzone) {
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setTag("min", area.min.toNbt());
-            nbt.setTag("max", area.max.toNbt());
-            nbt.setTag("opt", area.getDamageOptions().toNbt());
-            nbt.setBoolean("visible", area.isVisible());
-            if (area.target != null) {
-                nbt.setTag("target", area.target.serialize());
+            nbt.setTag("min", playzone.min.toNbt());
+            nbt.setTag("max", playzone.max.toNbt());
+            nbt.setTag("opt", playzone.getDamageOptions().toNbt());
+            nbt.setBoolean("visible", playzone.isVisible());
+            if (playzone.target != null) {
+                nbt.setTag("target", playzone.target.serialize());
             }
             return nbt;
         }
 
         @Override
-        public DynamicGameArea deserializeArea(NBTTagCompound nbt) {
+        public DynamicPlayzone deserializePlayzone(NBTTagCompound nbt) {
             Position2 min = new Position2(nbt.getCompoundTag("min"));
             Position2 max = new Position2(nbt.getCompoundTag("max"));
             DamageOptions options = DamageOptions.fromNbt(nbt.getCompoundTag("opt"));
             boolean visible = nbt.getBoolean("visible");
-            DynamicGameArea gameArea = new DynamicGameArea(options, min, max);
-            gameArea.setVisible(visible);
+            DynamicPlayzone playzone = new DynamicPlayzone(options, min, max);
+            playzone.setVisible(visible);
             if (nbt.hasKey("target", Constants.NBT.TAG_COMPOUND)) {
-                AreaTarget target = AreaTarget.deserialize(nbt.getCompoundTag("target"));
-                gameArea.setTarget(target);
+                ResizeTarget target = ResizeTarget.deserialize(nbt.getCompoundTag("target"));
+                playzone.setTarget(target);
             }
-            return gameArea;
+            return playzone;
         }
     }
 }

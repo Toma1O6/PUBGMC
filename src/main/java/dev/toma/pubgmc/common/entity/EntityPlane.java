@@ -1,13 +1,12 @@
 package dev.toma.pubgmc.common.entity;
 
-import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.PlayzoneDeliveryVehicle;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -18,7 +17,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import java.util.Objects;
 import java.util.UUID;
 
-public class EntityPlane extends Entity implements GameObject, IEntityAdditionalSpawnData {
+public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEntityAdditionalSpawnData {
 
     public static final int PLANE_CAPACITY = 32;
     private int flightDelay = 20;

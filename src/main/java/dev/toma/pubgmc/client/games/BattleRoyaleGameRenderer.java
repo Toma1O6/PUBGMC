@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.client.games;
 
 import dev.toma.pubgmc.api.client.game.GameRenderer;
-import dev.toma.pubgmc.api.client.util.GameAreaRenderer;
+import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.client.util.GameRenderHelper;
-import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -19,8 +19,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyaleGame> {
 
-    private static final ITextComponent ZONE_LABEL = new TextComponentTranslation("pubgmc.game_area.label");
-    private static final ITextComponent SHRINKING = new TextComponentTranslation("pubgmc.game_area.status.shrinking");
+    private static final ITextComponent ZONE_LABEL = new TextComponentTranslation("pubgmc.playzone.label");
+    private static final ITextComponent SHRINKING = new TextComponentTranslation("pubgmc.playzone.status.shrinking");
     private static final ITextComponent PLAYERS = new TextComponentTranslation("pubgmc.game.label.alive_players");
 
     @Override
@@ -66,7 +66,7 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
     public void renderInWorld(World world, BattleRoyaleGame game, double x, double y, double z, float partialTicks) {
         if (!game.isStarted())
             return;
-        GameArea area = game.getZone();
-        GameAreaRenderer.renderGameArea(area, 0x660033FF, x, y, z, partialTicks);
+        Playzone playzone = game.getPlayzone();
+        PlayzoneRenderer.renderPlayzone(playzone, 0x660033FF, x, y, z, partialTicks);
     }
 }

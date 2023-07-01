@@ -5,8 +5,8 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
-import dev.toma.pubgmc.api.game.area.GameArea;
-import dev.toma.pubgmc.api.game.area.GameAreaType;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.team.*;
@@ -18,9 +18,9 @@ import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
-import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
-import dev.toma.pubgmc.common.games.area.DynamicGameArea;
-import dev.toma.pubgmc.common.games.area.StaticGameArea;
+import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
+import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
+import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import dev.toma.pubgmc.common.games.util.TeamAIManager;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
 
-    public static final AbstractDamagingArea.DamageOptions OUT_OF_BOUNDS_DAMAGE = new AbstractDamagingArea.DamageOptions(5.0F, 20);
+    public static final AbstractDamagingPlayzone.DamageOptions OUT_OF_BOUNDS_DAMAGE = new AbstractDamagingPlayzone.DamageOptions(5.0F, 20);
     private final UUID gameId;
     private final BattleRoyaleGameConfiguration configuration;
     private final TeamManager teamManager;
@@ -59,10 +59,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private boolean started;
     private boolean completed;
     private int completedTimer;
-    private StaticGameArea mapArea;
-    private DynamicGameArea zone;
+    private StaticPlayzone mapPlayzone;
+    private DynamicPlayzone playzone;
     private int firstShrinkDelay;
-    private boolean areaReady;
+    private boolean playzoneReady;
     private int phase;
 
     public BattleRoyaleGame(UUID gameId, BattleRoyaleGameConfiguration configuration) {
@@ -74,7 +74,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         this.aiManager = new TeamAIManager(teamManager);
         this.deathMessages = new DeathMessageContainer(5, 100);
         this.listeners = new ArrayList<>();
-        this.firstShrinkDelay = configuration.areaGenerationDelay;
+        this.firstShrinkDelay = configuration.playzoneGenerationDelay;
         this.completedTimer = 200;
 
         this.addListener(new EventListener(this));
@@ -102,10 +102,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     @Override
     public void performGameMapValidations(World world, GameMap map) {
-        mapArea = new StaticGameArea(map.bounds());
-        mapArea.setDamageOptions(OUT_OF_BOUNDS_DAMAGE);
-        zone = new DynamicGameArea(map.bounds());
-        zone.onResizeCompleted(this::gameAreaResizeCompleted);
+        mapPlayzone = new StaticPlayzone(map.bounds());
+        mapPlayzone.setDamageOptions(OUT_OF_BOUNDS_DAMAGE);
+        playzone = new DynamicPlayzone(map.bounds());
+        playzone.onResizeCompleted(this::playzoneResizeCompleted);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
-            EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapArea, 1200);
+            EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, 1200);
             plane.setMovementSpeedMultiplier(configuration.planeSpeed);
             plane.setFlightHeight(configuration.planeFlightHeight);
             GameHelper.spawnPlaneWithPlayers(plane, teamManager, world, player -> {
@@ -166,22 +166,22 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (world.getTotalWorldTime() % 200L == 0) {
             teamManager.getAllActivePlayers(world).forEach(GameHelper::fillPlayerHunger);
         }
-        if (!areaReady && --firstShrinkDelay <= 0) {
-            areaReady = true;
-            gameAreaResizeCompleted(zone, world);
+        if (!playzoneReady && --firstShrinkDelay <= 0) {
+            playzoneReady = true;
+            playzoneResizeCompleted(playzone, world);
             BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
             if (configurations != null && configurations.length > 0) {
-                zone.setDamageOptions(configurations[0].getDamageOptions());
+                playzone.setDamageOptions(configurations[0].getDamageOptions());
             } else {
-                zone.setDamageOptions(OUT_OF_BOUNDS_DAMAGE);
+                playzone.setDamageOptions(OUT_OF_BOUNDS_DAMAGE);
             }
         }
         if (!world.isRemote) {
             // server only tick
             WorldServer worldServer = (WorldServer) world;
             List<Entity> activeEntities = teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList());
-            mapArea.hurtAllOutsideArea(worldServer, activeEntities);
-            zone.hurtAllOutsideArea(worldServer, activeEntities);
+            mapPlayzone.hurtAllOutside(worldServer, activeEntities);
+            playzone.hurtAllOutside(worldServer, activeEntities);
             tickAIEntities(worldServer);
             if (world.getTotalWorldTime() % 20 == 0) {
                 int teamCount = teamManager.getTeams().size();
@@ -198,7 +198,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             }
         }
         deathMessages.tick();
-        zone.tickGameArea(world);
+        playzone.tickPlayzone(world);
     }
 
     @Override
@@ -254,8 +254,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return inviteManager;
     }
 
-    public DynamicGameArea getZone() {
-        return zone;
+    public DynamicPlayzone getPlayzone() {
+        return playzone;
     }
 
     public DeathMessageContainer getDeathMessageContainer() {
@@ -263,11 +263,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     }
 
     public boolean isZoneShrinking() {
-        return areaReady && zone.isResizing();
+        return playzoneReady && playzone.isResizing();
     }
 
     public int getRemainingTimeBeforeShrinking() {
-        return areaReady ? zone.getRemainingStationaryTime() : -1;
+        return playzoneReady ? playzone.getRemainingStationaryTime() : -1;
     }
 
     public int getAlivePlayerCount(World world) {
@@ -276,13 +276,13 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return players + ai;
     }
 
-    private void gameAreaResizeCompleted(DynamicGameArea gameArea, World world) {
+    private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
         BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
         // airdrop
         if (!world.isRemote) {
-            GameArea airdropArea = zone.getResultingGameArea();
+            Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
             List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
-            Position2 pos = GameHelper.findLoadedPositionWithinArea(airdropArea, world, playerList, 0, 128);
+            Position2 pos = GameHelper.findLoadedPositionWithinPlayzone(airdropPlayzone, world, playerList, 0, 128);
             if (pos != null) {
                 int x = (int) pos.getX();
                 int z = (int) pos.getZ();
@@ -292,8 +292,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
         // Zone resize
         if (configurations != null && configurations.length > phase) {
-            DynamicGameArea.AreaTarget target = configurations[phase++].createNewShrinkTarget(gameArea, Pubgmc.rng());
-            gameArea.setTarget(target);
+            DynamicPlayzone.ResizeTarget target = configurations[phase++].createNewShrinkTarget(playzone, Pubgmc.rng());
+            playzone.setTarget(target);
         }
         GameHelper.requestClientGameDataSynchronization(world);
     }
@@ -306,18 +306,18 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         int mod = configuration.aiSpawnInterval * configuration.teamSize;
         if (total % mod == 0L) {
             if (aiManager.canSpawnEntity()) {
-                GameArea shrunkZone = zone.getResultingGameArea();
+                Playzone shrunkPlayzone = playzone.getResultingPlayzone();
                 List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
                 int memberCount = Math.min(configuration.teamSize, aiManager.getRemainingAliveEntityCount()) - 1;
                 Pubgmc.logger.debug("Attempting to spawn AI with default rules");
-                Position2 spawnPosition = GameHelper.findLoadedPositionWithinArea(shrunkZone, world, playerList, 32, 96);
+                Position2 spawnPosition = GameHelper.findLoadedPositionWithinPlayzone(shrunkPlayzone, world, playerList, 32, 96);
                 if (spawnPosition == null) {
                     Pubgmc.logger.debug("Attempting to spawn AI while ignoring player range");
-                    spawnPosition = GameHelper.findLoadedPositionWithinArea(shrunkZone, world, playerList, 0, 96, false);
+                    spawnPosition = GameHelper.findLoadedPositionWithinPlayzone(shrunkPlayzone, world, playerList, 0, 96, false);
                 }
                 if (spawnPosition == null) {
                     Pubgmc.logger.debug("Attempting to spawn AI while ignoring player range and playzone");
-                    spawnPosition = GameHelper.findLoadedPositionWithinArea(shrunkZone, world, playerList, 0, 96, true);
+                    spawnPosition = GameHelper.findLoadedPositionWithinPlayzone(shrunkPlayzone, world, playerList, 0, 96, true);
                 }
                 if (spawnPosition != null) {
                     EntityAIPlayer leader = initAi(world, spawnPosition);
@@ -376,7 +376,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                     GameHelper.requestClientGameDataSynchronization(player.world);
                 }
             }
-            if (joined || game.mapArea.isWithin(player)) {
+            if (joined || game.mapPlayzone.isWithin(player)) {
                 GameHelper.moveToLobby(player);
             }
         }
@@ -440,14 +440,14 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             nbt.setBoolean("started", game.started);
             nbt.setBoolean("completed", game.completed);
             nbt.setInteger("completedTimer", game.completedTimer);
-            if (game.mapArea != null) {
-                nbt.setTag("mapArea", GameAreaType.serialize(game.mapArea));
+            if (game.mapPlayzone != null) {
+                nbt.setTag("mapPlayzone", PlayzoneType.serialize(game.mapPlayzone));
             }
-            if (game.zone != null) {
-                nbt.setTag("zone", GameAreaType.serialize(game.zone));
+            if (game.playzone != null) {
+                nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
             }
-            nbt.setInteger("areaStart", game.firstShrinkDelay);
-            nbt.setBoolean("areaReady", game.areaReady);
+            nbt.setInteger("playzoneStart", game.firstShrinkDelay);
+            nbt.setBoolean("playzoneReady", game.playzoneReady);
             nbt.setInteger("phase", game.phase);
             return nbt;
         }
@@ -464,15 +464,15 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             game.started = nbt.getBoolean("started");
             game.completed = nbt.getBoolean("completed");
             game.completedTimer = nbt.getInteger("completedTimer");
-            if (nbt.hasKey("mapArea", Constants.NBT.TAG_COMPOUND)) {
-                game.mapArea = GameAreaType.deserialize(nbt.getCompoundTag("mapArea"));
+            if (nbt.hasKey("mapPlayzone", Constants.NBT.TAG_COMPOUND)) {
+                game.mapPlayzone = PlayzoneType.deserialize(nbt.getCompoundTag("mapPlayzone"));
             }
-            if (nbt.hasKey("zone", Constants.NBT.TAG_COMPOUND)) {
-                game.zone = GameAreaType.deserialize(nbt.getCompoundTag("zone"));
-                game.zone.onResizeCompleted(game::gameAreaResizeCompleted);
+            if (nbt.hasKey("playzone", Constants.NBT.TAG_COMPOUND)) {
+                game.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
+                game.playzone.onResizeCompleted(game::playzoneResizeCompleted);
             }
-            game.firstShrinkDelay = nbt.getInteger("areaStart");
-            game.areaReady = nbt.getBoolean("areaReady");
+            game.firstShrinkDelay = nbt.getInteger("playzoneStart");
+            game.playzoneReady = nbt.getBoolean("playzoneReady");
             game.phase = nbt.getInteger("phase");
             return game;
         }

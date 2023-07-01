@@ -4,11 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.game.GameWorldConfiguration;
-import dev.toma.pubgmc.api.game.area.GameArea;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
 import dev.toma.pubgmc.api.util.Position2;
-import dev.toma.pubgmc.common.games.area.AbstractDamagingArea;
-import dev.toma.pubgmc.common.games.area.DynamicGameArea;
+import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
+import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,7 +25,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public int teamSize = 4;
     public float planeSpeed = 1.0F;
     public int planeFlightHeight = 256;
-    public int areaGenerationDelay = 2400;
+    public int playzoneGenerationDelay = 2400;
     public int entityCount = 50;
     public boolean allowAi = true;
     public int aiSpawnInterval = 400;
@@ -43,7 +43,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         teamSize = Math.max(1, teamSize);
         planeSpeed = MathHelper.clamp(planeSpeed, 0.1F, 10.0F);
         planeFlightHeight = MathHelper.clamp(planeFlightHeight, 15, 270);
-        areaGenerationDelay = Math.max(0, areaGenerationDelay);
+        playzoneGenerationDelay = Math.max(0, playzoneGenerationDelay);
         entityCount = Math.max(1, entityCount);
         aiSpawnInterval = Math.max(100, aiSpawnInterval);
         worldConfiguration.correct();
@@ -53,7 +53,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setBoolean("autoJoin", automaticGameJoining);
         nbt.setInteger("teamSize", teamSize);
-        nbt.setInteger("areaGenerationDelay", areaGenerationDelay);
+        nbt.setInteger("playzoneGenerationDelay", playzoneGenerationDelay);
         nbt.setFloat("planeSpeed", planeSpeed);
         nbt.setInteger("planeFlightHeight", planeFlightHeight);
         NBTTagList zones = new NBTTagList();
@@ -69,7 +69,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         BattleRoyaleGameConfiguration configuration = new BattleRoyaleGameConfiguration();
         configuration.automaticGameJoining = nbt.getBoolean("autoJoin");
         configuration.teamSize = nbt.getInteger("teamSize");
-        configuration.areaGenerationDelay = nbt.getInteger("areaGenerationDelay");
+        configuration.playzoneGenerationDelay = nbt.getInteger("playzoneGenerationDelay");
         configuration.planeSpeed = nbt.getFloat("planeSpeed");
         configuration.planeFlightHeight = nbt.getInteger("planeFlightHeight");
         NBTTagList zones = nbt.getTagList("zonePhases", Constants.NBT.TAG_COMPOUND);
@@ -86,7 +86,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         JsonObject object = new JsonObject();
         object.addProperty("autoJoin", automaticGameJoining);
         object.addProperty("teamSize", teamSize);
-        object.addProperty("areaGenerationDelay", areaGenerationDelay);
+        object.addProperty("playzoneGenerationDelay", playzoneGenerationDelay);
         object.addProperty("planeSpeed", planeSpeed);
         object.addProperty("planeFlightHeight", planeFlightHeight);
         JsonArray zones = new JsonArray();
@@ -102,7 +102,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         BattleRoyaleGameConfiguration configuration = new BattleRoyaleGameConfiguration();
         configuration.automaticGameJoining = JsonUtils.getBoolean(object, "autoJoin", true);
         configuration.teamSize = JsonUtils.getInt(object, "teamSize", 1);
-        configuration.areaGenerationDelay = JsonUtils.getInt(object, "areaGenerationDelay", 2400);
+        configuration.playzoneGenerationDelay = JsonUtils.getInt(object, "playzoneGenerationDelay", 2400);
         configuration.planeSpeed = JsonUtils.getFloat(object, "planeSpeed", 1.0F);
         configuration.planeFlightHeight = JsonUtils.getInt(object, "planeFlightHeight", 255);
         JsonArray zones = JsonUtils.getJsonArray(object, "zonePhases", new JsonArray());
@@ -131,13 +131,13 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
             this.shrinkDelay = Math.max(0, shrinkDelay);
         }
 
-        public AbstractDamagingArea.DamageOptions getDamageOptions() {
-            return new AbstractDamagingArea.DamageOptions(damage, damageInterval);
+        public AbstractDamagingPlayzone.DamageOptions getDamageOptions() {
+            return new AbstractDamagingPlayzone.DamageOptions(damage, damageInterval);
         }
 
-        public DynamicGameArea.AreaTarget createNewShrinkTarget(GameArea area, Random random) {
-            Position2 min = area.getPositionMin(1.0F);
-            Position2 max = area.getPositionMax(1.0F);
+        public DynamicPlayzone.ResizeTarget createNewShrinkTarget(Playzone playzone, Random random) {
+            Position2 min = playzone.getPositionMin(1.0F);
+            Position2 max = playzone.getPositionMax(1.0F);
             double length = Math.min(Math.abs(min.getX() - max.getX()), Math.abs(min.getZ() - max.getZ()));
             double newLength = length * shrinkScale;
             double minX = min.getX();
@@ -147,8 +147,8 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
             double z = minZ + random.nextDouble() * diff;
             Position2 newMin = new Position2(x, z);
             Position2 newMax = new Position2(x + newLength, z + newLength);
-            AbstractDamagingArea.DamageOptions opt = getDamageOptions();
-            return new DynamicGameArea.AreaTarget(newMin, newMax, opt, shrinkTime, shrinkDelay);
+            AbstractDamagingPlayzone.DamageOptions opt = getDamageOptions();
+            return new DynamicPlayzone.ResizeTarget(newMin, newMax, opt, shrinkTime, shrinkDelay);
         }
 
         public NBTTagCompound serialize() {

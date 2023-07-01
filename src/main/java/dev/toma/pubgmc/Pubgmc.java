@@ -127,8 +127,8 @@ public class Pubgmc {
         PubgmcRegistries.LOOT_PROCESSORS.lock();
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Game());
         PubgmcRegistries.GAME_TYPES.lock();
-        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Area());
-        PubgmcRegistries.GAME_AREA_TYPES.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Playzone());
+        PubgmcRegistries.PLAYZONE_TYPES.lock();
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.PointType());
         PubgmcRegistries.GAME_MAP_POINTS.lock();
 

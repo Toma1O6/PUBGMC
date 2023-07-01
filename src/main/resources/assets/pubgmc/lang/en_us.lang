@@ -317,9 +317,8 @@ commands.pubgmc.team.member_kick.team=%s has been kicked from your team
 commands.pubgmc.team.member_kick.team.reason=%s has been kicked from your team with reason: %s
 
 pubgmc.game.won.label=You have won the game!
-pubgmc.game_area.label=Zone:
-pubgmc.game_area.status.time_remaining=Will resize after: %s
-pubgmc.game_area.status.shrinking=Shrinking...
+pubgmc.playzone.label=Zone:
+pubgmc.playzone.status.shrinking=Shrinking...
 pubgmc.game.label.alive_players=Alive:
 
 label.pubgmc.false=False

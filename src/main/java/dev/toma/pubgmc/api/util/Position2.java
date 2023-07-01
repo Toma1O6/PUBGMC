@@ -54,4 +54,9 @@ public final class Position2 {
         nbt.setDouble("z", z);
         return nbt;
     }
+
+    @Override
+    public String toString() {
+        return x + ", " + z;
+    }
 }

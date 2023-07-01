@@ -1,8 +1,7 @@
-package dev.toma.pubgmc.common.games.area;
+package dev.toma.pubgmc.common.games.playzone;
 
-import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.game.area.GameArea;
-import dev.toma.pubgmc.common.entity.EntityPlane;
+import dev.toma.pubgmc.api.game.PlayzoneDeliveryVehicle;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,12 +10,12 @@ import net.minecraft.world.WorldServer;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractDamagingArea implements GameArea {
+public abstract class AbstractDamagingPlayzone implements Playzone {
 
     private DamageOptions damageOptions;
     private boolean visible;
 
-    public AbstractDamagingArea(DamageOptions damageOptions) {
+    public AbstractDamagingPlayzone(DamageOptions damageOptions) {
         this.damageOptions = Objects.requireNonNull(damageOptions);
     }
 
@@ -40,12 +39,16 @@ public abstract class AbstractDamagingArea implements GameArea {
 
     public void hurtEntity(Entity entity) {
         Entity vehicle = entity.getRidingEntity();
-        if (!(vehicle instanceof EntityPlane)) { // TODO check agains itf to support extensibility
+        if (!(vehicle instanceof PlayzoneDeliveryVehicle)) {
+            PlayzoneDeliveryVehicle playzoneDeliveryVehicle = (PlayzoneDeliveryVehicle) vehicle;
+            if (playzoneDeliveryVehicle.disablePlayzoneDamageForPassengers()) {
+                return;
+            }
             entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
         }
     }
 
-    public void hurtAllOutsideArea(WorldServer world, List<Entity> entities) {
+    public void hurtAllOutside(WorldServer world, List<Entity> entities) {
         int interval = damageOptions.getDamageInterval();
         if (interval >= 0 && (interval == 0 || world.getTotalWorldTime() % interval == 0)) {
             entities.stream()
@@ -91,6 +94,11 @@ public abstract class AbstractDamagingArea implements GameArea {
                 return NONE;
             }
             return new DamageOptions(amount, interval);
+        }
+
+        @Override
+        public String toString() {
+            return "[Amount: " + damageAmount + ", Interval: " + damageInterval + "]";
         }
     }
 }
