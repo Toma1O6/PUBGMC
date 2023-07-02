@@ -2,6 +2,8 @@ package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.loot.LootableContainer;
+import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -10,13 +12,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.UUID;
 
-public class TileEntityPlayerCrate extends TileEntity implements IInventory, GameObject {
+public class TileEntityPlayerCrate extends TileEntity implements IInventory, LootableContainer, GameObject {
 
     private NonNullList<ItemStack> inv = NonNullList.withSize(45, ItemStack.EMPTY);
     private String customName;
@@ -160,5 +163,30 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, Gam
     public void onNewGameDetected(UUID newGameId) {
         inv.clear();
         world.destroyBlock(pos, false);
+    }
+
+    @Override
+    public BlockPos getWorldPosition() {
+        return pos;
+    }
+
+    @Override
+    public int getSize() {
+        return getSizeInventory();
+    }
+
+    @Override
+    public ItemStack getItemStackInSlot(int index) {
+        return getStackInSlot(index);
+    }
+
+    @Override
+    public void setItemStackToSlot(int index, ItemStack stack) {
+        setInventorySlotContents(index, stack);
+    }
+
+    @Override
+    public void onLootContentsChanged() {
+        TileEntityUtil.syncToClient(this);
     }
 }

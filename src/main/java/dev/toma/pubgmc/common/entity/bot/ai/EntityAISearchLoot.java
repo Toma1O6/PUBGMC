@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.entity.bot.ai;
 
 import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.InventorySearchHelper;
@@ -22,7 +23,7 @@ public class EntityAISearchLoot extends EntityAIBase {
     private final Set<BlockPos> checkedLootSpawners = new HashSet<>();
 
     @Nullable
-    private LootGenerator generator;
+    private LootableContainer lootable;
 
     public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, int chance) {
         this.aiPlayer = entityAIPlayer;
@@ -51,20 +52,20 @@ public class EntityAISearchLoot extends EntityAIBase {
         return aiPlayer.getHealth() < aiPlayer.getMaxHealth() && InventorySearchHelper.findHealingItem(aiPlayer.getInventory()).isEmpty();
     }
 
-    private LootGenerator findLootGeneratorWithinRange() {
+    private LootableContainer findLootGeneratorWithinRange() {
         int dist = Integer.MAX_VALUE;
-        LootGenerator closest = null;
-        List<LootGenerator> generators = GameHelper.mergeTileEntitiesAndEntitiesByRule(aiPlayer.world, obj -> obj instanceof LootGenerator, obj -> (LootGenerator) obj)
+        LootableContainer closest = null;
+        List<LootableContainer> containers = GameHelper.mergeTileEntitiesAndEntitiesByRule(aiPlayer.world, obj -> obj instanceof LootableContainer, obj -> (LootableContainer) obj)
                 .collect(Collectors.toList());
-        for (LootGenerator generator : generators) {
-            BlockPos pos = generator.getPositionInWorld();
+        for (LootableContainer lootable : containers) {
+            BlockPos pos = lootable.getWorldPosition();
             if (checkedLootSpawners.contains(pos)) {
                 continue;
             }
             int distance = (int) pos.distanceSq(aiPlayer.getPosition());
             if (distance < dist) {
                 dist = distance;
-                closest =  generator;
+                closest =  lootable;
             }
         }
         return closest;
@@ -74,8 +75,8 @@ public class EntityAISearchLoot extends EntityAIBase {
     public boolean shouldExecute() {
         int i = aiPlayer.getRNG().nextInt(chance);
         if (i == 0 && needsLoot()) {
-            generator = findLootGeneratorWithinRange();
-            return generator != null;
+            lootable = findLootGeneratorWithinRange();
+            return lootable != null;
         }
         return false;
     }
@@ -87,15 +88,15 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Override
     public void startExecuting() {
-        if(generator == null)
+        if(lootable == null)
             return;
-        BlockPos pos = generator.getPositionInWorld();
+        BlockPos pos = lootable.getWorldPosition();
         this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), 1.0D);
     }
 
     @Override
     public void updateTask() {
-        BlockPos pos = generator.getPositionInWorld();
+        BlockPos pos = lootable.getWorldPosition();
         if(pos.distanceSq(this.aiPlayer.getPosition()) > 4) {
             if (aiPlayer.getNavigator().noPath()) {
                 checkedLootSpawners.add(pos);
@@ -103,7 +104,7 @@ public class EntityAISearchLoot extends EntityAIBase {
             }
             this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), 1.0D);
         } else {
-            aiPlayer.loot(generator);
+            aiPlayer.loot(lootable);
             checkedLootSpawners.add(pos);
             aiPlayer.getNavigator().clearPath();
         }
@@ -111,6 +112,6 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Override
     public void resetTask() {
-        generator = null;
+        lootable = null;
     }
 }

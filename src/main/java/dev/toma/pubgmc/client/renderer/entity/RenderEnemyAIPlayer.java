@@ -34,7 +34,10 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
         super(manager, new ModelAIPlayer(), 0.5F);
         this.addLayer(new LayerGhillie<>(this, e -> e));
         this.addLayer(new LayerBackpack<>(this, e -> e));
-        this.addLayer(new LayerNightVision<>(this, e -> e, player -> (player.world.provider.getWorldTime() % 24000L) >= 13000L));
+        this.addLayer(new LayerNightVision<>(this, e -> e, player -> {
+            long time = player.world.provider.getWorldTime() % 24000L;
+            return time >= 13000L && time <= 23000;
+        }));
         this.addLayer(new LayerBipedArmor(this));
     }
 

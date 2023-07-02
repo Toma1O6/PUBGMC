@@ -96,17 +96,27 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     }
 
     @Override
-    public BlockPos getPositionInWorld() {
-        return this.pos;
+    public BlockPos getWorldPosition() {
+        return pos;
     }
 
     @Override
-    public List<ItemStack> getGeneratorItems() {
-        return inventory;
+    public int getSize() {
+        return getSizeInventory();
     }
 
     @Override
-    public void finishedLooting() {
+    public ItemStack getItemStackInSlot(int index) {
+        return getStackInSlot(index);
+    }
+
+    @Override
+    public void setItemStackToSlot(int index, ItemStack stack) {
+        setInventorySlotContents(index, stack);
+    }
+
+    @Override
+    public void onLootContentsChanged() {
         TileEntityUtil.syncToClient(this);
     }
 }

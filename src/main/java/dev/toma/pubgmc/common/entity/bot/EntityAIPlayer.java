@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.entity.bot;
 
 import dev.toma.pubgmc.api.game.LivingGameEntity;
-import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
@@ -30,7 +30,9 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider {
 
@@ -159,25 +161,24 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         return variant;
     }
 
-    public void loot(LootGenerator generator) {
+    public void loot(LootableContainer lootable) {
         AmmoType lootingAmmoType = null;
-        List<ItemStack> itemStacks = generator.getGeneratorItems();
-        for (int i = 0; i < itemStacks.size(); i++) {
-            ItemStack stack = itemStacks.get(i);
+        for (int i = 0; i < lootable.getSize(); i++) {
+            ItemStack stack = lootable.getItemStackInSlot(i);
             if (stack.isEmpty())
                 continue;
             ItemStack weapon = getHeldItemMainhand();
             if (weapon.isEmpty() && stack.getItem() instanceof GunBase) {
                 if (stack.getItem() != PMCItems.FLARE_GUN) {
                     setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack.copy());
-                    itemStacks.set(i, ItemStack.EMPTY);
+                    lootable.setItemStackToSlot(i, ItemStack.EMPTY);
                     lootingAmmoType = ((GunBase) stack.getItem()).getAmmoType();
                     continue;
                 }
             }
             if (lootingAmmoType != null && stack.getItem() instanceof ItemAmmo && ((ItemAmmo) stack.getItem()).getAmmoType() == lootingAmmoType) {
                 if (lootItem(stack)) {
-                    itemStacks.set(i, ItemStack.EMPTY);
+                    lootable.setItemStackToSlot(i, ItemStack.EMPTY);
                     continue;
                 }
             }
@@ -187,7 +188,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
                 ItemStack equippedArmor = getItemStackFromSlot(equipmentSlot);
                 if (equippedArmor.isEmpty()) {
                     setItemStackToSlot(equipmentSlot, stack.copy());
-                    itemStacks.set(i, ItemStack.EMPTY);
+                    lootable.setItemStackToSlot(i, ItemStack.EMPTY);
                     continue;
                 }
             }
@@ -197,18 +198,18 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
                 ItemStack equipped = specialEquipment.getStackInSlot(equipmentSlot.ordinal());
                 if (equipped.isEmpty()) {
                     specialEquipment.setInventorySlotContents(equipmentSlot.ordinal(), stack.copy());
-                    itemStacks.set(i, ItemStack.EMPTY);
+                    lootable.setItemStackToSlot(i, ItemStack.EMPTY);
                     continue;
                 }
             }
             if (stack.getItem() instanceof ItemHealing) {
                 if (lootItem(stack)) {
-                    itemStacks.set(i, ItemStack.EMPTY);
+                    lootable.setItemStackToSlot(i, ItemStack.EMPTY);
                 }
             }
         }
         SerializationHelper.syncEntity(this);
-        generator.finishedLooting();
+        lootable.onLootContentsChanged();
     }
 
     private boolean lootItem(ItemStack stack) {
