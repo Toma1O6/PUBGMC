@@ -332,3 +332,4 @@ label.pubgmc.death_message.generic.entity=KILLED
 label.pubgmc.death_message.zone=PLAYZONE
 label.pubgmc.accept=Accept
 label.pubgmc.decline=Decline
+label.pubgmc.bot.prefix=Bot

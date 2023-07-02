@@ -24,6 +24,7 @@ import dev.toma.pubgmc.network.client.CPacketAnimation;
 import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
 import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.RandomBotNameGenerator;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -113,6 +114,8 @@ public class CommonEvents {
             if (gameId.equals(GameHelper.DEFAULT_UUID)) {
                 LoadoutManager.apply(aiPlayer, EntityAIPlayer.DEFAULT_LOADOUT);
             }
+            aiPlayer.setCustomNameTag(RandomBotNameGenerator.generateBotName().getFormattedText());
+            aiPlayer.setAlwaysRenderNameTag(false);
         }
     }
 
