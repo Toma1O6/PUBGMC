@@ -3,6 +3,7 @@ package dev.toma.pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
+import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
@@ -13,6 +14,7 @@ import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.LootCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
+import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.init.CommonRegistry;
@@ -97,7 +99,9 @@ public class Pubgmc {
         dispatchRegistryEvents();
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
+        DefaultEntityLoadouts.register();
         LootManager.load();
+        LoadoutManager.load();
     }
 
     @EventHandler

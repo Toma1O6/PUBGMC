@@ -15,13 +15,13 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class LayerBackpack implements LayerRenderer<EntityLivingBase> {
+public class LayerBackpack<E extends EntityLivingBase> implements LayerRenderer<E> {
 
     private static final Map<Item, ModelRenderData<?>> RENDER_DATA_MAP = new IdentityHashMap<>();
     private final RenderLivingBase<?> renderer;
-    private final Function<EntityLivingBase, SpecialInventoryProvider> inventoryProvider;
+    private final Function<E, SpecialInventoryProvider> inventoryProvider;
 
-    public LayerBackpack(RenderLivingBase<?> renderer, Function<EntityLivingBase, SpecialInventoryProvider> inventoryProvider) {
+    public LayerBackpack(RenderLivingBase<E> renderer, Function<E, SpecialInventoryProvider> inventoryProvider) {
         this.renderer = renderer;
         this.inventoryProvider = inventoryProvider;
     }
@@ -31,7 +31,7 @@ public class LayerBackpack implements LayerRenderer<EntityLivingBase> {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(E entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         SpecialInventoryProvider provider = inventoryProvider.apply(entity);
         if (provider == null) {
             return;

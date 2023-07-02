@@ -158,6 +158,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, Gam
 
     @Override
     public void onNewGameDetected(UUID newGameId) {
+        inv.clear();
         world.destroyBlock(pos, false);
     }
 }

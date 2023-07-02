@@ -39,13 +39,13 @@ public abstract class AbstractDamagingPlayzone implements Playzone {
 
     public void hurtEntity(Entity entity) {
         Entity vehicle = entity.getRidingEntity();
-        if (!(vehicle instanceof PlayzoneDeliveryVehicle)) {
+        if (vehicle instanceof PlayzoneDeliveryVehicle) {
             PlayzoneDeliveryVehicle playzoneDeliveryVehicle = (PlayzoneDeliveryVehicle) vehicle;
             if (playzoneDeliveryVehicle.disablePlayzoneDamageForPassengers()) {
                 return;
             }
-            entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
         }
+        entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
     }
 
     public void hurtAllOutside(WorldServer world, List<Entity> entities) {

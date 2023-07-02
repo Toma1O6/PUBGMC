@@ -105,11 +105,8 @@ public class ASMHooksClient {
     }
 
     public static void player_constructRender(RenderPlayer renderPlayer, RenderManager manager, boolean useSmallArms) {
-        renderPlayer.addLayer(new LayerGhillie(renderPlayer));
-        renderPlayer.addLayer(new LayerBackpack(renderPlayer, entity -> {
-            EntityPlayer player = (EntityPlayer) entity;
-            return PlayerData.get(player);
-        }));
+        renderPlayer.addLayer(new LayerGhillie<>(renderPlayer, PlayerData::get));
+        renderPlayer.addLayer(new LayerBackpack<>(renderPlayer, PlayerData::get));
         renderPlayer.addLayer(new LayerNightVision<>(renderPlayer, PlayerData::get, player -> PlayerData.get(player).isNightVisionActive()));
     }
 

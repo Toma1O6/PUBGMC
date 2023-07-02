@@ -4,6 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.client.PacketSyncEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -83,5 +86,9 @@ public class SerializationHelper {
             ItemStack stack = new ItemStack(compound.getCompoundTag("itemStack"));
             inventory.setInventorySlotContents(slotIndex, stack);
         }
+    }
+
+    public static void syncEntity(Entity entity) {
+        PacketHandler.sendToAllTracking(new PacketSyncEntity(entity), entity);
     }
 }

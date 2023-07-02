@@ -5,6 +5,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
@@ -48,6 +49,19 @@ import java.util.stream.Collectors;
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
 
     public static final AbstractDamagingPlayzone.DamageOptions OUT_OF_BOUNDS_DAMAGE = new AbstractDamagingPlayzone.DamageOptions(5.0F, 20);
+    public static final String PLAYER_INITIAL_LOOT_PATH = "battleroyale/player_start_gear";
+    public static final String AI_INITIAL_LOOT_PATH = "battleroyale/initial_loot";
+    public static final String AI_EARLY_GAME_LOOT_PATH = "battleroyale/early_game_loot";
+    public static final String AI_MID_GAME_LOOT_PATH = "battleroyale/mid_game_loot";
+    public static final String AI_LATE_GAME_LOOT_PATH = "battleroyale/late_game_loot";
+    public static final String[] AI_EQUIPMENT_PATHS = {
+            AI_INITIAL_LOOT_PATH,
+            AI_EARLY_GAME_LOOT_PATH,
+            AI_MID_GAME_LOOT_PATH,
+            AI_LATE_GAME_LOOT_PATH
+    };
+
+
     private final UUID gameId;
     private final BattleRoyaleGameConfiguration configuration;
     private final TeamManager teamManager;
@@ -143,7 +157,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             plane.setFlightHeight(configuration.planeFlightHeight);
             GameHelper.spawnPlaneWithPlayers(plane, teamManager, world, player -> {
                 GameHelper.resetPlayerData(player);
-                player.addItemStackToInventory(new ItemStack(PMCItems.PARACHUTE));
+                LoadoutManager.apply(player, PLAYER_INITIAL_LOOT_PATH);
                 player.setGameType(net.minecraft.world.GameType.ADVENTURE);
             });
             configuration.worldConfiguration.apply(worldServer, ruleStorage);
@@ -185,8 +199,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             tickAIEntities(worldServer);
             if (world.getTotalWorldTime() % 20 == 0) {
                 int teamCount = teamManager.getTeams().size();
+                int playerCount = (int) teamManager.getAllActivePlayers(world).count();
                 int aiCount = aiManager.getRemainingAliveEntityCount();
-                if (teamCount <= 1 && aiCount <= 0) {
+                if (playerCount == 0 || (teamCount == 1 && aiCount <= 0)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
                     teamManager.getAllActivePlayers(world).forEach(player -> {
@@ -344,7 +359,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         EntityAIPlayer player = new EntityAIPlayer(world);
         int height = world.getHeight((int) spawnPos.getX(), (int) spawnPos.getZ());
         player.setPosition(spawnPos.getX(), height + 1, spawnPos.getZ());
-        // TODO loadout
+        LoadoutManager.apply(player, AI_EARLY_GAME_LOOT_PATH);
         addAiTasks(player);
         player.assignGameId(gameId);
         return player;

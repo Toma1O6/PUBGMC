@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.entity.bot;
 
 import dev.toma.pubgmc.api.game.LivingGameEntity;
+import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -16,21 +18,22 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import java.util.UUID;
 
-public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData {
+public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider {
 
     private final InventoryBasic inventory = new InventoryBasic("container.aiPlayer", false, 9);
+    private final InventoryBasic specialEquipment = new InventoryBasic("container.aiPlayer.equipment", false, 3);
     private int variant;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
@@ -92,6 +95,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         compound.setInteger("variant", this.variant);
         compound.setUniqueId("gameId", gameId);
         compound.setTag("inventory", SerializationHelper.inventoryToNbt(inventory));
+        compound.setTag("equipmentInventory", SerializationHelper.inventoryToNbt(specialEquipment));
     }
 
     @Override
@@ -100,20 +104,30 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         variant = compound.getInteger("variant");
         gameId = compound.getUniqueId("gameId");
         SerializationHelper.inventoryFromNbt(inventory, compound.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
+        SerializationHelper.inventoryFromNbt(specialEquipment, compound.getTagList("equipmentInventory", Constants.NBT.TAG_COMPOUND));
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
         buffer.writeInt(variant);
+        NBTTagCompound nbtTag = new NBTTagCompound();
+        nbtTag.setTag("inv", SerializationHelper.inventoryToNbt(specialEquipment));
+        ByteBufUtils.writeTag(buffer, nbtTag);
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData) {
         variant = additionalData.readInt();
+        NBTTagCompound nbtTag = ByteBufUtils.readTag(additionalData);
+        SerializationHelper.inventoryFromNbt(specialEquipment, nbtTag.getTagList("inv", Constants.NBT.TAG_COMPOUND));
     }
 
-    public InventoryBasic getInventory() {
+    public IInventory getInventory() {
         return inventory;
+    }
+
+    public IInventory getSpecialEquipmentInventory() {
+        return specialEquipment;
     }
 
     public int getVariant() {
@@ -228,5 +242,15 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     @Override
     public void onNewGameDetected(UUID newGameId) {
         setDead();
+    }
+
+    @Override
+    public ItemStack getSpecialItemFromSlot(SpecialEquipmentSlot slot) {
+        return specialEquipment.getStackInSlot(slot.ordinal());
+    }
+
+    @Override
+    public void setSpecialItemToSlot(SpecialEquipmentSlot slot, ItemStack stack) {
+        specialEquipment.setInventorySlotContents(slot.ordinal(), stack);
     }
 }

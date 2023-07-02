@@ -82,7 +82,7 @@ public final class GameHelper {
             Pubgmc.logger.warn(MARKER, "Unable to generate death crate at {} position, no valid position was found", pos);
             return;
         }
-        Pubgmc.logger.debug(MARKER, "Generating death crate at {} for game {}", ground, gameId);
+        Pubgmc.logger.debug(MARKER, "Generating death crate at {}", ground);
         world.setBlockState(ground, PMCBlocks.PLAYER_CRATE.getDefaultState(), 3);
         TileEntity tileEntity = world.getTileEntity(ground);
         if (!(tileEntity instanceof TileEntityPlayerCrate)) {

@@ -920,6 +920,7 @@ public class CommonRegistry {
 
     @SubscribeEvent
     public static void registerLootProviders(PubgmcRegistryEvent.LootProvider event) {
+        event.register(LootProviders.NONE);
         event.register(LootProviders.ITEM);
         event.register(LootProviders.RANDOM_CHANCE);
         event.register(LootProviders.COUNT);

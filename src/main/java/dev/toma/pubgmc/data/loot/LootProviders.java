@@ -5,6 +5,7 @@ import net.minecraft.util.ResourceLocation;
 
 public final class LootProviders {
 
+    public static final LootProviderType<NoLootProvider> NONE = create("none", new NoLootProvider.Serializer());
     public static final LootProviderType<ItemStackLootProvider> ITEM = create("item", new ItemStackLootProvider.Serializer());
     public static final LootProviderType<RandomChanceLootProvider> RANDOM_CHANCE = create("random_chance", new RandomChanceLootProvider.Serializer());
     public static final LootProviderType<CountLootProvider> COUNT = create("count", new CountLootProvider.Serializer());

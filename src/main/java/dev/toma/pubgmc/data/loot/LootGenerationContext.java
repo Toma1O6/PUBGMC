@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.data.loot;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,6 +18,10 @@ public final class LootGenerationContext {
         this.world = world;
         this.pos = pos;
         this.groupMappings = groupMappings;
+    }
+
+    public static LootGenerationContext entity(Entity entity) {
+        return new LootGenerationContext(entity.world, entity.getPosition(), Collections.emptyMap());
     }
 
     public World getWorld() {
