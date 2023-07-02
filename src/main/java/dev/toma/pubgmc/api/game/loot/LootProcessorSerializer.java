@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.data.loot.processor;
+package dev.toma.pubgmc.api.game.loot;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

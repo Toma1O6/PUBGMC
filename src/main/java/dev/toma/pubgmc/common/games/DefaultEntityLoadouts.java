@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.games;
 
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
@@ -11,7 +12,7 @@ import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.items.equipment.SpecialInventoryItem;
 import dev.toma.pubgmc.data.loot.*;
 import dev.toma.pubgmc.data.loot.processor.AmmoProcessor;
-import dev.toma.pubgmc.data.loot.processor.LootProcessor;
+import dev.toma.pubgmc.api.game.loot.LootProcessor;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import dev.toma.pubgmc.util.math.WeightedRandom;

@@ -1,6 +1,9 @@
 package dev.toma.pubgmc.data.loot;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
+import dev.toma.pubgmc.api.game.loot.LootProviderSerializer;
+import dev.toma.pubgmc.api.game.loot.LootProviderType;
 import net.minecraft.util.ResourceLocation;
 
 public final class LootProviders {

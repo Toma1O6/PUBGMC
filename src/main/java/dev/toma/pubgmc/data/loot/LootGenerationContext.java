@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.data.loot;
 
+import dev.toma.pubgmc.api.game.loot.LootProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

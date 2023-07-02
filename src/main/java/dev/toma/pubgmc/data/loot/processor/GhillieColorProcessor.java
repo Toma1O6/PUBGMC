@@ -1,6 +1,9 @@
 package dev.toma.pubgmc.data.loot.processor;
 
 import com.google.gson.*;
+import dev.toma.pubgmc.api.game.loot.LootProcessor;
+import dev.toma.pubgmc.api.game.loot.LootProcessorSerializer;
+import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.data.loot.LootGenerationContext;
 import net.minecraft.item.ItemStack;

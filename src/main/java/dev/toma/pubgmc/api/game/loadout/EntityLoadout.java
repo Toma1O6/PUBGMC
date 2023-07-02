@@ -3,8 +3,8 @@ package dev.toma.pubgmc.api.game.loadout;
 import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.data.loot.LootGenerationContext;
-import dev.toma.pubgmc.data.loot.LootProvider;
-import dev.toma.pubgmc.data.loot.LootProviderType;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
+import dev.toma.pubgmc.api.game.loot.LootProviderType;
 import dev.toma.pubgmc.data.loot.NoLootProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import scala.collection.script.NoLo;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;

@@ -4,6 +4,7 @@ import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.LootEvent;
 import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.util.EventDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;

@@ -3,6 +3,8 @@ package dev.toma.pubgmc.data.loot;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
+import dev.toma.pubgmc.api.game.loot.LootProviderType;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.util.JsonUtils;
 

@@ -1,6 +1,9 @@
 package dev.toma.pubgmc.data.loot.processor;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.game.loot.LootProcessor;
+import dev.toma.pubgmc.api.game.loot.LootProcessorSerializer;
+import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import net.minecraft.util.ResourceLocation;
 
 public final class LootProcessors {
