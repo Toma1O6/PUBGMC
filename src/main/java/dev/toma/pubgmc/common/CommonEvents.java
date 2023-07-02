@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.content.ContentResult;
 import dev.toma.pubgmc.client.content.ExternalLinks;
@@ -9,6 +10,7 @@ import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
@@ -23,6 +25,7 @@ import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
 import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
@@ -42,6 +45,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -49,6 +53,7 @@ import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -98,6 +103,17 @@ public class CommonEvents {
 
     private static void sendMessage(EntityPlayer player, String message, TextFormatting color) {
         player.sendMessage(new TextComponentString(color + message));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() instanceof EntityAIPlayer && !event.isCanceled()) {
+            EntityAIPlayer aiPlayer = (EntityAIPlayer) event.getEntity();
+            UUID gameId = GameHelper.getGameUUID(event.getWorld());
+            if (gameId.equals(GameHelper.DEFAULT_UUID)) {
+                LoadoutManager.apply(aiPlayer, EntityAIPlayer.DEFAULT_LOADOUT);
+            }
+        }
     }
 
     @SubscribeEvent

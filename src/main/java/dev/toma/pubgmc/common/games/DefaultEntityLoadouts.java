@@ -15,6 +15,7 @@ import dev.toma.pubgmc.common.items.equipment.SpecialInventoryItem;
 import dev.toma.pubgmc.data.loot.*;
 import dev.toma.pubgmc.data.loot.processor.AmmoProcessor;
 import dev.toma.pubgmc.data.loot.processor.AttachmentProcessor;
+import dev.toma.pubgmc.data.loot.processor.GhillieColorProcessor;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import dev.toma.pubgmc.util.math.WeightedRandom;
@@ -26,6 +27,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -37,7 +39,71 @@ public class DefaultEntityLoadouts {
         LoadoutManager.registerLoadoutHandler(EntityAIPlayer.class, DefaultEntityLoadouts::applyAiLoadout);
 
         // Loadouts
+        registerDefaultAiLoadout();
         registerBattleRoyaleLoadouts();
+    }
+
+    private static void registerDefaultAiLoadout() {
+        LoadoutManager.register(EntityAIPlayer.DEFAULT_LOADOUT, new EntityLoadout.Builder()
+                .withWeaponProvider(new RandomLootProvider(Arrays.asList(
+                        new ItemStackLootProvider(new ItemStack(PMCItems.P92)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.P1911)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.R1895)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.R45)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.P18C)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SCORPION)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.DEAGLE)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SAWED_OFF)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.S1897)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.S686)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.S12K)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.MICROUZI)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.UMP45)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.TOMMY_GUN)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.VECTOR)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.MP5K)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.BIZON)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.M16A4)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.M416)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SCAR_L)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.G36C)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.QBZ)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.AKM)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.BERYL_M762)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.MK47_MUTANT)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.DP28)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.VSS)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.MINI14)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.QBU)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SKS)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SLR)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.WIN94)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.KAR98K)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.M24))
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        new RandomLootProvider(Arrays.asList(
+                                new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1HELMET)),
+                                new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2HELMET)),
+                                new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3HELMET))
+                        )),
+                        new RandomLootProvider(Arrays.asList(
+                                new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1BODY)),
+                                new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2BODY)),
+                                new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3BODY))
+                        ))
+                )))
+                .withSpecialEquipmentProvider(new MultiValueLootProvider(Arrays.asList(
+                        new RandomChanceLootProvider(0.5F, new RandomLootProvider(Arrays.asList(
+                                new ItemStackLootProvider(new ItemStack(PMCItems.SMALL_BACKPACK_FOREST)),
+                                new ItemStackLootProvider(new ItemStack(PMCItems.MEDIUM_BACKPACK_FOREST)),
+                                new ItemStackLootProvider(new ItemStack(PMCItems.LARGE_BACKPACK_FOREST))
+                        ))),
+                        new RandomChanceLootProvider(0.1F, new ItemStackLootProvider(new ItemStack(PMCItems.NV_GOGGLES))),
+                        new RandomChanceLootProvider(0.1F, new ItemStackLootProvider(new ItemStack(PMCItems.GHILLIE_SUIT), Collections.singletonList(new GhillieColorProcessor(GhillieColorProcessor.ColorProvider.BIOME, new int[0]))))
+                )))
+                .build()
+        );
     }
 
     private static void registerBattleRoyaleLoadouts() {
@@ -311,6 +377,7 @@ public class DefaultEntityLoadouts {
         List<ItemStack> specialEquipment = loadout.getSpecialEquipment(context);
         List<ItemStack> general = loadout.getGeneralLoot(context);
 
+        ai.clearInventory();
         if (!weapon.isEmpty()) {
             ai.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, weapon.get(0));
             addToInventory(ai.getInventory(), weapon.subList(1, weapon.size()), 0, 0);

@@ -32,6 +32,7 @@ import java.util.UUID;
 
 public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider {
 
+    public static final String DEFAULT_LOADOUT = "default_loadout";
     private final InventoryBasic inventory = new InventoryBasic("container.aiPlayer", false, 9);
     private final InventoryBasic specialEquipment = new InventoryBasic("container.aiPlayer.equipment", false, 3);
     private int variant;
@@ -120,6 +121,14 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         variant = additionalData.readInt();
         NBTTagCompound nbtTag = ByteBufUtils.readTag(additionalData);
         SerializationHelper.inventoryFromNbt(specialEquipment, nbtTag.getTagList("inv", Constants.NBT.TAG_COMPOUND));
+    }
+
+    public void clearInventory() {
+        inventory.clear();
+        specialEquipment.clear();
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            setItemStackToSlot(slot, ItemStack.EMPTY);
+        }
     }
 
     public IInventory getInventory() {

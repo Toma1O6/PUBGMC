@@ -4,12 +4,14 @@ import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.GameDataSerializer;
+import dev.toma.pubgmc.api.game.GameEventListener;
+import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
-import dev.toma.pubgmc.api.game.playzone.Playzone;
-import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
@@ -23,7 +25,6 @@ import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import dev.toma.pubgmc.common.games.util.TeamAIManager;
-import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
@@ -31,7 +32,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.DamageSource;
@@ -359,7 +359,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         EntityAIPlayer player = new EntityAIPlayer(world);
         int height = world.getHeight((int) spawnPos.getX(), (int) spawnPos.getZ());
         player.setPosition(spawnPos.getX(), height + 1, spawnPos.getZ());
-        LoadoutManager.apply(player, AI_EARLY_GAME_LOOT_PATH);
+        LoadoutManager.apply(player, getAiLoadoutType());
         addAiTasks(player);
         player.assignGameId(gameId);
         return player;
@@ -372,6 +372,20 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         // Move to zone
         // Heal
         // Attack non-team members
+    }
+
+    private String getAiLoadoutType() {
+        if (!playzoneReady) {
+            return AI_INITIAL_LOOT_PATH;
+        }
+        float progression = phase / Math.max((float) configuration.zonePhases.length, 1.0F);
+        if (progression >= 0.40F) {
+            return AI_LATE_GAME_LOOT_PATH;
+        } else if (progression > 0.15F) {
+            return AI_MID_GAME_LOOT_PATH;
+        } else {
+            return AI_EARLY_GAME_LOOT_PATH;
+        }
     }
 
     private static final class EventListener implements GameEventListener {

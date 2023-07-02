@@ -80,6 +80,7 @@ public class SerializationHelper {
     }
 
     public static void inventoryFromNbt(IInventory inventory, NBTTagList list) {
+        inventory.clear();
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound compound = list.getCompoundTagAt(i);
             int slotIndex = compound.getInteger("slotIndex");
