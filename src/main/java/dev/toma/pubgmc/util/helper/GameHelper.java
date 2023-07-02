@@ -14,6 +14,7 @@ import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
@@ -73,6 +74,7 @@ public final class GameHelper {
         List<InventoryProvider> providers = new ArrayList<>();
         providers.add(InventoryProvider.wrappedEquipment(0, player));
         providers.add(InventoryProvider.inventory(EntityEquipmentSlot.values().length, player.getInventory()));
+        providers.add(InventoryProvider.inventory(SpecialEquipmentSlot.values().length, player.getSpecialEquipmentInventory()));
         spawnDeathCrate(gameId, world, player.getPosition(), providers);
         player.getInventory().clear();
         PUBGMCUtil.clearEntityInventory(player);
