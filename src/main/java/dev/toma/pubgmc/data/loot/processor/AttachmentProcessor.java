@@ -13,6 +13,7 @@ import net.minecraft.util.JsonUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class AttachmentProcessor implements LootProcessor {
 
@@ -20,6 +21,11 @@ public class AttachmentProcessor implements LootProcessor {
 
     public AttachmentProcessor(Map<AttachmentType<?>, LootProvider> generators) {
         this.generators = generators;
+    }
+
+    public AttachmentProcessor(Consumer<Map<AttachmentType<?>, LootProvider>> generator) {
+        this(new HashMap<>());
+        generator.accept(this.generators);
     }
 
     @Override

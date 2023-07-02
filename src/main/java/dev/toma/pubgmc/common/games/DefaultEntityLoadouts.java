@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.games;
 
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
+import dev.toma.pubgmc.api.game.loot.LootProcessor;
 import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
@@ -9,10 +10,11 @@ import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
+import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.equipment.SpecialInventoryItem;
 import dev.toma.pubgmc.data.loot.*;
 import dev.toma.pubgmc.data.loot.processor.AmmoProcessor;
-import dev.toma.pubgmc.api.game.loot.LootProcessor;
+import dev.toma.pubgmc.data.loot.processor.AttachmentProcessor;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import dev.toma.pubgmc.util.math.WeightedRandom;
@@ -24,7 +26,6 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -107,7 +108,13 @@ public class DefaultEntityLoadouts {
         ));
         LootProvider lowTierMeds = new RandomLootProvider(Arrays.asList(
                 new ItemStackLootProvider(new ItemStack(PMCItems.BANDAGE, 5)),
-                new ItemStackLootProvider(new ItemStack(PMCItems.ENERGYDRINK))
+                new ItemStackLootProvider(new ItemStack(PMCItems.ENERGYDRINK)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.PAINKILLERS))
+        ));
+        LootProvider highTierMeds = new RandomLootProvider(Arrays.asList(
+                new ItemStackLootProvider(new ItemStack(PMCItems.FIRSTAIDKIT)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.MEDKIT)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.ADRENALINESYRINGE))
         ));
         LootProvider lowTierAttachments = new RandomLootProvider(Arrays.asList(
                 new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)),
@@ -116,6 +123,78 @@ public class DefaultEntityLoadouts {
                 new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_AR)),
                 new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG))
         ));
+        LootProvider highTierAttachments = new RandomLootProvider(Arrays.asList(
+                new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE2X)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE4X)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SNIPER)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_AR)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_AR)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER))
+        ));
+        LootProcessor lowTierWeaponAttachments = new AttachmentProcessor(map -> {
+            map.put(AttachmentType.SCOPE, new RandomChanceLootProvider(0.2F, new RandomLootProvider(Arrays.asList(
+                    new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE2X))
+            ))));
+            map.put(AttachmentType.MUZZLE, new RandomChanceLootProvider(0.3F, new RandomLootProvider(Arrays.asList(
+                    new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SMG)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SMG))
+            ))));
+            map.put(AttachmentType.MAGAZINE, new RandomChanceLootProvider(0.35F, new RandomLootProvider(Arrays.asList(
+                    new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SMG)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_AR)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_AR))
+            ))));
+        });
+        LootProcessor highTierWeaponAttachments = new AttachmentProcessor(map -> {
+            map.put(AttachmentType.SCOPE, new RandomChanceLootProvider(0.5F, new RandomLootProvider(Arrays.asList(
+                    new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE2X)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE4X))
+            ))));
+            map.put(AttachmentType.MUZZLE, new RandomChanceLootProvider(0.4F, new MultiValueLootProvider(Arrays.asList(
+                    new RandomLootProvider(Arrays.asList(
+                            new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SMG)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SMG))
+                    )),
+                    new RandomLootProvider(Arrays.asList(
+                            new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_AR))
+                    )),
+                    new RandomLootProvider(Arrays.asList(
+                            new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SNIPER)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER))
+                    ))
+            ))));
+            map.put(AttachmentType.GRIP, new RandomChanceLootProvider(0.4F, new RandomLootProvider(Arrays.asList(
+                    new ItemStackLootProvider(new ItemStack(PMCItems.GRIP_VERTICAL)),
+                    new ItemStackLootProvider(new ItemStack(PMCItems.GRIP_ANGLED))
+            ))));
+            map.put(AttachmentType.MAGAZINE, new RandomChanceLootProvider(0.35F, new MultiValueLootProvider(Arrays.asList(
+                    new RandomLootProvider(Arrays.asList(
+                            new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SMG)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG))
+                    )),
+                    new RandomLootProvider(Arrays.asList(
+                            new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_AR)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_AR)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR))
+                    )),
+                    new RandomLootProvider(Arrays.asList(
+                            new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)),
+                            new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER))
+                    ))
+            ))));
+        });
 
         // Loadouts
         LoadoutManager.register(BattleRoyaleGame.PLAYER_INITIAL_LOOT_PATH, new EntityLoadout.Builder()
@@ -125,10 +204,10 @@ public class DefaultEntityLoadouts {
         LoadoutManager.register(BattleRoyaleGame.AI_INITIAL_LOOT_PATH, EntityLoadout.EMPTY);
         LoadoutManager.register(BattleRoyaleGame.AI_EARLY_GAME_LOOT_PATH, new EntityLoadout.Builder()
                 .withWeaponProvider(new WeightedLootProvider(Arrays.asList(
-                        new WeightedRandom.Entry<>(40, pistolsProvider.apply(Collections.singletonList(pistolAmmoPack))),
-                        new WeightedRandom.Entry<>(20, shotgunsProvider.apply(Collections.singletonList(shotgunAmmoPack))),
-                        new WeightedRandom.Entry<>(30, smgsProvider.apply(Collections.singletonList(defaultAmmoPack))),
-                        new WeightedRandom.Entry<>(10, arsProvider.apply(Collections.singletonList(defaultAmmoPack)))
+                        new WeightedRandom.Entry<>(40, pistolsProvider.apply(Arrays.asList(lowTierWeaponAttachments, pistolAmmoPack))),
+                        new WeightedRandom.Entry<>(20, shotgunsProvider.apply(Arrays.asList(lowTierWeaponAttachments, shotgunAmmoPack))),
+                        new WeightedRandom.Entry<>(30, smgsProvider.apply(Arrays.asList(lowTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(10, arsProvider.apply(Arrays.asList(lowTierWeaponAttachments, defaultAmmoPack)))
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
                         new RandomChanceLootProvider(0.3F, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1HELMET))),
@@ -143,6 +222,67 @@ public class DefaultEntityLoadouts {
                 ))))
                 .withGeneralLootProvider(new CountLootProvider(0, 2, new RandomLootProvider(Arrays.asList(
                         lowTierMeds, lowTierAttachments
+                ))))
+                .build()
+        );
+        LoadoutManager.register(BattleRoyaleGame.AI_MID_GAME_LOOT_PATH, new EntityLoadout.Builder()
+                .withWeaponProvider(new WeightedLootProvider(Arrays.asList(
+                        new WeightedRandom.Entry<>(30, smgsProvider.apply(Arrays.asList(highTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(50, arsProvider.apply(Arrays.asList(highTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(10, dmrsProvider.apply(Arrays.asList(highTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(10, srsProvider.apply(Arrays.asList(highTierWeaponAttachments, pistolAmmoPack)))
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        new WeightedLootProvider(Arrays.asList(
+                                new WeightedRandom.Entry<>(45, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2HELMET))),
+                                new WeightedRandom.Entry<>(55, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1HELMET)))
+                        )),
+                        new WeightedLootProvider(Arrays.asList(
+                                new WeightedRandom.Entry<>(10, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3BODY))),
+                                new WeightedRandom.Entry<>(55, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2BODY))),
+                                new WeightedRandom.Entry<>(35, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1BODY)))
+                        ))
+                )))
+                .withSpecialEquipmentProvider(new MultiValueLootProvider(Arrays.asList(
+                        new RandomChanceLootProvider(0.05F, new ItemStackLootProvider(new ItemStack(PMCItems.NV_GOGGLES))),
+                        new WeightedLootProvider(Arrays.asList(
+                                new WeightedRandom.Entry<>(35, smallBackpacks),
+                                new WeightedRandom.Entry<>(50, mediumBackpacks),
+                                new WeightedRandom.Entry<>(15, largeBackpacks)
+                        ))
+                )))
+                .withGeneralLootProvider(new CountLootProvider(1, 4, new RandomLootProvider(Arrays.asList(
+                        lowTierMeds, lowTierAttachments, highTierMeds, highTierAttachments
+                ))))
+                .build()
+        );
+        LoadoutManager.register(BattleRoyaleGame.AI_LATE_GAME_LOOT_PATH, new EntityLoadout.Builder()
+                .withWeaponProvider(new WeightedLootProvider(Arrays.asList(
+                        new WeightedRandom.Entry<>(5, smgsProvider.apply(Arrays.asList(highTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(50, arsProvider.apply(Arrays.asList(highTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(30, dmrsProvider.apply(Arrays.asList(highTierWeaponAttachments, defaultAmmoPack))),
+                        new WeightedRandom.Entry<>(15, srsProvider.apply(Arrays.asList(highTierWeaponAttachments, pistolAmmoPack)))
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        new WeightedLootProvider(Arrays.asList(
+                                new WeightedRandom.Entry<>(90, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2HELMET))),
+                                new WeightedRandom.Entry<>(10, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR1HELMET)))
+                        )),
+                        new WeightedLootProvider(Arrays.asList(
+                                new WeightedRandom.Entry<>(25, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3BODY))),
+                                new WeightedRandom.Entry<>(75, new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR2BODY)))
+                        ))
+                )))
+                .withSpecialEquipmentProvider(new MultiValueLootProvider(Arrays.asList(
+                        new RandomChanceLootProvider(0.15F, new ItemStackLootProvider(new ItemStack(PMCItems.NV_GOGGLES))),
+                        new WeightedLootProvider(Arrays.asList(
+                                new WeightedRandom.Entry<>(10, smallBackpacks),
+                                new WeightedRandom.Entry<>(65, mediumBackpacks),
+                                new WeightedRandom.Entry<>(25, largeBackpacks)
+                        ))
+                )))
+                .withGeneralLootProvider(new CountLootProvider(1, 5, new RandomLootProvider(Arrays.asList(
+                        lowTierMeds, highTierMeds, highTierAttachments
                 ))))
                 .build()
         );
