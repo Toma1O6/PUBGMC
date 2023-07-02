@@ -2,8 +2,6 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.util.IBuilder;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.common.util.EnumHelper;
@@ -43,7 +41,6 @@ public class MeleeItemBuilder implements IBuilder<ItemSword> {
         checkNotNull(material);
         ItemSword sword = new ItemSword(material);
         sword.setUnlocalizedName(registryName).setRegistryName(registryName).setMaxStackSize(1).setCreativeTab(PMCTabs.TAB_ITEMS);
-        LootManager.register(LootType.AMMO, new LootManager.LootEntry(sword, 10, false));
         return sword;
     }
 }

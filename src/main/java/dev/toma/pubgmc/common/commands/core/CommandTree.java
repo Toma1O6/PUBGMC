@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.commands.core;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -17,7 +18,7 @@ public final class CommandTree implements ChildNodeProvider {
     private final int permissionLevel;
     private final CommandNodeExecutor defaultExecutor;
     private final Map<String, CommandNode> children;
-    private final DefaultExecutorPropagationStrategy executorPropagationStrategy;
+    private final NodePropagationStrategy executorPropagationStrategy;
 
     private CommandTree(Builder builder) {
         name = builder.name;
@@ -47,6 +48,10 @@ public final class CommandTree implements ChildNodeProvider {
         if (node != null && node.getExecutor() != null) {
             executor = node.getExecutor();
         }
+        int permissionLevel = context.getPermissionLevel();
+        if (!sender.canUseCommand(permissionLevel, name)) {
+            throw new WrongUsageException("You are not authorized to use this command");
+        }
         executor.executeCommand(context);
     }
 
@@ -60,8 +65,6 @@ public final class CommandTree implements ChildNodeProvider {
             CommandNode commandNode = childNodeProvider.getChildNode(value);
             if (commandNode == null)
                 break;
-            if (commandNode.getChildNode(value) == null)
-                break;
             if (!commandNode.shouldUseChildNodesForSuggestions(maxDepth - treeDepth))
                 break;
             childNodeProvider = commandNode;
@@ -70,7 +73,10 @@ public final class CommandTree implements ChildNodeProvider {
         int offset = maxDepth - treeDepth;
         List<String> values = new ArrayList<>();
         for (CommandNode commandNode : childNodeProvider.listNodes()) {
-            values.addAll(commandNode.suggest(server, sender, lookingAt, offset));
+            int requiredPermissionLevel = commandNode.getPermissionLevel() >= 0 ? commandNode.getPermissionLevel() : permissionLevel;
+            if (sender.canUseCommand(requiredPermissionLevel, name)) {
+                values.addAll(commandNode.suggest(server, sender, lookingAt, offset));
+            }
         }
         return values;
     }
@@ -97,7 +103,7 @@ public final class CommandTree implements ChildNodeProvider {
         return defaultExecutor;
     }
 
-    DefaultExecutorPropagationStrategy getExecutorPropagationStrategy() {
+    NodePropagationStrategy getExecutorPropagationStrategy() {
         return executorPropagationStrategy;
     }
 
@@ -107,7 +113,7 @@ public final class CommandTree implements ChildNodeProvider {
         private Function<ICommandSender, String> usageProvider;
         private int permissionLevel = 4;
         private CommandNodeExecutor defaultExecutor;
-        private DefaultExecutorPropagationStrategy executorPropagationStrategy = DefaultExecutorPropagationStrategy.ROOT;
+        private NodePropagationStrategy executorPropagationStrategy = NodePropagationStrategy.ROOT;
         private final Map<String, CommandNode> children = new HashMap<>();
 
         private Builder(String name) {
@@ -147,7 +153,7 @@ public final class CommandTree implements ChildNodeProvider {
             return this;
         }
 
-        public Builder defaultExecutorPropagationStrategy(DefaultExecutorPropagationStrategy strategy) {
+        public Builder defaultExecutorPropagationStrategy(NodePropagationStrategy strategy) {
             this.executorPropagationStrategy = strategy;
             return this;
         }

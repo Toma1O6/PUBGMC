@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.commands.core;
 
-import dev.toma.pubgmc.common.capability.game.IGameData;
-import dev.toma.pubgmc.common.capability.world.IWorldData;
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,6 +59,14 @@ public abstract class AbstractCommand extends CommandBase {
         return player;
     }
 
+    public static EntityPlayer getSenderAsPlayer(CommandContext context) throws CommandException {
+        ICommandSender sender = context.getSender();
+        if (!(sender.getCommandSenderEntity() instanceof EntityPlayer)) {
+            throw new WrongUsageException("This command can be executed only by player");
+        }
+        return (EntityPlayer) sender.getCommandSenderEntity();
+    }
+
     public static List<String> suggestPlayer(SuggestionProvider.Context context) {
         MinecraftServer server = context.getServer();
         return server.getPlayerList().getPlayers().stream()
@@ -66,20 +74,10 @@ public abstract class AbstractCommand extends CommandBase {
                 .collect(Collectors.toList());
     }
 
-    public static IWorldData getWorldData(CommandContext context) throws CommandException {
+    public static GameData getGameData(CommandContext context) throws CommandException {
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        IWorldData worldData = world.getCapability(IWorldData.WorldDataProvider.WORLD_DATA, null);
-        if (worldData == null) {
-            throw new WrongUsageException("No world data are loaded. Report this issue.");
-        }
-        return worldData;
-    }
-
-    public static IGameData getGameData(CommandContext context) throws CommandException {
-        ICommandSender sender = context.getSender();
-        World world = sender.getEntityWorld();
-        IGameData gameData = world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
+        GameData gameData = GameDataProvider.getGameData(world).orElse(null);
         if (gameData == null) {
             throw new WrongUsageException("No game data are loaded. Report this issue.");
         }

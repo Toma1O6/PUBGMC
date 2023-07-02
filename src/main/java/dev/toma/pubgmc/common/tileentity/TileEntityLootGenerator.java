@@ -1,11 +1,12 @@
 package dev.toma.pubgmc.common.tileentity;
 
+import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.TileEntityUtil;
-import dev.toma.pubgmc.util.game.loot.ILootSpawner;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -18,13 +19,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.UUID;
 
-// TODO stop using IInventory
-public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, ILootSpawner {
+public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, LootGenerator {
 
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
-    private String gameID = "EMPTY";
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     @Override
     public String getName() {
@@ -57,7 +58,6 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
         clear();
         ItemStackHelper.loadAllItems(compound, this.inventory);
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
-        gameID = compound.hasKey("gameID") ? compound.getString("gameID") : "";
     }
 
     @Override
@@ -65,30 +65,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, this.inventory);
         if (this.hasCustomName()) compound.setString("CustomName", this.customName);
-        compound.setString("gameID", gameID);
         return compound;
-    }
-
-    @Override
-    public String getGameHash() {
-        return gameID;
-    }
-
-    @Override
-    public void setGameHash(String hash) {
-        this.gameID = hash;
-    }
-
-    @Override
-    public void onLoaded() {
-        clear();
-        int tier = world.getBlockState(pos).getValue(BlockLootSpawner.LOOT);
-        String configurationKey = LootConfigurations.LOOT_SPAWNER[tier];
-        List<ItemStack> generated = LootManager.getInstance().generateFromConfiguration(configurationKey, world, this, pos);
-        for (int i = 0; i < Math.min(generated.size(), inventory.size()); i++) {
-            setInventorySlotContents(i, generated.get(i));
-        }
-        TileEntityUtil.syncToClient(this);
     }
 
     @Override
@@ -97,7 +74,59 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
     }
 
     @Override
-    public boolean isAirdropContainer() {
-        return false;
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+        markDirty();
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        assignGameId(newGameId);
+        LootManager.generateLootInGenerator(this, world, pos);
+    }
+
+    @Override
+    public String getLootConfigurationId() {
+        int tier = world.getBlockState(pos).getValue(BlockLootSpawner.LOOT);
+        return LootConfigurations.LOOT_SPAWNER[tier];
+    }
+
+    @Override
+    public void fillWithLoot(List<ItemStack> items) {
+        clear();
+        for (int i = 0; i < Math.min(items.size(), getSizeInventory()); i++) {
+            setInventorySlotContents(i, items.get(i));
+        }
+        TileEntityUtil.syncToClient(this);
+    }
+
+    @Override
+    public BlockPos getWorldPosition() {
+        return pos;
+    }
+
+    @Override
+    public int getSize() {
+        return getSizeInventory();
+    }
+
+    @Override
+    public ItemStack getItemStackInSlot(int index) {
+        return getStackInSlot(index);
+    }
+
+    @Override
+    public void setItemStackToSlot(int index, ItemStack stack) {
+        setInventorySlotContents(index, stack);
+    }
+
+    @Override
+    public void onLootContentsChanged() {
+        TileEntityUtil.syncToClient(this);
     }
 }

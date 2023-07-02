@@ -1,136 +1,168 @@
 package dev.toma.pubgmc.common.commands;
 
-import dev.toma.pubgmc.api.Lobby;
-import dev.toma.pubgmc.api.games.Game;
-import dev.toma.pubgmc.common.capability.game.IGameData;
+import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.game.Game;
+import dev.toma.pubgmc.api.game.GameConfiguration;
+import dev.toma.pubgmc.api.game.GameException;
+import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.map.GameLobby;
+import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.commands.core.*;
-import dev.toma.pubgmc.common.commands.core.arg.*;
-import dev.toma.pubgmc.init.GameRegistry;
+import dev.toma.pubgmc.common.commands.core.arg.BlockPosArgument;
+import dev.toma.pubgmc.common.commands.core.arg.IntArgument;
+import dev.toma.pubgmc.common.commands.core.arg.PubgmcRegistryArgument;
+import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
+import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
-import dev.toma.pubgmc.world.MapLocation;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public class GameCommand extends AbstractCommand {
 
-    private static final Pattern NAME_PATTERN = Pattern.compile(".+");
-    private static final String NAME_ERROR = "Name cannot be empty!";
-
-    private static final ITextComponent STARTED_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.started");
-    private static final ITextComponent STOPPED_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.stopped");
-    private static final ITextComponent TYPE_CHANGE_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.type_selected");
-    private static final ITextComponent MAP_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.map_created");
-    private static final ITextComponent LOBBY_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.lobby_created");
-    private static final ITextComponent LOCATION_ADD_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.location_added");
-    private static final ITextComponent LOCATION_REMOVE_FEEDBACK = new TextComponentTranslation("commands.pubgmc.game.location_removed");
-    private static final ITextComponent LOCATION_LIST_HEADER = new TextComponentTranslation("commands.pubgmc.game.location_list");
-    private static final ITextComponent MAP_INFO_HEADER = new TextComponentTranslation("commands.pubgmc.game.map.header");
-    private static final ITextComponent LOBBY_INFO_HEADER = new TextComponentTranslation("commands.pubgmc.game.lobby.header");
-    private static final ITextComponent[] HELP_TEXT = {
-            new TextComponentTranslation("commands.pubgmc.game.help.header"),
-            new TextComponentTranslation("commands.pubgmc.game.help.start"),
-            new TextComponentTranslation("commands.pubgmc.game.help.stop"),
-            new TextComponentTranslation("commands.pubgmc.game.help.lobby"),
-            new TextComponentTranslation("commands.pubgmc.game.help.map")
-    };
-
-    private static final String ARG_START_PARAMS = "startParameters";
+    private static final ITextComponent TEXT_EXECUTE_CMD = new TextComponentTranslation("commands.pubgmc.game.leave.confirm.hover_cmd_text");
     private static final String ARG_GAME_TYPE = "gameType";
-    private static final String ARG_MAP_X = "mapX";
-    private static final String ARG_MAP_Z = "mapZ";
-    private static final String ARG_POSITION = "pos";
-    private static final String ARG_SIZE = "size";
-    private static final String ARG_NAME = "name";
+
+    private static final String ARG_MAP_NAME = "mapName";
+    private static final String ARG_MAP_CENTER_X = "mapCreateCenterX";
+    private static final String ARG_MAP_CENTER_Z = "mapCreateCenterZ";
+    private static final String ARG_MAP_SIZE = "mapCreateSize";
+    private static final String ARG_MAP_CORNER_AX = "mapCreateCornerAX";
+    private static final String ARG_MAP_CORNER_AZ = "mapCreateCornerAZ";
+    private static final String ARG_MAP_CORNER_BX = "mapCreateCornerBX";
+    private static final String ARG_MAP_CORNER_BZ = "mapCreateCornerBZ";
+    private static final String ARG_LOBBY_CENTER = "lobbyCenter";
 
     private static final CommandTree COMMAND = CommandTree.Builder.command("game")
-            .usage("/game [start|stop|type|map|lobby|locations|help]")
-            .permissionLevel(2)
-            .defaultExecutorPropagationStrategy(DefaultExecutorPropagationStrategy.LAST_NODE)
+            .usage("/game [join|leave|select|init|start|stop|map|lobby]")
+            .permissionLevel(0)
+            .defaultExecutorPropagationStrategy(NodePropagationStrategy.LAST_NODE)
             .executes(GameCommand::executeDefault)
             .node(
+                    CommandNodeProvider.literal("select")
+                            .permissionLevel(2)
+                            .executes(GameCommand::selectGameType)
+                            .node(
+                                    CommandNodeProvider.argument(ARG_GAME_TYPE, PubgmcRegistryArgument.registry(PubgmcRegistries.GAME_TYPES))
+                            )
+            )
+            .node(
+                    CommandNodeProvider.literal("init")
+                            .permissionLevel(2)
+                            .executes(GameCommand::initGame)
+            )
+            .node(
                     CommandNodeProvider.literal("start")
+                            .permissionLevel(2)
                             .executes(GameCommand::startGame)
                             .node(
-                                    CommandNodeProvider.argument(ARG_START_PARAMS, CustomStringArguments.arguments())
+                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
                             )
             )
             .node(
                     CommandNodeProvider.literal("stop")
+                            .permissionLevel(2)
                             .executes(GameCommand::stopGame)
             )
             .node(
-                    CommandNodeProvider.literal("type")
-                            .executes(GameCommand::selectGameType)
-                            .node(
-                                    CommandNodeProvider.argument(ARG_GAME_TYPE, MapLookupArgument.map(GameRegistry.REGISTRY, ResourceLocation::new))
-                            )
-            )
-            .node(
                     CommandNodeProvider.literal("map")
-                            .executes(GameCommand::configureMap)
+                            .permissionLevel(2)
+                            .executes(GameCommand::executeMapNoArguments)
                             .node(
-                                    CommandNodeProvider.argument(ARG_MAP_X, IntArgument.unboundedInt())
-                                            .suggests(GameCommand::suggestPositionX)
+                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
                                             .node(
-                                                    CommandNodeProvider.argument(ARG_MAP_Z, IntArgument.unboundedInt())
-                                                            .suggests(GameCommand::suggestPositionZ)
+                                                    CommandNodeProvider.literal("delete")
+                                                            .executes(GameCommand::deleteMapByName)
+                                            )
+                                            .node(
+                                                    CommandNodeProvider.literal("clearPois")
+                                                            .executes(GameCommand::deleteMapPoints)
+                                            )
+                            )
+                            .node(
+                                    CommandNodeProvider.literal("create")
+                                            .node(
+                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Map name must consist of atleast one a-zA-Z0-9 or _ character"))
                                                             .node(
-                                                                    CommandNodeProvider.argument(ARG_SIZE, IntArgument.min(16))
+                                                                    CommandNodeProvider.literal("center")
+                                                                            .executes(GameCommand::registerMapByCenter)
+                                                                            .node(
+                                                                                    CommandNodeProvider.argument(ARG_MAP_CENTER_X, IntArgument.unboundedInt())
+                                                                                            .suggests(GameCommand::suggestCurrentX)
+                                                                                            .node(
+                                                                                                    CommandNodeProvider.argument(ARG_MAP_CENTER_Z, IntArgument.unboundedInt())
+                                                                                                            .suggests(GameCommand::suggestCurrentZ)
+                                                                                                            .node(
+                                                                                                                    CommandNodeProvider.argument(ARG_MAP_SIZE, IntArgument.min(1))
+                                                                                                            )
+                                                                                            )
+                                                                            )
+                                                            )
+                                                            .node(
+                                                                    CommandNodeProvider.literal("corners")
+                                                                            .executes(GameCommand::registerMapByCorners)
+                                                                            .node(
+                                                                                    CommandNodeProvider.argument(ARG_MAP_CORNER_AX, IntArgument.unboundedInt())
+                                                                                            .suggests(GameCommand::suggestCurrentX)
+                                                                                            .node(
+                                                                                                    CommandNodeProvider.argument(ARG_MAP_CORNER_AZ, IntArgument.unboundedInt())
+                                                                                                            .suggests(GameCommand::suggestCurrentZ)
+                                                                                                            .node(
+                                                                                                                    CommandNodeProvider.argument(ARG_MAP_CORNER_BX, IntArgument.unboundedInt())
+                                                                                                                            .suggests(GameCommand::suggestCurrentX)
+                                                                                                                            .node(
+                                                                                                                                    CommandNodeProvider.argument(ARG_MAP_CORNER_BZ, IntArgument.unboundedInt())
+                                                                                                                                            .suggests(GameCommand::suggestCurrentZ)
+                                                                                                                            )
+                                                                                                            )
+                                                                                            )
+                                                                            )
                                                             )
                                             )
                             )
             )
             .node(
                     CommandNodeProvider.literal("lobby")
-                            .executes(GameCommand::configureLobby)
+                            .permissionLevel(2)
+                            .executes(GameCommand::printLobbyInformation)
                             .node(
-                                    CommandNodeProvider.argument(ARG_POSITION, BlockPosArgument.blockpos())
-                                            .node(
-                                                    CommandNodeProvider.argument(ARG_SIZE, IntArgument.min(1))
-                                            )
+                                    CommandNodeProvider.argument(ARG_LOBBY_CENTER, BlockPosArgument.blockpos())
+                                            .executes(GameCommand::createLobby)
                             )
             )
             .node(
-                    CommandNodeProvider.literal("location")
-                            .executes(GameCommand::listLocations)
+                    CommandNodeProvider.literal("leave")
+                            .permissionLevel(0)
+                            .executes(context -> leaveGame(context, false))
                             .node(
-                                    CommandNodeProvider.literal("add")
-                                            .executes(GameCommand::addNewLocation)
-                                            .node(
-                                                    CommandNodeProvider.argument(ARG_POSITION, BlockPosArgument.blockpos())
-                                                            .node(
-                                                                    CommandNodeProvider.argument(ARG_NAME, StringArgument.stringArgument(NAME_PATTERN, NAME_ERROR))
-                                                            )
-                                            )
-                            )
-                            .node(
-                                    CommandNodeProvider.literal("remove")
-                                            .executes(GameCommand::removeLocation)
-                                            .node(
-                                                    CommandNodeProvider.argument(ARG_NAME, StringArgument.stringArgument(NAME_PATTERN, NAME_ERROR))
-                                            )
+                                    CommandNodeProvider.literal("confirm")
+                                            .executes(context -> leaveGame(context, true))
                             )
             )
             .node(
-                    CommandNodeProvider.literal("help")
-                            .executes(GameCommand::displayUserHelp)
+                    CommandNodeProvider.literal("join")
+                            .permissionLevel(0)
+                            .executes(GameCommand::joinGame)
             )
             .build();
 
@@ -139,161 +171,256 @@ public class GameCommand extends AbstractCommand {
     }
 
     private static void executeDefault(CommandContext context) throws CommandException {
-        throw new WrongUsageException("Missing arguments. See /help game for more details");
+        throw new WrongUsageException("Not enough arguments. See /help game for more details");
     }
 
-    private static void startGame(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        if (gameData.getMapSize() <= 0) {
-            throw new WrongUsageException("You must first set up a map. Use '/game map' command for that");
-        }
-        if (gameData.getLobby() == null) {
-            throw new WrongUsageException("You must define lobby. Use '/game lobby' command for that");
-        }
-        Game game = gameData.getCurrentGame();
-        if (game.isRunning()) {
-            throw new WrongUsageException("There is already game in progress");
-        }
-        if (gameData.isInactiveGame()) {
-            throw new WrongUsageException("This game type cannot be started. Select different one via '/game type' command");
-        }
-        MinecraftServer server = context.getServer();
-        ICommandSender sender = context.getSender();
-        World world = sender.getEntityWorld();
-        String[] startArgs = context.<String[]>getArgument(ARG_START_PARAMS)
-                .orElse(new String[0]);
-        game.onGameStartCommandExecuted(sender, server, startArgs);
-        if (!game.prepareStart(world)) {
-            throw new WrongUsageException("Error occured when launching game! Check logs and contact GAME AUTHOR about this issue!");
-        }
-        game.updateDataToClients(world);
-        sender.sendMessage(STARTED_FEEDBACK);
-    }
-
-    private static void stopGame(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        Game game = gameData.getCurrentGame();
-        if (gameData.getLobby() == null || gameData.isInactiveGame() || !game.isRunning()) {
-            throw new WrongUsageException("There is no active game");
-        }
-        ICommandSender sender = context.getSender();
-        World world = sender.getEntityWorld();
-        game.stopGame(world);
-        game.updateDataToClients(world);
-        sender.sendMessage(STOPPED_FEEDBACK);
+    private static void executeMapNoArguments(CommandContext context) throws CommandException {
+        throw new WrongUsageException("Not enough arguments. Use '/game map create <name> ...' or '/game map <name> [delete|clearPois]'");
     }
 
     private static void selectGameType(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        Game game = context.getArgumentMandatory(ARG_GAME_TYPE);
-        gameData.setGame(game);
-        context.getSender().sendMessage(TYPE_CHANGE_FEEDBACK);
+        GameType<?, ?> gameType = context.getArgumentMandatory(ARG_GAME_TYPE);
+        GameData gameData = getGameData(context);
+        gameData.setSelectedGameType(gameType);
+        gameData.sendGameDataToClients();
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.type_selected", gameType.getIdentifier()));
     }
 
-    private static void configureMap(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        ICommandSender sender = context.getSender();
-        Optional<Integer> optionalX = context.getArgument(ARG_MAP_X);
-        if (optionalX.isPresent()) {
-            int mapX = optionalX.get();
-            int mapZ = context.getArgumentMandatory(ARG_MAP_Z);
-            int size = context.getArgumentMandatory(ARG_SIZE);
-            gameData.setMapCenter(mapX, mapZ, size);
-            sender.sendMessage(MAP_FEEDBACK);
-        } else {
-            BlockPos mapCenter = gameData.getMapCenter();
-            sender.sendMessage(MAP_INFO_HEADER);
-            if (mapCenter == null) {
-                sender.sendMessage(TextComponentHelper.applyColor(TextComponentHelper.UNDEFINED, TextFormatting.RED));
-            } else {
-                ITextComponent mapPosComponent = new TextComponentTranslation("commands.pubgmc.game.map.center", mapCenter.getX(), mapCenter.getZ());
-                mapPosComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, getTeleportCommandAsString(mapCenter)));
-                sender.sendMessage(mapPosComponent);
-                sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.size", gameData.getMapSize()));
-            }
+    @SuppressWarnings("unchecked")
+    private static <CFG extends GameConfiguration, G extends Game<CFG>> void initGame(CommandContext context) throws CommandException {
+        GameData data = getGameData(context);
+        GameType<CFG, G> type = (GameType<CFG, G>) data.getSelectedGameType();
+        if (type == GameTypes.NO_GAME) {
+            throw new WrongUsageException("You must first select game type. Use /game select <gameType>");
         }
-    }
-
-    private static void configureLobby(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        ICommandSender sender = context.getSender();
-        Optional<BlockPos> optional = context.getArgument(ARG_POSITION);
-        if (optional.isPresent()) {
-            BlockPos pos = optional.get();
-            int size = context.getArgumentMandatory(ARG_SIZE);
-            Lobby lobby = new Lobby(pos, size);
-            gameData.setLobby(lobby);
-            sender.sendMessage(LOBBY_FEEDBACK);
-        } else {
-            sender.sendMessage(LOBBY_INFO_HEADER);
-            Lobby lobby = gameData.getLobby();
-            if (lobby != null) {
-                BlockPos pos = lobby.center;
-                ITextComponent component = new TextComponentTranslation("commands.pubgmc.game.lobby.center", pos.getX(), pos.getY(), pos.getZ());
-                component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, getTeleportCommandAsString(pos)));
-                sender.sendMessage(component);
-                sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.lobby.size", lobby.radius));
-            } else {
-                sender.sendMessage(TextComponentHelper.applyColor(TextComponentHelper.UNDEFINED, TextFormatting.RED));
-            }
+        Game<?> current = data.getCurrentGame();
+        if (current != NoGame.INSTANCE && current.isStarted()) {
+            throw new WrongUsageException("There is already active game");
         }
+        validateGameLobbyDefined(data);
+        CFG config = GameConfigurationManager.getConfiguration(type);
+        if (config == null) {
+            throw new WrongUsageException("Selected game type has no configuration. Create one by command '/game configure " + type.getIdentifier().toString() + "'");
+        }
+        GameType.GameConstructor<CFG, G> constructor = type.getConstructor();
+        G game;
+        try {
+            game = constructor.constructGameInstance(UUID.randomUUID(), config);
+        } catch (GameException e) {
+            throw new SyntaxErrorException("Unable to initialize game: " + e.getMessage());
+        }
+        ICommandSender sender = context.getSender();
+        World world = sender.getEntityWorld();
+        game.onGameInit(world);
+        data.setActiveGame(game);
+        data.sendGameDataToClients();
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.initialized"));
     }
 
-    private static void listLocations(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        List<MapLocation> locations = gameData.getSpawnLocations();
+    private static void startGame(CommandContext context) throws CommandException {
+        GameData data = getGameData(context);
+        Optional<String> mapNameOpt = context.getArgument(ARG_MAP_NAME);
+        String actualMapName = mapNameOpt.orElseGet(() -> {
+            List<String> mapNames = new ArrayList<>(data.getRegisteredGameMaps().keySet());
+            if (mapNames.size() == 1) {
+                return mapNames.get(0);
+            }
+            return null;
+        });
+        Game<?> game = data.getCurrentGame();
+        if (game == NoGame.INSTANCE) {
+            throw new WrongUsageException("No game is currenly prepared for starting. Use '/game init' command");
+        }
+        if (game.isStarted()) {
+            throw new WrongUsageException("Game is already started");
+        }
+        if (actualMapName == null) {
+            throw new WrongUsageException("You must specify game map. Use /game start <mapName>");
+        }
+        GameMap map = data.getGameMap(actualMapName);
+        if (map == null) {
+            throw new WrongUsageException("No map is registered under " + actualMapName + " name");
+        }
         ICommandSender sender = context.getSender();
-        sender.sendMessage(LOCATION_LIST_HEADER);
-        for (MapLocation location : locations) {
-            BlockPos pos = location.pos();
-            ITextComponent component = new TextComponentString(String.format("%s - at [%d, %d, %d]", location.name(), pos.getX(), pos.getY(), pos.getZ()));
-            component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, getTeleportCommandAsString(pos)));
+        World world = sender.getEntityWorld();
+        try {
+            game.performGameMapValidations(world, map);
+            game.onGameStart(world);
+        } catch (GameException e) {
+            throw new WrongUsageException("Unable to start game: " + e.getMessage());
+        }
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.started"));
+    }
+
+    private static void stopGame(CommandContext context) throws CommandException {
+        GameData data = getGameData(context);
+        Game<?> game = data.getCurrentGame();
+        if (!game.isStarted()) {
+            throw new WrongUsageException("There is no active game");
+        }
+        ICommandSender sender = context.getSender();
+        GameHelper.stopGame(sender.getEntityWorld());
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.stopped"));
+    }
+
+    private static void registerMapByCenter(CommandContext context) throws CommandException {
+        String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
+        int centerX = context.getArgumentMandatory(ARG_MAP_CENTER_X);
+        int centerZ = context.getArgumentMandatory(ARG_MAP_CENTER_Z);
+        int size = context.getArgumentMandatory(ARG_MAP_SIZE);
+        double x = centerX + 0.5;
+        double z = centerZ + 0.5;
+        Position2 min = new Position2(x - size, z - size);
+        Position2 max = new Position2(x + size, z + size);
+        registerMap(context, mapName, min, max);
+    }
+
+    private static void registerMapByCorners(CommandContext context) throws CommandException {
+        String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
+        int ax = context.getArgumentMandatory(ARG_MAP_CORNER_AX);
+        int az = context.getArgumentMandatory(ARG_MAP_CORNER_AZ);
+        int bx = context.getArgumentMandatory(ARG_MAP_CORNER_BX);
+        int bz = context.getArgumentMandatory(ARG_MAP_CORNER_BZ);
+        int minX = Math.min(ax, bx);
+        int minZ = Math.min(az, bz);
+        int maxX = Math.max(ax, bx);
+        int maxZ = Math.max(az, bz);
+        Position2 min = new Position2(minX + 0.5, minZ + 0.5);
+        Position2 max = new Position2(maxX + 0.5, maxZ + 0.5);
+        registerMap(context, mapName, min, max);
+    }
+
+    private static void registerMap(CommandContext context, String name, Position2 min, Position2 max) throws CommandException {
+        GameData data = getGameData(context);
+        GameMap map = data.getGameMap(name);
+        if (map != null) {
+            throw new WrongUsageException("Map with name '" + name + "' already exists!");
+        }
+        GameMap gameMap = new GameMap(name, min, max);
+        data.registerGameMap(gameMap);
+        data.sendGameDataToClients();
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.created", name));
+    }
+
+    private static void deleteMapByName(CommandContext context) throws CommandException {
+        String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
+        GameData data = getGameData(context);
+        GameMap map = data.getGameMap(mapName);
+        if (map == null) {
+            throw new WrongUsageException("No map found by name '" + mapName + "'");
+        }
+        data.deleteGameMap(mapName);
+        data.sendGameDataToClients();
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.deleted", mapName));
+    }
+
+    private static void deleteMapPoints(CommandContext context) throws CommandException {
+        String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
+        GameData data = getGameData(context);
+        GameMap map = data.getGameMap(mapName);
+        if (map == null) {
+            throw new WrongUsageException("No map found by name '" + mapName + "'");
+        }
+        map.deletePoints();
+        data.sendGameDataToClients();
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.pois_deleted", mapName));
+    }
+
+    private static void printLobbyInformation(CommandContext context) throws CommandException {
+        GameData data = getGameData(context);
+        GameLobby lobby = data.getGameLobby();
+        ICommandSender sender = context.getSender();
+        if (lobby == null) {
+            sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.lobby.not_created"));
+        } else {
+            BlockPos pos = lobby.get();
+            ITextComponent component = new TextComponentTranslation("commands.pubgmc.game.lobby.info", pos.getX(), pos.getY(), pos.getZ());
+            Style style = component.getStyle();
+            style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp @p " + pos.getX() + " " + pos.getY() + " " + pos.getZ()));
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentHelper.CLICK_TO_TELEPORT));
             sender.sendMessage(component);
         }
     }
 
-    private static void addNewLocation(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        BlockPos pos = context.getArgumentMandatory(ARG_POSITION);
-        String name = context.getArgumentMandatory(ARG_NAME);
-        gameData.addSpawnLocation(new MapLocation(name, pos));
-        context.getSender().sendMessage(LOCATION_ADD_FEEDBACK);
+    private static void createLobby(CommandContext context) throws CommandException {
+        GameData data = getGameData(context);
+        BlockPos pos = context.getArgumentMandatory(ARG_LOBBY_CENTER);
+        GameLobby lobby = new GameLobby(pos);
+        data.setGameLobby(lobby);
+        data.sendGameDataToClients();
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.lobby.created"));
     }
 
-    private static void removeLocation(CommandContext context) throws CommandException {
-        IGameData gameData = getGameData(context);
-        String name = context.getArgumentMandatory(ARG_NAME);
-        MapLocation location = MapLocation.findLocation(name, gameData);
-        if (location == null) {
-            throw new WrongUsageException("There is no such location with name '" + name + "'");
+    private static void leaveGame(CommandContext context, boolean confirmed) throws CommandException {
+        GameData gameData = getGameData(context);
+        Game<?> game = gameData.getCurrentGame();
+        if (game == NoGame.INSTANCE || !game.isStarted()) {
+            throw new WrongUsageException("There is no active game");
         }
-        gameData.getSpawnLocations().remove(location);
-        context.getSender().sendMessage(LOCATION_REMOVE_FEEDBACK);
-    }
-
-    private static void displayUserHelp(CommandContext context) {
         ICommandSender sender = context.getSender();
-        for (ITextComponent component : HELP_TEXT) {
-            sender.sendMessage(component);
+        Entity entity = sender.getCommandSenderEntity();
+        if (!(entity instanceof EntityPlayer)) {
+            throw new WrongUsageException("This subcommand can be only executed by player");
+        }
+        EntityPlayer player = (EntityPlayer) entity;
+        if (confirmed) {
+            GameLobby lobby = gameData.getGameLobby();
+            if (lobby == null) {
+                throw new WrongUsageException("There is no lobby defined");
+            }
+            if (game.playerLeaveGame(player)) {
+                GameHelper.resetPlayerData(player);
+                lobby.teleport(player);
+                player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.leave.success"));
+            } else {
+                player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.leave.fail"));
+            }
+        } else {
+            String command = "/game leave confirm";
+            String commandText = TextFormatting.GREEN + command;
+            ITextComponent component = new TextComponentTranslation("commands.pubgmc.game.leave.confirm", commandText);
+            Style style = component.getStyle();
+            style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TEXT_EXECUTE_CMD));
+            player.sendMessage(component);
         }
     }
 
-    private static List<String> suggestPositionX(SuggestionProvider.Context context) {
-        return getCoordinateForPositionSuggestion(context, Vec3i::getX);
-    }
-
-    private static List<String> suggestPositionZ(SuggestionProvider.Context context) {
-        return getCoordinateForPositionSuggestion(context, Vec3i::getZ);
-    }
-
-    private static List<String> getCoordinateForPositionSuggestion(SuggestionProvider.Context context, Function<BlockPos, Integer> provider) {
+    private static void joinGame(CommandContext context) throws CommandException {
+        GameData gameData = getGameData(context);
+        Game<?> game = gameData.getCurrentGame();
+        if (game == NoGame.INSTANCE) {
+            throw new WrongUsageException("There is no active game");
+        }
         ICommandSender sender = context.getSender();
-        BlockPos pos = sender.getPosition();
-        int coordinate = provider.apply(pos);
-        return Collections.singletonList(String.valueOf(coordinate));
+        Entity entity = sender.getCommandSenderEntity();
+        if (!(entity instanceof EntityPlayer)) {
+            throw new WrongUsageException("This subcommand can be only executed by player");
+        }
+        EntityPlayer player = (EntityPlayer) entity;
+        if (game.playerJoinGame(player)) {
+            player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.join.success"));
+        } else {
+            player.sendMessage(new TextComponentTranslation("commands.pubgmc.game.join.fail"));
+        }
     }
 
-    private static String getTeleportCommandAsString(BlockPos pos) {
-        return "/tp @p " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
+    private static List<String> suggestCurrentX(SuggestionProvider.Context context) {
+        return suggestCoordinate(context, Vec3i::getX);
+    }
+
+    private static List<String> suggestCurrentZ(SuggestionProvider.Context context) {
+        return suggestCoordinate(context, Vec3i::getZ);
+    }
+
+    private static List<String> suggestCoordinate(SuggestionProvider.Context context, Function<BlockPos, Integer> provider) {
+        BlockPos pos = context.getSender().getPosition();
+        return Collections.singletonList(String.valueOf(provider.apply(pos)));
+    }
+
+    private static void validateGameLobbyDefined(GameData data) throws CommandException {
+        if (data.getGameLobby() == null) {
+            throw new WrongUsageException("You must first create game lobby. Use /game lobby <position>");
+        }
     }
 }

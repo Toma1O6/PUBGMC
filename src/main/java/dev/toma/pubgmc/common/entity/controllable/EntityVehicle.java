@@ -3,9 +3,11 @@ package dev.toma.pubgmc.common.entity.controllable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.init.PMCSounds;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -22,8 +24,9 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
-public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData
+public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject
 {
     private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
     private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
@@ -34,6 +37,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public float fuel;
     public boolean isBroken = false;
     private short timeInInvalidState;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
         super(world);
@@ -82,6 +86,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         move(MoverType.SELF, motionX, motionY, motionZ);
         playSoundAtVehicle();
         spawnParticles();
+        if (ticksExisted % 20 == 0) {
+            GameHelper.validateGameEntityStillValid(this);
+        }
     }
 
     protected void handleEmptyInputs() {
@@ -393,5 +400,20 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public void readSpawnData(ByteBuf buf) {
         health = buf.readFloat();
         fuel = buf.readFloat();
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        setDead();
     }
 }

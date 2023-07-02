@@ -8,8 +8,8 @@ import java.util.Map;
 
 public final class LiteralNode extends AbstractNode {
 
-    public LiteralNode(String key, CommandNodeExecutor executor, SuggestionProvider suggestionProvider, Map<String, CommandNode> children) {
-        super(key, executor, suggestionProvider, children);
+    public LiteralNode(String key, int permissionLevel, CommandNodeExecutor executor, SuggestionProvider suggestionProvider, Map<String, CommandNode> children) {
+        super(key, permissionLevel, executor, suggestionProvider, children);
     }
 
     @Override
@@ -35,7 +35,7 @@ public final class LiteralNode extends AbstractNode {
 
         @Override
         public CommandNode getNode() {
-            return new LiteralNode(key, executor, suggestionProvider, children);
+            return new LiteralNode(key, permissionLevel, executor, suggestionProvider, children);
         }
     }
 }

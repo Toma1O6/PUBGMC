@@ -1,23 +1,26 @@
 package dev.toma.pubgmc.util;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketDelayedSound;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nullable;
@@ -25,41 +28,6 @@ import java.util.List;
 import java.util.Random;
 
 public class PUBGMCUtil {
-
-    public static void sendSoundPacket(SoundEvent event, float volume, BlockPos pos, TargetPoint target) {
-        PacketHandler.INSTANCE.sendToAllAround(new PacketDelayedSound(event, volume, pos.getX(), pos.getY(), pos.getZ()), target);
-    }
-
-    public static boolean isPlayerDrivingVehicle(EntityPlayer player) {
-        return player.getRidingEntity() instanceof EntityVehicle;
-    }
-
-    public static boolean isPlayerDriverOfVehicle(EntityPlayer player) {
-        return player.getRidingEntity() instanceof EntityVehicle && player.getRidingEntity().getPassengers().get(0) == player;
-    }
-
-    public static <T> boolean contains(T object, T[] array) {
-        for(T t : array) {
-            if(object == t) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int findFirstNull(Object[] array) {
-        for(int i = 0; i < array.length; i++) {
-            if(array[i] == null) return i;
-        }
-        return -1;
-    }
-
-    public static void shiftElementsInArray(Object[] array) {
-        for(int i = array.length - 2; i >= 0; i--) {
-            array[i+1] = array[i];
-        }
-        array[0] = null;
-    }
 
     /**
      * Position calculated between X and Z coordinate of given positions
@@ -75,16 +43,8 @@ public class PUBGMCUtil {
         return Math.sqrt(sqr(pos1.getX() - pos2.getX()) + sqr(pos1.getY() - pos2.getY()) + sqr(pos1.getZ() - pos2.getZ()));
     }
 
-    public static float getAngleBetween2Points(Entity entityToRotate, BlockPos targetPos) {
-        return (float) (MathHelper.atan2(entityToRotate.posZ - targetPos.getZ(), entityToRotate.posX - targetPos.getX()) * (180D / Math.PI)) - 90f;
-    }
-
-    public static float updateRotation(float prevRotation, float additionalRotation) {
-        return MathHelper.wrapDegrees(additionalRotation - prevRotation);
-    }
-
-    public static void updateEntityRotation(Entity entity, BlockPos targetPos) {
-        entity.rotationYaw = updateRotation(entity.rotationYaw, getAngleBetween2Points(entity, targetPos));
+    public static float getAngleBetween2Points(double x1, double z1, double x2, double z2) {
+        return (float) (MathHelper.atan2(z2 - z1, x2 - x1) * (180D / Math.PI)) - 90.0F;
     }
 
     public static double sqr(double num) {
@@ -100,13 +60,11 @@ public class PUBGMCUtil {
         return new Vec3d(base.x + entity.motionX, base.y + entity.motionY, base.z + entity.motionZ);
     }
 
-    public static String generateID(int length) {
-        return RandomStringUtils.random(length, true, true);
-    }
-
     public static void spawnAirdrop(World world, BlockPos pos, boolean bigDrop) {
         if (!world.isRemote && world.isBlockLoaded(pos)) {
+            Pubgmc.logger.debug("Generating aidrop at {}. Large: {}", pos, bigDrop);
             EntityAirdrop drop = new EntityAirdrop(world, pos, bigDrop);
+            drop.assignGameId(GameHelper.getGameUUID(world));
             world.spawnEntity(drop);
         }
     }
@@ -143,5 +101,65 @@ public class PUBGMCUtil {
             stack.shrink(1);
         }
         return true;
+    }
+
+    @Nullable
+    public static BlockPos getEmptyGroundPositionAt(World world, BlockPos pos) {
+        BlockPos.MutableBlockPos possiblePosition = new BlockPos.MutableBlockPos(pos);
+        if (world.isAirBlock(possiblePosition)) {
+            return findGround(world, possiblePosition);
+        }
+        int y = possiblePosition.getY() - 1;
+        while (y < 255) {
+            possiblePosition.setY(y);
+            if (world.isAirBlock(possiblePosition)) {
+                return findGround(world, possiblePosition);
+            }
+            for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+                BlockPos withOffset = possiblePosition.offset(facing);
+                if (world.isAirBlock(withOffset)) {
+                    return findGround(world, withOffset);
+                }
+            }
+            ++y;
+        }
+        return null;
+    }
+
+    public static BlockPos findGround(World world, BlockPos pos) {
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
+        while (world.isAirBlock(mutableBlockPos.down()) && mutableBlockPos.getY() > 0) {
+            mutableBlockPos.setY(mutableBlockPos.getY() - 1);
+        }
+        return mutableBlockPos.toImmutable();
+    }
+
+    public static String formatTime(int ticks) {
+        int seconds = ticks / 20;
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        seconds = seconds % 60;
+        if (hours > 0) {
+            return String.format("%d:%02d:%02d", hours, minutes, seconds);
+        } else {
+            return String.format("%d:%02d", minutes, seconds);
+        }
+    }
+
+    public static IInventory asInventory(EntityLiving living) {
+        IInventory inventory = new InventoryBasic(living.getName(), false, EntityEquipmentSlot.values().length);
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            ItemStack stack = living.getItemStackFromSlot(slot);
+            if (!stack.isEmpty()) {
+                inventory.setInventorySlotContents(slot.getSlotIndex(), stack.copy());
+            }
+        }
+        return inventory;
+    }
+
+    public static void clearEntityInventory(EntityLiving living) {
+        for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
+            living.setItemStackToSlot(slot, ItemStack.EMPTY);
+        }
     }
 }

@@ -2,8 +2,6 @@ package dev.toma.pubgmc.client.layers;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.items.equipment.GhillieSuit;
 import net.minecraft.client.model.ModelBiped;
@@ -11,21 +9,24 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
+import java.util.function.Function;
+
+public class LayerGhillie<E extends EntityLivingBase> implements LayerRenderer<E> {
 
     public static final ResourceLocation TEXTURE_MAIN = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/ghillie_main.png");
     public static final ResourceLocation TEXTURE_OVERLAY = new ResourceLocation(Pubgmc.MOD_ID + ":textures/models/ghillie_overlay.png");
 
-    protected final RenderLivingBase<?> renderLivingBase;
+    protected final RenderLivingBase<E> renderLivingBase;
+    protected final Function<E, SpecialInventoryProvider> inventoryProvider;
     protected final ModelBiped baseLayer;
     protected final ModelBiped overlay;
 
-    public LayerGhillie(RenderLivingBase<?> renderLivingBase) {
+    public LayerGhillie(RenderLivingBase<E> renderLivingBase, Function<E, SpecialInventoryProvider> provider) {
         this.renderLivingBase = renderLivingBase;
+        this.inventoryProvider = provider;
         this.baseLayer = new ModelBiped(1.2F);
         this.overlay = new ModelBiped(1.4F);
     }
@@ -36,19 +37,12 @@ public class LayerGhillie implements LayerRenderer<EntityLivingBase> {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (entitylivingbaseIn instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entitylivingbaseIn;
-            IPlayerData data = PlayerData.get(player);
-            if (data == null) {
-                return;
-            }
-            ItemStack stack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.GHILLIE);
-            renderGhillie(stack, player, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-        } else if (entitylivingbaseIn instanceof SpecialInventoryProvider) {
-            ItemStack stack = ((SpecialInventoryProvider) entitylivingbaseIn).getSpecialItemFromSlot(SpecialEquipmentSlot.GHILLIE);
-            renderGhillie(stack, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-        }
+    public void doRenderLayer(E entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        SpecialInventoryProvider inventory = inventoryProvider.apply(entitylivingbaseIn);
+        if (inventory == null)
+            return;
+        ItemStack stack = inventory.getSpecialItemFromSlot(SpecialEquipmentSlot.GHILLIE);
+        renderGhillie(stack, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
     private void renderGhillie(ItemStack stack, EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {

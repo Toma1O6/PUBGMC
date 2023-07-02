@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.network;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.network.client.*;
 import dev.toma.pubgmc.network.server.*;
@@ -25,7 +26,6 @@ public class PacketHandler {
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
         registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
-        registerServerPacket(PacketChooseLocation.Handler.class, PacketChooseLocation.class);
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
@@ -37,16 +37,14 @@ public class PacketHandler {
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
         registerClientPacket(PacketParticle.Handler.class, PacketParticle.class);
         registerClientPacket(PacketClientCapabilitySync.Handler.class, PacketClientCapabilitySync.class);
-        registerClientPacket(PacketUpdatePlayerRotation.Handler.class, PacketUpdatePlayerRotation.class);
         registerClientPacket(PacketVehicleData.Handler.class, PacketVehicleData.class);
         registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
         registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
         registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
         registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
-        registerClientPacket(PacketSyncGameData.Handler.class, PacketSyncGameData.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
-        registerClientPacket(PacketOpenObjectiveGui.Handler.class, PacketOpenObjectiveGui.class);
         registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
+        registerClientPacket(S2C_SendGameData.Handler.class, S2C_SendGameData.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {
@@ -90,7 +88,11 @@ public class PacketHandler {
     }
 
     public static void syncPlayerDataToClient(IPlayerData data, EntityPlayerMP player) {
-        sendToClient(new PacketClientCapabilitySync(player, data.serializeNBT()), player);
+        sendToClient(new PacketClientCapabilitySync(player.getUniqueID(), data.serializeNBT()), player);
+    }
+
+    public static void syncGameDataToClient(EntityPlayerMP player) {
+        GameDataProvider.getGameData(player.world).ifPresent(data -> sendToClient(new S2C_SendGameData(data.serializeNBT()), player));
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerClientPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {

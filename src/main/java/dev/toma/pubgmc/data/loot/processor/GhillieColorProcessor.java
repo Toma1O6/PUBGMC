@@ -1,8 +1,12 @@
 package dev.toma.pubgmc.data.loot.processor;
 
 import com.google.gson.*;
+import dev.toma.pubgmc.api.game.loot.LootProcessor;
+import dev.toma.pubgmc.api.game.loot.LootProcessorSerializer;
+import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.data.loot.LootGenerationContext;
+import net.minecraft.init.Biomes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +35,13 @@ public class GhillieColorProcessor implements LootProcessor {
         BlockPos pos = context.getPos();
         if (colorProvider == ColorProvider.BIOME) {
             Biome biome = world.getBiome(pos);
-            color = biome.getFoliageColorAtPos(pos);
+            if (biome.isSnowyBiome()) {
+                color = 0xE8F2F2;
+            } else if (biome == Biomes.DESERT || biome == Biomes.DESERT_HILLS || biome == Biomes.MUTATED_DESERT) {
+                color = 0xE2D6AA;
+            } else {
+                color = biome.getFoliageColorAtPos(pos);
+            }
         } else {
             Random random = world.rand;
             color = colorList[random.nextInt(colorList.length)];

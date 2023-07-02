@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.client;
 
+import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
 import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
@@ -9,6 +10,8 @@ import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
+import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
+import dev.toma.pubgmc.client.games.GameRendererManager;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
@@ -19,6 +22,7 @@ import dev.toma.pubgmc.common.capability.player.*;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.controllable.IControllable;
+import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
@@ -87,6 +91,11 @@ public class ClientEvents {
     private int shotsFired;
     private boolean shooting;
     private int shootingTimer;
+
+    @SubscribeEvent
+    public void registerGameRenderers(RegisterGameRendererEvent event) {
+        event.registerRenderer(GameTypes.BATTLE_ROYALE, new BattleRoyaleGameRenderer());
+    }
 
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
@@ -237,7 +246,6 @@ public class ClientEvents {
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
-
         if (e.getType() == ElementType.CROSSHAIRS) {
             if (!ConfigPMC.developerMode.get() && stack.getItem() instanceof GunBase) {
                 e.setCanceled(true);
@@ -284,6 +292,14 @@ public class ClientEvents {
                 }
             }
         }
+
+        GameRendererManager.INSTANCE.renderCurrentGameHUDOverlay(e);
+    }
+
+    @SubscribeEvent
+    public void renderWorld(RenderWorldLastEvent event) {
+        float partialTicks = event.getPartialTicks();
+        GameRendererManager.INSTANCE.renderWorldOverlay(partialTicks);
     }
 
     @SubscribeEvent

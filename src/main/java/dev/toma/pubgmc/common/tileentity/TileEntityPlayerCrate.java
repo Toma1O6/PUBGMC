@@ -1,9 +1,10 @@
 package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.util.GameUtils;
-import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
-import dev.toma.pubgmc.init.PMCBlocks;
+import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.loot.LootableContainer;
+import dev.toma.pubgmc.util.TileEntityUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -11,14 +12,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGameTileEntity {
+import java.util.UUID;
+
+public class TileEntityPlayerCrate extends TileEntity implements IInventory, LootableContainer, GameObject {
+
     private NonNullList<ItemStack> inv = NonNullList.withSize(45, ItemStack.EMPTY);
     private String customName;
-    private String hash = "EMPTY";
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     @Override
     public String getName() {
@@ -69,15 +74,11 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        ItemStack itemstack = this.inv.get(index);
-        boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
         this.inv.set(index, stack);
-
-        if (stack.getCount() > this.getInventoryStackLimit()) stack.setCount(this.getInventoryStackLimit());
-        if (index == 0 && !flag) {
-            ItemStack stack1 = this.inv.get(index + 1);
-
+        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
+            stack.setCount(this.getInventoryStackLimit());
         }
+        this.markDirty();
     }
 
     @Override
@@ -85,7 +86,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
         super.readFromNBT(compound);
         this.inv = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(compound, this.inv);
-
+        gameId = compound.getUniqueId("gameId");
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
     }
 
@@ -93,7 +94,7 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, this.inv);
-
+        compound.setUniqueId("gameId", gameId);
         if (this.hasCustomName()) compound.setString("CustomName", this.customName);
         return compound;
     }
@@ -148,17 +149,44 @@ public class TileEntityPlayerCrate extends TileEntity implements IInventory, IGa
     }
 
     @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
+    public UUID getCurrentGameId() {
+        return gameId;
     }
 
     @Override
-    public String getGameHash() {
-        return hash;
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+        markDirty();
     }
 
     @Override
-    public void onLoaded() {
-        GameUtils.markBlockForRemoval(world, pos, PMCBlocks.PLAYER_CRATE);
+    public void onNewGameDetected(UUID newGameId) {
+        inv.clear();
+        world.destroyBlock(pos, false);
+    }
+
+    @Override
+    public BlockPos getWorldPosition() {
+        return pos;
+    }
+
+    @Override
+    public int getSize() {
+        return getSizeInventory();
+    }
+
+    @Override
+    public ItemStack getItemStackInSlot(int index) {
+        return getStackInSlot(index);
+    }
+
+    @Override
+    public void setItemStackToSlot(int index, ItemStack stack) {
+        setInventorySlotContents(index, stack);
+    }
+
+    @Override
+    public void onLootContentsChanged() {
+        TileEntityUtil.syncToClient(this);
     }
 }

@@ -7,8 +7,8 @@ import dev.toma.configuration.api.type.IntType;
 import dev.toma.configuration.api.type.ObjectType;
 
 public final class CFGOtherSettings extends ObjectType {
+
     public BooleanType messagesOnJoin;
-    public ColorType zoneColor;
     public IntType maxLootRenderDistance;
 
     public CFGOtherSettings() {
@@ -18,7 +18,6 @@ public final class CFGOtherSettings extends ObjectType {
     @Override
     public void buildStructure(ConfigCreator configCreator) {
         messagesOnJoin = configCreator.createBoolean("Log-In Messages", true, "Toggle info messages about updates on log-in");
-        zoneColor = configCreator.createColorRGB("Zone color", "#00BAFF");
         maxLootRenderDistance = configCreator.createInt("Loot render distance", 32, 8, 128, "Distance at which is loot being rendered");
     }
 }

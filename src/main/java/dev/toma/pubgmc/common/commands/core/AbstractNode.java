@@ -10,12 +10,14 @@ import java.util.*;
 public abstract class AbstractNode implements CommandNode {
 
     private final String key;
+    private final int permissionLevel;
     private final CommandNodeExecutor executor;
     private final SuggestionProvider suggestionProvider;
     private final Map<String, CommandNode> children;
 
-    public AbstractNode(String key, CommandNodeExecutor executor, SuggestionProvider suggestionProvider, Map<String, CommandNode> children) {
+    public AbstractNode(String key, int permissionLevel, CommandNodeExecutor executor, SuggestionProvider suggestionProvider, Map<String, CommandNode> children) {
         this.key = key;
+        this.permissionLevel = permissionLevel;
         this.executor = executor;
         this.suggestionProvider = suggestionProvider;
         this.children = children;
@@ -24,6 +26,11 @@ public abstract class AbstractNode implements CommandNode {
     @Override
     public String key() {
         return key;
+    }
+
+    @Override
+    public int getPermissionLevel() {
+        return permissionLevel;
     }
 
     @Override
@@ -54,6 +61,7 @@ public abstract class AbstractNode implements CommandNode {
 
         protected final String key;
         protected final Map<String, CommandNode> children;
+        protected int permissionLevel = -1;
         protected CommandNodeExecutor executor;
         protected SuggestionProvider suggestionProvider;
 
@@ -63,6 +71,11 @@ public abstract class AbstractNode implements CommandNode {
         }
 
         public abstract B self();
+
+        public B permissionLevel(int permissionLevel) {
+            this.permissionLevel = permissionLevel;
+            return self();
+        }
 
         public B executes(CommandNodeExecutor executor) {
             this.executor = executor;

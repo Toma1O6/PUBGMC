@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.asm;
 
+import dev.toma.pubgmc.client.event.ClientWorldTickEvent;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
@@ -21,6 +22,8 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ASMHooksClient {
 
@@ -102,11 +105,8 @@ public class ASMHooksClient {
     }
 
     public static void player_constructRender(RenderPlayer renderPlayer, RenderManager manager, boolean useSmallArms) {
-        renderPlayer.addLayer(new LayerGhillie(renderPlayer));
-        renderPlayer.addLayer(new LayerBackpack(renderPlayer, entity -> {
-            EntityPlayer player = (EntityPlayer) entity;
-            return PlayerData.get(player);
-        }));
+        renderPlayer.addLayer(new LayerGhillie<>(renderPlayer, PlayerData::get));
+        renderPlayer.addLayer(new LayerBackpack<>(renderPlayer, PlayerData::get));
         renderPlayer.addLayer(new LayerNightVision<>(renderPlayer, PlayerData::get, player -> PlayerData.get(player).isNightVisionActive()));
     }
 
@@ -139,6 +139,14 @@ public class ASMHooksClient {
             b = Math.min(1.0F, b * amplifier);
             lightmapColors[i] = 0xFF << 24 | ((int) (r * 255.0F)) << 16 | ((int) (g * 255.0F)) << 8 | ((int) (b * 255.0F));
         }
+    }
+
+    public static void dispatchPreWorldClientTickEvent(WorldClient worldClient) {
+        MinecraftForge.EVENT_BUS.post(new ClientWorldTickEvent(TickEvent.Phase.START, worldClient));
+    }
+
+    public static void dispatchPostWorldClientTickEvent(WorldClient worldClient) {
+        MinecraftForge.EVENT_BUS.post(new ClientWorldTickEvent(TickEvent.Phase.END, worldClient));
     }
 
     public static ItemCameraTransforms.TransformType getTransformType() {

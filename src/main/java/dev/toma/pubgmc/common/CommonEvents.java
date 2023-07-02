@@ -1,15 +1,16 @@
 package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.content.ContentResult;
 import dev.toma.pubgmc.client.content.ExternalLinks;
-import dev.toma.pubgmc.common.capability.game.IGameData;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.capability.world.IWorldData;
+import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
@@ -24,6 +25,7 @@ import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
 import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
@@ -35,7 +37,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -44,6 +45,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -51,6 +53,7 @@ import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -102,6 +105,17 @@ public class CommonEvents {
         player.sendMessage(new TextComponentString(color + message));
     }
 
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() instanceof EntityAIPlayer && !event.isCanceled()) {
+            EntityAIPlayer aiPlayer = (EntityAIPlayer) event.getEntity();
+            UUID gameId = GameHelper.getGameUUID(event.getWorld());
+            if (gameId.equals(GameHelper.DEFAULT_UUID)) {
+                LoadoutManager.apply(aiPlayer, EntityAIPlayer.DEFAULT_LOADOUT);
+            }
+        }
+    }
+
     @SubscribeEvent
     public void livingChangeEquipment(LivingEquipmentChangeEvent event) {
         if(event.getEntityLiving() instanceof EntityPlayer) {
@@ -136,9 +150,9 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public void attachWorldCapability(AttachCapabilitiesEvent<World> e) {
-        e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":worldData"), new IWorldData.WorldDataProvider());
-        e.addCapability(new ResourceLocation(Pubgmc.MOD_ID + ":gameData"), new IGameData.GameDataProvider());
+    public void attachWorldCapability(AttachCapabilitiesEvent<World> event) {
+        World world = event.getObject();
+        event.addCapability(Pubgmc.getResource("games"), new GameDataProvider(world));
     }
 
     @SubscribeEvent
@@ -176,32 +190,23 @@ public class CommonEvents {
 
     //Once player logs in
     @SubscribeEvent
-    public void onPlayerLoggedIn(PlayerLoggedInEvent e) {
+    public void onPlayerLoggedIn(PlayerLoggedInEvent event) {
+        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        if (player == null)
+            return;
         if (ConfigPMC.client.other.messagesOnJoin.get()) {
-            if (e.player instanceof EntityPlayer) {
-                ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
-                handleUpdateResults(version, e.player);
-            }
+            ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
+            handleUpdateResults(version, player);
         }
-        selectedSlotCache.put(e.player.getUniqueID(), e.player.inventory.currentItem);
-
-        if (e.player instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) e.player;
-            if (player != null && !player.world.isRemote) {
-                PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
-                //We get the last player data and later sync it to client
-                player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                data.getAimInfo().setAiming(false, 1.0F);
-                //Sync some data from capability to client for overlay rendering
-                PacketHandler.syncPlayerDataToClient(data, player);
-
-                IGameData gameData = player.world.getCapability(IGameData.GameDataProvider.GAMEDATA, null);
-                if(gameData != null) {
-                    gameData.getCurrentGame().updateDataToClient(player.world, player);
-                }
-            }
-        }
+        selectedSlotCache.put(event.player.getUniqueID(), event.player.inventory.currentItem);
+        PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
+        //We get the last player data and later sync it to client
+        player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        data.getAimInfo().setAiming(false, 1.0F);
+        //Sync some data from capability to client for overlay rendering
+        PacketHandler.syncPlayerDataToClient(data, player);
+        PacketHandler.syncGameDataToClient(player);
     }
 
     @SubscribeEvent

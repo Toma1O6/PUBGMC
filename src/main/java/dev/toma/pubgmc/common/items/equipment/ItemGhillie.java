@@ -4,8 +4,6 @@ import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.util.PUBGMCUtil;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +21,6 @@ public class ItemGhillie extends PMCItem implements GhillieSuit {
         super(name);
         this.setMaxStackSize(1);
         this.setCreativeTab(PMCTabs.TAB_ITEMS);
-        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 25, true));
     }
 
     @Override

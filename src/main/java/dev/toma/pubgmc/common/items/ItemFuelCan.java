@@ -1,8 +1,6 @@
 package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,10 +14,10 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemFuelCan extends PMCItem {
+
     public ItemFuelCan() {
         super("fuelcan");
         setMaxStackSize(1);
-        LootManager.register(LootType.ARMOR, new LootManager.LootEntry(this, 30, false));
     }
 
     @Override

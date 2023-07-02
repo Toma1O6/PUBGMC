@@ -1,46 +1,48 @@
 package dev.toma.pubgmc.common.tileentity;
 
-import dev.toma.pubgmc.api.interfaces.IGameTileEntity;
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import javax.annotation.Nullable;
+import java.util.UUID;
 
-public class TileEntityWindow extends TileEntity implements IGameTileEntity {
+public class TileEntityWindow extends TileEntity implements GameObject {
 
-    private String hash = "null";
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        compound.setString("hash", hash);
+        compound.setUniqueId("gameId", gameId);
         return compound;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        hash = compound.getString("hash");
+        gameId = compound.getUniqueId("gameId");
     }
 
     @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
+    public UUID getCurrentGameId() {
+        return gameId;
     }
 
     @Override
-    public String getGameHash() {
-        return hash;
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+        markDirty();
     }
 
-    @Nullable
     @Override
-    public void onLoaded() {
+    public void onNewGameDetected(UUID newGameId) {
+        assignGameId(newGameId);
         IBlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockWindow) {
-            if(state.getValue(BlockWindow.BROKEN)) {
+        if (state.getBlock() instanceof BlockWindow) {
+            if (state.getValue(BlockWindow.BROKEN)) {
                 world.scheduleBlockUpdate(pos, state.getBlock(), 5, 0);
             }
         }

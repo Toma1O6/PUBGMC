@@ -1,19 +1,22 @@
 package dev.toma.pubgmc;
 
+import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
+import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
-import dev.toma.pubgmc.common.capability.game.IGameData;
+import dev.toma.pubgmc.common.capability.game.GameDataImpl;
 import dev.toma.pubgmc.common.capability.player.IPlayerData;
 import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.world.IWorldData;
-import dev.toma.pubgmc.common.commands.*;
-import dev.toma.pubgmc.data.SimpleObjectRegistry;
+import dev.toma.pubgmc.common.commands.AirdropCommand;
+import dev.toma.pubgmc.common.commands.GameCommand;
+import dev.toma.pubgmc.common.commands.LootCommand;
+import dev.toma.pubgmc.common.commands.TeamCommand;
+import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
+import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.data.loot.LootManager;
-import dev.toma.pubgmc.data.loot.LootProviderType;
-import dev.toma.pubgmc.data.loot.LootProviders;
-import dev.toma.pubgmc.data.loot.processor.LootProcessorType;
-import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCItems;
@@ -59,9 +62,6 @@ public class Pubgmc {
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     public static final int CONTENT_DATA_VERSION = 1;
 
-    public static final SimpleObjectRegistry<LootProviderType<?>> LOOT_PROVIDER_TYPE_REGISTRY = new SimpleObjectRegistry<>(LootProviderType::getProviderId);
-    public static final SimpleObjectRegistry<LootProcessorType<?>> LOOT_PROCESSOR_TYPE_REGISTRY = new SimpleObjectRegistry<>(LootProcessorType::getIdentifier);
-
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger("pubgmc");
 
@@ -85,14 +85,8 @@ public class Pubgmc {
 
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
-        CapabilityManager.INSTANCE.register(IWorldData.class, SimpleStorageImpl.instance(), IWorldData.WorldData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
-        CapabilityManager.INSTANCE.register(IGameData.class, SimpleStorageImpl.instance(), IGameData.GameData::new);
-
-        dev.toma.pubgmc.init.GameRegistry.dispatchRegistryEvent();
-
-        LootProviders.registerLootProviders();
-        LootProcessors.registerLootProcessors();
+        CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
 
         proxy.preInit(event);
     }
@@ -102,9 +96,12 @@ public class Pubgmc {
         NetworkRegistry.INSTANCE.registerGuiHandler(Pubgmc.instance, new GuiHandler());
         CommonRegistry.initTileEntities();
         registerSmeltingRecipes();
+        dispatchRegistryEvents();
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
+        DefaultEntityLoadouts.register();
         LootManager.load();
+        LoadoutManager.load();
     }
 
     @EventHandler
@@ -115,17 +112,31 @@ public class Pubgmc {
 
     @EventHandler
     public void serverInit(FMLServerStartingEvent event) {
-        event.registerServerCommand(new LeaveCommand());
-        event.registerServerCommand(new LootCommand());
-        event.registerServerCommand(new ClearPlayerCratesCommand());
         event.registerServerCommand(new AirdropCommand());
+        event.registerServerCommand(new LootCommand());
         event.registerServerCommand(new GameCommand());
+        event.registerServerCommand(new TeamCommand());
     }
 
     private static void registerSmeltingRecipes() {
         FurnaceRecipes rec = FurnaceRecipes.instance();
         rec.addSmeltingRecipeForBlock(PMCBlocks.COPPER_ORE, new ItemStack(PMCItems.COPPER_INGOT, 1), 2f);
         rec.addSmelting(PMCItems.STEEL_DUST, new ItemStack(PMCItems.STEEL_INGOT, 1), 2f);
+    }
+
+    private static void dispatchRegistryEvents() {
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.LootProvider());
+        PubgmcRegistries.LOOT_PROVIDERS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.LootProcessor());
+        PubgmcRegistries.LOOT_PROCESSORS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Game());
+        PubgmcRegistries.GAME_TYPES.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.Playzone());
+        PubgmcRegistries.PLAYZONE_TYPES.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.PointType());
+        PubgmcRegistries.GAME_MAP_POINTS.lock();
+
+        GameConfigurationManager.loadConfigurations();
     }
 
     public static boolean isOutdated() {

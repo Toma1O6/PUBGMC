@@ -19,6 +19,8 @@ public interface CommandNode extends ChildNodeProvider {
 
     Map<String, CommandNode> children();
 
+    int getPermissionLevel();
+
     void process(ArgumentReader reader, Map<String, Object> argumentMap, MinecraftServer server, ICommandSender sender) throws CommandException;
 
     List<String> suggest(MinecraftServer server, ICommandSender sender, @Nullable BlockPos targetPos, int cursor);

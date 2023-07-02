@@ -1,9 +1,7 @@
 package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.games.GameBattleRoyale;
-import dev.toma.pubgmc.api.games.GameBombDefuse;
-import dev.toma.pubgmc.api.games.GameInactive;
+import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
@@ -17,17 +15,22 @@ import dev.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.common.games.playzone.PlayzoneTypes;
+import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.items.*;
-import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
+import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
+import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
-import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
+import dev.toma.pubgmc.data.loot.LootProviders;
+import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.util.Constants;
 import dev.toma.pubgmc.util.helper.AttachmentHelper;
 import net.minecraft.block.Block;
@@ -53,7 +56,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
 public class CommonRegistry {
 
     private static int entityID = 0;
@@ -910,17 +913,44 @@ public class CommonRegistry {
                 registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
                 registerEntity("molotov", EntityMolotov.class, 64, 1),
                 registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
-                registerEntity("flashbang", EntityFlashBang.class, 64, 1)
+                registerEntity("flashbang", EntityFlashBang.class, 64, 1),
+                registerEntity("item", EntityGameItem.class, 64, 20)
         );
     }
 
     @SubscribeEvent
-    public static void registerGameModes(GameRegistry.GameRegisterEvent e) {
-        e.registerAll(
-                new GameInactive("inactive"),
-                new GameBattleRoyale("battleroyale"),
-                new GameBombDefuse("bombDefuse")
-        );
+    public static void registerLootProviders(PubgmcRegistryEvent.LootProvider event) {
+        event.register(LootProviders.NONE);
+        event.register(LootProviders.ITEM);
+        event.register(LootProviders.RANDOM_CHANCE);
+        event.register(LootProviders.COUNT);
+        event.register(LootProviders.MULTI_VALUE);
+        event.register(LootProviders.RANDOM_ITEM);
+        event.register(LootProviders.WEIGHTED_ITEM);
+    }
+
+    @SubscribeEvent
+    public static void registerLootProcessors(PubgmcRegistryEvent.LootProcessor event) {
+        event.register(LootProcessors.AMMO_PROCESSOR);
+        event.register(LootProcessors.GHILLIE_COLOR_PROCESSOR);
+        event.register(LootProcessors.ATTACHMENT_PROCESSOR);
+    }
+
+    @SubscribeEvent
+    public static void registerGameTypes(PubgmcRegistryEvent.Game event) {
+        event.register(GameTypes.NO_GAME);
+        event.register(GameTypes.BATTLE_ROYALE);
+    }
+
+    @SubscribeEvent
+    public static void registerPlayzoneTypes(PubgmcRegistryEvent.Playzone event) {
+        event.register(PlayzoneTypes.STATIC_PLAYZONE);
+        event.register(PlayzoneTypes.DYNAMIC_PLAYZONE);
+    }
+
+    @SubscribeEvent
+    public static void registerPointTypes(PubgmcRegistryEvent.PointType event) {
+        event.register(GameMapPoints.SPAWNER);
     }
 
     public static void registerItemBlock(Block block) {

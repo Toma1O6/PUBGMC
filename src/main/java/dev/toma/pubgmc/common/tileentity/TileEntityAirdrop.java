@@ -1,22 +1,26 @@
 package dev.toma.pubgmc.common.tileentity;
 
+import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
-import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
-import dev.toma.pubgmc.util.game.loot.ILootSpawner;
+import dev.toma.pubgmc.util.TileEntityUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
+import java.util.UUID;
 
-public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ILootSpawner, ITickable {
+public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable, LootGenerator {
 
-    private String hash = "empty";
     private NonNullList<ItemStack> inventory;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public TileEntityAirdrop() {
         this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
@@ -27,14 +31,6 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
         return this;
     }
 
-    public void onLanded() {
-        String configuration = inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
-        List<ItemStack> generatedItems = LootManager.getInstance().generateFromConfiguration(configuration, world, this, pos);
-        for (int i = 0; i < Math.min(inventory.size(), generatedItems.size()); i++) {
-            setInventorySlotContents(i, generatedItems.get(i));
-        }
-    }
-
     @Override
     public String getName() {
         return "airdrop";
@@ -43,31 +39,6 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     @Override
     public NonNullList<ItemStack> getInventory() {
         return inventory;
-    }
-
-    @Override
-    public String getGameHash() {
-        return hash;
-    }
-
-    @Override
-    public void setGameHash(String hash) {
-        this.hash = hash;
-    }
-
-    @Override
-    public void onLoaded() {
-        this.world.scheduleBlockUpdate(this.pos, this.world.getBlockState(pos).getBlock(), 2, 1);
-    }
-
-    @Override
-    public boolean isAirdropContainer() {
-        return true;
-    }
-
-    @Override
-    public boolean generateLootOnCommand() {
-        return false;
     }
 
     @Override
@@ -83,7 +54,7 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, inventory);
-        compound.setString("game", hash);
+        compound.setUniqueId("gameId", gameId);
         return compound;
     }
 
@@ -91,6 +62,61 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         ItemStackHelper.loadAllItems(compound, inventory);
-        hash = compound.getString("hash");
+        gameId = compound.getUniqueId("gameId");
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+        markDirty();
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        world.scheduleBlockUpdate(pos, world.getBlockState(pos).getBlock(), 2, 0);
+    }
+
+    @Override
+    public String getLootConfigurationId() {
+        return inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
+    }
+
+    @Override
+    public void fillWithLoot(List<ItemStack> items) {
+        clear();
+        for (int i = 0; i < Math.min(getSizeInventory(), items.size()); i++) {
+            setInventorySlotContents(i, items.get(i));
+        }
+        TileEntityUtil.syncToClient(this);
+    }
+
+    @Override
+    public BlockPos getWorldPosition() {
+        return pos;
+    }
+
+    @Override
+    public int getSize() {
+        return getSizeInventory();
+    }
+
+    @Override
+    public ItemStack getItemStackInSlot(int index) {
+        return getStackInSlot(index);
+    }
+
+    @Override
+    public void setItemStackToSlot(int index, ItemStack stack) {
+        setInventorySlotContents(index, stack);
+    }
+
+    @Override
+    public void onLootContentsChanged() {
+        TileEntityUtil.syncToClient(this);
     }
 }

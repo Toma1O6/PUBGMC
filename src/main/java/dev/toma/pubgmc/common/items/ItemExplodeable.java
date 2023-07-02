@@ -2,8 +2,6 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.util.game.loot.LootManager;
-import dev.toma.pubgmc.util.game.loot.LootType;
 import dev.toma.pubgmc.common.entity.throwables.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -35,7 +33,6 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
         this.explodeableItemAction = action;
         this.setMaxStackSize(1);
         this.setCreativeTab(PMCTabs.TAB_GUNS);
-        LootManager.register(LootType.AMMO, new LootManager.LootEntry(this, 15, false));
     }
 
     public ItemExplodeable addAditionalDescription(String... description) {
