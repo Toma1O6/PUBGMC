@@ -10,6 +10,7 @@ public final class LootProcessors {
 
     public static final LootProcessorType<AmmoProcessor> AMMO_PROCESSOR = create("ammo_processor", new AmmoProcessor.Serializer());
     public static final LootProcessorType<GhillieColorProcessor> GHILLIE_COLOR_PROCESSOR = create("ghillie_color_processor", new GhillieColorProcessor.Serializer());
+    public static final LootProcessorType<AttachmentProcessor> ATTACHMENT_PROCESSOR = create("attachment_processor", new AttachmentProcessor.Serializer());
 
     private static <P extends LootProcessor> LootProcessorType<P> create(String id, LootProcessorSerializer<P> serializer) {
         ResourceLocation key = Pubgmc.getResource(id);

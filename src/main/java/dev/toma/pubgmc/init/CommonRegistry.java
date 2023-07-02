@@ -933,6 +933,7 @@ public class CommonRegistry {
     public static void registerLootProcessors(PubgmcRegistryEvent.LootProcessor event) {
         event.register(LootProcessors.AMMO_PROCESSOR);
         event.register(LootProcessors.GHILLIE_COLOR_PROCESSOR);
+        event.register(LootProcessors.ATTACHMENT_PROCESSOR);
     }
 
     @SubscribeEvent
