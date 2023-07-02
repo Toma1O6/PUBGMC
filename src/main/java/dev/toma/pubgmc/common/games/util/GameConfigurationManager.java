@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.games.util;
 
 import com.google.gson.*;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.game.GameConfiguration;
 import dev.toma.pubgmc.api.game.GameType;
@@ -30,7 +31,8 @@ public final class GameConfigurationManager {
                 loadGameConfiguration(type);
             }
         } catch (IOException e) {
-            // TODO log error
+            Pubgmc.logger.fatal("Unable to load game configuration");
+            throw new RuntimeException("Game configuration loading failed", e);
         }
     }
 

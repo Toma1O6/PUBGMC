@@ -18,7 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 
-// TODO improve player serialization
 public class PacketClientCapabilitySync implements IMessage {
 
     private UUID player;

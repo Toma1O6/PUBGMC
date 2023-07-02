@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.common.entity.bot.ai;
 
-import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.util.helper.GameHelper;

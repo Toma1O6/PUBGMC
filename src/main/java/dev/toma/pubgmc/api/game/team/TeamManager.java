@@ -31,6 +31,10 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
 
     void disbandAndTransferMembers(Team team);
 
+    default boolean canLeaveTeam(EntityPlayer player, Team team) {
+        return true;
+    }
+
     default Team getEntityTeam(Entity entity) {
         return getEntityTeamByEntityId(entity.getUniqueID());
     }

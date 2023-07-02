@@ -151,10 +151,14 @@ public class TeamCommand extends AbstractCommand {
         } else {
             team.removeMemberById(sender.getUniqueID());
         }
-        teamManager.createNewTeam(sender);
-        ITextComponent message = new TextComponentTranslation("commands.pubgmc.team.member_left.team", sender.getDisplayName());
-        forEachPlayerTeamMember(team.getAllMembers().values(), sender.world, player -> player.sendMessage(message));
-        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.team.member_left.self"));
+        if (teamManager.canLeaveTeam(sender, team)) {
+            teamManager.createNewTeam(sender);
+            ITextComponent message = new TextComponentTranslation("commands.pubgmc.team.member_left.team", sender.getDisplayName());
+            forEachPlayerTeamMember(team.getAllMembers().values(), sender.world, player -> player.sendMessage(message));
+            sender.sendMessage(new TextComponentTranslation("commands.pubgmc.team.member_left.self"));
+        } else {
+            throw new WrongUsageException("Team leaving is blocked by game settings");
+        }
         gameData.sendGameDataToClients();
     }
 
