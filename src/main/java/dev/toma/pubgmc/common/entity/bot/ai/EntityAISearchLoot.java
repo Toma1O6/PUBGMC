@@ -1,69 +1,82 @@
 package dev.toma.pubgmc.common.entity.bot.ai;
 
+import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
-import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
-import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
+import dev.toma.pubgmc.util.helper.InventorySearchHelper;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EntityAISearchLoot extends EntityAIBase {
 
-    private EntityAIPlayer aiPlayer;
-    private final float chance;
-    private float modifier;
-    private final List<BlockPos> checkedLootSpawners = new ArrayList<>();
+    private final EntityAIPlayer aiPlayer;
+    private final int chance;
+    private final Set<BlockPos> checkedLootSpawners = new HashSet<>();
 
     @Nullable
-    private BlockPos pos;
+    private LootGenerator generator;
 
-    public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, float chance) {
+    public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, int chance) {
         this.aiPlayer = entityAIPlayer;
-        this.chance = chance;
-        this.modifier = chance;
+        this.chance = Math.max(1, chance);
         this.setMutexBits(1);
     }
 
-    public BlockPos findNearestUncheckedSpawner() {
-        int smallestDist = Integer.MAX_VALUE;
-        TileEntityLootGenerator closest = null;
-        for(TileEntity tileEntity : this.aiPlayer.world.loadedTileEntityList) {
-            if (tileEntity instanceof TileEntityLootGenerator) {
-                TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
-                if(lootSpawner == null || lootSpawner.getPos() == null) continue;
-                boolean flag = checkedLootSpawners.contains(lootSpawner.getPos());
-                if(flag) continue;
-                int distance = (int) PUBGMCUtil.getDistanceToBlockPos3D(this.aiPlayer.getPosition(), lootSpawner.getPos());
-                if(distance < smallestDist) {
-                    smallestDist = distance;
-                    closest = lootSpawner;
-                }
+    @Override
+    public boolean isInterruptible() {
+        return true;
+    }
+
+    private boolean needsLoot() {
+        ItemStack weapon = aiPlayer.getHeldItemMainhand();
+        if (weapon.isEmpty()) {
+            return true;
+        }
+        ItemStack helmet = aiPlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        if (helmet.isEmpty()) {
+            return true;
+        }
+        ItemStack armor = aiPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        if (armor.isEmpty()) {
+            return true;
+        }
+        return aiPlayer.getHealth() < aiPlayer.getMaxHealth() && InventorySearchHelper.findHealingItem(aiPlayer.getInventory()).isEmpty();
+    }
+
+    private LootGenerator findLootGeneratorWithinRange() {
+        int dist = Integer.MAX_VALUE;
+        LootGenerator closest = null;
+        List<LootGenerator> generators = GameHelper.mergeTileEntitiesAndEntitiesByRule(aiPlayer.world, obj -> obj instanceof LootGenerator, obj -> (LootGenerator) obj)
+                .collect(Collectors.toList());
+        for (LootGenerator generator : generators) {
+            BlockPos pos = generator.getPositionInWorld();
+            if (checkedLootSpawners.contains(pos)) {
+                continue;
+            }
+            int distance = (int) pos.distanceSq(aiPlayer.getPosition());
+            if (distance < dist) {
+                dist = distance;
+                closest =  generator;
             }
         }
-        if(closest == null) {
-            // disable this task completely
-            this.modifier = 0.0F;
-            return null;
-        }
-        return closest.getPos();
+        return closest;
     }
 
     @Override
     public boolean shouldExecute() {
-        float f = this.aiPlayer.getRNG().nextFloat();
-        if(f <= modifier) {
-            BlockPos pos = this.findNearestUncheckedSpawner();
-            if(pos == null) {
-                return false;
-            }
-            this.pos = pos;
-            return true;
+        int i = aiPlayer.getRNG().nextInt(chance);
+        if (i == 0 && needsLoot()) {
+            generator = findLootGeneratorWithinRange();
+            return generator != null;
         }
-        this.pos = null;
         return false;
     }
 
@@ -74,22 +87,30 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Override
     public void startExecuting() {
-        if(pos == null) return;
+        if(generator == null)
+            return;
+        BlockPos pos = generator.getPositionInWorld();
         this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), 1.0D);
     }
 
     @Override
+    public void updateTask() {
+        BlockPos pos = generator.getPositionInWorld();
+        if(pos.distanceSq(this.aiPlayer.getPosition()) > 4) {
+            if (aiPlayer.getNavigator().noPath()) {
+                checkedLootSpawners.add(pos);
+                return;
+            }
+            this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), 1.0D);
+        } else {
+            aiPlayer.loot(generator);
+            checkedLootSpawners.add(pos);
+            aiPlayer.getNavigator().clearPath();
+        }
+    }
+
+    @Override
     public void resetTask() {
-        if(PUBGMCUtil.getDistanceToBlockPos(this.aiPlayer.getPosition(), this.pos) > 10) {
-            return;
-        }
-        TileEntity tileEntity = this.aiPlayer.world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityLootGenerator) {
-            TileEntityLootGenerator lootSpawner = (TileEntityLootGenerator) tileEntity;
-            int i = this.aiPlayer.lootFromLootSpawner(lootSpawner);
-            this.modifier = i == 0 ? 0 : i < 5 ? this.chance * 0.1F : i >= 10 ? this.chance * 2.5F : modifier;
-            this.checkedLootSpawners.add(this.pos);
-            this.pos = null;
-        }
+        generator = null;
     }
 }

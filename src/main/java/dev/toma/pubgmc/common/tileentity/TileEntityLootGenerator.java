@@ -104,4 +104,19 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
         }
         TileEntityUtil.syncToClient(this);
     }
+
+    @Override
+    public BlockPos getPositionInWorld() {
+        return this.pos;
+    }
+
+    @Override
+    public List<ItemStack> getGeneratorItems() {
+        return inventory;
+    }
+
+    @Override
+    public void finishedLooting() {
+        TileEntityUtil.syncToClient(this);
+    }
 }

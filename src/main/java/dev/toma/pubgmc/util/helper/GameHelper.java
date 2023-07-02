@@ -6,7 +6,9 @@ import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
+import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
@@ -332,6 +334,37 @@ public final class GameHelper {
             }
         }
         return null;
+    }
+
+    public static TeamRelations getEntityRelations(EntityLivingBase entity1, EntityLivingBase entity2) {
+        World world = entity1.world;
+        GameData gameData = GameDataProvider.getGameData(world).orElse(null);
+        if (gameData == null) {
+            return TeamRelations.UNKNOWN;
+        }
+        Game<?> game = gameData.getCurrentGame();
+        if (!(game instanceof TeamGame<?>)) {
+            return TeamRelations.UNKNOWN;
+        }
+        TeamManager manager = ((TeamGame<?>) game).getTeamManager();
+        Team team1 = manager.getEntityTeam(entity1);
+        Team team2 = manager.getEntityTeam(entity2);
+        if (team1 == null || team2 == null) {
+            return TeamRelations.UNKNOWN;
+        }
+        return manager.getTeamRelationship(team1, team2);
+    }
+
+    public static Optional<Team> getEntityTeam(Entity entity) {
+        World world = entity.world;
+        return GameDataProvider.getGameData(world).map(data -> {
+            Game<?> game = data.getCurrentGame();
+            if (!(game instanceof TeamGame<?>)) {
+                return null;
+            }
+            TeamManager manager = ((TeamGame<?>) game).getTeamManager();
+            return manager.getEntityTeam(entity);
+        });
     }
 
     public interface InventoryProvider {

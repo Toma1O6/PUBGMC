@@ -15,13 +15,13 @@ import java.util.stream.Stream;
 
 public final class Team implements Iterable<Team.Member> {
 
-    private final Member owner;
+    private final Member teamLeader;
     private final Map<UUID, Member> members;
     private final Set<UUID> activeMembers;
     private final Map<UUID, String> usernames;
 
     public Team(Entity entity) {
-        this.owner = Member.of(entity);
+        this.teamLeader = Member.of(entity);
         this.members = new HashMap<>();
         this.activeMembers = new LinkedHashSet<>();
         this.usernames = new HashMap<>();
@@ -29,7 +29,7 @@ public final class Team implements Iterable<Team.Member> {
     }
 
     public Team(Member member) {
-        this.owner = member;
+        this.teamLeader = member;
         this.members = new HashMap<>();
         this.activeMembers = new HashSet<>();
         this.usernames = new HashMap<>();
@@ -38,14 +38,14 @@ public final class Team implements Iterable<Team.Member> {
     }
 
     private Team(Member owner, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
-        this.owner = owner;
+        this.teamLeader = owner;
         this.members = members;
         this.activeMembers = activeMembers;
         this.usernames = usernames;
     }
 
     public UUID getTeamId() {
-        return owner.getId();
+        return teamLeader.getId();
     }
 
     public void add(Entity entity) {
@@ -58,6 +58,10 @@ public final class Team implements Iterable<Team.Member> {
 
     public int getSize() {
         return members.size();
+    }
+
+    public Member getTeamLeader() {
+        return teamLeader;
     }
 
     public void addMember(Member member) {
@@ -93,7 +97,7 @@ public final class Team implements Iterable<Team.Member> {
     }
 
     public boolean isTeamLeader(UUID memberId) {
-        return owner.uuid.equals(memberId);
+        return teamLeader.uuid.equals(memberId);
     }
 
     public boolean isTeamLeader(Entity entity) {
@@ -111,7 +115,7 @@ public final class Team implements Iterable<Team.Member> {
 
     // Useful for game AI despawning
     public void removeMemberById(UUID memberId) {
-        if (owner.uuid.equals(memberId) && members.size() > 1) {
+        if (teamLeader.uuid.equals(memberId) && members.size() > 1) {
             throw new UnsupportedOperationException("Cannot remove owner of non-empty team");
         }
         members.remove(memberId);
@@ -132,7 +136,7 @@ public final class Team implements Iterable<Team.Member> {
 
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setUniqueId("owner", owner.uuid);
+        nbt.setUniqueId("owner", teamLeader.uuid);
         NBTTagList members = new NBTTagList();
         this.members.values().forEach(member -> members.appendTag(member.serialize()));
         nbt.setTag("members", members);
@@ -178,12 +182,12 @@ public final class Team implements Iterable<Team.Member> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Team team = (Team) o;
-        return owner.equals(team.owner);
+        return teamLeader.equals(team.teamLeader);
     }
 
     @Override
     public int hashCode() {
-        return owner.hashCode();
+        return teamLeader.hashCode();
     }
 
     public static final class Member {

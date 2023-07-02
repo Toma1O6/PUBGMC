@@ -4,7 +4,8 @@ public enum TeamRelations {
 
     FRIENDLY,
     NEUTRAL,
-    ENEMY;
+    ENEMY,
+    UNKNOWN;
 
     public boolean areNameplatesVisible() {
         return this == FRIENDLY;

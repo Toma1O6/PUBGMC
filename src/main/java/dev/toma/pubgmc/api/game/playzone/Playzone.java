@@ -24,4 +24,20 @@ public interface Playzone extends Bounds {
         Position2 max = getPositionMax(1.0F);
         return x > min.getX() && x < max.getX() && z > min.getZ() && z < max.getZ();
     }
+
+    default double length() {
+        Position2 min = getPositionMin(1.0F);
+        Position2 max = getPositionMax(1.0F);
+        double x = max.getX() - min.getX();
+        double z = max.getZ() - min.getZ();
+        return x * x + z * z;
+    }
+
+    default Position2 center() {
+        Position2 min = getPositionMin(1.0F);
+        Position2 max = getPositionMax(1.0F);
+        double x = Math.abs(max.getX() - min.getX());
+        double z = Math.abs(max.getZ() - min.getZ());
+        return new Position2(min.getX() + x / 2.0, min.getZ() + z / 2.0);
+    }
 }

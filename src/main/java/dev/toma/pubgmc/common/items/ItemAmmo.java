@@ -12,4 +12,8 @@ public class ItemAmmo extends PMCItem {
         this.type = type;
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
     }
+
+    public AmmoType getAmmoType() {
+        return type;
+    }
 }

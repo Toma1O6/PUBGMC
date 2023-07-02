@@ -20,6 +20,7 @@ import dev.toma.pubgmc.api.util.GameRuleStorage;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import dev.toma.pubgmc.common.entity.bot.ai.*;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
@@ -54,13 +55,6 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public static final String AI_EARLY_GAME_LOOT_PATH = "battleroyale/early_game_loot";
     public static final String AI_MID_GAME_LOOT_PATH = "battleroyale/mid_game_loot";
     public static final String AI_LATE_GAME_LOOT_PATH = "battleroyale/late_game_loot";
-    public static final String[] AI_EQUIPMENT_PATHS = {
-            AI_INITIAL_LOOT_PATH,
-            AI_EARLY_GAME_LOOT_PATH,
-            AI_MID_GAME_LOOT_PATH,
-            AI_LATE_GAME_LOOT_PATH
-    };
-
 
     private final UUID gameId;
     private final BattleRoyaleGameConfiguration configuration;
@@ -366,12 +360,16 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     }
 
     private void addAiTasks(EntityAIPlayer player) {
-        // TODO Tasks
-        // Loot
-        // Target non-team members
-        // Move to zone
-        // Heal
-        // Attack non-team members
+        player.clearAI();
+        EntityAIPlayer.addDefaultTasks(player);
+        player.tasks.addTask(0, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.25F));
+        player.tasks.addTask(1, new EntityAIGunAttack(player));
+        player.tasks.addTask(2, new EntityAIMoveToTeamLeader(player, 32));
+        player.tasks.addTask(3, new EntityAISearchLoot(player, 5));
+        player.tasks.addTask(5, new EntityAIMoveIntoPlayzone(player, level -> playzone.getResultingPlayzone()));
+        player.targetTasks.addTask(0, new EntityAICallTeamForHelp(player));
+        player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
+        player.targetTasks.addTask(2, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
     }
 
     private String getAiLoadoutType() {

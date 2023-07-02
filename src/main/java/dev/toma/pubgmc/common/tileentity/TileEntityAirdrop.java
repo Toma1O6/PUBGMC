@@ -5,12 +5,14 @@ import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 import java.util.UUID;
@@ -90,6 +92,21 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
         for (int i = 0; i < Math.min(getSizeInventory(), items.size()); i++) {
             setInventorySlotContents(i, items.get(i));
         }
+        TileEntityUtil.syncToClient(this);
+    }
+
+    @Override
+    public BlockPos getPositionInWorld() {
+        return this.pos;
+    }
+
+    @Override
+    public List<ItemStack> getGeneratorItems() {
+        return inventory;
+    }
+
+    @Override
+    public void finishedLooting() {
         TileEntityUtil.syncToClient(this);
     }
 }

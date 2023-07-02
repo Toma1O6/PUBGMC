@@ -29,16 +29,16 @@ public class EntityAIGunAttack extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if(!this.aiPlayer.hasGun()) {
+        if(this.aiPlayer.hasNoWeapon()) {
             return false;
         }
         this.target = this.aiPlayer.getAttackTarget();
-        return target != null;
+        return target != null && target.isEntityAlive();
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        return this.shouldExecute() || !this.aiPlayer.getNavigator().noPath() || !this.aiPlayer.hasGun();
+        return this.shouldExecute() || !this.aiPlayer.getNavigator().noPath() || this.aiPlayer.hasNoWeapon();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EntityAIGunAttack extends EntityAIBase {
         if(flag) {
             this.timeWatching++;
         } else timeWatching = 0;
-        if(!this.aiPlayer.hasGun()) {
+        if(this.aiPlayer.hasNoWeapon()) {
             return;
         }
         ItemStack stack = aiPlayer.getHeldItemMainhand();

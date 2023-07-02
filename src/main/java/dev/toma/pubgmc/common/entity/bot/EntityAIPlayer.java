@@ -1,25 +1,27 @@
 package dev.toma.pubgmc.common.entity.bot;
 
 import dev.toma.pubgmc.api.game.LivingGameEntity;
+import dev.toma.pubgmc.api.game.LootGenerator;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
+import dev.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
+import dev.toma.pubgmc.common.items.ItemAmmo;
+import dev.toma.pubgmc.common.items.equipment.SpecialInventoryItem;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
-import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.init.PMCItems;
-import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.ai.*;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.EnumDifficulty;
@@ -28,7 +30,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import java.util.UUID;
+import java.util.*;
 
 public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider {
 
@@ -55,7 +57,10 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     }
 
     public void clearAI() {
-        // TODO implement
+        List<EntityAITasks.EntityAITaskEntry> taskEntries = new ArrayList<>(tasks.taskEntries);
+        taskEntries.forEach(entry -> tasks.removeTask(entry.action));
+        List<EntityAITasks.EntityAITaskEntry> targetTaskEntries = new ArrayList<>(targetTasks.taskEntries);
+        targetTaskEntries.forEach(entry -> targetTasks.removeTask(entry.action));
     }
 
     @Override
@@ -80,7 +85,18 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
 
     @Override
     protected void initEntityAI() {
-        // Add Default tasks such as move, loot and shoot
+        addDefaultTasks(this);
+        tasks.addTask(1, new EntityAIGunAttack(this));
+
+        targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
+        targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, true));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget<>(this, EntityAIPlayer.class, true));
+    }
+
+    public static void addDefaultTasks(EntityAIPlayer ai) {
+        ai.tasks.addTask(0, new EntityAISwimming(ai));
+        ai.tasks.addTask(5, new EntityAIWanderAvoidWater(ai, 1.0));
+        ai.tasks.addTask(8, new EntityAILookIdle(ai));
     }
 
     @Override
@@ -143,99 +159,78 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         return variant;
     }
 
-    /**
-     * Return value if still needs to loot something (Bigger value = Bigger chance to loot more), >= 10 = needs to loot
-     **/
-    // TODO rework for loadout system
-    public int lootFromLootSpawner(TileEntityLootGenerator lootSpawner) {
-        boolean needsGun = !this.hasGun();
-        boolean needsHelmet = this.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty();
-        boolean needsVest = this.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty();
-        boolean needsMeds = !(this.inventory.getStackInSlot(0).getItem() instanceof ItemHealing);
-        boolean needsAmmo = false;
-        GunBase lootedGun = null;
-        int needToLoot = 0;
-        for (int i = 0; i < lootSpawner.getSizeInventory(); i++) {
-            ItemStack stack = lootSpawner.getStackInSlot(i);
-            if (needsGun) {
-                if (stack.getItem() instanceof GunBase && stack.getItem() != PMCItems.FLARE_GUN) {
-                    this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
-                    EntityItem item = new EntityItem(world, this.posX, this.posY, this.posZ, stack.copy());
-                    item.setPickupDelay(0);
-                    this.world.spawnEntity(item);
-                    lootedGun = (GunBase) stack.getItem();
-                    needsGun = false;
-                    needsAmmo = true;
-                    lootSpawner.removeStackFromSlot(i);
+    public void loot(LootGenerator generator) {
+        AmmoType lootingAmmoType = null;
+        List<ItemStack> itemStacks = generator.getGeneratorItems();
+        for (int i = 0; i < itemStacks.size(); i++) {
+            ItemStack stack = itemStacks.get(i);
+            if (stack.isEmpty())
+                continue;
+            ItemStack weapon = getHeldItemMainhand();
+            if (weapon.isEmpty() && stack.getItem() instanceof GunBase) {
+                if (stack.getItem() != PMCItems.FLARE_GUN) {
+                    setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack.copy());
+                    itemStacks.set(i, ItemStack.EMPTY);
+                    lootingAmmoType = ((GunBase) stack.getItem()).getAmmoType();
+                    continue;
                 }
             }
-            if (needsAmmo || (this.hasGun() && this.needsAmmo())) {
-                GunBase gun = lootedGun != null ? lootedGun : this.getGun();
-                if (gun.getAmmoType().ammo() == stack.getItem()) {
-                    for (int j = 1; j < 6; j++) {
-                        if (inventory.getStackInSlot(j).isEmpty()) {
-                            inventory.setInventorySlotContents(j, stack.copy());
-                            lootSpawner.removeStackFromSlot(i);
-                            break;
-                        }
-                    }
+            if (lootingAmmoType != null && stack.getItem() instanceof ItemAmmo && ((ItemAmmo) stack.getItem()).getAmmoType() == lootingAmmoType) {
+                if (lootItem(stack)) {
+                    itemStacks.set(i, ItemStack.EMPTY);
+                    continue;
                 }
             }
-            if (needsHelmet) {
-                if (stack.getItem() instanceof ItemBulletproofArmor) {
-                    ItemBulletproofArmor armorBase = (ItemBulletproofArmor) stack.getItem();
-                    if (armorBase.armorType == EntityEquipmentSlot.HEAD) {
-                        this.setItemStackToSlot(EntityEquipmentSlot.HEAD, stack.copy());
-                        lootSpawner.removeStackFromSlot(i);
-                        needsHelmet = false;
-                    }
+            if (stack.getItem() instanceof ItemArmor) {
+                ItemArmor armor = (ItemArmor) stack.getItem();
+                EntityEquipmentSlot equipmentSlot = armor.getEquipmentSlot();
+                ItemStack equippedArmor = getItemStackFromSlot(equipmentSlot);
+                if (equippedArmor.isEmpty()) {
+                    setItemStackToSlot(equipmentSlot, stack.copy());
+                    itemStacks.set(i, ItemStack.EMPTY);
+                    continue;
                 }
             }
-            if (needsVest) {
-                if (stack.getItem() instanceof ItemBulletproofArmor) {
-                    ItemBulletproofArmor armorBase = (ItemBulletproofArmor) stack.getItem();
-                    if (armorBase.armorType == EntityEquipmentSlot.CHEST) {
-                        this.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack.copy());
-                        lootSpawner.removeStackFromSlot(i);
-                        needsVest = false;
-                    }
+            if (stack.getItem() instanceof SpecialInventoryItem) {
+                SpecialInventoryItem item = (SpecialInventoryItem) stack.getItem();
+                SpecialEquipmentSlot equipmentSlot = item.getSlotType();
+                ItemStack equipped = specialEquipment.getStackInSlot(equipmentSlot.ordinal());
+                if (equipped.isEmpty()) {
+                    specialEquipment.setInventorySlotContents(equipmentSlot.ordinal(), stack.copy());
+                    itemStacks.set(i, ItemStack.EMPTY);
+                    continue;
                 }
             }
-            if (needsMeds) {
-                if (stack.getItem() instanceof ItemHealing) {
-                    this.inventory.setInventorySlotContents(0, stack.copy());
-                    lootSpawner.removeStackFromSlot(i);
-                    needsMeds = false;
+            if (stack.getItem() instanceof ItemHealing) {
+                if (lootItem(stack)) {
+                    itemStacks.set(i, ItemStack.EMPTY);
                 }
             }
         }
-        IBlockState state = this.world.getBlockState(lootSpawner.getPos());
-        TileEntityUtil.syncToClient(lootSpawner);
-        needToLoot = needToLoot + (needsGun ? 10 : 0) + (needsAmmo() ? 10 : 0) + (needsHelmet ? 5 : 0) + (needsVest ? 5 : 0) + (needsMeds ? 3 : 0);
-        return needToLoot;
+        SerializationHelper.syncEntity(this);
+        generator.finishedLooting();
     }
 
-    protected boolean needsAmmo() {
-        if (!this.hasGun()) {
+    private boolean lootItem(ItemStack stack) {
+        int slot = -1;
+        if (stack.isEmpty())
             return false;
-        }
-        int totalAmmoCount = 0;
-        AmmoType ammoType = this.getGun().getAmmoType();
-        for (int i = 1; i < 6; i++) {
-            ItemStack stack = this.inventory.getStackInSlot(i);
-            if (ammoType.ammo() == stack.getItem()) {
-                totalAmmoCount += stack.getCount();
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack item = inventory.getStackInSlot(i);
+            if (item.isEmpty()) {
+                slot = i;
+                break;
             }
         }
-        return totalAmmoCount < 60;
+        if (slot != -1) {
+            inventory.setInventorySlotContents(slot, stack.copy());
+            return true;
+        }
+        return false;
     }
 
-    public boolean hasGun() {
-        return this.getHeldItemMainhand().getItem() instanceof GunBase;
-    }
-
-    public GunBase getGun() {
-        return (GunBase) this.getHeldItemMainhand().getItem();
+    public boolean hasNoWeapon() {
+        return !(this.getHeldItemMainhand().getItem() instanceof GunBase);
     }
 
     @Override
