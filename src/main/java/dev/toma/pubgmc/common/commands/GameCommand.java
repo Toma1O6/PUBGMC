@@ -164,6 +164,11 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(0)
                             .executes(GameCommand::joinGame)
             )
+            .node(
+                    CommandNodeProvider.literal("reloadConfigs")
+                            .permissionLevel(2)
+                            .executes(GameCommand::reloadGameConfigurations)
+            )
             .build();
 
     public GameCommand() {
@@ -176,6 +181,10 @@ public class GameCommand extends AbstractCommand {
 
     private static void executeMapNoArguments(CommandContext context) throws CommandException {
         throw new WrongUsageException("Not enough arguments. Use '/game map create <name> ...' or '/game map <name> [delete|clearPois]'");
+    }
+
+    private static void reloadGameConfigurations(CommandContext context) throws CommandException {
+        GameConfigurationManager.loadConfigurations();
     }
 
     private static void selectGameType(CommandContext context) throws CommandException {
