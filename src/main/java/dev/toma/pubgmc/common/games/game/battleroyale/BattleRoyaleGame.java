@@ -294,7 +294,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
         BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
         // airdrop
-        if (!world.isRemote) {
+        if (!world.isRemote && phase > 0) {
             Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
             List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
             Position2 pos = GameHelper.findLoadedPositionWithinPlayzone(airdropPlayzone, world, playerList, 0, 128);
