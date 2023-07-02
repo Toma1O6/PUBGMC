@@ -1,30 +1,26 @@
 package dev.toma.pubgmc.common.entity;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
+import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
-{
+import java.util.UUID;
 
-    private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
-    private int shooterId;
+public class EntityFlare extends Entity implements GameObject {
+
     private int timer;
     private double height;
-    private EntityLivingBase shooter;
-    private ItemStack item = ItemStack.EMPTY;
+    private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityFlare(World worldIn) {
         super(worldIn);
@@ -35,8 +31,6 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
 
     public EntityFlare(World worldIn, EntityLivingBase shooter) {
         this(worldIn);
-        this.shooterId = shooter.getEntityId();
-        this.shooter = shooter;
         this.timer = 0;
         this.height = shooter.posY;
 
@@ -53,7 +47,7 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
     private void updateHeading() {
         float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f) * (180D / Math.PI));
+        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, f) * (180D / Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }
@@ -111,24 +105,29 @@ public class EntityFlare extends Entity //implements IEntityAdditionalSpawnData
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setDouble("x", this.posX);
-        compound.setDouble("y", this.posY);
-        compound.setDouble("z", this.posZ);
-        compound.setDouble("movx", this.motionX);
-        compound.setDouble("movy", this.motionY);
-        compound.setDouble("movz", this.motionZ);
-        compound.setInteger("flare_timer", this.timer);
+        compound.setInteger("flareTimer", timer);
+        compound.setUniqueId("gameId", gameId);
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
-        posX = compound.getDouble("x");
-        posY = compound.getDouble("y");
-        posZ = compound.getDouble("z");
-        motionX = compound.getDouble("movx");
-        motionY = compound.getDouble("movy");
-        motionZ = compound.getDouble("movz");
         timer = compound.getInteger("flare_timer");
+        gameId = compound.getUniqueId("gameId");
+    }
+
+    @Override
+    public UUID getCurrentGameId() {
+        return gameId;
+    }
+
+    @Override
+    public void assignGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
+
+    @Override
+    public void onNewGameDetected(UUID newGameId) {
+        setDead();
     }
 
     @Override
