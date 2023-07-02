@@ -409,7 +409,7 @@ public class DefaultEntityLoadouts {
         for (ItemStack stack : items) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemArmor) {
                 ItemArmor armor = (ItemArmor) stack.getItem();
-                EntityEquipmentSlot slot = armor.getEquipmentSlot();
+                EntityEquipmentSlot slot = armor.armorType;
                 ItemStack equipped = entity.getItemStackFromSlot(slot);
                 if (equipped.isEmpty()) {
                     entity.setItemStackToSlot(slot, stack.copy());

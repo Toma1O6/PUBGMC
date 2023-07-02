@@ -184,7 +184,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
             }
             if (stack.getItem() instanceof ItemArmor) {
                 ItemArmor armor = (ItemArmor) stack.getItem();
-                EntityEquipmentSlot equipmentSlot = armor.getEquipmentSlot();
+                EntityEquipmentSlot equipmentSlot = armor.armorType;
                 ItemStack equippedArmor = getItemStackFromSlot(equipmentSlot);
                 if (equippedArmor.isEmpty()) {
                     setItemStackToSlot(equipmentSlot, stack.copy());
