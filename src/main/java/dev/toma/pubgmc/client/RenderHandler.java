@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client;
 
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
@@ -32,7 +32,7 @@ public class RenderHandler {
         EntityPlayer player = e.getEntity();
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         GameSettings settings = Minecraft.getMinecraft().gameSettings;
-        if (data.isAiming()) {
+        if (data.getAimInfo().isAiming()) {
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gunBase = (GunBase) stack.getItem();

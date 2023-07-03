@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.client.renderer.item.gun;
 
-import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
@@ -12,8 +14,6 @@ import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.models.weapons.ModelGun;
 import dev.toma.pubgmc.client.renderer.IRenderConfig;
 import dev.toma.pubgmc.client.renderer.item.attachment.AttachmentRenderer;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;
@@ -75,7 +75,7 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
         manager.bindTexture(GUN_TEXTURES);
         getWeaponModel().render(itemStackIn, transformType);
         GunBase gun = (GunBase) itemStackIn.getItem();
-        IPlayerData data = PlayerData.get(Minecraft.getMinecraft().player);
+        IPlayerData data = PlayerDataProvider.get(Minecraft.getMinecraft().player);
         float aimPct = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? data.getAimInfo().getProgress(ASMHooksClient.getRenderTickTime()) : 0.0F;
         for (AttachmentType<?> type : AttachmentType.allTypes) {
             ItemAttachment attachment = gun.getAttachment(type, itemStackIn);

@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import dev.toma.pubgmc.PMCTabs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -14,6 +15,7 @@ public class ItemStock extends ItemAttachment {
 
     public ItemStock(String name, boolean fastReload, float ads) {
         super(name);
+        setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.fastReload = fastReload;
         this.ads = ads;
     }

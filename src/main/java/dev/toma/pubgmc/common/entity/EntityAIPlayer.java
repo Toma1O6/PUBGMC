@@ -1,12 +1,12 @@
-package dev.toma.pubgmc.common.entity.bot;
+package dev.toma.pubgmc.common.entity;
 
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.entity.bot.ai.EntityAIGunAttack;
+import dev.toma.pubgmc.api.item.SpecialInventoryItem;
+import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.items.ItemAmmo;
-import dev.toma.pubgmc.common.items.equipment.SpecialInventoryItem;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;

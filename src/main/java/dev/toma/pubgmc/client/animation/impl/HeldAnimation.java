@@ -1,13 +1,13 @@
 package dev.toma.pubgmc.client.animation.impl;
 
-import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.interfaces.Animation;
 import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,7 +33,7 @@ public class HeldAnimation implements Animation {
             if(element == AnimationElement.ITEM_AND_HANDS) {
                 float partialTicks = ASMHooksClient.getRenderTickTime();
                 AnimationProcessor.processKeyFrame(bigWeaponSprintFrame, progressSmooth);
-                IPlayerData data = PlayerData.get(player);
+                IPlayerData data = PlayerDataProvider.get(player);
                 float bobbingScale = 0.4F;
                 if(data.getAimInfo().isAiming()) {
                     bobbingScale = 0.1F;

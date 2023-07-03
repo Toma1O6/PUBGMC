@@ -2,7 +2,6 @@ package dev.toma.pubgmc.api.game;
 
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 

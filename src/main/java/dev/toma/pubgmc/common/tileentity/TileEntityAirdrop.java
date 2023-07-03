@@ -5,7 +5,6 @@ import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

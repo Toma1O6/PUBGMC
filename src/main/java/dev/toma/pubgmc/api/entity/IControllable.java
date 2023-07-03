@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.entity.controllable;
+package dev.toma.pubgmc.api.entity;
 
 import net.minecraft.client.settings.GameSettings;
 import net.minecraftforge.fml.relauncher.Side;

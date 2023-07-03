@@ -1,10 +1,15 @@
 package dev.toma.pubgmc.client;
 
-import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
-import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.*;
+import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
+import dev.toma.pubgmc.api.entity.IControllable;
+import dev.toma.pubgmc.api.item.Backpack;
+import dev.toma.pubgmc.api.item.BulletproofArmor;
+import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import dev.toma.pubgmc.asm.ASMHooks;
+import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -18,10 +23,8 @@ import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
-import dev.toma.pubgmc.common.capability.player.*;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.entity.controllable.IControllable;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
@@ -29,9 +32,6 @@ import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.attachment.ScopeData;
-import dev.toma.pubgmc.common.items.equipment.Backpack;
-import dev.toma.pubgmc.common.items.equipment.BulletproofArmor;
-import dev.toma.pubgmc.common.items.equipment.NightVisionGoggles;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
@@ -244,8 +244,6 @@ public class ClientEvents {
         ScaledResolution res = new ScaledResolution(mc);
         ItemStack stack = sp.getHeldItemMainhand();
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        int width = res.getScaledWidth();
-        int height = res.getScaledHeight();
         if (e.getType() == ElementType.CROSSHAIRS) {
             if (!ConfigPMC.developerMode.get() && stack.getItem() instanceof GunBase) {
                 e.setCanceled(true);
@@ -316,12 +314,13 @@ public class ClientEvents {
             }
         }
         if (KeyBinds.PRONE.isPressed()) {
-            IPlayerData data = PlayerData.get(sp);
+            IPlayerData data = PlayerDataProvider.get(sp);
             if (data != null) {
                 data.setProne(!data.isProne());
+                ReloadInfo reloadInfo = data.getReloadInfo();
                 if(data.getAimInfo().isAiming()) this.setAiming(data, false);
-                if(data.isReloading()) {
-                    data.getReloadInfo().interrupt(data);
+                if(reloadInfo.isReloading()) {
+                    reloadInfo.interrupt(data);
                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 }
                 PacketHandler.sendToServer(new PacketProne(data.isProne()));
@@ -543,9 +542,9 @@ public class ClientEvents {
 
     private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
-        if(data.isReloading()) {
+        ReloadInfo info = data.getReloadInfo();
+        if(info.isReloading()) {
             if(reloader.canInterrupt(gun, stack)) {
-                ReloadInfo info = data.getReloadInfo();
                 info.setReloading(false);
                 PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
@@ -561,7 +560,7 @@ public class ClientEvents {
         ItemGrip grip = gun.getAttachment(AttachmentType.GRIP, stack);
         float vertical = 1.0F;
         float horizontal = 1.0F;
-        IPlayerData data = PlayerData.get(player);
+        IPlayerData data = PlayerDataProvider.get(player);
         if(data.isProne()) {
             vertical *= 0.3F;
             horizontal *= 0.3F;
@@ -665,15 +664,6 @@ public class ClientEvents {
     private static void renderIconWithBackground(Minecraft minecraft, ResourceLocation texture, int left, int top, int width, int height, float r, float g, float b, float a) {
         ImageUtil.drawShape(left, top, left + width, top + height, 0.0F, 0.0F, 0.0F, 0.6902F);
         ImageUtil.drawTintedImage(minecraft, texture, left, top, width, height, r, g, b, a);
-    }
-
-    /**
-     * @deprecated render tinted texture instead
-     */
-    @Deprecated
-    private static int getDamageLevel(ItemStack stack) {
-        final double val = (double) stack.getItemDamage() / (double) stack.getMaxDamage();
-        return val < 0.2d ? 0 : val > 0.7d ? 2 : 1;
     }
 
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {

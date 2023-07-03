@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.blocks;
+package dev.toma.pubgmc.api.block;
 
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import net.minecraft.block.state.IBlockState;

@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import dev.toma.pubgmc.PMCTabs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -14,6 +15,7 @@ public class ItemMagazine extends ItemAttachment {
 
     public ItemMagazine(String name, boolean extended, boolean quickdraw) {
         super(name);
+        setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.extended = extended;
         this.quickdraw = quickdraw;
     }

@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.items.equipment;
 
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.item.BulletproofArmor;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;

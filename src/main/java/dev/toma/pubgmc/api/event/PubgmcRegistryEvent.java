@@ -2,11 +2,11 @@ package dev.toma.pubgmc.api.event;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.game.GameType;
-import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
-import dev.toma.pubgmc.api.game.map.GameMapPointType;
-import dev.toma.pubgmc.api.util.RegistryObject;
-import dev.toma.pubgmc.api.game.loot.LootProviderType;
 import dev.toma.pubgmc.api.game.loot.LootProcessorType;
+import dev.toma.pubgmc.api.game.loot.LootProviderType;
+import dev.toma.pubgmc.api.game.map.GameMapPointType;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
+import dev.toma.pubgmc.api.util.RegistryObject;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public abstract class PubgmcRegistryEvent<T extends RegistryObject> extends Event {

@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.api.capability;
 
-import dev.toma.pubgmc.common.capability.game.GameDataImpl;
+import dev.toma.pubgmc.common.capability.GameDataImpl;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;

@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.data.loot;
 
+import dev.toma.pubgmc.api.game.loot.LootProcessor;
 import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.data.loot.processor.AmmoProcessor;
 import dev.toma.pubgmc.data.loot.processor.GhillieColorProcessor;
-import dev.toma.pubgmc.api.game.loot.LootProcessor;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.math.WeightedRandom;
 import net.minecraft.item.ItemStack;

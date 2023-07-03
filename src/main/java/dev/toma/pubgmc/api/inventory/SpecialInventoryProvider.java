@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.api.inventory;
 
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 /**

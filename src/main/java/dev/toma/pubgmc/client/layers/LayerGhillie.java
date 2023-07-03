@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.client.layers;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.items.equipment.GhillieSuit;
+import dev.toma.pubgmc.api.item.GhillieSuit;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;

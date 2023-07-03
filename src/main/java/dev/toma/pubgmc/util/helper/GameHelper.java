@@ -1,8 +1,7 @@
 package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
@@ -12,11 +11,8 @@ import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
-import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -57,7 +53,7 @@ public final class GameHelper {
         World world = player.world;
         List<InventoryProvider> inventoryProviders = new ArrayList<>();
         inventoryProviders.add(InventoryProvider.inventory(0, player.inventory));
-        IPlayerData data = PlayerData.get(player);
+        IPlayerData data = PlayerDataProvider.get(player);
         if (data != null) {
             inventoryProviders.add(InventoryProvider.inventory(41, data.getEquipmentInventory()));
         }
@@ -177,7 +173,7 @@ public final class GameHelper {
             player.removeActivePotionEffect(effect.getPotion());
         }
         fillPlayerHunger(player);
-        IPlayerData playerData = PlayerData.get(player);
+        IPlayerData playerData = PlayerDataProvider.get(player);
         if (playerData != null) {
             playerData.setNightVisionActive(false);
             playerData.setProne(false);

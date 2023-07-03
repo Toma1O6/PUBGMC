@@ -2,7 +2,6 @@ package dev.toma.pubgmc.config.client;
 
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.type.BooleanType;
-import dev.toma.configuration.api.type.ColorType;
 import dev.toma.configuration.api.type.IntType;
 import dev.toma.configuration.api.type.ObjectType;
 

@@ -1,7 +1,5 @@
 package dev.toma.pubgmc.common.blocks;
 
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketParticle;
 import dev.toma.pubgmc.common.tileentity.TileEntityWindow;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

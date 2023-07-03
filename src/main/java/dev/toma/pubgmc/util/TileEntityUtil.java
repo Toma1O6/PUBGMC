@@ -1,8 +1,5 @@
 package dev.toma.pubgmc.util;
 
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketSyncTileEntity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

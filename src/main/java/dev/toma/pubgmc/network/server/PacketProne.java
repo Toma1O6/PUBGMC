@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.network.server;
 
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -32,7 +32,7 @@ public class PacketProne implements IMessage {
     public static class Handler implements IMessageHandler<PacketProne, IMessage> {
 
         public static void handle(PacketProne p, EntityPlayer player) {
-            IPlayerData data = PlayerData.get(player);
+            IPlayerData data = PlayerDataProvider.get(player);
             if (data != null) {
                 data.setProne(p.prone);
                 data.sync();

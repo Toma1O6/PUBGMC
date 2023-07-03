@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.capability.player;
+package dev.toma.pubgmc.api.capability;
 
 import dev.toma.pubgmc.DevUtil;
 import net.minecraft.entity.player.EntityPlayer;

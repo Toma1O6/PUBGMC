@@ -5,21 +5,11 @@ import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.client.models.ModelAIPlayer;
-import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
-import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
-import dev.toma.pubgmc.init.PMCItems;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.GlStateManager;
+import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.function.Function;
 
 public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
 

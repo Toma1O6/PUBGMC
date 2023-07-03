@@ -1,5 +1,6 @@
-package dev.toma.pubgmc.common.capability.player;
+package dev.toma.pubgmc.api.capability;
 
+import dev.toma.pubgmc.common.capability.PlayerData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
@@ -20,6 +21,10 @@ public class PlayerDataProvider implements ICapabilitySerializable<NBTBase> {
 
     public PlayerDataProvider(EntityPlayer player) {
         this.instance = new PlayerData(player);
+    }
+
+    public static IPlayerData get(EntityPlayer player) {
+        return player.getCapability(PLAYER_DATA, null);
     }
 
     @Override

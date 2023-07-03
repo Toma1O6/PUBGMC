@@ -1,6 +1,6 @@
-package dev.toma.pubgmc.common.items.equipment;
+package dev.toma.pubgmc.api.item;
 
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 public interface GhillieSuit extends SpecialInventoryItem {

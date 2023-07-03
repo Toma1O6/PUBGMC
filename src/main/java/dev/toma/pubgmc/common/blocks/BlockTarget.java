@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.blocks;
 
+import dev.toma.pubgmc.api.block.IBulletReaction;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.block.material.Material;

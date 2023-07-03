@@ -1,13 +1,12 @@
 package dev.toma.pubgmc.client.animation.impl;
 
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.api.capability.AimInfo;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationSpec;
 import dev.toma.pubgmc.client.animation.interfaces.Animation;
-import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
-import dev.toma.pubgmc.common.capability.player.AimInfo;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import net.minecraft.client.Minecraft;
 
 public class AimAnimation implements Animation {
@@ -18,7 +17,7 @@ public class AimAnimation implements Animation {
 
     public AimAnimation(AnimationSpec spec) {
         this.spec = spec;
-        this.info = PlayerData.get(Minecraft.getMinecraft().player).getAimInfo();
+        this.info = PlayerDataProvider.get(Minecraft.getMinecraft().player).getAimInfo();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.common.games.util;
 
 import dev.toma.pubgmc.api.game.LivingGameEntity;
-import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.game.team.TeamManager;
+import dev.toma.pubgmc.api.game.util.Team;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

@@ -2,13 +2,9 @@ package dev.toma.pubgmc.api.game;
 
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.map.GameMap;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 

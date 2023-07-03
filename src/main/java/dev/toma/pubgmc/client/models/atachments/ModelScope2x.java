@@ -3,10 +3,8 @@ package dev.toma.pubgmc.client.models.atachments;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.models.renderer.ExtendedModelBox;
 import dev.toma.pubgmc.common.items.attachment.ItemScope;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelScope2x extends ModelAttachment<ItemScope> {

@@ -2,20 +2,19 @@ package dev.toma.pubgmc.common;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
+import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.content.ContentResult;
 import dev.toma.pubgmc.client.content.ExternalLinks;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
 import dev.toma.pubgmc.common.items.MainHandOnly;
-import dev.toma.pubgmc.common.items.equipment.Backpack;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
@@ -216,7 +215,7 @@ public class CommonEvents {
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
         if(e.player instanceof EntityPlayerMP) {
             selectedSlotCache.remove(e.player.getUniqueID());
-            IPlayerData data = PlayerData.get(e.player);
+            IPlayerData data = PlayerDataProvider.get(e.player);
             data.getAimInfo().setAiming(false, 1.0F);
             data.sync();
             PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP)e.player);
@@ -281,7 +280,7 @@ public class CommonEvents {
     public void onItemPickup(EntityItemPickupEvent event) {
         EntityPlayer player = event.getEntityPlayer();
         ItemStack stack = event.getItem().getItem();
-        IPlayerData data = PlayerData.get(player);
+        IPlayerData data = PlayerDataProvider.get(player);
         if (data == null) {
             return;
         }

@@ -2,9 +2,9 @@ package dev.toma.pubgmc.api.game.loadout;
 
 import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.data.loot.LootGenerationContext;
 import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.api.game.loot.LootProviderType;
+import dev.toma.pubgmc.data.loot.LootGenerationContext;
 import dev.toma.pubgmc.data.loot.NoLootProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;

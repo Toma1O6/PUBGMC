@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.controllable;
 
+import dev.toma.pubgmc.api.entity.IControllable;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;

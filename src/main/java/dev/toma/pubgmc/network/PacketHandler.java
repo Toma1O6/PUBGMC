@@ -2,7 +2,7 @@ package dev.toma.pubgmc.network;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
+import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.network.client.*;
 import dev.toma.pubgmc.network.server.*;
 import net.minecraft.entity.Entity;

@@ -2,14 +2,13 @@ package dev.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import dev.toma.pubgmc.api.block.IBulletReaction;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.common.blocks.BlockLandMine;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
-import dev.toma.pubgmc.common.blocks.IBulletReaction;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.items.equipment.BulletproofArmor;
-import dev.toma.pubgmc.common.items.equipment.ItemBulletproofArmor;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.WeaponStats;
 import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
@@ -76,7 +75,7 @@ public class EntityBullet extends Entity {
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
         if(shooter instanceof EntityPlayer) {
             IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            calculateBulletHeading(direct, (EntityPlayer) shooter, data.isAiming());
+            calculateBulletHeading(direct, (EntityPlayer) shooter, data.getAimInfo().isFullyAds());
             this.setPosition(shooter.posX, data.isProne() ? shooter.posY + 0.5f : shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         } else {
             this.calculateBulletHeading(direct, shooter, 2 + this.world.getDifficulty().ordinal());
@@ -108,7 +107,7 @@ public class EntityBullet extends Entity {
             this.onEntityHit(isHeadshot, entity);
             entity.hurtResistantTime = 0;
             this.setDead();
-        } else if(rayTraceResult.getBlockPos() != null && !world.isRemote) {
+        } else if(!world.isRemote) {
             BlockPos pos = rayTraceResult.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();

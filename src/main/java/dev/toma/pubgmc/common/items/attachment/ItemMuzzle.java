@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import dev.toma.pubgmc.PMCTabs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -23,6 +24,7 @@ public class ItemMuzzle extends ItemAttachment {
 
     public ItemMuzzle(String name, float verticalRecoil, float horizontalRecoil, boolean silent) {
         super(name);
+        setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.verticalRecoil = verticalRecoil;
         this.horizontalRecoil = horizontalRecoil;
         this.silent = silent;

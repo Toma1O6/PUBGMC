@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.entity.bot.ai;
+package dev.toma.pubgmc.common.ai;
 
 import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.util.helper.GameHelper;

@@ -1,10 +1,10 @@
 package dev.toma.pubgmc.asm;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.items.equipment.Backpack;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -32,7 +32,7 @@ public final class ASMHooks {
         if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
             return false;
         }
-        IPlayerData data = PlayerData.get(playerInventory.player);
+        IPlayerData data = PlayerDataProvider.get(playerInventory.player);
         if (data != null) {
             ItemStack stack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.BACKPACK);
             if (stack.getItem() instanceof Backpack) {

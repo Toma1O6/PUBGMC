@@ -1,6 +1,6 @@
-package dev.toma.pubgmc.common.entity.bot.ai;
+package dev.toma.pubgmc.common.ai;
 
-import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;

@@ -1,10 +1,10 @@
 package dev.toma.pubgmc.network.client;
 
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,7 +54,7 @@ public class PacketClientCapabilitySync implements IMessage {
                 EntityPlayer target = mc.world.getPlayerEntityByUUID(m.player);
                 if (target == null)
                     return;
-                IPlayerData data = PlayerData.get(target);
+                IPlayerData data = PlayerDataProvider.get(target);
                 data.deserializeNBT(m.nbt);
 
                 if(!data.getReloadInfo().isReloading()) {

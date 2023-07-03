@@ -1,6 +1,5 @@
 package dev.toma.pubgmc;
 
-import dev.toma.pubgmc.common.items.attachment.ItemStock;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 

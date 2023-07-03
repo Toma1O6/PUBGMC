@@ -2,14 +2,14 @@ package dev.toma.pubgmc;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
+import dev.toma.pubgmc.common.capability.GameDataImpl;
+import dev.toma.pubgmc.common.capability.PlayerData;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
-import dev.toma.pubgmc.common.capability.game.GameDataImpl;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.LootCommand;

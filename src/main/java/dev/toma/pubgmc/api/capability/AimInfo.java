@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.capability.player;
+package dev.toma.pubgmc.api.capability;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -25,7 +25,7 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
         EntityPlayer player = data.getPlayer();
         boolean server = !player.world.isRemote;
         int equippedSlot = player.inventory.currentItem;
-        if(aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.isReloading())) {
+        if(aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.getReloadInfo().isReloading())) {
             setAiming(false, STOP_AIMING_SPEED);
             data.sync();
         }

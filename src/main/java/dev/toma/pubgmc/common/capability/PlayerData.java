@@ -1,6 +1,7 @@
-package dev.toma.pubgmc.common.capability.player;
+package dev.toma.pubgmc.common.capability;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketClientCapabilitySync;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
@@ -28,7 +29,6 @@ public class PlayerData implements IPlayerData {
     private final ReloadInfo reloadInfo;
     private boolean isProne;
     private boolean areNightVisionGogglesActive;
-    private double dist; // TODO remove
 
     public PlayerData() {
         this(null);
@@ -40,10 +40,6 @@ public class PlayerData implements IPlayerData {
         this.aimInfo = new AimInfo(this);
         this.reloadInfo = new ReloadInfo();
         this.inventory = new InventoryBasic("pubgmc.equipment_inventory", false, SpecialEquipmentSlot.values().length);
-    }
-
-    public static IPlayerData get(EntityPlayer player) {
-        return player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
     }
 
     @Override
@@ -89,21 +85,6 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public boolean isAiming() {
-        return aimInfo.isAiming();
-    }
-
-    @Override
-    public boolean getEquippedNV() {
-        return this.areNightVisionGogglesActive;
-    }
-
-    @Override
-    public boolean isReloading() {
-        return reloadInfo.reloading;
-    }
-
-    @Override
     public void setNightVisionActive(boolean status) {
         if (!getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
             areNightVisionGogglesActive = status;
@@ -115,16 +96,6 @@ public class PlayerData implements IPlayerData {
     @Override
     public boolean isNightVisionActive() {
         return !getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty() && areNightVisionGogglesActive;
-    }
-
-    @Override
-    public double getDistance() {
-        return dist;
-    }
-
-    @Override
-    public void setDistance(double dist) {
-        this.dist = dist;
     }
 
     @Override
@@ -202,7 +173,7 @@ public class PlayerData implements IPlayerData {
         public static void onStartTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event) {
             if(event.getTarget() instanceof EntityPlayerMP) {
                 EntityPlayer player = (EntityPlayer) event.getTarget();
-                PacketHandler.sendToClient(new PacketClientCapabilitySync(player.getUniqueID(), PlayerData.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
+                PacketHandler.sendToClient(new PacketClientCapabilitySync(player.getUniqueID(), PlayerDataProvider.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
             }
         }
 

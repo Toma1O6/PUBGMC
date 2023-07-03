@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.capability.game;
+package dev.toma.pubgmc.common.capability;
 
 import com.google.common.collect.ImmutableMap;
 import dev.toma.pubgmc.api.PubgmcRegistries;

@@ -1,7 +1,8 @@
 package dev.toma.pubgmc.common.items.equipment;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.player.EntityPlayer;

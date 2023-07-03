@@ -1,6 +1,5 @@
-package dev.toma.pubgmc.common.capability.player;
+package dev.toma.pubgmc.api.capability;
 
-import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
 import net.minecraft.entity.player.EntityPlayer;

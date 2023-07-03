@@ -1,13 +1,13 @@
 package dev.toma.pubgmc.asm;
 
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import dev.toma.pubgmc.client.event.ClientWorldTickEvent;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.items.equipment.NightVisionGoggles;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -39,7 +39,7 @@ public class ASMHooksClient {
         if(!(entity instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) entity;
-        IPlayerData data = PlayerData.get(player);
+        IPlayerData data = PlayerDataProvider.get(player);
         if(data == null)
             return;
         boolean isHoldingWeapon = player.getHeldItemMainhand().getItem() instanceof GunBase;
@@ -65,7 +65,7 @@ public class ASMHooksClient {
             player.limbSwing = 0.0F;
             player.limbSwingAmount = 0.0F;
         } else if(isHoldingWeapon) {
-            boolean aiming = data.isAiming();
+            boolean aiming = data.getAimInfo().isAiming();
             float f0;
             float f1;
             float f2;
@@ -97,7 +97,7 @@ public class ASMHooksClient {
     }
 
     public static void player_preRenderCallback(RenderPlayer render, AbstractClientPlayer abstractClientPlayer, float partialTicks) {
-        IPlayerData data = PlayerData.get(abstractClientPlayer);
+        IPlayerData data = PlayerDataProvider.get(abstractClientPlayer);
         if(data != null && data.isProne()) {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 0.9F, 0.12F);
@@ -105,9 +105,9 @@ public class ASMHooksClient {
     }
 
     public static void player_constructRender(RenderPlayer renderPlayer, RenderManager manager, boolean useSmallArms) {
-        renderPlayer.addLayer(new LayerGhillie<>(renderPlayer, PlayerData::get));
-        renderPlayer.addLayer(new LayerBackpack<>(renderPlayer, PlayerData::get));
-        renderPlayer.addLayer(new LayerNightVision<>(renderPlayer, PlayerData::get, player -> PlayerData.get(player).isNightVisionActive()));
+        renderPlayer.addLayer(new LayerGhillie<>(renderPlayer, PlayerDataProvider::get));
+        renderPlayer.addLayer(new LayerBackpack<>(renderPlayer, PlayerDataProvider::get));
+        renderPlayer.addLayer(new LayerNightVision<>(renderPlayer, PlayerDataProvider::get, player -> PlayerDataProvider.get(player).isNightVisionActive()));
     }
 
     public static void preRenderItem(ItemCameraTransforms.TransformType renderingType) {
@@ -118,7 +118,7 @@ public class ASMHooksClient {
         Minecraft mc = Minecraft.getMinecraft();
         WorldClient client = mc.world;
 
-        IPlayerData data = PlayerData.get(mc.player);
+        IPlayerData data = PlayerDataProvider.get(mc.player);
         if (data == null)
             return;
         ItemStack stack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION);

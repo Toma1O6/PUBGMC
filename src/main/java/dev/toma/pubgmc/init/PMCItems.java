@@ -2,9 +2,9 @@ package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
+import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
-import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.FlareGun;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.*;

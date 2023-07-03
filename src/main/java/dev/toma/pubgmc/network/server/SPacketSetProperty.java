@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.network.server;
 
-import dev.toma.pubgmc.common.capability.player.AimInfo;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.ReloadInfo;
+import dev.toma.pubgmc.api.capability.AimInfo;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.ReloadInfo;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
@@ -54,7 +54,7 @@ public class SPacketSetProperty implements IMessage {
 
     public enum Action {
         AIM((player, aBoolean) -> {
-            IPlayerData data = PlayerData.get(player);
+            IPlayerData data = PlayerDataProvider.get(player);
             AimInfo info = data.getAimInfo();
             float speed = AimInfo.STOP_AIMING_SPEED;
             if(aBoolean) {
@@ -68,7 +68,7 @@ public class SPacketSetProperty implements IMessage {
             data.sync();
         }),
         RELOAD((player, aBoolean) -> {
-            IPlayerData data = PlayerData.get(player);
+            IPlayerData data = PlayerDataProvider.get(player);
             ItemStack stack = player.getHeldItemMainhand();
             if(stack.getItem() instanceof GunBase) {
                 ReloadInfo reloadInfo = data.getReloadInfo();
@@ -89,7 +89,7 @@ public class SPacketSetProperty implements IMessage {
             }
         }),
         NIGHT_VISION((player, aBoolean) -> {
-            IPlayerData data = PlayerData.get(player);
+            IPlayerData data = PlayerDataProvider.get(player);
             data.setNightVisionActive(aBoolean);
             data.sync();
         });

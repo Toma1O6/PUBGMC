@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.util;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -15,13 +15,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -86,7 +84,7 @@ public class PUBGMCUtil {
     }
 
     public static boolean tryQuickEquip(EntityPlayer player, SpecialEquipmentSlot slot, ItemStack stack) {
-        IPlayerData data = PlayerData.get(player);
+        IPlayerData data = PlayerDataProvider.get(player);
         if (data == null)
             return false;
         ItemStack oldStack = data.getSpecialItemFromSlot(slot);

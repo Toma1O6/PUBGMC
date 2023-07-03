@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import dev.toma.pubgmc.PMCTabs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -14,11 +15,8 @@ public class ItemScope extends ItemAttachment {
     final ScopeData data;
 
     public ItemScope(String name, ScopeData data) {
-        this(name, data, false);
-    }
-
-    public ItemScope(String name, ScopeData data, boolean airdropOnly) {
-        super(name, airdropOnly);
+        super(name);
+        setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.data = data;
     }
 
@@ -29,10 +27,6 @@ public class ItemScope extends ItemAttachment {
 
     public int getZoom(int fov) {
         return data.getZoom() < 0 ? fov : data.getZoom();
-    }
-
-    public float getMouseSensMultiplier() {
-        return data.getMouseSens();
     }
 
     public ScopeData getData() {

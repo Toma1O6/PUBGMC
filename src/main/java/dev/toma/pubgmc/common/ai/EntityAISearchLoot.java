@@ -1,7 +1,7 @@
-package dev.toma.pubgmc.common.entity.bot.ai;
+package dev.toma.pubgmc.common.ai;
 
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
-import dev.toma.pubgmc.common.entity.bot.EntityAIPlayer;
+import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.InventorySearchHelper;
 import net.minecraft.entity.ai.EntityAIBase;

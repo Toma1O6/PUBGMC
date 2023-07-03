@@ -1,12 +1,12 @@
 package dev.toma.pubgmc.common.container;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.items.equipment.Backpack;
-import dev.toma.pubgmc.common.items.equipment.GhillieSuit;
-import dev.toma.pubgmc.common.items.equipment.NightVisionGoggles;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.item.Backpack;
+import dev.toma.pubgmc.api.item.GhillieSuit;
+import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -27,7 +27,7 @@ public class ContainerPlayerEquipment extends Container {
     private final IInventory equipmentInventory;
 
     public ContainerPlayerEquipment(InventoryPlayer playerInventory) {
-        IPlayerData data = PlayerData.get(playerInventory.player);
+        IPlayerData data = PlayerDataProvider.get(playerInventory.player);
         if (data == null) {
             this.equipmentInventory = null;
             return;

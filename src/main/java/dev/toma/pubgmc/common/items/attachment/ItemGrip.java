@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import dev.toma.pubgmc.PMCTabs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -18,6 +19,7 @@ public class ItemGrip extends ItemAttachment {
 
     public ItemGrip(String name, float verticalRecoil, float horizontalRecoil, float ads) {
         super(name);
+        setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.verticalRecoil = verticalRecoil;
         this.horizontalRecoil = horizontalRecoil;
         this.ads = ads;

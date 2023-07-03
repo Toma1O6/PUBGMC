@@ -3,10 +3,10 @@ package dev.toma.pubgmc.common.items.guns;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
-import dev.toma.pubgmc.common.capability.player.IPlayerData;
-import dev.toma.pubgmc.common.capability.player.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.PMCItem;
@@ -109,8 +109,8 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     public void shoot(World world, EntityPlayer player, ItemStack stack) {
-        IPlayerData data = PlayerData.get(player);
-        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.isReloading()) {
+        IPlayerData data = PlayerDataProvider.get(player);
+        if ((this.hasAmmo(stack) || player.capabilities.isCreativeMode) && !data.getReloadInfo().isReloading()) {
             if (!world.isRemote) {
                 if (!gunType.equals(GunType.SHOTGUN)) {
                     EntityBullet bullet = new EntityBullet(world, player, this);

@@ -1,8 +1,8 @@
 package dev.toma.pubgmc.client.layers;
 
+import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
-import dev.toma.pubgmc.common.capability.player.SpecialEquipmentSlot;
-import dev.toma.pubgmc.common.items.equipment.Backpack;
+import dev.toma.pubgmc.api.item.Backpack;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
