@@ -75,10 +75,10 @@ public class EntityBullet extends Entity {
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
         if(shooter instanceof EntityPlayer) {
             IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            calculateBulletHeading(direct, (EntityPlayer) shooter, data.getAimInfo().isFullyAds());
+            calculateBulletHeading(direct, data.getAimInfo().isFullyAds());
             this.setPosition(shooter.posX, data.isProne() ? shooter.posY + 0.5f : shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         } else {
-            this.calculateBulletHeading(direct, shooter, 2 + this.world.getDifficulty().ordinal());
+            this.calculateBulletHeading(direct, 2.5F - this.world.getDifficulty().ordinal() * 0.5F);
             this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         }
 
@@ -300,7 +300,7 @@ public class EntityBullet extends Entity {
         return getPitchRotationInaccuracy(shooter) == -35f ? 0f : -60f;
     }
 
-    private void calculateBulletHeading(Vec3d rotVec, EntityPlayer shooter, boolean aim) {
+    private void calculateBulletHeading(Vec3d rotVec, boolean aim) {
         if (aim && type != GunBase.GunType.SHOTGUN) {
             this.motionX = rotVec.x * velocity;
             this.motionY = rotVec.y * velocity;
@@ -312,17 +312,18 @@ public class EntityBullet extends Entity {
         }
     }
 
-    private void calculateBulletHeading(Vec3d rotVec, EntityLivingBase shooter, int accuracy) {
-        if(accuracy == 0) accuracy = 1;
-        this.motionX = rotVec.x * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
-        this.motionY = rotVec.y * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
-        this.motionZ = rotVec.z * velocity + rand.nextDouble() / accuracy - rand.nextDouble() / accuracy;
+    private void calculateBulletHeading(Vec3d rotVec, float inaccuracy) {
+        if(inaccuracy == 0)
+            inaccuracy = 1;
+        this.motionX = rotVec.x * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        this.motionY = rotVec.y * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        this.motionZ = rotVec.z * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
     }
 
     private void updateHeading() {
         float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) f) * (180D / Math.PI));
+        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, f) * (180D / Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }

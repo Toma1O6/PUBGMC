@@ -14,13 +14,14 @@ import net.minecraft.util.SoundEvent;
 
 public class EntityAIGunAttack extends EntityAIBase {
 
-    private static final int[] MAX_ATTACK_RANGE_TABLE = {40, 20, 10, 20, 40, 60, 60};
+    private static final int[] EFFECTIVE_RANGE_TABLE = {40, 20, 10, 20, 40, 60, 60};
     private final EntityAIPlayer aiPlayer;
-    private int timeRemaining;
-    private int shotsFired;
     private int timeWatching;
-
     private EntityLivingBase target;
+
+    private int shootCooldown;
+    private int firedTotal;
+    private int firedBurst;
 
     public EntityAIGunAttack(final EntityAIPlayer aiPlayer) {
         this.aiPlayer = aiPlayer;
@@ -43,10 +44,11 @@ public class EntityAIGunAttack extends EntityAIBase {
 
     @Override
     public void resetTask() {
-        this.timeWatching = 0;
-        this.timeRemaining = 5;
-        this.shotsFired = 0;
-        this.target = null;
+        timeWatching = 0;
+        target = null;
+        shootCooldown = 10;
+        firedTotal = 0;
+        firedBurst = 0;
     }
 
     @Override
@@ -64,11 +66,11 @@ public class EntityAIGunAttack extends EntityAIBase {
         if(stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             int tableIndex = gun.getGunType().ordinal();
-            if(distanceToTarget <= MAX_ATTACK_RANGE_TABLE[tableIndex] * 1.5 && this.timeWatching >= 20) {
+            if(distanceToTarget <= EFFECTIVE_RANGE_TABLE[tableIndex] * 3.0 && this.timeWatching >= 40) {
                 this.aiPlayer.getNavigator().clearPath();
             } else this.aiPlayer.getNavigator().tryMoveToEntityLiving(this.target, 1.0D);
             this.aiPlayer.getLookHelper().setLookPositionWithEntity(this.target, 30, 30);
-            if(--this.timeRemaining <= 0) {
+            if(--this.shootCooldown <= 0) {
                 if(!flag) {
                     return;
                 }
@@ -78,10 +80,11 @@ public class EntityAIGunAttack extends EntityAIBase {
     }
 
     private void shoot(GunBase gun, ItemStack stack, double distanceToTarget) {
-        if(distanceToTarget > MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
+        if(distanceToTarget > EFFECTIVE_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
             return;
         }
-        ++this.shotsFired;
+        ++this.firedTotal;
+        boolean burstFire = distanceToTarget < EFFECTIVE_RANGE_TABLE[gun.getGunType().ordinal()];
         int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 8 : 1;
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         boolean isSilenced = muzzle != null && muzzle.isSilenced();
@@ -97,11 +100,15 @@ public class EntityAIGunAttack extends EntityAIBase {
             }
             this.aiPlayer.world.spawnEntity(bullet);
         }
-        boolean effectiveRange = distanceToTarget < MAX_ATTACK_RANGE_TABLE[gun.getGunType().ordinal()];
-        this.timeRemaining = gun.getFireRate() + (effectiveRange ? 6 : 18);
-        if(shotsFired >= gun.getWeaponAmmoLimit(stack)) {
-            this.shotsFired = 0;
-            this.timeRemaining = 80;
+        this.shootCooldown = gun.getFireRate() + (gun.getGunType() == GunBase.GunType.DMR ? 10 : 0) + aiPlayer.getRNG().nextInt(5);
+        if (burstFire && ++firedBurst > 3) {
+            firedBurst = 0;
+            this.shootCooldown = 15;
+        }
+        if(firedTotal >= gun.getWeaponAmmoLimit(stack)) {
+            this.firedTotal = 0;
+            this.firedBurst = 0;
+            this.shootCooldown = gun.getReloadTime(stack);
         }
     }
 }

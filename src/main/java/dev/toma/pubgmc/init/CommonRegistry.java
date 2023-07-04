@@ -227,7 +227,7 @@ public class CommonRegistry {
                 new ItemScope("scope2x", new ScopeData(Constants.SCOPE_2X_ZOOM, () -> ConfigPMC.client.reticles.scope2xSensitivity.getAsFloat())),
                 new ItemScope("scope4x", new ScopeData(Constants.SCOPE_4X_ZOOM, () -> ConfigPMC.client.reticles.scope4xSensitivity.getAsFloat())),
                 new ItemScope("scope8x", new ScopeData(Constants.SCOPE_8X_ZOOM, () -> ConfigPMC.client.reticles.scope8xSensitivity.getAsFloat())),
-                new ItemScope("scope15x", new ScopeData(Constants.SCOPE_15X_ZOOM, () -> ConfigPMC.client.reticles.scope15xSensitivity.getAsFloat()), true),
+                new ItemScope("scope15x", new ScopeData(Constants.SCOPE_15X_ZOOM, () -> ConfigPMC.client.reticles.scope15xSensitivity.getAsFloat())),
                 new ItemGrip("grip_vertical", 0.8F, 1.0F),
                 new ItemGrip("grip_angled", 1.0F, 0.8F),
                 new ItemMagazine("quickdraw_mag_smg", false, true),
