@@ -2,6 +2,7 @@ package dev.toma.pubgmc.api.game.team;
 
 import dev.toma.pubgmc.api.game.util.Team;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
@@ -60,6 +61,17 @@ public class SimpleTeamManager implements TeamManager {
                 teamById.remove(team.getTeamId());
             }
         }
+    }
+
+    @Override
+    public boolean tryLeaveTeam(EntityPlayer player, Team team, boolean kicked) {
+        if (team.isTeamLeader(player)) {
+            disbandAndTransferMembers(team);
+        } else {
+            team.removeMemberById(player.getUniqueID());
+        }
+        createNewTeam(player);
+        return true;
     }
 
     @Override

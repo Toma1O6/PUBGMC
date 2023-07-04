@@ -146,13 +146,7 @@ public class TeamCommand extends AbstractCommand {
         if (teamGame.isStarted()) {
             throw new WrongUsageException("You cannot leave team while participating in active game");
         }
-        if (team.isTeamLeader(sender)) {
-            teamManager.disbandAndTransferMembers(team);
-        } else {
-            team.removeMemberById(sender.getUniqueID());
-        }
-        if (teamManager.canLeaveTeam(sender, team)) {
-            teamManager.createNewTeam(sender);
+        if (teamManager.tryLeaveTeam(sender, team, false)) {
             ITextComponent message = new TextComponentTranslation("commands.pubgmc.team.member_left.team", sender.getDisplayName());
             forEachPlayerTeamMember(team.getAllMembers().values(), sender.world, player -> player.sendMessage(message));
             sender.sendMessage(new TextComponentTranslation("commands.pubgmc.team.member_left.self"));
@@ -247,12 +241,12 @@ public class TeamCommand extends AbstractCommand {
         if (game.isStarted()) {
             throw new WrongUsageException("You cannot kick players during active game");
         }
-        senderTeam.removeMemberById(target.getUniqueID());
-        teamManager.createNewTeam(target);
         // TODO reasons - needs to improve command parser
-        ITextComponent message = new TextComponentTranslation("commands.pubgmc.team.member_kick.team", target.getDisplayName());
-        forEachPlayerTeamMember(senderTeam.getAllMembers().values(), sender.world, player -> player.sendMessage(message));
-        target.sendMessage(new TextComponentTranslation("commands.pubgmc.team.member_kick.target", sender.getDisplayName()));
+        if (teamManager.tryLeaveTeam(target, senderTeam, true)) {
+            ITextComponent message = new TextComponentTranslation("commands.pubgmc.team.member_kick.team", target.getDisplayName());
+            forEachPlayerTeamMember(senderTeam.getAllMembers().values(), sender.world, player -> player.sendMessage(message));
+            target.sendMessage(new TextComponentTranslation("commands.pubgmc.team.member_kick.target", sender.getDisplayName()));
+        }
         gameData.sendGameDataToClients();
     }
 
