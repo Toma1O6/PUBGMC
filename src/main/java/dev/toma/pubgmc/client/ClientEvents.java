@@ -17,6 +17,7 @@ import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
 import dev.toma.pubgmc.client.games.GameRendererManager;
+import dev.toma.pubgmc.client.games.MapPointRendererManager;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
@@ -298,6 +299,7 @@ public class ClientEvents {
     public void renderWorld(RenderWorldLastEvent event) {
         float partialTicks = event.getPartialTicks();
         GameRendererManager.INSTANCE.renderWorldOverlay(partialTicks);
+        MapPointRendererManager.INSTANCE.renderInWorld(partialTicks);
     }
 
     @SubscribeEvent

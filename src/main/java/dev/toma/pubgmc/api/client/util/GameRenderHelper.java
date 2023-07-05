@@ -15,11 +15,11 @@ public class GameRenderHelper {
 
     private static final int TEAM_PANEL_WIDTH = 60;
 
-    public static void renderTeamOverlay(Minecraft minecraft, TeamGame<?> teamGame, int x, int y) {
-        renderTeamOverlay(minecraft, teamGame, x, y, false);
+    public static void renderTeamOverlay(Minecraft minecraft, TeamGame<?> teamGame, int x, int y, boolean renderSoloTeam) {
+        renderTeamOverlay(minecraft, teamGame, x, y, renderSoloTeam, false);
     }
 
-    public static void renderTeamOverlay(Minecraft minecraft, TeamGame<?> teamGame, int x, int y, boolean offsetYByTeamSize) {
+    public static void renderTeamOverlay(Minecraft minecraft, TeamGame<?> teamGame, int x, int y, boolean renderSoloTeam, boolean offsetYByTeamSize) {
         Entity entity = minecraft.getRenderViewEntity();
         if (entity == null) {
             return;
@@ -27,6 +27,9 @@ public class GameRenderHelper {
         TeamManager manager = teamGame.getTeamManager();
         Team team = manager.getEntityTeam(entity);
         if (team == null) {
+            return;
+        }
+        if (!renderSoloTeam && team.getSize() == 1) {
             return;
         }
         if (offsetYByTeamSize) {

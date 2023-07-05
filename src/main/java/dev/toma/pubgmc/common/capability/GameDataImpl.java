@@ -28,6 +28,7 @@ public class GameDataImpl implements GameData {
     private GameType<?, ?> selectedGameType;
     @Nullable
     private GameLobby lobby;
+    private String activeMap = "";
     private final Map<String, GameMap> maps;
 
     public GameDataImpl() {
@@ -101,6 +102,17 @@ public class GameDataImpl implements GameData {
     }
 
     @Override
+    public void setActiveGameMapName(@Nullable String mapName) {
+        this.activeMap = mapName;
+    }
+
+    @Nullable
+    @Override
+    public String getActiveGameMapName() {
+        return activeMap;
+    }
+
+    @Override
     public void sendGameDataToClients() {
         if (!world.isRemote) {
             PacketHandler.sendToAllClients(new S2C_SendGameData(serializeNBT()));
@@ -118,6 +130,9 @@ public class GameDataImpl implements GameData {
         NBTTagList mapsNbt = new NBTTagList();
         maps.values().forEach(map -> mapsNbt.appendTag(map.serialize()));
         nbt.setTag("maps", mapsNbt);
+        if (activeMap != null) {
+            nbt.setString("activeMap", activeMap);
+        }
         return nbt;
     }
 
@@ -140,5 +155,6 @@ public class GameDataImpl implements GameData {
             GameMap map = GameMap.deserialize(mapData);
             maps.put(map.getMapName(), map);
         }
+        activeMap = nbt.hasKey("activeMap") ? nbt.getString("activeMap") : null;
     }
 }

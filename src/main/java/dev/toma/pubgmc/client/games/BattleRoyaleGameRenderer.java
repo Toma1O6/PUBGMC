@@ -28,7 +28,7 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
         if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft minecraft = Minecraft.getMinecraft();
             FontRenderer font = minecraft.fontRenderer;
-            GameRenderHelper.renderTeamOverlay(minecraft, game, 0, resolution.getScaledHeight() - 50, true);
+            GameRenderHelper.renderTeamOverlay(minecraft, game, 0, resolution.getScaledHeight() - 50, false, true);
             if (game.isStarted()) {
                 String zoneText = ZONE_LABEL.getFormattedText();
                 int zoneTextWidth = font.getStringWidth(zoneText);

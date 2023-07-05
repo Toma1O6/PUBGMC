@@ -36,5 +36,10 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
 
     void setActiveGame(Game<?> game);
 
+    void setActiveGameMapName(@Nullable String mapName);
+
+    @Nullable
+    String getActiveGameMapName();
+
     void sendGameDataToClients();
 }

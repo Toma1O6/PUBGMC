@@ -2,10 +2,12 @@ package dev.toma.pubgmc.proxy;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
+import dev.toma.pubgmc.api.client.event.RegisterMapPointRendererEvent;
 import dev.toma.pubgmc.client.ClientEvents;
 import dev.toma.pubgmc.client.RenderHandler;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.client.games.GameRendererManager;
+import dev.toma.pubgmc.client.games.MapPointRendererManager;
 import dev.toma.pubgmc.client.gui.GuiGunWorkbench;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
@@ -88,6 +90,7 @@ public class ClientProxy extends Proxy {
         registerBackpackModels();
 
         MinecraftForge.EVENT_BUS.post(new RegisterGameRendererEvent(GameRendererManager.INSTANCE::registerGameRenderer));
+        MinecraftForge.EVENT_BUS.post(new RegisterMapPointRendererEvent(MapPointRendererManager.INSTANCE::registerRenderer));
     }
 
     @Override

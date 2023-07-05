@@ -159,7 +159,6 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             ruleStorage.storeValueAndSet(world, "doMobSpawning", "false");
             ruleStorage.storeValueAndSet(world, "doMobLoot", "false");
             ruleStorage.storeValueAndSet(world, "showDeathMessages", "false");
-            GameHelper.requestClientGameDataSynchronization(world);
         }
     }
 

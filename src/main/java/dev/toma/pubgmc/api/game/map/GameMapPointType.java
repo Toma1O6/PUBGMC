@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -18,6 +19,10 @@ public final class GameMapPointType<P extends GameMapPoint> extends RegistryObje
     private GameMapPointType(ResourceLocation identifier, GameMapPointSerializer<P> serializer) {
         super(identifier);
         this.serializer = serializer;
+    }
+
+    public P createPointInstance(BlockPos pos, World world, GameMap map) {
+        return serializer.createDefaultInstance(pos, world, map);
     }
 
     public static <P extends GameMapPoint> GameMapPointType<P> create(ResourceLocation identifier, GameMapPointSerializer<P> serializer) {

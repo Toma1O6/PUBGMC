@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -30,6 +31,10 @@ public final class GameMap implements Bounds {
         this.max = max;
         this.pointsByPosition = new HashMap<>();
         this.pointsByType = ArrayListMultimap.create();
+    }
+
+    public Collection<GameMapPoint> getPoints() {
+        return pointsByPosition.values();
     }
 
     public void setMapPoint(BlockPos pos, GameMapPoint point) {

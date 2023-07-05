@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.api.game.map;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -40,6 +42,11 @@ public abstract class GameMapPoint {
         @Override
         public P deserializePointData(BlockPos pointPosition, NBTTagCompound nbt) {
             return factory.apply(pointPosition);
+        }
+
+        @Override
+        public P createDefaultInstance(BlockPos pos, World world, GameMap map, EntityPlayer player) {
+            return factory.apply(pos);
         }
     }
 }

@@ -8,6 +8,8 @@ import dev.toma.pubgmc.api.game.GameException;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapPoint;
+import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.BlockPosArgument;
@@ -37,12 +39,12 @@ import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class GameCommand extends AbstractCommand {
 
     private static final ITextComponent TEXT_EXECUTE_CMD = new TextComponentTranslation("commands.pubgmc.game.leave.confirm.hover_cmd_text");
     private static final String ARG_GAME_TYPE = "gameType";
-
     private static final String ARG_MAP_NAME = "mapName";
     private static final String ARG_MAP_CENTER_X = "mapCreateCenterX";
     private static final String ARG_MAP_CENTER_Z = "mapCreateCenterZ";
@@ -52,6 +54,7 @@ public class GameCommand extends AbstractCommand {
     private static final String ARG_MAP_CORNER_BX = "mapCreateCornerBX";
     private static final String ARG_MAP_CORNER_BZ = "mapCreateCornerBZ";
     private static final String ARG_LOBBY_CENTER = "lobbyCenter";
+    private static final String ARG_POINT_TYPE = "pointType";
 
     private static final CommandTree COMMAND = CommandTree.Builder.command("game")
             .usage("/game [join|leave|select|init|start|stop|map|lobby]")
@@ -97,6 +100,16 @@ public class GameCommand extends AbstractCommand {
                                             .node(
                                                     CommandNodeProvider.literal("clearPois")
                                                             .executes(GameCommand::deleteMapPoints)
+                                            )
+                                            .node(
+                                                    CommandNodeProvider.literal("addPoint")
+                                                            .executes(GameCommand::addMapPoint)
+                                                            .node(
+                                                                    CommandNodeProvider.argument(ARG_POINT_TYPE, PubgmcRegistryArgument.registry(PubgmcRegistries.GAME_MAP_POINTS))
+                                                                            .node(
+                                                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
+                                                                            )
+                                                            )
                                             )
                             )
                             .node(
@@ -185,6 +198,7 @@ public class GameCommand extends AbstractCommand {
 
     private static void reloadGameConfigurations(CommandContext context) throws CommandException {
         GameConfigurationManager.loadConfigurations();
+        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.config.reloaded"));
     }
 
     private static void selectGameType(CommandContext context) throws CommandException {
@@ -250,15 +264,18 @@ public class GameCommand extends AbstractCommand {
         if (map == null) {
             throw new WrongUsageException("No map is registered under " + actualMapName + " name");
         }
+        data.setActiveGameMapName(actualMapName);
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
         try {
             game.performGameMapValidations(world, map);
             game.onGameStart(world);
         } catch (GameException e) {
+            data.setActiveGameMapName(actualMapName);
             throw new WrongUsageException("Unable to start game: " + e.getMessage());
         }
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.started"));
+        data.sendGameDataToClients();
     }
 
     private static void stopGame(CommandContext context) throws CommandException {
@@ -333,6 +350,33 @@ public class GameCommand extends AbstractCommand {
         map.deletePoints();
         data.sendGameDataToClients();
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.pois_deleted", mapName));
+    }
+
+    private static void addMapPoint(CommandContext context) throws CommandException {
+        GameData gameData = getGameData(context);
+        GameMapPointType<?> pointType = context.getArgumentMandatory(ARG_POINT_TYPE);
+        ICommandSender sender = context.getSender();
+        BlockPos pos = sender.getPosition();
+        Optional<String> providedMapName = context.getArgument(ARG_MAP_NAME);
+        GameMap map;
+        if (providedMapName.isPresent()) {
+            map = gameData.getGameMap(providedMapName.get());
+            if (map == null) {
+                throw new WrongUsageException("No map found by name '" + providedMapName.get() + "'");
+            }
+        } else {
+            List<GameMap> insideMaps = gameData.getRegisteredGameMaps().values().stream()
+                    .filter(gameMap -> gameMap.isWithin(pos))
+                    .collect(Collectors.toList());
+            if (insideMaps.size() != 1) {
+                throw new WrongUsageException("You must specify map name");
+            }
+            map = insideMaps.get(0);
+        }
+        GameMapPoint point = pointType.createPointInstance(pos, sender.getEntityWorld(), map);
+        map.setMapPoint(pos, point);
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.poi_added", pointType.getIdentifier(), map.getMapName()));
+        gameData.sendGameDataToClients();
     }
 
     private static void printLobbyInformation(CommandContext context) throws CommandException {
