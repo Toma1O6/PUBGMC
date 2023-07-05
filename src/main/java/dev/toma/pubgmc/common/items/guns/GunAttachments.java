@@ -6,6 +6,7 @@ import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.util.LazyLoad;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,6 +59,19 @@ public class GunAttachments {
             String key = attachment.getType().getName();
             attachmentTag.setString(key, attachment.getRegistryName().toString());
         }
+    }
+
+    public boolean hasAttachment(ItemStack gunStack, AttachmentType<?> attachmentType) {
+        if (gunStack.getItem() instanceof GunBase) {
+            NBTTagCompound nbt = gunStack.getTagCompound();
+            if (nbt == null || !nbt.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
+                return false;
+            }
+            NBTTagCompound attachmentsTag = nbt.getCompoundTag("attachments");
+            String tag = attachmentType.getName();
+            return attachmentsTag.hasKey(tag, Constants.NBT.TAG_STRING);
+        }
+        return false;
     }
 
     public Map<AttachmentType<?>, List<ItemAttachment>> getCompatibilityMap() {

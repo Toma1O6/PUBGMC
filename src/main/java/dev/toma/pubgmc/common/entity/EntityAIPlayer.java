@@ -7,7 +7,10 @@ import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.SpecialInventoryItem;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.items.ItemAmmo;
+import dev.toma.pubgmc.common.items.attachment.AttachmentType;
+import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
+import dev.toma.pubgmc.common.items.guns.GunAttachments;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.init.PMCItems;
@@ -168,6 +171,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
             if (stack.isEmpty())
                 continue;
             ItemStack weapon = getHeldItemMainhand();
+            boolean hasWeapon = !weapon.isEmpty() && weapon.getItem() instanceof GunBase;
             if (weapon.isEmpty() && stack.getItem() instanceof GunBase) {
                 if (stack.getItem() != PMCItems.FLARE_GUN) {
                     setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack.copy());
@@ -205,6 +209,18 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
             if (stack.getItem() instanceof ItemHealing) {
                 if (lootItem(stack)) {
                     lootable.setItemStackToSlot(i, ItemStack.EMPTY);
+                }
+            }
+            if (stack.getItem() instanceof ItemAttachment) {
+                ItemAttachment attachment = (ItemAttachment) stack.getItem();
+                if (hasWeapon) {
+                    GunBase gun = (GunBase) weapon.getItem();
+                    GunAttachments attachments = gun.getAttachments();
+                    AttachmentType<?> type = attachment.getType();
+                    if (attachments.supports(attachment) && !attachments.hasAttachment(weapon, type)) {
+                        attachments.attach(weapon, attachment);
+                        lootable.setItemStackToSlot(i, ItemStack.EMPTY);
+                    }
                 }
             }
         }
