@@ -2,7 +2,6 @@ package dev.toma.pubgmc.api.game.map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import dev.toma.pubgmc.api.util.Bounds;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
@@ -35,6 +34,11 @@ public final class GameMap implements Bounds {
 
     public Collection<GameMapPoint> getPoints() {
         return pointsByPosition.values();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <P extends GameMapPoint> Collection<P> getPoints(GameMapPointType<P> pointType) {
+        return (Collection<P>) pointsByType.get(pointType);
     }
 
     public void setMapPoint(BlockPos pos, GameMapPoint point) {

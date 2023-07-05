@@ -45,7 +45,7 @@ public abstract class GameMapPoint {
         }
 
         @Override
-        public P createDefaultInstance(BlockPos pos, World world, GameMap map, EntityPlayer player) {
+        public P createDefaultInstance(BlockPos pos, World world, GameMap map) {
             return factory.apply(pos);
         }
     }

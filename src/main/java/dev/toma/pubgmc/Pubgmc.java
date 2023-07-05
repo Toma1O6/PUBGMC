@@ -88,6 +88,8 @@ public class Pubgmc {
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
         CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
 
+        LoadoutManager.registerLoadoutDirectory("ffa");
+
         proxy.preInit(event);
     }
 

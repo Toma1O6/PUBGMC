@@ -275,17 +275,20 @@ public final class GameHelper {
 
     public static DeathMessage createDefaultDeathMessage(EntityLivingBase victim, DamageSource source) {
         Entity sourceEntity = source.getTrueSource();
+        boolean headshot = false;
         if (sourceEntity instanceof EntityLivingBase) {
             EntityLivingBase killer = (EntityLivingBase) sourceEntity;
             ItemStack killWeapon = killer.getHeldItemMainhand();
             if (source instanceof DamageSourceGun) {
-                killWeapon = ((DamageSourceGun) source).getWeapon();
+                DamageSourceGun damageSourceGun = (DamageSourceGun) source;
+                killWeapon = damageSourceGun.getWeapon();
+                headshot = damageSourceGun.wasHeadshot();
             }
             ITextComponent label = killWeapon.isEmpty() ? TextComponentHelper.GENERIC_DEATH_BY_ENTITY : new TextComponentString(killWeapon.getDisplayName());
             if (source == PMCDamageSources.VEHICLE && killer.getRidingEntity() != null) {
                 label = killer.getRidingEntity().getDisplayName();
             }
-            return new DeathMessage(killer, victim, label);
+            return new DeathMessage(killer, victim, label, headshot);
         }
         if (source == PMCDamageSources.ZONE) {
             return new DeathMessage(null, victim, TextComponentHelper.GENERIC_ZONE);

@@ -23,26 +23,33 @@ public final class DeathMessage {
     private final EntityLivingBase killer;
     private final EntityLivingBase victim;
     private final ITextComponent cause;
+    private final boolean headshot;
     private final ITextComponent combined;
     private Type type;
 
     public DeathMessage(@Nullable EntityLivingBase killer, EntityLivingBase victim, ITextComponent cause) {
+        this(killer, victim, cause, false);
+    }
+
+    public DeathMessage(@Nullable EntityLivingBase killer, EntityLivingBase victim, ITextComponent cause, boolean headshot) {
         this.killer = killer;
         this.killerId = killer != null ? killer.getUniqueID() : null;
         this.victim = victim;
         this.victimId = victim.getUniqueID();
         this.cause = cause;
+        this.headshot = headshot;
 
-        this.combined = combine(killer != null ? killer.getDisplayName() : null, victim.getDisplayName(), cause);
+        this.combined = combine(killer != null ? killer.getDisplayName() : null, victim.getDisplayName(), cause, headshot);
     }
 
-    private DeathMessage(@Nullable ITextComponent killerName, ITextComponent victimName, ITextComponent cause, @Nullable UUID killerId, UUID victimId) {
+    private DeathMessage(@Nullable ITextComponent killerName, ITextComponent victimName, ITextComponent cause, @Nullable UUID killerId, UUID victimId, boolean headshot) {
         this.killer = null;
         this.victim = null;
         this.cause = cause;
         this.killerId = killerId;
         this.victimId = victimId;
-        this.combined = combine(killerName, victimName, cause);
+        this.headshot = headshot;
+        this.combined = combine(killerName, victimName, cause, headshot);
     }
 
     public Type getType() {
@@ -82,6 +89,7 @@ public final class DeathMessage {
         }
         nbt.setString("cause", ITextComponent.Serializer.componentToJson(cause));
         nbt.setUniqueId("victimUUID", victimId);
+        nbt.setBoolean("headshot", headshot);
         return nbt;
     }
 
@@ -98,13 +106,18 @@ public final class DeathMessage {
         }
         ITextComponent cause = ITextComponent.Serializer.jsonToComponent(nbt.getString("cause"));
         UUID victimId = nbt.getUniqueId("victimUUID");
-        return new DeathMessage(killer, victim, cause, killerId, victimId);
+        boolean headshot = nbt.getBoolean("headshot");
+        return new DeathMessage(killer, victim, cause, killerId, victimId, headshot);
     }
 
-    private ITextComponent combine(@Nullable ITextComponent killer, ITextComponent victim, ITextComponent cause) {
+    private ITextComponent combine(@Nullable ITextComponent killer, ITextComponent victim, ITextComponent cause, boolean headshot) {
         return victim == null ? new TextComponentString("") : killer != null
-                ? new TextComponentString(String.format("%s [%s] %s", killer.getFormattedText(), cause.getFormattedText(), victim.getFormattedText()))
+                ? new TextComponentString(String.format("%s [%s] %s", killer.getFormattedText(), getCauseString(cause.getFormattedText(), headshot), victim.getFormattedText()))
                 : new TextComponentString(String.format("[%s] %s", cause.getFormattedText(), victim.getFormattedText()));
+    }
+
+    private String getCauseString(String cause, boolean headshot) {
+        return headshot ? "⦿ " + cause : cause;
     }
 
     public enum Type {

@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.api.game.playzone;
 
-import dev.toma.pubgmc.api.util.Bounds;
+import dev.toma.pubgmc.api.game.map.Bounds;
 import dev.toma.pubgmc.api.util.Position2;
 import net.minecraft.world.World;
 

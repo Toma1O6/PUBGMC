@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.entity;
 
-import dev.toma.pubgmc.api.game.PlayzoneDeliveryVehicle;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneDeliveryVehicle;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;

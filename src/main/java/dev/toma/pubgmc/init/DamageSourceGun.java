@@ -22,6 +22,10 @@ public class DamageSourceGun extends EntityDamageSourceIndirect {
         return weapon;
     }
 
+    public boolean wasHeadshot() {
+        return headshot;
+    }
+
     @Override
     public ITextComponent getDeathMessage(EntityLivingBase victim) {
         String label = "death.attack." + getDamageType();

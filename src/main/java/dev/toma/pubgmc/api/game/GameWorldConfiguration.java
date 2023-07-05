@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.api.game;
 
 import com.google.gson.JsonObject;
-import dev.toma.pubgmc.api.util.GameRuleStorage;
+import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.JsonUtils;
@@ -13,7 +13,7 @@ import net.minecraft.world.storage.WorldInfo;
 public class GameWorldConfiguration {
 
     public boolean doDaylightCycle = false;
-    public int daytime;
+    public int daytime = 5000;
     public boolean doWeatherCycle = false;
     public WeatherType weatherType = WeatherType.CLEAR;
     public int weatherDuration = 1000000;

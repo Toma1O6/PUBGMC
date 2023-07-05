@@ -939,6 +939,7 @@ public class CommonRegistry {
     public static void registerGameTypes(PubgmcRegistryEvent.Game event) {
         event.register(GameTypes.NO_GAME);
         event.register(GameTypes.BATTLE_ROYALE);
+        event.register(GameTypes.FFA);
     }
 
     @SubscribeEvent

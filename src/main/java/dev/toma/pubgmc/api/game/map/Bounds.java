@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.api.util;
+package dev.toma.pubgmc.api.game.map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;

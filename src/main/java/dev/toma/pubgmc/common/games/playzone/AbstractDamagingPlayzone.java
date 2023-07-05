@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.games.playzone;
 
-import dev.toma.pubgmc.api.game.PlayzoneDeliveryVehicle;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneDeliveryVehicle;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import net.minecraft.entity.Entity;

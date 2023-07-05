@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.api.util;
+package dev.toma.pubgmc.api.game.util;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.GameRules;
