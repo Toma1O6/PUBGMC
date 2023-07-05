@@ -335,3 +335,6 @@ label.pubgmc.death_message.zone=PLAYZONE
 label.pubgmc.accept=Accept
 label.pubgmc.decline=Decline
 label.pubgmc.bot.prefix=Bot
+
+label.pubgmc.game.battleroyale.kill.single=%s KILL
+label.pubgmc.game.battleroyale.kill.multiple=%s KILLS

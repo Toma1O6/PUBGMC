@@ -15,12 +15,21 @@ public final class PlayerPropertyHolder {
 
     private static final ITextComponent DEFAULT_USERNAME = new TextComponentString("<Unknown>");
     private final Map<UUID, ScoreEntry> playerScoreEntries = new HashMap<>();
+    private final Map<PropertyType<?>, Object> registeredProperties = new HashMap<>();
 
     public void register(Entity entity) {
         UUID entityId = entity.getUniqueID();
         ITextComponent username = entity.getDisplayName();
         ScoreEntry entry = new ScoreEntry(username.getFormattedText());
         playerScoreEntries.put(entityId, entry);
+    }
+
+    public void delete(UUID uuid) {
+        playerScoreEntries.remove(uuid);
+    }
+
+    public <V> void registerProperty(PropertyType<V> type, V initialValue) {
+        registeredProperties.put(type, initialValue);
     }
 
     public <V> void setProperty(UUID ownerId, PropertyType<V> propertyId, V value) {
@@ -44,7 +53,17 @@ public final class PlayerPropertyHolder {
         }
         Object prop = entry.properties.get(property);
         try {
-            return (T) prop;
+            T t = (T) prop;
+            if (t == null) {
+                T initialValue = (T) registeredProperties.get(property);
+                if (initialValue != null) {
+                    t = initialValue;
+                    setProperty(ownerId, property, initialValue);
+                } else {
+                    return fallback;
+                }
+            }
+            return t;
         } catch (ClassCastException e) {
             return fallback;
         }
@@ -56,7 +75,11 @@ public final class PlayerPropertyHolder {
             return -1;
         }
         int newValue = value + amount;
-        playerScoreEntries.get(ownerId).properties.put(property, newValue);
+        ScoreEntry entry = playerScoreEntries.get(ownerId);
+        if (entry == null) {
+            return -1;
+        }
+        entry.properties.put(property, newValue);
         return newValue;
     }
 
@@ -99,6 +122,12 @@ public final class PlayerPropertyHolder {
         public PropertyType(ResourceLocation identifier, PropertyValueSerializer<V> serializer) {
             this.identifier = identifier;
             this.serializer = serializer;
+        }
+
+        public static PropertyType<Integer> intProperty(ResourceLocation identifier) {
+            return new PropertyType<>(identifier, PropertyValueSerializer.primitive(
+                    NBTTagCompound::setInteger, NBTTagCompound::getInteger
+            ));
         }
 
         public static void registerProperty(PropertyType<?> type) {

@@ -13,10 +13,7 @@ import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
-import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
-import dev.toma.pubgmc.api.game.util.Team;
-import dev.toma.pubgmc.api.game.util.GameRuleStorage;
+import dev.toma.pubgmc.api.game.util.*;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
@@ -37,6 +34,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -63,6 +64,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private final TeamAIManager aiManager;
     private final GameRuleStorage ruleStorage;
     private final DeathMessageContainer deathMessages;
+    private final PlayerPropertyHolder playerProperties;
     private final List<GameEventListener> listeners;
     private boolean started;
     private boolean completed;
@@ -81,6 +83,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         this.ruleStorage = new GameRuleStorage();
         this.aiManager = new TeamAIManager(teamManager);
         this.deathMessages = new DeathMessageContainer(5, 100);
+        this.playerProperties = new PlayerPropertyHolder();
         this.listeners = new ArrayList<>();
         this.firstShrinkDelay = configuration.playzoneGenerationDelay;
         this.completedTimer = 200;
@@ -118,6 +121,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     @Override
     public void onGameInit(World world) {
+        playerProperties.registerProperty(SharedProperties.KILLS, 0);
         List<EntityPlayer> playerList = world.playerEntities;
         if (playerList.size() <= EntityPlane.PLANE_CAPACITY) {
             GameDataProvider.getGameData(world)
@@ -128,9 +132,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                             lobby.teleport(player);
                             if (!configuration.automaticGameJoining || team == null || team.getSize() >= configuration.teamSize) {
                                 team = teamManager.createNewTeam(player);
+                                playerProperties.register(player);
                                 continue;
                             }
                             teamManager.join(team, player);
+                            playerProperties.register(player);
                         }
                     });
         }
@@ -237,6 +243,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public boolean playerJoinGame(EntityPlayer player) {
         if (!started && teamManager.getAllActivePlayers(player.world).count() < EntityPlane.PLANE_CAPACITY) {
             teamManager.createNewTeam(player);
+            playerProperties.register(player);
             return true;
         }
         return false;
@@ -434,6 +441,20 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 GameHelper.spawnAiPlayerDeathCrate(game.gameId, aiPlayer);
                 game.aiManager.onAiEntityDied(aiPlayer);
             }
+            Entity killer = source.getTrueSource();
+            if (killer instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) killer;
+                TeamRelations relations = GameHelper.getEntityRelations(player, entity);
+                if (relations != TeamRelations.FRIENDLY) {
+                    int kills = game.playerProperties.increaseInt(player.getUniqueID(), SharedProperties.KILLS);
+                    String message = kills == 1 ? "label.pubgmc.game.battleroyale.kill.single" : "label.pubgmc.game.battleroyale.kill.multiple";
+                    ITextComponent component = new TextComponentTranslation(message, kills);
+                    Style style = component.getStyle();
+                    style.setBold(true);
+                    style.setColor(TextFormatting.RED);
+                    player.sendStatusMessage(component, true);
+                }
+            }
             GameHelper.requestClientGameDataSynchronization(world);
         }
 
@@ -463,6 +484,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             nbt.setTag("rules", game.ruleStorage.serialize());
             nbt.setTag("deathMessages", game.deathMessages.serialize());
             nbt.setTag("aiManager", game.aiManager.serialize());
+            nbt.setTag("props", game.playerProperties.serialize());
             nbt.setBoolean("started", game.started);
             nbt.setBoolean("completed", game.completed);
             nbt.setInteger("completedTimer", game.completedTimer);
@@ -487,6 +509,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             game.ruleStorage.deserialize(nbt.getCompoundTag("rules"));
             game.deathMessages.deserialize(nbt.getCompoundTag("deathMessages"));
             game.aiManager.deserialize(nbt.getCompoundTag("aiManager"));
+            game.playerProperties.deserialize(nbt.getCompoundTag("props"));
             game.started = nbt.getBoolean("started");
             game.completed = nbt.getBoolean("completed");
             game.completedTimer = nbt.getInteger("completedTimer");

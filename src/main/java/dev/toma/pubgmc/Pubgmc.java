@@ -5,6 +5,8 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
+import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.SharedProperties;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.GameDataImpl;
@@ -88,6 +90,7 @@ public class Pubgmc {
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
         CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
 
+        registerProperties();
         LoadoutManager.registerLoadoutDirectory("ffa");
 
         proxy.preInit(event);
@@ -139,6 +142,10 @@ public class Pubgmc {
         PubgmcRegistries.GAME_MAP_POINTS.lock();
 
         GameConfigurationManager.loadConfigurations();
+    }
+
+    private static void registerProperties() {
+        PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.KILLS);
     }
 
     public static boolean isOutdated() {
