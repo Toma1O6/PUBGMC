@@ -72,6 +72,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private StaticPlayzone mapPlayzone;
     private DynamicPlayzone playzone;
     private int firstShrinkDelay;
+    private long gameTime;
     private boolean playzoneReady;
     private int phase;
 
@@ -213,6 +214,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
         deathMessages.tick();
         playzone.tickPlayzone(world);
+        ++gameTime;
     }
 
     @Override
@@ -314,12 +316,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     }
 
     private void tickAIEntities(WorldServer world) {
-        long total = world.getTotalWorldTime();
-        if (total % 20L == 0L) {
+        if (gameTime % 20L == 0L) {
             aiManager.checkForUnloadedEntities(world);
         }
         int mod = configuration.aiSpawnInterval * configuration.teamSize;
-        if (total % mod == 0L) {
+        if (gameTime >= configuration.initialAiSpawnDelay && gameTime % mod == 0L) {
             if (aiManager.canSpawnEntity()) {
                 Playzone shrunkPlayzone = playzone.getResultingPlayzone();
                 List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
@@ -383,9 +384,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             return AI_INITIAL_LOOT_PATH;
         }
         float progression = phase / Math.max((float) configuration.zonePhases.length, 1.0F);
-        if (progression >= 0.40F) {
+        if (progression >= 0.45F) {
             return AI_LATE_GAME_LOOT_PATH;
-        } else if (progression > 0.15F) {
+        } else if (progression > 0.25F) {
             return AI_MID_GAME_LOOT_PATH;
         } else {
             return AI_EARLY_GAME_LOOT_PATH;
@@ -488,6 +489,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             nbt.setBoolean("started", game.started);
             nbt.setBoolean("completed", game.completed);
             nbt.setInteger("completedTimer", game.completedTimer);
+            nbt.setLong("gameTime", game.gameTime);
             if (game.mapPlayzone != null) {
                 nbt.setTag("mapPlayzone", PlayzoneType.serialize(game.mapPlayzone));
             }
@@ -513,6 +515,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             game.started = nbt.getBoolean("started");
             game.completed = nbt.getBoolean("completed");
             game.completedTimer = nbt.getInteger("completedTimer");
+            game.gameTime = nbt.getLong("gameTime");
             if (nbt.hasKey("mapPlayzone", Constants.NBT.TAG_COMPOUND)) {
                 game.mapPlayzone = PlayzoneType.deserialize(nbt.getCompoundTag("mapPlayzone"));
             }
