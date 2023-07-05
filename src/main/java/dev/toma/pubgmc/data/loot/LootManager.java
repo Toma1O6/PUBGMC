@@ -76,7 +76,12 @@ public final class LootManager {
         for (File file : files) {
             loadFile(file);
         }
-        Map<String, LootConfiguration> createdDefault = LootConfigurations.registerDefaultLootConfigurations(this::registerDefaultLootConfiguration);
+        createDefaultLootConfigFiles(false);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void createDefaultLootConfigFiles(boolean forceReload) throws IOException {
+        Map<String, LootConfiguration> createdDefault = LootConfigurations.registerDefaultLootConfigurations(this::registerDefaultLootConfiguration, forceReload);
         for (Map.Entry<String, LootConfiguration> entry : createdDefault.entrySet()) {
             String filename = entry.getKey() + ".json";
             File file = new File(DIRECTORY, filename);

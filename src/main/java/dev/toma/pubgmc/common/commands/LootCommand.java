@@ -20,6 +20,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class LootCommand extends AbstractCommand {
     private static final String ARG_RANGE = "range";
 
     private static final CommandTree COMMAND = CommandTree.Builder.command("loot")
-            .usage("/loot [generate|clear|delete|info] <range>")
+            .usage("/loot [generate|clear|delete|reset|info] <range>")
             .permissionLevel(2)
             .defaultExecutorPropagationStrategy(NodePropagationStrategy.LAST_NODE)
             .executes(LootCommand::executeDefault)
@@ -55,6 +56,10 @@ public class LootCommand extends AbstractCommand {
                             .node(
                                     CommandNodeProvider.argument(ARG_RANGE, IntArgument.unboundedInt())
                             )
+            )
+            .node(
+                    CommandNodeProvider.literal("resetConfigs")
+                            .executes(LootCommand::resetLootConfigs)
             )
             .node(
                     CommandNodeProvider.literal("info")
@@ -115,6 +120,17 @@ public class LootCommand extends AbstractCommand {
             ++count;
         }
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.loot.remove", count));
+    }
+
+    private static void resetLootConfigs(CommandContext context) throws CommandException {
+        LootManager manager = LootManager.getInstance();
+        try {
+            manager.createDefaultLootConfigFiles(true);
+            LootManager.load();
+            context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.reloaded_configs"));
+        } catch (IOException e) {
+            throw new WrongUsageException("IO Error occurred: " + e.getMessage(), e);
+        }
     }
 
     private static void displayLootGeneratorInformation(CommandContext context) throws CommandException {

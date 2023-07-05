@@ -20,59 +20,59 @@ public final class LootConfigurations {
     public static final String AIRDROP = "airdrop";
     public static final String AIRDROP_LARGE = "airdrop_large";
 
-    static Map<String, LootConfiguration> registerDefaultLootConfigurations(RegistrationHandler handler) {
+    static Map<String, LootConfiguration> registerDefaultLootConfigurations(RegistrationHandler handler, boolean force) {
         Map<String, LootConfiguration> created = new HashMap<>();
-        generateLootTier1(handler, created);
-        generateLootTier2(handler, created);
-        generateLootTier3(handler, created);
-        generateAirdropDefault(handler, created);
-        generateAirdropLarge(handler, created);
+        generateLootTier1(handler, created, force);
+        generateLootTier2(handler, created, force);
+        generateLootTier3(handler, created, force);
+        generateAirdropDefault(handler, created, force);
+        generateAirdropLarge(handler, created, force);
         return created;
     }
 
-    private static void generateLootTier1(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap) {
+    private static void generateLootTier1(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
         LootProvider pool = new CountLootProvider(0, 2, new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(7, getMeds(10, 7, 5, 1)),
                 new WeightedRandom.Entry<>(10, getArmor(30, 17, 3)),
                 new WeightedRandom.Entry<>(15, getAttachments(40, 15, 2)),
-                new WeightedRandom.Entry<>(10, getWeapons(10, 15, 10, 4, 2, 1, 0)),
+                new WeightedRandom.Entry<>(10, getWeapons(30, 45, 30, 12, 6, 3, 0)),
                 new WeightedRandom.Entry<>(5, getRandomAmmoPack()),
                 new WeightedRandom.Entry<>(5, getThrowables()),
                 new WeightedRandom.Entry<>(5, getOtherLoot())
         )));
         LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
-        register(handler, defaultConfigMap, LOOT_SPAWNER[0], configuration);
+        register(handler, defaultConfigMap, LOOT_SPAWNER[0], configuration, force);
     }
 
-    private static void generateLootTier2(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap) {
+    private static void generateLootTier2(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
         LootProvider pool = new CountLootProvider(1, 3, new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(10, getMeds(6, 8, 5, 2)),
                 new WeightedRandom.Entry<>(15, getArmor(20, 17, 6)),
                 new WeightedRandom.Entry<>(15, getAttachments(25, 30, 8)),
-                new WeightedRandom.Entry<>(15, getWeapons(4, 8, 6, 12, 9, 6, 1)),
+                new WeightedRandom.Entry<>(15, getWeapons(20, 40, 30, 60, 45, 30, 1)),
                 new WeightedRandom.Entry<>(1, getRandomAmmoPack()),
                 new WeightedRandom.Entry<>(5, getThrowables()),
                 new WeightedRandom.Entry<>(1, getOtherLoot())
         )));
         LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
-        register(handler, defaultConfigMap, LOOT_SPAWNER[1], configuration);
+        register(handler, defaultConfigMap, LOOT_SPAWNER[1], configuration, force);
     }
 
-    private static void generateLootTier3(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap) {
+    private static void generateLootTier3(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
         LootProvider pool = new CountLootProvider(2, 4, new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(8, getMeds(2, 10, 10, 5)),
                 new WeightedRandom.Entry<>(5, getArmor(5, 22, 10)),
                 new WeightedRandom.Entry<>(7, getAttachments(5, 25, 15)),
-                new WeightedRandom.Entry<>(12, getWeapons(1, 2, 2, 15, 11, 8, 2)),
+                new WeightedRandom.Entry<>(12, getWeapons(5, 10, 10, 75, 55, 40, 1)),
                 new WeightedRandom.Entry<>(0, getRandomAmmoPack()),
                 new WeightedRandom.Entry<>(5, getThrowables()),
                 new WeightedRandom.Entry<>(1, getOtherLoot())
         )));
         LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
-        register(handler, defaultConfigMap, LOOT_SPAWNER[2], configuration);
+        register(handler, defaultConfigMap, LOOT_SPAWNER[2], configuration, force);
     }
 
-    private static void generateAirdropDefault(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap) {
+    private static void generateAirdropDefault(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
         LootProvider pool = new MultiValueLootProvider(Arrays.asList(
                 getAirdropWeapons(),
                 new ItemStackLootProvider(new ItemStack(PMCItems.ARMOR3HELMET)),
@@ -86,10 +86,10 @@ public final class LootConfigurations {
                 new RandomChanceLootProvider(0.5F, getAirdropMeds())
         ));
         LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
-        register(handler, defaultConfigMap, AIRDROP, configuration);
+        register(handler, defaultConfigMap, AIRDROP, configuration, force);
     }
 
-    private static void generateAirdropLarge(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap) {
+    private static void generateAirdropLarge(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
         LootProvider pool = new MultiValueLootProvider(Arrays.asList(
                 new CountLootProvider(2, 2, new MultiValueLootProvider(Arrays.asList(
                         getAirdropWeapons(),
@@ -105,7 +105,7 @@ public final class LootConfigurations {
                 new CountLootProvider(1, 2, getAirdropMeds())
         ));
         LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
-        register(handler, defaultConfigMap, AIRDROP_LARGE, configuration);
+        register(handler, defaultConfigMap, AIRDROP_LARGE, configuration, force);
     }
 
     private static LootProvider getArmor(int lvl1, int lvl2, int lvl3) {
@@ -320,8 +320,8 @@ public final class LootConfigurations {
         ));
     }
 
-    private static void register(RegistrationHandler handler, Map<String, LootConfiguration> map, String confKey, LootConfiguration configuration) {
-        if (handler.register(confKey, configuration)) {
+    private static void register(RegistrationHandler handler, Map<String, LootConfiguration> map, String confKey, LootConfiguration configuration, boolean force) {
+        if (handler.register(confKey, configuration) || force) {
             map.put(confKey, configuration);
         }
     }
