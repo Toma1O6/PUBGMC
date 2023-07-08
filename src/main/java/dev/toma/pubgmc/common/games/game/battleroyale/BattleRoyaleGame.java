@@ -41,6 +41,7 @@ import dev.toma.pubgmc.util.helper.TextComponentHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -471,6 +472,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 return;
             }
             game.teamManager.eliminate(entity);
+            if (!team.isTeamEliminated() && team.isTeamLeader(entity.getUniqueID())) {
+                Optional<Team.Member> nextTL = team.getAliveTeamMember();
+                nextTL.ifPresent(team::setTeamLeader);
+            }
             DeathMessage deathMessage = GameHelper.createDefaultDeathMessage(entity, source);
             game.deathMessages.push(deathMessage);
             if (entity instanceof EntityPlayer) {

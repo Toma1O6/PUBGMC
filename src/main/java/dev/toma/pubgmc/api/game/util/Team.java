@@ -15,13 +15,15 @@ import java.util.stream.Stream;
 
 public final class Team implements Iterable<Team.Member> {
 
-    private final Member teamLeader;
+    private final UUID teamId;
     private final Map<UUID, Member> members;
     private final Set<UUID> activeMembers;
     private final Map<UUID, String> usernames;
+    private Member teamLeader;
 
     public Team(Entity entity) {
         this.teamLeader = Member.of(entity);
+        this.teamId = teamLeader.uuid;
         this.members = new LinkedHashMap<>();
         this.activeMembers = new HashSet<>();
         this.usernames = new HashMap<>();
@@ -29,6 +31,7 @@ public final class Team implements Iterable<Team.Member> {
     }
 
     public Team(Member member) {
+        this.teamId = member.uuid;
         this.teamLeader = member;
         this.members = new HashMap<>();
         this.activeMembers = new HashSet<>();
@@ -37,15 +40,20 @@ public final class Team implements Iterable<Team.Member> {
         addMember(member);
     }
 
-    private Team(Member owner, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
+    private Team(UUID teamId, Member owner, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
+        this.teamId = teamId;
         this.teamLeader = owner;
         this.members = members;
         this.activeMembers = activeMembers;
         this.usernames = usernames;
     }
 
+    public void setTeamLeader(Member teamLeader) {
+        this.teamLeader = teamLeader;
+    }
+
     public UUID getTeamId() {
-        return teamLeader.getId();
+        return teamId;
     }
 
     public void add(Entity entity) {
@@ -96,6 +104,20 @@ public final class Team implements Iterable<Team.Member> {
         return isMember(uuid) ? Optional.ofNullable(members.get(uuid)) : Optional.empty();
     }
 
+    public Optional<Member> getAliveTeamMember() {
+        Member lastValidMember = null;
+        for (Member member : members.values()) {
+            MemberType type = member.getMemberType();
+            if (!isMember(member.uuid)) {
+                continue;
+            }
+            if (lastValidMember == null || (lastValidMember.getMemberType() != MemberType.PLAYER && type.isPlayer())) {
+                lastValidMember = member;
+            }
+        }
+        return Optional.ofNullable(lastValidMember);
+    }
+
     public boolean isTeamEliminated() {
         return activeMembers.isEmpty();
     }
@@ -144,7 +166,8 @@ public final class Team implements Iterable<Team.Member> {
 
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setUniqueId("owner", teamLeader.uuid);
+        nbt.setUniqueId("teamId", teamId);
+        nbt.setUniqueId("teamLeader", teamLeader.uuid);
         NBTTagList members = new NBTTagList();
         this.members.values().forEach(member -> members.appendTag(member.serialize()));
         nbt.setTag("members", members);
@@ -160,7 +183,8 @@ public final class Team implements Iterable<Team.Member> {
     }
 
     public static Team deserialize(NBTTagCompound nbt) {
-        UUID ownerId = nbt.getUniqueId("owner");
+        UUID teamId = nbt.getUniqueId("teamId");
+        UUID teamLeader = nbt.getUniqueId("teamLeader");
         NBTTagList memberList = nbt.getTagList("members", Constants.NBT.TAG_COMPOUND);
         Map<UUID, Member> memberMap = new HashMap<>();
         for (int i = 0; i < memberList.tagCount(); i++) {
@@ -168,7 +192,7 @@ public final class Team implements Iterable<Team.Member> {
             Member member = Member.deserialize(memberTag);
             memberMap.put(member.uuid, member);
         }
-        Member owner = memberMap.get(ownerId);
+        Member leader = memberMap.get(teamLeader);
         Set<UUID> activeMembers = new HashSet<>();
         NBTTagList activeList = nbt.getTagList("active", Constants.NBT.TAG_STRING);
         for (int i = 0; i < activeList.tagCount(); i++) {
@@ -182,7 +206,7 @@ public final class Team implements Iterable<Team.Member> {
             String name = usernamesTag.getString(key);
             usernameMap.put(memberId, name);
         }
-        return new Team(owner, memberMap, activeMembers, usernameMap);
+        return new Team(teamId, leader, memberMap, activeMembers, usernameMap);
     }
 
     @Override
@@ -190,12 +214,12 @@ public final class Team implements Iterable<Team.Member> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Team team = (Team) o;
-        return teamLeader.equals(team.teamLeader);
+        return teamId.equals(team.teamId);
     }
 
     @Override
     public int hashCode() {
-        return teamLeader.hashCode();
+        return teamId.hashCode();
     }
 
     public static final class Member {
