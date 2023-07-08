@@ -355,9 +355,6 @@ public final class GameHelper {
         TeamManager manager = ((TeamGame<?>) game).getTeamManager();
         Team team1 = manager.getEntityTeam(entity1);
         Team team2 = manager.getEntityTeam(entity2);
-        if (team1 == null || team2 == null) {
-            return TeamRelations.UNKNOWN;
-        }
         return manager.getTeamRelationship(team1, team2);
     }
 

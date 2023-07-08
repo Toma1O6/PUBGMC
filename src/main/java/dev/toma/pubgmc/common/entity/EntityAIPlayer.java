@@ -18,6 +18,7 @@ import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -273,5 +274,10 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     @Override
     public void setSpecialItemToSlot(SpecialEquipmentSlot slot, ItemStack stack) {
         specialEquipment.setInventorySlotContents(slot.ordinal(), stack);
+    }
+
+    @Override
+    public EntityLiving getLivingEntity() {
+        return this;
     }
 }

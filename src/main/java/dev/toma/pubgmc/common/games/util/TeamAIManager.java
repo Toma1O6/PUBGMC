@@ -49,7 +49,7 @@ public class TeamAIManager {
                 iterator.remove();
                 continue;
             }
-            Optional<Team.Member> memberOptional = team.getMember(memberId);
+            Optional<Team.Member> memberOptional = team.getActiveMember(memberId);
             if (!memberOptional.isPresent()) {
                 // Should not really happen if team manager is implemented correctly
                 iterator.remove();

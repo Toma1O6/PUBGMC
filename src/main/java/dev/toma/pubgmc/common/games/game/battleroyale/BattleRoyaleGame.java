@@ -222,7 +222,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 int teamCount = teamManager.getTeams().size();
                 int playerCount = (int) teamManager.getAllActivePlayers(world).count();
                 int aiCount = aiManager.getRemainingAliveEntityCount();
-                if (playerCount == 0 || (teamCount == 1 && aiCount <= 0)) {
+                if (isGameCompleted(playerCount, aiCount, teamCount)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
                     teamManager.getAllActivePlayers(world).forEach(player -> {
@@ -312,6 +312,18 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         int players = (int) teamManager.getAllActivePlayers(world).count();
         int ai = aiManager.getRemainingAliveEntityCount();
         return players + ai;
+    }
+
+    private boolean isGameCompleted(int players, int ai, int teams) {
+        if (players > 0 && teams == 1) {
+            if (ai > 0) {
+                Team team = new ArrayList<>(teamManager.getTeams()).get(0);
+                int activeMembers = team.getActiveMemberCount();
+                return activeMembers == players + ai;
+            }
+            return true;
+        }
+        return players <= 0;
     }
 
     private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
@@ -506,6 +518,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             }
             EntityPlayer player = (EntityPlayer) entity;
             World world = player.world;
+            if (world.isRemote)
+                return;
             Team team = game.teamManager.getEntityTeam(player);
             int missingTeamMembers = team != null ? Math.max(0, game.configuration.teamSize - team.getSize()) : 0;
             if (!team.isTeamLeader(player) || missingTeamMembers == 0)

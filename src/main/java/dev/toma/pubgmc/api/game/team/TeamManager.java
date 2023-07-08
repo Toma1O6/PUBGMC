@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
@@ -17,10 +18,12 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
 
     Collection<Team> getTeams();
 
+    @Nullable
     Team getTeamById(UUID teamId);
 
     void removeTeam(UUID teamId);
 
+    @Nullable
     Team getEntityTeamByEntityId(UUID entityId);
 
     Team createNewTeam(Entity entity);
@@ -33,6 +36,7 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
 
     boolean tryLeaveTeam(EntityPlayer player, Team team, boolean kicked);
 
+    @Nullable
     default Team getEntityTeam(Entity entity) {
         return getEntityTeamByEntityId(entity.getUniqueID());
     }
@@ -45,7 +49,10 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
         return !team.getAllMembers().containsKey(entity.getUniqueID());
     }
 
-    default TeamRelations getTeamRelationship(Team team1, Team team2) {
+    default TeamRelations getTeamRelationship(@Nullable Team team1, @Nullable Team team2) {
+        if (team1 == null || team2 == null) {
+            return TeamRelations.UNKNOWN;
+        }
         return team1.getTeamId().equals(team2.getTeamId()) ? TeamRelations.FRIENDLY : TeamRelations.ENEMY;
     }
 

@@ -22,8 +22,8 @@ public final class Team implements Iterable<Team.Member> {
 
     public Team(Entity entity) {
         this.teamLeader = Member.of(entity);
-        this.members = new HashMap<>();
-        this.activeMembers = new LinkedHashSet<>();
+        this.members = new LinkedHashMap<>();
+        this.activeMembers = new HashSet<>();
         this.usernames = new HashMap<>();
         add(entity);
     }
@@ -84,7 +84,15 @@ public final class Team implements Iterable<Team.Member> {
         return activeMembers.contains(uuid);
     }
 
-    public Optional<Member> getMember(UUID uuid) {
+    public int getActiveMemberCount() {
+        return activeMembers.size();
+    }
+
+    public Optional<Member> getMember(UUID memberUid) {
+        return Optional.ofNullable(members.get(memberUid));
+    }
+
+    public Optional<Member> getActiveMember(UUID uuid) {
         return isMember(uuid) ? Optional.ofNullable(members.get(uuid)) : Optional.empty();
     }
 

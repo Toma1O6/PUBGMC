@@ -148,13 +148,16 @@ public final class DeathMessage {
             UUID killer = message.killerId;
             UUID victim = message.victimId;
             Minecraft client = Minecraft.getMinecraft();
+            // my death
             if (victim.equals(client.player.getUniqueID())) {
                 return FRIENDLY_DEATH;
             }
+            // my kill
             if (Objects.equals(killer, client.player.getUniqueID())) {
                 return FRIENDLY_KILL;
             }
             Team myTeam = manager.getEntityTeam(client.player);
+            // default, spectator
             if (myTeam == null) {
                 return NORMAL;
             }

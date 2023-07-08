@@ -11,9 +11,21 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-public final class PlayzoneRenderer {
+import java.util.function.ToIntFunction;
 
-    public static void renderPlayzone(Playzone playzone, int color, double x, double y, double z, float partialTicks) {
+public class PlayzoneRenderer<P extends Playzone> {
+
+    private ToIntFunction<P> colorProvider = zone -> 0xFFFFFFFF;
+
+    public void setColorProvider(ToIntFunction<P> colorProvider) {
+        this.colorProvider = colorProvider;
+    }
+
+    public void setColor(int color) {
+        this.setColorProvider(zone -> color);
+    }
+
+    public void renderPlayzone(P playzone, double x, double y, double z, float partialTicks) {
         Position2 min = playzone.getPositionMin(partialTicks);
         Position2 max = playzone.getPositionMax(partialTicks);
         double minX = min.getX();
@@ -30,6 +42,7 @@ public final class PlayzoneRenderer {
             GlStateManager.disableTexture2D();
             GlStateManager.disableCull();
             GlStateManager.depthMask(false);
+            int color = colorProvider.applyAsInt(playzone);
             int alpha = (color >> 24) & 0xff;
             int red = (color >> 16) & 0xff;
             int green = (color >> 8) & 0xff;
@@ -49,17 +62,17 @@ public final class PlayzoneRenderer {
                 builder.pos(maxX, 0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(maxX, 0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
             }
-            if (x < minX + maxRenderDistance) {
-                builder.pos(minX, 256.0, minRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minX, 256.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minX, 0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minX, 0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
-            }
             if (z > maxZ - maxRenderDistance) {
                 builder.pos(minRenderX, 256.0, maxZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(maxRenderX, 256.0, maxZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(maxRenderX, 0.0, maxZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(minRenderX, 0.0, maxZ).color(red, green, blue, alpha).endVertex();
+            }
+            if (x < minX + maxRenderDistance) {
+                builder.pos(minX, 256.0, minRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minX, 256.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minX, 0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minX, 0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
             }
             if (z < minZ + maxRenderDistance) {
                 builder.pos(minRenderX, 256.0, minZ).color(red, green, blue, alpha).endVertex();

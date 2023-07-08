@@ -85,6 +85,7 @@ public class FFAGame implements Game<FFAGameConfiguration> {
         for (int i = 0; i < Math.min(playerList.size(), configuration.entityCount); i++) {
             EntityPlayer player = playerList.get(i);
             participantManager.registerPlayer(player);
+            GameHelper.moveToLobby(player);
         }
     }
 
@@ -100,6 +101,7 @@ public class FFAGame implements Game<FFAGameConfiguration> {
             gameRuleStorage.storeValueAndSet(world, "doMobLoot", "false");
             gameRuleStorage.storeValueAndSet(world, "showDeathMessages", "false");
         }
+        // TODO move to spawn
     }
 
     @Override

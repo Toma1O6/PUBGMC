@@ -1,11 +1,12 @@
 package dev.toma.pubgmc.client.games;
 
 import dev.toma.pubgmc.api.client.game.GameRenderer;
-import dev.toma.pubgmc.api.client.util.GameRenderHelper;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
+import dev.toma.pubgmc.api.client.util.TeamPanelRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
+import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,12 +24,24 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
     private static final ITextComponent SHRINKING = new TextComponentTranslation("pubgmc.playzone.status.shrinking");
     private static final ITextComponent PLAYERS = new TextComponentTranslation("pubgmc.game.label.alive_players");
 
+    private final TeamPanelRenderer teamPanelRenderer;
+    private final PlayzoneRenderer<DynamicPlayzone> playzoneRenderer;
+
+    public BattleRoyaleGameRenderer() {
+        this.teamPanelRenderer = new TeamPanelRenderer();
+        this.teamPanelRenderer.setRenderSoloTeams(false);
+        this.teamPanelRenderer.setOffsetsY(false);
+        this.teamPanelRenderer.shouldLoadRealAIHealth(true);
+        this.playzoneRenderer = new PlayzoneRenderer<>();
+        this.playzoneRenderer.setColor(0x660033FF);
+    }
+
     @Override
     public boolean renderHudOverlay(EntityPlayer player, BattleRoyaleGame game, ScaledResolution resolution, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
         if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft minecraft = Minecraft.getMinecraft();
             FontRenderer font = minecraft.fontRenderer;
-            GameRenderHelper.renderTeamOverlay(minecraft, game, 0, resolution.getScaledHeight() - 50, false, true);
+            teamPanelRenderer.render(minecraft, game, 0, resolution.getScaledHeight() - 50);
             if (game.isStarted()) {
                 String zoneText = ZONE_LABEL.getFormattedText();
                 int zoneTextWidth = font.getStringWidth(zoneText);
@@ -66,7 +79,7 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
     public void renderInWorld(World world, BattleRoyaleGame game, double x, double y, double z, float partialTicks) {
         if (!game.isStarted())
             return;
-        Playzone playzone = game.getPlayzone();
-        PlayzoneRenderer.renderPlayzone(playzone, 0x660033FF, x, y, z, partialTicks);
+        DynamicPlayzone playzone = game.getPlayzone();
+        playzoneRenderer.renderPlayzone(playzone, x, y, z, partialTicks);
     }
 }
