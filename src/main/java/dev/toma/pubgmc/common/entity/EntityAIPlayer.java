@@ -110,6 +110,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(128.0D);
+        this.getEntityAttribute(SWIM_SPEED).setBaseValue(2.0);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.common.ai;
 
 import dev.toma.pubgmc.api.game.playzone.Playzone;
-import dev.toma.pubgmc.api.util.Position2;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -52,17 +52,13 @@ public class EntityAIMoveIntoPlayzone extends EntityAIBase {
         living.setSprinting(false);
     }
 
-    // TODO select closest zone position rather than center
     @Override
     public void updateTask() {
         if (--delay <= 0) {
             Playzone playzone = playzoneProvider.getPlayzone(living.world);
             if (playzone != null) {
-                Position2 center = playzone.center();
-                int x = (int) center.getX();
-                int z = (int) center.getZ();
-                double y = living.world.getHeight(x, z);
-                living.getNavigator().tryMoveToXYZ(x, y, z, moveSpeed);
+                BlockPos pos = playzone.findNearestPositionWithin(living.getPositionVector(), living.world);
+                living.getNavigator().tryMoveToXYZ(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, moveSpeed);
             }
         }
     }
