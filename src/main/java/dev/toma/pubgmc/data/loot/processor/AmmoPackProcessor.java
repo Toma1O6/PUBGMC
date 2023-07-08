@@ -15,13 +15,13 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class AmmoProcessor implements LootProcessor {
+public class AmmoPackProcessor implements LootProcessor {
 
     private final int packSize;
     private final int packCountMin;
     private final int packCountMax;
 
-    public AmmoProcessor(int packSize, int packCountMin, int packCountMax) {
+    public AmmoPackProcessor(int packSize, int packCountMin, int packCountMax) {
         this.packSize = packSize;
         this.packCountMin = packCountMin;
         this.packCountMax = packCountMax;
@@ -51,14 +51,14 @@ public class AmmoProcessor implements LootProcessor {
         return LootProcessors.AMMO_PROCESSOR;
     }
 
-    public static final class Serializer implements LootProcessorSerializer<AmmoProcessor> {
+    public static final class Serializer implements LootProcessorSerializer<AmmoPackProcessor> {
 
         private static final int DEFAULT_PACK_SIZE = 30;
         private static final int DEFAULT_PACK_MIN = 1;
         private static final int DEFAULT_PACK_MAX = 3;
 
         @Override
-        public AmmoProcessor parse(JsonObject object) throws JsonParseException {
+        public AmmoPackProcessor parse(JsonObject object) throws JsonParseException {
             int size = JsonUtils.getInt(object, "count", DEFAULT_PACK_SIZE);
             int min = JsonUtils.getInt(object, "minPacks", DEFAULT_PACK_MIN);
             int max = JsonUtils.getInt(object, "maxPacks", DEFAULT_PACK_MAX);
@@ -71,11 +71,11 @@ public class AmmoProcessor implements LootProcessor {
             if (max < 0) {
                 throw new JsonSyntaxException("Max pack count cannot be lower than 1");
             }
-            return new AmmoProcessor(size, min, max);
+            return new AmmoPackProcessor(size, min, max);
         }
 
         @Override
-        public void serialize(JsonObject object, AmmoProcessor processor) {
+        public void serialize(JsonObject object, AmmoPackProcessor processor) {
             if (processor.packSize != DEFAULT_PACK_SIZE) {
                 object.addProperty("count", processor.packSize);
             }

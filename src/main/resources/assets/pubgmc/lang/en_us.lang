@@ -298,6 +298,7 @@ commands.pubgmc.game.map.created=Map '%s' has been created
 commands.pubgmc.game.map.deleted=Map '%s' has been removed
 commands.pubgmc.game.map.pois_deleted=All map points have been removed from map '%s'
 commands.pubgmc.game.map.poi_added=New %s point has been added to %s map
+commands.pubgmc.game.map.info=%s - Center %s, Dimensions %s
 commands.pubgmc.game.lobby.not_created=There is no lobby defined
 commands.pubgmc.game.lobby.info=Lobby is currently at position [%s;%s;%s]
 commands.pubgmc.game.lobby.created=Lobby has been successfully created
@@ -324,6 +325,9 @@ pubgmc.playzone.label=Zone:
 pubgmc.playzone.status.shrinking=Shrinking...
 pubgmc.game.label.alive_players=Alive:
 
+gui.pubgmc.update_data_files.header=Old data versions have been detected
+gui.pubgmc.update_data_files.warning=All selected items will regenerate it's configuration. This will rewrite your data
+
 label.pubgmc.false=False
 label.pubgmc.true=True
 label.pubgmc.no=No
@@ -335,6 +339,8 @@ label.pubgmc.death_message.generic.entity=KILLED
 label.pubgmc.death_message.zone=PLAYZONE
 label.pubgmc.accept=Accept
 label.pubgmc.decline=Decline
+label.pubgmc.confirm=Confirm
+label.pubgmc.ignore=Ignore
 label.pubgmc.bot.prefix=Bot
 
 label.pubgmc.game.battleroyale.kill.single=%s KILL

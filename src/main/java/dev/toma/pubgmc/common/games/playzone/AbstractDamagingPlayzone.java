@@ -3,6 +3,9 @@ package dev.toma.pubgmc.common.games.playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneDeliveryVehicle;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.init.PMCDamageSources;
+
+import java.util.function.Supplier;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldServer;
@@ -49,8 +52,13 @@ public abstract class AbstractDamagingPlayzone implements Playzone {
     }
 
     public void hurtAllOutside(WorldServer world, List<Entity> entities) {
+        hurtAllOutside(world, () -> entities);
+    }
+
+    public void hurtAllOutside(WorldServer world, Supplier<List<Entity>> entitiesProvider) {
         int interval = damageOptions.getDamageInterval();
         if (interval >= 0 && (interval == 0 || world.getTotalWorldTime() % interval == 0)) {
+            List<Entity> entities = entitiesProvider.get();
             entities.stream()
                     .filter(entity -> !isWithin(entity))
                     .forEach(this::hurtEntity);
@@ -60,6 +68,7 @@ public abstract class AbstractDamagingPlayzone implements Playzone {
     public static final class DamageOptions {
 
         public static final DamageOptions NONE = new DamageOptions(0.0F, -1);
+        public static final DamageOptions BOUNDS = new DamageOptions(5.0F, 20);
         private final float damageAmount;
         private final int damageInterval;
 

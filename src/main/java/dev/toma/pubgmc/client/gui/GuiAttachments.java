@@ -45,10 +45,10 @@ public class GuiAttachments extends GuiContainer {
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         ItemStack dragging = mc.player.inventory.getItemStack();
         int highlighted = -1;
-        if(dragging.getItem() instanceof ItemAttachment) {
+        if (dragging.getItem() instanceof ItemAttachment) {
             ItemAttachment item = (ItemAttachment) dragging.getItem();
             GunAttachments attachments = ((GunBase) stack.getItem()).getAttachments();
-            if(attachments.supports(item)) {
+            if (attachments.supports(item)) {
                 highlighted = item.getType().getIndex();
             }
         }
@@ -70,7 +70,7 @@ public class GuiAttachments extends GuiContainer {
     }
 
     void drawSlot(Slot slot, boolean compatible, boolean drawDefaultSlot, BufferBuilder bufferBuilder) {
-        if(drawDefaultSlot) {
+        if (drawDefaultSlot) {
             addShapeToBuffer(slot.xPos - 1, slot.yPos - 1, slot.xPos + 17, slot.yPos + 17, 0.545F, 0.545F, 0.545F, bufferBuilder);
             addShapeToBuffer(slot.xPos - 1, slot.yPos - 1, slot.xPos + 16, slot.yPos + 16, 0.216F, 0.216F, 0.216F, bufferBuilder);
             addShapeToBuffer(slot.xPos, slot.yPos, slot.xPos + 17, slot.yPos + 17, 1.0F, 1.0F, 1.0F, bufferBuilder);
@@ -113,7 +113,7 @@ public class GuiAttachments extends GuiContainer {
     }
 
     private void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d) {
-        GlStateManager.translate((float)xPosition, (float)yPosition, 100.0F + this.zLevel);
+        GlStateManager.translate((float) xPosition, (float) yPosition, 100.0F + this.zLevel);
         GlStateManager.translate(8.0F, 8.0F, 0.0F);
         GlStateManager.scale(1.0F, -1.0F, 1.0F);
         GlStateManager.scale(80.0F, 80.0F, 80.0F);

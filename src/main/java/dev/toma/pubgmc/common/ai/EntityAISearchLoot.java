@@ -64,7 +64,7 @@ public class EntityAISearchLoot extends EntityAIBase {
             int distance = (int) pos.distanceSq(aiPlayer.getPosition());
             if (distance < dist) {
                 dist = distance;
-                closest =  lootable;
+                closest = lootable;
             }
         }
         return closest;
@@ -87,7 +87,7 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Override
     public void startExecuting() {
-        if(lootable == null)
+        if (lootable == null)
             return;
         BlockPos pos = lootable.getWorldPosition();
         this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), 1.0D);
@@ -96,7 +96,7 @@ public class EntityAISearchLoot extends EntityAIBase {
     @Override
     public void updateTask() {
         BlockPos pos = lootable.getWorldPosition();
-        if(pos.distanceSq(this.aiPlayer.getPosition()) > 4) {
+        if (pos.distanceSq(this.aiPlayer.getPosition()) > 4) {
             if (aiPlayer.getNavigator().noPath()) {
                 checkedLootSpawners.add(pos);
                 return;

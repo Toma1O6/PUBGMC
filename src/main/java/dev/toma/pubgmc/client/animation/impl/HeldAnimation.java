@@ -25,23 +25,23 @@ public class HeldAnimation implements Animation {
     public void animateElement(AnimationElement element) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
-        if(player != null) {
+        if (player != null) {
             ItemStack stack = player.getHeldItemMainhand();
-            if(!(stack.getItem() instanceof GunBase)) {
+            if (!(stack.getItem() instanceof GunBase)) {
                 return;
             }
-            if(element == AnimationElement.ITEM_AND_HANDS) {
+            if (element == AnimationElement.ITEM_AND_HANDS) {
                 float partialTicks = ASMHooksClient.getRenderTickTime();
                 AnimationProcessor.processKeyFrame(bigWeaponSprintFrame, progressSmooth);
                 IPlayerData data = PlayerDataProvider.get(player);
                 float bobbingScale = 0.4F;
-                if(data.getAimInfo().isAiming()) {
+                if (data.getAimInfo().isAiming()) {
                     bobbingScale = 0.1F;
                 }
                 float f = player.distanceWalkedModified - player.prevDistanceWalkedModified;
                 float f1 = -(player.distanceWalkedModified + f * partialTicks);
                 float f2 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
-                GlStateManager.translate(MathHelper.sin(f1 * (float)Math.PI) * f2 * bobbingScale, -Math.abs(MathHelper.cos(f1 * (float)Math.PI) * f2) * bobbingScale, 0.0F);
+                GlStateManager.translate(MathHelper.sin(f1 * (float) Math.PI) * f2 * bobbingScale, -Math.abs(MathHelper.cos(f1 * (float) Math.PI) * f2) * bobbingScale, 0.0F);
             }
         }
     }
@@ -51,7 +51,7 @@ public class HeldAnimation implements Animation {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         progressPrev = progress;
-        if(player != null && player.isSprinting()) {
+        if (player != null && player.isSprinting()) {
             progress = Math.min(1.0F, progress + 0.1F);
         } else {
             progress = Math.max(0.0F, progress - 0.1F);

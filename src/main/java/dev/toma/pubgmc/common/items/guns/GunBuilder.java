@@ -173,10 +173,10 @@ public class GunBuilder {
         validateFloat(volumeNormal, 1f, 40f);
         validateFloat(volumeSilenced, 1f, 30f);
         checkNotNull(reloadSound);
-        if(attachments == null)
+        if (attachments == null)
             attachments().build();
         validateInt(burstAmount, 0, 3);
-        if(action != null) {
+        if (action != null) {
             Preconditions.checkNotNull(action.get(), "Action cannot return null sound event");
         }
         return buildFunc.apply(this);

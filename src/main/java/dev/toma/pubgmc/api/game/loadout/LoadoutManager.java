@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.data.DataVersion;
+import dev.toma.pubgmc.api.data.Recreatable;
 import net.minecraft.entity.EntityLivingBase;
 
 import javax.annotation.Nullable;
@@ -17,13 +19,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public final class LoadoutManager {
+public final class LoadoutManager implements Recreatable {
 
+    public static final LoadoutManager INSTANCE = new LoadoutManager();
     private static final Map<Class<? extends EntityLivingBase>, LoadoutApplicator<?>> ENTITY_LOADOUT_HANDLERS = new HashMap<>();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(EntityLoadout.class, new EntityLoadout.Adapter()).create();
 
     private static final Map<String, EntityLoadout> LOADOUT_MAP = new HashMap<>();
     private static final Set<String> DYNAMIC_LOADOUT_DIR_KEYS = new HashSet<>();
+
+    private LoadoutManager() {
+    }
 
     public static void register(String path, EntityLoadout loadout) {
         LOADOUT_MAP.put(path, loadout);
@@ -33,7 +39,7 @@ public final class LoadoutManager {
         DYNAMIC_LOADOUT_DIR_KEYS.add(dir);
     }
 
-    public static void load() {
+    public static void load(boolean rewriteExistingData) {
         File directory = new File("./pubgmc/loadout");
         directory.mkdirs();
         Map<String, EntityLoadout> loadedValues = new HashMap<>();
@@ -114,5 +120,15 @@ public final class LoadoutManager {
 
     public static <E extends EntityLivingBase> void registerLoadoutHandler(Class<E> type, LoadoutApplicator<E> applicator) {
         ENTITY_LOADOUT_HANDLERS.put(type, applicator);
+    }
+
+    @Override
+    public void recreateData() {
+        load(true);
+    }
+
+    @Override
+    public DataVersion getVersion() {
+        return Pubgmc.LOADOUT_DATA_VERSION;
     }
 }

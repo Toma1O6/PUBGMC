@@ -26,7 +26,7 @@ public class AnnouncementWidget extends Widget {
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         boolean hovered = isMouseOver(mouseX, mouseY);
         drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.25F);
-        if(hovered) {
+        if (hovered) {
             drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.2F);
         }
         FontRenderer renderer = mc.fontRenderer;
@@ -40,7 +40,7 @@ public class AnnouncementWidget extends Widget {
 
     @Override
     public void onClick(int mouseX, int mouseY, int button) {
-        if(announcement.hasLink()) {
+        if (announcement.hasLink()) {
             parent.openWebLink(announcement.getUrl());
         }
     }

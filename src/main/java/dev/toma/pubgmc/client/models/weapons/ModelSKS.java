@@ -79,7 +79,7 @@ public class ModelSKS extends ModelGun {
     public void renderModel(ItemStack stack) {
         sks.render(1f);
         bb_main.render(1.0F);
-        if(!hasScopeAtachment(stack))
+        if (!hasScopeAtachment(stack))
             ironsights.render(1f);
     }
 

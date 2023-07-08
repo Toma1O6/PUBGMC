@@ -30,7 +30,7 @@ public class EntityAIGunAttack extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        if(this.aiPlayer.hasNoWeapon()) {
+        if (this.aiPlayer.hasNoWeapon()) {
             return false;
         }
         this.target = this.aiPlayer.getAttackTarget();
@@ -53,25 +53,25 @@ public class EntityAIGunAttack extends EntityAIBase {
 
     @Override
     public void updateTask() {
-        if(target == null) return;
+        if (target == null) return;
         double distanceToTarget = Math.sqrt(this.aiPlayer.getDistanceSq(this.target));
         boolean flag = this.aiPlayer.getEntitySenses().canSee(this.target);
-        if(flag) {
+        if (flag) {
             this.timeWatching++;
         } else timeWatching = 0;
-        if(this.aiPlayer.hasNoWeapon()) {
+        if (this.aiPlayer.hasNoWeapon()) {
             return;
         }
         ItemStack stack = aiPlayer.getHeldItemMainhand();
-        if(stack.getItem() instanceof GunBase) {
+        if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             int tableIndex = gun.getGunType().ordinal();
-            if(distanceToTarget <= EFFECTIVE_RANGE_TABLE[tableIndex] * 3.0 && this.timeWatching >= 40) {
+            if (distanceToTarget <= EFFECTIVE_RANGE_TABLE[tableIndex] * 3.0 && this.timeWatching >= 40) {
                 this.aiPlayer.getNavigator().clearPath();
             } else this.aiPlayer.getNavigator().tryMoveToEntityLiving(this.target, 1.0D);
             this.aiPlayer.getLookHelper().setLookPositionWithEntity(this.target, 30, 30);
-            if(--this.shootCooldown <= 0) {
-                if(!flag) {
+            if (--this.shootCooldown <= 0) {
+                if (!flag) {
                     return;
                 }
                 this.shoot(gun, stack, distanceToTarget);
@@ -80,7 +80,7 @@ public class EntityAIGunAttack extends EntityAIBase {
     }
 
     private void shoot(GunBase gun, ItemStack stack, double distanceToTarget) {
-        if(distanceToTarget > EFFECTIVE_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
+        if (distanceToTarget > EFFECTIVE_RANGE_TABLE[gun.getGunType().ordinal()] * 10) {
             return;
         }
         ++this.firedTotal;
@@ -91,10 +91,10 @@ public class EntityAIGunAttack extends EntityAIBase {
         SoundEvent event = isSilenced ? gun.getGunSilencedSound() : gun.getGunSound();
         float volume = isSilenced ? gun.getGunSilencedVolume() : gun.getGunVolume();
         PacketHandler.sendToDimension(new PacketDelayedSound(event, volume, this.aiPlayer.posX, this.aiPlayer.posY, this.aiPlayer.posZ), this.aiPlayer.dimension);
-        for(int i = 0; i < shotAmount; i++) {
+        for (int i = 0; i < shotAmount; i++) {
             EntityBullet bullet = new EntityBullet(this.aiPlayer.world, this.aiPlayer, gun);
             bullet.setPosition(bullet.posX, bullet.posY - 0.5, bullet.posZ);
-            if(shotAmount > 1) {
+            if (shotAmount > 1) {
                 double d0 = distanceToTarget / 150;
                 bullet.motionY += d0;
             }
@@ -105,7 +105,7 @@ public class EntityAIGunAttack extends EntityAIBase {
             firedBurst = 0;
             this.shootCooldown = 15;
         }
-        if(firedTotal >= gun.getWeaponAmmoLimit(stack)) {
+        if (firedTotal >= gun.getWeaponAmmoLimit(stack)) {
             this.firedTotal = 0;
             this.firedBurst = 0;
             this.shootCooldown = gun.getReloadTime(stack);

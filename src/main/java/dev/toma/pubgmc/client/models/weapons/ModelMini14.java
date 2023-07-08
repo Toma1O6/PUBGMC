@@ -69,7 +69,7 @@ public class ModelMini14 extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1f);
-        if(!hasScopeAtachment(stack)) ironsights.render(1f);
+        if (!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
     @Override

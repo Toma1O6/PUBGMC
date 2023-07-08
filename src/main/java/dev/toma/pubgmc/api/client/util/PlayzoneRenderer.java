@@ -46,26 +46,26 @@ public final class PlayzoneRenderer {
             if (x > maxX - maxRenderDistance) {
                 builder.pos(maxX, 256.0, minRenderZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(maxX, 256.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(maxX,   0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(maxX,   0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(maxX, 0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(maxX, 0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
             }
             if (x < minX + maxRenderDistance) {
                 builder.pos(minX, 256.0, minRenderZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(minX, 256.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minX,   0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minX,   0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minX, 0.0, maxRenderZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minX, 0.0, minRenderZ).color(red, green, blue, alpha).endVertex();
             }
             if (z > maxZ - maxRenderDistance) {
                 builder.pos(minRenderX, 256.0, maxZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(maxRenderX, 256.0, maxZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(maxRenderX,   0.0, maxZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minRenderX,   0.0, maxZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(maxRenderX, 0.0, maxZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minRenderX, 0.0, maxZ).color(red, green, blue, alpha).endVertex();
             }
             if (z < minZ + maxRenderDistance) {
                 builder.pos(minRenderX, 256.0, minZ).color(red, green, blue, alpha).endVertex();
                 builder.pos(maxRenderX, 256.0, minZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(maxRenderX,   0.0, minZ).color(red, green, blue, alpha).endVertex();
-                builder.pos(minRenderX,   0.0, minZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(maxRenderX, 0.0, minZ).color(red, green, blue, alpha).endVertex();
+                builder.pos(minRenderX, 0.0, minZ).color(red, green, blue, alpha).endVertex();
             }
 
             tessellator.draw();

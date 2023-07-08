@@ -36,7 +36,7 @@ public class DecimalInputWidget extends Widget {
     @Override
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (valid) {
-            if(focused) {
+            if (focused) {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 0.0F, 1.0F);
             } else {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 1.0F);
@@ -78,7 +78,7 @@ public class DecimalInputWidget extends Widget {
         try {
             if (DECIMAL_PATTERN.matcher(num).matches()) {
                 double d = Double.parseDouble(num);
-                if(frame != null) setter.set(frame, d);
+                if (frame != null) setter.set(frame, d);
                 valid = true;
             } else
                 valid = false;

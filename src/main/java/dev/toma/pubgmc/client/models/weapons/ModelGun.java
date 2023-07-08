@@ -54,7 +54,7 @@ public abstract class ModelGun extends ModelBase {
         AnimationProcessor processor = AnimationProcessor.instance();
         for (AnimateEntry entry : entries) {
             GlStateManager.pushMatrix();
-            if(flag)
+            if (flag)
                 processor.process(entry.getElement());
             entry.render(stack, 1.0F);
             GlStateManager.popMatrix();
@@ -106,7 +106,7 @@ public abstract class ModelGun extends ModelBase {
     }
 
     public static <I extends ItemAttachment> boolean has(ItemStack stack, AttachmentType<I> type, Predicate<I> predicate) {
-        if(stack.getItem() instanceof GunBase) {
+        if (stack.getItem() instanceof GunBase) {
             GunBase gunBase = (GunBase) stack.getItem();
             I i = gunBase.getAttachment(type, stack);
             return i != null && predicate.test(i);

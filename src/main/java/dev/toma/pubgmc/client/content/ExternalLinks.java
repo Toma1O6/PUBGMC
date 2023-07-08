@@ -38,7 +38,8 @@ public final class ExternalLinks {
 
         @Override
         public ExternalLinks deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if(!json.isJsonObject()) throw new JsonParseException("Received invalid data - links must be defined inside JSON Object");
+            if (!json.isJsonObject())
+                throw new JsonParseException("Received invalid data - links must be defined inside JSON Object");
             JsonObject object = json.getAsJsonObject();
             String discord = JsonUtils.getString(object, "discord", DEF_DISCORD);
             String patreon = JsonUtils.getString(object, "patreon", DEF_PATREON);

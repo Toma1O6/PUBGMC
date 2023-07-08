@@ -73,7 +73,8 @@ public class BakedModelGun implements IBakedModel {
                 break;
             }
 
-            case THIRD_PERSON_RIGHT_HAND: case GROUND: {
+            case THIRD_PERSON_RIGHT_HAND:
+            case GROUND: {
                 trsrt = tprh;
                 break;
             }

@@ -5,8 +5,8 @@ import dev.toma.pubgmc.api.game.GameException;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGameConfiguration;
-import dev.toma.pubgmc.common.games.game.ffa.FreeForAllGame;
-import dev.toma.pubgmc.common.games.game.ffa.FreeForAllGameConfiguration;
+import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
+import dev.toma.pubgmc.common.games.game.ffa.FFAGameConfiguration;
 
 import java.util.UUID;
 
@@ -16,5 +16,5 @@ public final class GameTypes {
         throw new GameException("This type of game cannot be started");
     }, new NoGame.Serializer(), () -> NoGame.NoConfiguration.INSTANCE);
     public static final GameType<BattleRoyaleGameConfiguration, BattleRoyaleGame> BATTLE_ROYALE = GameType.create(Pubgmc.getResource("battle_royale"), BattleRoyaleGame::new, new BattleRoyaleGame.Serializer(), BattleRoyaleGameConfiguration::new);
-    public static final GameType<FreeForAllGameConfiguration, FreeForAllGame> FFA = GameType.create(Pubgmc.getResource("ffa"), FreeForAllGame::new, new FreeForAllGame.Serializer(), FreeForAllGameConfiguration::new);
+    public static final GameType<FFAGameConfiguration, FFAGame> FFA = GameType.create(Pubgmc.getResource("ffa"), FFAGame::new, new FFAGame.Serializer(), FFAGameConfiguration::new);
 }

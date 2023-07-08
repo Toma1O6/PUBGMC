@@ -42,7 +42,7 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     @Override
     public void dropItemFromInvalidSlot(ItemStack stack, EntityPlayer player) {
-        if(isCooking(stack)) {
+        if (isCooking(stack)) {
             getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, maxFuse - getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
         } else {
             EntityItem item = new EntityItem(player.world, player.posX, player.posY + player.getEyeHeight(), player.posZ, stack.copy());
@@ -82,11 +82,11 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        if(!worldIn.isRemote) {
+        if (!worldIn.isRemote) {
             if (!stack.hasTagCompound()) {
                 this.attachNBT(stack, playerIn);
             }
-            if(this.maxFuse > 0 && !this.isCooking(stack)) {
+            if (this.maxFuse > 0 && !this.isCooking(stack)) {
                 stack.getTagCompound().setBoolean("isCooking", true);
                 worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
                 return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -100,11 +100,11 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        if(!(entityIn instanceof EntityPlayer)) return;
-        if(!worldIn.isRemote) {
-            if(this.isCooking(stack)) {
+        if (!(entityIn instanceof EntityPlayer)) return;
+        if (!worldIn.isRemote) {
+            if (this.isCooking(stack)) {
                 int timeLeft = this.maxFuse - this.getFuseTime(stack);
-                if(timeLeft < 0) {
+                if (timeLeft < 0) {
                     this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, (EntityPlayer) entityIn, timeLeft, EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
                     ((EntityPlayer) entityIn).inventory.removeStackFromSlot(itemSlot);
                     return;
@@ -118,7 +118,7 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add("Right-click: Long throw");
         tooltip.add("Left-click: Short throw");
-        if(maxFuse > 0) tooltip.add("Fuse: " + this.maxFuse);
+        if (maxFuse > 0) tooltip.add("Fuse: " + this.maxFuse);
         if (description != null) {
             Collections.addAll(tooltip, description);
         }

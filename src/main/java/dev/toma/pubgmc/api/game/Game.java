@@ -18,7 +18,7 @@ public interface Game<CFG extends GameConfiguration> {
 
     CFG getConfiguration();
 
-    void performGameMapValidations(World world, GameMap map) throws GameException;
+    void validateAndSetupForMap(World world, GameMap map) throws GameException;
 
     boolean isStarted();
 

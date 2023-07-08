@@ -10,7 +10,14 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.util.Constants;
 
-public class FreeForAllGameConfiguration implements GameConfiguration {
+public class FFAGameConfiguration implements GameConfiguration {
+
+    public static final String LOADOUT_UMP45 = "ffa/ump45";
+    public static final String LOADOUT_VECTOR = "ffa/vector";
+    public static final String LOADOUT_AKM = "ffa/akm";
+    public static final String LOADOUT_M416 = "ffa/m416";
+    public static final String LOADOUT_SLR = "ffa/slr";
+    public static final String LOADOUT_M24 = "ffa/m24";
 
     public int entityCount = 8;
     public boolean allowAi = true;
@@ -18,12 +25,12 @@ public class FreeForAllGameConfiguration implements GameConfiguration {
     public int killTarget = 30;
     public int spawnProtectionTime = 60;
     public String[] loadoutFiles = {
-            "ffa/ump45",
-            "ffa/vector",
-            "ffa/akm",
-            "ffa/m416",
-            "ffa/slr",
-            "ffa/m24"
+            LOADOUT_UMP45,
+            LOADOUT_VECTOR,
+            LOADOUT_AKM,
+            LOADOUT_M416,
+            LOADOUT_SLR,
+            LOADOUT_M24
     };
     public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
 
@@ -52,8 +59,8 @@ public class FreeForAllGameConfiguration implements GameConfiguration {
         return nbt;
     }
 
-    public static FreeForAllGameConfiguration deserialize(NBTTagCompound nbt) {
-        FreeForAllGameConfiguration cfg = new FreeForAllGameConfiguration();
+    public static FFAGameConfiguration deserialize(NBTTagCompound nbt) {
+        FFAGameConfiguration cfg = new FFAGameConfiguration();
         cfg.entityCount = nbt.getInteger("entityCount");
         cfg.gameDuration = nbt.getInteger("gameDuration");
         cfg.killTarget = nbt.getInteger("killTarget");
@@ -84,8 +91,8 @@ public class FreeForAllGameConfiguration implements GameConfiguration {
         return object;
     }
 
-    public static FreeForAllGameConfiguration jsonDeserialize(JsonObject object) {
-        FreeForAllGameConfiguration cfg = new FreeForAllGameConfiguration();
+    public static FFAGameConfiguration jsonDeserialize(JsonObject object) {
+        FFAGameConfiguration cfg = new FFAGameConfiguration();
         cfg.entityCount = JsonUtils.getInt(object, "entityCount", 8);
         cfg.allowAi = JsonUtils.getBoolean(object, "allowAi", true);
         cfg.gameDuration = JsonUtils.getInt(object, "gameDuration", 12000);

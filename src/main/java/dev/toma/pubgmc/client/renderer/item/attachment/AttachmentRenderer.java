@@ -15,12 +15,13 @@ public abstract class AttachmentRenderer<I extends ItemAttachment> {
 
     public abstract ModelAttachment<I> getModel();
 
-    public void preRenderCallback() {}
+    public void preRenderCallback() {
+    }
 
     public final void render(WeaponRenderer renderer, I item, float aimPct) {
         GlStateManager.pushMatrix();
         IRenderConfig config = renderer.getRenderConfig(item);
-        if(config != null) {
+        if (config != null) {
             config.applyTransforms();
         }
         this.preRenderCallback();

@@ -68,7 +68,7 @@ public class ModelScarL extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         scar.render(1f);
-        if(!hasScopeAtachment(stack))
+        if (!hasScopeAtachment(stack))
             ironsights.render(1.0F);
     }
 

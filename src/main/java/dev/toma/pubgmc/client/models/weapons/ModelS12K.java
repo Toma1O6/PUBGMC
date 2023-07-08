@@ -75,7 +75,7 @@ public class ModelS12K extends ModelGun {
     public void renderModel(ItemStack stack) {
         gun.render(1f);
         handguard.render(1.0F);
-        if(hasScopeAtachment(stack))
+        if (hasScopeAtachment(stack))
             rail.render(1.0F);
     }
 

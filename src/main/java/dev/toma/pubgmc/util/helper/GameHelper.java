@@ -4,6 +4,8 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.Generator;
+import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
@@ -111,18 +113,21 @@ public final class GameHelper {
         Pubgmc.logger.debug(MARKER, "Death crate generated at {}", ground);
     }
 
-    public static void updateLoadedGameObjects(World world) {
+    public static void updateLoadedGameObjects(World world, GenerationType.Context context) {
         List<GameObject> loadedGameObjects = mergeTileEntitiesAndEntitiesByRule(world, t -> t instanceof GameObject, t -> (GameObject) t)
                 .collect(Collectors.toList());
-        updateGameObjects(loadedGameObjects, world);
+        updateGameObjects(loadedGameObjects, world, context);
     }
 
-    public static void updateGameObjects(Collection<GameObject> collection, World world) {
+    public static void updateGameObjects(Collection<GameObject> collection, World world, GenerationType.Context context) {
         UUID currentGameId = getGameUUID(world);
         collection.forEach(object -> {
             UUID objectId = object.getCurrentGameId();
             if (!objectId.equals(currentGameId)) {
                 object.onNewGameDetected(currentGameId);
+                if (!context.isEmpty() && object instanceof Generator) {
+                    ((Generator) object).generate(context);
+                }
             }
         });
     }

@@ -10,6 +10,7 @@ import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.BlockPosArgument;
@@ -21,6 +22,9 @@ import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
+
+import java.util.function.ToIntFunction;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
@@ -31,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -38,7 +43,6 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GameCommand extends AbstractCommand {
@@ -54,7 +58,10 @@ public class GameCommand extends AbstractCommand {
     private static final String ARG_MAP_CORNER_BX = "mapCreateCornerBX";
     private static final String ARG_MAP_CORNER_BZ = "mapCreateCornerBZ";
     private static final String ARG_LOBBY_CENTER = "lobbyCenter";
+    private static final String ARG_LOBBY_RADIUS = "lobbyRadius";
     private static final String ARG_POINT_TYPE = "pointType";
+
+    private static final String ERROR_MAP_NAME_FORMAT = "Invalid map name format";
 
     private static final CommandTree COMMAND = CommandTree.Builder.command("game")
             .usage("/game [join|leave|select|init|start|stop|map|lobby]")
@@ -79,7 +86,7 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(2)
                             .executes(GameCommand::startGame)
                             .node(
-                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
+                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                             )
             )
             .node(
@@ -92,7 +99,7 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(2)
                             .executes(GameCommand::executeMapNoArguments)
                             .node(
-                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
+                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                                             .node(
                                                     CommandNodeProvider.literal("delete")
                                                             .executes(GameCommand::deleteMapByName)
@@ -107,7 +114,7 @@ public class GameCommand extends AbstractCommand {
                                                             .node(
                                                                     CommandNodeProvider.argument(ARG_POINT_TYPE, PubgmcRegistryArgument.registry(PubgmcRegistries.GAME_MAP_POINTS))
                                                                             .node(
-                                                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Invalid map name format"))
+                                                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                                                                             )
                                                             )
                                             )
@@ -153,6 +160,10 @@ public class GameCommand extends AbstractCommand {
                                                             )
                                             )
                             )
+                            .node(
+                                    CommandNodeProvider.literal("list")
+                                            .executes(GameCommand::listMaps)
+                            )
             )
             .node(
                     CommandNodeProvider.literal("lobby")
@@ -161,6 +172,9 @@ public class GameCommand extends AbstractCommand {
                             .node(
                                     CommandNodeProvider.argument(ARG_LOBBY_CENTER, BlockPosArgument.blockpos())
                                             .executes(GameCommand::createLobby)
+                                            .node(
+                                                    CommandNodeProvider.argument(ARG_LOBBY_RADIUS, IntArgument.range(0, 256))
+                                            )
                             )
             )
             .node(
@@ -197,7 +211,7 @@ public class GameCommand extends AbstractCommand {
     }
 
     private static void reloadGameConfigurations(CommandContext context) throws CommandException {
-        GameConfigurationManager.loadConfigurations();
+        GameConfigurationManager.loadConfigurations(false);
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.config.reloaded"));
     }
 
@@ -268,7 +282,7 @@ public class GameCommand extends AbstractCommand {
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
         try {
-            game.performGameMapValidations(world, map);
+            game.validateAndSetupForMap(world, map);
             game.onGameStart(world);
         } catch (GameException e) {
             data.setActiveGameMapName(actualMapName);
@@ -335,6 +349,10 @@ public class GameCommand extends AbstractCommand {
         if (map == null) {
             throw new WrongUsageException("No map found by name '" + mapName + "'");
         }
+        Game<?> game = data.getCurrentGame();
+        if (game != null && game.isStarted()) {
+            throw new WrongUsageException("Cannot delete map while there is game in progress");
+        }
         data.deleteGameMap(mapName);
         data.sendGameDataToClients();
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.deleted", mapName));
@@ -344,8 +362,12 @@ public class GameCommand extends AbstractCommand {
         String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
         GameData data = getGameData(context);
         GameMap map = data.getGameMap(mapName);
+        Game<?> activeGame = data.getCurrentGame();
         if (map == null) {
             throw new WrongUsageException("No map found by name '" + mapName + "'");
+        }
+        if (activeGame != null && activeGame.isStarted()) {
+            throw new WrongUsageException("Unable to delete map point as there is game in progress");
         }
         map.deletePoints();
         data.sendGameDataToClients();
@@ -358,6 +380,10 @@ public class GameCommand extends AbstractCommand {
         ICommandSender sender = context.getSender();
         BlockPos pos = sender.getPosition();
         Optional<String> providedMapName = context.getArgument(ARG_MAP_NAME);
+        Game<?> game = gameData.getCurrentGame();
+        if (game != null && game.isStarted()) {
+            throw new WrongUsageException("Unable to add point as there is game in progress");
+        }
         GameMap map;
         if (providedMapName.isPresent()) {
             map = gameData.getGameMap(providedMapName.get());
@@ -379,6 +405,32 @@ public class GameCommand extends AbstractCommand {
         gameData.sendGameDataToClients();
     }
 
+    private static void listMaps(CommandContext context) throws CommandException {
+        GameData gameData = getGameData(context);
+        Map<String, GameMap> maps = gameData.getRegisteredGameMaps();
+        ICommandSender sender = context.getSender();
+        World world = sender.getEntityWorld();
+        for (Map.Entry<String, GameMap> entry : maps.entrySet()) {
+            String mapName = entry.getKey();
+            GameMap map = entry.getValue();
+            Playzone bounds = map.bounds();
+            Position2 center = bounds.center();
+            int y = world.getHeight((int) center.getX(), (int) center.getZ());
+            BlockPos mapCenter = new BlockPos(center.getX(), y, center.getZ());
+            ITextComponent centerComponent = new TextComponentString(String.format("[%d; %d; %d]", mapCenter.getX(), mapCenter.getY(), mapCenter.getZ()));
+            Style style = centerComponent.getStyle();
+            style.setColor(TextFormatting.AQUA);
+            style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/tp @p %d %d %d", mapCenter.getX(), mapCenter.getY(), mapCenter.getZ())));
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentHelper.CLICK_TO_TELEPORT));
+            Position2 min = bounds.getPositionMin(1.0F);
+            Position2 max = bounds.getPositionMax(1.0F);
+            double lenX = Math.abs(max.getX() - min.getX());
+            double lenZ = Math.abs(max.getZ() - min.getZ());
+            String dimensions = String.format("[%d x %d]", (int) lenX, (int) lenZ);
+            sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.info", mapName, centerComponent, dimensions));
+        }
+    }
+
     private static void printLobbyInformation(CommandContext context) throws CommandException {
         GameData data = getGameData(context);
         GameLobby lobby = data.getGameLobby();
@@ -398,7 +450,8 @@ public class GameCommand extends AbstractCommand {
     private static void createLobby(CommandContext context) throws CommandException {
         GameData data = getGameData(context);
         BlockPos pos = context.getArgumentMandatory(ARG_LOBBY_CENTER);
-        GameLobby lobby = new GameLobby(pos);
+        int radius = context.<Integer>getArgument(ARG_LOBBY_RADIUS).orElse(GameLobby.DEFAULT_RADIUS);
+        GameLobby lobby = new GameLobby(pos, radius);
         data.setGameLobby(lobby);
         data.sendGameDataToClients();
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.lobby.created"));
@@ -466,9 +519,9 @@ public class GameCommand extends AbstractCommand {
         return suggestCoordinate(context, Vec3i::getZ);
     }
 
-    private static List<String> suggestCoordinate(SuggestionProvider.Context context, Function<BlockPos, Integer> provider) {
+    private static List<String> suggestCoordinate(SuggestionProvider.Context context, ToIntFunction<BlockPos> provider) {
         BlockPos pos = context.getSender().getPosition();
-        return Collections.singletonList(String.valueOf(provider.apply(pos)));
+        return Collections.singletonList(String.valueOf(provider.applyAsInt(pos)));
     }
 
     private static void validateGameLobbyDefined(GameData data) throws CommandException {

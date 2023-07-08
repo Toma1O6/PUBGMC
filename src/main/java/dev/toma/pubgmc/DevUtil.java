@@ -29,7 +29,7 @@ public class DevUtil {
 
     @SuppressWarnings("unchecked")
     public static <T> T[] expandArray(T[] array, int addedLength) {
-        if(addedLength <= 0)
+        if (addedLength <= 0)
             throw new IllegalArgumentException("Number must be bigger than 0");
         T[] expanded = (T[]) new Object[array.length + addedLength];
         System.arraycopy(array, 0, expanded, 0, array.length);
@@ -38,20 +38,20 @@ public class DevUtil {
 
     public static <T> T getPrevious(List<T> list, int index, T fallback) {
         int prev = index - 1;
-        if(prev < 0)
+        if (prev < 0)
             return fallback;
         return list.get(prev);
     }
 
     public static <T> T make(T t, Consumer<T> consumer) {
-        if(t != null)
+        if (t != null)
             consumer.accept(t);
         return t;
     }
 
     public static <E> boolean contains(E[] group, E element) {
-        for(E e : group) {
-            if(element == e) {
+        for (E e : group) {
+            if (element == e) {
                 return true;
             }
         }
@@ -64,7 +64,7 @@ public class DevUtil {
 
     public static <T, U> boolean contains(T t, Collection<U> collection, BiPredicate<T, U> test) {
         for (U u : collection) {
-            if(test.test(t, u))
+            if (test.test(t, u))
                 return true;
         }
         return false;
@@ -90,7 +90,7 @@ public class DevUtil {
         int total = 0;
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
-            if(stack.getItem() == item) {
+            if (stack.getItem() == item) {
                 total += stack.getCount();
             }
         }

@@ -31,10 +31,10 @@ public class PMCBlock extends Block {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
-        if(desc == null) {
+        if (desc == null) {
             return;
         }
-        for(int i = 0; i < desc.length; i++) {
+        for (int i = 0; i < desc.length; i++) {
             tooltip.add(desc[i]);
         }
     }

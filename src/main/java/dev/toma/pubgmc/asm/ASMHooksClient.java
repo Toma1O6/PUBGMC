@@ -33,19 +33,19 @@ public class ASMHooksClient {
     public static void model_setupModelAngles(ModelBiped model, Entity entity) {
         Minecraft mc = Minecraft.getMinecraft();
         Entity entity1 = mc.getRenderViewEntity();
-        if(entity == entity1 && mc.gameSettings.thirdPersonView == 0) {
+        if (entity == entity1 && mc.gameSettings.thirdPersonView == 0) {
             return;
         }
-        if(!(entity instanceof EntityPlayer))
+        if (!(entity instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) entity;
         IPlayerData data = PlayerDataProvider.get(player);
-        if(data == null)
+        if (data == null)
             return;
         boolean isHoldingWeapon = player.getHeldItemMainhand().getItem() instanceof GunBase;
         boolean isProne = data.isProne();
         boolean playerModel = model instanceof ModelPlayer;
-        if(isProne) {
+        if (isProne) {
             float f0 = (float) Math.toRadians(180.0F);
             float f1 = (float) Math.toRadians(10.0F);
             float f2 = (float) Math.toRadians(-45.0F);
@@ -57,19 +57,19 @@ public class ASMHooksClient {
             model.bipedLeftLeg.rotateAngleZ = -f1;
             model.bipedHead.rotateAngleX = model.bipedHead.rotateAngleX + f2;
             model.bipedHeadwear.rotateAngleX = model.bipedHead.rotateAngleX;
-            if(playerModel) {
+            if (playerModel) {
                 ModelPlayer mp = (ModelPlayer) model;
                 ModelBase.copyModelAngles(model.bipedRightArm, mp.bipedRightArmwear);
                 ModelBase.copyModelAngles(model.bipedLeftArm, mp.bipedLeftArmwear);
             }
             player.limbSwing = 0.0F;
             player.limbSwingAmount = 0.0F;
-        } else if(isHoldingWeapon) {
+        } else if (isHoldingWeapon) {
             boolean aiming = data.getAimInfo().isAiming();
             float f0;
             float f1;
             float f2;
-            if(aiming) {
+            if (aiming) {
                 f0 = (float) Math.toRadians(-90.0F);
                 f1 = (float) Math.toRadians(-15.0F);
                 f2 = (float) Math.toRadians(45.0F);
@@ -88,7 +88,7 @@ public class ASMHooksClient {
                 model.bipedRightArm.rotateAngleY = f1;
                 model.bipedLeftArm.rotateAngleY = f2;
             }
-            if(playerModel) {
+            if (playerModel) {
                 ModelPlayer mp = (ModelPlayer) model;
                 ModelBase.copyModelAngles(model.bipedRightArm, mp.bipedRightArmwear);
                 ModelBase.copyModelAngles(model.bipedLeftArm, mp.bipedLeftArmwear);
@@ -98,7 +98,7 @@ public class ASMHooksClient {
 
     public static void player_preRenderCallback(RenderPlayer render, AbstractClientPlayer abstractClientPlayer, float partialTicks) {
         IPlayerData data = PlayerDataProvider.get(abstractClientPlayer);
-        if(data != null && data.isProne()) {
+        if (data != null && data.isProne()) {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 0.9F, 0.12F);
         }
@@ -111,7 +111,7 @@ public class ASMHooksClient {
     }
 
     public static void preRenderItem(ItemCameraTransforms.TransformType renderingType) {
-         transformType = renderingType;
+        transformType = renderingType;
     }
 
     public static void updateLightmap(int[] lightmapColors) {
@@ -132,8 +132,8 @@ public class ASMHooksClient {
         for (int i = 0; i < 256; i++) {
             int value = lightmapColors[i];
             float r = ((value >> 16) & 255) / 255.0F;
-            float g = ((value >>  8) & 255) / 255.0F;
-            float b =  (value        & 255) / 255.0F;
+            float g = ((value >> 8) & 255) / 255.0F;
+            float b = (value & 255) / 255.0F;
             r = Math.min(1.0F, r * amplifier);
             g = Math.min(1.0F, g * amplifier);
             b = Math.min(1.0F, b * amplifier);

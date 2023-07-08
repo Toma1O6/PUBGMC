@@ -34,20 +34,20 @@ public class EntitySmokeGrenade extends EntityThrowableExplodeable {
     }
 
     public void createSmokeParticles() {
-        if(this.world.getBlockState(this.getPosition()).getMaterial().isLiquid()) {
+        if (this.world.getBlockState(this.getPosition()).getMaterial().isLiquid()) {
             world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, this.posY, this.posZ, 0, 0.2, 0);
             return;
         }
         this.currentAngle += SMOKE_ANGLE_PER_TICK;
-        if(world.isRemote) {
-            for(int i = SMOKE_ANGLE_PER_TICK; i > 0; i -= 5) {
+        if (world.isRemote) {
+            for (int i = SMOKE_ANGLE_PER_TICK; i > 0; i -= 5) {
                 int updatedAngle = (this.currentAngle - i) % 360;
                 double angle = Math.toRadians(updatedAngle);
                 double x = Math.sin(angle) / 3;
                 double z = Math.cos(angle) / 3;
                 double y = 0;
                 double d = 0;
-                for(; d < this.smokeHeight; d += 0.5D) {
+                for (; d < this.smokeHeight; d += 0.5D) {
                     this.world.spawnParticle(EnumParticleTypes.CLOUD, true, this.posX, this.posY + d, this.posZ, x, y, z);
                 }
             }
@@ -56,15 +56,15 @@ public class EntitySmokeGrenade extends EntityThrowableExplodeable {
 
     @Override
     public void onThrowableTick() {
-        if(startedSmoking) {
-            if(this.smokeHeight < 3.5D) {
-                if(ticksExisted % 5 == 0) {
+        if (startedSmoking) {
+            if (this.smokeHeight < 3.5D) {
+                if (ticksExisted % 5 == 0) {
                     this.smokeHeight += 0.25D;
                 }
             }
             this.createSmokeParticles();
             --this.effectLeft;
-            if(effectLeft <= 0) {
+            if (effectLeft <= 0) {
                 this.setDead();
             }
         }

@@ -44,15 +44,15 @@ public class ItemGrip extends ItemAttachment {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if(verticalRecoil < 1) {
+        if (verticalRecoil < 1) {
             int i = Math.round((1.0F - verticalRecoil) * 100);
             tooltip.add(formatProperty("Vertical recoil", "-" + i) + "%");
         }
-        if(horizontalRecoil < 1) {
+        if (horizontalRecoil < 1) {
             int i = Math.round((1.0F - horizontalRecoil) * 100);
             tooltip.add(formatProperty("Horizontal recoil", "-" + i) + "%");
         }
-        if(ads < 1) {
+        if (ads < 1) {
             int i = Math.round((1.0F - ads) * 100);
             tooltip.add(formatProperty("ADS speed", "-" + i) + "%");
         }

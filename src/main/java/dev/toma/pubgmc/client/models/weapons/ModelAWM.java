@@ -89,7 +89,7 @@ public class ModelAWM extends ModelGun {
     public void renderModel(ItemStack stack) {
         awm.render(1f);
         stock.render(1.0F);
-        if(!hasScopeAtachment(stack))
+        if (!hasScopeAtachment(stack))
             ironsights.render(1.0F);
     }
 

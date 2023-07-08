@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.tileentity;
 
-import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.GenerationType;
+import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
@@ -21,7 +22,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, LootGenerator {
+public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, Generator {
 
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;
@@ -86,8 +87,17 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
 
     @Override
     public void onNewGameDetected(UUID newGameId) {
+        clear();
         assignGameId(newGameId);
-        LootManager.generateLootInGenerator(this, world, pos);
+        TileEntityUtil.syncToClient(this);
+    }
+
+    @Override
+    public void generate(GenerationType.Context context) {
+        if (context.has(GenerationType.ITEMS)) {
+            LootManager.generateLootInGenerator(this, world, pos);
+            markDirty();
+        }
     }
 
     @Override

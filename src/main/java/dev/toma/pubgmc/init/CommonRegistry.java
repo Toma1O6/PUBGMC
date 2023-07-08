@@ -933,6 +933,7 @@ public class CommonRegistry {
         event.register(LootProcessors.AMMO_PROCESSOR);
         event.register(LootProcessors.GHILLIE_COLOR_PROCESSOR);
         event.register(LootProcessors.ATTACHMENT_PROCESSOR);
+        event.register(LootProcessors.WEAPON_AMMO_PROCESOR);
     }
 
     @SubscribeEvent

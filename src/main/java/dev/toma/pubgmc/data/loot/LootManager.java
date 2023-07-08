@@ -2,8 +2,10 @@ package dev.toma.pubgmc.data.loot;
 
 import com.google.gson.*;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.data.DataVersion;
+import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.event.LootEvent;
-import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.util.EventDispatcher;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class LootManager {
+public final class LootManager implements Recreatable {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File DIRECTORY = new File("./pubgmc/loot");
@@ -31,7 +33,8 @@ public final class LootManager {
 
     private final Map<String, LootConfiguration> lootConfigurations = new HashMap<>();
 
-    private LootManager() {}
+    private LootManager() {
+    }
 
     public static LootManager getInstance() {
         return INSTANCE;
@@ -46,7 +49,7 @@ public final class LootManager {
         }
     }
 
-    public static void generateLootInGenerator(LootGenerator generator, World world, BlockPos pos) {
+    public static void generateLootInGenerator(Generator generator, World world, BlockPos pos) {
         LootManager manager = getInstance();
         String configuration = generator.getLootConfigurationId();
         List<ItemStack> items = manager.generateFromConfiguration(configuration, world, pos);
@@ -66,6 +69,21 @@ public final class LootManager {
 
     public LootConfiguration getConfigurationById(String key) {
         return lootConfigurations.get(key);
+    }
+
+    @Override
+    public void recreateData() {
+        try {
+            createDefaultLootConfigFiles(true);
+            load();
+        } catch (IOException e) {
+            throw new IllegalStateException("Data recreate failed", e);
+        }
+    }
+
+    @Override
+    public DataVersion getVersion() {
+        return Pubgmc.LOOT_DATA_VERSION;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

@@ -48,32 +48,32 @@ public class EntityMolotov extends EntityThrowableExplodeable {
     @Override
     public void onThrowableTick() {
         this.setInvisible(this.isFrozen);
-        if(world.isRemote && !isFrozen) {
+        if (world.isRemote && !isFrozen) {
             world.spawnParticle(EnumParticleTypes.FLAME, this.posX, this.posY, this.posZ, 0, 0, 0);
         }
-        if(this.world.getBlockState(this.getPosition()).getMaterial().isLiquid()) {
+        if (this.world.getBlockState(this.getPosition()).getMaterial().isLiquid()) {
             setDead();
         }
-        if(isFrozen) {
-            if(hasStartedSpreading) {
-                if((this.ticksExisted - this.startedSpreadingAt) % SPREAD_DELAY == 0 && timesSpreaded < FIRE_SPREAD_AMOUNT) {
+        if (isFrozen) {
+            if (hasStartedSpreading) {
+                if ((this.ticksExisted - this.startedSpreadingAt) % SPREAD_DELAY == 0 && timesSpreaded < FIRE_SPREAD_AMOUNT) {
                     ++this.timesSpreaded;
                     this.fireSpreader.spread(this, this.burningBlocks);
                 }
             }
-            if(burningBlocks != null && !burningBlocks.isEmpty()) {
+            if (burningBlocks != null && !burningBlocks.isEmpty()) {
                 List<Entity> entities = this.world.getEntitiesInAABBexcluding(this,
                         new AxisAlignedBB(this.posX - FIRE_SPREAD_AMOUNT, this.posY - FIRE_SPREAD_AMOUNT, this.posZ - FIRE_SPREAD_AMOUNT, this.posX + FIRE_SPREAD_AMOUNT, this.posY + FIRE_SPREAD_AMOUNT, this.posZ + FIRE_SPREAD_AMOUNT),
                         Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING));
-                for(Entity e : entities) {
-                    if(e instanceof EntityLivingBase) {
-                        for(MolotovFirePosEntry entry : this.burningBlocks) {
+                for (Entity e : entities) {
+                    if (e instanceof EntityLivingBase) {
+                        for (MolotovFirePosEntry entry : this.burningBlocks) {
                             BlockPos p0 = new BlockPos(entry.pos.getX(), entry.y, entry.pos.getZ());
                             BlockPos p00 = new BlockPos(p0.getX(), p0.getY() + 1, p0.getZ());
                             BlockPos p1 = e.getPosition();
-                            if(p0.equals(p1) || p00.equals(p1)) {
+                            if (p0.equals(p1) || p00.equals(p1)) {
                                 e.setFire(5);
-                                if(this.ticksExisted % 10 == 0) {
+                                if (this.ticksExisted % 10 == 0) {
                                     e.attackEntityFrom(DamageSource.ON_FIRE, 4);
                                 }
                                 break;
@@ -81,12 +81,12 @@ public class EntityMolotov extends EntityThrowableExplodeable {
                         }
                     }
                 }
-                if(world.isRemote) {
+                if (world.isRemote) {
                     burningBlocks.forEach(entry -> createMolotovParticles(EntityMolotov.this.world, entry, 2, 1));
                 }
             }
             --this.timeLeft;
-            if(timeLeft <= 0) this.setDead();
+            if (timeLeft <= 0) this.setDead();
         }
     }
 
@@ -115,7 +115,7 @@ public class EntityMolotov extends EntityThrowableExplodeable {
 
     protected void createMolotovParticles(World world, MolotovFirePosEntry entry, int amount, int spreadAmount) {
         BlockPos pos = entry.pos;
-        for(int i = 0; i < amount; i++) {
+        for (int i = 0; i < amount; i++) {
             world.spawnParticle(EnumParticleTypes.FLAME, pos.getX() + smallDouble(spreadAmount), entry.y, pos.getZ() + smallDouble(spreadAmount), smallDouble(20) - smallDouble(20), 0.01, smallDouble(20) - smallDouble(20));
         }
     }
@@ -131,9 +131,9 @@ public class EntityMolotov extends EntityThrowableExplodeable {
         compound.setInteger("timeLeft", this.timeLeft);
         compound.setInteger("startedSpreadingAt", this.startedSpreadingAt);
         compound.setBoolean("hasStarted", this.hasStartedSpreading);
-        if(this.burningBlocks != null && !this.burningBlocks.isEmpty()) {
+        if (this.burningBlocks != null && !this.burningBlocks.isEmpty()) {
             NBTTagList list = new NBTTagList();
-            for(MolotovFirePosEntry entry : this.burningBlocks) {
+            for (MolotovFirePosEntry entry : this.burningBlocks) {
                 list.appendTag(this.writeFireEntryToNBT(entry));
             }
             compound.setTag("burningBlocks", list);
@@ -149,9 +149,9 @@ public class EntityMolotov extends EntityThrowableExplodeable {
         this.hasStartedSpreading = compound.getBoolean("hasStarted");
         this.fireSpreader = new MolotovFireSpreader();
         this.burningBlocks = new ArrayList<>();
-        if(compound.hasKey("burningBlocks")) {
+        if (compound.hasKey("burningBlocks")) {
             NBTTagList list = compound.getTagList("burningBlocks", Constants.NBT.TAG_COMPOUND);
-            for(int i = 0; i < list.tagCount(); i++) {
+            for (int i = 0; i < list.tagCount(); i++) {
                 NBTTagCompound nbt = list.getCompoundTagAt(i);
                 MolotovFirePosEntry entry = this.readEntryFromNBT(nbt);
                 burningBlocks.add(entry);
@@ -174,10 +174,10 @@ public class EntityMolotov extends EntityThrowableExplodeable {
 
     protected class MolotovFireSpreader {
 
-        final EnumFacing[] FACINGS = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.WEST, EnumFacing.SOUTH, EnumFacing.EAST};
+        final EnumFacing[] FACINGS = new EnumFacing[]{EnumFacing.NORTH, EnumFacing.WEST, EnumFacing.SOUTH, EnumFacing.EAST};
 
         public List<MolotovFirePosEntry> startSpreading(EntityMolotov molotov) {
-            if(molotov.isInWater()) {
+            if (molotov.isInWater()) {
                 molotov.setDead();
                 return Collections.emptyList();
             }
@@ -185,28 +185,28 @@ public class EntityMolotov extends EntityThrowableExplodeable {
             BlockPos initial = molotov.getPosition();
             BlockPos ground = this.findGround(molotov.world, initial);
             AxisAlignedBB alignedBB = molotov.world.getBlockState(ground).getCollisionBoundingBox(molotov.world, ground);
-            if(molotov.world.isAirBlock(ground.up())) {
+            if (molotov.world.isAirBlock(ground.up())) {
                 list.add(new MolotovFirePosEntry(ground, alignedBB));
             }
             return list;
         }
 
         public void spread(EntityMolotov molotov, List<MolotovFirePosEntry> list) {
-            if(list == null) return;
+            if (list == null) return;
             List<MolotovFirePosEntry> toBeAdded = new ArrayList<>();
-            for(MolotovFirePosEntry entry : list) {
-                for(EnumFacing facing : FACINGS) {
+            for (MolotovFirePosEntry entry : list) {
+                for (EnumFacing facing : FACINGS) {
                     BlockPos pos = entry.pos.offset(facing);
                     BlockPos ground = this.findGround(molotov.world, pos);
                     Pair<Integer, BlockPos> pair = this.getFireStepHeight(molotov.world, ground);
                     ground = pair.getRight();
                     int stepHeight = pair.getLeft();
-                    if(stepHeight > 1) {
+                    if (stepHeight > 1) {
                         continue;
                     }
                     IBlockState state = molotov.world.getBlockState(ground);
                     AxisAlignedBB alignedBB = state.getCollisionBoundingBox(molotov.world, ground);
-                    if(state.getBlock() == Blocks.AIR || state.getMaterial().isLiquid()) {
+                    if (state.getBlock() == Blocks.AIR || state.getMaterial().isLiquid()) {
                         continue;
                     }
                     MolotovFirePosEntry entry1 = new MolotovFirePosEntry(ground, alignedBB);
@@ -257,10 +257,10 @@ public class EntityMolotov extends EntityThrowableExplodeable {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj == this) {
+            if (obj == this) {
                 return true;
             }
-            if(obj instanceof MolotovFirePosEntry) {
+            if (obj instanceof MolotovFirePosEntry) {
                 MolotovFirePosEntry entry = (MolotovFirePosEntry) obj;
                 return this.pos.equals(entry.pos) && this.y == entry.y;
             }

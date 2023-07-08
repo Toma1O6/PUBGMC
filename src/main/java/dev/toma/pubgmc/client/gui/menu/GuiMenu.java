@@ -1,11 +1,18 @@
 package dev.toma.pubgmc.client.gui.menu;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.data.DataVersion;
+import dev.toma.pubgmc.api.data.DataVersion.CompareResult;
+import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.client.content.*;
+import dev.toma.pubgmc.client.gui.GuiUpdateDataFiles;
 import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.ImageButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.util.helper.ImageUtil;
+
+import java.util.Map;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.util.ITickable;
@@ -46,7 +53,6 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         // anouncements
         addWidget(new EventPanelComponent(this, 15, initialHeight + 20, w, 68));
         // singleplayer
-        int hw = w / 2;
         addWidget(new ButtonWidget(15, initialHeight + 100, w, 20, "Singleplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this))));
         addWidget(new ButtonWidget(15, initialHeight + 125, w, 20, "Multiplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this))));
         // settings
@@ -75,6 +81,11 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         addWidget(new LinkImageComponent(20, height - 20, 20, 20, CF_ICON, links.getHomepageLink(), this, true).withInfo("CurseForge").notificationOn(Pubgmc.isOutdated()));
         addWidget(new LinkImageComponent(40, height - 20, 20, 20, PATREON_ICON, links.getPatreonLink(), this, true).withInfo("Become a patron"));
         addWidget(new VipListWidget(60, height - 20, 20, 20, this));
+
+        Map<ResourceLocation, CompareResult> mismatchedDataVersions = DataVersionManager.getListOfMismatchedData();
+        if (!mismatchedDataVersions.isEmpty()) {
+            mc.displayGuiScreen(new GuiUpdateDataFiles(this, mismatchedDataVersions));
+        }
     }
 
     @Override
@@ -213,7 +224,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
             this.parent = parent;
             this.count = getMessageCount();
             Optional<ContentResult> optional = allContent();
-            if(Pubgmc.isOutdated() || (optional.isPresent() && !optional.get().isSupportedVersion())) {
+            if (Pubgmc.isOutdated() || (optional.isPresent() && !optional.get().isSupportedVersion())) {
                 msgComponents.add(new UpdatePromptWidget(parent, x + 4, y + 15, width - 8, 40));
                 ++count;
             }
@@ -234,7 +245,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
                 }
             }
             for (Widget widget : children) {
-                if(widget.handleClicked(mouseX, mouseY, mouseButton)) {
+                if (widget.handleClicked(mouseX, mouseY, mouseButton)) {
                     return true;
                 }
             }
@@ -383,7 +394,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
-            if(trusted) {
+            if (trusted) {
                 parent.openWebLink(link);
             } else {
                 Minecraft mc = Minecraft.getMinecraft();
@@ -437,7 +448,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             boolean hovered = isMouseOver(mouseX, mouseY);
             drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.25F);
-            if(hovered) {
+            if (hovered) {
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.2F);
             }
             FontRenderer renderer = mc.fontRenderer;

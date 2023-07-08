@@ -17,7 +17,7 @@ public class ArgumentNode<T> extends AbstractNode {
 
     private final ArgumentType<T> type;
 
-    public ArgumentNode(String key, int permissionLevel, CommandNodeExecutor executor, SuggestionProvider suggestionProvider,  Map<String, CommandNode> children, ArgumentType<T> type) {
+    public ArgumentNode(String key, int permissionLevel, CommandNodeExecutor executor, SuggestionProvider suggestionProvider, Map<String, CommandNode> children, ArgumentType<T> type) {
         super(key, permissionLevel, executor, suggestionProvider, children);
         this.type = type;
     }

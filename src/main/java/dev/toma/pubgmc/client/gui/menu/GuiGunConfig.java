@@ -55,13 +55,13 @@ public class GuiGunConfig extends GuiWidgets {
 
     @Override
     public void init() {
-        if(gunSelector == null) {
+        if (gunSelector == null) {
             gunSelector = new SelectionWidget<>(5, 5, 150, 20, ForgeRegistries.ITEMS.getValuesCollection().stream()
                     .filter(it -> it instanceof GunBase)
                     .map(it -> (GunBase) it)
                     .collect(Collectors.toList()), gun -> gun.getRegistryName().toString(), this::updateWeapon);
         }
-        if(attachmentListWidget == null) {
+        if (attachmentListWidget == null) {
             attachmentListWidget = new AttachmentListWidget(5, 30, 80, height - 35);
         }
         addWidget(gunSelector);
@@ -79,7 +79,7 @@ public class GuiGunConfig extends GuiWidgets {
     }
 
     public void updateWeapon(GunBase prev, GunBase gun, SelectionWidget<GunBase> selector) {
-        if(!map.isEmpty()) {
+        if (!map.isEmpty()) {
             ((WeaponRenderer) prev.getTileEntityItemStackRenderer()).setRenderConfigsTempt(map);
             map.clear();
         }
@@ -88,7 +88,7 @@ public class GuiGunConfig extends GuiWidgets {
         this.displayWeapon = new ItemStack(gun);
         compatibleAttachments.clear();
         GunAttachments attachments = gun.getAttachments();
-        if(!attachments.isLoaded()) {
+        if (!attachments.isLoaded()) {
             attachments.load();
         }
         Map<AttachmentType<?>, List<ItemAttachment>> map = attachments.getCompatibilityMap();
@@ -110,14 +110,14 @@ public class GuiGunConfig extends GuiWidgets {
 
     void addAttachment(ItemAttachment attachment) {
         NBTTagCompound nbt = displayWeapon.getTagCompound();
-        if(nbt == null) {
+        if (nbt == null) {
             nbt = new NBTTagCompound();
             nbt.setTag("attachments", new NBTTagCompound());
             displayWeapon.setTagCompound(nbt);
         }
         AttachmentType<?> type = attachment.getType();
         NBTTagCompound attachments;
-        if(!nbt.hasKey("attachments")) {
+        if (!nbt.hasKey("attachments")) {
             attachments = new NBTTagCompound();
             nbt.setTag("attachments", attachments);
         } else {
@@ -125,11 +125,11 @@ public class GuiGunConfig extends GuiWidgets {
         }
         String key = type.getName();
         attachments.setString(key, attachment.getRegistryName().toString());
-        if(!map.containsKey(attachment)) {
+        if (!map.containsKey(attachment)) {
             map.put(attachment, new MutableRenderConfig());
         }
         IRenderConfig cfg = map.get(attachment);
-        if(cfg instanceof MutableRenderConfig) {
+        if (cfg instanceof MutableRenderConfig) {
             activeConfigs.add((MutableRenderConfig) cfg);
         }
         translateWidget.reset();
@@ -139,14 +139,14 @@ public class GuiGunConfig extends GuiWidgets {
 
     void removeAttachment(ItemAttachment attachment) {
         NBTTagCompound nbt = displayWeapon.getTagCompound();
-        if(nbt == null) {
+        if (nbt == null) {
             nbt = new NBTTagCompound();
             nbt.setTag("attachments", new NBTTagCompound());
             displayWeapon.setTagCompound(nbt);
         }
         AttachmentType<?> type = attachment.getType();
         NBTTagCompound attachments;
-        if(!nbt.hasKey("attachments")) {
+        if (!nbt.hasKey("attachments")) {
             attachments = new NBTTagCompound();
             nbt.setTag("attachments", attachments);
         } else {
@@ -155,7 +155,7 @@ public class GuiGunConfig extends GuiWidgets {
         String key = type.getName();
         attachments.removeTag(key);
         IRenderConfig cfg = map.get(attachment);
-        if(cfg instanceof MutableRenderConfig) {
+        if (cfg instanceof MutableRenderConfig) {
             activeConfigs.remove(cfg);
         }
         translateWidget.reset();
@@ -186,7 +186,7 @@ public class GuiGunConfig extends GuiWidgets {
     }
 
     void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float scale, float yaw, float pitch) {
-        GlStateManager.translate((float)xPosition, (float)yPosition, 400.0F + this.zLevel);
+        GlStateManager.translate((float) xPosition, (float) yPosition, 400.0F + this.zLevel);
         GlStateManager.translate(8.0F, 8.0F, 0.0F);
         GlStateManager.rotate(yaw, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-30.0F + pitch, 0.0F, 0.0F, 1.0F);
@@ -213,7 +213,7 @@ public class GuiGunConfig extends GuiWidgets {
                 ItemAttachment attachment = entry.getKey();
                 IRenderConfig config = entry.getValue();
                 String itemName = "PMCItems." + attachment.getRegistryName().getResourcePath().toUpperCase();
-                if(config instanceof MutableRenderConfig) {
+                if (config instanceof MutableRenderConfig) {
                     MutableRenderConfig mcfg = (MutableRenderConfig) config;
                     String configDef = mcfg.toString();
                     builder.append(String.format("registerRenderConfig(%s, %s);\n", itemName, configDef));
@@ -277,7 +277,7 @@ public class GuiGunConfig extends GuiWidgets {
                 ItemAttachment attachment = list.get(i);
                 BooleanSupplier supplier = () -> GuiGunConfig.this.lightTheme;
                 widgets.add(new CheckboxWidget(x, y + j * 20, width, 20, I18n.format(attachment.getUnlocalizedName() + ".name"), (state, mouseX, mouseY, widget) -> {
-                    if(state) {
+                    if (state) {
                         GuiGunConfig.this.addAttachment(attachment);
                     } else GuiGunConfig.this.removeAttachment(attachment);
                 }).lightThemeSupplier(supplier));
@@ -322,7 +322,7 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int button) {
-            if(increment.handleClicked(mouseX, mouseY, button) || decrement.handleClicked(mouseX, mouseY, button)) {
+            if (increment.handleClicked(mouseX, mouseY, button) || decrement.handleClicked(mouseX, mouseY, button)) {
                 ClientProxy.playButtonPressSound();
                 return true;
             }
@@ -332,9 +332,9 @@ public class GuiGunConfig extends GuiWidgets {
         void incr(int i) {
             int prev = selected;
             int j = prev + i;
-            if(j < 0) {
+            if (j < 0) {
                 selected = list.size() - 1;
-            } else if(j >= list.size()) {
+            } else if (j >= list.size()) {
                 selected = 0;
             } else {
                 selected = j;
@@ -386,7 +386,7 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            if(GuiGunConfig.this.lightTheme)
+            if (GuiGunConfig.this.lightTheme)
                 drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.6F);
             else
                 drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.6F);
@@ -496,14 +496,14 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public void onClick(int mouseX, int mouseY, int button) {
-            if(!validateAndSet()) {
+            if (!validateAndSet()) {
                 value = String.valueOf(f);
             }
         }
 
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int button) {
-            if(decrease.handleClicked(mouseX, mouseY, button) || increase.handleClicked(mouseX, mouseY, button)) {
+            if (decrease.handleClicked(mouseX, mouseY, button) || increase.handleClicked(mouseX, mouseY, button)) {
                 return true;
             }
             return super.handleClicked(mouseX, mouseY, button);
@@ -516,9 +516,9 @@ public class GuiGunConfig extends GuiWidgets {
 
         @Override
         public void onKeyPress(char character, int keycode) {
-            if(!isFocused())
+            if (!isFocused())
                 return;
-            if(Character.isDigit(character) || character == '.' || character == '-') {
+            if (Character.isDigit(character) || character == '.' || character == '-') {
                 addChar(character);
             } else {
                 if (keycode == Keyboard.KEY_BACK) {
@@ -545,9 +545,9 @@ public class GuiGunConfig extends GuiWidgets {
         }
 
         boolean validateAndSet() {
-            if(DECIMAL_PATTERN.matcher(value).matches()) {
+            if (DECIMAL_PATTERN.matcher(value).matches()) {
                 f = Float.parseFloat(value);
-                if(callback != null)
+                if (callback != null)
                     callback.onSet(f);
                 return true;
             }
@@ -555,17 +555,17 @@ public class GuiGunConfig extends GuiWidgets {
         }
 
         void increase(int mod) {
-            if(GuiScreen.isCtrlKeyDown()) {
+            if (GuiScreen.isCtrlKeyDown()) {
                 f += valueStepLControl * mod;
-            } else if(GuiScreen.isShiftKeyDown()) {
+            } else if (GuiScreen.isShiftKeyDown()) {
                 f += valueStepLShift * mod;
-            } else if(GuiScreen.isAltKeyDown()) {
+            } else if (GuiScreen.isAltKeyDown()) {
                 f += (valueStepNormal * 0.025) * mod;
             } else {
                 f += valueStepNormal * mod;
             }
             value = String.valueOf(f);
-            if(callback != null)
+            if (callback != null)
                 callback.onSet(f);
         }
 

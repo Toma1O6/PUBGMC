@@ -17,7 +17,8 @@ public class CPacketAnimation implements IMessage {
     boolean play;
     int index;
 
-    public CPacketAnimation() {}
+    public CPacketAnimation() {
+    }
 
     public CPacketAnimation(boolean play, AnimationType<?> type) {
         this.play = play;
@@ -44,7 +45,7 @@ public class CPacketAnimation implements IMessage {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 AnimationType<?> type = AnimationType.getFromID(message.index);
                 AnimationProcessor processor = AnimationProcessor.instance();
-                if(message.play) {
+                if (message.play) {
                     processor.play(type);
                 } else {
                     processor.stop(type);

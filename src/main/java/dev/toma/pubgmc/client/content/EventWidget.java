@@ -28,7 +28,7 @@ public class EventWidget extends Widget {
 
     @Override
     public void onClick(int mouseX, int mouseY, int button) {
-        if(event.isLive()) {
+        if (event.isLive()) {
             FMLClientHandler.instance().connectToServer(parent, new ServerData(
                     event.getName(),
                     event.getIP(),
@@ -41,7 +41,7 @@ public class EventWidget extends Widget {
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         boolean hovered = isMouseOver(mouseX, mouseY);
         ImageUtil.drawShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.25F);
-        if(hovered) {
+        if (hovered) {
             drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.2F);
         }
         FontRenderer renderer = mc.fontRenderer;
@@ -53,11 +53,11 @@ public class EventWidget extends Widget {
         String time = event.getScheduledDateTime().toLocalTime().format(timeFormatter) + " UTC";
         int timeWidth = renderer.getStringWidth(time) + 3;
         renderer.drawString(time, x + width - timeWidth, y + 28, 0xffffff);
-        if(event.isLive()) {
+        if (event.isLive()) {
             long sysTime = System.currentTimeMillis() % 2500L;
             boolean b = sysTime > 1250L;
             float value = b ? 1.0F - (sysTime - 1250F) / 1250F : sysTime / 1250F;
-            int red = (int)(value * 255) << 16;
+            int red = (int) (value * 255) << 16;
             int color = red | 0xff00;
             renderer.drawString("LIVE! Click to join!", x + 3, y + 28, color);
         } else {

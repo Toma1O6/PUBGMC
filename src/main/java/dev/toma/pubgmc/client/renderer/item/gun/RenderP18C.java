@@ -22,7 +22,7 @@ public class RenderP18C extends WeaponRenderer {
 
     @Override
     public void preRender(ItemCameraTransforms.TransformType transformType) {
-        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+        if (transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
             GlStateManager.translate(0, 0, -0.4);
         }
         GlStateManager.translate(1.055, 0.3, 0.7);

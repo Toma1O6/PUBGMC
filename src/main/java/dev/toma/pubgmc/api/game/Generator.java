@@ -5,9 +5,11 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public interface LootGenerator extends GameObject, LootableContainer {
+public interface Generator extends GameObject, LootableContainer {
 
     String getLootConfigurationId();
 
     void fillWithLoot(List<ItemStack> items);
+
+    void generate(GenerationType.Context context);
 }

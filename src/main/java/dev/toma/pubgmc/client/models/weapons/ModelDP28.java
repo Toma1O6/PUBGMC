@@ -65,7 +65,7 @@ public class ModelDP28 extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         dp28.render(1f);
-        if(!hasScopeAtachment(stack)) ironsights.render(1f);
+        if (!hasScopeAtachment(stack)) ironsights.render(1f);
     }
 
     @Override

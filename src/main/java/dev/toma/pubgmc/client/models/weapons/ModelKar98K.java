@@ -67,7 +67,7 @@ public class ModelKar98K extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         kar98k.render(1f);
-        if(hasBulletLoops(stack))
+        if (hasBulletLoops(stack))
             stock.render(1.0F);
     }
 

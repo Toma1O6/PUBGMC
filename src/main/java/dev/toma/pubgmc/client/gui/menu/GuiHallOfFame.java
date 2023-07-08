@@ -32,7 +32,7 @@ public class GuiHallOfFame extends GuiWidgets {
     public void handleMouseInput() throws IOException {
         int n = -(Integer.signum(Mouse.getEventDWheel()));
         int m = scrollIndex + n;
-        if(m >= 0 && m <= vipPatrons.length - displayOnPage) {
+        if (m >= 0 && m <= vipPatrons.length - displayOnPage) {
             scrollIndex = m;
             initGui();
         }
@@ -42,7 +42,7 @@ public class GuiHallOfFame extends GuiWidgets {
     @Override
     public void init() {
         ContentManager cm = Pubgmc.getContentManager();
-        if(cm.getCachedResult() != null) {
+        if (cm.getCachedResult() != null) {
             vipPatrons = cm.getCachedResult().getVipPatrons();
         }
         displayOnPage = (height - 60) / 12;
@@ -87,7 +87,7 @@ public class GuiHallOfFame extends GuiWidgets {
         GlStateManager.enableTexture2D();
         drawWidgets(mc, mouseX, mouseY, partialTicks);
         renderHeader();
-        if(vipPatrons.length > 0) {
+        if (vipPatrons.length > 0) {
             String text = String.format("Showing %d-%d out of %d VIP Patrons", scrollIndex, Math.min(scrollIndex + displayOnPage, vipPatrons.length), vipPatrons.length);
             int w = fontRenderer.getStringWidth(text);
             fontRenderer.drawStringWithShadow(text, width - 10 - w, height - 15, 0xffffff);

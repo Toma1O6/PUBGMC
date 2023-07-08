@@ -57,10 +57,10 @@ public class PacketClientCapabilitySync implements IMessage {
                 IPlayerData data = PlayerDataProvider.get(target);
                 data.deserializeNBT(m.nbt);
 
-                if(!data.getReloadInfo().isReloading()) {
+                if (!data.getReloadInfo().isReloading()) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 }
-                if(!data.getAimInfo().isAiming()) {
+                if (!data.getAimInfo().isAiming()) {
                     mc.gameSettings.fovSetting = RenderHandler.fovBackup;
                     mc.gameSettings.mouseSensitivity = RenderHandler.sensBackup;
                 }

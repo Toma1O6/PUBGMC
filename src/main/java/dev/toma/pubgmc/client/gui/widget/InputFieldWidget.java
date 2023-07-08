@@ -39,7 +39,7 @@ public abstract class InputFieldWidget<T> extends Widget {
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         drawColorShape(x, y, x + width, y + height, 1.0F, validState ? 1.0F : 0.0F, validState ? focused ? 0.0F : 1.0F : 0.0F, 1.0F);
         drawColorShape(x + 1, y + 1, x + width - 1, y + height - 1, 0.0F, 0.0F, 0.0F, 1.0F);
-        if(text.isEmpty()) {
+        if (text.isEmpty()) {
             mc.fontRenderer.drawString(backgroundText, x + 3, y + (height - mc.fontRenderer.FONT_HEIGHT) / 2, 0xAAAAAA);
         } else {
             mc.fontRenderer.drawString(text, x + 3, y + (height - mc.fontRenderer.FONT_HEIGHT) / 2, 0xFFFFFF);
@@ -57,18 +57,18 @@ public abstract class InputFieldWidget<T> extends Widget {
 
     @Override
     public void onKeyPress(char character, int keycode) {
-        if(keycode == 1) {
+        if (keycode == 1) {
             unfocus();
-        } else if(keycode == 14) {
-            if(!text.isEmpty()) {
+        } else if (keycode == 14) {
+            if (!text.isEmpty()) {
                 text = text.substring(0, text.length() - 1);
                 validate();
             }
         } else {
-            if(isValid(character)) {
+            if (isValid(character)) {
                 FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
                 String newText = text + character;
-                if(renderer.getStringWidth(newText) < width - 6) {
+                if (renderer.getStringWidth(newText) < width - 6) {
                     text = newText;
                     validate();
                 }
@@ -78,10 +78,10 @@ public abstract class InputFieldWidget<T> extends Widget {
 
     protected void validate() {
         validState = isValid(text);
-        if(validState) {
+        if (validState) {
             try {
                 T t = parser.parse(text);
-                if(isValidValue(t)) {
+                if (isValidValue(t)) {
                     callback.onValueChanged(this, t);
                 } else validState = false;
             } catch (Exception e) {

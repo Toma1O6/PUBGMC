@@ -14,7 +14,7 @@ public class LazyLoad<T> implements Supplier<T> {
 
     @Override
     public T get() {
-        if(supplier != null) {
+        if (supplier != null) {
             t = Objects.requireNonNull(supplier.get());
             supplier = null;
         }

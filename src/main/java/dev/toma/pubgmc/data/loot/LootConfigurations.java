@@ -2,7 +2,7 @@ package dev.toma.pubgmc.data.loot;
 
 import dev.toma.pubgmc.api.game.loot.LootProcessor;
 import dev.toma.pubgmc.api.game.loot.LootProvider;
-import dev.toma.pubgmc.data.loot.processor.AmmoProcessor;
+import dev.toma.pubgmc.data.loot.processor.AmmoPackProcessor;
 import dev.toma.pubgmc.data.loot.processor.GhillieColorProcessor;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.math.WeightedRandom;
@@ -150,10 +150,10 @@ public final class LootConfigurations {
     }
 
     private static LootProvider getWeapons(int pistols, int smgs, int shotguns, int ar, int dmr, int sr, int flare) {
-        List<LootProcessor> ammo30 = Collections.singletonList(new AmmoProcessor(30, 1, 3));
-        List<LootProcessor> ammo15 = Collections.singletonList(new AmmoProcessor(15, 1, 3));
-        List<LootProcessor> ammo10 = Collections.singletonList(new AmmoProcessor(10, 1, 3));
-        List<LootProcessor> ammo01 = Collections.singletonList(new AmmoProcessor( 1, 1, 1));
+        List<LootProcessor> ammo30 = Collections.singletonList(new AmmoPackProcessor(30, 1, 3));
+        List<LootProcessor> ammo15 = Collections.singletonList(new AmmoPackProcessor(15, 1, 3));
+        List<LootProcessor> ammo10 = Collections.singletonList(new AmmoPackProcessor(10, 1, 3));
+        List<LootProcessor> ammo01 = Collections.singletonList(new AmmoPackProcessor(1, 1, 1));
         return new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(pistols, new RandomLootProvider(Arrays.asList(
                         new ItemStackLootProvider(new ItemStack(PMCItems.P92), ammo15),
@@ -222,8 +222,8 @@ public final class LootConfigurations {
                 new WeightedRandom.Entry<>(10, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_9MM, 30))),
                 new WeightedRandom.Entry<>(10, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_45ACP, 30))),
                 new WeightedRandom.Entry<>(10, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_SHOTGUN, 10))),
-                new WeightedRandom.Entry<>( 5, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_556, 30))),
-                new WeightedRandom.Entry<>( 3, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_762, 30)))
+                new WeightedRandom.Entry<>(5, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_556, 30))),
+                new WeightedRandom.Entry<>(3, new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_762, 30)))
         ));
     }
 
@@ -251,23 +251,23 @@ public final class LootConfigurations {
         return new RandomLootProvider(Arrays.asList(
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.AUG),
-                        Collections.singletonList(new AmmoProcessor(30, 1, 3))
+                        Collections.singletonList(new AmmoPackProcessor(30, 1, 3))
                 ),
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.GROZA),
-                        Collections.singletonList(new AmmoProcessor(30, 1, 3))
+                        Collections.singletonList(new AmmoPackProcessor(30, 1, 3))
                 ),
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.M249),
-                        Collections.singletonList(new AmmoProcessor(50, 2, 4))
+                        Collections.singletonList(new AmmoPackProcessor(50, 2, 4))
                 ),
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.MK14),
-                        Collections.singletonList(new AmmoProcessor(30, 1, 3))
+                        Collections.singletonList(new AmmoPackProcessor(30, 1, 3))
                 ),
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.AWM),
-                        Collections.singletonList(new AmmoProcessor(10, 2, 2))
+                        Collections.singletonList(new AmmoPackProcessor(10, 2, 2))
                 )
         ));
     }

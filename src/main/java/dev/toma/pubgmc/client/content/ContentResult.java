@@ -35,7 +35,7 @@ public class ContentResult {
         this.version = other.version;
         this.externalLinks = other.externalLinks;
         Minecraft mc = Minecraft.getMinecraft();
-        if(changed && mc.currentScreen instanceof RefreshListener) {
+        if (changed && mc.currentScreen instanceof RefreshListener) {
             synchronized (Minecraft.getMinecraft()) {
                 ((RefreshListener) mc.currentScreen).onRefresh();
             }
@@ -70,7 +70,7 @@ public class ContentResult {
 
         @Override
         public ContentResult deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if(!json.isJsonObject()) throw new JsonParseException("Received invalid data - not a Json Object");
+            if (!json.isJsonObject()) throw new JsonParseException("Received invalid data - not a Json Object");
             JsonObject object = json.getAsJsonObject();
             int version = JsonUtils.getInt(object, "version", 1);
             if (version == Pubgmc.CONTENT_DATA_VERSION) {

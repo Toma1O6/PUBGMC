@@ -57,7 +57,7 @@ public class AnimationProject {
     public void save() {
         try {
             File file = new File(workingFile, name + ".json");
-            if(file.exists()) {
+            if (file.exists()) {
                 AnimationSpec spec = new AnimationSpec(toImmutable());
                 String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class).replaceAll("\\s", "");
                 FileWriter writer = new FileWriter(file);
@@ -72,10 +72,10 @@ public class AnimationProject {
 
     public void saveAs(String path) {
         try {
-            if(!workingFile.exists())
+            if (!workingFile.exists())
                 workingFile.mkdirs();
             File file = new File(workingFile, path + ".json");
-            if(!file.exists())
+            if (!file.exists())
                 file.createNewFile();
             AnimationSpec spec = new AnimationSpec(toImmutable());
             String content = AnimationLoader.GSON.toJson(spec, AnimationSpec.class).replaceAll("\\s", "");
@@ -97,10 +97,10 @@ public class AnimationProject {
 
     public void remove(AnimationElement element, MutableKeyFrame frame) {
         List<MutableKeyFrame> frameList = animation.get(element);
-        if(frameList != null) {
+        if (frameList != null) {
             frameList.remove(frame);
         }
-        if(frameList.isEmpty())
+        if (frameList.isEmpty())
             animation.remove(element);
         markModified();
     }

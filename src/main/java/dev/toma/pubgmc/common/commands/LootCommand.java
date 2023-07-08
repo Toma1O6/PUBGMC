@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.commands;
 
-import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.IntArgument;
 import dev.toma.pubgmc.data.loot.LootManager;
@@ -82,9 +82,9 @@ public class LootCommand extends AbstractCommand {
         LootManager manager = LootManager.getInstance();
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        List<LootGenerator> list = getWithinRange(context);
+        List<Generator> list = getWithinRange(context);
         int itemCount = 0;
-        for (LootGenerator generator : list) {
+        for (Generator generator : list) {
             String configId = generator.getLootConfigurationId();
             BlockPos pos = accept(generator, Entity::getPosition, TileEntity::getPos);
             List<ItemStack> loot = manager.generateFromConfiguration(configId, world, pos);
@@ -97,18 +97,18 @@ public class LootCommand extends AbstractCommand {
     }
 
     private static void clearLoot(CommandContext context) {
-        List<LootGenerator> list = getWithinRange(context);
+        List<Generator> list = getWithinRange(context);
         int count = list.size();
         list.forEach(gen -> gen.fillWithLoot(Collections.emptyList()));
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.clear", count));
     }
 
     private static void removeLootGenerators(CommandContext context) throws CommandException {
-        List<LootGenerator> list = getWithinRange(context);
+        List<Generator> list = getWithinRange(context);
         int count = 0;
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        for (LootGenerator generator : list) {
+        for (Generator generator : list) {
             accept(generator, entity -> {
                 entity.setDead();
                 return null;
@@ -125,19 +125,18 @@ public class LootCommand extends AbstractCommand {
     private static void resetLootConfigs(CommandContext context) throws CommandException {
         LootManager manager = LootManager.getInstance();
         try {
-            manager.createDefaultLootConfigFiles(true);
-            LootManager.load();
+            manager.recreateData();
             context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.reloaded_configs"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new WrongUsageException("IO Error occurred: " + e.getMessage(), e);
         }
     }
 
     private static void displayLootGeneratorInformation(CommandContext context) throws CommandException {
         ICommandSender sender = context.getSender();
-        List<LootGenerator> list = getWithinRange(context);
+        List<Generator> list = getWithinRange(context);
         Object2IntMap<String> map = new Object2IntOpenHashMap<>();
-        for (LootGenerator generator : list) {
+        for (Generator generator : list) {
             String name = accept(generator, Entity::getName, tileEntity -> {
                 ITextComponent displayName = tileEntity.getDisplayName();
                 if (displayName == null) {
@@ -157,12 +156,12 @@ public class LootCommand extends AbstractCommand {
         }
     }
 
-    private static List<LootGenerator> getWithinRange(CommandContext context) {
+    private static List<Generator> getWithinRange(CommandContext context) {
         int range = context.<Integer>getArgument(ARG_RANGE).orElse(-1);
         ICommandSender sender = context.getSender();
         BlockPos origin = sender.getPosition();
         World world = sender.getEntityWorld();
-        return GameHelper.mergeTileEntitiesAndEntitiesByRule(world, t -> t instanceof LootGenerator, t -> (LootGenerator) t)
+        return GameHelper.mergeTileEntitiesAndEntitiesByRule(world, t -> t instanceof Generator, t -> (Generator) t)
                 .filter(generator -> {
                     try {
                         return isWithinRange(range, origin, generator);
@@ -173,7 +172,7 @@ public class LootCommand extends AbstractCommand {
                 .collect(Collectors.toList());
     }
 
-    private static boolean isWithinRange(int range, BlockPos origin, LootGenerator generator) throws CommandException {
+    private static boolean isWithinRange(int range, BlockPos origin, Generator generator) throws CommandException {
         if (range < 0) {
             return true;
         }
@@ -187,7 +186,7 @@ public class LootCommand extends AbstractCommand {
         return (x * x + y * y + z * z) <= (max * max);
     }
 
-    private static <T> T accept(LootGenerator generator, Function<Entity, T> entityAcceptor, Function<TileEntity, T> tileEntityAcceptor) throws CommandException {
+    private static <T> T accept(Generator generator, Function<Entity, T> entityAcceptor, Function<TileEntity, T> tileEntityAcceptor) throws CommandException {
         if (generator instanceof TileEntity) {
             return tileEntityAcceptor.apply((TileEntity) generator);
         } else if (generator instanceof Entity) {

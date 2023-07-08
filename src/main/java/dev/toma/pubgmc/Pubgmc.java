@@ -3,6 +3,8 @@ package dev.toma.pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.data.DataVersion;
+import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
@@ -63,9 +65,12 @@ public class Pubgmc {
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     public static final int CONTENT_DATA_VERSION = 1;
+    public static final DataVersion LOOT_DATA_VERSION = DataVersion.of(1, 0);
+    public static final DataVersion GAME_CONFIGS_VERSION = DataVersion.of(1, 0);
+    public static final DataVersion LOADOUT_DATA_VERSION = DataVersion.of(1, 0);
 
     private static final Random RANDOM = new Random();
-    public static final Logger logger = LogManager.getLogger("pubgmc");
+    public static final Logger logger = LogManager.getLogger(MOD_ID);
 
     public static boolean isDevEnvironment;
     @Instance
@@ -91,6 +96,9 @@ public class Pubgmc {
         CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
 
         registerProperties();
+        DataVersionManager.register(Pubgmc.getResource("loot_schema"), LootManager.getInstance());
+        DataVersionManager.register(Pubgmc.getResource("game_configs"), GameConfigurationManager.INSTANCE);
+        DataVersionManager.register(Pubgmc.getResource("entity_loadouts"), LoadoutManager.INSTANCE);
         LoadoutManager.registerLoadoutDirectory("ffa");
 
         proxy.preInit(event);
@@ -106,7 +114,7 @@ public class Pubgmc {
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
         DefaultEntityLoadouts.register();
         LootManager.load();
-        LoadoutManager.load();
+        LoadoutManager.load(false);
     }
 
     @EventHandler
@@ -141,16 +149,18 @@ public class Pubgmc {
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.PointType());
         PubgmcRegistries.GAME_MAP_POINTS.lock();
 
-        GameConfigurationManager.loadConfigurations();
+        GameConfigurationManager.loadConfigurations(false);
+        DataVersionManager.load();
     }
 
     private static void registerProperties() {
         PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.KILLS);
+        PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.GAME_TIMESTAMP);
     }
 
     public static boolean isOutdated() {
         ModContainer container = Loader.instance().activeModContainer();
-        if(container == null)
+        if (container == null)
             return false;
         ForgeVersion.CheckResult result = ForgeVersion.getResult(container);
         ForgeVersion.Status status = result.status;

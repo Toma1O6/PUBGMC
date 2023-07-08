@@ -15,8 +15,7 @@ public class EquipmentInventoryButton extends GuiButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        if (this.visible)
-        {
+        if (this.visible) {
             FontRenderer fontrenderer = mc.fontRenderer;
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
@@ -26,17 +25,11 @@ public class EquipmentInventoryButton extends GuiButton {
             this.mouseDragged(mc, mouseX, mouseY);
             int color = 0xe0e0e0;
 
-            if (packedFGColour != 0)
-            {
+            if (packedFGColour != 0) {
                 color = packedFGColour;
-            }
-            else
-            if (!this.enabled)
-            {
+            } else if (!this.enabled) {
                 color = 0xa0a0a0;
-            }
-            else if (this.hovered)
-            {
+            } else if (this.hovered) {
                 color = 0xffffa0;
             }
 

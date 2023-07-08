@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
+import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.SharedProperties;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.map.SpawnerPoint;
@@ -19,25 +22,27 @@ import net.minecraft.world.WorldServer;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class FreeForAllGame implements Game<FreeForAllGameConfiguration> {
+public class FFAGame implements Game<FFAGameConfiguration> {
 
-    private static final AbstractDamagingPlayzone.DamageOptions BOUNDS_DAMAGE = new AbstractDamagingPlayzone.DamageOptions(5.0F, 20);
     private final List<GameEventListener> listeners = new ArrayList<>();
     private final UUID gameId;
-    private final FreeForAllGameConfiguration configuration;
-    private final Set<UUID> participatingPlayers;
+    private final FFAGameConfiguration configuration;
     private final GameRuleStorage gameRuleStorage;
+    private final FFAParticipantManager participantManager;
+    private final PlayerPropertyHolder properties;
     private AbstractDamagingPlayzone playzone;
     private boolean started;
+    private long gametime;
     private int timeRemaining;
 
-    public FreeForAllGame(UUID gameId, FreeForAllGameConfiguration configuration) {
+    public FFAGame(UUID gameId, FFAGameConfiguration configuration) {
         this.gameId = gameId;
         this.configuration = configuration;
-        this.participatingPlayers = new HashSet<>();
         this.gameRuleStorage = new GameRuleStorage();
+        this.participantManager = new FFAParticipantManager();
+        this.properties = new PlayerPropertyHolder();
 
-        this.addListener(new EventListener());
+        this.addListener(new EventListener(this));
     }
 
     @Override
@@ -46,24 +51,24 @@ public class FreeForAllGame implements Game<FreeForAllGameConfiguration> {
     }
 
     @Override
-    public GameType<FreeForAllGameConfiguration, ?> getGameType() {
+    public GameType<FFAGameConfiguration, ?> getGameType() {
         return GameTypes.FFA;
     }
 
     @Override
-    public FreeForAllGameConfiguration getConfiguration() {
+    public FFAGameConfiguration getConfiguration() {
         return configuration;
     }
 
     @Override
-    public void performGameMapValidations(World world, GameMap map) throws GameException {
+    public void validateAndSetupForMap(World world, GameMap map) throws GameException {
         int participantCount = configuration.entityCount;
         Collection<SpawnerPoint> spawners = map.getPoints(GameMapPoints.SPAWNER);
         if (participantCount > spawners.size()) {
             throw new GameException(String.format("%s map does not provide enough spawn points for this game configuration. Required %d points, got %s", map.getMapName(), participantCount, spawners.size()));
         }
         playzone = new StaticPlayzone(map.bounds());
-        playzone.setDamageOptions(BOUNDS_DAMAGE);
+        playzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
     }
 
     @Override
@@ -73,18 +78,20 @@ public class FreeForAllGame implements Game<FreeForAllGameConfiguration> {
 
     @Override
     public void onGameInit(World world) {
+        properties.registerProperty(SharedProperties.KILLS, 0);
+        properties.registerProperty(SharedProperties.GAME_TIMESTAMP, 0L);
         timeRemaining = configuration.gameDuration;
         List<EntityPlayer> playerList = world.playerEntities;
         for (int i = 0; i < Math.min(playerList.size(), configuration.entityCount); i++) {
             EntityPlayer player = playerList.get(i);
-            participatingPlayers.add(player.getUniqueID());
+            participantManager.registerPlayer(player);
         }
     }
 
     @Override
     public void onGameStart(World world) {
         started = true;
-        GameHelper.updateLoadedGameObjects(world);
+        GameHelper.updateLoadedGameObjects(world, GenerationType.empty());
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             configuration.worldConfiguration.apply(worldServer, gameRuleStorage);
@@ -105,32 +112,48 @@ public class FreeForAllGame implements Game<FreeForAllGameConfiguration> {
         }
         if (!world.isRemote) {
             WorldServer server = (WorldServer) world;
-            playzone.hurtAllOutside(server, Collections.emptyList()); // TODO all entities
+            playzone.hurtAllOutside(server, () -> participantManager.getLoadedParticipants(server));
         }
+        ++gametime;
     }
 
     @Override
     public void onGameStopped(World world, GameData data) {
-        // TODO implement
         started = false;
         gameRuleStorage.restoreGameRules(world);
-        participatingPlayers.forEach(uuid -> {
-            EntityPlayer player = world.getPlayerEntityByUUID(uuid);
-            if (player != null) {
-                GameHelper.moveToLobby(player);
-            }
-        });
+        participantManager.getPlayerParticipants(world)
+                .forEach(GameHelper::moveToLobby);
     }
 
     @Override
     public boolean playerLeaveGame(EntityPlayer player) {
-        // TODO implement
+        if (participantManager.isParticipant(player)) {
+            participantManager.removePlayer(player.getUniqueID());
+            GameHelper.moveToLobby(player);
+            if (started) {
+                // TODO add AI backup
+            }
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean playerJoinGame(EntityPlayer player) {
-        // TODO implement
+        if (participantManager.isParticipant(player)) {
+            return false;
+        }
+        int players = participantManager.getPlayerParticipantsCount();
+        if (players < configuration.entityCount) {
+            participantManager.registerPlayer(player);
+            if (started) {
+                // TODO mark player for respawn
+                // TODO replace one AI with this player
+            } else {
+                GameHelper.moveToLobby(player);
+            }
+            return true;
+        }
         return false;
     }
 
@@ -146,42 +169,65 @@ public class FreeForAllGame implements Game<FreeForAllGameConfiguration> {
 
     public static final class EventListener implements GameEventListener {
 
+        private final FFAGame game;
 
+        public EventListener(FFAGame game) {
+            this.game = game;
+        }
     }
 
-    public static final class Serializer implements GameDataSerializer<FreeForAllGameConfiguration, FreeForAllGame> {
+    public static final class Serializer implements GameDataSerializer<FFAGameConfiguration, FFAGame> {
 
         @Override
-        public NBTTagCompound serializeGameData(FreeForAllGame game) {
+        public NBTTagCompound serializeGameData(FFAGame game) {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setUniqueId("gameId", game.gameId);
+            nbt.setInteger("timeRemaining", game.timeRemaining);
+            nbt.setLong("gameTime", game.gametime);
+            nbt.setBoolean("started", game.started);
+            nbt.setTag("gamerules", game.gameRuleStorage.serialize());
+            nbt.setTag("participants", game.participantManager.serialize());
+            nbt.setTag("props", game.properties.serialize());
+            if (game.playzone != null) {
+                nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
+            }
             return nbt;
         }
 
         @Override
-        public FreeForAllGame deserializeGameData(NBTTagCompound nbt, FreeForAllGameConfiguration configuration) {
+        public FFAGame deserializeGameData(NBTTagCompound nbt, FFAGameConfiguration configuration) {
             UUID gameId = nbt.getUniqueId("gameId");
-            return new FreeForAllGame(gameId, configuration);
+            FFAGame ffaGame = new FFAGame(gameId, configuration);
+            ffaGame.timeRemaining = nbt.getInteger("timeRemaining");
+            ffaGame.gametime = nbt.getLong("gameTime");
+            ffaGame.started = nbt.getBoolean("started");
+            ffaGame.gameRuleStorage.deserialize(nbt.getCompoundTag("gamerules"));
+            ffaGame.participantManager.deserialize(nbt.getCompoundTag("participants"));
+            ffaGame.properties.deserialize(nbt.getCompoundTag("props"));
+            if (nbt.hasKey("playzone")) {
+                ffaGame.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
+            }
+            return ffaGame;
         }
 
         @Override
-        public NBTTagCompound serializeGameConfiguration(FreeForAllGameConfiguration configuration) {
+        public NBTTagCompound serializeGameConfiguration(FFAGameConfiguration configuration) {
             return configuration.serialize();
         }
 
         @Override
-        public FreeForAllGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return FreeForAllGameConfiguration.deserialize(nbt);
+        public FFAGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
+            return FFAGameConfiguration.deserialize(nbt);
         }
 
         @Override
-        public JsonObject serializeConfigurationToJson(FreeForAllGameConfiguration configuration) {
+        public JsonObject serializeConfigurationToJson(FFAGameConfiguration configuration) {
             return configuration.jsonSerialize();
         }
 
         @Override
-        public FreeForAllGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
-            return FreeForAllGameConfiguration.jsonDeserialize(object);
+        public FFAGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
+            return FFAGameConfiguration.jsonDeserialize(object);
         }
     }
 }

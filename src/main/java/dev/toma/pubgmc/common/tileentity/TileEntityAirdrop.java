@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.common.tileentity;
 
-import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.GenerationType;
+import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
+import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.TileEntityUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -16,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable, LootGenerator {
+public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable, Generator {
 
     private NonNullList<ItemStack> inventory;
     private UUID gameId = GameHelper.DEFAULT_UUID;
@@ -42,8 +44,8 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
 
     @Override
     public void update() {
-        if(world.isRemote && !this.isEmpty()) {
-            if(world.getTotalWorldTime() % 3 == 0) {
+        if (world.isRemote && !this.isEmpty()) {
+            if (world.getTotalWorldTime() % 3 == 0) {
                 world.spawnParticle(EnumParticleTypes.CLOUD, this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 0, 0.2, 0);
             }
         }
@@ -92,6 +94,13 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
             setInventorySlotContents(i, items.get(i));
         }
         TileEntityUtil.syncToClient(this);
+    }
+
+    @Override
+    public void generate(GenerationType.Context context) {
+        if (context.has(GenerationType.ITEMS)) {
+            LootManager.generateLootInGenerator(this, world, pos);
+        }
     }
 
     @Override

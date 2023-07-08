@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 
 /**
  * This is the core class for all guns
+ *
  * @author Toma
  */
 public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
@@ -165,18 +166,18 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("gun.desc.ammo") + ": " + TextFormatting.RED + getAmmo(stack));
         tooltip.add(I18n.format("gun.desc.firemode") + ": " + getFiremode(stack).translatedName());
-        if(GuiScreen.isShiftKeyDown()) {
-            if(!wepStats.shouldDisplayStatistics())
+        if (GuiScreen.isShiftKeyDown()) {
+            if (!wepStats.shouldDisplayStatistics())
                 return;
             tooltip.add(I18n.format("gun.desc.damage") + ": " + TextFormatting.RED + DevUtil.formatToTwoDecimals(wepStats.getDamage()));
             tooltip.add(I18n.format("gun.desc.velocity") + ": " + TextFormatting.AQUA + DevUtil.formatToTwoDecimals(wepStats.getVelocity() * 20) + " m/s");
             tooltip.add(I18n.format("gun.desc.ammotype") + ": " + TextFormatting.GREEN + ammoType.translatedName());
             tooltip.add(I18n.format("gun.desc.firerate") + ": " + TextFormatting.GOLD + DevUtil.formatToTwoDecimals(20.0D / firerate) + " shots per second");
-        } else if(GuiScreen.isCtrlKeyDown()) {
+        } else if (GuiScreen.isCtrlKeyDown()) {
             tooltip.add("Attachments");
             for (AttachmentType<?> type : AttachmentType.allTypes) {
                 ItemAttachment attachment = getAttachment(type, stack);
-                if(attachment != null) {
+                if (attachment != null) {
                     tooltip.add(type.getName() + ": " + TextFormatting.AQUA + I18n.format(attachment.getUnlocalizedName() + ".name"));
                 }
             }
@@ -198,10 +199,10 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     @SuppressWarnings("unchecked")
     public <I extends ItemAttachment> I getAttachment(AttachmentType<I> type, ItemStack stack) {
         NBTTagCompound nbt = getOrCreateGunData(stack);
-        if(nbt.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
+        if (nbt.hasKey("attachments", Constants.NBT.TAG_COMPOUND)) {
             NBTTagCompound attachmentData = nbt.getCompoundTag("attachments");
             String key = type.getName();
-            if(attachmentData.hasKey(key, Constants.NBT.TAG_STRING)) {
+            if (attachmentData.hasKey(key, Constants.NBT.TAG_STRING)) {
                 ResourceLocation loc = new ResourceLocation(attachmentData.getString(key));
                 Item item = ForgeRegistries.ITEMS.getValue(loc);
                 try {
@@ -217,7 +218,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
 
     public Firemode getFiremode(ItemStack stack) {
         NBTTagCompound nbt = getOrCreateGunData(stack);
-        if(nbt.hasKey("firemode", Constants.NBT.TAG_INT)) {
+        if (nbt.hasKey("firemode", Constants.NBT.TAG_INT)) {
             return Firemode.fromID(nbt.getInteger("firemode"));
         }
         return firemode;
@@ -234,7 +235,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     public ScopeData getScopeData(ItemStack stack) {
-        if(customScope != null) {
+        if (customScope != null) {
             return customScope;
         }
         ItemScope scope = getAttachment(AttachmentType.SCOPE, stack);
@@ -244,18 +245,18 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     public float getAimSpeedMultiplier(ItemStack stack) {
         float f0 = 1.0F;
         ItemStock stock = getAttachment(AttachmentType.STOCK, stack);
-        if(stock != null) {
+        if (stock != null) {
             f0 = stock.applyAdsSpeedMultiplier(f0);
         }
         ItemGrip grip = getAttachment(AttachmentType.GRIP, stack);
-        if(grip != null) {
+        if (grip != null) {
             f0 = grip.applyAdsSpeedMultiplier(f0);
         }
         return f0;
     }
 
     public NBTTagCompound getOrCreateGunData(ItemStack stack) {
-        if(!stack.hasTagCompound()) {
+        if (!stack.hasTagCompound()) {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setInteger("ammo", 0);
             stack.setTagCompound(nbt);
@@ -286,7 +287,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     public int getReloadTime(boolean quickdraw) {
-        return quickdraw ? (int)(reloadTime * 0.7) : reloadTime;
+        return quickdraw ? (int) (reloadTime * 0.7) : reloadTime;
     }
 
     @SideOnly(Side.CLIENT)
@@ -377,7 +378,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         public static Firemode cycleAll(Firemode current) {
             int i = current.ordinal();
             int j = i + 1;
-            if(j > 2)
+            if (j > 2)
                 j = 0;
             return values()[j];
         }

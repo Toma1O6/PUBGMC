@@ -85,7 +85,8 @@ public class CommonEvents {
                 break;
             }
 
-            case OUTDATED: case BETA_OUTDATED: {
+            case OUTDATED:
+            case BETA_OUTDATED: {
                 sendMessage(player, "[PUBGMC] You are using old version! Get a new one.", TextFormatting.YELLOW);
                 TextComponentString comp = new TextComponentString(TextFormatting.YELLOW + "New version is available! You can get it " + TextFormatting.ITALIC + "HERE");
                 comp.setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, links.getHomepageLink())));
@@ -120,20 +121,20 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void livingChangeEquipment(LivingEquipmentChangeEvent event) {
-        if(event.getEntityLiving() instanceof EntityPlayer) {
+        if (event.getEntityLiving() instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) event.getEntityLiving();
             AbstractAttributeMap map = player.getAttributeMap();
             ItemStack stack = event.getTo();
             IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
             instance.removeModifier(GunBase.EQUIP_MODIFIER_UID);
-            if(stack.getItem() instanceof GunBase) {
+            if (stack.getItem() instanceof GunBase) {
                 instance.applyModifier(((GunBase) stack.getItem()).getGunType().getModifier());
                 int last = selectedSlotCache.getOrDefault(player.getUniqueID(), 0);
-                if(last != player.inventory.currentItem) {
+                if (last != player.inventory.currentItem) {
                     PacketHandler.sendToClient(new CPacketAnimation(true, AnimationType.EQUIP_ANIMATION_TYPE), (EntityPlayerMP) player);
                 }
             }
-            if(event.getSlot() == EntityEquipmentSlot.MAINHAND) {
+            if (event.getSlot() == EntityEquipmentSlot.MAINHAND) {
                 selectedSlotCache.put(player.getUniqueID(), player.inventory.currentItem);
             }
         }
@@ -169,16 +170,16 @@ public class CommonEvents {
         EntityPlayer player = ev.player;
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         player.eyeHeight = player.getDefaultEyeHeight();
-        if(data.isProne()) {
+        if (data.isProne()) {
             AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
             player.setEntityBoundingBox(proneBB);
             player.height = 0.9F;
             player.eyeHeight = 0.6F;
         }
-        if(ev.phase == Phase.END)
+        if (ev.phase == Phase.END)
             return;
         data.tick();
-        if((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProne() && !player.world.isRemote) {
+        if ((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProne() && !player.world.isRemote) {
             data.setProne(false);
             data.sync();
         }
@@ -213,12 +214,12 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
-        if(e.player instanceof EntityPlayerMP) {
+        if (e.player instanceof EntityPlayerMP) {
             selectedSlotCache.remove(e.player.getUniqueID());
             IPlayerData data = PlayerDataProvider.get(e.player);
             data.getAimInfo().setAiming(false, 1.0F);
             data.sync();
-            PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP)e.player);
+            PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP) e.player);
             CONFIGS.remove(e.player.getUniqueID());
         }
     }
@@ -230,7 +231,7 @@ public class CommonEvents {
             EntityPlayer player = (EntityPlayer) e.getEntity();
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(PRONE_MODIFIER);
-            if(data.isProne()) {
+            if (data.isProne()) {
                 player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(PRONE_MODIFIER);
             }
         }
@@ -266,10 +267,10 @@ public class CommonEvents {
                 player.addItemStackToInventory(new ItemStack(gun.getAmmoType().ammo(), ammo));
                 stack.getTagCompound().setInteger("ammo", 0);
             }
-        } else if(itemEntity.getItem().getItem() instanceof ItemExplodeable) {
+        } else if (itemEntity.getItem().getItem() instanceof ItemExplodeable) {
             ItemStack stack = itemEntity.getItem();
             ItemExplodeable explodeable = (ItemExplodeable) stack.getItem();
-            if(explodeable.isCooking(stack)) {
+            if (explodeable.isCooking(stack)) {
                 e.setCanceled(true);
                 explodeable.getExplodeableItemAction().onRemoveFromInventory(stack, player.world, player, explodeable.getMaxFuse() - explodeable.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.SHORT);
             }

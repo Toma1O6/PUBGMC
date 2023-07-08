@@ -34,7 +34,7 @@ public class GuiConnectAnimations extends GuiWidgets {
             widget.addWidgets(this);
             ++j;
         }
-        if(j < 8) {
+        if (j < 8) {
             addWidget(new ButtonWidget(10, 10 + j * 25, 60, 20, "Add", (widget, mouseX, mouseY, button) -> {
                 ConnectionSpec spec = new ConnectionSpec(1.0F, 1, AnimationSpec.EMPTY_SPEC);
                 specs.add(spec);
@@ -49,7 +49,8 @@ public class GuiConnectAnimations extends GuiWidgets {
             mc.displayGuiScreen(parent);
         }));
         addWidget(new ButtonWidget(160, 10 + j * 25, 60, 20, "Back", (widget, mouseX, mouseY, button) -> mc.displayGuiScreen(parent)));
-        consumeFrames = addWidget(new CheckboxWidget(225, 10 + j * 25, 80, 20, "Ignore first frames", (state, mouseX, mouseY, widget) -> {}, 20));
+        consumeFrames = addWidget(new CheckboxWidget(225, 10 + j * 25, 80, 20, "Ignore first frames", (state, mouseX, mouseY, widget) -> {
+        }, 20));
     }
 
     @Override
@@ -71,7 +72,7 @@ public class GuiConnectAnimations extends GuiWidgets {
             float max = connectionSpec.endpoint;
             for (Map.Entry<AnimationElement, List<KeyFrame>> entry : animSpec.getFrameDefs().entrySet()) {
                 List<KeyFrame> modifiedList = map.computeIfAbsent(entry.getKey(), element -> new ArrayList<>());
-                if(consumeFrames && j > 0 && modifiedList.size() > 1) {
+                if (consumeFrames && j > 0 && modifiedList.size() > 1) {
                     modifiedList.remove(0);
                 }
                 for (KeyFrame frame : entry.getValue()) {
@@ -95,7 +96,7 @@ public class GuiConnectAnimations extends GuiWidgets {
         List<ConnectionSpec> list = new ArrayList<>();
         float lastEnd = 0.0F;
         for (ConnectionSpec spec : specs) {
-            if(spec.repeatCount > 1) {
+            if (spec.repeatCount > 1) {
                 float pool = spec.endpoint - lastEnd;
                 double modifier = 1.0 / spec.repeatCount;
                 for (int i = 1; i <= spec.repeatCount; i++) {
@@ -150,7 +151,7 @@ public class GuiConnectAnimations extends GuiWidgets {
 
         private void validateAnimation(InputFieldWidget<String> widget, String key) {
             GuiAnimator.WrappedAnimationSpec specContainer = AnimatorCache.animations.get(key);
-            if(specContainer == null) {
+            if (specContainer == null) {
                 widget.invalidate();
                 return;
             }

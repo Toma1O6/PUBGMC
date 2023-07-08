@@ -93,7 +93,7 @@ public class ModelM16A4 extends ModelGun {
         gun.render(1f);
         barrel.render(1.0F);
         stock.render(1.0F);
-        if(hasScopeAtachment(stack))
+        if (hasScopeAtachment(stack))
             railTop.render(1.0F);
         railBot.render(1.0F);
     }

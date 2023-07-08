@@ -28,8 +28,8 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private MapColor mapColor;
     private boolean opaque, fullCube;
     private float lightValue;
-    private AxisAlignedBB[] boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
-    private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[] {Block.FULL_BLOCK_AABB};
+    private AxisAlignedBB[] boxes = new AxisAlignedBB[]{Block.FULL_BLOCK_AABB};
+    private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[]{Block.FULL_BLOCK_AABB};
     private BlockFaceShape faceShape;
     private String[] desc;
 
@@ -75,14 +75,14 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     }
 
     public HorizontalBlockBuilder aabb(AxisAlignedBB aabb) {
-        this.boxes = new AxisAlignedBB[] {aabb};
-        this.coll_boxes = new AxisAlignedBB[] {aabb};
+        this.boxes = new AxisAlignedBB[]{aabb};
+        this.coll_boxes = new AxisAlignedBB[]{aabb};
         return this;
     }
 
     public HorizontalBlockBuilder aabb(AxisAlignedBB bounding, AxisAlignedBB collision) {
-        this.boxes = new AxisAlignedBB[] {bounding};
-        this.coll_boxes = new AxisAlignedBB[] {collision};
+        this.boxes = new AxisAlignedBB[]{bounding};
+        this.coll_boxes = new AxisAlignedBB[]{collision};
         return this;
     }
 
@@ -96,7 +96,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     }
 
     public HorizontalBlockBuilder nullAABB() {
-        this.coll_boxes = new AxisAlignedBB[] {Block.NULL_AABB};
+        this.coll_boxes = new AxisAlignedBB[]{Block.NULL_AABB};
         return this;
     }
 

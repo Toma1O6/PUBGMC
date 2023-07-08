@@ -37,7 +37,7 @@ public class RenderHandler {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gunBase = (GunBase) stack.getItem();
                 ScopeData scopeData = gunBase.getScopeData(stack);
-                if(scopeData != null && scopeData.getZoom() > 0) {
+                if (scopeData != null && scopeData.getZoom() > 0) {
                     settings.fovSetting = scopeData.getZoom();
                 }
             }

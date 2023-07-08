@@ -50,13 +50,13 @@ public interface IReloader {
     default boolean canReload(EntityPlayer player, GunBase gun, ItemStack stack) {
         int count = gun.getAmmo(stack);
         int max = gun.getWeaponAmmoLimit(stack);
-        if(count >= max)
+        if (count >= max)
             return false;
         AmmoType type = gun.getAmmoType();
         Item item = type.ammo();
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack itemStack = player.inventory.getStackInSlot(i);
-            if(itemStack.getItem() == item && itemStack.getCount() > 0) {
+            if (itemStack.getItem() == item && itemStack.getCount() > 0) {
                 return true;
             }
         }
@@ -74,11 +74,11 @@ public interface IReloader {
             Item target = type.ammo();
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack itemStack = player.inventory.getStackInSlot(i);
-                if(!itemStack.isEmpty() && itemStack.getItem() == target) {
+                if (!itemStack.isEmpty() && itemStack.getItem() == target) {
                     int count = Math.min(left, itemStack.getCount());
                     left -= count;
                     itemStack.shrink(count);
-                    if(left <= 0)
+                    if (left <= 0)
                         break;
                 }
             }
@@ -96,7 +96,7 @@ public interface IReloader {
         public IntHashMap<ResourceLocation> registerReloadAnimations(GunBase gun, String prefix, AnimationLoader loader) {
             IntHashMap<ResourceLocation> map = new IntHashMap<>();
             int maxAmmo = gun.getMaxAmmoExtended();
-            if(maxAmmo > 1) {
+            if (maxAmmo > 1) {
                 ResourceLocation reload = Pubgmc.getResource(prefix + "_reload");
                 loader.registerEntry(reload);
                 map.addKey(1, reload);
@@ -119,12 +119,12 @@ public interface IReloader {
             Item target = type.ammo();
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack itemStack = player.inventory.getStackInSlot(i);
-                if(!itemStack.isEmpty() && itemStack.getItem() == target) {
+                if (!itemStack.isEmpty() && itemStack.getItem() == target) {
                     --left;
                     itemStack.shrink(1);
                     gun.setAmmo(stack, actual + 1);
                     boolean b = left <= 0;
-                    if(!b) {
+                    if (!b) {
                         player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
                     }
                     return b;
@@ -185,7 +185,7 @@ public interface IReloader {
             ItemStock stock = gun.getAttachment(AttachmentType.STOCK, stack);
             boolean quickdraw = mag != null && mag.isQuickdraw() || stock != null && stock.isFasterReload();
             int count = gun.getAmmo(stack);
-            return count == 0 ? (quickdraw ? (int)(stripperClipTime * 0.7) : stripperClipTime) : gun.getReloadTime(quickdraw);
+            return count == 0 ? (quickdraw ? (int) (stripperClipTime * 0.7) : stripperClipTime) : gun.getReloadTime(quickdraw);
         }
 
         @Override

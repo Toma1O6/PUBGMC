@@ -41,7 +41,8 @@ public enum AmmoType {
 
     public Item ammo() {
         switch (this) {
-            case AMMO9MM: default:
+            case AMMO9MM:
+            default:
                 return PMCItems.AMMO_9MM;
             case AMMO45ACP:
                 return PMCItems.AMMO_45ACP;

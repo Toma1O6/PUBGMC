@@ -59,7 +59,7 @@ public class ContentManager {
     }
 
     synchronized void start() {
-        if(updatePeriodically = ConfigPMC.client.content.periodicUpdates.get()) {
+        if (updatePeriodically = ConfigPMC.client.content.periodicUpdates.get()) {
             this.schedulePeriodicUpdates();
         } else {
             task = executorService.submit(this::loadContent);
@@ -70,30 +70,30 @@ public class ContentManager {
         try {
             JsonParser parser = new JsonParser();
             ContentResult result = gson.fromJson(parser.parse(this.getRawContent()), ContentResult.class);
-            if(cache == null) {
+            if (cache == null) {
                 cacheResult(result);
                 log.info("Content loaded");
-                if(!updatePeriodically) {
+                if (!updatePeriodically) {
                     executorService.shutdown();
                     log.info("Shutting down Content Thread because periodic updates are disabled");
                 }
             } else {
                 cache.updateModifiable(result);
             }
-            if(failed) {
+            if (failed) {
                 failed = false;
-                if(task != null)
+                if (task != null)
                     task.cancel(true);
-                if(updatePeriodically) {
+                if (updatePeriodically) {
                     schedulePeriodicUpdates();
                 } else task = executorService.submit(this::loadContent);
                 log.info("Data parsing successful");
             }
         } catch (Exception ex) {
             log.fatal("Couldn't parse received data: {}", ex.toString());
-            if(!failed) {
+            if (!failed) {
                 failed = true;
-                if(task != null)
+                if (task != null)
                     task.cancel(true);
                 task = executorService.scheduleAtFixedRate(this::loadContent, 30, 30, TimeUnit.SECONDS);
                 log.info("Scheduling new parse attempts in 30s until successful");
@@ -102,12 +102,12 @@ public class ContentManager {
     }
 
     String getRawContent() throws Exception {
-        boolean forceUrlParse = false;
+        boolean forceUrlParse = true;
         BufferedReader reader;
-        if(Pubgmc.isDevEnvironment && !forceUrlParse) {
+        if (Pubgmc.isDevEnvironment && !forceUrlParse) {
             String path = "./content.json";
             File file = new File(path);
-            if(!file.exists())
+            if (!file.exists())
                 throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
             reader = new BufferedReader(new FileReader(file));
         } else {

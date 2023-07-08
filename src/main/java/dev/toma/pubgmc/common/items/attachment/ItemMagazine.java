@@ -35,9 +35,9 @@ public class ItemMagazine extends ItemAttachment {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if(extended)
+        if (extended)
             tooltip.add(TextFormatting.AQUA + "Extended");
-        if(quickdraw)
+        if (quickdraw)
             tooltip.add(TextFormatting.AQUA + "Quickdraw");
     }
 }

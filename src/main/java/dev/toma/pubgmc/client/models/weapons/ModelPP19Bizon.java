@@ -45,7 +45,7 @@ public class ModelPP19Bizon extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1f);
-        if(!hasScopeAtachment(stack))
+        if (!hasScopeAtachment(stack))
             ironsights.render(1f);
     }
 

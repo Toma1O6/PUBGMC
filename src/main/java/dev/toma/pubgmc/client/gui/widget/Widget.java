@@ -24,9 +24,9 @@ public abstract class Widget {
     public abstract void render(Minecraft mc, int mouseX, int mouseY, float partialTicks);
 
     public boolean handleClicked(int mouseX, int mouseY, int button) {
-        if(this.processClicked(mouseX, mouseY, button)) {
+        if (this.processClicked(mouseX, mouseY, button)) {
             this.onClick(mouseX, mouseY, button);
-            if(isFocusable()) {
+            if (isFocusable()) {
                 focusWidget();
             }
             return true;
@@ -35,7 +35,7 @@ public abstract class Widget {
     }
 
     public boolean handleDragged(int mouseX, int mouseY, int button, long time) {
-        if(this.processDragged(mouseX, mouseY, button, time)) {
+        if (this.processDragged(mouseX, mouseY, button, time)) {
             this.onDrag(mouseX, mouseY, button, time);
             return true;
         }
@@ -43,7 +43,7 @@ public abstract class Widget {
     }
 
     public boolean handleKeyPressed(char character, int keycode) {
-        if(isFocused()) {
+        if (isFocused()) {
             onKeyPress(character, keycode);
             return true;
         }
@@ -51,7 +51,7 @@ public abstract class Widget {
     }
 
     public boolean handleMouseScrolled(int mouseX, int mouseY, int delta) {
-        if(isMouseOver(mouseX, mouseY) && canScrollTo(delta)) {
+        if (isMouseOver(mouseX, mouseY) && canScrollTo(delta)) {
             this.onScroll(delta);
             return true;
         }

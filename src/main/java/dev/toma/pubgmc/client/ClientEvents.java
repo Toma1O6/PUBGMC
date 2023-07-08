@@ -100,7 +100,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {
-        if(ConfigPMC.client.customMainMenu.get() && event.getGui() instanceof GuiMainMenu) {
+        if (ConfigPMC.client.customMainMenu.get() && event.getGui() instanceof GuiMainMenu) {
             event.setGui(new GuiMenu());
         }
     }
@@ -133,7 +133,7 @@ public class ClientEvents {
         float partial = event.getPartialTicks();
         EnumHand hand = event.getHand();
         if (hand == EnumHand.MAIN_HAND) {
-            if(stack.getItem() instanceof HandAnimate) {
+            if (stack.getItem() instanceof HandAnimate) {
                 HandAnimate animate = (HandAnimate) stack.getItem();
                 event.setCanceled(true);
                 float pitch = DevUtil.lerp(player.rotationPitch, player.prevRotationPitch, partial);
@@ -165,7 +165,7 @@ public class ClientEvents {
                         GlStateManager.popMatrix();
                     }
                     GlStateManager.popMatrix();
-                    if(!processor.isItemRenderBlocked()) {
+                    if (!processor.isItemRenderBlocked()) {
                         processor.process(AnimationElement.ITEM);
                         mc.getItemRenderer().renderItemInFirstPerson(player, partial, pitch, event.getHand(), swing, stack, 0.0F);
                     }
@@ -305,13 +305,13 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
         EntityPlayerSP sp = Minecraft.getMinecraft().player;
-        if(ConfigPMC.developerMode.get()) {
+        if (ConfigPMC.developerMode.get()) {
             Minecraft mc = Minecraft.getMinecraft();
-            if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
                 mc.displayGuiScreen(new GuiGunConfig());
-            } else if(Keyboard.isKeyDown(Keyboard.KEY_M)) {
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_M)) {
                 mc.displayGuiScreen(new GuiAnimator());
-            } else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
                 mc.displayGuiScreen(new GuiHandPlacer());
             }
         }
@@ -320,8 +320,8 @@ public class ClientEvents {
             if (data != null) {
                 data.setProne(!data.isProne());
                 ReloadInfo reloadInfo = data.getReloadInfo();
-                if(data.getAimInfo().isAiming()) this.setAiming(data, false);
-                if(reloadInfo.isReloading()) {
+                if (data.getAimInfo().isAiming()) this.setAiming(data, false);
+                if (reloadInfo.isReloading()) {
                     reloadInfo.interrupt(data);
                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 }
@@ -330,7 +330,7 @@ public class ClientEvents {
         }
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         if (KeyBinds.ATTACHMENT.isPressed()) {
-            if(sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
                 PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
             } else {
                 sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
@@ -341,9 +341,9 @@ public class ClientEvents {
             ReloadInfo reloadInfo = data.getReloadInfo();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                if(reloadInfo.isReloading()) {
+                if (reloadInfo.isReloading()) {
                     IReloader reloader = gun.getReloader();
-                    if(reloader.canInterrupt(gun, stack)) {
+                    if (reloader.canInterrupt(gun, stack)) {
                         reloadInfo.setReloading(false);
                         PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                         AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
@@ -357,12 +357,12 @@ public class ClientEvents {
                         boolean hasAmmo = false;
                         for (int i = 0; i < sp.inventory.getSizeInventory(); i++) {
                             ItemStack ammoStack = sp.inventory.getStackInSlot(i);
-                            if(!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
+                            if (!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
                                 hasAmmo = true;
                                 break;
                             }
                         }
-                        if(hasAmmo && !reloadInfo.isReloading()) {
+                        if (hasAmmo && !reloadInfo.isReloading()) {
                             AnimationDispatcher.dispatchReloadAnimation(gun, stack, sp);
                             reloadInfo.startReload(sp, gun, stack);
                             PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.RELOAD));
@@ -400,16 +400,16 @@ public class ClientEvents {
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                if(isEquipAnimationDone(mc)) {
+                if (isEquipAnimationDone(mc)) {
                     if (gs.keyBindAttack.isPressed()) {
                         if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
                             if (!isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
                                 if (gun.hasAmmo(stack)) {
                                     PacketHandler.INSTANCE.sendToServer(new PacketShoot());
                                     tracker.add(gun);
-                                    if(gun.getAction() != null) {
+                                    if (gun.getAction() != null) {
                                         Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                        if(gun.getGunType() == GunBase.GunType.SR) {
+                                        if (gun.getGunType() == GunBase.GunType.SR) {
                                             setAiming(data, false);
                                         }
                                     }
@@ -438,7 +438,7 @@ public class ClientEvents {
                         RenderHandler.fovBackup = gs.fovSetting;
                         RenderHandler.sensBackup = gs.mouseSensitivity;
                         ScopeData scopeData = gun.getScopeData(stack);
-                        if(scopeData != null && scopeData.getMouseSens() < 1.0F) {
+                        if (scopeData != null && scopeData.getMouseSens() < 1.0F) {
                             gs.mouseSensitivity *= scopeData.getMouseSens();
                         }
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
@@ -458,8 +458,8 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         GameSettings gs = mc.gameSettings;
-        if(ev.phase == Phase.END) {
-            if(mc.currentScreen instanceof ITickable) {
+        if (ev.phase == Phase.END) {
+            if (mc.currentScreen instanceof ITickable) {
                 ((ITickable) mc.currentScreen).update();
             }
             AnimationProcessor.instance().processTick();
@@ -468,7 +468,7 @@ public class ClientEvents {
         if (player != null && ev.phase == Phase.END && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
             tracker.tick(mc.isGamePaused());
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            if(player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
+            if (player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
                 IControllable controllable = (IControllable) player.getRidingEntity();
                 int inputs = controllable.encode(gs);
                 controllable.handle((byte) inputs);
@@ -528,7 +528,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         ASMHooksClient.setRenderTickTime(event.renderTickTime);
-        if(event.phase == Phase.START) {
+        if (event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }
     }
@@ -545,8 +545,8 @@ public class ClientEvents {
     private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
         ReloadInfo info = data.getReloadInfo();
-        if(info.isReloading()) {
-            if(reloader.canInterrupt(gun, stack)) {
+        if (info.isReloading()) {
+            if (reloader.canInterrupt(gun, stack)) {
                 info.setReloading(false);
                 PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
@@ -563,18 +563,18 @@ public class ClientEvents {
         float vertical = 1.0F;
         float horizontal = 1.0F;
         IPlayerData data = PlayerDataProvider.get(player);
-        if(data.isProne()) {
+        if (data.isProne()) {
             vertical *= 0.3F;
             horizontal *= 0.3F;
-        } else if(player.isSneaking()) {
+        } else if (player.isSneaking()) {
             vertical *= 0.85F;
             horizontal *= 0.85F;
         }
-        if(muzzle != null) {
+        if (muzzle != null) {
             vertical = muzzle.applyVerticalRecoilMultiplier(vertical);
             horizontal = muzzle.applyHorizontalRecoilMultiplier(horizontal);
         }
-        if(grip != null) {
+        if (grip != null) {
             vertical = grip.applyVerticalRecoilMultiplier(vertical);
             horizontal = grip.applyHorizontalRecoilMultiplier(horizontal);
         }
@@ -672,7 +672,7 @@ public class ClientEvents {
         if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int)(speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
+            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
         } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;

@@ -14,7 +14,8 @@ public class NoLootProvider implements LootProvider {
 
     public static final NoLootProvider EMPTY = new NoLootProvider();
 
-    private NoLootProvider() {}
+    private NoLootProvider() {
+    }
 
     @Override
     public LootProviderType<?> getType() {

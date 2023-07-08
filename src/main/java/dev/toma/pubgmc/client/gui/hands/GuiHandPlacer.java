@@ -19,7 +19,7 @@ public class GuiHandPlacer extends GuiWidgets {
 
     @Override
     public void init() {
-        if(renderInfo == null) {
+        if (renderInfo == null) {
             renderInfo = new RenderInfo(5, 5, 155, 185, this);
         }
         addWidget(new ButtonWidget(width - 145, 5, 140, 20, "Copy to clipboard", (widget, mouseX, mouseY, button) -> {
@@ -177,7 +177,7 @@ public class GuiHandPlacer extends GuiWidgets {
             this.percent = value * 0.01F;
             this.name = name;
             this.setter = setter;
-            subtract = new ButtonWidget(x, y, 20, 20, "<<", (widget, mouseX, mouseY, button) -> modify(t ,-1));
+            subtract = new ButtonWidget(x, y, 20, 20, "<<", (widget, mouseX, mouseY, button) -> modify(t, -1));
             add = new ButtonWidget(x + 25, y, 20, 20, ">>", (widget, mouseX, mouseY, button) -> modify(t, 1));
         }
 
@@ -196,11 +196,11 @@ public class GuiHandPlacer extends GuiWidgets {
 
         void modify(T t, int i) {
             float f;
-            if(GuiScreen.isAltKeyDown()) {
+            if (GuiScreen.isAltKeyDown()) {
                 f = percent * i;
-            } else if(GuiScreen.isCtrlKeyDown()) {
+            } else if (GuiScreen.isCtrlKeyDown()) {
                 f = tenth * i;
-            } else if(GuiScreen.isShiftKeyDown()) {
+            } else if (GuiScreen.isShiftKeyDown()) {
                 f = quarter * i;
             } else {
                 f = value * i;
@@ -237,8 +237,8 @@ public class GuiHandPlacer extends GuiWidgets {
         public boolean handleClicked(int mouseX, int mouseY, int button) {
             widgets.forEach(Widget::unfocus);
             for (Widget widget : widgets) {
-                if(widget.handleClicked(mouseX, mouseY, button)) {
-                    if(widget.isFocusable()) {
+                if (widget.handleClicked(mouseX, mouseY, button)) {
+                    if (widget.isFocusable()) {
                         widget.focusWidget();
                     }
                     return true;
@@ -250,7 +250,7 @@ public class GuiHandPlacer extends GuiWidgets {
         @Override
         public void onKeyPress(char character, int keycode) {
             for (Widget widget : widgets) {
-                if(widget.handleKeyPressed(character, keycode)) {
+                if (widget.handleKeyPressed(character, keycode)) {
                     break;
                 }
             }

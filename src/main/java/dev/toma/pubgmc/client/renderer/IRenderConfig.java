@@ -4,7 +4,8 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public interface IRenderConfig {
 
-    IRenderConfig EMPTY = () -> {};
+    IRenderConfig EMPTY = () -> {
+    };
 
     void applyTransforms();
 
@@ -76,11 +77,11 @@ public interface IRenderConfig {
         @Override
         public void applyTransforms() {
             super.applyTransforms();
-            if(rx != 0)
+            if (rx != 0)
                 GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
-            if(ry != 0)
+            if (ry != 0)
                 GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
-            if(rz != 0)
+            if (rz != 0)
                 GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
         }
     }
@@ -99,11 +100,11 @@ public interface IRenderConfig {
         @Override
         public void applyTransforms() {
             super.applyTransforms();
-            if(rx != 0)
+            if (rx != 0)
                 GlStateManager.rotate(rx, 1.0F, 0.0F, 0.0F);
-            if(ry != 0)
+            if (ry != 0)
                 GlStateManager.rotate(ry, 0.0F, 1.0F, 0.0F);
-            if(rz != 0)
+            if (rz != 0)
                 GlStateManager.rotate(rz, 0.0F, 0.0F, 1.0F);
         }
     }

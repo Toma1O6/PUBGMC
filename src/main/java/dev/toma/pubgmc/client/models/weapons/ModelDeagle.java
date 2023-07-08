@@ -57,7 +57,7 @@ public class ModelDeagle extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         gun.render(1f);
-        if(hasScopeAtachment(stack)) rail.render(1f);
+        if (hasScopeAtachment(stack)) rail.render(1f);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

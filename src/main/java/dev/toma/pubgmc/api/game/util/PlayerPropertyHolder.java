@@ -130,6 +130,12 @@ public final class PlayerPropertyHolder {
             ));
         }
 
+        public static PropertyType<Long> longProperty(ResourceLocation identifier) {
+            return new PropertyType<>(identifier, PropertyValueSerializer.primitive(
+                    NBTTagCompound::setLong, NBTTagCompound::getLong
+            ));
+        }
+
         public static void registerProperty(PropertyType<?> type) {
             REGISTERED_PROPERTIES.put(type.identifier, type);
         }
@@ -160,15 +166,17 @@ public final class PlayerPropertyHolder {
 
     public interface PropertyValueSerializer<V> {
         void toNbt(NBTTagCompound nbt, String propertyId, V value);
+
         V fromNbt(NBTTagCompound nbt, String propertyId);
 
         static <T> PropertyValueSerializer<T> primitive(TriConsumer<NBTTagCompound, String, T> nbtSerialize,
-                BiFunction<NBTTagCompound, String, T> nbtDeserialize) {
+                                                        BiFunction<NBTTagCompound, String, T> nbtDeserialize) {
             return new PropertyValueSerializer<T>() {
                 @Override
                 public void toNbt(NBTTagCompound nbt, String propertyId, T value) {
                     nbtSerialize.accept(nbt, propertyId, value);
                 }
+
                 @Override
                 public T fromNbt(NBTTagCompound nbt, String propertyId) {
                     return nbtDeserialize.apply(nbt, propertyId);

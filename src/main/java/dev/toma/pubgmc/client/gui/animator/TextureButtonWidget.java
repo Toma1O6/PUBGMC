@@ -25,7 +25,7 @@ public class TextureButtonWidget extends Widget {
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         mc.getTextureManager().bindTexture(texture);
         drawTexturedShape(x, y, x + width, y + height, def.u1, def.v1, def.u2, def.v2);
-        if(isMouseOver(mouseX, mouseY)) {
+        if (isMouseOver(mouseX, mouseY)) {
             drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.3F);
         }
     }

@@ -49,7 +49,7 @@ public class AnimationLoader implements ISelectiveResourceReloadListener {
 
     public AnimationSpec getAnimationSpecification(ResourceLocation location) {
         AnimationSpec spec = animationSpecMap.get(location);
-        if(spec == null) {
+        if (spec == null) {
             spec = AnimationSpec.EMPTY_SPEC;
             animationSpecMap.put(location, spec);
             log.error("Couldn't lookup animation for {} key, falling back to default animation", location);

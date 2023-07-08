@@ -45,7 +45,7 @@ public class ItemBulletproofArmor extends ItemArmor implements BulletproofArmor 
             this.headProtection = headProtection;
             this.bodyProtection = bodyProtection;
             int level = ordinal() + 1;
-            this.icons = new ResourceLocation[] {
+            this.icons = new ResourceLocation[]{
                     Pubgmc.getResource("textures/overlay/helmet_level" + level + ".png"),
                     Pubgmc.getResource("textures/overlay/vest_level" + level + ".png")
             };

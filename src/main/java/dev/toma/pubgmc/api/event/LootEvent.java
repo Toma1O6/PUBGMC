@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.api.event;
 
 import com.google.common.collect.ImmutableList;
-import dev.toma.pubgmc.api.game.LootGenerator;
+import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.data.loot.LootConfiguration;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -51,7 +51,7 @@ public abstract class LootEvent extends Event {
         }
     }
 
-    public static final class Generated<T extends LootGenerator> extends LootEvent {
+    public static final class Generated<T extends Generator> extends LootEvent {
 
         private final T getLootGenerator;
         private List<ItemStack> loot;

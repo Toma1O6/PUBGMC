@@ -52,7 +52,7 @@ public class BlockLootCrate extends PMCBlock {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if(!worldIn.isRemote) {
+        if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, state.withProperty(OPEN, !state.getValue(OPEN)), 3);
         }
         return true;

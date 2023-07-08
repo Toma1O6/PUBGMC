@@ -39,7 +39,7 @@ public final class AnimationElement implements Comparable<AnimationElement> {
     private static AnimationElement create(String name) {
         AnimationElement element = new AnimationElement(name);
         int index = element.index;
-        if(index >= elements.length)
+        if (index >= elements.length)
             elements = DevUtil.expandArray(elements, 1);
         elements[element.index] = element;
         return element;

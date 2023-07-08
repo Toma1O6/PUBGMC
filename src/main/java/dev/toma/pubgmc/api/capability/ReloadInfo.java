@@ -14,20 +14,20 @@ public class ReloadInfo implements INBTSerializable<NBTTagCompound> {
     int reloadingTime;
 
     public void tick(IPlayerData data) {
-        if(reloading) {
+        if (reloading) {
             EntityPlayer player = data.getPlayer();
             ItemStack stack = player.getHeldItemMainhand();
             int slot = player.inventory.currentItem;
-            if(stack.getItem() instanceof GunBase) {
+            if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                if(slot != reloadingSlot) {
+                if (slot != reloadingSlot) {
                     interrupt(data);
                     return;
                 }
-                if(--reloadingTime < 0) {
+                if (--reloadingTime < 0) {
                     IReloader reloader = gun.getReloader();
                     boolean finished = reloader.finishCycle(gun, stack, player);
-                    if(finished) {
+                    if (finished) {
                         reloading = false;
                     } else {
                         reloadingTime = reloader.getReloadTime(gun, stack);
@@ -42,7 +42,7 @@ public class ReloadInfo implements INBTSerializable<NBTTagCompound> {
 
     public void startReload(EntityPlayer player, GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
-        if(reloader.canReload(player, gun, stack)) {
+        if (reloader.canReload(player, gun, stack)) {
             setReloading(true);
             reloadingSlot = player.inventory.currentItem;
             reloadingTime = gun.getReloader().getReloadTime(gun, stack);

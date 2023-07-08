@@ -46,16 +46,16 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
         ContentResult result = manager.getCachedResult();
         String[] news = new String[0];
         int max = w - 20;
-        if(result != null) {
+        if (result != null) {
             news = result.getNews();
         }
-        if(news.length == 0) {
-            news = new String[] {"Couldn't get latest mod news. Check your internet connection and try again (or wait 30 seconds for auto-refresh)"};
+        if (news.length == 0) {
+            news = new String[]{"Couldn't get latest mod news. Check your internet connection and try again (or wait 30 seconds for auto-refresh)"};
         }
         FontRenderer renderer = mc.fontRenderer;
-        for(String string : news) {
+        for (String string : news) {
             ITextComponent component = ForgeHooks.newChatWithLinks(string, false);
-            if(max >= 0) {
+            if (max >= 0) {
                 list.addAll(GuiUtilRenderComponents.splitText(component, max, renderer, true, true));
             }
         }
@@ -92,13 +92,13 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
         int quarter = width / 4;
         int w = quarter * 2;
         Widget.drawColorShape(quarter, 0, quarter + w, height - 30, 0.0F, 0.0F, 0.0F, 0.5F);
-        for(int i = atIndex; i < atIndex + lineCount; i++) {
-            if(i >= list.size()) break;
+        for (int i = atIndex; i < atIndex + lineCount; i++) {
+            if (i >= list.size()) break;
             String text = list.get(i).getFormattedText();
             int j = i - atIndex;
             mc.fontRenderer.drawString(text, quarter + 10, 10 + j * 10, 0xffffff);
         }
-        if(list.size() > lineCount) {
+        if (list.size() > lineCount) {
             drawScrollbar(quarter + w);
         }
         drawWidgets(mc, mouseX, mouseY, partialTicks);
@@ -107,9 +107,9 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
 
     @Override
     public void handleMouseInput() throws IOException {
-        int n = -(int)(Integer.signum(Mouse.getEventDWheel()));
+        int n = -(int) (Integer.signum(Mouse.getEventDWheel()));
         int m = atIndex + n;
-        if(m >= 0 && m <= list.size() - lineCount) {
+        if (m >= 0 && m <= list.size() - lineCount) {
             atIndex = m;
         }
         super.handleMouseInput();
@@ -125,6 +125,6 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
         double step = (height - 30) / (double) list.size();
         double start = atIndex * step;
         double end = Math.min(height - 30, (atIndex + lineCount) * step);
-        Widget.drawColorShape(edge - 2, (int)start, edge, (int) end, 1.0F, 1.0F, 1.0F, 1.0F);
+        Widget.drawColorShape(edge - 2, (int) start, edge, (int) end, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

@@ -23,7 +23,7 @@ public interface SpecialInventoryProvider {
     /**
      * Used to set provided itemstack to equipment inventory
      *
-     * @param slot Equipment slot type
+     * @param slot  Equipment slot type
      * @param stack Itemstack to be set into inventory
      */
     void setSpecialItemToSlot(SpecialEquipmentSlot slot, ItemStack stack);

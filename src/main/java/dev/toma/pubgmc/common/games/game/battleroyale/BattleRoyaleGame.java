@@ -7,15 +7,31 @@ import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.GameDataSerializer;
 import dev.toma.pubgmc.api.game.GameEventListener;
 import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
-import dev.toma.pubgmc.api.game.team.*;
-import dev.toma.pubgmc.api.game.util.*;
+import dev.toma.pubgmc.api.game.team.SimpleTeamInviteManager;
+import dev.toma.pubgmc.api.game.team.SizeLimitedTeamManager;
+import dev.toma.pubgmc.api.game.team.TeamGame;
+import dev.toma.pubgmc.api.game.team.TeamInviteManager;
+import dev.toma.pubgmc.api.game.team.TeamManager;
+import dev.toma.pubgmc.api.game.team.TeamRelations;
+import dev.toma.pubgmc.api.game.util.DeathMessage;
+import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
+import dev.toma.pubgmc.api.game.util.GameRuleStorage;
+import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.SharedProperties;
+import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
-import dev.toma.pubgmc.common.ai.*;
+import dev.toma.pubgmc.common.ai.EntityAICallTeamForHelp;
+import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
+import dev.toma.pubgmc.common.ai.EntityAIMoveIntoPlayzone;
+import dev.toma.pubgmc.common.ai.EntityAIMoveToTeamLeader;
+import dev.toma.pubgmc.common.ai.EntityAISearchLoot;
+import dev.toma.pubgmc.common.ai.EntityAITeamAwareNearestAttackableTarget;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.games.GameTypes;
@@ -26,6 +42,13 @@ import dev.toma.pubgmc.common.games.util.TeamAIManager;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,16 +64,13 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
 
-    public static final AbstractDamagingPlayzone.DamageOptions OUT_OF_BOUNDS_DAMAGE = new AbstractDamagingPlayzone.DamageOptions(5.0F, 20);
     public static final String PLAYER_INITIAL_LOOT_PATH = "battleroyale/player_start_gear";
     public static final String AI_INITIAL_LOOT_PATH = "battleroyale/initial_loot";
     public static final String AI_EARLY_GAME_LOOT_PATH = "battleroyale/early_game_loot";
@@ -113,9 +133,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     }
 
     @Override
-    public void performGameMapValidations(World world, GameMap map) {
+    public void validateAndSetupForMap(World world, GameMap map) {
         mapPlayzone = new StaticPlayzone(map.bounds());
-        mapPlayzone.setDamageOptions(OUT_OF_BOUNDS_DAMAGE);
+        mapPlayzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
         playzone = new DynamicPlayzone(map.bounds());
         playzone.onResizeCompleted(this::playzoneResizeCompleted);
     }
@@ -149,7 +169,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         int playerCount = (int) teamManager.getAllActivePlayers(world).count();
         int aiCount = configuration.allowAi ? configuration.entityCount - playerCount : 0;
         aiManager.setAllowedAiSpawnCount(aiCount);
-        GameHelper.updateLoadedGameObjects(world);
+        GameHelper.updateLoadedGameObjects(world, GenerationType.create(GenerationType.ITEMS, GenerationType.ENTITIES));
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
@@ -187,7 +207,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             if (configurations != null && configurations.length > 0) {
                 playzone.setDamageOptions(configurations[0].getDamageOptions());
             } else {
-                playzone.setDamageOptions(OUT_OF_BOUNDS_DAMAGE);
+                playzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
             }
         }
         if (!world.isRemote) {
@@ -402,8 +422,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
 
         @Override
-        public void onPlayerLoggedIn(EntityPlayerMP player) {
+        public void onPlayerLoggedIn(PlayerLoggedInEvent event) {
             boolean joined = false;
+            EntityPlayer player = event.player;
             if (game.configuration.automaticGameJoining && !game.started) {
                 if (game.playerJoinGame(player)) {
                     joined = true;
@@ -416,15 +437,19 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
 
         @Override
-        public void onPlayerLoggedOut(EntityPlayerMP player) {
+        public void onPlayerLoggedOut(PlayerLoggedOutEvent event) {
+            EntityPlayer player = event.player;
             if (player != null && game.started) {
                 game.teamManager.eliminate(player);
+                GameHelper.moveToLobby(player);
                 GameHelper.requestClientGameDataSynchronization(player.world);
             }
         }
 
         @Override
-        public void onEntityDeath(EntityLivingBase entity, DamageSource source) {
+        public void onEntityDeath(LivingDeathEvent event) {
+            EntityLivingBase entity = event.getEntityLiving();
+            DamageSource source = event.getSource();
             World world = entity.world;
             if (world.isRemote)
                 return;
@@ -460,17 +485,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
 
         @Override
-        public void onPlayerRespawn(EntityPlayer player) {
+        public void onPlayerRespawn(PlayerRespawnEvent event) {
+            EntityPlayer player = event.player;
             GameHelper.moveToLobby(player);
             GameHelper.requestClientGameDataSynchronization(player.world);
-        }
-
-        @Override
-        public boolean onEntitySpawnInWorld(Entity entity, World world) {
-            if (entity instanceof EntityAIPlayer) {
-                game.addAiTasks((EntityAIPlayer) entity);
-            }
-            return true;
         }
     }
 

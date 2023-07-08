@@ -6,28 +6,29 @@ import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
+import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.common.entity.EntityGameItem;
 import dev.toma.pubgmc.util.helper.GameHelper;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
 public final class CommonGameEventHandler {
@@ -46,7 +47,7 @@ public final class CommonGameEventHandler {
     public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.invokeEvent(listener -> listener.onPlayerLoggedIn((EntityPlayerMP) event.player));
+            game.invokeEvent(listener -> listener.onPlayerLoggedIn(event));
         });
     }
 
@@ -54,7 +55,7 @@ public final class CommonGameEventHandler {
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.invokeEvent(listener -> listener.onPlayerLoggedOut((EntityPlayerMP) event.player));
+            game.invokeEvent(listener -> listener.onPlayerLoggedOut(event));
         });
     }
 
@@ -65,8 +66,25 @@ public final class CommonGameEventHandler {
             GameDataProvider.getGameData(entity.world).ifPresent(data -> {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    DamageSource source = event.getSource();
-                    game.invokeEvent(listener -> listener.onEntityDeath(entity, source));
+                    game.invokeEvent(listener -> listener.onEntityDeath(event));
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityHurt(LivingHurtEvent event) {
+        EntityLivingBase entity = event.getEntityLiving();
+        if (!event.isCanceled()) {
+            GameDataProvider.getGameData(entity.world).ifPresent(data -> {
+                GameLobby lobby = data.getGameLobby();
+                if (lobby != null && lobby.isWithin(entity)) {
+                    event.setCanceled(true);
+                    return;
+                }
+                Game<?> game = data.getCurrentGame();
+                if (game.isStarted()) {
+                    game.invokeEvent(listener -> listener.onEntityHurt(event));
                 }
             });
         }
@@ -77,7 +95,7 @@ public final class CommonGameEventHandler {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             if (game.isStarted()) {
-                game.invokeEvent(listener -> listener.onPlayerRespawn(event.player));
+                game.invokeEvent(listener -> listener.onPlayerRespawn(event));
             }
         });
     }
@@ -102,11 +120,7 @@ public final class CommonGameEventHandler {
             GameDataProvider.getGameData(world).ifPresent(data -> {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    game.invokeEvent(listener -> {
-                        if (!listener.onEntitySpawnInWorld(entity, world)) {
-                            event.setCanceled(true);
-                        }
-                    });
+                    game.invokeEvent(listener -> listener.onEntitySpawnInWorld(event));
                 }
             });
         }

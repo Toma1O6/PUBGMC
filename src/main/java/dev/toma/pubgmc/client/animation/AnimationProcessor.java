@@ -26,7 +26,7 @@ public class AnimationProcessor {
     }
 
     public <A extends Animation> void play(AnimationType<A> type, A animation) {
-        if(animation != null)
+        if (animation != null)
             animations.put(type, animation);
     }
 
@@ -52,7 +52,7 @@ public class AnimationProcessor {
         while (iterator.hasNext()) {
             ScheduledAnimation<A> scheduledAnimation = (ScheduledAnimation<A>) iterator.next();
             scheduledAnimation.tick();
-            if(scheduledAnimation.ticksRemaining == 0) {
+            if (scheduledAnimation.ticksRemaining == 0) {
                 play(scheduledAnimation.type, scheduledAnimation.animation);
                 iterator.remove();
             }
@@ -60,7 +60,7 @@ public class AnimationProcessor {
         Iterator<Animation> itr = animations.values().iterator();
         while (itr.hasNext()) {
             Animation animation = itr.next();
-            if(animation.shouldRemove())
+            if (animation.shouldRemove())
                 itr.remove();
             animation.tick();
         }
@@ -91,18 +91,18 @@ public class AnimationProcessor {
         Vec3d smoothRotate = currentFrame.rotateTarget();
         boolean shouldMove = !staticMove.equals(Vec3d.ZERO) || !smoothMove.equals(Vec3d.ZERO);
         boolean shouldRotate = !staticRotate.equals(Vec3d.ZERO) || !smoothRotate.equals(Vec3d.ZERO);
-        if(!shouldMove && !shouldRotate)
+        if (!shouldMove && !shouldRotate)
             return;
         GlStateManager.translate(staticMove.x + smoothMove.x * pct, staticMove.y + smoothMove.y * pct, staticMove.z + smoothMove.z * pct);
         // rotation
-        if(shouldRotate) {
-            if(staticRotate.x != 0.0 || smoothRotate.x != 0.0) {
+        if (shouldRotate) {
+            if (staticRotate.x != 0.0 || smoothRotate.x != 0.0) {
                 GlStateManager.rotate((float) (staticRotate.x + smoothRotate.x * pct), 1.0F, 0.0F, 0.0F);
             }
-            if(staticRotate.y != 0.0 || smoothRotate.y != 0.0) {
+            if (staticRotate.y != 0.0 || smoothRotate.y != 0.0) {
                 GlStateManager.rotate((float) (staticRotate.y + smoothRotate.y * pct), 0.0F, 1.0F, 0.0F);
             }
-            if(staticRotate.z != 0.0 || smoothRotate.z != 0.0) {
+            if (staticRotate.z != 0.0 || smoothRotate.z != 0.0) {
                 GlStateManager.rotate((float) (staticRotate.z + smoothRotate.z * pct), 0.0F, 0.0F, 1.0F);
             }
         }

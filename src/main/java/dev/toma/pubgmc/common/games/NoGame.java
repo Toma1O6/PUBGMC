@@ -16,7 +16,8 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
 
     public static final Game<?> INSTANCE = new NoGame();
 
-    private NoGame() {}
+    private NoGame() {
+    }
 
     @Override
     public GameType<NoConfiguration, ?> getGameType() {
@@ -39,7 +40,7 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     }
 
     @Override
-    public void performGameMapValidations(World world, GameMap map) throws GameException {
+    public void validateAndSetupForMap(World world, GameMap map) throws GameException {
         throw new GameException("This type of game cannot be started");
     }
 
@@ -114,7 +115,8 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
 
         public static final NoConfiguration INSTANCE = new NoConfiguration();
 
-        private NoConfiguration() {}
+        private NoConfiguration() {
+        }
 
         @Override
         public void performCorrections() {

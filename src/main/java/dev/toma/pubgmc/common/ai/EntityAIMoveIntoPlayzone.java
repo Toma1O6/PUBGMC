@@ -60,6 +60,7 @@ public class EntityAIMoveIntoPlayzone extends EntityAIBase {
 
     @FunctionalInterface
     public interface PlayzoneProvider {
-        @Nullable Playzone getPlayzone(World world);
+        @Nullable
+        Playzone getPlayzone(World world);
     }
 }

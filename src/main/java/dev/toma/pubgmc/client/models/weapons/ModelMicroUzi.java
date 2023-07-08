@@ -75,7 +75,7 @@ public class ModelMicroUzi extends ModelGun {
     public void renderModel(ItemStack stack) {
         gun.render(1.0F);
         stock.render(1.0F);
-        if(hasScopeAtachment(stack))
+        if (hasScopeAtachment(stack))
             toprail.render(1.0F);
         botrail.render(1.0F);
     }

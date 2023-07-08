@@ -50,7 +50,7 @@ public class ModelVector extends ModelGun {
     @Override
     public void renderModel(ItemStack stack) {
         vector.render(1.0F);
-        if(!hasScopeAtachment(stack))
+        if (!hasScopeAtachment(stack))
             ironsights.render(1.0F);
     }
 
