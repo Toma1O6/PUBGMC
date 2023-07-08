@@ -59,10 +59,10 @@ public class EntityAIMoveToTeamLeader extends EntityAIBase {
     @Override
     public void resetTask() {
         teamLeader = null;
+        living.getNavigator().clearPath();
         living.setSprinting(false);
     }
 
-    // TODO stop when within some specific range
     @Override
     public void updateTask() {
         if (--delay <= 0) {
