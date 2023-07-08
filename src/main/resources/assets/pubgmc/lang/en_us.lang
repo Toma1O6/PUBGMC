@@ -342,6 +342,11 @@ label.pubgmc.decline=Decline
 label.pubgmc.confirm=Confirm
 label.pubgmc.ignore=Ignore
 label.pubgmc.bot.prefix=Bot
+label.pubgmc.data.mismatch=Mismatched data version: %s
 
 label.pubgmc.game.battleroyale.kill.single=%s KILL
 label.pubgmc.game.battleroyale.kill.multiple=%s KILLS
+
+data.pubgmc.loot_schema=Loot configurations
+data.pubgmc.game_configs=Game configurations
+data.pubgmc.entity_loadouts=Entity loadouts

@@ -11,13 +11,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,7 +86,7 @@ public final class DataVersionManager {
         try (FileWriter writer = new FileWriter(FILE)) {
             JsonObject object = new JsonObject();
             for (Map.Entry<ResourceLocation, LoadResult.Entry> entry : lastLoadingResult.entrySet()) {
-                object.addProperty(entry.getKey().toString(), entry.getValue().version.toString());
+                object.addProperty(entry.getKey().toString(), entry.getValue().getVersion().toString());
             }
             String content = GSON.toJson(object);
             writer.write(content);
@@ -134,7 +131,20 @@ public final class DataVersionManager {
         private final Map<ResourceLocation, DataVersion.CompareResult> mismatched = new LinkedHashMap<>();
 
         void markFixed(ResourceLocation... locations) {
-
+            for (ResourceLocation location : locations) {
+                Recreatable recreatable = RECREATABLES.get(location);
+                if (recreatable != null) {
+                    recreatable.recreateData();
+                }
+            }
+            for (ResourceLocation mismatched : mismatched.keySet()) {
+                Entry old = entries.get(mismatched);
+                if (old != null) {
+                    DataVersion target = old.getTargetVersion();
+                    entries.put(mismatched, new Entry(target, target));
+                }
+            }
+            mismatched.clear();
         }
 
         void addResult(ResourceLocation identifier, DataVersion version, DataVersion target) {
