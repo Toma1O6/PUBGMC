@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.api.game.util;
 
 import dev.toma.pubgmc.api.game.team.TeamManager;
+import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -117,7 +118,7 @@ public final class DeathMessage {
     }
 
     private String getCauseString(String cause, boolean headshot) {
-        return headshot ? "⦿ " + cause : cause;
+        return headshot ? ConfigPMC.client.other.headshotCharacter.get() + cause : cause;
     }
 
     public enum Type {
