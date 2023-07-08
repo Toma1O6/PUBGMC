@@ -33,4 +33,9 @@ public class ItemFirstAidKit extends ItemHealing {
     public float getHealAmount(EntityPlayer player) {
         return 15 - player.getHealth();
     }
+
+    @Override
+    public float getAIHealAmount() {
+        return 10.0F;
+    }
 }

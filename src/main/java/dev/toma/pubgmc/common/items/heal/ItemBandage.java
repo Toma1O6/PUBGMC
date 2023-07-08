@@ -33,4 +33,9 @@ public class ItemBandage extends ItemHealing {
     public boolean canPlayerHeal(EntityPlayer player) {
         return player.getHealth() < 15f;
     }
+
+    @Override
+    public float getAIHealAmount() {
+        return 2.0F;
+    }
 }

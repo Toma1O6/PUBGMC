@@ -27,4 +27,9 @@ public class ItemEnergyDrink extends ItemHealing {
     public int getBoostAmount() {
         return 8;
     }
+
+    @Override
+    public float getAIHealAmount() {
+        return 2.0F;
+    }
 }

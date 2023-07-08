@@ -27,4 +27,9 @@ public class ItemAdrenalineSyringe extends ItemHealing {
     public int getBoostAmount() {
         return 20;
     }
+
+    @Override
+    public float getAIHealAmount() {
+        return 6.0F;
+    }
 }

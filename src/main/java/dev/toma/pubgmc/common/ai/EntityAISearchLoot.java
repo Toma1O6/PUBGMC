@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.ai;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.util.helper.GameHelper;
-import dev.toma.pubgmc.util.helper.InventorySearchHelper;
+import dev.toma.pubgmc.util.helper.InventoryHelper;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -19,14 +19,16 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     private final EntityAIPlayer aiPlayer;
     private final int chance;
+    private final float moveSpeed;
     private final Set<BlockPos> checkedLootSpawners = new HashSet<>();
 
     @Nullable
     private LootableContainer lootable;
 
-    public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, int chance) {
+    public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, int chance, float moveSpeed) {
         this.aiPlayer = entityAIPlayer;
         this.chance = Math.max(1, chance);
+        this.moveSpeed = moveSpeed;
         this.setMutexBits(1);
     }
 
@@ -48,7 +50,7 @@ public class EntityAISearchLoot extends EntityAIBase {
         if (armor.isEmpty()) {
             return true;
         }
-        return aiPlayer.getHealth() < aiPlayer.getMaxHealth() && InventorySearchHelper.findHealingItem(aiPlayer.getInventory()).isEmpty();
+        return aiPlayer.getHealth() < aiPlayer.getMaxHealth() && InventoryHelper.findHealingItemForAi(aiPlayer.getInventory()).isEmpty();
     }
 
     private LootableContainer findLootGeneratorWithinRange() {
@@ -90,7 +92,10 @@ public class EntityAISearchLoot extends EntityAIBase {
         if (lootable == null)
             return;
         BlockPos pos = lootable.getWorldPosition();
-        this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), 1.0D);
+        this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), moveSpeed);
+        if (moveSpeed > 1.0F) {
+            this.aiPlayer.setSprinting(true);
+        }
     }
 
     @Override
@@ -101,7 +106,7 @@ public class EntityAISearchLoot extends EntityAIBase {
                 checkedLootSpawners.add(pos);
                 return;
             }
-            this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), 1.0D);
+            this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), moveSpeed);
         } else {
             aiPlayer.loot(lootable);
             checkedLootSpawners.add(pos);
@@ -112,5 +117,6 @@ public class EntityAISearchLoot extends EntityAIBase {
     @Override
     public void resetTask() {
         lootable = null;
+        aiPlayer.setSprinting(false);
     }
 }

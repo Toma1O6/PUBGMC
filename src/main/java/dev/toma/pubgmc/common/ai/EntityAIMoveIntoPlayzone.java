@@ -42,8 +42,17 @@ public class EntityAIMoveIntoPlayzone extends EntityAIBase {
     @Override
     public void startExecuting() {
         delay = 0;
+        if (moveSpeed > 1.0F) {
+            living.setSprinting(true);
+        }
     }
 
+    @Override
+    public void resetTask() {
+        living.setSprinting(false);
+    }
+
+    // TODO select closest zone position rather than center
     @Override
     public void updateTask() {
         if (--delay <= 0) {

@@ -178,6 +178,7 @@ public final class GameHelper {
             player.removeActivePotionEffect(effect.getPotion());
         }
         fillPlayerHunger(player);
+        player.setHealth(player.getMaxHealth());
         IPlayerData playerData = PlayerDataProvider.get(player);
         if (playerData != null) {
             playerData.setNightVisionActive(false);

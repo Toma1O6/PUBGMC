@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.items.heal;
 
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.item.AIHealingItem;
 import dev.toma.pubgmc.common.items.PMCItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +15,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public abstract class ItemHealing extends PMCItem {
+public abstract class ItemHealing extends PMCItem implements AIHealingItem {
 
     public ItemHealing(String name, final int weight, final int amount) {
         super(name);
@@ -22,8 +23,6 @@ public abstract class ItemHealing extends PMCItem {
     }
 
     public abstract Action getAction();
-
-    public abstract int getUseTime();
 
     public abstract EnumAction getUseAction();
 

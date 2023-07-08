@@ -11,13 +11,15 @@ public class EntityAIMoveToTeamLeader extends EntityAIBase {
 
     private final EntityLiving living;
     private final int maxAllowedDistance;
+    private final float moveSpeed;
 
     private Entity teamLeader;
     private int delay;
 
-    public EntityAIMoveToTeamLeader(EntityLiving entity, int maxAllowedDistance) {
+    public EntityAIMoveToTeamLeader(EntityLiving entity, int maxAllowedDistance, float moveSpeed) {
         this.living = entity;
         this.maxAllowedDistance = maxAllowedDistance;
+        this.moveSpeed = moveSpeed;
     }
 
     @Override
@@ -49,18 +51,23 @@ public class EntityAIMoveToTeamLeader extends EntityAIBase {
     @Override
     public void startExecuting() {
         delay = 0;
+        if (moveSpeed > 1.0F) {
+            living.setSprinting(true);
+        }
     }
 
     @Override
     public void resetTask() {
         teamLeader = null;
+        living.setSprinting(false);
     }
 
+    // TODO stop when within some specific range
     @Override
     public void updateTask() {
         if (--delay <= 0) {
             delay = 10;
-            living.getNavigator().tryMoveToEntityLiving(teamLeader, 1.0D);
+            living.getNavigator().tryMoveToEntityLiving(teamLeader, moveSpeed);
         }
     }
 }
