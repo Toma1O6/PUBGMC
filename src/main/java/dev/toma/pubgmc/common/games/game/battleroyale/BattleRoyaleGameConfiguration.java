@@ -28,6 +28,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public int playzoneGenerationDelay = 2400;
     public int entityCount = 64;
     public boolean allowAi = true;
+    public boolean allowAiCompanions = true;
     public int aiSpawnInterval = 300;
     public int initialAiSpawnDelay = 1200;
     public ZonePhaseConfiguration[] zonePhases = {
@@ -60,6 +61,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         nbt.setInteger("planeFlightHeight", planeFlightHeight);
         nbt.setInteger("entityCount", entityCount);
         nbt.setBoolean("allowAi", allowAi);
+        nbt.setBoolean("allowAiCompanions", allowAiCompanions);
         nbt.setInteger("aiSpawnInterval", aiSpawnInterval);
         nbt.setInteger("initialAiSpawnDelay", initialAiSpawnDelay);
         NBTTagList zones = new NBTTagList();
@@ -80,6 +82,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         configuration.planeFlightHeight = nbt.getInteger("planeFlightHeight");
         configuration.entityCount = nbt.getInteger("entityCount");
         configuration.allowAi = nbt.getBoolean("allowAi");
+        configuration.allowAiCompanions = nbt.getBoolean("allowAiCompanions");
         configuration.aiSpawnInterval = nbt.getInteger("aiSpawnInterval");
         configuration.initialAiSpawnDelay = nbt.getInteger("initialAiSpawnDelay");
         NBTTagList zones = nbt.getTagList("zonePhases", Constants.NBT.TAG_COMPOUND);
@@ -101,6 +104,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         object.addProperty("planeFlightHeight", planeFlightHeight);
         object.addProperty("entityCount", entityCount);
         object.addProperty("allowAi", allowAi);
+        object.addProperty("allowAiCompanions", allowAiCompanions);
         object.addProperty("aiSpawnInterval", aiSpawnInterval);
         object.addProperty("initialAiSpawnDelay", initialAiSpawnDelay);
         JsonArray zones = new JsonArray();
@@ -121,6 +125,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         configuration.planeFlightHeight = JsonUtils.getInt(object, "planeFlightHeight", 255);
         configuration.entityCount = JsonUtils.getInt(object, "entityCount", 64);
         configuration.allowAi = JsonUtils.getBoolean(object, "allowAi", true);
+        configuration.allowAiCompanions = JsonUtils.getBoolean(object, "allowAiCompanions", true);
         configuration.aiSpawnInterval = JsonUtils.getInt(object, "aiSpawnInterval", 300);
         configuration.initialAiSpawnDelay = JsonUtils.getInt(object, "initialAiSpawnDelay", 1200);
         JsonArray zones = JsonUtils.getJsonArray(object, "zonePhases", new JsonArray());

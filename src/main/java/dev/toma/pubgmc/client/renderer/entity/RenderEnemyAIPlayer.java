@@ -6,6 +6,8 @@ import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.client.models.ModelAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
@@ -34,5 +36,13 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
     @Override
     protected ResourceLocation getEntityTexture(EntityAIPlayer entity) {
         return BOT_TEXTURES[entity.getVariant()];
+    }
+
+    @Override
+    protected boolean canRenderName(EntityAIPlayer entity) {
+        EntityPlayerSP entityplayersp = Minecraft.getMinecraft().player;
+        boolean flag = !entity.isInvisibleToPlayer(entityplayersp);
+        boolean basePredicate = Minecraft.isGuiEnabled() && entity != renderManager.renderViewEntity && flag && !entity.isBeingRidden();
+        return basePredicate && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName());
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.api.game.GameDataSerializer;
 import dev.toma.pubgmc.api.game.GameEventListener;
 import dev.toma.pubgmc.api.game.GameType;
@@ -413,6 +414,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
     }
 
+    private boolean hasAiCompanions() {
+        return configuration.allowAi && configuration.allowAiCompanions;
+    }
+
     private static final class EventListener implements GameEventListener {
 
         private final BattleRoyaleGame game;
@@ -489,6 +494,34 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             EntityPlayer player = event.player;
             GameHelper.moveToLobby(player);
             GameHelper.requestClientGameDataSynchronization(player.world);
+        }
+
+        @Override
+        public void onEntityWithParachuteLanded(ParachuteEvent.Land event) {
+            EntityLivingBase entity = event.getParachuteOwner();
+            if (!game.hasAiCompanions())
+                return;
+            if (!(entity instanceof EntityPlayer)) {
+                return;
+            }
+            EntityPlayer player = (EntityPlayer) entity;
+            World world = player.world;
+            Team team = game.teamManager.getEntityTeam(player);
+            int missingTeamMembers = team != null ? Math.max(0, game.configuration.teamSize - team.getSize()) : 0;
+            if (!team.isTeamLeader(player) || missingTeamMembers == 0)
+                return;
+            TeamAIManager teamAIManager = game.aiManager;
+            Position2 tlPos = new Position2(player.posX, player.posZ);
+            for (int i = 0; i < missingTeamMembers; i++) {
+                if (!teamAIManager.canSpawnEntity())
+                    break;
+                Position2 spawnPos = tlPos.around(world.rand, 8);
+                EntityAIPlayer aiPlayer = game.initAi(world, spawnPos);
+                world.spawnEntity(aiPlayer);
+                game.teamManager.join(team, aiPlayer);
+                teamAIManager.entitySpawned(aiPlayer);
+            }
+            GameHelper.requestClientGameDataSynchronization(world);
         }
     }
 

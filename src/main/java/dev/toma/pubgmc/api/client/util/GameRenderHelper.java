@@ -11,6 +11,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import java.util.Collection;
+
 public class GameRenderHelper {
 
     private static final int TEAM_PANEL_WIDTH = 60;
@@ -38,25 +40,41 @@ public class GameRenderHelper {
         FontRenderer font = minecraft.fontRenderer;
         World world = minecraft.world;
         int index = 0;
-        for (Team.Member member : team.getAllMembers().values()) {
-            renderMemberInformation(font, world, team, member, x, y + 15 * index++);
+        Collection<Team.Member> members = team.getAllMembers().values();
+        int width = getTeamPanelWidth(team, members, font);
+        for (Team.Member member : members) {
+            renderMemberInformation(font, world, team, member, x, y + 15 * index++, width);
         }
     }
 
-    private static void renderMemberInformation(FontRenderer font, World world, Team team, Team.Member member, int x, int y) {
+    private static void renderMemberInformation(FontRenderer font, World world, Team team, Team.Member member, int x, int y, int width) {
         boolean alive = team.isMember(member.getId());
         String username = team.getUsername(member.getId());
-        ImageUtil.drawShape(x, y, x + TEAM_PANEL_WIDTH, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
-        float health = 1.0F;
+        ImageUtil.drawShape(x, y, x + width, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
+        float health = 0.0F;
         if (member.getMemberType().isPlayer()) {
             EntityPlayer player = world.getPlayerEntityByUUID(member.getId());
             if (player != null) {
                 health = player.getHealth() / player.getMaxHealth();
             }
         }
-        ImageUtil.drawShape(x, y + 13, x + TEAM_PANEL_WIDTH, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
-        ImageUtil.drawShape(x, y + 13, x + (int) (TEAM_PANEL_WIDTH * health), y + 15, 1.0F, 1.0F, 1.0F, 1.0F);
+        if (health > 0) {
+            ImageUtil.drawShape(x, y + 13, x + width, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
+            ImageUtil.drawShape(x, y + 13, x + (int) (width * health), y + 15, 1.0F, 1.0F, 1.0F, 1.0F);
+        }
         font.drawString(username, x, y + 2, alive ? 0xFFFFFF : 0xFF0000);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    private static int getTeamPanelWidth(Team team, Collection<Team.Member> members, FontRenderer font) {
+        int i = TEAM_PANEL_WIDTH;
+        for (Team.Member member : members) {
+            String username = team.getUsername(member.getId());
+            int width = font.getStringWidth(username);
+            if (width > i) {
+                i = width;
+            }
+        }
+        return i;
     }
 }

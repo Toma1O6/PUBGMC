@@ -1,11 +1,14 @@
 package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.common.entity.controllable.EntityControllable;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class EntityParachute extends EntityControllable {
 
@@ -47,6 +50,10 @@ public class EntityParachute extends EntityControllable {
         this.rotationYaw += turningSpeed;
         if (isBeingRidden()) {
             if (onGround || collided) {
+                Entity passenger = getControllingPassenger();
+                if (passenger instanceof EntityLivingBase) {
+                    MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Land(this, (EntityLivingBase) passenger));
+                }
                 removePassengers();
                 return;
             }

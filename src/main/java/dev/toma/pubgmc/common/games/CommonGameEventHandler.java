@@ -3,17 +3,13 @@ package dev.toma.pubgmc.common.games;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.common.entity.EntityGameItem;
 import dev.toma.pubgmc.util.helper.GameHelper;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -22,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -29,6 +26,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
 public final class CommonGameEventHandler {
@@ -67,6 +68,19 @@ public final class CommonGameEventHandler {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
                     game.invokeEvent(listener -> listener.onEntityDeath(event));
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityAttack(LivingAttackEvent event) {
+        EntityLivingBase entity = event.getEntityLiving();
+        if (!event.isCanceled()) {
+            GameDataProvider.getGameData(entity.world).ifPresent(data -> {
+                Game<?> game = data.getCurrentGame();
+                if (game.isStarted()) {
+                    game.invokeEvent(listener -> listener.onEntityAttack(event));
                 }
             });
         }
@@ -140,5 +154,29 @@ public final class CommonGameEventHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void entityOpenParachute(ParachuteEvent.Open event) {
+        World world = event.getParachuteEntity().getEntityWorld();
+        GameDataProvider.getGameData(world).ifPresent(data -> {
+            Game<?> game = data.getCurrentGame();
+            if (game.isStarted()) {
+                game.invokeEvent(listener -> listener.onEntityOpenParachute(event));
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public static void entityLandWithParachute(ParachuteEvent.Land event) {
+        if (event.isCanceled())
+            return;
+        World world = event.getParachuteEntity().getEntityWorld();
+        GameDataProvider.getGameData(world).ifPresent(data -> {
+            Game<?> game = data.getCurrentGame();
+            if (game.isStarted()) {
+                game.invokeEvent(listener -> listener.onEntityWithParachuteLanded(event));
+            }
+        });
     }
 }
