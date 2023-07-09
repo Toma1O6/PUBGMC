@@ -4,7 +4,6 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -25,21 +24,16 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Random;
 
 public class BlockLootSpawner extends PMCBlock {
     public static final PropertyInteger LOOT = PropertyInteger.create("loot", 0, 2);
-    private static final AxisAlignedBB BB = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.25, 1.0);
-    private MapColor color;
-    private Random rand = new Random();
+    public static final AxisAlignedBB BB = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.25, 1.0);
 
-    public BlockLootSpawner(String name, Material material, SoundType sound, MapColor color) {
+    public BlockLootSpawner(String name, Material material, SoundType sound) {
         super(name, material);
         setSoundType(sound);
         this.setBlockUnbreakable();
         this.setDefaultState(this.blockState.getBaseState().withProperty(LOOT, 0));
-
-        this.color = color;
     }
 
     @Override
@@ -122,16 +116,15 @@ public class BlockLootSpawner extends PMCBlock {
 
     public enum LootType {
 
-        COMMON(1, 0, 0, 1f, false),
-        RARE(0, 1, 0, 1.4f, false),
-        VERY_RARE(0.2, 1, 0, 2f, false),
-        AIRDROP(0, 0, 0, 1.0F, true);
-        private final Vec3d rgb;
-        private final float multiplier;
+        COMMON(1, 0, 0),
+        RARE(0, 1, 0),
+        VERY_RARE(0.2, 1, 0),
+        AIRDROP(0, 0, 0);
 
-        LootType(final double r, final double g, final double b, final float multiplier, final boolean allowSpecialWeapons) {
+        private final Vec3d rgb;
+
+        LootType(double r, double g, double b) {
             this.rgb = new Vec3d(r, g, b);
-            this.multiplier = multiplier;
         }
 
         public static LootType getTypeFromState(IBlockState state) {
@@ -140,14 +133,6 @@ public class BlockLootSpawner extends PMCBlock {
 
         public Vec3d getRGB() {
             return rgb;
-        }
-
-        public float getLootMultiplier() {
-            return multiplier;
-        }
-
-        public LootType switchMode() {
-            return ordinal() + 1 < 3 ? values()[ordinal() + 1] : values()[0];
         }
     }
 }

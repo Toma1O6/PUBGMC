@@ -8,8 +8,10 @@ import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SimpleEntityProvider implements EntityProvider {
@@ -22,18 +24,23 @@ public class SimpleEntityProvider implements EntityProvider {
         this.processors = processors;
     }
 
+    public SimpleEntityProvider(Class<? extends Entity> entityClass) {
+        this(entityClass, Collections.emptyList());
+    }
+
     @Override
-    public void spawnEntity(World world, BlockPos pos) {
+    public @Nullable Entity spawnEntity(World world, BlockPos pos) {
         try {
             Constructor<? extends Entity> constructor = entityClass.getDeclaredConstructor(World.class);
             Entity instance = constructor.newInstance(world);
             instance.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
-            direction.rotate(instance);
             processors.forEach(processor -> processor.processEntityPreSpawn(instance));
             world.spawnEntity(instance);
             processors.forEach(processor -> processor.processEntityPostSpawn(instance));
+            return instance;
         } catch (Exception e) {
             Pubgmc.logger.error("Entity spawn from simple entity provider failed", e);
+            return null;
         }
     }
 

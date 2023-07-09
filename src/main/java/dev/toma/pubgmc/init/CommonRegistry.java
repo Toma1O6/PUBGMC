@@ -28,6 +28,7 @@ import dev.toma.pubgmc.common.items.heal.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
+import dev.toma.pubgmc.data.entity.DefaultEntityProviders;
 import dev.toma.pubgmc.data.entity.EntityProviders;
 import dev.toma.pubgmc.data.loot.LootProviders;
 import dev.toma.pubgmc.data.loot.processor.LootProcessors;
@@ -71,7 +72,7 @@ public class CommonRegistry {
                 BlockBuilder.create("schoolwindow", Material.GLASS).soundType(SoundType.GLASS).setGlass().build(),
                 new BlockAirdrop("airdrop", Material.IRON),
                 BlockBuilder.create("darkwood", Material.WOOD).soundType(SoundType.WOOD).build(),
-                new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE, MapColor.BLACK),
+                new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE),
                 new BlockPlayerCrate("player_crate", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
                 HorizontalBlockBuilder.create("chair", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
                 HorizontalBlockBuilder.create("table", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
@@ -170,7 +171,8 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_cobblestone", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_diorite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_granite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
-                BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build()
+                BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
+                new BlockGameEntitySpawner("vehicle_spawner", DefaultEntityProviders.VEHICLE_SPAWNER)
         );
     }
 
@@ -998,6 +1000,7 @@ public class CommonRegistry {
         registerTileEntity(TileEntityGunWorkbench.class, "gun_workbench");
         registerTileEntity(TileEntityLandMine.class, "landmine");
         registerTileEntity(TileEntityWindow.class, "window");
+        registerTileEntity(TileEntityGameEntitySpawner.class, "entity_spawner");
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name) {

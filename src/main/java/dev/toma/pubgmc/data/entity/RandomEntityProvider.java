@@ -7,9 +7,11 @@ import dev.toma.pubgmc.api.entity.EntityProvider;
 import dev.toma.pubgmc.api.entity.EntityProviderSerializer;
 import dev.toma.pubgmc.api.entity.EntityProviderType;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +24,12 @@ public class RandomEntityProvider implements EntityProvider {
     }
 
     @Override
-    public void spawnEntity(World world, BlockPos pos) {
+    public @Nullable Entity spawnEntity(World world, BlockPos pos) {
         if (!providers.isEmpty()) {
             EntityProvider provider = PUBGMCUtil.randomListElement(providers, world.rand);
-            provider.spawnEntity(world, pos);
+            return provider.spawnEntity(world, pos);
         }
+        return null;
     }
 
     @Override

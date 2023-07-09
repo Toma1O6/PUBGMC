@@ -5,9 +5,12 @@ import com.google.gson.JsonParseException;
 import dev.toma.pubgmc.api.entity.EntityProvider;
 import dev.toma.pubgmc.api.entity.EntityProviderSerializer;
 import dev.toma.pubgmc.api.entity.EntityProviderType;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class RandomChanceEntityProvider implements EntityProvider {
 
@@ -20,10 +23,11 @@ public class RandomChanceEntityProvider implements EntityProvider {
     }
 
     @Override
-    public void spawnEntity(World world, BlockPos pos) {
+    public @Nullable Entity spawnEntity(World world, BlockPos pos) {
         if (world.rand.nextFloat() < chance) {
-            provider.spawnEntity(world, pos);
+            return provider.spawnEntity(world, pos);
         }
+        return null;
     }
 
     @Override

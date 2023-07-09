@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.Generator;
+import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
@@ -22,7 +23,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, Generator {
+public class TileEntityLootGenerator extends TileEntitySync implements IInventoryTileEntity, Generator, LootableContainer {
 
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private String customName;

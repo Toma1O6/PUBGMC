@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.entity.EntityProvider;
 import dev.toma.pubgmc.api.entity.EntityProviderType;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -37,6 +38,11 @@ public final class EntityProviderManager implements Recreatable {
 
     public void registerDefaultConfiguration(String path, EntityProvider provider) {
         defaultConfigurations.put(path, provider);
+    }
+
+    @Nullable
+    public EntityProvider getEntityProviderById(String path) {
+        return providers.get(path);
     }
 
     @Override

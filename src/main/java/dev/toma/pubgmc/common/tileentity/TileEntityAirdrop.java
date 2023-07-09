@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.Generator;
+import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
@@ -18,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable, Generator {
+public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileEntity, ITickable, Generator, LootableContainer {
 
     private NonNullList<ItemStack> inventory;
     private UUID gameId = GameHelper.DEFAULT_UUID;
