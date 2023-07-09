@@ -2,6 +2,7 @@ package dev.toma.pubgmc.data.loot;
 
 import dev.toma.pubgmc.api.game.loot.LootProvider;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,6 +20,10 @@ public final class LootGenerationContext {
         this.world = world;
         this.pos = pos;
         this.groupMappings = groupMappings;
+    }
+
+    public static LootGenerationContext tileEntity(TileEntity tileEntity) {
+        return new LootGenerationContext(tileEntity.getWorld(), tileEntity.getPos(), Collections.emptyMap());
     }
 
     public static LootGenerationContext entity(Entity entity) {

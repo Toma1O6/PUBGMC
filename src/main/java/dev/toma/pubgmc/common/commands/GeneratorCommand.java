@@ -1,10 +1,12 @@
 package dev.toma.pubgmc.common.commands;
 
+import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.common.commands.core.*;
+import dev.toma.pubgmc.common.commands.core.arg.EnumArgument;
 import dev.toma.pubgmc.common.commands.core.arg.IntArgument;
+import dev.toma.pubgmc.data.entity.EntityProviderManager;
 import dev.toma.pubgmc.data.loot.LootManager;
-import dev.toma.pubgmc.util.EventDispatcher;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -12,7 +14,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -20,57 +21,59 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class LootCommand extends AbstractCommand {
+public class GeneratorCommand extends AbstractCommand {
 
+    private static final String ARG_MODE = "mode";
     private static final String ARG_RANGE = "range";
 
-    private static final CommandTree COMMAND = CommandTree.Builder.command("loot")
-            .usage("/loot [generate|clear|delete|reset|info] <range>")
+    private static final CommandTree COMMAND = CommandTree.Builder.command("generator")
+            .usage("/generator [generate|delete|reset|info|resetConfigs]")
             .permissionLevel(2)
             .defaultExecutorPropagationStrategy(NodePropagationStrategy.LAST_NODE)
-            .executes(LootCommand::executeDefault)
+            .executes(GeneratorCommand::executeDefault)
             .node(
                     CommandNodeProvider.literal("generate")
-                            .executes(LootCommand::generateLoot)
+                            .executes(GeneratorCommand::generateLoot)
                             .node(
-                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.unboundedInt())
-                            )
-            )
-            .node(
-                    CommandNodeProvider.literal("clear")
-                            .executes(LootCommand::clearLoot)
-                            .node(
-                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.unboundedInt())
+                                    CommandNodeProvider.argument(ARG_MODE, EnumArgument.enumeration(GenerationType.class))
+                                            .node(
+                                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.min(1))
+                                            )
                             )
             )
             .node(
                     CommandNodeProvider.literal("destroy")
-                            .executes(LootCommand::removeLootGenerators)
+                            .executes(GeneratorCommand::removeLootGenerators)
                             .node(
-                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.unboundedInt())
+                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.min(1))
                             )
             )
             .node(
                     CommandNodeProvider.literal("resetConfigs")
-                            .executes(LootCommand::resetLootConfigs)
+                            .node(
+                                    CommandNodeProvider.literal("loot")
+                                            .executes(GeneratorCommand::resetLootConfigs)
+                            )
+                            .node(
+                                    CommandNodeProvider.literal("entity")
+                                            .executes(GeneratorCommand::resetEntitySpawnConfigs)
+                            )
             )
             .node(
                     CommandNodeProvider.literal("info")
-                            .executes(LootCommand::displayLootGeneratorInformation)
+                            .executes(GeneratorCommand::displayLootGeneratorInformation)
                             .node(
-                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.unboundedInt())
+                                    CommandNodeProvider.argument(ARG_RANGE, IntArgument.min(1))
                             )
             )
             .build();
 
-    public LootCommand() {
+    public GeneratorCommand() {
         super(COMMAND);
     }
 
@@ -78,29 +81,18 @@ public class LootCommand extends AbstractCommand {
         throw new WrongUsageException("Not enough arguments. See /help loot for more details");
     }
 
-    private static void generateLoot(CommandContext context) throws CommandException {
-        LootManager manager = LootManager.getInstance();
+    private static void generateLoot(CommandContext context) {
         ICommandSender sender = context.getSender();
-        World world = sender.getEntityWorld();
         List<Generator> list = getWithinRange(context);
-        int itemCount = 0;
+        GenerationType generationType = context.<GenerationType>getArgument(ARG_MODE)
+                .orElse(null);
+        GenerationType.Context generationContext = generationType == null
+                ? GenerationType.create(GenerationType.ITEMS, GenerationType.ENTITIES, GenerationType.CUSTOM)
+                : GenerationType.create(generationType);
         for (Generator generator : list) {
-            String configId = generator.getLootConfigurationId();
-            BlockPos pos = accept(generator, Entity::getPosition, TileEntity::getPos);
-            List<ItemStack> loot = manager.generateFromConfiguration(configId, world, pos);
-            generator.fillWithLoot(EventDispatcher.getModifiedLoot(generator, loot));
-            itemCount += loot.stream()
-                    .mapToInt(ItemStack::getCount)
-                    .sum();
+            generator.generate(generationContext);
         }
-        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.loot.generate", list.size(), itemCount));
-    }
-
-    private static void clearLoot(CommandContext context) {
-        List<Generator> list = getWithinRange(context);
-        int count = list.size();
-        list.forEach(gen -> gen.fillWithLoot(Collections.emptyList()));
-        context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.clear", count));
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.generator.generate", list.size()));
     }
 
     private static void removeLootGenerators(CommandContext context) throws CommandException {
@@ -119,16 +111,26 @@ public class LootCommand extends AbstractCommand {
             });
             ++count;
         }
-        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.loot.remove", count));
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.generator.remove", count));
     }
 
     private static void resetLootConfigs(CommandContext context) throws CommandException {
         LootManager manager = LootManager.getInstance();
         try {
             manager.recreateData();
-            context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.loot.reloaded_configs"));
+            context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.generator.reloaded_configs.loot"));
         } catch (Exception e) {
-            throw new WrongUsageException("IO Error occurred: " + e.getMessage(), e);
+            throw new WrongUsageException("Error occurred: " + e.getMessage(), e);
+        }
+    }
+
+    private static void resetEntitySpawnConfigs(CommandContext context) throws CommandException {
+        EntityProviderManager manager = EntityProviderManager.INSTANCE;
+        try {
+            manager.recreateData();
+            context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.generator.reloaded_configs.entity"));
+        } catch (Exception e) {
+            throw new WrongUsageException("Error occurred: " + e.getMessage(), e);
         }
     }
 
@@ -148,7 +150,7 @@ public class LootCommand extends AbstractCommand {
             map.put(name, prev + 1);
         }
         int total = list.size();
-        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.loot.info", total));
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.generator.info", total));
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             String name = entry.getKey();
             int count = entry.getValue();

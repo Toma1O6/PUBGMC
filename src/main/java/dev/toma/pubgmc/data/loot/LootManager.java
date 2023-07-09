@@ -7,7 +7,6 @@ import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.event.LootEvent;
 import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.api.game.loot.LootProvider;
-import dev.toma.pubgmc.util.EventDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,24 +46,6 @@ public final class LootManager implements Recreatable {
             Pubgmc.logger.fatal(MARKER, "Loot initialization failed!");
             throw new RuntimeException("Loot load failed", e);
         }
-    }
-
-    public static void generateLootInGenerator(Generator generator, World world, BlockPos pos) {
-        LootManager manager = getInstance();
-        String configuration = generator.getLootConfigurationId();
-        List<ItemStack> items = manager.generateFromConfiguration(configuration, world, pos);
-        generator.fillWithLoot(EventDispatcher.getModifiedLoot(generator, items));
-    }
-
-    public List<ItemStack> generateFromConfiguration(String configurationKey, World world, BlockPos pos) {
-        LootConfiguration configuration = lootConfigurations.get(configurationKey);
-        if (configuration == null) {
-            Pubgmc.logger.error(MARKER, "Attempted to generate loot with non-existent loot configuration: " + configurationKey);
-            return Collections.emptyList();
-        }
-        LootGenerationContext context = new LootGenerationContext(world, pos, configuration.getGroups());
-        LootProvider provider = configuration.getPool();
-        return provider.generateItems(context);
     }
 
     public LootConfiguration getConfigurationById(String key) {

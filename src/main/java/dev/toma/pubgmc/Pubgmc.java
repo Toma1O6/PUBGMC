@@ -16,7 +16,7 @@ import dev.toma.pubgmc.common.capability.PlayerData;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.GameCommand;
-import dev.toma.pubgmc.common.commands.LootCommand;
+import dev.toma.pubgmc.common.commands.GeneratorCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
 import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
@@ -131,7 +131,7 @@ public class Pubgmc {
     @EventHandler
     public void serverInit(FMLServerStartingEvent event) {
         event.registerServerCommand(new AirdropCommand());
-        event.registerServerCommand(new LootCommand());
+        event.registerServerCommand(new GeneratorCommand());
         event.registerServerCommand(new GameCommand());
         event.registerServerCommand(new TeamCommand());
     }

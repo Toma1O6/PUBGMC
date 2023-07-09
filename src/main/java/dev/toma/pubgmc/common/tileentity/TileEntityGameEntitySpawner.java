@@ -9,12 +9,10 @@ import dev.toma.pubgmc.data.entity.EntityProviderManager;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-import java.util.List;
 import java.util.UUID;
 
 public class TileEntityGameEntitySpawner extends TileEntity implements Generator {
@@ -53,16 +51,6 @@ public class TileEntityGameEntitySpawner extends TileEntity implements Generator
     @Override
     public void onNewGameDetected(UUID newGameId) {
         assignGameId(newGameId);
-    }
-
-    @Override
-    public String getLootConfigurationId() {
-        return ""; // TODO remove
-    }
-
-    @Override
-    public void fillWithLoot(List<ItemStack> items) {
-        // TODO remove
     }
 
     @Override

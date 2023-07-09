@@ -2,8 +2,8 @@ package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
-import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.TileEntityUtil;
@@ -60,7 +60,7 @@ public class EntityAirdrop extends Entity implements IEntityAdditionalSpawnData,
             if (tileEntity instanceof TileEntityAirdrop) {
                 TileEntityAirdrop airdrop = (TileEntityAirdrop) tileEntity;
                 airdrop.assignGameId(GameHelper.getGameUUID(world));
-                LootManager.generateLootInGenerator(airdrop, world, landingPosition);
+                airdrop.generate(GenerationType.create(GenerationType.ITEMS));
                 TileEntityUtil.syncToClient(tileEntity);
             }
         }

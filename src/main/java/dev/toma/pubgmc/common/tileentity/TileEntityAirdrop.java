@@ -2,8 +2,11 @@ package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.Generator;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
+import dev.toma.pubgmc.data.loot.LootConfiguration;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
+import dev.toma.pubgmc.data.loot.LootGenerationContext;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.TileEntityUtil;
@@ -84,24 +87,21 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
     }
 
     @Override
-    public String getLootConfigurationId() {
-        return inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
-    }
-
-    @Override
-    public void fillWithLoot(List<ItemStack> items) {
+    public void generate(GenerationType.Context context) {
         clear();
-        for (int i = 0; i < Math.min(getSizeInventory(), items.size()); i++) {
-            setInventorySlotContents(i, items.get(i));
+        if (context.has(GenerationType.ITEMS)) {
+            String configurationPath = inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
+            LootConfiguration configuration = LootManager.getInstance().getConfigurationById(configurationPath);
+            if (configuration != null) {
+                LootProvider provider = configuration.getPool();
+                LootGenerationContext generationContext = LootGenerationContext.tileEntity(this);
+                List<ItemStack> itemStacks = provider.generateItems(generationContext);
+                for (int i = 0; i < Math.min(this.getSizeInventory(), itemStacks.size()); i++) {
+                    setInventorySlotContents(i, itemStacks.get(i));
+                }
+            }
         }
         TileEntityUtil.syncToClient(this);
-    }
-
-    @Override
-    public void generate(GenerationType.Context context) {
-        if (context.has(GenerationType.ITEMS)) {
-            LootManager.generateLootInGenerator(this, world, pos);
-        }
     }
 
     @Override

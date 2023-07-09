@@ -279,11 +279,11 @@ model.bullet1=Bullet 1
 model.belt=Belt
 model.top=Top
 
-commands.pubgmc.loot.generate=Generated %2$s items inside %1$s loot generators
-commands.pubgmc.loot.clear=Cleared items inside %s loot generators
-commands.pubgmc.loot.remove=Removed %s loot generators
-commands.pubgmc.loot.reloaded_configs=Loot configurations have been reloaded
-commands.pubgmc.loot.info=Found %s loaded loot generators:
+commands.pubgmc.generator.generate=Processed %s generators
+commands.pubgmc.generator.remove=Removed %s generators
+commands.pubgmc.generator.reloaded_configs.loot=Loot configurations have been reloaded
+commands.pubgmc.generator.reloaded_configs.entity=Entity spawn configurations have been reloaded
+commands.pubgmc.generator.info=Found %s loaded generators:
 commands.pubgmc.game.join.success=You have joined the game
 commands.pubgmc.game.join.fail=You cannot join this game
 commands.pubgmc.game.leave.success=You have been teleported back to lobby

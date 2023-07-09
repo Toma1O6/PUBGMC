@@ -2,9 +2,12 @@ package dev.toma.pubgmc.common.tileentity;
 
 import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.Generator;
+import dev.toma.pubgmc.api.game.loot.LootProvider;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.common.blocks.BlockLootSpawner;
+import dev.toma.pubgmc.data.loot.LootConfiguration;
 import dev.toma.pubgmc.data.loot.LootConfigurations;
+import dev.toma.pubgmc.data.loot.LootGenerationContext;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.util.TileEntitySync;
 import dev.toma.pubgmc.util.TileEntityUtil;
@@ -95,25 +98,25 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
 
     @Override
     public void generate(GenerationType.Context context) {
-        if (context.has(GenerationType.ITEMS)) {
-            LootManager.generateLootInGenerator(this, world, pos);
-            markDirty();
-        }
-    }
-
-    @Override
-    public String getLootConfigurationId() {
-        int tier = world.getBlockState(pos).getValue(BlockLootSpawner.LOOT);
-        return LootConfigurations.LOOT_SPAWNER[tier];
-    }
-
-    @Override
-    public void fillWithLoot(List<ItemStack> items) {
         clear();
-        for (int i = 0; i < Math.min(items.size(), getSizeInventory()); i++) {
-            setInventorySlotContents(i, items.get(i));
+        if (context.has(GenerationType.ITEMS)) {
+            String configurationPath = this.getLootConfigurationId();
+            LootConfiguration configuration = LootManager.getInstance().getConfigurationById(configurationPath);
+            if (configuration != null) {
+                LootProvider provider = configuration.getPool();
+                LootGenerationContext generationContext = LootGenerationContext.tileEntity(this);
+                List<ItemStack> itemStacks = provider.generateItems(generationContext);
+                for (int i = 0; i < Math.min(this.getSizeInventory(), itemStacks.size()); i++) {
+                    setInventorySlotContents(i, itemStacks.get(i));
+                }
+            }
         }
         TileEntityUtil.syncToClient(this);
+    }
+
+    private String getLootConfigurationId() {
+        int tier = world.getBlockState(pos).getValue(BlockLootSpawner.LOOT);
+        return LootConfigurations.LOOT_SPAWNER[tier];
     }
 
     @Override
