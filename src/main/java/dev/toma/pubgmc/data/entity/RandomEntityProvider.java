@@ -8,6 +8,7 @@ import dev.toma.pubgmc.api.entity.EntityProviderSerializer;
 import dev.toma.pubgmc.api.entity.EntityProviderType;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -48,7 +49,7 @@ public class RandomEntityProvider implements EntityProvider {
 
         @Override
         public RandomEntityProvider parse(JsonObject data) throws JsonParseException {
-            JsonArray array = new JsonArray();
+            JsonArray array = JsonUtils.getJsonArray(data, "providers");
             List<EntityProvider> providers = new ArrayList<>();
             array.forEach(el -> {
                 JsonObject obj = el.getAsJsonObject();

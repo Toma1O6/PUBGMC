@@ -98,8 +98,8 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
 
     @Override
     public void generate(GenerationType.Context context) {
-        clear();
         if (context.has(GenerationType.ITEMS)) {
+            clear();
             String configurationPath = this.getLootConfigurationId();
             LootConfiguration configuration = LootManager.getInstance().getConfigurationById(configurationPath);
             if (configuration != null) {
@@ -110,8 +110,8 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
                     setInventorySlotContents(i, itemStacks.get(i));
                 }
             }
+            TileEntityUtil.syncToClient(this);
         }
-        TileEntityUtil.syncToClient(this);
     }
 
     private String getLootConfigurationId() {

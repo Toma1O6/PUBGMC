@@ -88,8 +88,8 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
 
     @Override
     public void generate(GenerationType.Context context) {
-        clear();
         if (context.has(GenerationType.ITEMS)) {
+            clear();
             String configurationPath = inventory.size() > 9 ? LootConfigurations.AIRDROP_LARGE : LootConfigurations.AIRDROP;
             LootConfiguration configuration = LootManager.getInstance().getConfigurationById(configurationPath);
             if (configuration != null) {
@@ -100,8 +100,8 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
                     setInventorySlotContents(i, itemStacks.get(i));
                 }
             }
+            TileEntityUtil.syncToClient(this);
         }
-        TileEntityUtil.syncToClient(this);
     }
 
     @Override

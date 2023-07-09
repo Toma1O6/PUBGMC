@@ -17,17 +17,19 @@ import java.util.UUID;
 
 public class TileEntityGameEntitySpawner extends TileEntity implements Generator {
 
-    private final String entityProviderConfigPath;
+    private String entityProviderConfigPath = "undefined";
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
-    public TileEntityGameEntitySpawner(String entityProviderConfigPath) {
+    public void setEntityProviderConfigPath(String entityProviderConfigPath) {
         this.entityProviderConfigPath = entityProviderConfigPath;
+        markDirty();
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         compound.setUniqueId("gameId", gameId);
+        compound.setString("config", entityProviderConfigPath);
         return compound;
     }
 
@@ -35,6 +37,7 @@ public class TileEntityGameEntitySpawner extends TileEntity implements Generator
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         gameId = compound.getUniqueId("gameId");
+        entityProviderConfigPath = compound.getString("config");
     }
 
     @Override
@@ -65,7 +68,9 @@ public class TileEntityGameEntitySpawner extends TileEntity implements Generator
                 object.assignGameId(gameId);
                 IBlockState state = world.getBlockState(pos);
                 EnumFacing facing = state.getValue(PMCBlockHorizontal.FACING);
-                // TODO rotate entity
+                float rotation = 90.0F * facing.getHorizontalIndex() - 180.0F;
+                entity.rotationYaw = rotation;
+                entity.prevRotationYaw = rotation;
             }
         }
     }

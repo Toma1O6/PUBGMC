@@ -57,6 +57,8 @@ public class BlockGameEntitySpawner extends PMCBlockHorizontal {
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileEntityGameEntitySpawner(spawnConfigurationPath);
+        TileEntityGameEntitySpawner spawner = new TileEntityGameEntitySpawner();
+        spawner.setEntityProviderConfigPath(spawnConfigurationPath);
+        return spawner;
     }
 }

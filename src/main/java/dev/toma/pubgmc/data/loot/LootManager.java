@@ -5,11 +5,6 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.event.LootEvent;
-import dev.toma.pubgmc.api.game.Generator;
-import dev.toma.pubgmc.api.game.loot.LootProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -18,9 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class LootManager implements Recreatable {
