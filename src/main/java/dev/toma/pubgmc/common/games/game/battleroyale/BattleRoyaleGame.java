@@ -353,7 +353,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             if (aiManager.canSpawnEntity()) {
                 Playzone shrunkPlayzone = playzone.getResultingPlayzone();
                 List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
-                int memberCount = Math.min(configuration.teamSize, aiManager.getRemainingAliveEntityCount()) - 1;
+                int memberCount = Math.min(configuration.teamSize, aiManager.getAiEntitiesToSpawn()) - 1;
                 Pubgmc.logger.debug("Attempting to spawn AI with default rules");
                 Position2 spawnPosition = GameHelper.findLoadedPositionWithinPlayzone(shrunkPlayzone, world, playerList, 32, 96);
                 if (spawnPosition == null) {

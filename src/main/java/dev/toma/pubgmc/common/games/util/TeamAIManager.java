@@ -101,6 +101,10 @@ public class TeamAIManager {
         return totalAiCount - deadEntities;
     }
 
+    public int getAiEntitiesToSpawn() {
+        return allowedAiSpawnCount;
+    }
+
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setInteger("total", totalAiCount);
