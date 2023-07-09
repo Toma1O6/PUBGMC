@@ -275,7 +275,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         if (this.isPassenger(passenger)) {
             float x = 0F;
             float z = -0.55F;
-            float f1 = (float) ((this.isDead ? 0.009999999776482582D : this.getMountedYOffset()) + passenger.getYOffset());
+            float f1 = (float) ((this.isDead ? 0.009999999776482582D : this.getMountedYOffset()));
 
             if (this.getPassengers().size() > 0) {
                 int i = this.getPassengers().indexOf(passenger);
@@ -354,7 +354,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     protected float getPassengerXOffset(int passengerIndex) {
-        return passengerIndex % 2 == 0 ? 0.5f : -0.5f;
+        return passengerIndex % 2 == 0 ? 0.5f : -0.8f;
     }
 
     protected float getPassengerZOffset(int passengerIndex) {

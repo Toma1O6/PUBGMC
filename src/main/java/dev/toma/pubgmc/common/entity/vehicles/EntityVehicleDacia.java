@@ -62,7 +62,7 @@ public class EntityVehicleDacia extends EntityVehicle implements Variants {
 
     @Override
     public double getMountedYOffset() {
-        return 0.25d;
+        return -0.1;
     }
 
     @Override

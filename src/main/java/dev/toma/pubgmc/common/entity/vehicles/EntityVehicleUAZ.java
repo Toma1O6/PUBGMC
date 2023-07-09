@@ -34,7 +34,7 @@ public class EntityVehicleUAZ extends EntityVehicle {
 
     @Override
     public double getMountedYOffset() {
-        return 0.75d;
+        return 0.35d;
     }
 
     @Override
