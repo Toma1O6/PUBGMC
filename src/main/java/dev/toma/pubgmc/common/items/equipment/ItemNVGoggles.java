@@ -52,4 +52,9 @@ public class ItemNVGoggles extends PMCItem implements NightVisionGoggles {
     public float getLightExposureSensitivity() {
         return 1.0F;
     }
+
+    @Override
+    public float getViewClarityFactor() {
+        return 0.65F;
+    }
 }

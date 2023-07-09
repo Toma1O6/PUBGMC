@@ -13,6 +13,8 @@ public interface NightVisionGoggles extends SpecialInventoryItem {
 
     float getLightExposureSensitivity();
 
+    float getViewClarityFactor();
+
     @Override
     default SpecialEquipmentSlot getSlotType() {
         return SpecialEquipmentSlot.NIGHT_VISION;

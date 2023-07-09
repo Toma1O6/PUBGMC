@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.SpecialInventoryItem;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
+import dev.toma.pubgmc.common.ai.EntityAILightSensitiveNearestAttackableTarget;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
@@ -95,8 +96,8 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         tasks.addTask(1, new EntityAIGunAttack(this));
 
         targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, true));
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget<>(this, EntityAIPlayer.class, true));
+        targetTasks.addTask(2, new EntityAILightSensitiveNearestAttackableTarget<>(this, EntityPlayer.class, true));
+        targetTasks.addTask(3, new EntityAILightSensitiveNearestAttackableTarget<>(this, EntityAIPlayer.class, true));
     }
 
     public static void addDefaultTasks(EntityAIPlayer ai) {
