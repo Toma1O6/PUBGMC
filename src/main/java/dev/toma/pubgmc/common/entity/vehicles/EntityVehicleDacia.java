@@ -26,6 +26,7 @@ public class EntityVehicleDacia extends EntityVehicle implements Variants {
     public EntityVehicleDacia(World world) {
         super(world);
         setSize(2f, 1.5f);
+        this.textureIndex = world.rand.nextInt(VARIANTS.length);
     }
 
     public EntityVehicleDacia(World world, int x, int y, int z) {

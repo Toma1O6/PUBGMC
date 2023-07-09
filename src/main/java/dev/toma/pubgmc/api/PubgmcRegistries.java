@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.api;
 
+import dev.toma.pubgmc.api.entity.EntityProcessorType;
+import dev.toma.pubgmc.api.entity.EntityProviderType;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import dev.toma.pubgmc.api.game.loot.LootProviderType;
@@ -26,6 +28,10 @@ public final class PubgmcRegistries {
     public static final PubgmcRegistry<PlayzoneType<?>> PLAYZONE_TYPES = new Registry<PlayzoneType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<GameMapPointType<?>> GAME_MAP_POINTS = new Registry<GameMapPointType<?>>()
+            .withKeyExtractor(RegistryObject::getIdentifier);
+    public static final PubgmcRegistry<EntityProviderType<?>> ENTITY_PROVIDERS = new Registry<EntityProviderType<?>>()
+            .withKeyExtractor(RegistryObject::getIdentifier);
+    public static final PubgmcRegistry<EntityProcessorType<?>> ENTITY_PROCESSORS = new Registry<EntityProcessorType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
 
     private static final class Registry<V> implements PubgmcRegistry<V> {

@@ -28,6 +28,7 @@ import dev.toma.pubgmc.common.items.heal.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
+import dev.toma.pubgmc.data.entity.EntityProviders;
 import dev.toma.pubgmc.data.loot.LootProviders;
 import dev.toma.pubgmc.data.loot.processor.LootProcessors;
 import dev.toma.pubgmc.util.Constants;
@@ -952,6 +953,18 @@ public class CommonRegistry {
     @SubscribeEvent
     public static void registerPointTypes(PubgmcRegistryEvent.PointType event) {
         event.register(GameMapPoints.SPAWNER);
+    }
+
+    @SubscribeEvent
+    public static void registerEntityProvider(PubgmcRegistryEvent.EntityProvider event) {
+        event.register(EntityProviders.SIMPLE_ENTITY_PROVIDER);
+        event.register(EntityProviders.RANDOM_CHANCE_ENTITY_PROVIDER);
+        event.register(EntityProviders.RANDOM_ENTITY_PROVIDER);
+    }
+
+    @SubscribeEvent
+    public static void registerEntityProcessor(PubgmcRegistryEvent.EntityProcessor event) {
+
     }
 
     public static void registerItemBlock(Block block) {

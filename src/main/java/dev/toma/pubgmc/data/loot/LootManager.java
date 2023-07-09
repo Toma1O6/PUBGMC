@@ -59,7 +59,7 @@ public final class LootManager implements Recreatable {
     public List<ItemStack> generateFromConfiguration(String configurationKey, World world, BlockPos pos) {
         LootConfiguration configuration = lootConfigurations.get(configurationKey);
         if (configuration == null) {
-            Pubgmc.logger.error("Attempted to generate loot with non-existent loot configuration: " + configurationKey);
+            Pubgmc.logger.error(MARKER, "Attempted to generate loot with non-existent loot configuration: " + configurationKey);
             return Collections.emptyList();
         }
         LootGenerationContext context = new LootGenerationContext(world, pos, configuration.getGroups());

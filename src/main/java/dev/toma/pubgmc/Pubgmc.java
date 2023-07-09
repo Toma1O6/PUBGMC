@@ -20,6 +20,8 @@ import dev.toma.pubgmc.common.commands.LootCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
 import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
+import dev.toma.pubgmc.data.entity.DefaultEntityProviders;
+import dev.toma.pubgmc.data.entity.EntityProviderManager;
 import dev.toma.pubgmc.data.loot.LootManager;
 import dev.toma.pubgmc.init.CommonRegistry;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -68,6 +70,7 @@ public class Pubgmc {
     public static final DataVersion LOOT_DATA_VERSION = DataVersion.of(1, 0);
     public static final DataVersion GAME_CONFIGS_VERSION = DataVersion.of(1, 0);
     public static final DataVersion LOADOUT_DATA_VERSION = DataVersion.of(1, 0);
+    public static final DataVersion ENTITY_PROVIDER_VERSION = DataVersion.of(1, 0);
 
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger(MOD_ID);
@@ -78,7 +81,6 @@ public class Pubgmc {
     @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = SERVER_PROXY_CLASS)
     public static Proxy proxy;
     private static final ContentManager contentManager = new ContentManager();
-    private static Boolean earlyAccess;
 
     public static Random rng() {
         return RANDOM;
@@ -99,6 +101,7 @@ public class Pubgmc {
         DataVersionManager.register(Pubgmc.getResource("loot_schema"), LootManager.getInstance());
         DataVersionManager.register(Pubgmc.getResource("game_configs"), GameConfigurationManager.INSTANCE);
         DataVersionManager.register(Pubgmc.getResource("entity_loadouts"), LoadoutManager.INSTANCE);
+        DataVersionManager.register(Pubgmc.getResource("entity_providers"), EntityProviderManager.INSTANCE);
         LoadoutManager.registerLoadoutDirectory("ffa");
 
         proxy.preInit(event);
@@ -113,8 +116,10 @@ public class Pubgmc {
         proxy.init(event);
         GameRegistry.registerWorldGenerator(new OreGen(), 4);
         DefaultEntityLoadouts.register();
+        DefaultEntityProviders.registerDefaults();
         LootManager.load();
         LoadoutManager.load(false);
+        EntityProviderManager.load();
     }
 
     @EventHandler
@@ -148,11 +153,17 @@ public class Pubgmc {
         PubgmcRegistries.PLAYZONE_TYPES.lock();
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.PointType());
         PubgmcRegistries.GAME_MAP_POINTS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.EntityProvider());
+        PubgmcRegistries.ENTITY_PROVIDERS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.EntityProcessor());
+        PubgmcRegistries.ENTITY_PROCESSORS.lock();
 
         GameConfigurationManager.loadConfigurations(false);
         DataVersionManager.load();
     }
 
+    // TODO rework property types to support global properties
+    @Deprecated
     private static void registerProperties() {
         PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.KILLS);
         PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.GAME_TIMESTAMP);

@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.api.event;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.entity.EntityProcessorType;
+import dev.toma.pubgmc.api.entity.EntityProviderType;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import dev.toma.pubgmc.api.game.loot.LootProviderType;
@@ -48,6 +50,18 @@ public abstract class PubgmcRegistryEvent<T extends RegistryObject> extends Even
     public static final class PointType extends PubgmcRegistryEvent<GameMapPointType<?>> {
         public PointType() {
             super(PubgmcRegistries.GAME_MAP_POINTS::register);
+        }
+    }
+
+    public static final class EntityProvider extends PubgmcRegistryEvent<EntityProviderType<?>> {
+        public EntityProvider() {
+            super(PubgmcRegistries.ENTITY_PROVIDERS::register);
+        }
+    }
+
+    public static final class EntityProcessor extends PubgmcRegistryEvent<EntityProcessorType<?>> {
+        public EntityProcessor() {
+            super(PubgmcRegistries.ENTITY_PROCESSORS::register);
         }
     }
 
