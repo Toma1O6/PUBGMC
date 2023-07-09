@@ -153,6 +153,7 @@ tile.prop5.name=First aid kit (prop)
 tile.prop6.name=Official Majonaise prop
 tile.wheat.name=Wheat
 tile.loot_spawner.name=Loot Spawner
+tile.vehicle_spawner.name=Vehicle Spawner
 tile.player_crate.name=Player Crate
 tile.gun_workbench.name=Gun Workbench
 tile.copper_ore.name=Copper Ore

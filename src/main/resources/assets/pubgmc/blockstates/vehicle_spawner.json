@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pubgmc:vehicle_spawner"
+    },
+    "facing=south": {
+      "model": "pubgmc:vehicle_spawner"
+    },
+    "facing=east": {
+      "model": "pubgmc:vehicle_spawner"
+    },
+    "facing=west": {
+      "model": "pubgmc:vehicle_spawner"
+    }
+  }
+}

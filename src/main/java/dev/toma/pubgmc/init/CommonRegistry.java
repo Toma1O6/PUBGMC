@@ -73,6 +73,7 @@ public class CommonRegistry {
                 new BlockAirdrop("airdrop", Material.IRON),
                 BlockBuilder.create("darkwood", Material.WOOD).soundType(SoundType.WOOD).build(),
                 new BlockLootSpawner("loot_spawner", Material.ROCK, SoundType.STONE),
+                new BlockGameEntitySpawner("vehicle_spawner", DefaultEntityProviders.VEHICLE_SPAWNER),
                 new BlockPlayerCrate("player_crate", Material.WOOD, SoundType.WOOD, MapColor.BROWN),
                 HorizontalBlockBuilder.create("chair", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
                 HorizontalBlockBuilder.create("table", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
@@ -171,8 +172,7 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_cobblestone", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_diorite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_granite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
-                BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
-                new BlockGameEntitySpawner("vehicle_spawner", DefaultEntityProviders.VEHICLE_SPAWNER)
+                BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build()
         );
     }
 

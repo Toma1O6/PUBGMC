@@ -34,7 +34,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
 
     @Override
     public String getName() {
-        return this.hasCustomName() ? this.customName : "container.lootspawner";
+        return this.hasCustomName() ? this.customName : "container.loot";
     }
 
     @Override
