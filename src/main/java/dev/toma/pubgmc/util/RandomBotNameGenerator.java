@@ -30,6 +30,6 @@ public class RandomBotNameGenerator {
 
     static {
         Style style = BOT_PREFIX.getStyle();
-        style.setBold(true);
+        style.setItalic(true);
     }
 }
