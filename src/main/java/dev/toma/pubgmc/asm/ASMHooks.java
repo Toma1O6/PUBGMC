@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -26,10 +27,13 @@ public final class ASMHooks {
     }
 
     public static boolean isSlotLocked(int slotIndex, InventoryPlayer playerInventory) {
-        if (slotIndex < 9) {
+        if (slotIndex < 9 || playerInventory.player.isCreative()) {
             return false;
         }
         if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
+            return false;
+        }
+        if (!GameHelper.hasRestrictedInventory(playerInventory.player.world)) {
             return false;
         }
         IPlayerData data = PlayerDataProvider.get(playerInventory.player);

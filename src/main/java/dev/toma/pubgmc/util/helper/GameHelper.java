@@ -2,10 +2,7 @@ package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
-import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameObject;
-import dev.toma.pubgmc.api.game.Generator;
-import dev.toma.pubgmc.api.game.GenerationType;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
@@ -371,6 +368,13 @@ public final class GameHelper {
             TeamManager manager = ((TeamGame<?>) game).getTeamManager();
             return manager.getEntityTeam(entity);
         });
+    }
+
+    public static boolean hasRestrictedInventory(World world) {
+        return GameDataProvider.getGameData(world).map(data -> {
+            Game<?> game = data.getCurrentGame();
+            return game.isStarted() && game instanceof InventoryRestrictingGame;
+        }).orElse(false);
     }
 
     public interface InventoryProvider {

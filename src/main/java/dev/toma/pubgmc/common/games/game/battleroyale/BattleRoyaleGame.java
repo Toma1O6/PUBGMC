@@ -5,10 +5,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
-import dev.toma.pubgmc.api.game.GameDataSerializer;
-import dev.toma.pubgmc.api.game.GameEventListener;
-import dev.toma.pubgmc.api.game.GameType;
-import dev.toma.pubgmc.api.game.GenerationType;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -66,7 +63,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
-public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
+public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>, InventoryRestrictingGame {
 
     public static final String PLAYER_INITIAL_LOOT_PATH = "battleroyale/player_start_gear";
     public static final String AI_INITIAL_LOOT_PATH = "battleroyale/initial_loot";
