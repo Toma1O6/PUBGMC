@@ -185,6 +185,8 @@ public final class GameHelper {
             playerData.setProne(false);
             playerData.getBoostStats().reset();
             playerData.getEquipmentInventory().clear();
+            playerData.getDebuffs().clearBlindStatus();
+            playerData.getDebuffs().clearDeafStatus();
             playerData.sync();
         }
     }

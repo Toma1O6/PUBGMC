@@ -39,7 +39,6 @@ public class PacketHandler {
         registerClientPacket(PacketClientCapabilitySync.Handler.class, PacketClientCapabilitySync.class);
         registerClientPacket(PacketVehicleData.Handler.class, PacketVehicleData.class);
         registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
-        registerClientPacket(PacketUpdateFlashStatus.Handler.class, PacketUpdateFlashStatus.class);
         registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
         registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);

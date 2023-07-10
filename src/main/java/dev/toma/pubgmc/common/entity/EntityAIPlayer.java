@@ -1,10 +1,12 @@
 package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.SpecialInventoryItem;
+import dev.toma.pubgmc.common.ai.EntityAIBeBlinded;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAILightSensitiveNearestAttackableTarget;
 import dev.toma.pubgmc.common.items.ItemAmmo;
@@ -39,12 +41,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider {
+public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider, EntityDebuffs {
 
     public static final String DEFAULT_LOADOUT = "default_loadout";
     private final InventoryBasic inventory = new InventoryBasic("container.aiPlayer", false, 9);
     private final InventoryBasic specialEquipment = new InventoryBasic("container.aiPlayer.equipment", false, 3);
     private int variant;
+    private int blindTime;
+    private int deafTime;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityAIPlayer(World worldIn) {
@@ -60,6 +64,12 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         super.onUpdate();
         if (ticksExisted % 20 == 0) {
             GameHelper.validateGameEntityStillValid(this);
+        }
+        if (blindTime > 0) {
+            --blindTime;
+        }
+        if (deafTime > 0) {
+            --deafTime;
         }
     }
 
@@ -101,6 +111,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     }
 
     public static void addDefaultTasks(EntityAIPlayer ai) {
+        ai.tasks.addTask(0, new EntityAIBeBlinded<>(ai));
         ai.tasks.addTask(0, new EntityAISwimming(ai));
         ai.tasks.addTask(5, new EntityAIWanderAvoidWater(ai, 1.0));
         ai.tasks.addTask(8, new EntityAILookIdle(ai));
@@ -121,6 +132,8 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         compound.setUniqueId("gameId", gameId);
         compound.setTag("inventory", SerializationHelper.inventoryToNbt(inventory));
         compound.setTag("equipmentInventory", SerializationHelper.inventoryToNbt(specialEquipment));
+        compound.setInteger("blindTime", blindTime);
+        compound.setInteger("deafTime", deafTime);
     }
 
     @Override
@@ -130,6 +143,8 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         gameId = compound.getUniqueId("gameId");
         SerializationHelper.inventoryFromNbt(inventory, compound.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
         SerializationHelper.inventoryFromNbt(specialEquipment, compound.getTagList("equipmentInventory", Constants.NBT.TAG_COMPOUND));
+        blindTime = compound.getInteger("blindTime");
+        deafTime = compound.getInteger("deafTime");
     }
 
     @Override
@@ -281,5 +296,45 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     @Override
     public EntityLiving getLivingEntity() {
         return this;
+    }
+
+    @Override
+    public boolean isBlind() {
+        return blindTime > 0;
+    }
+
+    @Override
+    public boolean isDeaf() {
+        return deafTime > 0;
+    }
+
+    @Override
+    public void clearBlindStatus() {
+        setBlindTime(0);
+    }
+
+    @Override
+    public void clearDeafStatus() {
+        setDeafTime(0);
+    }
+
+    @Override
+    public void setBlindTime(int time) {
+        blindTime = time;
+    }
+
+    @Override
+    public void setDeafTime(int time) {
+        deafTime = time;
+    }
+
+    @Override
+    public int getRemainingBlindTime() {
+        return blindTime;
+    }
+
+    @Override
+    public int getRemainingDeafTime() {
+        return deafTime;
     }
 }

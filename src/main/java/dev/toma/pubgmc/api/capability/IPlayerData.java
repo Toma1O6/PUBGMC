@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.capability;
 
+import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -19,6 +20,8 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound>, SpecialIn
     EntityPlayer getPlayer();
 
     IInventory getEquipmentInventory();
+
+    EntityDebuffs getDebuffs();
 
     void setNightVisionActive(boolean status);
 

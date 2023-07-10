@@ -407,7 +407,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> playzone.getResultingPlayzone()));
         player.targetTasks.addTask(0, new EntityAICallTeamForHelp(player));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
-        player.targetTasks.addTask(2, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
+        player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
     }
 
     private String getAiLoadoutType() {

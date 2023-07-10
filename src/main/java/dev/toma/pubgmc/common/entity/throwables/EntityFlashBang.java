@@ -40,13 +40,13 @@ public class EntityFlashBang extends EntityThrowableExplodeable {
                 world.spawnParticle(EnumParticleTypes.CLOUD, posX, posY, posZ, rand.nextDouble() / 8 - rand.nextDouble() / 8, rand.nextDouble() / 4, rand.nextDouble() / 8 - rand.nextDouble() / 8);
             }
         }
-        List<EntityPlayer> entityList = world.getEntitiesWithinAABB(EntityPlayer.class, Block.FULL_BLOCK_AABB.offset(getPosition()).grow(30));
+        List<EntityLivingBase> entityList = world.getEntitiesWithinAABB(EntityLivingBase.class, Block.FULL_BLOCK_AABB.offset(getPosition()).grow(30));
         Vec3d start = PUBGMCUtil.getPositionVec(this);
         entityList.forEach(e -> {
             Vec3d entityVec = new Vec3d(e.posX, e.posY + e.getEyeHeight() + 0.25, e.posZ);
             RayTraceResult rayTrace = this.rayTraceBlocks(start, entityVec, iBlockState -> iBlockState.getBlock().isOpaqueCube(iBlockState));
             if (rayTrace == null) {
-                FlashHandler.flashPlayer(e, this);
+                FlashHandler.flashEntity(e, this);
             }
         });
         this.setDead();

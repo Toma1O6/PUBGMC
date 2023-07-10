@@ -8,6 +8,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
 public class PlayerDataProvider implements ICapabilitySerializable<NBTBase> {
 
     @CapabilityInject(IPlayerData.class)
@@ -25,6 +28,10 @@ public class PlayerDataProvider implements ICapabilitySerializable<NBTBase> {
 
     public static IPlayerData get(EntityPlayer player) {
         return player.getCapability(PLAYER_DATA, null);
+    }
+
+    public static Optional<IPlayerData> getOptional(@Nullable EntityPlayer player) {
+        return player != null ? Optional.ofNullable(get(player)) : Optional.empty();
     }
 
     @Override

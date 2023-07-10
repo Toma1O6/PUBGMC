@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.ai;
 
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import net.minecraft.entity.Entity;
@@ -35,6 +36,11 @@ public class EntityAILightSensitiveNearestAttackableTarget<E extends EntityLivin
 
     @Override
     public boolean shouldExecute() {
+        if (taskOwner instanceof EntityDebuffs) {
+            if (((EntityDebuffs) taskOwner).isBlind()) {
+                return false;
+            }
+        }
         List<E> list = this.taskOwner.world.getEntitiesWithinAABB(this.targetClass, this.getTargetableArea(this.getTargetDistance()), entity -> {
             if (entity == null)
                 return false;

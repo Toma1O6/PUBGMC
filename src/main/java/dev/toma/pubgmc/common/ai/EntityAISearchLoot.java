@@ -24,17 +24,13 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Nullable
     private LootableContainer lootable;
+    private boolean lootingCompleted;
 
     public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, int chance, float moveSpeed) {
         this.aiPlayer = entityAIPlayer;
         this.chance = Math.max(1, chance);
         this.moveSpeed = moveSpeed;
         this.setMutexBits(1);
-    }
-
-    @Override
-    public boolean isInterruptible() {
-        return true;
     }
 
     private boolean needsLoot() {
@@ -84,7 +80,7 @@ public class EntityAISearchLoot extends EntityAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !this.aiPlayer.getNavigator().noPath();
+        return !lootingCompleted || !this.aiPlayer.getNavigator().noPath();
     }
 
     @Override
@@ -101,22 +97,28 @@ public class EntityAISearchLoot extends EntityAIBase {
     @Override
     public void updateTask() {
         BlockPos pos = lootable.getWorldPosition();
-        if (pos.distanceSq(this.aiPlayer.getPosition()) > 4) {
+        if (pos.distanceSq(this.aiPlayer.getPosition()) > 16) {
             if (aiPlayer.getNavigator().noPath()) {
-                checkedLootSpawners.add(pos);
+                markSearched(pos);
                 return;
             }
             this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), moveSpeed);
         } else {
             aiPlayer.loot(lootable);
-            checkedLootSpawners.add(pos);
-            aiPlayer.getNavigator().clearPath();
+            markSearched(pos);
         }
     }
 
     @Override
     public void resetTask() {
         lootable = null;
+        lootingCompleted = false;
         aiPlayer.setSprinting(false);
+    }
+
+    private void markSearched(BlockPos pos) {
+        checkedLootSpawners.add(pos);
+        aiPlayer.getNavigator().clearPath();
+        lootingCompleted = true;
     }
 }

@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.capability;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
+import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketClientCapabilitySync;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
@@ -27,6 +28,7 @@ public class PlayerData implements IPlayerData {
     private final BoostStats boostStats;
     private final AimInfo aimInfo;
     private final ReloadInfo reloadInfo;
+    private final PlayerDebuffs debuffs;
     private boolean isProne;
     private boolean areNightVisionGogglesActive;
 
@@ -40,6 +42,7 @@ public class PlayerData implements IPlayerData {
         this.aimInfo = new AimInfo(this);
         this.reloadInfo = new ReloadInfo();
         this.inventory = new InventoryBasic("pubgmc.equipment_inventory", false, SpecialEquipmentSlot.values().length);
+        this.debuffs = new PlayerDebuffs();
     }
 
     @Override
@@ -47,6 +50,7 @@ public class PlayerData implements IPlayerData {
         boostStats.onTick(player);
         aimInfo.onTick();
         reloadInfo.tick(this);
+        debuffs.tick();
     }
 
     @Override
@@ -77,6 +81,11 @@ public class PlayerData implements IPlayerData {
     @Override
     public ItemStack getSpecialItemFromSlot(SpecialEquipmentSlot slot) {
         return inventory.getStackInSlot(slot.ordinal());
+    }
+
+    @Override
+    public EntityDebuffs getDebuffs() {
+        return debuffs;
     }
 
     @Override
@@ -115,6 +124,7 @@ public class PlayerData implements IPlayerData {
         c.setTag("aimInfo", aimInfo.serializeNBT());
         c.setTag("reloadInfo", reloadInfo.serializeNBT());
         c.setTag("inventory", SerializationHelper.inventoryToNbt(inventory));
+        c.setTag("debuffs", debuffs.serializeNBT());
         c.setBoolean("activeNightVision", areNightVisionGogglesActive);
         c.setBoolean("prone", this.isProne);
         return c;
@@ -125,6 +135,7 @@ public class PlayerData implements IPlayerData {
         boostStats.deserializeNBT(nbt.getCompoundTag("boostStats"));
         aimInfo.deserializeNBT(nbt.getCompoundTag("aimInfo"));
         reloadInfo.deserializeNBT(nbt.getCompoundTag("reloadInfo"));
+        debuffs.deserializeNBT(nbt.getCompoundTag("debuffs"));
         SerializationHelper.inventoryFromNbt(inventory, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
         areNightVisionGogglesActive = nbt.getBoolean("activeNightVision");
         isProne = nbt.getBoolean("prone");
