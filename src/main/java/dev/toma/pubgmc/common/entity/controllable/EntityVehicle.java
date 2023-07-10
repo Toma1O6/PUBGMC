@@ -295,7 +295,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     @Override
-    protected boolean canFitPassenger(Entity passenger) {
+    public boolean canFitPassenger(Entity passenger) {
         return this.getPassengers().size() < getMaximumCapacity();
     }
 

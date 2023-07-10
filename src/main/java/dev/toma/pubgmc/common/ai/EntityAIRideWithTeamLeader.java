@@ -5,6 +5,7 @@ import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -72,7 +73,7 @@ public class EntityAIRideWithTeamLeader extends EntityAIBase {
         if (teamLeader != null && teamLeader.isEntityAlive()) {
             Entity teamLeaderVehicle = teamLeader.getRidingEntity();
             Entity myVehicle = entity.getRidingEntity();
-            return teamLeaderVehicle != null && teamLeaderVehicle != myVehicle;
+            return teamLeaderVehicle != myVehicle && teamLeaderVehicle instanceof EntityVehicle && ((EntityVehicle) teamLeaderVehicle).canFitPassenger(entity);
         }
         return false;
     }
