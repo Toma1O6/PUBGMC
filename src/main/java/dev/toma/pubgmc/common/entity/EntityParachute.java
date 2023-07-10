@@ -75,6 +75,14 @@ public class EntityParachute extends EntityControllable {
     }
 
     @Override
+    protected void removePassenger(Entity passenger) {
+        if (passenger instanceof EntityLivingBase) {
+            MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Land(this, (EntityLivingBase) passenger));
+        }
+        super.removePassenger(passenger);
+    }
+
+    @Override
     public void updatePost() {
         move(MoverType.SELF, motionX, motionY, motionZ);
         if (!isBeingRidden()) {
