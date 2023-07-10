@@ -1,41 +1,44 @@
 package dev.toma.pubgmc.common.items.heal;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 
 public class ItemMedkit extends ItemHealing {
+
     public ItemMedkit(String name) {
-        super(name, 2, 1);
+        super(name);
         setMaxStackSize(1);
     }
 
     @Override
-    public Action getAction() {
-        return Action.HEAL;
-    }
-
-    @Override
-    public EnumAction getUseAction() {
-        return EnumAction.NONE;
-    }
-
-    @Override
-    public int getUseTime() {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 160;
     }
 
     @Override
-    public boolean canPlayerHeal(EntityPlayer player) {
-        return player.getHealth() < 20f;
+    public boolean canHeal(EntityLivingBase entity, ItemStack stack) {
+        int health = Math.round(entity.getHealth());
+        if (health >= (int) entity.getMaxHealth()) {
+            if (entity instanceof EntityPlayer) {
+                ITextComponent message = new TextComponentTranslation("message.pubgmc.healing.max_health");
+                message.getStyle().setColor(TextFormatting.RED);
+                ((EntityPlayer) entity).sendStatusMessage(message, true);
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public float getHealAmount(EntityPlayer player) {
-        return 20 - player.getHealth();
-    }
-
-    @Override
-    public float getAIHealAmount() {
-        return 20.0F;
+    public void heal(EntityLivingBase entity, ItemStack stack, World world) {
+        entity.setHealth(entity.getMaxHealth());
+        if (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isCreative()) {
+            stack.shrink(1);
+        }
     }
 }

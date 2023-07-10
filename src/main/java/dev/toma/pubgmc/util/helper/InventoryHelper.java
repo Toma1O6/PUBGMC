@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.util.helper;
 
-import dev.toma.pubgmc.api.item.AIHealingItem;
+import dev.toma.pubgmc.api.item.HealingItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -9,7 +9,7 @@ public class InventoryHelper {
     public static ItemStack findHealingItemForAi(IInventory inventory) {
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
-            if (stack.getItem() instanceof AIHealingItem) {
+            if (stack.getItem() instanceof HealingItem) {
                 return stack;
             }
         }

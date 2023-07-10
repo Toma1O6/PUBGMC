@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.ai;
 
-import dev.toma.pubgmc.api.item.AIHealingItem;
+import dev.toma.pubgmc.api.item.HealingItem;
 import dev.toma.pubgmc.util.helper.InventoryHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -30,7 +30,15 @@ public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
     public boolean shouldExecute() {
         float health = entity.getHealth();
         IInventory inventory = invProvider.apply(entity);
-        return entity.getAttackTarget() == null && health <= healthThreshold && !InventoryHelper.findHealingItemForAi(inventory).isEmpty();
+        if (entity.getAttackTarget() == null && health < healthThreshold) {
+            ItemStack medStack = InventoryHelper.findHealingItemForAi(inventory);
+            if (medStack.isEmpty()) {
+                return false;
+            }
+            HealingItem healingItem = (HealingItem) medStack.getItem();
+            return healingItem.canHeal(entity, medStack);
+        }
+        return false;
     }
 
     @Override
@@ -42,8 +50,8 @@ public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
     public void startExecuting() {
         IInventory inventory = invProvider.apply(entity);
         ItemStack stack = InventoryHelper.findHealingItemForAi(inventory);
-        if (!stack.isEmpty() && stack.getItem() instanceof AIHealingItem) {
-            AIHealingItem healingItem = (AIHealingItem) stack.getItem();
+        if (!stack.isEmpty() && stack.getItem() instanceof HealingItem) {
+            HealingItem healingItem = (HealingItem) stack.getItem();
             ItemStack mainHand = entity.getHeldItemMainhand();
             oldMainhandItem = entity.getHeldItemMainhand().copy();
             if (!oldMainhandItem.isEmpty()) {
@@ -51,8 +59,8 @@ public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
             }
             oldMainhandItem = mainHand.copy();
             entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack.copy());
+            timeRemaining = healingItem.getMaxItemUseDuration(stack);
             stack.setCount(0);
-            timeRemaining = healingItem.getUseTime();
         }
     }
 
@@ -78,10 +86,8 @@ public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
         entity.getNavigator().clearPath();
         if (--timeRemaining <= 0) {
             ItemStack stack = entity.getHeldItemMainhand();
-            if (stack.getItem() instanceof AIHealingItem) {
-                float healthGain = ((AIHealingItem) stack.getItem()).getAIHealAmount();
-                entity.heal(healthGain);
-                stack.shrink(1);
+            if (stack.getItem() instanceof HealingItem) {
+                ((HealingItem) stack.getItem()).heal(entity, stack, entity.world);
             }
             completed = true;
         }

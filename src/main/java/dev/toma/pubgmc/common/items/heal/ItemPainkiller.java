@@ -1,35 +1,50 @@
 package dev.toma.pubgmc.common.items.heal;
 
+import dev.toma.pubgmc.api.capability.BoostStats;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public class ItemPainkiller extends ItemHealing {
+
     public ItemPainkiller(String name) {
-        super(name, 12, 1);
+        super(name);
         setMaxStackSize(4);
     }
 
     @Override
-    public Action getAction() {
-        return Action.BOOST;
-    }
-
-    @Override
-    public EnumAction getUseAction() {
-        return EnumAction.EAT;
-    }
-
-    @Override
-    public int getUseTime() {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 120;
     }
 
     @Override
-    public int getBoostAmount() {
-        return 12;
+    public EnumAction getItemUseAction(ItemStack stack) {
+        return EnumAction.EAT;
     }
 
     @Override
-    public float getAIHealAmount() {
-        return 4.0F;
+    public boolean canHeal(EntityLivingBase entity, ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public void heal(EntityLivingBase entity, ItemStack stack, World world) {
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
+            PlayerDataProvider.getOptional(player).ifPresent(data -> {
+                BoostStats stats = data.getBoostStats();
+                stats.add(12);
+                data.sync();
+            });
+            if (!player.isCreative()) {
+                stack.shrink(1);
+            }
+        } else {
+            entity.heal(4.0F);
+            stack.shrink(1);
+        }
     }
 }
