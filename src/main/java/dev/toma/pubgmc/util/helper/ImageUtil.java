@@ -116,7 +116,7 @@ public class ImageUtil {
         GlStateManager.disableAlpha();
     }
 
-    public static void drawShape(int startX, int startY, int endX, int endY, float r, float g, float b, float a) {
+    public static void drawShape(float startX, float startY, float endX, float endY, float r, float g, float b, float a) {
         GlStateManager.color(1f, 1f, 1f);
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
@@ -130,5 +130,13 @@ public class ImageUtil {
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+    }
+
+    public static void drawShape(float startX, float startY, float endX, float endY, int color) {
+        float a = ((color >> 24) & 255) / 255.0F;
+        float r = ((color >> 16) & 255) / 255.0F;
+        float g = ((color >>  8) & 255) / 255.0F;
+        float b = ((color      ) & 255) / 255.0F;
+        drawShape(startX, startY, endX, endY, r, g, b, a);
     }
 }

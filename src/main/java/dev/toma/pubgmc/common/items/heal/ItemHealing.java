@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.heal;
 
+import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.api.item.HealingItem;
 import dev.toma.pubgmc.common.items.PMCItem;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,7 +11,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public abstract class ItemHealing extends PMCItem implements HealingItem {
+public abstract class ItemHealing extends PMCItem implements HealingItem, Consumable {
 
     public static final String UNREACHED_THRESHOLD_KEY = "message.pubgmc.healing.unreached_threshold";
 

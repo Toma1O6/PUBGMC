@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items;
 
+import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,7 +14,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemFuelCan extends PMCItem {
+public class ItemFuelCan extends PMCItem implements Consumable {
 
     public ItemFuelCan() {
         super("fuelcan");

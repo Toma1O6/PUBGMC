@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
 import dev.toma.pubgmc.api.entity.IControllable;
 import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
+import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import dev.toma.pubgmc.asm.ASMHooks;
 import dev.toma.pubgmc.asm.ASMHooksClient;
@@ -28,7 +29,6 @@ import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.items.ItemAmmo;
-import dev.toma.pubgmc.common.items.ItemFuelCan;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
@@ -36,7 +36,6 @@ import dev.toma.pubgmc.common.items.attachment.ScopeData;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
-import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DCoords;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
@@ -79,10 +78,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 public class ClientEvents {
 
     private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
+    private static final DecimalFormat CONSUMABLE_USE_FORMAT = new DecimalFormat("#,#0.0");
     private static final EntityEquipmentSlot[] ARMOR_SLOTS = {
             EntityEquipmentSlot.HEAD,
             EntityEquipmentSlot.CHEST
@@ -285,7 +286,7 @@ public class ClientEvents {
             if (ConfigPMC.client.overlays.renderArmorIcons.get() && !sp.isSpectator())
                 renderArmorIcons(e, sp, res, mc, data);
 
-            if (stack.getItem() instanceof ItemHealing || stack.getItem() instanceof ItemFuelCan) {
+            if (stack.getItem() instanceof Consumable) {
                 if (sp.isHandActive()) {
                     drawItemUseOverlay(sp, mc, res, e, stack);
                 }
@@ -684,18 +685,37 @@ public class ClientEvents {
     }
 
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
-        final DecimalFormat f = new DecimalFormat("#,#0.0");
-        final float useTime = (float) player.getItemInUseCount();
+        int useTime = player.getItemInUseCount();
+        int useDuration = stack.getMaxItemUseDuration();
+        float progress = 1.0F - (useTime / (float) useDuration);
         FontRenderer font = mc.fontRenderer;
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
-        int left = width / 2;
-        int top = height / 2;
-        font.drawStringWithShadow(f.format(useTime / 20), left - 6, top + 3, 0xFFFFFF);
+        String useTimeText = CONSUMABLE_USE_FORMAT.format(useTime / 20.0F);
+        int textWidth = font.getStringWidth(useTimeText);
+        float left = (width - textWidth) / 2.0F;
+        float top = (height - font.FONT_HEIGHT) / 2.0F + 15.0F;
+        int margin = 2;
+        float leftPos = left - margin;
+        float rightPos = left + textWidth + margin;
+        float topPos = top - margin;
+        float bottomPos = top + font.FONT_HEIGHT + margin + 1;
+        ImageUtil.drawShape(leftPos, topPos, rightPos, bottomPos, 0xFF << 24);
+        ImageUtil.drawShape(leftPos, bottomPos - 1, rightPos, bottomPos, 0x66FFFFFF);
+        float xDiff = rightPos - leftPos;
+        ImageUtil.drawShape(leftPos, bottomPos - 1, leftPos + xDiff * progress, bottomPos, 0xFFFFFFFF);
+        font.drawStringWithShadow(useTimeText, left, top + 0.5F, 0xFFFFFF);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     private static boolean isEquipAnimationDone(Minecraft mc) {
         ItemRenderer renderer = mc.getItemRenderer();
         return renderer.equippedProgressMainHand == 1.0F;
+    }
+
+    static {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        CONSUMABLE_USE_FORMAT.setDecimalFormatSymbols(symbols);
     }
 }
