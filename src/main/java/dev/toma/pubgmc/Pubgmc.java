@@ -7,8 +7,9 @@ import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
-import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
-import dev.toma.pubgmc.api.game.util.SharedProperties;
+import dev.toma.pubgmc.api.properties.Properties;
+import dev.toma.pubgmc.api.properties.SharedProperties;
+import dev.toma.pubgmc.api.properties.PropertyType;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.GameDataImpl;
@@ -162,11 +163,9 @@ public class Pubgmc {
         DataVersionManager.load();
     }
 
-    // TODO rework property types to support global properties
-    @Deprecated
     private static void registerProperties() {
-        PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.KILLS);
-        PlayerPropertyHolder.PropertyType.registerProperty(SharedProperties.GAME_TIMESTAMP);
+        Properties.registerProperty(SharedProperties.KILLS);
+        Properties.registerProperty(SharedProperties.GAME_TIMESTAMP);
     }
 
     public static boolean isOutdated() {

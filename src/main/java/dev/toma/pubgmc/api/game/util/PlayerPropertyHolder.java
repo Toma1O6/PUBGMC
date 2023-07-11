@@ -1,15 +1,18 @@
 package dev.toma.pubgmc.api.game.util;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.properties.Properties;
+import dev.toma.pubgmc.api.properties.PropertyType;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import org.apache.logging.log4j.util.TriConsumer;
 
-import java.util.*;
-import java.util.function.BiFunction;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public final class PlayerPropertyHolder {
 
@@ -112,79 +115,6 @@ public final class PlayerPropertyHolder {
         }
     }
 
-    public static final class PropertyType<V> {
-
-        private static final Map<ResourceLocation, PropertyType<?>> REGISTERED_PROPERTIES = new HashMap<>();
-
-        private final ResourceLocation identifier;
-        private final PropertyValueSerializer<V> serializer;
-
-        public PropertyType(ResourceLocation identifier, PropertyValueSerializer<V> serializer) {
-            this.identifier = identifier;
-            this.serializer = serializer;
-        }
-
-        public static PropertyType<Integer> intProperty(ResourceLocation identifier) {
-            return new PropertyType<>(identifier, PropertyValueSerializer.primitive(
-                    NBTTagCompound::setInteger, NBTTagCompound::getInteger
-            ));
-        }
-
-        public static PropertyType<Long> longProperty(ResourceLocation identifier) {
-            return new PropertyType<>(identifier, PropertyValueSerializer.primitive(
-                    NBTTagCompound::setLong, NBTTagCompound::getLong
-            ));
-        }
-
-        public static void registerProperty(PropertyType<?> type) {
-            REGISTERED_PROPERTIES.put(type.identifier, type);
-        }
-
-        @SuppressWarnings("unchecked")
-        public static <T> PropertyType<T> getProperty(ResourceLocation identifier) {
-            return (PropertyType<T>) REGISTERED_PROPERTIES.get(identifier);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PropertyType<?> that = (PropertyType<?>) o;
-            return Objects.equals(identifier, that.identifier);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(identifier);
-        }
-
-        @Override
-        public String toString() {
-            return identifier.toString();
-        }
-    }
-
-    public interface PropertyValueSerializer<V> {
-        void toNbt(NBTTagCompound nbt, String propertyId, V value);
-
-        V fromNbt(NBTTagCompound nbt, String propertyId);
-
-        static <T> PropertyValueSerializer<T> primitive(TriConsumer<NBTTagCompound, String, T> nbtSerialize,
-                                                        BiFunction<NBTTagCompound, String, T> nbtDeserialize) {
-            return new PropertyValueSerializer<T>() {
-                @Override
-                public void toNbt(NBTTagCompound nbt, String propertyId, T value) {
-                    nbtSerialize.accept(nbt, propertyId, value);
-                }
-
-                @Override
-                public T fromNbt(NBTTagCompound nbt, String propertyId) {
-                    return nbtDeserialize.apply(nbt, propertyId);
-                }
-            };
-        }
-    }
-
     private static final class ScoreEntry {
 
         private final String username;
@@ -202,8 +132,7 @@ public final class PlayerPropertyHolder {
             for (Map.Entry<PropertyType<?>, Object> entry : properties.entrySet()) {
                 PropertyType<T> type = (PropertyType<T>) entry.getKey();
                 T value = (T) entry.getValue();
-                PropertyValueSerializer<T> serializer = type.serializer;
-                serializer.toNbt(props, type.identifier.toString(), value);
+                type.serializeTo(props, value);
             }
             nbt.setTag("props", props);
             return nbt;
@@ -215,13 +144,12 @@ public final class PlayerPropertyHolder {
             Set<String> keys = props.getKeySet();
             ScoreEntry entry = new ScoreEntry(username);
             for (String key : keys) {
-                PropertyType<T> type = PropertyType.getProperty(new ResourceLocation(key));
+                PropertyType<T> type = Properties.getProperty(new ResourceLocation(key));
                 if (type == null) {
                     Pubgmc.logger.warn("Unknown property type '{}', skipping...", key);
                     continue;
                 }
-                PropertyValueSerializer<T> serializer = type.serializer;
-                T value = serializer.fromNbt(props, key);
+                T value = type.deserializeFrom(props, key);
                 entry.properties.put(type, value);
             }
             return entry;

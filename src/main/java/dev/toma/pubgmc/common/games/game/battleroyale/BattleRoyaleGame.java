@@ -21,7 +21,7 @@ import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
-import dev.toma.pubgmc.api.game.util.SharedProperties;
+import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.ai.*;

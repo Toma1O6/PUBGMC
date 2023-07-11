@@ -7,7 +7,7 @@ import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
-import dev.toma.pubgmc.api.game.util.SharedProperties;
+import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.map.SpawnerPoint;
