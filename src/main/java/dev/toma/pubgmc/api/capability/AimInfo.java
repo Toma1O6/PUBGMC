@@ -25,7 +25,8 @@ public class AimInfo implements INBTSerializable<NBTTagCompound> {
         EntityPlayer player = data.getPlayer();
         boolean server = !player.world.isRemote;
         int equippedSlot = player.inventory.currentItem;
-        if (aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.getReloadInfo().isReloading())) {
+        float fallDistance = player.fallDistance;
+        if (aiming && server && (!(player.getHeldItemMainhand().getItem() instanceof GunBase) || equippedSlot != slot || player.isSprinting() || data.getReloadInfo().isReloading() || fallDistance > 0.5F)) {
             setAiming(false, STOP_AIMING_SPEED);
             data.sync();
         }
