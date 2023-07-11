@@ -18,6 +18,7 @@ public abstract class MenuDisplayContent {
     public static void registerDeserializers() {
         addDeserializer("event", CommunityEvent::deserialize);
         addDeserializer("announcement", Announcement::deserialize);
+        addDeserializer("server", ServerPromotion::deserialize);
     }
 
     @SideOnly(Side.CLIENT)

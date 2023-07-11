@@ -231,7 +231,8 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
             optional.map(ContentResult::getMenuDisplayContents).ifPresent(arr -> {
                 for (MenuDisplayContent mdc : arr) {
-                    msgComponents.add(mdc.createWidget(parent, x + 4, y + 15, width - 8, 40));
+                    Widget widget = mdc.createWidget(parent, x + 4, y + 15, width - 8, 40);
+                    msgComponents.add(widget);
                 }
             });
             updateChilds();
@@ -239,8 +240,9 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
 
         @Override
         public boolean handleClicked(int mouseX, int mouseY, int mouseButton) {
-            for (Widget component : msgComponents) {
-                if (component.handleClicked(mouseX, mouseY, mouseButton)) {
+            if (currentMsg >= 0 && currentMsg < msgComponents.size()) {
+                Widget widget = msgComponents.get(currentMsg);
+                if (widget.handleClicked(mouseX, mouseY, mouseButton)) {
                     return true;
                 }
             }

@@ -102,7 +102,7 @@ public class ContentManager {
     }
 
     String getRawContent() throws Exception {
-        boolean forceUrlParse = true;
+        boolean forceUrlParse = false;
         BufferedReader reader;
         if (Pubgmc.isDevEnvironment && !forceUrlParse) {
             String path = "./content.json";

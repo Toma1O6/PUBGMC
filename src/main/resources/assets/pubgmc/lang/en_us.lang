@@ -344,6 +344,8 @@ label.pubgmc.confirm=Confirm
 label.pubgmc.ignore=Ignore
 label.pubgmc.bot.prefix=[Bot]
 label.pubgmc.data.mismatch=Mismatched data version: %s
+label.pubgmc.server_promo=Official Server Invite
+label.pubgmc.click_to_join=Click to join
 
 label.pubgmc.game.battleroyale.kill.single=%s KILL
 label.pubgmc.game.battleroyale.kill.multiple=%s KILLS
