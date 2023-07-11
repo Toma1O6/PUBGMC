@@ -60,7 +60,7 @@ public class TeamPanelRenderer {
             return;
         }
         if (!offsetsY) {
-            y = y - size * 15;
+            y = y - Math.min(size, maxPlayerCount) * 15;
         }
         WorldClient client = minecraft.world;
         int index = 0;
