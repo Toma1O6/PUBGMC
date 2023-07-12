@@ -7,20 +7,15 @@ import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.CheckboxWidget;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.util.helper.ImageUtil;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GuiUpdateDataFiles extends GuiWidgets {
 

@@ -1,23 +1,15 @@
 package dev.toma.pubgmc.common.games.game.ffa;
 
 import com.google.common.collect.ImmutableSet;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class FFAParticipantManager {
 

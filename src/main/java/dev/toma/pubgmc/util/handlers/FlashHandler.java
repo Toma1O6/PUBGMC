@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -71,7 +70,7 @@ public final class FlashHandler {
         return amount;
     }
 
-    // TODO wtf
+    // TODO rework to use something better than this
     public static boolean isInRangeToFlash(EntityLivingBase player, EntityFlashBang flash) {
         Vec3d playerPos = PUBGMCUtil.getPositionVec(player);
         Vec3d playerLook = player.getLookVec();

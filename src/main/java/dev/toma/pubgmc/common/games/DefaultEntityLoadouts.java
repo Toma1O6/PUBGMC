@@ -12,7 +12,6 @@ import dev.toma.pubgmc.api.item.SpecialInventoryItem;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGameConfiguration;
-import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.data.loot.*;
 import dev.toma.pubgmc.data.loot.processor.AmmoPackProcessor;

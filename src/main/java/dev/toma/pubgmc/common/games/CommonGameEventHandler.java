@@ -42,8 +42,6 @@ public final class CommonGameEventHandler {
         }
     }
 
-    // TODO other events
-
     @SubscribeEvent
     public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {

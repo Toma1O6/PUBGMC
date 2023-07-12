@@ -11,18 +11,9 @@ import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
-import dev.toma.pubgmc.api.game.team.SimpleTeamInviteManager;
-import dev.toma.pubgmc.api.game.team.SizeLimitedTeamManager;
-import dev.toma.pubgmc.api.game.team.TeamGame;
-import dev.toma.pubgmc.api.game.team.TeamInviteManager;
-import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.team.TeamRelations;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
-import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
-import dev.toma.pubgmc.api.game.util.GameRuleStorage;
-import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.team.*;
+import dev.toma.pubgmc.api.game.util.*;
 import dev.toma.pubgmc.api.properties.SharedProperties;
-import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
@@ -35,14 +26,6 @@ import dev.toma.pubgmc.common.games.util.TeamAIManager;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,6 +45,13 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>, InventoryRestrictingGame {
 

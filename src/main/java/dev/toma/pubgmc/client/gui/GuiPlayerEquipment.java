@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.gui;
 
 import dev.toma.pubgmc.Pubgmc;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,17 +14,6 @@ public class GuiPlayerEquipment extends GuiContainer {
 
     public GuiPlayerEquipment(Container container) {
         super(container);
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-        // TODO button to return back to players inventory
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        // TODO handle button press events
     }
 
     @Override

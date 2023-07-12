@@ -6,19 +6,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.data.DataVersion.CompareResult;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import net.minecraft.util.ResourceLocation;
+import java.util.*;
 
 public final class DataVersionManager {
 

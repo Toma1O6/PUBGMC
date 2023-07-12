@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.client.gui.menu;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.DataVersion.CompareResult;
 import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.client.content.*;
@@ -10,9 +9,6 @@ import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.ImageButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.util.helper.ImageUtil;
-
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.util.ITickable;
@@ -26,6 +22,7 @@ import net.minecraftforge.fml.client.GuiModList;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class GuiMenu extends GuiWidgets implements RefreshListener {

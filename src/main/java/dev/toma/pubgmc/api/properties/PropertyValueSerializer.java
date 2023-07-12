@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.api.properties;
 
-import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.logging.log4j.util.TriConsumer;
 

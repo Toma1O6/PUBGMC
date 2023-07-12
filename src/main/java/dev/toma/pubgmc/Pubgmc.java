@@ -9,7 +9,6 @@ import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.properties.Properties;
 import dev.toma.pubgmc.api.properties.SharedProperties;
-import dev.toma.pubgmc.api.properties.PropertyType;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.GameDataImpl;

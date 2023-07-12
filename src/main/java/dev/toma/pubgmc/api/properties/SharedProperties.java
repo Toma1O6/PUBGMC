@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.api.properties;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.api.properties.PropertyType;
 
 public final class SharedProperties {
 

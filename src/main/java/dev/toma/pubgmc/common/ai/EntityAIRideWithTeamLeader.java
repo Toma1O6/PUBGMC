@@ -94,7 +94,6 @@ public class EntityAIRideWithTeamLeader extends EntityAIBase {
     private void updateTeamLeader() {
         GameDataProvider.getGameData(entity.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            if (entity.world.isRemote) return; // TODO is this even needed?
             if (game.isStarted() && game instanceof TeamGame<?>) {
                 TeamGame<?> teamGame = (TeamGame<?>) game;
                 TeamManager teamManager = teamGame.getTeamManager();

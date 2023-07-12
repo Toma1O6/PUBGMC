@@ -241,7 +241,6 @@ public class TeamCommand extends AbstractCommand {
         if (game.isStarted()) {
             throw new WrongUsageException("You cannot kick players during active game");
         }
-        // TODO reasons - needs to improve command parser
         if (teamManager.tryLeaveTeam(target, senderTeam, true)) {
             ITextComponent message = new TextComponentTranslation("commands.pubgmc.team.member_kick.team", target.getDisplayName());
             forEachPlayerTeamMember(senderTeam.getAllMembers().values(), sender.world, player -> player.sendMessage(message));
