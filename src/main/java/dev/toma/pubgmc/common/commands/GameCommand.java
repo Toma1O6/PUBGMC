@@ -470,7 +470,7 @@ public class GameCommand extends AbstractCommand {
     private static void leaveGame(CommandContext context, boolean confirmed) throws CommandException {
         GameData gameData = getGameData(context);
         Game<?> game = gameData.getCurrentGame();
-        if (game == NoGame.INSTANCE || !game.isStarted()) {
+        if (game == NoGame.INSTANCE) {
             throw new WrongUsageException("There is no active game");
         }
         ICommandSender sender = context.getSender();

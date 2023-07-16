@@ -202,9 +202,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     public boolean playerLeaveGame(EntityPlayer player) {
         if (participantManager.isParticipant(player)) {
             participantManager.removePlayer(player.getUniqueID());
+            properties.delete(player.getUniqueID());
             GameHelper.moveToLobby(player);
-            if (started) {
-                // TODO add AI backup
+            if (started && !player.world.isRemote) {
+                createAi((WorldServer) player.world);
             }
             return true;
         }
@@ -219,9 +220,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         int players = participantManager.getPlayerParticipantsCount();
         if (players < configuration.entityCount) {
             participantManager.registerPlayer(player);
-            if (started) {
-                // TODO mark player for respawn
-                // TODO replace one AI with this player
+            properties.register(player);
+            if (started && !player.world.isRemote) {
+                respawnPlayer(player);
+                participantManager.removeSingleAi((WorldServer) player.world);
             } else {
                 GameHelper.moveToLobby(player);
             }

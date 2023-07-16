@@ -241,7 +241,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     @Override
     public boolean playerLeaveGame(EntityPlayer player) {
         Team team = teamManager.getEntityTeam(player);
-        if (team != null && team.isMember(player.getUniqueID())) {
+        if (started && team != null && team.isMember(player.getUniqueID())) {
             teamManager.eliminate(player);
             return true;
         }

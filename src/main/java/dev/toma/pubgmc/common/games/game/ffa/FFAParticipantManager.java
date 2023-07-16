@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.games.game.ffa;
 
 import com.google.common.collect.ImmutableSet;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -49,6 +50,17 @@ public final class FFAParticipantManager {
 
     public int getPlayerParticipantsCount() {
         return players.size();
+    }
+
+    public void removeSingleAi(WorldServer server) {
+        List<UUID> uuids = new ArrayList<>(aiData.keySet());
+        UUID random = PUBGMCUtil.randomListElement(uuids, server.rand);
+        Entity entity = server.getEntityFromUuid(random);
+        if (entity != null) {
+            entity.setDead();
+        }
+        aiData.remove(random);
+        respawnAi.remove(random);
     }
 
     public List<EntityPlayer> getPlayerParticipants(World world) {

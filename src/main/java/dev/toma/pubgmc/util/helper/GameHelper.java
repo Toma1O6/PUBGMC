@@ -276,7 +276,7 @@ public final class GameHelper {
     }
 
     public static void teleport(Entity entity, double x, double y, double z) {
-        if (entity.world.isRemote)
+        if (entity.world.isRemote || !entity.isEntityAlive())
             return;
         entity.dismountRidingEntity();
         if (entity instanceof EntityPlayerMP) {
