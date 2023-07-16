@@ -22,6 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -167,5 +168,18 @@ public class PUBGMCUtil {
         for (EntityEquipmentSlot slot : EntityEquipmentSlot.values()) {
             living.setItemStackToSlot(slot, ItemStack.EMPTY);
         }
+    }
+
+    public static BlockPos getClosestPosition(Collection<BlockPos> positions, BlockPos pos) {
+        BlockPos selected = null;
+        double distance = Double.MAX_VALUE;
+        for (BlockPos position : positions) {
+            double d = pos.distanceSq(position);
+            if (d < distance) {
+                distance = d;
+                selected = position;
+            }
+        }
+        return selected;
     }
 }

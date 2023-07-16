@@ -955,6 +955,7 @@ public class CommonRegistry {
     @SubscribeEvent
     public static void registerPointTypes(PubgmcRegistryEvent.PointType event) {
         event.register(GameMapPoints.SPAWNER);
+        event.register(GameMapPoints.POINT_OF_INTEREST);
     }
 
     @SubscribeEvent

@@ -16,6 +16,7 @@ import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAIMoveIntoPlayzone;
 import dev.toma.pubgmc.common.ai.EntityAITeamAwareNearestAttackableTarget;
+import dev.toma.pubgmc.common.ai.EntityAIVisitMapPoint;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
@@ -288,6 +289,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         EntityAIPlayer.addDefaultTasks(player);
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
         player.tasks.addTask(2, new EntityAIGunAttack(player));
+        player.tasks.addTask(4, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAIHurtByTarget(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
@@ -399,7 +401,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
                 game.participantManager.markAiAsDead(entity.getUniqueID());
                 deathMessage = true;
             }
-            if (deathMessage) {
+            if (deathMessage && !entity.world.isRemote) {
                 DeathMessage message = GameHelper.createDefaultDeathMessage(entity, source);
                 game.deathMessages.push(message);
             }

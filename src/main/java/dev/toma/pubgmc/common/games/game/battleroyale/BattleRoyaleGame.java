@@ -20,6 +20,7 @@ import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
@@ -395,6 +396,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         player.tasks.addTask(4, new EntityAIMoveToTeamLeader(player, 32, 1.20F));
         player.tasks.addTask(5, new EntityAIHeal<>(player, 12.0F, EntityAIPlayer::getInventory));
         player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> playzone.getResultingPlayzone()));
+        player.tasks.addTask(7, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAICallTeamForHelp(player));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
