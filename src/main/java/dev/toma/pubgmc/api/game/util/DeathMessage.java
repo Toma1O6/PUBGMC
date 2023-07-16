@@ -5,6 +5,7 @@ import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -141,6 +142,26 @@ public final class DeathMessage {
             if (!world.isRemote)
                 return NORMAL;
             return getClientType(message, manager);
+        }
+
+        public static Type getSoloType(DeathMessage deathMessage, World world) {
+            if (!world.isRemote)
+                return NORMAL;
+            return getClientSoloType(deathMessage);
+        }
+
+        @SideOnly(Side.CLIENT)
+        private static Type getClientSoloType(DeathMessage deathMessage) {
+            Minecraft client = Minecraft.getMinecraft();
+            if (client.getRenderViewEntity() != null) {
+                UUID myId = client.getRenderViewEntity().getUniqueID();
+                if (Objects.equals(myId, deathMessage.victimId)) {
+                    return FRIENDLY_DEATH;
+                } else if (Objects.equals(myId, deathMessage.killerId)) {
+                    return FRIENDLY_KILL;
+                }
+            }
+            return NORMAL;
         }
 
         @SideOnly(Side.CLIENT)

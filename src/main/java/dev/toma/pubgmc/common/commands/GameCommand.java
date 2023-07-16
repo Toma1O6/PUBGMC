@@ -406,6 +406,9 @@ public class GameCommand extends AbstractCommand {
             }
             map = insideMaps.get(0);
         }
+        if (!map.isWithin(pos)) {
+            throw new WrongUsageException("Unable to add point outside game map");
+        }
         GameMapPoint point = pointType.createPointInstance(pos, sender.getEntityWorld(), map);
         map.setMapPoint(pos, point);
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.poi_added", pointType.getIdentifier(), map.getMapName()));

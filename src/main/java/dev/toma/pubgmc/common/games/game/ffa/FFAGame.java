@@ -8,6 +8,8 @@ import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
+import dev.toma.pubgmc.api.game.util.DeathMessage;
+import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
@@ -62,6 +64,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     private final FFALoadoutManager loadoutManager;
     private final PlayerPropertyHolder properties;
     private final SpawnPointSelector<SpawnerPoint> spawnerSelector;
+    private final DeathMessageContainer deathMessages;
     private AbstractDamagingPlayzone playzone;
     private boolean started;
     private long gametime;
@@ -75,6 +78,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         this.loadoutManager = new FFALoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
         this.properties = new PlayerPropertyHolder();
         this.spawnerSelector = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMap);
+        this.deathMessages = new DeathMessageContainer(7, 60);
 
         this.addListener(new EventListener(this));
     }
@@ -173,6 +177,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
                 respawnAiEntities(server);
             }
         }
+        deathMessages.tick();
         ++gametime;
     }
 
@@ -234,12 +239,20 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         listeners.forEach(consumer);
     }
 
+    public int getTimeRemaining() {
+        return timeRemaining;
+    }
+
     public AbstractDamagingPlayzone getPlayzone() {
         return playzone;
     }
 
     public PlayerPropertyHolder getProperties() {
         return properties;
+    }
+
+    public DeathMessageContainer getDeathMessageHolder() {
+        return deathMessages;
     }
 
     public void selectLoadout(UUID uuid, int loadout, World world) {
@@ -370,17 +383,25 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             EntityLivingBase entity = event.getEntityLiving();
             DamageSource source = event.getSource();
             Entity killer = source.getTrueSource();
+            boolean deathMessage = false;
             if (entity instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) entity;
                 if (game.participantManager.isParticipant(player)) {
                     player.inventory.clear();
                     awardKill(killer);
+                    deathMessage = true;
                 }
             } else if (game.participantManager.isAiParticipant(entity)) {
                 awardKill(killer);
                 game.properties.setProperty(entity.getUniqueID(), SharedProperties.GAME_TIMESTAMP, game.gametime);
                 game.participantManager.markAiAsDead(entity.getUniqueID());
+                deathMessage = true;
             }
+            if (deathMessage) {
+                DeathMessage message = GameHelper.createDefaultDeathMessage(entity, source);
+                game.deathMessages.push(message);
+            }
+            GameHelper.requestClientGameDataSynchronization(entity.world);
         }
 
         @Override
@@ -427,6 +448,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
                 nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
             }
             nbt.setTag("loadouts", game.loadoutManager.serialize());
+            nbt.setTag("deathMessages", game.deathMessages.serialize());
             return nbt;
         }
 
@@ -444,6 +466,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
                 ffaGame.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
             }
             ffaGame.loadoutManager.deserialize(nbt.getCompoundTag("loadouts"));
+            ffaGame.deathMessages.deserialize(nbt.getCompoundTag("deathMessages"));
             return ffaGame;
         }
 
