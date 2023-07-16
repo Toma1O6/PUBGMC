@@ -22,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -275,8 +276,15 @@ public final class GameHelper {
     }
 
     public static void teleport(Entity entity, double x, double y, double z) {
+        if (entity.world.isRemote)
+            return;
         entity.dismountRidingEntity();
-        entity.setPositionAndUpdate(x, y, z);
+        if (entity instanceof EntityPlayerMP) {
+            entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
+            ((EntityPlayerMP) entity).connection.setPlayerLocation(x, y, z, entity.rotationYaw, entity.rotationPitch);
+        } else {
+            entity.setPositionAndUpdate(x, y, z);
+        }
     }
 
     public static DeathMessage createDefaultDeathMessage(EntityLivingBase victim, DamageSource source) {

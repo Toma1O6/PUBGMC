@@ -10,6 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class PlayerPropertyHolder {
 
@@ -26,6 +27,13 @@ public final class PlayerPropertyHolder {
 
     public void delete(UUID uuid) {
         playerScoreEntries.remove(uuid);
+    }
+
+    public <T> List<UUID> getSortedOwners(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+        List<UUID> list = new ArrayList<>(playerScoreEntries.keySet());
+        return list.stream()
+                .sorted(Comparator.comparing(uuid -> getProperty(uuid, type, defaultValue), comparator))
+                .collect(Collectors.toList());
     }
 
     public <V> void registerProperty(PropertyType<V> type, V initialValue) {

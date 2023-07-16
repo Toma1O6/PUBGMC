@@ -347,6 +347,8 @@ label.pubgmc.data.mismatch=Mismatched data version: %s
 label.pubgmc.server_promo=Official Server Invite
 label.pubgmc.click_to_join=Click to join
 label.pubgmc.select_loadout=Select loadout
+label.pubgmc.name=Name
+label.pubgmc.kills=Kills
 
 label.pubgmc.game.battleroyale.kill.single=%s KILL
 label.pubgmc.game.battleroyale.kill.multiple=%s KILLS

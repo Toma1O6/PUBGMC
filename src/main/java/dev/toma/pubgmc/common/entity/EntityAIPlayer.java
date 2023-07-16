@@ -17,6 +17,7 @@ import dev.toma.pubgmc.common.items.guns.GunAttachments;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
 import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.util.RandomBotNameGenerator;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
@@ -57,6 +58,13 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
         this.variant = worldIn.rand.nextInt(4);
+
+        setRandomName(this);
+    }
+
+    public static void setRandomName(EntityAIPlayer aiPlayer) {
+        aiPlayer.setCustomNameTag(RandomBotNameGenerator.generateBotName().getFormattedText());
+        aiPlayer.setAlwaysRenderNameTag(false);
     }
 
     @Override

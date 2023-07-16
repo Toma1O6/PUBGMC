@@ -8,6 +8,7 @@ import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -39,7 +40,9 @@ public final class GameRendererManager {
 
     public <G extends Game<?>> void renderCurrentGameHUDOverlay(RenderGameOverlayEvent.Pre event) {
         Minecraft minecraft = Minecraft.getMinecraft();
+        Profiler profiler = minecraft.mcProfiler;
         World world = minecraft.world;
+        profiler.startSection("pubgmc:game_hud");
         G game = getActiveGame(world);
         if (game != null) {
             GameType<?, G> type = (GameType<?, G>) game.getGameType();
@@ -53,11 +56,14 @@ public final class GameRendererManager {
                 event.setCanceled(true);
             }
         }
+        profiler.endSection();
     }
 
     public <G extends Game<?>> void renderWorldOverlay(float partialTicks) {
         Minecraft minecraft = Minecraft.getMinecraft();
+        Profiler profiler = minecraft.mcProfiler;
         World world = minecraft.world;
+        profiler.startSection("pubgmc:game_world_renderer");
         G game = getActiveGame(world);
         if (game != null) {
             GameType<?, G> type = (GameType<?, G>) game.getGameType();
@@ -72,6 +78,7 @@ public final class GameRendererManager {
             double z = PUBGMCUtil.interpolate(entity.lastTickPosZ, entity.posZ, partialTicks);
             renderer.renderInWorld(world, game, x, y, z, partialTicks);
         }
+        profiler.endSection();
     }
 
     private <G extends Game<?>> G getActiveGame(World world) {

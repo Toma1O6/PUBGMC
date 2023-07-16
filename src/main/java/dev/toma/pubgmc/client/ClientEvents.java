@@ -17,6 +17,7 @@ import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
+import dev.toma.pubgmc.client.games.FFAGameRenderer;
 import dev.toma.pubgmc.client.games.GameRendererManager;
 import dev.toma.pubgmc.client.games.MapPointRendererManager;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
@@ -97,6 +98,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void registerGameRenderers(RegisterGameRendererEvent event) {
         event.registerRenderer(GameTypes.BATTLE_ROYALE, new BattleRoyaleGameRenderer());
+        event.registerRenderer(GameTypes.FFA, new FFAGameRenderer());
     }
 
     @SubscribeEvent

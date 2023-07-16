@@ -114,8 +114,6 @@ public class CommonEvents {
             if (gameId.equals(GameHelper.DEFAULT_UUID)) {
                 LoadoutManager.apply(aiPlayer, EntityAIPlayer.DEFAULT_LOADOUT);
             }
-            aiPlayer.setCustomNameTag(RandomBotNameGenerator.generateBotName().getFormattedText());
-            aiPlayer.setAlwaysRenderNameTag(false);
         }
     }
 

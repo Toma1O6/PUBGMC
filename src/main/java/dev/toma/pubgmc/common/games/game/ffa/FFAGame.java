@@ -233,6 +233,14 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         listeners.forEach(consumer);
     }
 
+    public AbstractDamagingPlayzone getPlayzone() {
+        return playzone;
+    }
+
+    public PlayerPropertyHolder getProperties() {
+        return properties;
+    }
+
     public void selectLoadout(UUID uuid, int loadout, World world) {
         loadoutManager.selectByIndex(uuid, loadout);
         GameHelper.requestClientGameDataSynchronization(world);
