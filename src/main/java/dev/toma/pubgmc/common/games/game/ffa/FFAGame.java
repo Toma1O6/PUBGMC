@@ -44,6 +44,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import javax.annotation.Nullable;
@@ -405,11 +406,26 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         }
 
         @Override
+        public void onEntityHurt(LivingHurtEvent event) {
+            EntityLivingBase entityLivingBase = event.getEntityLiving();
+            UUID uuid = entityLivingBase.getUniqueID();
+            if (game.participantManager.isEntityParticipant(entityLivingBase)) {
+                long spawnTimestamp = game.properties.getProperty(uuid, SharedProperties.GAME_TIMESTAMP, 0L);
+                long timeDiff = game.gametime - spawnTimestamp;
+                if (timeDiff < game.configuration.spawnProtectionTime) {
+                    event.setCanceled(true);
+                }
+            }
+        }
+
+        @Override
         public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
             EntityPlayer player = event.player;
             if (game.participantManager.isParticipant(player)) {
                 if (game.started) {
                     game.respawnPlayer(player);
+                    player.hurtResistantTime = 0;
+                    player.hurtTime = 0;
                 } else {
                     GameHelper.moveToLobby(player);
                 }
