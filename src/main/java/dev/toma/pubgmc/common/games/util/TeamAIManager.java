@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.games.util;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -110,12 +111,8 @@ public class TeamAIManager {
         nbt.setInteger("total", totalAiCount);
         nbt.setInteger("toSpawn", allowedAiSpawnCount);
         nbt.setInteger("dead", deadEntities);
-        NBTTagList spawned = new NBTTagList();
-        spawnedEntities.forEach(uuid -> spawned.appendTag(new NBTTagString(uuid.toString())));
-        NBTTagList despawned = new NBTTagList();
-        despawnedEntities.forEach(uuid -> despawned.appendTag(new NBTTagString(uuid.toString())));
-        nbt.setTag("spawned", spawned);
-        nbt.setTag("despawned", despawned);
+        nbt.setTag("spawned", SerializationHelper.collectionToNbt(spawnedEntities, uuid -> new NBTTagString(uuid.toString())));
+        nbt.setTag("despawned", SerializationHelper.collectionToNbt(despawnedEntities, uuid -> new NBTTagString(uuid.toString())));
         return nbt;
     }
 
@@ -125,9 +122,7 @@ public class TeamAIManager {
         totalAiCount = nbt.getInteger("total");
         allowedAiSpawnCount = nbt.getInteger("toSpawn");
         deadEntities = nbt.getInteger("dead");
-        NBTTagList spawned = nbt.getTagList("spawned", Constants.NBT.TAG_STRING);
-        NBTTagList despawned = nbt.getTagList("despawned", Constants.NBT.TAG_STRING);
-        spawned.forEach(tag -> spawnedEntities.add(UUID.fromString(((NBTTagString) tag).getString())));
-        despawned.forEach(tag -> despawnedEntities.add(UUID.fromString(((NBTTagString) tag).getString())));
+        SerializationHelper.collectionFromNbt(spawnedEntities, nbt.getTagList("spawned", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
+        SerializationHelper.collectionFromNbt(despawnedEntities, nbt.getTagList("despawned", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
     }
 }

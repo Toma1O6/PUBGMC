@@ -72,8 +72,8 @@ public class EntityAIGunAttack extends EntityAIBase {
     public void updateTask() {
         EntityLivingBase target = aiPlayer.getAttackTarget();
         double distanceToTarget = Math.sqrt(aiPlayer.getDistanceSq(target));
-        boolean flag = aiPlayer.getEntitySenses().canSee(target);
-        if (flag) {
+        boolean canSee = aiPlayer.getEntitySenses().canSee(target);
+        if (canSee) {
             timeWatching++;
         } else timeWatching = 0;
         if (aiPlayer.hasNoWeapon()) {
@@ -83,12 +83,12 @@ public class EntityAIGunAttack extends EntityAIBase {
         if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             int tableIndex = gun.getGunType().ordinal();
-            if (distanceToTarget <= EFFECTIVE_RANGE_TABLE[tableIndex] * 3.0) {
+            if (canSee && distanceToTarget <= EFFECTIVE_RANGE_TABLE[tableIndex] * 3.0) {
                 aiPlayer.getNavigator().clearPath();
             } else aiPlayer.getNavigator().tryMoveToEntityLiving(target, 1.0D);
             aiPlayer.getLookHelper().setLookPositionWithEntity(target, 30, 30);
             if (timeWatching >= 15 && --shootCooldown <= 0) {
-                if (!flag) {
+                if (!canSee) {
                     return;
                 }
                 Vec3d start = aiPlayer.getPositionVector().addVector(0, aiPlayer.getEyeHeight(), 0);
@@ -101,6 +101,7 @@ public class EntityAIGunAttack extends EntityAIBase {
                     float direction = aiPlayer.world.rand.nextBoolean() ? 1.0F : -1.0F;
                     EntityMoveHelper moveHelper = aiPlayer.getMoveHelper();
                     moveHelper.strafe(1.0F, direction);
+                    aiPlayer.getLookHelper().setLookPositionWithEntity(target, 30, 30);
                 }
             }
         }

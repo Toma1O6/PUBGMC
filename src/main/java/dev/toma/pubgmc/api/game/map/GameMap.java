@@ -5,14 +5,12 @@ import com.google.common.collect.Multimap;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public final class GameMap implements Bounds {
@@ -87,9 +85,7 @@ public final class GameMap implements Bounds {
         nbt.setString("name", mapName);
         nbt.setTag("min", min.toNbt());
         nbt.setTag("max", max.toNbt());
-        NBTTagList poiList = new NBTTagList();
-        pointsByPosition.values().forEach(point -> poiList.appendTag(GameMapPointType.serializePointData(point)));
-        nbt.setTag("pois", poiList);
+        nbt.setTag("pois", SerializationHelper.collectionToNbt(pointsByPosition.values(), GameMapPointType::serializePointData));
         return nbt;
     }
 
@@ -98,14 +94,9 @@ public final class GameMap implements Bounds {
         Position2 min = new Position2(nbt.getCompoundTag("min"));
         Position2 max = new Position2(nbt.getCompoundTag("max"));
         GameMap map = new GameMap(name, min, max);
-        NBTTagList list = nbt.getTagList("pois", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound poiData = list.getCompoundTagAt(i);
-            GameMapPoint point = GameMapPointType.deserializePointData(poiData);
-            if (point == null)
-                continue;
-            map.pointsByPosition.put(point.getPointPosition(), point);
-        }
+        List<GameMapPoint> points = new ArrayList<>();
+        SerializationHelper.collectionFromNbt(points, nbt.getTagList("pois", Constants.NBT.TAG_COMPOUND), base -> GameMapPointType.deserializePointData((NBTTagCompound) base));
+        points.forEach(point -> map.pointsByPosition.put(point.getPointPosition(), point));
         map.remapPointsByType();
         return map;
     }

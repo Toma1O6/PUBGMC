@@ -1,16 +1,16 @@
 package dev.toma.pubgmc.api.game.team;
 
 import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SimpleTeamInviteManager implements TeamInviteManager {
@@ -88,22 +88,12 @@ public class SimpleTeamInviteManager implements TeamInviteManager {
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagList list = new NBTTagList();
-        for (TeamInvite invite : invites.values()) {
-            list.appendTag(invite.serialize());
-        }
-        nbt.setTag("inviteList", list);
+        nbt.setTag("inviteList", SerializationHelper.mapToNbt(invites, Function.identity(), TeamInvite::serialize));
         return nbt;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        invites.clear();
-        NBTTagList list = nbt.getTagList("inviteList", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound tag = list.getCompoundTagAt(i);
-            TeamInvite invite = TeamInvite.deserialize(tag);
-            invites.put(invite.getUniqueKey(), invite);
-        }
+        SerializationHelper.mapFromNbt(invites, nbt.getCompoundTag("inviteList"), Function.identity(), base -> TeamInvite.deserialize((NBTTagCompound) base));
     }
 }

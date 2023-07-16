@@ -3,6 +3,7 @@ package dev.toma.pubgmc.util.helper;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
@@ -375,6 +376,13 @@ public final class GameHelper {
             Game<?> game = data.getCurrentGame();
             return game.isStarted() && game instanceof InventoryRestrictingGame;
         }).orElse(false);
+    }
+
+    public static GameMap getActiveGameMap(World world) {
+        return GameDataProvider.getGameData(world).map(data -> {
+            String mapName = data.getActiveGameMapName();
+            return data.getGameMap(mapName);
+        }).orElse(null);
     }
 
     public interface InventoryProvider {

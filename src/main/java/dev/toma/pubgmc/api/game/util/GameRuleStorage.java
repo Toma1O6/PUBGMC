@@ -1,12 +1,14 @@
 package dev.toma.pubgmc.api.game.util;
 
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Function;
 
 public final class GameRuleStorage {
 
@@ -28,19 +30,10 @@ public final class GameRuleStorage {
     }
 
     public NBTTagCompound serialize() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        for (Map.Entry<String, String> entry : ruleValues.entrySet()) {
-            nbt.setString(entry.getKey(), entry.getValue());
-        }
-        return nbt;
+        return SerializationHelper.mapToNbt(ruleValues, Function.identity(), NBTTagString::new);
     }
 
     public void deserialize(NBTTagCompound nbt) {
-        ruleValues.clear();
-        Set<String> keys = nbt.getKeySet();
-        for (String key : keys) {
-            String value = nbt.getString(key);
-            ruleValues.put(key, value);
-        }
+        SerializationHelper.mapFromNbt(ruleValues, nbt, Function.identity(), base -> ((NBTTagString) base).getString());
     }
 }

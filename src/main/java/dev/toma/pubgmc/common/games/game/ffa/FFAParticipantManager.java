@@ -1,12 +1,15 @@
 package dev.toma.pubgmc.common.games.game.ffa;
 
 import com.google.common.collect.ImmutableSet;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,10 +79,15 @@ public final class FFAParticipantManager {
 
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setTag("aiData", SerializationHelper.mapToNbt(aiData, UUID::toString, entityNbt -> entityNbt));
+        nbt.setTag("players", SerializationHelper.collectionToNbt(players, uuid -> new NBTTagString(uuid.toString())));
+        nbt.setTag("respawnAi", SerializationHelper.collectionToNbt(respawnAi, uuid -> new NBTTagString(uuid.toString())));
         return nbt;
     }
 
     public void deserialize(NBTTagCompound nbt) {
-
+        SerializationHelper.mapFromNbt(aiData, nbt.getCompoundTag("aiData"), UUID::fromString, base -> (NBTTagCompound) base);
+        SerializationHelper.collectionFromNbt(players, nbt.getTagList("players", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
+        SerializationHelper.collectionFromNbt(respawnAi, nbt.getTagList("respawnAi", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
     }
 }

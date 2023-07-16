@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.api.game.util;
 
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
@@ -46,23 +46,12 @@ public class DeathMessageContainer {
 
     public NBTTagCompound serialize() {
         NBTTagCompound compound = new NBTTagCompound();
-        NBTTagList messages = new NBTTagList();
-        for (Value value : renderingMessages) {
-            if (value != null) {
-                messages.appendTag(value.serialize());
-            }
-        }
-        compound.setTag("messages", messages);
+        compound.setTag("messages", SerializationHelper.arrayToNbt(renderingMessages, Value::serialize));
         return compound;
     }
 
     public void deserialize(NBTTagCompound nbt) {
-        Arrays.fill(renderingMessages, null);
-        NBTTagList messages = nbt.getTagList("messages", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < Math.min(messages.tagCount(), renderingMessages.length); i++) {
-            NBTTagCompound compound = messages.getCompoundTagAt(i);
-            renderingMessages[i] = Value.deserialize(compound);
-        }
+        SerializationHelper.arrayFromNbt(nbt.getTagList("messages", Constants.NBT.TAG_COMPOUND), renderingMessages, base -> Value.deserialize((NBTTagCompound) base));
     }
 
     private static final class Value {

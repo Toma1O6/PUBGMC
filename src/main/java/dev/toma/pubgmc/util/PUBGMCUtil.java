@@ -83,6 +83,14 @@ public class PUBGMCUtil {
         return list.get(random.nextInt(list.size()));
     }
 
+    @Nullable
+    public static <T> T randomArrayElement(T[] array, Random random) {
+        if (array.length == 0) {
+            return null;
+        }
+        return array[random.nextInt(array.length)];
+    }
+
     public static boolean tryQuickEquip(EntityPlayer player, SpecialEquipmentSlot slot, ItemStack stack) {
         IPlayerData data = PlayerDataProvider.get(player);
         if (data == null)

@@ -1,13 +1,16 @@
 package dev.toma.pubgmc.api.game.team;
 
 import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.NBTTagString;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class SimpleTeamManager implements TeamManager {
 
@@ -102,42 +105,17 @@ public class SimpleTeamManager implements TeamManager {
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagList teamByIdTag = new NBTTagList();
-        for (Map.Entry<UUID, Team> entry : teamById.entrySet()) {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setUniqueId("teamId", entry.getKey());
-            tag.setTag("team", entry.getValue().serialize());
-            teamByIdTag.appendTag(tag);
-        }
-        nbt.setTag("teams", teamByIdTag);
-        NBTTagCompound entityTeams = new NBTTagCompound();
-        for (Map.Entry<UUID, Team> entry : teamByEntityId.entrySet()) {
-            entityTeams.setString(entry.getKey().toString(), entry.getValue().getTeamId().toString());
-        }
-        nbt.setTag("entityTeams", entityTeams);
+        nbt.setTag("teams", SerializationHelper.mapToNbt(teamById, UUID::toString, Team::serialize));
+        nbt.setTag("entityTeams", SerializationHelper.mapToNbt(teamByEntityId, UUID::toString, team -> new NBTTagString(team.getTeamId().toString())));
         return nbt;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        teamById.clear();
-        teamByEntityId.clear();
-        NBTTagList teamList = nbt.getTagList("teams", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < teamList.tagCount(); i++) {
-            NBTTagCompound tag = teamList.getCompoundTagAt(i);
-            UUID teamId = tag.getUniqueId("teamId");
-            Team team = Team.deserialize(tag.getCompoundTag("team"));
-            teamById.put(teamId, team);
-        }
-        NBTTagCompound entityTag = nbt.getCompoundTag("entityTeams");
-        Set<String> keys = entityTag.getKeySet();
-        for (String key : keys) {
-            UUID entityId = UUID.fromString(key);
-            UUID teamId = UUID.fromString(entityTag.getString(key));
-            Team team = teamById.get(teamId);
-            if (team != null) {
-                teamByEntityId.put(entityId, team);
-            }
-        }
+        SerializationHelper.mapFromNbt(teamById, nbt.getCompoundTag("teams"), UUID::fromString, nbtBase -> Team.deserialize((NBTTagCompound) nbtBase));
+        SerializationHelper.mapFromNbt(teamByEntityId, nbt.getCompoundTag("entityTeams"), UUID::fromString, nbtBase -> {
+            UUID teamId = UUID.fromString(((NBTTagString) nbtBase).getString());
+            return teamById.get(teamId);
+        });
     }
 }

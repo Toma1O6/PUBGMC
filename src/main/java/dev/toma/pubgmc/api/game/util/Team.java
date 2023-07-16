@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game.util;
 
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -168,44 +169,19 @@ public final class Team implements Iterable<Team.Member> {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setUniqueId("teamId", teamId);
         nbt.setUniqueId("teamLeader", teamLeader.uuid);
-        NBTTagList members = new NBTTagList();
-        this.members.values().forEach(member -> members.appendTag(member.serialize()));
-        nbt.setTag("members", members);
-        NBTTagList active = new NBTTagList();
-        this.activeMembers.forEach(uuid -> active.appendTag(new NBTTagString(uuid.toString())));
-        nbt.setTag("active", active);
-        NBTTagCompound usernameTag = new NBTTagCompound();
-        for (Map.Entry<UUID, String> entry : usernames.entrySet()) {
-            usernameTag.setString(entry.getKey().toString(), entry.getValue());
-        }
-        nbt.setTag("usernames", usernameTag);
+        nbt.setTag("members", SerializationHelper.mapToNbt(members, UUID::toString, Member::serialize));
+        nbt.setTag("active", SerializationHelper.collectionToNbt(activeMembers, uuid -> new NBTTagString(uuid.toString())));
+        nbt.setTag("usernames", SerializationHelper.mapToNbt(usernames, UUID::toString, NBTTagString::new));
         return nbt;
     }
 
     public static Team deserialize(NBTTagCompound nbt) {
         UUID teamId = nbt.getUniqueId("teamId");
         UUID teamLeader = nbt.getUniqueId("teamLeader");
-        NBTTagList memberList = nbt.getTagList("members", Constants.NBT.TAG_COMPOUND);
-        Map<UUID, Member> memberMap = new HashMap<>();
-        for (int i = 0; i < memberList.tagCount(); i++) {
-            NBTTagCompound memberTag = memberList.getCompoundTagAt(i);
-            Member member = Member.deserialize(memberTag);
-            memberMap.put(member.uuid, member);
-        }
+        Map<UUID, Member> memberMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("members"), UUID::fromString, base -> Member.deserialize((NBTTagCompound) base));
+        Set<UUID> activeMembers = SerializationHelper.collectionFromNbt(HashSet::new, nbt.getTagList("active", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
+        Map<UUID, String> usernameMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("usernames"), UUID::fromString, base -> ((NBTTagString) base).getString());
         Member leader = memberMap.get(teamLeader);
-        Set<UUID> activeMembers = new HashSet<>();
-        NBTTagList activeList = nbt.getTagList("active", Constants.NBT.TAG_STRING);
-        for (int i = 0; i < activeList.tagCount(); i++) {
-            activeMembers.add(UUID.fromString(activeList.getStringTagAt(i)));
-        }
-        Map<UUID, String> usernameMap = new HashMap<>();
-        NBTTagCompound usernamesTag = nbt.getCompoundTag("usernames");
-        Set<String> ids = usernamesTag.getKeySet();
-        for (String key : ids) {
-            UUID memberId = UUID.fromString(key);
-            String name = usernamesTag.getString(key);
-            usernameMap.put(memberId, name);
-        }
         return new Team(teamId, leader, memberMap, activeMembers, usernameMap);
     }
 

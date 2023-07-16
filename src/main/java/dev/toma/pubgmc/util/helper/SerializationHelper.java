@@ -10,13 +10,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.*;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class SerializationHelper {
 
@@ -91,5 +96,86 @@ public class SerializationHelper {
 
     public static void syncEntity(Entity entity) {
         PacketHandler.sendToAllTracking(new PacketSyncEntity(entity), entity);
+    }
+
+    public static <T> NBTTagList arrayToNbt(T[] array, Function<T, NBTBase> encoder) {
+        NBTTagList list = new NBTTagList();
+        for (T t : array) {
+            if (t == null)
+                continue;
+            list.appendTag(encoder.apply(t));
+        }
+        return list;
+    }
+
+    public static <T> T[] arrayFromNbt(NBTTagList src, Function<Integer, T[]> arrayInstanceFn, Function<NBTBase, T> decoder) {
+        T[] array = arrayInstanceFn.apply(src.tagCount());
+        for (int i = 0; i < src.tagCount(); i++) {
+            NBTBase base = src.get(i);
+            array[i] = decoder.apply(base);
+        }
+        return array;
+    }
+
+    public static <T> void arrayFromNbt(NBTTagList src, T[] array, Function<NBTBase, T> decoder, @Nullable T fill) {
+        Arrays.fill(array, fill);
+        for (int i = 0; i < Math.min(array.length, src.tagCount()); i++) {
+            array[i] = decoder.apply(src.get(i));
+        }
+    }
+
+    public static <T> void arrayFromNbt(NBTTagList src, T[] array, Function<NBTBase, T> decoder) {
+        arrayFromNbt(src, array, decoder, null);
+    }
+
+    public static <T> NBTTagList collectionToNbt(Collection<T> collection, Function<T, NBTBase> encoder) {
+        NBTTagList list = new NBTTagList();
+        collection.forEach(t -> list.appendTag(encoder.apply(t)));
+        return list;
+    }
+
+    public static <T, C extends Collection<T>> C collectionFromNbt(Supplier<C> collectionProvider, NBTTagList src, Function<NBTBase, T> decoder) {
+        C collection = collectionProvider.get();
+        collectionFromNbt(collection, src, decoder);
+        return collection;
+    }
+
+    public static <T> void collectionFromNbt(Collection<T> collection, NBTTagList src, Function<NBTBase, T> decoder) {
+        collection.clear();
+        src.forEach(nbtBase -> {
+            T t = decoder.apply(nbtBase);
+            if (t != null) {
+                collection.add(t);
+            }
+        });
+    }
+
+    public static <K, V> NBTTagCompound mapToNbt(Map<K, V> map, Function<K, String> keyEncoder, Function<V, NBTBase> valueEncoder) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            String key = keyEncoder.apply(entry.getKey());
+            NBTBase base = valueEncoder.apply(entry.getValue());
+            nbt.setTag(key, base);
+        }
+        return nbt;
+    }
+
+    public static <K, V, M extends Map<K, V>> M mapFromNbt(Supplier<M> mapProvider, NBTTagCompound src, Function<String, K> keyDecoder, Function<NBTBase, V> valueDecoder) {
+        M map = mapProvider.get();
+        mapFromNbt(map, src, keyDecoder, valueDecoder);
+        return map;
+    }
+
+    public static <K, V> void mapFromNbt(Map<K, V> map, NBTTagCompound src, Function<String, K> keyDecoder, Function<NBTBase, V> valueDecoder) {
+        map.clear();
+        Set<String> keys = src.getKeySet();
+        for (String string : keys) {
+            K key = keyDecoder.apply(string);
+            NBTBase nbtBase = src.getTag(string);
+            V value = valueDecoder.apply(nbtBase);
+            if (value != null) {
+                map.put(key, value);
+            }
+        }
     }
 }
