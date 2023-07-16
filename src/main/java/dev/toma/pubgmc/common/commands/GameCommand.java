@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.commands;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -79,6 +80,7 @@ public class GameCommand extends AbstractCommand {
                             .executes(GameCommand::startGame)
                             .node(
                                     CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
+                                            .suggests(GameCommand::suggestMapName)
                             )
             )
             .node(
@@ -92,6 +94,7 @@ public class GameCommand extends AbstractCommand {
                             .executes(GameCommand::executeMapNoArguments)
                             .node(
                                     CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
+                                            .suggests(GameCommand::suggestMapName)
                                             .node(
                                                     CommandNodeProvider.literal("delete")
                                                             .executes(GameCommand::deleteMapByName)
@@ -115,6 +118,7 @@ public class GameCommand extends AbstractCommand {
                                     CommandNodeProvider.literal("create")
                                             .node(
                                                     CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Map name must consist of atleast one a-zA-Z0-9 or _ character"))
+                                                            .suggests(GameCommand::suggestMapName)
                                                             .node(
                                                                     CommandNodeProvider.literal("center")
                                                                             .executes(GameCommand::registerMapByCenter)
@@ -532,6 +536,15 @@ public class GameCommand extends AbstractCommand {
     private static List<String> suggestCoordinate(SuggestionProvider.Context context, ToIntFunction<BlockPos> provider) {
         BlockPos pos = context.getSender().getPosition();
         return Collections.singletonList(String.valueOf(provider.applyAsInt(pos)));
+    }
+
+    private static List<String> suggestMapName(SuggestionProvider.Context context) {
+        ICommandSender sender = context.getSender();
+        World world = sender.getEntityWorld();
+        return GameDataProvider.getGameData(world).map(data -> {
+            Map<String, GameMap> maps = data.getRegisteredGameMaps();
+            return (List<String>) new ArrayList<>(maps.keySet());
+        }).orElse(Collections.emptyList());
     }
 
     private static void validateGameLobbyDefined(GameData data) throws CommandException {
