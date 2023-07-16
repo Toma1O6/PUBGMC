@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.games.game.ffa;
 
 import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
@@ -29,6 +30,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -37,17 +39,19 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
-
     private static final ITextComponent LOADOUT_MESSAGE = new TextComponentTranslation("message.pubgmc.game.ffa.select_loadout");
+    private static final String GAME_WON_KEY = "message.pubgmc.game.ffa.game_won";
+    private static final String GAME_LOST_KEY = "message.pubgmc.game.ffa.game_lost";
 
     private final List<GameEventListener> listeners = new ArrayList<>();
     private final UUID gameId;
@@ -129,6 +133,8 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             SpawnerPoint point = spawnerSelector.getPoint(world, participants);
             BlockPos pos = point.getPointPosition();
             GameHelper.teleport(player, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+            GameHelper.resetPlayerData(player);
+            player.setGameType(net.minecraft.world.GameType.ADVENTURE);
             if (!world.isRemote) {
                 if (!loadoutManager.hasLoadout(player.getUniqueID())) {
                     openMenu((EntityPlayerMP) player);
@@ -155,13 +161,16 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     public void onGameTick(World world) {
         if (started) {
             if (--timeRemaining < 0) {
-                // TODO end game
+                verifyGameCompletion(world);
                 GameHelper.stopGame(world);
             }
         }
         if (!world.isRemote) {
             WorldServer server = (WorldServer) world;
             playzone.hurtAllOutside(server, () -> participantManager.getLoadedParticipants(server));
+            if (gametime % 20L == 0L) {
+                respawnAiEntities(server);
+            }
         }
         ++gametime;
     }
@@ -171,7 +180,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         started = false;
         gameRuleStorage.restoreGameRules(world);
         participantManager.getPlayerParticipants(world)
-                .forEach(GameHelper::moveToLobby);
+                .forEach(player -> {
+                    GameHelper.resetPlayerData(player);
+                    GameHelper.moveToLobby(player);
+                });
     }
 
     @Override
@@ -235,6 +247,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         initAi(aiPlayer);
         aiPlayer.assignGameId(gameId);
         participantManager.registerAi(aiPlayer);
+        properties.register(aiPlayer);
         world.spawnEntity(aiPlayer);
         List<EntityLoadout> available = getAvailableLoadouts();
         EntityLoadout loadout = PUBGMCUtil.randomListElement(available, world.rand);
@@ -262,17 +275,122 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         return list;
     }
 
-    private void applySelectedLoadout(EntityLivingBase entity) {
+    public void applySelectedLoadout(EntityLivingBase entity) {
         EntityLoadout loadout = loadoutManager.getLoadout(entity.getUniqueID());
         LoadoutManager.apply(entity, loadout);
     }
 
+    public FFALoadoutManager getLoadoutManager() {
+        return loadoutManager;
+    }
+
+    private void verifyGameCompletion(World world) {
+        int highestKillScore = properties.compareAndGet(SharedProperties.KILLS, 0, Comparator.<Integer>comparingInt(value -> value).reversed());
+        if (highestKillScore >= configuration.killTarget || timeRemaining <= 0) {
+            List<EntityPlayer> playerList = participantManager.getPlayerParticipants(world);
+            for (EntityPlayer player : playerList) {
+                int score = properties.getProperty(player.getUniqueID(), SharedProperties.KILLS, 0);
+                if (score >= highestKillScore) {
+                    player.sendStatusMessage(new TextComponentTranslation(GAME_WON_KEY, score), true);
+                    MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, player, true));
+                } else {
+                    player.sendStatusMessage(new TextComponentTranslation(GAME_LOST_KEY, score), true);
+                    MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, player, false));
+                }
+            }
+            GameHelper.stopGame(world);
+        }
+    }
+
+    private void respawnAiEntities(WorldServer world) {
+        Set<UUID> aiForRespawn = participantManager.getAiForRespawn();
+        aiForRespawn.forEach(uuid -> {
+            long time = properties.getProperty(uuid, SharedProperties.GAME_TIMESTAMP, 0L);
+            if (gametime - time < 60L) {
+                return;
+            }
+            EntityAIPlayer player = new EntityAIPlayer(world);
+            NBTTagCompound compound = participantManager.getAiData(uuid);
+            if (compound != null) {
+                player.readFromNBT(compound);
+            }
+            List<Entity> entities = participantManager.getLoadedParticipants(world);
+            SpawnerPoint point = spawnerSelector.getPoint(world, entities);
+            BlockPos pos = point.getPointPosition();
+            player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+            initAi(player);
+            player.setUniqueId(uuid);
+            player.assignGameId(gameId);
+            applySelectedLoadout(player);
+            participantManager.markRespawned(uuid);
+            properties.setProperty(uuid, SharedProperties.GAME_TIMESTAMP, gametime);
+            world.spawnEntity(player);
+        });
+        GameHelper.requestClientGameDataSynchronization(world);
+    }
+
+    private void respawnPlayer(EntityPlayer player) {
+        World world = player.world;
+        if (world.isRemote)
+            return;
+        WorldServer server = (WorldServer) world;
+        List<Entity> participants = participantManager.getLoadedParticipants(server);
+        SpawnerPoint point = spawnerSelector.getPoint(world, participants);
+        BlockPos pos = point.getPointPosition();
+        GameHelper.teleport(player, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+        properties.setProperty(player.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
+        applySelectedLoadout(player);
+    }
+
+    // TODO spawn protection impl
     public static final class EventListener implements GameEventListener {
 
         private final FFAGame game;
 
         public EventListener(FFAGame game) {
             this.game = game;
+        }
+
+        @Override
+        public void onEntityDeath(LivingDeathEvent event) {
+            EntityLivingBase entity = event.getEntityLiving();
+            DamageSource source = event.getSource();
+            Entity killer = source.getTrueSource();
+            if (entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) entity;
+                if (game.participantManager.isParticipant(player)) {
+                    player.inventory.clear();
+                    awardKill(killer);
+                }
+            } else if (game.participantManager.isAiParticipant(entity)) {
+                awardKill(killer);
+                game.properties.setProperty(entity.getUniqueID(), SharedProperties.GAME_TIMESTAMP, game.gametime);
+                game.participantManager.markAiAsDead(entity.getUniqueID());
+            }
+        }
+
+        @Override
+        public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+            EntityPlayer player = event.player;
+            if (game.participantManager.isParticipant(player)) {
+                if (game.started) {
+                    game.respawnPlayer(player);
+                } else {
+                    GameHelper.moveToLobby(player);
+                }
+            }
+        }
+
+        private void awardKill(@Nullable Entity killer) {
+            if (killer == null)
+                return;
+            if (game.participantManager.isEntityParticipant(killer)) {
+                game.properties.increaseInt(killer.getUniqueID(), SharedProperties.KILLS);
+                if (!killer.world.isRemote) {
+                    game.verifyGameCompletion(killer.world);
+                    GameHelper.requestClientGameDataSynchronization(killer.world);
+                }
+            }
         }
     }
 

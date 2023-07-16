@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
@@ -40,6 +41,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -211,6 +213,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                     teamManager.getAllActivePlayers(world).forEach(player -> {
                         EntityPlayerMP playerMP = (EntityPlayerMP) player;
                         playerMP.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_WON, 20, 120, 60));
+                        MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, playerMP, true));
                     });
                     return;
                 }
@@ -468,6 +471,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             game.deathMessages.push(deathMessage);
             if (entity instanceof EntityPlayer) {
                 GameHelper.spawnPlayerDeathCrate(game.gameId, (EntityPlayer) entity);
+                MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(game, (EntityPlayer) entity, false));
             } else if (entity instanceof EntityAIPlayer) {
                 EntityAIPlayer aiPlayer = (EntityAIPlayer) entity;
                 GameHelper.spawnAiPlayerDeathCrate(game.gameId, aiPlayer);

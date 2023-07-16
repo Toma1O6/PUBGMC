@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
@@ -34,8 +35,16 @@ public final class FFAParticipantManager {
         players.remove(player);
     }
 
+    public boolean isEntityParticipant(Entity entity) {
+        return entity instanceof EntityPlayer ? isParticipant((EntityPlayer) entity) : entity instanceof EntityLivingBase && isAiParticipant((EntityLivingBase) entity);
+    }
+
     public boolean isParticipant(EntityPlayer player) {
         return players.contains(player.getUniqueID());
+    }
+
+    public boolean isAiParticipant(EntityLivingBase entity) {
+        return aiData.containsKey(entity.getUniqueID());
     }
 
     public int getPlayerParticipantsCount() {
@@ -61,8 +70,12 @@ public final class FFAParticipantManager {
     public void registerAi(EntityLiving ai) {
         UUID uuid = ai.getUniqueID();
         NBTTagCompound nbt = new NBTTagCompound();
-        ai.writeEntityToNBT(nbt);
+        ai.writeToNBT(nbt);
         aiData.put(uuid, nbt);
+    }
+
+    public NBTTagCompound getAiData(UUID ai) {
+        return aiData.get(ai);
     }
 
     public void markAiAsDead(UUID ai) {

@@ -9,10 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public final class PlayerPropertyHolder {
 
@@ -88,6 +85,14 @@ public final class PlayerPropertyHolder {
 
     public int increaseInt(UUID ownerId, PropertyType<Integer> property) {
         return increaseInt(ownerId, property, 1);
+    }
+
+    public <T> T compareAndGet(PropertyType<T> type, T defaultValue, Comparator<T> comparator) {
+        List<T> list = new ArrayList<>();
+        Set<UUID> keys = playerScoreEntries.keySet();
+        keys.forEach(uuid -> list.add(getProperty(uuid, type, defaultValue)));
+        list.sort(comparator);
+        return list.isEmpty() ? defaultValue : list.get(0);
     }
 
     public String getUsername(UUID ownerId) {

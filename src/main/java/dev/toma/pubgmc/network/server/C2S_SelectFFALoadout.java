@@ -38,7 +38,12 @@ public class C2S_SelectFFALoadout implements IMessage {
             sender.getServer().addScheduledTask(() -> GameDataProvider.getGameData(sender.world).ifPresent(gameData -> {
                 Game<?> game = gameData.getCurrentGame();
                 if (game instanceof FFAGame) {
-                    ((FFAGame) game).selectLoadout(sender.getUniqueID(), message.loadout, sender.world);
+                    FFAGame ffaGame = (FFAGame) game;
+                    boolean noLoadout = !ffaGame.getLoadoutManager().hasLoadout(sender.getUniqueID());
+                    ffaGame.selectLoadout(sender.getUniqueID(), message.loadout, sender.world);
+                    if (ffaGame.isStarted() && noLoadout) {
+                        ffaGame.applySelectedLoadout(sender);
+                    }
                 }
             }));
             return null;
