@@ -96,15 +96,10 @@ public class EntityBullet extends Entity {
         Entity entity = rayTraceResult.entityHit;
         if (entity != null && !world.isRemote) {
             boolean isHeadshot = this.canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
-            Vec3d vec = rayTraceResult.hitVec;
-            Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
             if (isHeadshot) {
                 damage *= 2.5;
             }
-            if (entity instanceof EntityLivingBase || entity instanceof EntityVehicle) {
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);
-            }
-            this.onEntityHit(isHeadshot, entity);
+            this.onEntityHit(isHeadshot, entity, rayTraceResult.hitVec);
             entity.hurtResistantTime = 0;
             this.setDead();
         } else if (!world.isRemote) {
@@ -240,14 +235,22 @@ public class EntityBullet extends Entity {
         return entity;
     }
 
-    protected void onEntityHit(boolean isHeadshot, Entity entity) {
+    protected void onEntityHit(boolean isHeadshot, Entity entity, Vec3d vec) {
         DamageSource gunsource = new DamageSourceGun(shooter, this, stack, isHeadshot).setDamageBypassesArmor();
 
-        if (entity instanceof EntityLivingBase) {
+        float baseDamage = damage;
+        boolean isLivingEntity = entity instanceof EntityLivingBase;
+        if (isLivingEntity) {
             getCalculatedDamage((EntityLivingBase) entity, isHeadshot);
         }
+        if (entity.attackEntityFrom(gunsource, damage) && isLivingEntity) {
+            damageArmor(isHeadshot, baseDamage, (EntityLivingBase) entity);
+        }
 
-        entity.attackEntityFrom(gunsource, damage);
+        Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
+        if (isLivingEntity || entity instanceof EntityVehicle) {
+            PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);
+        }
     }
 
     @Override
@@ -350,8 +353,18 @@ public class EntityBullet extends Entity {
             return;
         }
         BulletproofArmor armor = (BulletproofArmor) stack.getItem();
-        float baseDamage = damage;
         damage *= armor.getDamageMultiplier(area, stack, target);
+    }
+
+    private void damageArmor(boolean headshot, float baseDamage, EntityLivingBase target) {
+        ItemStack stack = target.getItemStackFromSlot(headshot ? EntityEquipmentSlot.HEAD : EntityEquipmentSlot.CHEST);
+        if (stack.isEmpty())
+            return;
+        if (!(stack.getItem() instanceof BulletproofArmor)) {
+            return;
+        }
+        BulletproofArmor armor = (BulletproofArmor) stack.getItem();
+        BulletproofArmor.ProtectionArea area = headshot ? BulletproofArmor.ProtectionArea.HEAD : BulletproofArmor.ProtectionArea.OTHER;
         float itemDamageMultiplier = armor.getItemDamageMultiplier(area, stack, target);
         int damageAmount = Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier);
         stack.damageItem(damageAmount, target);

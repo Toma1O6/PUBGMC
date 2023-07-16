@@ -43,8 +43,8 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import javax.annotation.Nullable;
@@ -370,7 +370,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         }
     }
 
-    // TODO spawn protection impl
     public static final class EventListener implements GameEventListener {
 
         private final FFAGame game;
@@ -406,7 +405,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         }
 
         @Override
-        public void onEntityHurt(LivingHurtEvent event) {
+        public void onEntityAttack(LivingAttackEvent event) {
             EntityLivingBase entityLivingBase = event.getEntityLiving();
             UUID uuid = entityLivingBase.getUniqueID();
             if (game.participantManager.isEntityParticipant(entityLivingBase)) {
