@@ -27,6 +27,7 @@ import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -271,6 +272,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         EntityAIPlayer.addDefaultTasks(player);
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
         player.tasks.addTask(2, new EntityAIGunAttack(player));
+        player.targetTasks.addTask(0, new EntityAIHurtByTarget(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
     }
@@ -347,7 +349,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         BlockPos pos = point.getPointPosition();
         GameHelper.teleport(player, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
         properties.setProperty(player.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
-        applySelectedLoadout(player);
+        if (loadoutManager.hasLoadout(player.getUniqueID())) {
+            applySelectedLoadout(player);
+        } else {
+            openMenu((EntityPlayerMP) player);
+        }
     }
 
     // TODO spawn protection impl
@@ -397,6 +403,9 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
                 if (!killer.world.isRemote) {
                     game.verifyGameCompletion(killer.world);
                     GameHelper.requestClientGameDataSynchronization(killer.world);
+                }
+                if (game.configuration.healPerKill > 0 && killer instanceof EntityLivingBase) {
+                    ((EntityLivingBase) killer).heal(game.configuration.healPerKill);
                 }
             }
         }

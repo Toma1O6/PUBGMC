@@ -29,6 +29,8 @@ public class PMCClassTransformer implements IClassTransformer {
                 return EntityRendererClassTransformer.transform(basicClass);
             case "net.minecraft.client.Minecraft":
                 return MinecraftClassTransformer.transform(basicClass);
+            case "net.minecraftforge.client.GuiIngameForge":
+                return GuiIngameClassTransformer.transform(basicClass);
         }
         return basicClass;
     }

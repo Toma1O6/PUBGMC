@@ -37,6 +37,11 @@ public class FFALoadoutScreen extends GuiWidgets {
     }
 
     @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
+    @Override
     public void init() {
         int loadoutCount = loadoutList.size();
         int rows = Math.max(1, loadoutCount / COLUMN_COUNT);

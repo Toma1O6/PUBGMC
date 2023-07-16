@@ -24,6 +24,7 @@ public class FFAGameConfiguration implements GameConfiguration {
     public int gameDuration = 12000;
     public int killTarget = 30;
     public int spawnProtectionTime = 60;
+    public int healPerKill = 3;
     public String[] loadoutFiles = {
             LOADOUT_UMP45,
             LOADOUT_VECTOR,
@@ -40,6 +41,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         gameDuration = Math.max(1200, gameDuration);
         killTarget = Math.max(-1, killTarget);
         spawnProtectionTime = Math.max(0, spawnProtectionTime);
+        healPerKill = Math.max(0, healPerKill);
         worldConfiguration.correct();
     }
 
@@ -50,6 +52,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         nbt.setInteger("killTarget", killTarget);
         nbt.setBoolean("allowAi", allowAi);
         nbt.setInteger("spawnProtection", spawnProtectionTime);
+        nbt.setInteger("healPerKill", healPerKill);
         NBTTagList loadouts = new NBTTagList();
         for (String loadout : loadoutFiles) {
             loadouts.appendTag(new NBTTagString(loadout));
@@ -66,6 +69,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         cfg.killTarget = nbt.getInteger("killTarget");
         cfg.allowAi = nbt.getBoolean("allowAi");
         cfg.spawnProtectionTime = nbt.getInteger("spawnProtection");
+        cfg.healPerKill = nbt.getInteger("healPerKill");
         NBTTagList loadouts = nbt.getTagList("loadouts", Constants.NBT.TAG_STRING);
         cfg.loadoutFiles = new String[loadouts.tagCount()];
         for (int i = 0; i < loadouts.tagCount(); i++) {
@@ -82,6 +86,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         object.addProperty("gameDuration", gameDuration);
         object.addProperty("killTarget", killTarget);
         object.addProperty("spawnProtection", spawnProtectionTime);
+        object.addProperty("healPerKill", healPerKill);
         JsonArray loadouts = new JsonArray();
         for (String loadout : loadoutFiles) {
             loadouts.add(loadout);
@@ -98,6 +103,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         cfg.gameDuration = JsonUtils.getInt(object, "gameDuration", 12000);
         cfg.killTarget = JsonUtils.getInt(object, "killTarget", 30);
         cfg.spawnProtectionTime = JsonUtils.getInt(object, "spawnProtection", 60);
+        cfg.healPerKill = JsonUtils.getInt(object, "healPerKill", 3);
         JsonArray loadouts = JsonUtils.getJsonArray(object, "loadouts", new JsonArray());
         cfg.loadoutFiles = new String[loadouts.size()];
         for (int i = 0; i < loadouts.size(); i++) {

@@ -5,6 +5,7 @@ import dev.toma.pubgmc.api.properties.PropertyType;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
@@ -18,7 +19,6 @@ import java.util.function.Consumer;
 public final class ScoreboardRenderer {
 
     private final Sorter<?> sorter;
-    private final List<Table.Column<UUID>> columns;
 
     private final Table<UUID> table;
     private boolean renderMyScore;
@@ -26,9 +26,9 @@ public final class ScoreboardRenderer {
 
     private ScoreboardRenderer(Builder builder) {
         this.sorter = builder.sorter;
-        this.columns = builder.columns;
+        List<Table.Column<UUID>> columns = builder.columns;
         this.table = new Table<>();
-        this.columns.forEach(table::addColumn);
+        columns.forEach(table::addColumn);
     }
 
     public static Builder create() {
@@ -39,6 +39,10 @@ public final class ScoreboardRenderer {
         this.renderMyScore = renderMyScore;
     }
 
+    public void setTextMargin(int textMargin) {
+        table.setMargin(textMargin);
+    }
+
     public void setDisplayLimit(int displayLimit) {
         this.displayLimit = displayLimit;
     }
@@ -47,7 +51,7 @@ public final class ScoreboardRenderer {
         table.setDrawGrid(drawGrid);
     }
 
-    public void renderScoreboard(PlayerPropertyHolder propertyHolder, int x, int y) {
+    public void renderScoreboard(PlayerPropertyHolder propertyHolder, ScaledResolution resolution) {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         Minecraft minecraft = Minecraft.getMinecraft();
         Entity entity = minecraft.getRenderViewEntity();
@@ -57,12 +61,16 @@ public final class ScoreboardRenderer {
         List<UUID> list = sorter.sort(propertyHolder);
         List<UUID> partial = list.subList(0, Math.min(displayLimit, list.size()));
         boolean hasMyScore = partial.contains(ownerId);
-        if (!hasMyScore) {
+        if (!hasMyScore && renderMyScore) {
             partial.remove(partial.size() - 1);
             partial.add(ownerId);
         }
         table.setRows(partial);
         FontRenderer font = minecraft.fontRenderer;
+        int tWidth = table.getTableWidth();
+        int tHeight = table.getTableHeight();
+        int x = (resolution.getScaledWidth() - tWidth) / 2;
+        int y = (resolution.getScaledHeight() - tHeight) / 2;
         table.render(font, propertyHolder, x, y);
     }
 
@@ -112,13 +120,14 @@ public final class ScoreboardRenderer {
 
     public static final class Table<T> {
 
-        private static final int DEFAULT_COLUMN_SIZE = 40;
+        private static final int DEFAULT_COLUMN_SIZE = 75;
         private static final int COLUMN_HEIGHT = 12;
 
         private List<T> rows = new ArrayList<>();
         private final List<Column<T>> columns = new ArrayList<>();
         private final List<Integer> columnSizes = new ArrayList<>();
         private boolean drawGrid;
+        private int margin = 2;
 
         public void addColumn(Column<T> column) {
             columns.add(column);
@@ -134,6 +143,10 @@ public final class ScoreboardRenderer {
             this.drawGrid = drawGrid;
         }
 
+        public void setMargin(int margin) {
+            this.margin = margin;
+        }
+
         public void render(FontRenderer font, PlayerPropertyHolder props, int x, int y) {
             int colOffset = 0;
             for (int i = 0; i < columns.size(); i++) {
@@ -143,7 +156,7 @@ public final class ScoreboardRenderer {
                 for (T row : rows) {
                     String value = row != null ? column.getValue(props, row) : column.name;
                     int columnSize = columnSizes.get(i);
-                    int valueSize = font.getStringWidth(value) + 1;
+                    int valueSize = font.getStringWidth(value) + margin * 2;
                     if (valueSize > columnSize) {
                         columnSizes.set(i, valueSize);
                         columnSize = valueSize;
@@ -158,16 +171,16 @@ public final class ScoreboardRenderer {
                     ImageUtil.drawShape(colLeft, colTop, colLeft + columnSize, colTop + COLUMN_HEIGHT, 0x66 << 24);
                     boolean shadow = row == null;
                     if (column.rightAlignment) {
-                        font.drawString(value, colLeft + columnSize - valueSize - 0.5F, colTop + 2, column.textColor, shadow);
+                        font.drawString(value, colLeft + columnSize - valueSize - margin, colTop + 2, column.textColor, shadow);
                     } else {
-                        font.drawString(value, colLeft + 0.5F, colTop + 2, column.textColor, shadow);
+                        font.drawString(value, colLeft + margin, colTop + 2, column.textColor, shadow);
                     }
                 }
                 colOffset += columnSizes.get(i);
             }
             if (drawGrid) {
-                int tableWidth = columnSizes.stream().mapToInt(Integer::intValue).sum();
-                int tableHeight = COLUMN_HEIGHT * rows.size();
+                int tableWidth = getTableWidth();
+                int tableHeight = getTableHeight();
                 for (int r = 1; r < rows.size(); r++) {
                     float posY = y + COLUMN_HEIGHT * r - 0.5F;
                     ImageUtil.drawShape(x, posY, x + tableWidth, posY + 1.0F, 0xFFFFFFFF);
@@ -178,6 +191,14 @@ public final class ScoreboardRenderer {
                     ImageUtil.drawShape(posX - 0.5F, y, posX + 0.5F, y + tableHeight, 0xFFFFFFFF);
                 }
             }
+        }
+
+        int getTableWidth() {
+            return columnSizes.stream().mapToInt(Integer::intValue).sum();
+        }
+
+        int getTableHeight() {
+            return COLUMN_HEIGHT * rows.size();
         }
 
         public static final class Column<T> {

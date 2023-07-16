@@ -11,6 +11,8 @@ import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -22,6 +24,8 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -147,6 +151,10 @@ public class ASMHooksClient {
 
     public static void dispatchPostWorldClientTickEvent(WorldClient worldClient) {
         MinecraftForge.EVENT_BUS.post(new ClientWorldTickEvent(TickEvent.Phase.END, worldClient));
+    }
+
+    public static int getPlayerLimitForTabOverlayRender() {
+        return 0; // Allows rendering of player list even when player is alone
     }
 
     public static ItemCameraTransforms.TransformType getTransformType() {

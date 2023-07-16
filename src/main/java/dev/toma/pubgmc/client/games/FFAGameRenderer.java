@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
+import dev.toma.pubgmc.util.helper.ImageUtil;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,17 +32,21 @@ public class FFAGameRenderer implements GameRenderer<FFAGame> {
                 .build();
         this.scoreboardRenderer.setDrawGrid(true);
         this.scoreboardRenderer.setMyScoreAlwaysRendered(true);
-        this.scoreboardRenderer.setDisplayLimit(5);
+        this.scoreboardRenderer.setDisplayLimit(20);
         this.playzoneRenderer = new PlayzoneRenderer<>();
         this.playzoneRenderer.setColor(0x660033FF);
     }
 
     @Override
     public boolean renderHudOverlay(EntityPlayer player, FFAGame game, ScaledResolution resolution, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
-        if (elementType != RenderGameOverlayEvent.ElementType.ALL || !game.isStarted())
+        if (!game.isStarted())
             return false;
-        PlayerPropertyHolder properties = game.getProperties();
-        scoreboardRenderer.renderScoreboard(properties, 0, 10);
+        if (elementType == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
+            PlayerPropertyHolder properties = game.getProperties();
+            ImageUtil.drawShape(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x88 << 24);
+            scoreboardRenderer.renderScoreboard(properties, resolution);
+            return true;
+        }
         return false;
     }
 
