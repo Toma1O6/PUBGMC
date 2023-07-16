@@ -139,4 +139,32 @@ public class ImageUtil {
         float b = ((color      ) & 255) / 255.0F;
         drawShape(startX, startY, endX, endY, r, g, b, a);
     }
+
+    public static void drawGradient(float x1, float y1, float x2, float y2, int gradientStart, int gradientEnd) {
+        float[] c1 = decomposeRGBA(gradientStart);
+        float[] c2 = decomposeRGBA(gradientEnd);
+        GlStateManager.color(1f, 1f, 1f);
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+        builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        builder.pos(x1, y2, 0).color(c2[0], c2[1], c2[2], c2[3]).endVertex();
+        builder.pos(x2, y2, 0).color(c2[0], c2[1], c2[2], c2[3]).endVertex();
+        builder.pos(x2, y1, 0).color(c1[0], c1[1], c1[2], c1[3]).endVertex();
+        builder.pos(x1, y1, 0).color(c1[0], c1[1], c1[2], c1[3]).endVertex();
+        tessellator.draw();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
+    public static float[] decomposeRGBA(int argb) {
+        float a = ((argb >> 24) & 255) / 255.0F;
+        float r = ((argb >> 16) & 255) / 255.0F;
+        float g = ((argb >>  8) & 255) / 255.0F;
+        float b = ((argb      ) & 255) / 255.0F;
+        return new float[] {r, g, b, a};
+    }
 }

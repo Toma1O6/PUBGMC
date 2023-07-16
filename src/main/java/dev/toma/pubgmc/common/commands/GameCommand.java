@@ -2,10 +2,7 @@ package dev.toma.pubgmc.common.commands;
 
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameConfiguration;
-import dev.toma.pubgmc.api.game.GameException;
-import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
@@ -28,6 +25,7 @@ import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.*;
@@ -190,6 +188,11 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(2)
                             .executes(GameCommand::reloadGameConfigurations)
             )
+            .node(
+                    CommandNodeProvider.literal("menu")
+                            .permissionLevel(0)
+                            .executes(GameCommand::openGameMenu)
+            )
             .build();
 
     public GameCommand() {
@@ -202,6 +205,16 @@ public class GameCommand extends AbstractCommand {
 
     private static void executeMapNoArguments(CommandContext context) throws CommandException {
         throw new WrongUsageException("Not enough arguments. Use '/game map create <name> ...' or '/game map <name> [delete|clearPois]'");
+    }
+
+    private static void openGameMenu(CommandContext context) throws CommandException {
+        GameData gameData = getGameData(context);
+        Game<?> game = gameData.getCurrentGame();
+        if (game instanceof GameMenuProvider) {
+            EntityPlayerMP sender = (EntityPlayerMP) getSenderAsPlayer(context);
+            GameMenuProvider provider = (GameMenuProvider) game;
+            provider.openMenu(sender);
+        }
     }
 
     private static void reloadGameConfigurations(CommandContext context) throws CommandException {

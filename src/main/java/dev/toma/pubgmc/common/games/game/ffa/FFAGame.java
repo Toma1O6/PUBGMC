@@ -20,6 +20,8 @@ import dev.toma.pubgmc.common.games.map.SpawnerPoint;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import dev.toma.pubgmc.common.games.util.SpawnPointSelector;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.client.S2C_PacketFFAGui;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -28,6 +30,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -38,6 +45,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
+
+
+    private static final ITextComponent LOADOUT_MESSAGE = new TextComponentTranslation("message.pubgmc.game.ffa.select_loadout");
 
     private final List<GameEventListener> listeners = new ArrayList<>();
     private final UUID gameId;
@@ -104,6 +114,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         for (int i = 0; i < Math.min(playerList.size(), configuration.entityCount); i++) {
             EntityPlayer player = playerList.get(i);
             participantManager.registerPlayer(player);
+            player.sendMessage(LOADOUT_MESSAGE);
             GameHelper.moveToLobby(player);
             properties.register(player);
         }
@@ -119,7 +130,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             BlockPos pos = point.getPointPosition();
             GameHelper.teleport(player, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
             if (!world.isRemote) {
-                openMenu((EntityPlayerMP) player);
+                if (!loadoutManager.hasLoadout(player.getUniqueID())) {
+                    openMenu((EntityPlayerMP) player);
+                } else {
+                    applySelectedLoadout(player);
+                }
             }
         }
         if (!world.isRemote) {
@@ -161,7 +176,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
     @Override
     public void openMenu(EntityPlayerMP player) {
-        // TODO implement loadout selection
+        PacketHandler.sendToClient(new S2C_PacketFFAGui(loadoutManager.getAvailableLoadouts()), player);
     }
 
     @Override
@@ -204,6 +219,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     @Override
     public void invokeEvent(Consumer<GameEventListener> consumer) {
         listeners.forEach(consumer);
+    }
+
+    public void selectLoadout(UUID uuid, int loadout, World world) {
+        loadoutManager.selectByIndex(uuid, loadout);
+        GameHelper.requestClientGameDataSynchronization(world);
     }
 
     private void createAi(WorldServer world) {
@@ -311,5 +331,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         public FFAGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
             return FFAGameConfiguration.jsonDeserialize(object);
         }
+    }
+
+    static {
+        Style style = LOADOUT_MESSAGE.getStyle();
+        style.setColor(TextFormatting.AQUA);
+        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/game menu"));
     }
 }

@@ -25,6 +25,16 @@ public final class FFALoadoutManager {
         return selectedLoadouts.getOrDefault(uuid, defaultLoadout);
     }
 
+    public boolean hasLoadout(UUID uuid) {
+        return selectedLoadouts.containsKey(uuid);
+    }
+
+    public void selectByIndex(UUID uuid, int loadout) {
+        if (loadout >= 0 && loadout < available.size()) {
+            selectedLoadouts.put(uuid, available.get(loadout));
+        }
+    }
+
     public void select(UUID uuid, EntityLoadout loadout) {
         selectedLoadouts.put(uuid, loadout);
     }
