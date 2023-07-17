@@ -352,6 +352,8 @@ label.pubgmc.kills=Kills
 
 label.pubgmc.game.battleroyale.kill.single=%s KILL
 label.pubgmc.game.battleroyale.kill.multiple=%s KILLS
+label.pubgmc.game.battleroyale.kill.single.distance=%s KILL - Range [%sm]
+label.pubgmc.game.battleroyale.kill.multiple.distance=%s KILLS - Range [%sm]
 
 message.pubgmc.healing.unreached_threshold=You must have below %s hearts to use this item
 message.pubgmc.healing.max_health=You must not have max health in order to use this item

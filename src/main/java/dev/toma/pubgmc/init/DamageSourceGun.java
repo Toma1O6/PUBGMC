@@ -4,8 +4,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+
+import javax.annotation.Nullable;
 
 public class DamageSourceGun extends EntityDamageSourceIndirect {
 
@@ -37,5 +40,12 @@ public class DamageSourceGun extends EntityDamageSourceIndirect {
             return new TextComponentTranslation(label + ".headshot", trueSource.getName(), victim.getName(), weapon.getDisplayName());
         }
         return new TextComponentTranslation(label, trueSource.getName(), victim.getName(), weapon.getDisplayName());
+    }
+
+    @Nullable
+    @Override
+    public Vec3d getDamageLocation() {
+        Entity shooter = getTrueSource();
+        return shooter != null ? new Vec3d(shooter.posX, shooter.posY, shooter.posZ) : null;
     }
 }

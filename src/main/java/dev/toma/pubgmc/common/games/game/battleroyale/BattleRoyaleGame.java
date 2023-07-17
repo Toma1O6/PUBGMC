@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -487,7 +488,16 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 if (relations != TeamRelations.FRIENDLY) {
                     int kills = game.playerProperties.increaseInt(player.getUniqueID(), SharedProperties.KILLS);
                     String message = kills == 1 ? "label.pubgmc.game.battleroyale.kill.single" : "label.pubgmc.game.battleroyale.kill.multiple";
-                    ITextComponent component = new TextComponentTranslation(message, kills);
+                    Vec3d damagePos = source.getDamageLocation();
+                    ITextComponent component;
+                    if (damagePos != null) {
+                        message += ".distance";
+                        double distance = PUBGMCUtil.getDistance(damagePos.x, damagePos.y, damagePos.z, entity.posX, entity.posY, entity.posZ);
+                        String distanceText = String.format("%.2f", distance);
+                        component = new TextComponentTranslation(message, kills, distanceText);
+                    } else {
+                        component = new TextComponentTranslation(message, kills);
+                    }
                     Style style = component.getStyle();
                     style.setBold(true);
                     style.setColor(TextFormatting.RED);

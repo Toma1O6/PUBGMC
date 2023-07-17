@@ -42,6 +42,13 @@ public class PUBGMCUtil {
         return Math.sqrt(sqr(pos1.getX() - pos2.getX()) + sqr(pos1.getY() - pos2.getY()) + sqr(pos1.getZ() - pos2.getZ()));
     }
 
+    public static double getDistance(double x1, double y1, double z1, double x2, double y2, double z2) {
+        double x = x2 - x1;
+        double y = y2 - y1;
+        double z = z2 - z1;
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
     public static float getAngleBetween2Points(double x1, double z1, double x2, double z2) {
         return (float) (MathHelper.atan2(z2 - z1, x2 - x1) * (180D / Math.PI)) - 90.0F;
     }
