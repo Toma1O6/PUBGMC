@@ -1,13 +1,13 @@
 package dev.toma.pubgmc.asm;
 
-import dev.toma.pubgmc.api.capability.IPlayerData;
-import dev.toma.pubgmc.api.capability.PlayerDataProvider;
-import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.capability.*;
+import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import dev.toma.pubgmc.client.event.ClientWorldTickEvent;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
+import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -121,7 +121,9 @@ public class ASMHooksClient {
     public static void updateLightmap(int[] lightmapColors) {
         Minecraft mc = Minecraft.getMinecraft();
         WorldClient client = mc.world;
-
+        Game<?> game = GameDataProvider.getGameData(client).<Game<?>>map(GameData::getCurrentGame).orElse(NoGame.INSTANCE);
+        if (!game.isStarted())
+            return;
         IPlayerData data = PlayerDataProvider.get(mc.player);
         if (data == null)
             return;
