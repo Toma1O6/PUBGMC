@@ -208,7 +208,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 int teamCount = teamManager.getTeams().size();
                 int playerCount = (int) teamManager.getAllActivePlayers(world).count();
                 int aiCount = aiManager.getRemainingAliveEntityCount();
-                if (isGameCompleted(playerCount, aiCount, teamCount)) {
+                int aiToSpawn = aiManager.getAiEntitiesToSpawn();
+                if (isGameCompleted(playerCount, aiCount, aiToSpawn, teamCount)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
                     teamManager.getAllActivePlayers(world).forEach(player -> {
@@ -301,8 +302,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return players + ai;
     }
 
-    private boolean isGameCompleted(int players, int ai, int teams) {
-        if (players > 0 && teams == 1) {
+    private boolean isGameCompleted(int players, int ai, int aiForSpawn, int teams) {
+        if (players > 0 && (teams == 1 || ai == 0 && aiForSpawn == 0)) {
             if (ai > 0) {
                 Team team = new ArrayList<>(teamManager.getTeams()).get(0);
                 int activeMembers = team.getActiveMemberCount();
