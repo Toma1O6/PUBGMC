@@ -396,12 +396,25 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         player.tasks.addTask(2, new EntityAIGunAttack(player));
         player.tasks.addTask(3, new EntityAISearchLoot(player, 5, 1.10F));
         player.tasks.addTask(4, new EntityAIMoveToTeamLeader(player, 32, 1.20F));
-        player.tasks.addTask(5, new EntityAIHeal<>(player, 12.0F, EntityAIPlayer::getInventory));
+        player.tasks.addTask(5, new EntityAIHeal<>(player, this::shouldHeal, EntityAIPlayer::getInventory));
         player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> playzone.getResultingPlayzone()));
         player.tasks.addTask(7, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAICallTeamForHelp(player));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
+    }
+
+    private boolean shouldHeal(EntityAIPlayer player) {
+        boolean withinPlayzone = playzone.isWithin(player);
+        float health = player.getHealth();
+        if (withinPlayzone) {
+            return health < 12.0F;
+        }
+        if (health > 10)
+            return false;
+        BlockPos nearestPosition = playzone.findNearestPositionWithin(player.getPositionVector(), player.world);
+        double distance = player.getDistanceSq(nearestPosition);
+        return distance > 256;
     }
 
     private String getAiLoadoutType() {

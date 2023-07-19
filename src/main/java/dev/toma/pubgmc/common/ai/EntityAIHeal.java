@@ -9,11 +9,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
 
     private final T entity;
-    private final float healthThreshold;
+    private final Predicate<T> healCondition;
     private final Function<T, IInventory> invProvider;
 
     private ItemStack oldMainhandItem = ItemStack.EMPTY;
@@ -21,16 +22,19 @@ public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
     private boolean completed;
 
     public EntityAIHeal(T entity, float healthThreshold, Function<T, IInventory> invProvider) {
+        this(entity, e -> e.getHealth() < healthThreshold, invProvider);
+    }
+
+    public EntityAIHeal(T entity, Predicate<T> healCondition, Function<T, IInventory> invProvider) {
         this.entity = entity;
-        this.healthThreshold = healthThreshold;
+        this.healCondition = healCondition;
         this.invProvider = invProvider;
     }
 
     @Override
     public boolean shouldExecute() {
-        float health = entity.getHealth();
         IInventory inventory = invProvider.apply(entity);
-        if (entity.getAttackTarget() == null && health < healthThreshold) {
+        if (entity.getAttackTarget() == null && healCondition.test(entity)) {
             ItemStack medStack = InventoryHelper.findHealingItemForAi(inventory);
             if (medStack.isEmpty()) {
                 return false;
