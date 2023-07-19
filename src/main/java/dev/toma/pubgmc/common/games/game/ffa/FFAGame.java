@@ -55,8 +55,7 @@ import java.util.function.Consumer;
 public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
     private static final ITextComponent LOADOUT_MESSAGE = new TextComponentTranslation("message.pubgmc.game.ffa.select_loadout");
-    private static final String GAME_WON_KEY = "message.pubgmc.game.ffa.game_won";
-    private static final String GAME_LOST_KEY = "message.pubgmc.game.ffa.game_lost";
+    private static final String GAME_ENDED_KEY = "message.pubgmc.game.ffa.game_ended";
 
     private final List<GameEventListener> listeners = new ArrayList<>();
     private final UUID gameId;
@@ -71,6 +70,8 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     private boolean started;
     private long gametime;
     private int timeRemaining;
+    private boolean completed;
+    private int completionTimer = 60;
 
     public FFAGame(UUID gameId, FFAGameConfiguration configuration) {
         this.gameId = gameId;
@@ -166,10 +167,14 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
     @Override
     public void onGameTick(World world) {
+        if (completed && --completionTimer < 0) {
+            GameHelper.stopGame(world);
+            return;
+        }
         if (started) {
             if (--timeRemaining < 0) {
                 verifyGameCompletion(world);
-                GameHelper.stopGame(world);
+                return;
             }
         }
         if (!world.isRemote) {
@@ -318,18 +323,19 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     private void verifyGameCompletion(World world) {
         int highestKillScore = properties.compareAndGet(SharedProperties.KILLS, 0, Comparator.<Integer>comparingInt(value -> value).reversed());
         if (highestKillScore >= configuration.killTarget || timeRemaining <= 0) {
+            completed = true;
+            PlayerPropertyHolder.Leaderboard leaderboard = properties.computeLeaderboard(SharedProperties.KILLS, Comparator.<Integer>comparingInt(val -> val).reversed(), 0);
             List<EntityPlayer> playerList = participantManager.getPlayerParticipants(world);
             for (EntityPlayer player : playerList) {
-                int score = properties.getProperty(player.getUniqueID(), SharedProperties.KILLS, 0);
-                if (score >= highestKillScore) {
-                    player.sendStatusMessage(new TextComponentTranslation(GAME_WON_KEY, score), true);
-                    MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, player, true));
-                } else {
-                    player.sendStatusMessage(new TextComponentTranslation(GAME_LOST_KEY, score), true);
-                    MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, player, false));
+                int index = leaderboard.getParticipantIndex(player.getUniqueID());
+                int score = leaderboard.getProperty(player.getUniqueID(), SharedProperties.KILLS, 0);
+                if (index >= 0) {
+                    ITextComponent component = new TextComponentTranslation(GAME_ENDED_KEY, index + 1, score);
+                    component.getStyle().setColor(index == 0 ? TextFormatting.GREEN : TextFormatting.RED);
+                    player.sendStatusMessage(component, true);
+                    MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, player, index == 0));
                 }
             }
-            GameHelper.stopGame(world);
         }
     }
 
@@ -415,6 +421,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         public void onEntityAttack(LivingAttackEvent event) {
             EntityLivingBase entityLivingBase = event.getEntityLiving();
             UUID uuid = entityLivingBase.getUniqueID();
+            if (game.completed) {
+                event.setCanceled(true);
+                return;
+            }
             if (game.participantManager.isEntityParticipant(entityLivingBase)) {
                 long spawnTimestamp = game.properties.getProperty(uuid, SharedProperties.GAME_TIMESTAMP, 0L);
                 long timeDiff = game.gametime - spawnTimestamp;
@@ -439,7 +449,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         }
 
         private void awardKill(@Nullable Entity killer) {
-            if (killer == null)
+            if (killer == null || game.completed || !game.started)
                 return;
             if (game.participantManager.isEntityParticipant(killer)) {
                 game.properties.increaseInt(killer.getUniqueID(), SharedProperties.KILLS);
@@ -461,8 +471,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setUniqueId("gameId", game.gameId);
             nbt.setInteger("timeRemaining", game.timeRemaining);
+            nbt.setInteger("completionTimer", game.completionTimer);
             nbt.setLong("gameTime", game.gametime);
             nbt.setBoolean("started", game.started);
+            nbt.setBoolean("completed", game.completed);
             nbt.setTag("gamerules", game.gameRuleStorage.serialize());
             nbt.setTag("participants", game.participantManager.serialize());
             nbt.setTag("props", game.properties.serialize());
@@ -479,8 +491,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             UUID gameId = nbt.getUniqueId("gameId");
             FFAGame ffaGame = new FFAGame(gameId, configuration);
             ffaGame.timeRemaining = nbt.getInteger("timeRemaining");
+            ffaGame.completionTimer = nbt.getInteger("completionTimer");
             ffaGame.gametime = nbt.getLong("gameTime");
             ffaGame.started = nbt.getBoolean("started");
+            ffaGame.completed = nbt.getBoolean("completed");
             ffaGame.gameRuleStorage.deserialize(nbt.getCompoundTag("gamerules"));
             ffaGame.participantManager.deserialize(nbt.getCompoundTag("participants"));
             ffaGame.properties.deserialize(nbt.getCompoundTag("props"));

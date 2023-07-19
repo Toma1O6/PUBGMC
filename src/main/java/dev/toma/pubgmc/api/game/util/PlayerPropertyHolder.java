@@ -36,6 +36,10 @@ public final class PlayerPropertyHolder {
                 .collect(Collectors.toList());
     }
 
+    public <T> Leaderboard computeLeaderboard(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+        return new Leaderboard(this, type, comparator, defaultValue);
+    }
+
     public <V> void registerProperty(PropertyType<V> type, V initialValue) {
         registeredProperties.put(type, initialValue);
     }
@@ -125,6 +129,44 @@ public final class PlayerPropertyHolder {
             UUID uuid = UUID.fromString(key);
             ScoreEntry entry = ScoreEntry.deserialize(data);
             playerScoreEntries.put(uuid, entry);
+        }
+    }
+
+    public static final class Leaderboard {
+
+        private final List<UUID> order;
+        private final Map<UUID, ScoreEntry> data;
+
+        <T> Leaderboard(PlayerPropertyHolder properties, PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+            this.order = properties.getSortedOwners(type, comparator, defaultValue);
+            this.data = new HashMap<>(properties.playerScoreEntries);
+        }
+
+        public List<UUID> getOrderedParticipants() {
+            return this.order;
+        }
+
+        public int getParticipantIndex(UUID uuid) {
+            return this.order.indexOf(uuid);
+        }
+
+        public <T> T getProperty(UUID ownerId, PropertyType<T> property) {
+            return getProperty(ownerId, property, null);
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> T getProperty(UUID ownerId, PropertyType<T> property, T fallback) {
+            ScoreEntry entry = data.get(ownerId);
+            if (entry == null) {
+                return fallback;
+            }
+            Object prop = entry.properties.get(property);
+            try {
+                T t = (T) prop;
+                return t != null ? t : fallback;
+            } catch (ClassCastException e) {
+                return fallback;
+            }
         }
     }
 

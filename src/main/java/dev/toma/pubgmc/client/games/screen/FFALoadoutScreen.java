@@ -44,9 +44,9 @@ public class FFALoadoutScreen extends GuiWidgets {
     @Override
     public void init() {
         int loadoutCount = loadoutList.size();
-        int rows = Math.max(1, loadoutCount / COLUMN_COUNT);
+        int rows = (loadoutCount - 1) / COLUMN_COUNT + 1;
         int rowCount = Math.min(loadoutCount, COLUMN_COUNT);
-        int width = loadoutCount * (WIDTH + MARGIN) - MARGIN;
+        int width = Math.min(loadoutCount, COLUMN_COUNT) * (WIDTH + MARGIN) - MARGIN;
         int height = rows * (HEIGHT + MARGIN) - MARGIN;
         int left = (this.width - width) / 2;
         int top = (this.height - height) / 2;
