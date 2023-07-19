@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
-import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
 import dev.toma.pubgmc.api.entity.IControllable;
 import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
@@ -16,8 +15,6 @@ import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
-import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
-import dev.toma.pubgmc.client.games.FFAGameRenderer;
 import dev.toma.pubgmc.client.games.GameRendererManager;
 import dev.toma.pubgmc.client.games.MapPointRendererManager;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
@@ -28,7 +25,6 @@ import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemGrip;
@@ -94,12 +90,6 @@ public class ClientEvents {
     private int shotsFired;
     private boolean shooting;
     private int shootingTimer;
-
-    @SubscribeEvent
-    public void registerGameRenderers(RegisterGameRendererEvent event) {
-        event.registerRenderer(GameTypes.BATTLE_ROYALE, new BattleRoyaleGameRenderer());
-        event.registerRenderer(GameTypes.FFA, new FFAGameRenderer());
-    }
 
     @SubscribeEvent
     public void openGui(GuiOpenEvent event) {

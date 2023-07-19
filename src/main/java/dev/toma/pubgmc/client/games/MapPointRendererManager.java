@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.item.MapPointItem;
+import dev.toma.pubgmc.client.renderer.poi.SimplePoiRenderer;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -39,7 +40,7 @@ public final class MapPointRendererManager {
     }
 
     public <P extends GameMapPoint> MapPointRenderer<P> getRendererForType(GameMapPointType<P> pointType) {
-        return (MapPointRenderer<P>) rendererMap.get(pointType);
+        return (MapPointRenderer<P>) rendererMap.getOrDefault(pointType, SimplePoiRenderer.simpleRenderer());
     }
 
     public void renderInWorld(float partialTicks) {

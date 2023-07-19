@@ -34,6 +34,15 @@ public final class GameMap implements Bounds {
         return pointsByPosition.values();
     }
 
+    public Optional<GameMapPoint> getPointAt(BlockPos pos) {
+        return Optional.ofNullable(pointsByPosition.get(pos));
+    }
+
+    public void deletePoiAt(BlockPos pos) {
+        pointsByPosition.remove(pos);
+        remapPointsByType();
+    }
+
     @SuppressWarnings("unchecked")
     public <P extends GameMapPoint> Collection<P> getPoints(GameMapPointType<P> pointType) {
         return (Collection<P>) pointsByType.get(pointType);

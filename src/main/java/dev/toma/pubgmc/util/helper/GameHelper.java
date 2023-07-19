@@ -222,6 +222,7 @@ public final class GameHelper {
             Game<?> game = data.getCurrentGame();
             game.onGameStopped(world, data);
             data.setActiveGame(null);
+            data.setActiveGameMapName(null);
             data.sendGameDataToClients();
         });
     }

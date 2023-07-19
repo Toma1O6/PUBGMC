@@ -25,6 +25,7 @@ import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
+import dev.toma.pubgmc.common.items.map.MapPointRemovalItem;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
@@ -895,7 +896,8 @@ public class CommonRegistry {
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})
                         .build()
                         .renderer(() -> RenderAWM::new)
-                        .build()
+                        .build(),
+                new MapPointRemovalItem("mapitem_poi_removal")
         );
         ITEM_BLOCKS.forEach(registry::register);
         ITEM_BLOCKS = null;

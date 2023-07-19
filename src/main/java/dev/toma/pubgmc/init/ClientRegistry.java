@@ -1,7 +1,14 @@
 package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
+import dev.toma.pubgmc.api.client.event.RegisterMapPointRendererEvent;
+import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
+import dev.toma.pubgmc.client.games.FFAGameRenderer;
 import dev.toma.pubgmc.client.models.BakedModelGun;
+import dev.toma.pubgmc.client.renderer.poi.PointOfInterestRenderer;
+import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -40,6 +47,17 @@ public class ClientRegistry {
             if (rl.getResourceDomain().equals(Pubgmc.MOD_ID))
                 registerModel(ForgeRegistries.BLOCKS.getValue(rl));
         }
+    }
+
+    @SubscribeEvent
+    public static void registerGameRenderers(RegisterGameRendererEvent event) {
+        event.registerRenderer(GameTypes.BATTLE_ROYALE, new BattleRoyaleGameRenderer());
+        event.registerRenderer(GameTypes.FFA, new FFAGameRenderer());
+    }
+
+    @SubscribeEvent
+    public static void registerPoiRenderers(RegisterMapPointRendererEvent event) {
+        event.registerRenderer(GameMapPoints.POINT_OF_INTEREST, new PointOfInterestRenderer());
     }
 
     private static void registerModel(Item item) {

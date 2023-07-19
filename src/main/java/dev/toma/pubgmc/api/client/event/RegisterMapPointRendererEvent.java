@@ -13,7 +13,7 @@ public class RegisterMapPointRendererEvent extends Event {
         this.registrationHandler = registrationHandler;
     }
 
-    public <P extends GameMapPoint> void register(GameMapPointType<P> pointType, MapPointRenderer<P> renderer) {
+    public <P extends GameMapPoint> void registerRenderer(GameMapPointType<P> pointType, MapPointRenderer<P> renderer) {
         this.registrationHandler.register(pointType, renderer);
     }
 
