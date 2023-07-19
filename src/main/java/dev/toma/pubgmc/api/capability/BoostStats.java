@@ -35,7 +35,6 @@ public class BoostStats implements INBTSerializable<NBTTagCompound> {
 
     public void add(int level) {
         this.level = DevUtil.wrap(this.level + level, 0, 20);
-        this.saturation = 0.0F;
     }
 
     public int getLevel() {
