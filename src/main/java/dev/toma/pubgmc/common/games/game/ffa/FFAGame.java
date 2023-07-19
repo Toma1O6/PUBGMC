@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.games.game.ffa;
 import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.event.GameEvent;
+import dev.toma.pubgmc.api.event.SpawnPositionSetEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
@@ -213,6 +214,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             if (started && !player.world.isRemote) {
                 createAi((WorldServer) player.world);
             }
+            player.inventory.clear();
             return true;
         }
         return false;
@@ -220,16 +222,18 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
     @Override
     public boolean playerJoinGame(EntityPlayer player) {
-        if (participantManager.isParticipant(player)) {
-            return false;
-        }
-        int players = participantManager.getPlayerParticipantsCount();
-        if (players < configuration.entityCount) {
+        if (isJoinable(player)) {
+            player.inventory.clear();
             participantManager.registerPlayer(player);
             properties.register(player);
             if (started && !player.world.isRemote) {
                 respawnPlayer(player);
-                participantManager.removeSingleAi((WorldServer) player.world);
+                SpawnerPoint point = spawnerSelector.getPoint(player.world, participantManager.getLoadedParticipants((WorldServer) player.world));
+                BlockPos pos = point.getPointPosition();
+                GameHelper.teleport(player, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+                UUID removedAi = participantManager.removeSingleAi((WorldServer) player.world);
+                properties.delete(removedAi);
+                GameHelper.requestClientGameDataSynchronization(player.world);
             } else {
                 GameHelper.moveToLobby(player);
             }
@@ -370,17 +374,20 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         World world = player.world;
         if (world.isRemote)
             return;
-        WorldServer server = (WorldServer) world;
-        List<Entity> participants = participantManager.getLoadedParticipants(server);
-        SpawnerPoint point = spawnerSelector.getPoint(world, participants);
-        BlockPos pos = point.getPointPosition();
-        GameHelper.teleport(player, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
         properties.setProperty(player.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
         if (loadoutManager.hasLoadout(player.getUniqueID())) {
             applySelectedLoadout(player);
         } else {
             openMenu((EntityPlayerMP) player);
         }
+    }
+
+    private boolean isJoinable(EntityPlayer player) {
+        if (participantManager.isParticipant(player)) {
+            return false;
+        }
+        int players = participantManager.getPlayerParticipantsCount();
+        return players < configuration.entityCount;
     }
 
     public static final class EventListener implements GameEventListener {
@@ -445,6 +452,34 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
                 } else {
                     GameHelper.moveToLobby(player);
                 }
+            }
+        }
+
+        @Override
+        public void setSpawnPosition(SpawnPositionSetEvent event) {
+            World world = event.getWorld();
+            if (world.isRemote)
+                return;
+            WorldServer server = (WorldServer) world;
+            List<Entity> participants = game.participantManager.getLoadedParticipants(server);
+            SpawnerPoint point = game.spawnerSelector.getPoint(world, participants);
+            BlockPos pos = point.getPointPosition();
+            event.setSpawnPosition(pos);
+        }
+
+        @Override
+        public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+            EntityPlayer player = event.player;
+            if (player != null && game.isStarted()) {
+                game.playerLeaveGame(player);
+            }
+        }
+
+        @Override
+        public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+            EntityPlayer player = event.player;
+            if (game.isJoinable(player)) {
+                player.sendMessage(new TextComponentTranslation("message.pubgmc.game.joinable_game_in_progress"));
             }
         }
 

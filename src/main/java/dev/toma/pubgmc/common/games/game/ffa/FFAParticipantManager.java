@@ -52,7 +52,7 @@ public final class FFAParticipantManager {
         return players.size();
     }
 
-    public void removeSingleAi(WorldServer server) {
+    public UUID removeSingleAi(WorldServer server) {
         List<UUID> uuids = new ArrayList<>(aiData.keySet());
         UUID random = PUBGMCUtil.randomListElement(uuids, server.rand);
         Entity entity = server.getEntityFromUuid(random);
@@ -61,6 +61,7 @@ public final class FFAParticipantManager {
         }
         aiData.remove(random);
         respawnAi.remove(random);
+        return random;
     }
 
     public List<EntityPlayer> getPlayerParticipants(World world) {

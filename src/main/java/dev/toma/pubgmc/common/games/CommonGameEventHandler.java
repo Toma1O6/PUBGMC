@@ -4,6 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
+import dev.toma.pubgmc.api.event.SpawnPositionSetEvent;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
@@ -174,6 +175,17 @@ public final class CommonGameEventHandler {
             Game<?> game = data.getCurrentGame();
             if (game.isStarted()) {
                 game.invokeEvent(listener -> listener.onEntityWithParachuteLanded(event));
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public static void adjustSpawnPosition(SpawnPositionSetEvent event) {
+        World world = event.getWorld();
+        GameDataProvider.getGameData(world).ifPresent(data -> {
+            Game<?> game = data.getCurrentGame();
+            if (game.isStarted()) {
+                game.invokeEvent(listener -> listener.setSpawnPosition(event));
             }
         });
     }
