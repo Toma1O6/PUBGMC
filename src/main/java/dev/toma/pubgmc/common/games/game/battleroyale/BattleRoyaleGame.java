@@ -394,7 +394,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         player.tasks.addTask(0, new EntityAIRideWithTeamLeader(player, 1.1F));
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
         player.tasks.addTask(2, new EntityAIGunAttack(player));
-        player.tasks.addTask(3, new EntityAISearchLoot(player, 5, 1.10F));
+        player.tasks.addTask(3, new EntityAISearchLoot(player, () -> playzone, 5, 1.10F));
         player.tasks.addTask(4, new EntityAIMoveToTeamLeader(player, 32, 1.20F));
         player.tasks.addTask(5, new EntityAIHeal<>(player, this::shouldHeal, EntityAIPlayer::getInventory));
         player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> playzone.getResultingPlayzone()));

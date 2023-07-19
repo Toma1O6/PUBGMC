@@ -76,7 +76,7 @@ public class BlockLootSpawner extends PMCBlock {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return BB;
+        return NULL_AABB;
     }
 
     @Override
@@ -89,10 +89,14 @@ public class BlockLootSpawner extends PMCBlock {
         return new TileEntityLootGenerator();
     }
 
-    //We don't want to save anything since it's just for debug and could cause some weird stuff
     @Override
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(LOOT, meta);
+    }
+
+    @Override
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+        return true;
     }
 
     @Override

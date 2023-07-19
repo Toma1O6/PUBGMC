@@ -69,6 +69,11 @@ public class BlockPlayerCrate extends PMCBlock {
     }
 
     @Override
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+        return true;
+    }
+
+    @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Items.AIR;
     }
