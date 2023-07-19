@@ -259,26 +259,12 @@ public class EntityBullet extends Entity {
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setDouble("x", this.posX);
-        compound.setDouble("y", this.posY);
-        compound.setDouble("z", this.posZ);
-        compound.setDouble("movx", this.motionX);
-        compound.setDouble("movy", this.motionY);
-        compound.setDouble("movz", this.motionZ);
-        compound.setInteger("lifespan", this.ticksExisted);
         compound.setFloat("bullet_damage", this.damage);
         compound.setDouble("bullet_velocity", this.velocity);
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
-        posX = compound.getDouble("x");
-        posY = compound.getDouble("y");
-        posZ = compound.getDouble("z");
-        motionX = compound.getDouble("movx");
-        motionY = compound.getDouble("movy");
-        motionZ = compound.getDouble("movz");
-        ticksExisted = compound.getInteger("lifespan");
         damage = compound.getFloat("bullet_damage");
         velocity = compound.getDouble("bullet_velocity");
     }
