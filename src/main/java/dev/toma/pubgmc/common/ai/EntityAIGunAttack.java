@@ -24,6 +24,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class EntityAIGunAttack extends EntityAIBase {
@@ -31,11 +33,20 @@ public class EntityAIGunAttack extends EntityAIBase {
     private static final int[] EFFECTIVE_RANGE_TABLE = {40, 20, 10, 20, 40, 60, 60};
     private final EntityAIPlayer aiPlayer;
     private final Predicate<TeamRelations> teamRelationsPredicate;
-    private int timeWatching;
 
+    // configurable props
+    private int reactionTime = 15;
+    private boolean ignoreFriendlies = false;
+    private int initialShootDelay = 10;
+    private BiFunction<EntityAIPlayer, Integer, Double> effectiveEngagementDistance = (entity, baseEngagementDistance) -> baseEngagementDistance * 3.0D;
+    private boolean remembersLastEngagedEntity = true;
+
+    // private props
+    private int timeWatching;
     private int shootCooldown;
     private int firedTotal;
     private int firedBurst;
+    private int lastEngagedEntity = -1;
 
     public EntityAIGunAttack(EntityAIPlayer player) {
         this(player, relations -> relations != TeamRelations.FRIENDLY);
@@ -45,6 +56,26 @@ public class EntityAIGunAttack extends EntityAIBase {
         this.aiPlayer = aiPlayer;
         this.teamRelationsPredicate = teamRelationsPredicate;
         this.setMutexBits(3);
+    }
+
+    public void setReactionTime(int reactionTime) {
+        this.reactionTime = reactionTime;
+    }
+
+    public void setIgnoresFriendlies() {
+        this.ignoreFriendlies = true;
+    }
+
+    public void setInitialShootDelay(int delay) {
+        this.initialShootDelay = delay;
+    }
+
+    public void setEffectiveEngagementDistance(BiFunction<EntityAIPlayer, Integer, Double> engagementDistance) {
+        this.effectiveEngagementDistance = Objects.requireNonNull(engagementDistance);
+    }
+
+    public void setRememberLastEngagedEntity(boolean rememberLastEngagedEntity) {
+        this.remembersLastEngagedEntity = rememberLastEngagedEntity;
     }
 
     @Override
@@ -64,8 +95,19 @@ public class EntityAIGunAttack extends EntityAIBase {
     @Override
     public void resetTask() {
         timeWatching = 0;
-        shootCooldown = 10;
+        shootCooldown = initialShootDelay;
         firedBurst = 0;
+    }
+
+    @Override
+    public void startExecuting() {
+        EntityLivingBase target = aiPlayer.getAttackTarget();
+        int id = target.getEntityId();
+        if (remembersLastEngagedEntity && id == lastEngagedEntity) {
+            shootCooldown = 5;
+            timeWatching = 100;
+        }
+        lastEngagedEntity = id;
     }
 
     @Override
@@ -83,19 +125,23 @@ public class EntityAIGunAttack extends EntityAIBase {
         if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             int tableIndex = gun.getGunType().ordinal();
-            if (canSee && distanceToTarget <= EFFECTIVE_RANGE_TABLE[tableIndex] * 3.0) {
+            if (canSee && distanceToTarget <= effectiveEngagementDistance.apply(aiPlayer, EFFECTIVE_RANGE_TABLE[tableIndex])) {
                 aiPlayer.getNavigator().clearPath();
             } else aiPlayer.getNavigator().tryMoveToEntityLiving(target, 1.0D);
             aiPlayer.getLookHelper().setLookPositionWithEntity(target, 30, 30);
-            if (timeWatching >= 15 && --shootCooldown <= 0) {
+            if (timeWatching >= reactionTime && --shootCooldown <= 0) {
                 if (!canSee) {
                     return;
                 }
-                Vec3d start = aiPlayer.getPositionVector().addVector(0, aiPlayer.getEyeHeight(), 0);
-                Vec3d end = start.add(getVectorForRotation(aiPlayer).scale(32.0));
-                EntityLivingBase entityInPath = findEntityInPath(start, end);
-                TeamRelations relations = entityInPath == null ? TeamRelations.UNKNOWN : GameHelper.getEntityRelations(aiPlayer, entityInPath);
-                if (teamRelationsPredicate.test(relations)) {
+                boolean canEngage = true;
+                if (!ignoreFriendlies) {
+                    Vec3d start = aiPlayer.getPositionVector().addVector(0, aiPlayer.getEyeHeight(), 0);
+                    Vec3d end = start.add(getVectorForRotation(aiPlayer).scale(32.0));
+                    EntityLivingBase entityInPath = findEntityInPath(start, end);
+                    TeamRelations relations = entityInPath == null ? TeamRelations.UNKNOWN : GameHelper.getEntityRelations(aiPlayer, entityInPath);
+                    canEngage = teamRelationsPredicate.test(relations);
+                }
+                if (canEngage) {
                     shoot(gun, stack, distanceToTarget);
                 } else {
                     float direction = aiPlayer.world.rand.nextBoolean() ? 1.0F : -1.0F;

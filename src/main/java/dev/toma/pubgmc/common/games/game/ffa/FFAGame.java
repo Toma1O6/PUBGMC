@@ -287,8 +287,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     private void initAi(EntityAIPlayer player) {
         player.clearAI();
         EntityAIPlayer.addDefaultTasks(player);
+        EntityAIGunAttack shootTask = new EntityAIGunAttack(player);
+        shootTask.setIgnoresFriendlies();
+        shootTask.setReactionTime(10);
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
-        player.tasks.addTask(2, new EntityAIGunAttack(player));
+        player.tasks.addTask(2, shootTask);
         player.tasks.addTask(4, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAIHurtByTarget(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
