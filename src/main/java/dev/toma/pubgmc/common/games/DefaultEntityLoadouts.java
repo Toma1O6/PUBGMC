@@ -477,6 +477,7 @@ public final class DefaultEntityLoadouts {
         IPlayerData data = PlayerDataProvider.get(player);
         if (data != null) {
             addSpecialEquipment(data, specialEquipment);
+            data.sync();
         }
     }
 
