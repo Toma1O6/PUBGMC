@@ -8,11 +8,11 @@ import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
+import dev.toma.pubgmc.common.games.mutator.LightmapMutator;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -24,10 +24,10 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.Optional;
 
 public class ASMHooksClient {
 
@@ -122,8 +122,10 @@ public class ASMHooksClient {
         Minecraft mc = Minecraft.getMinecraft();
         WorldClient client = mc.world;
         Game<?> game = GameDataProvider.getGameData(client).<Game<?>>map(GameData::getCurrentGame).orElse(NoGame.INSTANCE);
-        if (!game.isStarted())
+        Optional<LightmapMutator> mutatorOptional = GameMutatorManager.INSTANCE.getMutator(game.getGameType(), LightmapMutator.TYPE);
+        if (!mutatorOptional.isPresent())
             return;
+        LightmapMutator mutator = mutatorOptional.get();
         IPlayerData data = PlayerDataProvider.get(mc.player);
         if (data == null)
             return;
@@ -132,8 +134,8 @@ public class ASMHooksClient {
         if (stack.getItem() instanceof NightVisionGoggles && data.isNightVisionActive()) {
             lightAmplifier = ((NightVisionGoggles) stack.getItem()).getBrightnessValue();
         }
-        float gammaSetting = mc.gameSettings.gammaSetting;
-        float sunLight = client.getSunBrightness(1.0F) + 0.2F - gammaSetting * 0.10F;
+        float gammaSetting = mutator.applyClientGamma(mc.gameSettings.gammaSetting);
+        float sunLight = client.getSunBrightness(1.0F) + mutator.getGammaBoost() - gammaSetting * mutator.getGammaMultiplier();
         float amplifier = sunLight * lightAmplifier;
         for (int i = 0; i < 256; i++) {
             int value = lightmapColors[i];

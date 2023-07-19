@@ -2,6 +2,7 @@ package dev.toma.pubgmc.init;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
+import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
@@ -16,6 +17,8 @@ import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
+import dev.toma.pubgmc.common.games.mutator.InventoryMutator;
+import dev.toma.pubgmc.common.games.mutator.LightmapMutator;
 import dev.toma.pubgmc.common.games.playzone.PlayzoneTypes;
 import dev.toma.pubgmc.common.items.*;
 import dev.toma.pubgmc.common.items.attachment.*;
@@ -969,7 +972,13 @@ public class CommonRegistry {
 
     @SubscribeEvent
     public static void registerEntityProcessor(PubgmcRegistryEvent.EntityProcessor event) {
+    }
 
+    @SubscribeEvent
+    public static void registerGameMutator(RegisterGameMutatorEvent event) {
+        event.registerMutator(GameTypes.BATTLE_ROYALE, InventoryMutator.TYPE, InventoryMutator.INSTANCE);
+        event.registerMutator(GameTypes.BATTLE_ROYALE, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
+        event.registerMutator(GameTypes.FFA, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
     }
 
     public static void registerItemBlock(Block block) {

@@ -283,7 +283,7 @@ public class CommonEvents {
         if (data == null) {
             return;
         }
-        if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
+        if (!GameHelper.hasRestrictedInventory(player.world)) {
             return;
         }
         ItemStack backpackStack = data.getSpecialItemFromSlot(SpecialEquipmentSlot.BACKPACK);

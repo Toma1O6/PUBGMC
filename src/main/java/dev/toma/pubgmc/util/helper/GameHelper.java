@@ -13,6 +13,8 @@ import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
+import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
+import dev.toma.pubgmc.common.games.mutator.InventoryMutator;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -383,7 +385,7 @@ public final class GameHelper {
     public static boolean hasRestrictedInventory(World world) {
         return GameDataProvider.getGameData(world).map(data -> {
             Game<?> game = data.getCurrentGame();
-            return game.isStarted() && game instanceof InventoryRestrictingGame;
+            return game.isStarted() && GameMutatorManager.INSTANCE.hasMutator(game.getGameType(), InventoryMutator.TYPE);
         }).orElse(false);
     }
 

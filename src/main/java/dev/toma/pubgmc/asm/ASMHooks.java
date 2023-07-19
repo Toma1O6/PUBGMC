@@ -34,9 +34,6 @@ public final class ASMHooks {
         if (slotIndex < 9 || playerInventory.player.isCreative()) {
             return false;
         }
-        if (!ConfigPMC.common.players.inventoryRestrictions.get()) {
-            return false;
-        }
         if (!GameHelper.hasRestrictedInventory(playerInventory.player.world)) {
             return false;
         }

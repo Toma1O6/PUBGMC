@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
+import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.properties.Properties;
 import dev.toma.pubgmc.api.properties.SharedProperties;
@@ -19,6 +20,7 @@ import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.GeneratorCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
 import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
+import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.data.entity.DefaultEntityProviders;
 import dev.toma.pubgmc.data.entity.EntityProviderManager;
@@ -158,6 +160,7 @@ public class Pubgmc {
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.EntityProcessor());
         PubgmcRegistries.ENTITY_PROCESSORS.lock();
 
+        MinecraftForge.EVENT_BUS.post(new RegisterGameMutatorEvent(GameMutatorManager.INSTANCE));
         GameConfigurationManager.loadConfigurations(false);
         DataVersionManager.load();
     }

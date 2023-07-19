@@ -7,7 +7,6 @@ import dev.toma.configuration.api.type.ObjectType;
 public class PlayerConfig extends ObjectType {
 
     public BooleanType knockbackEnabled;
-    public BooleanType inventoryRestrictions;
 
     public PlayerConfig() {
         super("Player");
@@ -16,6 +15,5 @@ public class PlayerConfig extends ObjectType {
     @Override
     public void buildStructure(ConfigCreator configCreator) {
         knockbackEnabled = configCreator.createBoolean("Allow knockback", false);
-        inventoryRestrictions = configCreator.createBoolean("Inventory restrictions", true, "Your inventory capacity will be affected by equipped backpack");
     }
 }
