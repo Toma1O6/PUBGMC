@@ -349,6 +349,9 @@ label.pubgmc.click_to_join=Click to join
 label.pubgmc.select_loadout=Select loadout
 label.pubgmc.name=Name
 label.pubgmc.kills=Kills
+label.pubgmc.deaths=Deaths
+label.pubgmc.score=Score
+label.pubgmc.captures=Captures
 
 label.pubgmc.team.red=RED
 label.pubgmc.team.blue=BLUE
@@ -356,13 +359,19 @@ label.pubgmc.game.battleroyale.kill.single=%s KILL
 label.pubgmc.game.battleroyale.kill.multiple=%s KILLS
 label.pubgmc.game.battleroyale.kill.single.distance=%s KILL - Range [%sm]
 label.pubgmc.game.battleroyale.kill.multiple.distance=%s KILLS - Range [%sm]
+label.pubgmc.capture_status.new=New
+label.pubgmc.capture_status.captured=Captured
+label.pubgmc.capture_status.capturing=Capturing
+label.pubgmc.capture_status.blocked=Blocked
 
 message.pubgmc.healing.unreached_threshold=You must have below %s hearts to use this item
 message.pubgmc.healing.max_health=You must not have max health in order to use this item
 message.pubgmc.game.joinable_game_in_progress=There is ongoing game which can be joined. Run command '/game join' to join the game
-message.pubgmc.game.ffa.select_loadout=This game requires you to select custom loadout. You can select it now using '/game menu' command or by clicking on this message
+message.pubgmc.game.select_loadout=This game requires you to select custom loadout. You can select it now using '/game menu' command or by clicking on this message
 message.pubgmc.game.ffa.game_ended=You have ended at %s. place with %s kills
 message.pubgmc.game.domination.team_joined=You have joined %s team
+message.pubgmc.game.domination.match_end.draw=Match DRAW
+message.pubgmc.game.domination.match_end=%s team has won the game
 
 data.pubgmc.loot_schema=Loot configurations
 data.pubgmc.game_configs=Game configurations

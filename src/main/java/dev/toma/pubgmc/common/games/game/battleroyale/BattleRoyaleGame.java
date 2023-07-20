@@ -204,9 +204,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (!world.isRemote) {
             // server only tick
             WorldServer worldServer = (WorldServer) world;
-            List<Entity> activeEntities = teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList());
-            mapPlayzone.hurtAllOutside(worldServer, activeEntities);
-            playzone.hurtAllOutside(worldServer, activeEntities);
+            mapPlayzone.hurtAllOutside(worldServer, () -> teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList()));
+            playzone.hurtAllOutside(worldServer, () -> teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList()));
             tickAIEntities(worldServer);
             if (world.getTotalWorldTime() % 20 == 0) {
                 int teamCount = teamManager.getTeams().size();

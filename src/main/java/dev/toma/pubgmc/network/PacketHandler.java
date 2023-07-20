@@ -32,7 +32,7 @@ public class PacketHandler {
         registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
         registerServerPacket(SPacketControllableInput.Handler.class, SPacketControllableInput.class);
         registerServerPacket(C2S_PacketOpenPlayerEquipment.Handler.class, C2S_PacketOpenPlayerEquipment.class);
-        registerServerPacket(C2S_SelectFFALoadout.Handler.class, C2S_SelectFFALoadout.class);
+        registerServerPacket(C2S_SelectLoadout.Handler.class, C2S_SelectLoadout.class);
         registerServerPacket(C2S_AdjustTeamSpawner.Handler.class, C2S_AdjustTeamSpawner.class);
         registerServerPacket(C2S_AdjustCaptureZone.Handler.class, C2S_AdjustCaptureZone.class);
 
@@ -47,7 +47,7 @@ public class PacketHandler {
         registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
         registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
         registerClientPacket(S2C_SendGameData.Handler.class, S2C_SendGameData.class);
-        registerClientPacket(S2C_PacketFFAGui.Handler.class, S2C_PacketFFAGui.class);
+        registerClientPacket(S2C_PacketLoadoutSelect.Handler.class, S2C_PacketLoadoutSelect.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

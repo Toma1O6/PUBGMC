@@ -2,6 +2,7 @@ package dev.toma.pubgmc.api.game;
 
 import dev.toma.pubgmc.api.game.util.CaptureStatus;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -12,6 +13,9 @@ public interface CaptureZones {
 
     @Nullable
     CaptureData getCapturePointData(BlockPos pos);
+
+    @Nullable
+    CaptureData getEntityCaptureData(Entity entity);
 
     class CaptureData {
 

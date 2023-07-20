@@ -160,6 +160,13 @@ public class ImageUtil {
         GlStateManager.disableBlend();
     }
 
+    public static float[] decomposeRGB(int rgb) {
+        float r = ((rgb >> 16) & 255) / 255.0F;
+        float g = ((rgb >>  8) & 255) / 255.0F;
+        float b = ((rgb      ) & 255) / 255.0F;
+        return new float[] {r, g, b};
+    }
+
     public static float[] decomposeRGBA(int argb) {
         float a = ((argb >> 24) & 255) / 255.0F;
         float r = ((argb >> 16) & 255) / 255.0F;

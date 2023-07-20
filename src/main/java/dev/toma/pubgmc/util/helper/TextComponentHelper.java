@@ -22,6 +22,9 @@ public class TextComponentHelper {
     public static final ITextComponent GAME_WON = applyColor(new TextComponentTranslation("pubgmc.game.won.label"), TextFormatting.GREEN);
     public static final ITextComponent NAME = new TextComponentTranslation("label.pubgmc.name");
     public static final ITextComponent KILLS = new TextComponentTranslation("label.pubgmc.kills");
+    public static final ITextComponent DEATHS = new TextComponentTranslation("label.pubgmc.deaths");
+    public static final ITextComponent CAPTURES = new TextComponentTranslation("label.pubgmc.captures");
+    public static final ITextComponent SCORE = new TextComponentTranslation("label.pubgmc.score");
 
     public static <T extends ITextComponent> T applyColor(T component, TextFormatting color) {
         component.getStyle().setColor(color);

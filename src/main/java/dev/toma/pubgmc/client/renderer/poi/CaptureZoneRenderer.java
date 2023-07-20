@@ -3,13 +3,11 @@ package dev.toma.pubgmc.client.renderer.poi;
 import dev.toma.pubgmc.api.game.CaptureZones;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
-import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -63,6 +61,8 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
 
     @Override
     public void renderPointInGame(CaptureZonePoint point, @Nullable Game<?> game, double x, double y, double z, float partialTicks) {
+        if (!game.isStarted())
+            return;
         if (!(game instanceof CaptureZones))
             return;
         BlockPos pos = point.getPointPosition();
@@ -81,29 +81,25 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
             }
             float factor = (float) (distance * 0.00001F + 0.05F);
             renderTowardsViewer(mc, manager, x, y, z, pos.getX() + 0.5, pos.getY() + 5.0 + point.getRightScale().y, pos.getZ() + 0.5, factor, () -> {
-                String text = label;
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder builder = tessellator.getBuffer();
                 float progress = captureData.getCaptureProgress();
                 boolean capturing = progress > 0.0F;
-                if (capturing) {
-                    text = TextFormatting.BOLD + label;
-                }
-                int width = font.getStringWidth(text);
+                int width = font.getStringWidth(label);
                 GlStateManager.disableTexture2D();
                 builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
                 builder.pos(-width - 1, -4, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
                 builder.pos(-width - 1, 11, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
                 builder.pos(width + 1, 11, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
                 builder.pos(width + 1, -4, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
-                float[] bg = ImageUtil.decomposeRGBA(captureData.getBackground());
+                float[] bg = ImageUtil.decomposeRGB(captureData.getBackground());
                 builder.pos(-width, -3, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
                 builder.pos(-width, 10, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
                 builder.pos(width, 10, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
                 builder.pos(width, -3, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
                 int textColor = 0xFFFFFF;
                 if (capturing) {
-                    float[] fg = ImageUtil.decomposeRGBA(captureData.getForeground()); // TODO optimize to 3 color array
+                    float[] fg = ImageUtil.decomposeRGB(captureData.getForeground());
                     float min = -3.0F + 13.0F * (1.0F - progress);
                     float max = 10.0F;
                     builder.pos(-width, min, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
@@ -120,7 +116,7 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
                 }
                 tessellator.draw();
                 GlStateManager.enableTexture2D();
-                font.drawString(text, -width / 2, 0, textColor);
+                font.drawStringWithShadow(label, -width / 2f, 0, textColor);
                 GlStateManager.enableDepth();
                 GlStateManager.depthMask(true);
             });
@@ -129,6 +125,32 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
 
     @Override
     public void renderInHud(CaptureZonePoint point, EntityPlayer player, Game<?> game, ScaledResolution resolution, float partialTicks) {
-        // TODO capture progress
+        if (!game.isStarted())
+            return;
+        if (!(game instanceof CaptureZones))
+            return;
+        CaptureZones zones = (CaptureZones) game;
+        CaptureZones.CaptureData data = zones.getEntityCaptureData(player);
+        if (data == null)
+            return;
+        int width = 120;
+        int height = 25;
+        float left = (resolution.getScaledWidth() - width) / 2.0F;
+        float top = 5.0F;
+        ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
+        ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0x66 << 24 | data.getBackground());
+        if (data.getCaptureProgress() > 0.0F) {
+            float right = left + (width - 2) * data.getCaptureProgress();
+            ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0x66 << 24 | data.getForeground());
+        }
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        StringBuilder text = new StringBuilder();
+        String label = point.getLabel();
+        if (label != null) {
+            text.append(label.toUpperCase()).append(": ");
+        }
+        text.append(data.getStatus().getTitle().getFormattedText());
+        font.drawStringWithShadow(TextFormatting.UNDERLINE + text.toString(), left + 5, top + 5, 0xFFFFFF);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

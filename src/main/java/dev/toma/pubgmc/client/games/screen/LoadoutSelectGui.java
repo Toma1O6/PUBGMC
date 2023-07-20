@@ -5,7 +5,7 @@ import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.C2S_SelectFFALoadout;
+import dev.toma.pubgmc.network.server.C2S_SelectLoadout;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.client.Minecraft;
@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class FFALoadoutScreen extends GuiWidgets {
+public class LoadoutSelectGui extends GuiWidgets {
 
     private static final ITextComponent HEADER = new TextComponentTranslation("label.pubgmc.select_loadout");
 
@@ -32,7 +32,7 @@ public class FFALoadoutScreen extends GuiWidgets {
     private EntityLoadout selected;
     private int index;
 
-    public FFALoadoutScreen(List<EntityLoadout> loadoutList) {
+    public LoadoutSelectGui(List<EntityLoadout> loadoutList) {
         this.loadoutList = loadoutList;
     }
 
@@ -97,7 +97,7 @@ public class FFALoadoutScreen extends GuiWidgets {
     private void confirmed() {
         if (selected == null)
             return;
-        PacketHandler.sendToServer(new C2S_SelectFFALoadout(index));
+        PacketHandler.sendToServer(new C2S_SelectLoadout(index));
         mc.displayGuiScreen(null);
     }
 
@@ -121,7 +121,7 @@ public class FFALoadoutScreen extends GuiWidgets {
 
         @Override
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            boolean selected = FFALoadoutScreen.this.selected == this.loadout;
+            boolean selected = LoadoutSelectGui.this.selected == this.loadout;
             boolean hovered = isMouseOver(mouseX, mouseY);
             boolean highlight = selected || hovered;
             ImageUtil.drawShape(x - 1, y - 1, x + width + 1, y + height + 1, 0xFF << 24);

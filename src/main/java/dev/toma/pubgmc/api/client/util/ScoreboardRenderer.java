@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.client.util;
 
+import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.PropertyType;
 import dev.toma.pubgmc.util.helper.ImageUtil;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,24 +17,25 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.ToIntBiFunction;
 
-public final class ScoreboardRenderer {
+public final class ScoreboardRenderer<G extends Game<?>> {
 
     private final Sorter<?> sorter;
 
-    private final Table<UUID> table;
+    private final Table<UUID, G> table;
     private boolean renderMyScore;
     private int displayLimit = 5;
 
-    private ScoreboardRenderer(Builder builder) {
+    private ScoreboardRenderer(Builder<G> builder) {
         this.sorter = builder.sorter;
-        List<Table.Column<UUID>> columns = builder.columns;
+        List<Table.Column<UUID, G>> columns = builder.columns;
         this.table = new Table<>();
         columns.forEach(table::addColumn);
     }
 
-    public static Builder create() {
-        return new Builder();
+    public static <G extends Game<?>> Builder<G> create() {
+        return new Builder<>();
     }
 
     public void setMyScoreAlwaysRendered(boolean renderMyScore) {
@@ -51,7 +54,7 @@ public final class ScoreboardRenderer {
         table.setDrawGrid(drawGrid);
     }
 
-    public void renderScoreboard(PlayerPropertyHolder propertyHolder, ScaledResolution resolution) {
+    public void renderScoreboard(PlayerPropertyHolder propertyHolder, G game, ScaledResolution resolution) {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         Minecraft minecraft = Minecraft.getMinecraft();
         Entity entity = minecraft.getRenderViewEntity();
@@ -71,34 +74,34 @@ public final class ScoreboardRenderer {
         int tHeight = table.getTableHeight();
         int x = (resolution.getScaledWidth() - tWidth) / 2;
         int y = (resolution.getScaledHeight() - tHeight) / 2;
-        table.render(font, propertyHolder, x, y);
+        table.render(font, propertyHolder, game, x, y);
     }
 
-    public static final class Builder {
+    public static final class Builder<G extends Game<?>> {
 
         private Sorter<?> sorter;
-        private final List<Table.Column<UUID>> columns = new ArrayList<>();
+        private final List<Table.Column<UUID, G>> columns = new ArrayList<>();
 
         private Builder() {}
 
-        public <T> Builder withSorting(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+        public <T> Builder<G> withSorting(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
             this.sorter = new Sorter<>(type, comparator, defaultValue);
             return this;
         }
 
-        public Builder addRenderableColumn(String name, BiFunction<PlayerPropertyHolder, UUID, String> provider, Consumer<Table.Column<UUID>> consumer) {
-            Table.Column<UUID> column = new Table.Column<>(name, provider);
+        public Builder<G> addRenderableColumn(String name, BiFunction<PlayerPropertyHolder, UUID, String> provider, Consumer<Table.Column<UUID, G>> consumer) {
+            Table.Column<UUID, G> column = new Table.Column<>(name, provider);
             consumer.accept(column);
             columns.add(column);
             return this;
         }
 
-        public Builder addRenderableColumn(String name, BiFunction<PlayerPropertyHolder, UUID, String> provider) {
+        public Builder<G> addRenderableColumn(String name, BiFunction<PlayerPropertyHolder, UUID, String> provider) {
             return addRenderableColumn(name, provider, t -> {});
         }
 
-        public ScoreboardRenderer build() {
-            return new ScoreboardRenderer(this);
+        public ScoreboardRenderer<G> build() {
+            return new ScoreboardRenderer<>(this);
         }
     }
 
@@ -118,18 +121,18 @@ public final class ScoreboardRenderer {
         }
     }
 
-    public static final class Table<T> {
+    public static final class Table<T, G extends Game<?>> {
 
         private static final int DEFAULT_COLUMN_SIZE = 75;
         private static final int COLUMN_HEIGHT = 12;
 
         private List<T> rows = new ArrayList<>();
-        private final List<Column<T>> columns = new ArrayList<>();
+        private final List<Column<T, G>> columns = new ArrayList<>();
         private final List<Integer> columnSizes = new ArrayList<>();
         private boolean drawGrid;
         private int margin = 2;
 
-        public void addColumn(Column<T> column) {
+        public void addColumn(Column<T, G> column) {
             columns.add(column);
             columnSizes.add(DEFAULT_COLUMN_SIZE);
         }
@@ -147,14 +150,15 @@ public final class ScoreboardRenderer {
             this.margin = margin;
         }
 
-        public void render(FontRenderer font, PlayerPropertyHolder props, int x, int y) {
+        public void render(FontRenderer font, PlayerPropertyHolder props, G game, int x, int y) {
             int colOffset = 0;
             for (int i = 0; i < columns.size(); i++) {
-                Column<T> column = columns.get(i);
+                Column<T, G> column = columns.get(i);
                 int rowIndex = 0;
                 boolean shrinkAllowed = column.allowSizeShrinking;
                 for (T row : rows) {
-                    String value = row != null ? column.getValue(props, row) : column.name;
+                    boolean isName = row == null;
+                    String value = !isName ? column.getValue(props, row) : column.name;
                     int columnSize = columnSizes.get(i);
                     int valueSize = font.getStringWidth(value) + margin * 2;
                     if (valueSize > columnSize) {
@@ -169,11 +173,14 @@ public final class ScoreboardRenderer {
                     int colLeft = x + colOffset;
                     int colTop = y + rowIndex++ * COLUMN_HEIGHT;
                     ImageUtil.drawShape(colLeft, colTop, colLeft + columnSize, colTop + COLUMN_HEIGHT, 0x66 << 24);
-                    boolean shadow = row == null;
-                    if (column.rightAlignment) {
-                        font.drawString(value, colLeft + columnSize - valueSize - margin, colTop + 2, column.textColor, shadow);
+                    if (isName) {
+                        font.drawStringWithShadow(TextFormatting.BOLD + value, colLeft + (columnSize - valueSize) / 2.0F, colTop + 2, column.textColor.applyAsInt(game, null));
                     } else {
-                        font.drawString(value, colLeft + margin, colTop + 2, column.textColor, shadow);
+                        if (column.rightAlignment) {
+                            font.drawString(value, colLeft + columnSize - valueSize - margin, colTop + 2, column.textColor.applyAsInt(game, row), false);
+                        } else {
+                            font.drawString(value, colLeft + margin, colTop + 2, column.textColor.applyAsInt(game, row), false);
+                        }
                     }
                 }
                 colOffset += columnSizes.get(i);
@@ -201,21 +208,25 @@ public final class ScoreboardRenderer {
             return COLUMN_HEIGHT * rows.size();
         }
 
-        public static final class Column<T> {
+        public static final class Column<T, G extends Game<?>> {
 
             private final String name;
             private final BiFunction<PlayerPropertyHolder, T, String> value;
 
             private boolean allowSizeShrinking;
-            private int textColor = 0xFFFFFF;
+            private ToIntBiFunction<G, T> textColor = (game, type) -> 0xFFFFFF;
             private boolean rightAlignment = false;
 
             public void setAllowSizeShrinking(boolean allowSizeShrinking) {
                 this.allowSizeShrinking = allowSizeShrinking;
             }
 
-            public void setTextColor(int textColor) {
+            public void setTextColor(ToIntBiFunction<G, T> textColor) {
                 this.textColor = textColor;
+            }
+
+            public void setTextColor(int textColor) {
+                this.textColor = (game, type) -> textColor;
             }
 
             public void setRightAlignment(boolean rightAlignment) {

@@ -4,6 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.client.event.RegisterGameRendererEvent;
 import dev.toma.pubgmc.api.client.event.RegisterMapPointRendererEvent;
 import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
+import dev.toma.pubgmc.client.games.DominationGameRenderer;
 import dev.toma.pubgmc.client.games.FFAGameRenderer;
 import dev.toma.pubgmc.client.models.BakedModelGun;
 import dev.toma.pubgmc.client.renderer.poi.CaptureZoneRenderer;
@@ -55,6 +56,7 @@ public class ClientRegistry {
     public static void registerGameRenderers(RegisterGameRendererEvent event) {
         event.registerRenderer(GameTypes.BATTLE_ROYALE, new BattleRoyaleGameRenderer());
         event.registerRenderer(GameTypes.FFA, new FFAGameRenderer());
+        event.registerRenderer(GameTypes.DOMINATION, new DominationGameRenderer());
     }
 
     @SubscribeEvent

@@ -26,14 +26,16 @@ public class DominationCapturePointManager {
 
     private final DominationTeamManager teamManager;
     private final float captureSpeed;
+    private final PointCapturedCallback capturedCallback;
     private final Map<BlockPos, Tracker> pointMap = new HashMap<>();
     private static final int NO_OWNER_BG = 0xaaaaaa;
     private static final int BLUE = 0xff;
     private static final int RED = 0xff << 16;
 
-    public DominationCapturePointManager(DominationTeamManager teamManager, float captureSpeed) {
+    public DominationCapturePointManager(DominationTeamManager teamManager, float captureSpeed, PointCapturedCallback capturedCallback) {
         this.teamManager = teamManager;
         this.captureSpeed = captureSpeed;
+        this.capturedCallback = capturedCallback;
     }
 
     public void init(GameMap map) {
@@ -47,14 +49,24 @@ public class DominationCapturePointManager {
         return tracker != null ? tracker.captureData : null;
     }
 
-    public int getCapturedPoints(TeamType type) {
-        return (int) pointMap.values().stream().filter(tracker -> tracker.owner == type).count();
+    @Nullable
+    public CaptureZones.CaptureData getEntityCaptureData(Entity entity) {
+        for (Tracker tracker : pointMap.values()) {
+            if (tracker.point.isWithin(entity)) {
+                return tracker.captureData;
+            }
+        }
+        return null;
+    }
+
+    public List<CaptureZonePoint> getCapturedPoints(TeamType type) {
+        return pointMap.values().stream().filter(tracker -> tracker.owner == type).map(t -> t.point).collect(Collectors.toList());
     }
 
     public void update(List<Entity> entityList, World world) {
         boolean updateNeeded = false;
         for (Tracker tracker : pointMap.values()) {
-            if (updateCaptureState(tracker, entityList)) {
+            if (updateCaptureState(tracker, entityList, world)) {
                 updateNeeded = true;
             }
         }
@@ -63,7 +75,7 @@ public class DominationCapturePointManager {
         }
     }
 
-    private boolean updateCaptureState(Tracker tracker, List<Entity> entityList) {
+    private boolean updateCaptureState(Tracker tracker, List<Entity> entityList, World world) {
         List<Entity> entitiesOnPoint = entityList.stream().filter(tracker.point::isWithin).collect(Collectors.toList());
         CaptureZones.CaptureData data = tracker.captureData;
         int redCount = getNumberOfPlayers(entitiesOnPoint, TeamType.RED);
@@ -78,14 +90,14 @@ public class DominationCapturePointManager {
             return true;
         }
         if (tracker.owner == TeamType.RED) {
-            return handleTeamCapture(redCount, blueCount, BLUE, TeamType.BLUE, tracker);
+            return handleTeamCapture(redCount, blueCount, BLUE, TeamType.BLUE, tracker, entitiesOnPoint, world);
         } else if (tracker.owner == TeamType.BLUE) {
-            return handleTeamCapture(blueCount, redCount, RED, TeamType.RED, tracker);
+            return handleTeamCapture(blueCount, redCount, RED, TeamType.RED, tracker, entitiesOnPoint, world);
         } else {
             if (redCount > blueCount) {
-                handleNewPointCapture(redCount, blueCount, RED, tracker, TeamType.RED);
+                handleNewPointCapture(redCount, blueCount, RED, tracker, TeamType.RED, entitiesOnPoint, world);
             } else if (redCount < blueCount) {
-                handleNewPointCapture(blueCount, redCount, BLUE, tracker, TeamType.BLUE);
+                handleNewPointCapture(blueCount, redCount, BLUE, tracker, TeamType.BLUE, entitiesOnPoint, world);
             } else {
                 tracker.captureData.setStatus(CaptureStatus.BLOCKED);
             }
@@ -93,7 +105,7 @@ public class DominationCapturePointManager {
         }
     }
 
-    private void handleNewPointCapture(int majority, int minority, int majorityColor, Tracker tracker, TeamType majorityTeamType) {
+    private void handleNewPointCapture(int majority, int minority, int majorityColor, Tracker tracker, TeamType majorityTeamType, List<Entity> entities, World world) {
         CaptureZones.CaptureData data = tracker.captureData;
         data.setStatus(CaptureStatus.CAPTURING);
         float progress = data.getCaptureProgress();
@@ -113,13 +125,14 @@ public class DominationCapturePointManager {
                 data.setCaptureProgress(0.0F);
                 data.setStatus(CaptureStatus.CAPTURED);
                 tracker.owner = majorityTeamType;
+                onCaptured(entities, world, tracker.point);
             } else {
                 data.setStatus(CaptureStatus.BLOCKED);
             }
         }
     }
 
-    private boolean handleTeamCapture(int friendlyCount, int enemyCount, int enemyColor, TeamType enemyTeam, Tracker tracker) {
+    private boolean handleTeamCapture(int friendlyCount, int enemyCount, int enemyColor, TeamType enemyTeam, Tracker tracker, List<Entity> entities, World world) {
         CaptureZones.CaptureData data = tracker.captureData;
         if (enemyCount > 0) {
             if (enemyCount > friendlyCount) {
@@ -133,6 +146,7 @@ public class DominationCapturePointManager {
                         data.setCaptureProgress(0.0F);
                         data.setBackground(enemyColor);
                         tracker.owner = enemyTeam;
+                        onCaptured(entities, world, tracker.point);
                     } else {
                         data.setStatus(CaptureStatus.BLOCKED);
                     }
@@ -150,6 +164,10 @@ public class DominationCapturePointManager {
             return true;
         }
         return false;
+    }
+
+    private void onCaptured(List<Entity> entities, World world, CaptureZonePoint point) {
+        capturedCallback.onCaptured(point, world, entities);
     }
 
     private int getNumberOfPlayers(List<Entity> entitiesOnPoint, TeamType teamType) {
@@ -202,5 +220,10 @@ public class DominationCapturePointManager {
             }
             return tracker;
         }
+    }
+
+    @FunctionalInterface
+    interface PointCapturedCallback {
+        void onCaptured(CaptureZonePoint point, World world, List<Entity> entities);
     }
 }

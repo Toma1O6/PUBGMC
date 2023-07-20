@@ -11,6 +11,7 @@ import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.SpecialInventoryItem;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
+import dev.toma.pubgmc.common.games.game.domination.DominationGameConfiguration;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGameConfiguration;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.data.loot.*;
@@ -45,6 +46,113 @@ public final class DefaultEntityLoadouts {
         registerDefaultAiLoadout();
         registerBattleRoyaleLoadouts();
         registerFfaLoadouts();
+        registerDominationLoadouts();
+    }
+
+    private static void registerDominationLoadouts() {
+        LoadoutManager.register(DominationGameConfiguration.LOADOUT_UMP45, new EntityLoadout.Builder()
+                .withName("UMP-45")
+                .withIcon(new ItemStack(PMCItems.UMP45))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.UMP45), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SMG)));
+                        }),
+                        new WeaponAmmoProcessor(1.0F),
+                        new AmmoPackProcessor(60, 3, 3)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(1), helmet(2)
+                )))
+                .build()
+        );
+        LoadoutManager.register(DominationGameConfiguration.LOADOUT_VECTOR, new EntityLoadout.Builder()
+                .withName("Vector")
+                .withIcon(new ItemStack(PMCItems.VECTOR))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.VECTOR), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SMG)));
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)));
+                        }),
+                        new WeaponAmmoProcessor(1.0F),
+                        new AmmoPackProcessor(60, 3, 3)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(1), helmet(2)
+                )))
+                .build()
+        );
+        LoadoutManager.register(DominationGameConfiguration.LOADOUT_AKM, new EntityLoadout.Builder()
+                .withName("AKM")
+                .withIcon(new ItemStack(PMCItems.AKM))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.AKM), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)));
+                        }),
+                        new WeaponAmmoProcessor(1.0F),
+                        new AmmoPackProcessor(60, 3, 3)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(1)
+                )))
+                .build()
+        );
+        LoadoutManager.register(DominationGameConfiguration.LOADOUT_M416, new EntityLoadout.Builder()
+                .withName("M416")
+                .withIcon(new ItemStack(PMCItems.M416))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.M416), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_AR)));
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_AR)));
+                        }),
+                        new WeaponAmmoProcessor(1.0F),
+                        new AmmoPackProcessor(60, 3, 3)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(1)
+                )))
+                .build()
+        );
+        LoadoutManager.register(DominationGameConfiguration.LOADOUT_SLR, new EntityLoadout.Builder()
+                .withName("SLR")
+                .withIcon(new ItemStack(PMCItems.SLR))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.SLR), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE4X)));
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)));
+                            map.put(AttachmentType.STOCK, new ItemStackLootProvider(new ItemStack(PMCItems.CHEEKPAD)));
+                        }),
+                        new WeaponAmmoProcessor(1.0F),
+                        new AmmoPackProcessor(45, 2, 2)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(1), helmet(1)
+                )))
+                .build()
+        );
+        LoadoutManager.register(DominationGameConfiguration.LOADOUT_M24, new EntityLoadout.Builder()
+                .withName("M24")
+                .withIcon(new ItemStack(PMCItems.M24))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.M24), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE8X)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER)));
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)));
+                        }),
+                        new WeaponAmmoProcessor(1.0F),
+                        new AmmoPackProcessor(20, 2, 2)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(2)
+                )))
+                .withSpecialEquipmentProvider(new ItemStackLootProvider(new ItemStack(PMCItems.GHILLIE_SUIT), Collections.singletonList(
+                        new GhillieColorProcessor(ColorProvider.BIOME, new int[0])
+                )))
+                .build()
+        );
     }
 
     private static void registerFfaLoadouts() {

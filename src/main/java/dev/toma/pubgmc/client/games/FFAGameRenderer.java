@@ -23,11 +23,11 @@ import java.util.Comparator;
 
 public class FFAGameRenderer implements GameRenderer<FFAGame> {
 
-    private final ScoreboardRenderer scoreboardRenderer;
+    private final ScoreboardRenderer<FFAGame> scoreboardRenderer;
     private final PlayzoneRenderer<Playzone> playzoneRenderer;
 
     public FFAGameRenderer() {
-        this.scoreboardRenderer = ScoreboardRenderer.create()
+        this.scoreboardRenderer = ScoreboardRenderer.<FFAGame>create()
                 .withSorting(SharedProperties.KILLS, Comparator.<Integer>comparingInt(val -> val).reversed(), 0)
                 .addRenderableColumn(TextComponentHelper.NAME.getFormattedText(), PlayerPropertyHolder::getUsername)
                 .addRenderableColumn(TextComponentHelper.KILLS.getFormattedText(), (propertyHolder, uuid) -> String.valueOf(propertyHolder.getProperty(uuid, SharedProperties.KILLS, 0)), col -> {
@@ -49,7 +49,7 @@ public class FFAGameRenderer implements GameRenderer<FFAGame> {
         if (elementType == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
             PlayerPropertyHolder properties = game.getProperties();
             ImageUtil.drawShape(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x88 << 24);
-            scoreboardRenderer.renderScoreboard(properties, resolution);
+            scoreboardRenderer.renderScoreboard(properties, game, resolution);
             return true;
         } else if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             FontRenderer font = Minecraft.getMinecraft().fontRenderer;

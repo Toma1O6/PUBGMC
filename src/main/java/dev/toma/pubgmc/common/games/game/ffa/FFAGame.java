@@ -20,13 +20,14 @@ import dev.toma.pubgmc.common.ai.EntityAITeamAwareNearestAttackableTarget;
 import dev.toma.pubgmc.common.ai.EntityAIVisitMapPoint;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.common.games.game.SimpleLoadoutManager;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.map.SpawnerPoint;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import dev.toma.pubgmc.common.games.util.SpawnPointSelector;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.S2C_PacketFFAGui;
+import dev.toma.pubgmc.network.client.S2C_PacketLoadoutSelect;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -53,9 +54,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
+public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, LoadoutHandler {
 
-    private static final ITextComponent LOADOUT_MESSAGE = new TextComponentTranslation("message.pubgmc.game.ffa.select_loadout");
+    private static final ITextComponent LOADOUT_MESSAGE = new TextComponentTranslation("message.pubgmc.game.select_loadout");
     private static final String GAME_ENDED_KEY = "message.pubgmc.game.ffa.game_ended";
 
     private final List<GameEventListener> listeners = new ArrayList<>();
@@ -63,7 +64,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     private final FFAGameConfiguration configuration;
     private final GameRuleStorage gameRuleStorage;
     private final FFAParticipantManager participantManager;
-    private final FFALoadoutManager loadoutManager;
+    private final SimpleLoadoutManager loadoutManager;
     private final PlayerPropertyHolder properties;
     private final SpawnPointSelector<SpawnerPoint> spawnerSelector;
     private final DeathMessageContainer deathMessages;
@@ -79,7 +80,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         this.configuration = configuration;
         this.gameRuleStorage = new GameRuleStorage();
         this.participantManager = new FFAParticipantManager();
-        this.loadoutManager = new FFALoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
+        this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
         this.properties = new PlayerPropertyHolder();
         this.spawnerSelector = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMap);
         this.deathMessages = new DeathMessageContainer(7, 60);
@@ -145,10 +146,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             GameHelper.resetPlayerData(player);
             player.setGameType(net.minecraft.world.GameType.ADVENTURE);
             if (!world.isRemote) {
-                if (!loadoutManager.hasLoadout(player.getUniqueID())) {
+                if (!loadoutManager.hasSelectedLoadout(player.getUniqueID())) {
                     openMenu((EntityPlayerMP) player);
                 } else {
-                    applySelectedLoadout(player);
+                    loadoutManager.applyLoadout(player);
                 }
             }
         }
@@ -202,7 +203,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
     @Override
     public void openMenu(EntityPlayerMP player) {
-        PacketHandler.sendToClient(new S2C_PacketFFAGui(loadoutManager.getAvailableLoadouts()), player);
+        PacketHandler.sendToClient(new S2C_PacketLoadoutSelect(loadoutManager.getAvailableLoadouts()), player);
     }
 
     @Override
@@ -273,11 +274,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         return deathMessages;
     }
 
-    public void selectLoadout(UUID uuid, int loadout, World world) {
-        loadoutManager.selectByIndex(uuid, loadout);
-        GameHelper.requestClientGameDataSynchronization(world);
-    }
-
     private void createAi(WorldServer world) {
         EntityAIPlayer aiPlayer = new EntityAIPlayer(world);
         List<Entity> entities = participantManager.getLoadedParticipants(world);
@@ -294,7 +290,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         if (loadout != null) {
             UUID uuid = aiPlayer.getUniqueID();
             loadoutManager.select(uuid, loadout);
-            applySelectedLoadout(aiPlayer);
+            loadoutManager.applyLoadout(aiPlayer);
         }
     }
 
@@ -320,12 +316,8 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         return list;
     }
 
-    public void applySelectedLoadout(EntityLivingBase entity) {
-        EntityLoadout loadout = loadoutManager.getLoadout(entity.getUniqueID());
-        LoadoutManager.apply(entity, loadout);
-    }
-
-    public FFALoadoutManager getLoadoutManager() {
+    @Override
+    public SimpleLoadoutManager getLoadoutManager() {
         return loadoutManager;
     }
 
@@ -367,7 +359,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
             initAi(player);
             player.setUniqueId(uuid);
             player.assignGameId(gameId);
-            applySelectedLoadout(player);
+            loadoutManager.applyLoadout(player);
             participantManager.markRespawned(uuid);
             properties.setProperty(uuid, SharedProperties.GAME_TIMESTAMP, gametime);
             world.spawnEntity(player);
@@ -380,8 +372,8 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         if (world.isRemote)
             return;
         properties.setProperty(player.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
-        if (loadoutManager.hasLoadout(player.getUniqueID())) {
-            applySelectedLoadout(player);
+        if (loadoutManager.hasSelectedLoadout(player.getUniqueID())) {
+            loadoutManager.applyLoadout(player);
         } else {
             openMenu((EntityPlayerMP) player);
         }
@@ -569,7 +561,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
 
     static {
         Style style = LOADOUT_MESSAGE.getStyle();
-        style.setColor(TextFormatting.AQUA);
+        style.setColor(TextFormatting.YELLOW);
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/game menu"));
     }
 }

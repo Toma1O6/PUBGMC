@@ -6,17 +6,23 @@ import net.minecraft.util.text.TextFormatting;
 
 public enum TeamType {
 
-    RED(TextFormatting.RED),
-    BLUE(TextFormatting.BLUE);
+    RED(TextFormatting.RED, 0xAA0000),
+    BLUE(TextFormatting.BLUE, 0x0000AA);
 
     private final ITextComponent title;
+    private final int color;
 
-    TeamType(TextFormatting color) {
+    TeamType(TextFormatting formatting, int color) {
         this.title = new TextComponentTranslation("label.pubgmc.team." + name().toLowerCase());
-        this.title.getStyle().setColor(color);
+        this.title.getStyle().setColor(formatting);
+        this.color = color;
     }
 
     public ITextComponent getTitle() {
         return title;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

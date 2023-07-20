@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -30,7 +31,11 @@ public class DominationTeamManager implements TeamManager {
     }
 
     public TeamType getTeamType(Entity entity) {
-        Team team = entityTeamMap.get(entity.getUniqueID());
+        return getTeamType(entity.getUniqueID());
+    }
+
+    public TeamType getTeamType(UUID uuid) {
+        Team team = entityTeamMap.get(uuid);
         if (team == null) {
             return null;
         }
@@ -41,17 +46,12 @@ public class DominationTeamManager implements TeamManager {
         return team.getTeamId().equals(RED_TEAM) ? TeamType.RED : TeamType.BLUE;
     }
 
-    public Team getTeamByType(TeamType type) {
-        UUID uuid = type == TeamType.RED ? RED_TEAM : BLUE_TEAM;
-        return getTeamById(uuid);
-    }
-
-    public Team autoJoinTeam(EntityLivingBase livingBase) {
+    public void autoJoinTeam(EntityLivingBase livingBase) {
         int red = teamMap.get(RED_TEAM).getSize();
         int blue = teamMap.get(BLUE_TEAM).getSize();
         Team team = red < blue ? teamMap.get(RED_TEAM) : teamMap.get(BLUE_TEAM);
         join(team, livingBase);
-        return team;
+        livingBase.sendMessage(new TextComponentTranslation("message.pubgmc.game.domination.team_joined", getTeamType(team).getTitle()));
     }
 
     @Override
@@ -112,6 +112,7 @@ public class DominationTeamManager implements TeamManager {
             team.removeMemberById(player.getUniqueID());
             enemyTeam.add(player);
             entityTeamMap.put(player.getUniqueID(), enemyTeam);
+            player.sendMessage(new TextComponentTranslation("message.pubgmc.game.domination.team_joined", getTeamType(enemyTeam).getTitle()));
             return true;
         }
         return false;

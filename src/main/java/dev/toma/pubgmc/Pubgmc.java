@@ -105,6 +105,7 @@ public class Pubgmc {
         DataVersionManager.register(Pubgmc.getResource("entity_loadouts"), LoadoutManager.INSTANCE);
         DataVersionManager.register(Pubgmc.getResource("entity_providers"), EntityProviderManager.INSTANCE);
         LoadoutManager.registerLoadoutDirectory("ffa");
+        LoadoutManager.registerLoadoutDirectory("domination");
 
         proxy.preInit(event);
     }

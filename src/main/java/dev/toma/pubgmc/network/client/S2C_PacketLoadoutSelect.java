@@ -2,7 +2,7 @@ package dev.toma.pubgmc.network.client;
 
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
-import dev.toma.pubgmc.client.games.screen.FFALoadoutScreen;
+import dev.toma.pubgmc.client.games.screen.LoadoutSelectGui;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -12,19 +12,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class S2C_PacketFFAGui implements IMessage {
+public class S2C_PacketLoadoutSelect implements IMessage {
 
     private final List<EntityLoadout> list;
 
-    public S2C_PacketFFAGui() {
+    public S2C_PacketLoadoutSelect() {
         this(new ArrayList<>());
     }
 
-    public S2C_PacketFFAGui(List<EntityLoadout> list) {
+    public S2C_PacketLoadoutSelect(List<EntityLoadout> list) {
         this.list = list;
     }
 
@@ -48,13 +47,13 @@ public class S2C_PacketFFAGui implements IMessage {
         }
     }
 
-    public static final class Handler implements IMessageHandler<S2C_PacketFFAGui, IMessage> {
+    public static final class Handler implements IMessageHandler<S2C_PacketLoadoutSelect, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(S2C_PacketFFAGui message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketLoadoutSelect message, MessageContext ctx) {
             Minecraft minecraft = Minecraft.getMinecraft();
-            minecraft.addScheduledTask(() -> minecraft.displayGuiScreen(new FFALoadoutScreen(message.list)));
+            minecraft.addScheduledTask(() -> minecraft.displayGuiScreen(new LoadoutSelectGui(message.list)));
             return null;
         }
     }
