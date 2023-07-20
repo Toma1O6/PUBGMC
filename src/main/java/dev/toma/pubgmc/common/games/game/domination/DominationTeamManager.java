@@ -2,8 +2,10 @@ package dev.toma.pubgmc.common.games.game.domination;
 
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
@@ -25,6 +27,31 @@ public class DominationTeamManager implements TeamManager {
     public DominationTeamManager() {
         teamMap.put(RED_TEAM, new Team(RED_TEAM));
         teamMap.put(BLUE_TEAM, new Team(BLUE_TEAM));
+    }
+
+    public TeamType getTeamType(Entity entity) {
+        Team team = entityTeamMap.get(entity.getUniqueID());
+        if (team == null) {
+            return null;
+        }
+        return getTeamType(team);
+    }
+
+    public TeamType getTeamType(Team team) {
+        return team.getTeamId().equals(RED_TEAM) ? TeamType.RED : TeamType.BLUE;
+    }
+
+    public Team getTeamByType(TeamType type) {
+        UUID uuid = type == TeamType.RED ? RED_TEAM : BLUE_TEAM;
+        return getTeamById(uuid);
+    }
+
+    public Team autoJoinTeam(EntityLivingBase livingBase) {
+        int red = teamMap.get(RED_TEAM).getSize();
+        int blue = teamMap.get(BLUE_TEAM).getSize();
+        Team team = red < blue ? teamMap.get(RED_TEAM) : teamMap.get(BLUE_TEAM);
+        join(team, livingBase);
+        return team;
     }
 
     @Override
@@ -84,7 +111,7 @@ public class DominationTeamManager implements TeamManager {
         if (enemyTeam.getSize() - team.getSize() < 2) {
             team.removeMemberById(player.getUniqueID());
             enemyTeam.add(player);
-            entityTeamMap.put(player.getUniqueID(), team);
+            entityTeamMap.put(player.getUniqueID(), enemyTeam);
             return true;
         }
         return false;

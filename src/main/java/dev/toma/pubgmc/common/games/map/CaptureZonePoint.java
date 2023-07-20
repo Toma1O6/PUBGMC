@@ -58,26 +58,6 @@ public class CaptureZonePoint extends GameMapPoint implements Bounds3 {
         return GameMapPoints.CAPTURE_ZONE;
     }
 
-    public enum CaptureStatus {
-
-        CAPTURED,
-        CAPTURING,
-        BLOCKED,
-        BLOCKING,
-        LOSING,
-        STALEMATE;
-
-        private final ITextComponent title;
-
-        CaptureStatus() {
-            this.title = new TextComponentTranslation("label.pubgmc.capture_status." + name().toLowerCase());
-        }
-
-        public ITextComponent getTitle() {
-            return title;
-        }
-    }
-
     public static final class Serializer implements GameMapPointSerializer<CaptureZonePoint> {
 
         @Override

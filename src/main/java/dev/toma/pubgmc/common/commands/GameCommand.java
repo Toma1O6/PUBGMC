@@ -289,11 +289,11 @@ public class GameCommand extends AbstractCommand {
         if (map == null) {
             throw new WrongUsageException("No map is registered under " + actualMapName + " name");
         }
-        data.setActiveGameMapName(actualMapName);
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
         try {
             game.validateAndSetupForMap(world, map);
+            data.setActiveGameMapName(actualMapName);
             game.onGameStart(world);
         } catch (GameException e) {
             data.setActiveGameMapName(actualMapName);

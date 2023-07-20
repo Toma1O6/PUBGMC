@@ -136,7 +136,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     @Override
     public void onGameStart(World world) {
         started = true;
-        GameHelper.updateLoadedGameObjects(world, GenerationType.empty());
+        GameHelper.updateLoadedGameObjects(world, getGeneratorContext());
         List<EntityPlayer> participants = participantManager.getPlayerParticipants(world);
         for (EntityPlayer player : participants) {
             SpawnerPoint point = spawnerSelector.getPoint(world, participants);
@@ -155,10 +155,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             configuration.worldConfiguration.apply(worldServer, gameRuleStorage);
-            gameRuleStorage.storeValueAndSet(world, "naturalRegeneration", "false");
-            gameRuleStorage.storeValueAndSet(world, "doMobSpawning", "false");
-            gameRuleStorage.storeValueAndSet(world, "doMobLoot", "false");
-            gameRuleStorage.storeValueAndSet(world, "showDeathMessages", "false");
+            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
+            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
+            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
+            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
             int aiCount = configuration.allowAi ? configuration.entityCount - participants.size() : 0;
             for (int i = 0; i < aiCount; i++) {
                 createAi(worldServer);
@@ -250,6 +250,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider {
     @Override
     public void invokeEvent(Consumer<GameEventListener> consumer) {
         listeners.forEach(consumer);
+    }
+
+    @Override
+    public GenerationType.Context getGeneratorContext() {
+        return GenerationType.empty();
     }
 
     public int getTimeRemaining() {

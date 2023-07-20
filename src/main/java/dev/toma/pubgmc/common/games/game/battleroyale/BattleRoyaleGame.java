@@ -160,7 +160,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         int playerCount = (int) teamManager.getAllActivePlayers(world).count();
         int aiCount = configuration.allowAi ? configuration.entityCount - playerCount : 0;
         aiManager.setAllowedAiSpawnCount(aiCount);
-        GameHelper.updateLoadedGameObjects(world, GenerationType.create(GenerationType.ITEMS, GenerationType.ENTITIES));
+        GameHelper.updateLoadedGameObjects(world, getGeneratorContext());
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
@@ -173,10 +173,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 player.setGameType(net.minecraft.world.GameType.ADVENTURE);
             });
             configuration.worldConfiguration.apply(worldServer, ruleStorage);
-            ruleStorage.storeValueAndSet(world, "naturalRegeneration", "false");
-            ruleStorage.storeValueAndSet(world, "doMobSpawning", "false");
-            ruleStorage.storeValueAndSet(world, "doMobLoot", "false");
-            ruleStorage.storeValueAndSet(world, "showDeathMessages", "false");
+            ruleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
+            ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
+            ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
+            ruleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
         }
     }
 
@@ -282,6 +282,11 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     @Override
     public TeamInviteManager getInviteManager() {
         return inviteManager;
+    }
+
+    @Override
+    public GenerationType.Context getGeneratorContext() {
+        return GenerationType.create(GenerationType.ITEMS, GenerationType.ENTITIES);
     }
 
     public DynamicPlayzone getPlayzone() {

@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.client.renderer.poi;
 
+import dev.toma.pubgmc.api.game.CaptureZones;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -15,6 +17,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -60,37 +63,72 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
 
     @Override
     public void renderPointInGame(CaptureZonePoint point, @Nullable Game<?> game, double x, double y, double z, float partialTicks) {
-        String label = point.getLabel();
+        if (!(game instanceof CaptureZones))
+            return;
+        BlockPos pos = point.getPointPosition();
+        CaptureZones.CaptureData captureData = ((CaptureZones) game).getCapturePointData(pos);
+        if (captureData == null)
+            return;
+        String label = point.getLabel() != null ? point.getLabel().toUpperCase() : null;
         if (label != null) {
-            // background color
-            // foreground color
-            // foreground progress
+            Minecraft mc = Minecraft.getMinecraft();
+            FontRenderer font = mc.fontRenderer;
+            RenderManager manager = mc.getRenderManager();
+            double distance = pos.distanceSq(manager.viewerPosX, manager.viewerPosY, manager.viewerPosZ);
+            int renderDistance = manager.options.renderDistanceChunks << 4;
+            if (distance > renderDistance * renderDistance) {
+                return;
+            }
+            float factor = (float) (distance * 0.00001F + 0.05F);
+            renderTowardsViewer(mc, manager, x, y, z, pos.getX() + 0.5, pos.getY() + 5.0 + point.getRightScale().y, pos.getZ() + 0.5, factor, () -> {
+                String text = label;
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder builder = tessellator.getBuffer();
+                float progress = captureData.getCaptureProgress();
+                boolean capturing = progress > 0.0F;
+                if (capturing) {
+                    text = TextFormatting.BOLD + label;
+                }
+                int width = font.getStringWidth(text);
+                GlStateManager.disableTexture2D();
+                builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+                builder.pos(-width - 1, -4, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
+                builder.pos(-width - 1, 11, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
+                builder.pos(width + 1, 11, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
+                builder.pos(width + 1, -4, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
+                float[] bg = ImageUtil.decomposeRGBA(captureData.getBackground());
+                builder.pos(-width, -3, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
+                builder.pos(-width, 10, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
+                builder.pos(width, 10, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
+                builder.pos(width, -3, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
+                int textColor = 0xFFFFFF;
+                if (capturing) {
+                    float[] fg = ImageUtil.decomposeRGBA(captureData.getForeground()); // TODO optimize to 3 color array
+                    float min = -3.0F + 13.0F * (1.0F - progress);
+                    float max = 10.0F;
+                    builder.pos(-width, min, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
+                    builder.pos(-width, max, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
+                    builder.pos(width, max, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
+                    builder.pos(width, min, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
+
+                    long time = System.currentTimeMillis();
+                    float partial = (time % 1000L) / 1000.0F;
+                    float f = partial <= 0.5F ? partial / 0.5F : 1.0F - (partial - 0.5F) / 0.5F;
+                    float eased = f < 0.5F ? 2 * f * f : 1 - (float) Math.pow(-2 * f + 2, 2) / 2;
+                    int blue = (int) (255 * eased);
+                    textColor = 0xFFFF << 8 | blue;
+                }
+                tessellator.draw();
+                GlStateManager.enableTexture2D();
+                font.drawString(text, -width / 2, 0, textColor);
+                GlStateManager.enableDepth();
+                GlStateManager.depthMask(true);
+            });
         }
     }
 
     @Override
     public void renderInHud(CaptureZonePoint point, EntityPlayer player, Game<?> game, ScaledResolution resolution, float partialTicks) {
         // TODO capture progress
-    }
-
-    public static void renderTowardsViewer(Minecraft mc, RenderManager manager, double x, double y, double z, double posX, double posY, double posZ, float scale, Runnable renderFn) {
-        boolean thirdPersonFront = manager.options.thirdPersonView == 2;
-        GlStateManager.pushMatrix();
-        GlStateManager.alphaFunc(516, 0.1F);
-        GlStateManager.translate(-x, -y, -z);
-        GlStateManager.translate(posX, posY, posZ);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-manager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float)(thirdPersonFront ? -1 : 1) * manager.playerViewX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(-scale, -scale, scale);
-        GlStateManager.disableLighting();
-        GlStateManager.depthMask(false);
-        GlStateManager.disableDepth();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        renderFn.run();
-        GlStateManager.disableBlend();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
     }
 }

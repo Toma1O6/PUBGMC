@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public final class SpawnPointSelector<P extends GameMapPoint> {
 
@@ -19,16 +21,22 @@ public final class SpawnPointSelector<P extends GameMapPoint> {
     private static final int ENTITY_DISTANCE_UNIT_WEIGHT = 10;
 
     private final GameMapPointType<P> mapPointType;
+    private final Predicate<P> selector;
     private final Function<World, GameMap> mapProvider;
 
-    public SpawnPointSelector(GameMapPointType<P> mapPointType, Function<World, GameMap> mapProvider) {
+    public SpawnPointSelector(GameMapPointType<P> mapPointType, Predicate<P> selector, Function<World, GameMap> mapProvider) {
         this.mapPointType = mapPointType;
+        this.selector = selector;
         this.mapProvider = mapProvider;
+    }
+
+    public SpawnPointSelector(GameMapPointType<P> mapPointType, Function<World, GameMap> mapProvider) {
+        this(mapPointType, t -> true, mapProvider);
     }
 
     public P getPoint(World world, Collection<? extends Entity> enemyEntities) {
         GameMap map = mapProvider.apply(world);
-        Collection<P> points = map.getPoints(mapPointType);
+        Collection<P> points = map.getPoints(mapPointType).stream().filter(selector).collect(Collectors.toList());
         if (points.isEmpty()) {
             throw new UnsupportedOperationException("Map has to contain atleast one point");
         }

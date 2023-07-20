@@ -43,4 +43,6 @@ public interface Game<CFG extends GameConfiguration> {
     void addListener(GameEventListener listener);
 
     void invokeEvent(Consumer<GameEventListener> consumer);
+
+    GenerationType.Context getGeneratorContext();
 }

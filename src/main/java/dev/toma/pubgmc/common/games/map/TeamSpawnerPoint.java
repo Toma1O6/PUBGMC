@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.common.games.map;
 
 import dev.toma.pubgmc.api.game.map.GameMap;
-import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointSerializer;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.common.games.util.TeamType;
@@ -10,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TeamSpawnerPoint extends GameMapPoint {
+public class TeamSpawnerPoint extends SpawnerPoint {
 
     private TeamType teamType;
 

@@ -350,6 +350,8 @@ label.pubgmc.select_loadout=Select loadout
 label.pubgmc.name=Name
 label.pubgmc.kills=Kills
 
+label.pubgmc.team.red=RED
+label.pubgmc.team.blue=BLUE
 label.pubgmc.game.battleroyale.kill.single=%s KILL
 label.pubgmc.game.battleroyale.kill.multiple=%s KILLS
 label.pubgmc.game.battleroyale.kill.single.distance=%s KILL - Range [%sm]
@@ -360,6 +362,7 @@ message.pubgmc.healing.max_health=You must not have max health in order to use t
 message.pubgmc.game.joinable_game_in_progress=There is ongoing game which can be joined. Run command '/game join' to join the game
 message.pubgmc.game.ffa.select_loadout=This game requires you to select custom loadout. You can select it now using '/game menu' command or by clicking on this message
 message.pubgmc.game.ffa.game_ended=You have ended at %s. place with %s kills
+message.pubgmc.game.domination.team_joined=You have joined %s team
 
 data.pubgmc.loot_schema=Loot configurations
 data.pubgmc.game_configs=Game configurations

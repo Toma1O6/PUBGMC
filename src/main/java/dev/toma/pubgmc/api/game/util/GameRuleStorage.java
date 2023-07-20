@@ -12,6 +12,14 @@ import java.util.function.Function;
 
 public final class GameRuleStorage {
 
+    public static final String FALSE = "false";
+    public static final String TRUE = "true";
+
+    public static final String NATURAL_REGENERATION = "naturalRegeneration";
+    public static final String MOB_SPAWNING = "doMobSpawning";
+    public static final String MOB_LOOT = "doMobLoot";
+    public static final String SHOW_DEATH_MESSAGES = "showDeathMessages";
+
     private final Map<String, String> ruleValues = new HashMap<>();
 
     public void storeValueAndSet(World world, String rule, String toSet) {

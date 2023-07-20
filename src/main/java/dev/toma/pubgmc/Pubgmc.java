@@ -167,6 +167,9 @@ public class Pubgmc {
 
     private static void registerProperties() {
         Properties.registerProperty(SharedProperties.KILLS);
+        Properties.registerProperty(SharedProperties.DEATHS);
+        Properties.registerProperty(SharedProperties.CAPTURES);
+        Properties.registerProperty(SharedProperties.SCORE);
         Properties.registerProperty(SharedProperties.GAME_TIMESTAMP);
     }
 

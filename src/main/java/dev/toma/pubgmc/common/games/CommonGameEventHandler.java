@@ -5,9 +5,7 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.api.event.SpawnPositionSetEvent;
-import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameObject;
-import dev.toma.pubgmc.api.game.LivingGameEntity;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.common.entity.EntityGameItem;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -143,16 +141,25 @@ public final class CommonGameEventHandler {
     public static void loadChunk(ChunkEvent.Load event) {
         Chunk chunk = event.getChunk();
         Map<BlockPos, TileEntity> tileEntityMap = new HashMap<>(chunk.getTileEntityMap());
-        UUID currentGameId = GameHelper.getGameUUID(event.getWorld());
-        for (Map.Entry<BlockPos, TileEntity> entry : tileEntityMap.entrySet()) {
-            TileEntity entity = entry.getValue();
-            if (entity instanceof GameObject) {
-                GameObject gameObject = (GameObject) entity;
-                if (!gameObject.getCurrentGameId().equals(currentGameId)) {
-                    gameObject.onNewGameDetected(currentGameId);
+        GameDataProvider.getGameData(event.getWorld()).ifPresent(data -> {
+            Game<?> game = data.getCurrentGame();
+            if (!game.isStarted())
+                return;
+            UUID gameId = game.getGameId();
+            GenerationType.Context context = game.getGeneratorContext();
+            for (Map.Entry<BlockPos, TileEntity> entry : tileEntityMap.entrySet()) {
+                TileEntity entity = entry.getValue();
+                if (entity instanceof GameObject) {
+                    GameObject gameObject = (GameObject) entity;
+                    if (!gameObject.getCurrentGameId().equals(gameId)) {
+                        gameObject.onNewGameDetected(gameId);
+                        if (!context.isEmpty() && gameObject instanceof Generator) {
+                            ((Generator) gameObject).generate(context);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     @SubscribeEvent

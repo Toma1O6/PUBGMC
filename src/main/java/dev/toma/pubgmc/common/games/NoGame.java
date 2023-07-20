@@ -78,6 +78,11 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
     public void invokeEvent(Consumer<GameEventListener> consumer) {
     }
 
+    @Override
+    public GenerationType.Context getGeneratorContext() {
+        return GenerationType.empty();
+    }
+
     public static final class Serializer implements GameDataSerializer<NoConfiguration, NoGame> {
 
         @Override

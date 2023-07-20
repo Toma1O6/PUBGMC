@@ -4,10 +4,12 @@ import dev.toma.pubgmc.api.client.game.MapPointRenderer;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.util.helper.ImageUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -129,5 +131,26 @@ public class SimplePoiRenderer<T extends GameMapPoint> implements MapPointRender
         GlStateManager.enableTexture2D();
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
+    }
+
+    protected static void renderTowardsViewer(Minecraft mc, RenderManager manager, double x, double y, double z, double posX, double posY, double posZ, float scale, Runnable renderFn) {
+        boolean thirdPersonFront = manager.options.thirdPersonView == 2;
+        GlStateManager.pushMatrix();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.translate(-x, -y, -z);
+        GlStateManager.translate(posX, posY, posZ);
+        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-manager.playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float)(thirdPersonFront ? -1 : 1) * manager.playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(-scale, -scale, scale);
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        renderFn.run();
+        GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
     }
 }
