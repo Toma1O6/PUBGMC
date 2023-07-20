@@ -33,6 +33,8 @@ public class PacketHandler {
         registerServerPacket(SPacketControllableInput.Handler.class, SPacketControllableInput.class);
         registerServerPacket(C2S_PacketOpenPlayerEquipment.Handler.class, C2S_PacketOpenPlayerEquipment.class);
         registerServerPacket(C2S_SelectFFALoadout.Handler.class, C2S_SelectFFALoadout.class);
+        registerServerPacket(C2S_AdjustTeamSpawner.Handler.class, C2S_AdjustTeamSpawner.class);
+        registerServerPacket(C2S_AdjustCaptureZone.Handler.class, C2S_AdjustCaptureZone.class);
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);

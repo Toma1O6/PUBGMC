@@ -21,6 +21,10 @@ public abstract class GameMapPoint {
         return pointPosition;
     }
 
+    public final boolean is(GameMapPointType<?> type) {
+        return this.getType() == type;
+    }
+
     public static <P extends GameMapPoint> GameMapPointSerializer<P> createSimpleSerializer(Function<BlockPos, P> pointFactory) {
         return new SimpleSerializerImpl<>(pointFactory);
     }

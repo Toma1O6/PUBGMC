@@ -348,6 +348,10 @@ public class GameCommand extends AbstractCommand {
             throw new WrongUsageException("Map with name '" + name + "' already exists!");
         }
         GameMap gameMap = new GameMap(name, min, max);
+        GameMap overlap = gameMap.getOverlappingMap(data.getRegisteredGameMaps().values());
+        if (overlap != null) {
+            throw new WrongUsageException("Map overlaps over '" + overlap.getMapName() + "' map");
+        }
         data.registerGameMap(gameMap);
         data.sendGameDataToClients();
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.created", name));

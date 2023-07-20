@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 public class ButtonWidget extends Widget {
 
     final IPressable pressable;
-    protected final String text;
+    protected String text;
 
     public ButtonWidget(int x, int y, int width, int height, String text, IPressable pressable) {
         super(x, y, width, height);

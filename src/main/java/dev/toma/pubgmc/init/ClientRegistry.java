@@ -6,7 +6,9 @@ import dev.toma.pubgmc.api.client.event.RegisterMapPointRendererEvent;
 import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
 import dev.toma.pubgmc.client.games.FFAGameRenderer;
 import dev.toma.pubgmc.client.models.BakedModelGun;
+import dev.toma.pubgmc.client.renderer.poi.CaptureZoneRenderer;
 import dev.toma.pubgmc.client.renderer.poi.PointOfInterestRenderer;
+import dev.toma.pubgmc.client.renderer.poi.TeamSpawnerRenderer;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -58,6 +60,8 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void registerPoiRenderers(RegisterMapPointRendererEvent event) {
         event.registerRenderer(GameMapPoints.POINT_OF_INTEREST, new PointOfInterestRenderer());
+        event.registerRenderer(GameMapPoints.CAPTURE_ZONE, new CaptureZoneRenderer());
+        event.registerRenderer(GameMapPoints.TEAM_SPAWNER, new TeamSpawnerRenderer());
     }
 
     private static void registerModel(Item item) {

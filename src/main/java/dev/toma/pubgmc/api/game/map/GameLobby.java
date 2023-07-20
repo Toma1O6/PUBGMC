@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 
-public final class GameLobby implements Bounds {
+public final class GameLobby implements Bounds2 {
 
     public static final int DEFAULT_RADIUS = 5;
 

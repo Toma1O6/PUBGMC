@@ -4,8 +4,6 @@ import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import net.minecraft.util.EnumActionResult;
 
-import java.util.Map;
-
 public class MapPointRemovalItem extends MapPointItem {
 
     public MapPointRemovalItem(String name) {
@@ -13,13 +11,11 @@ public class MapPointRemovalItem extends MapPointItem {
     }
 
     @Override
-    public EnumActionResult processPoints(PointClickContext context) {
+    public EnumActionResult handlePoiClick(PointClickContext context) {
         if (context.isServerCall()) {
-            for (Map.Entry<GameMap, GameMapPoint> entry : context.getMapPoints().entrySet()) {
-                GameMap map = entry.getKey();
-                GameMapPoint point = entry.getValue();
-                map.deletePoiAt(point.getPointPosition());
-            }
+            GameMap map = context.getMap();
+            GameMapPoint point = context.getPoint();
+            map.deletePoiAt(point.getPointPosition());
             context.getData().sendGameDataToClients();
         }
         return EnumActionResult.SUCCESS;

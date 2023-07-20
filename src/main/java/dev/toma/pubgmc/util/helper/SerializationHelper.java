@@ -178,4 +178,9 @@ public class SerializationHelper {
             }
         }
     }
+
+    public static <E extends Enum<E>> E enumByIndex(int index, Class<E> type) {
+        E[] vals = type.getEnumConstants();
+        return vals[index % vals.length];
+    }
 }

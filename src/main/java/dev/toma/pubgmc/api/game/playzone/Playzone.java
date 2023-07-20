@@ -1,12 +1,12 @@
 package dev.toma.pubgmc.api.game.playzone;
 
-import dev.toma.pubgmc.api.game.map.Bounds;
+import dev.toma.pubgmc.api.game.map.Bounds2;
 import dev.toma.pubgmc.api.util.Position2;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public interface Playzone extends Bounds {
+public interface Playzone extends Bounds2 {
 
     PlayzoneType<?> getPlayzoneType();
 

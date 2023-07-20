@@ -1,17 +1,15 @@
 package dev.toma.pubgmc.api.game.mutator;
 
+import net.minecraft.util.ResourceLocation;
+
 import java.util.Objects;
 
 public final class GameMutatorType<M extends GameMutator> {
 
-    private final Class<M> type;
+    private final ResourceLocation identifier;
 
-    private GameMutatorType(Class<M> type) {
-        this.type = type;
-    }
-
-    public Class<M> getType() {
-        return type;
+    private GameMutatorType(ResourceLocation identifier) {
+        this.identifier = identifier;
     }
 
     @Override
@@ -19,15 +17,15 @@ public final class GameMutatorType<M extends GameMutator> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameMutatorType<?> that = (GameMutatorType<?>) o;
-        return Objects.equals(type, that.type);
+        return Objects.equals(identifier, that.identifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type);
+        return Objects.hash(identifier);
     }
 
-    public static <M extends GameMutator> GameMutatorType<M> createMutator(Class<M> type) {
-        return new GameMutatorType<>(type);
+    public static <M extends GameMutator> GameMutatorType<M> createMutatorType(ResourceLocation identifier) {
+        return new GameMutatorType<>(identifier);
     }
 }

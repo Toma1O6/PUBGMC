@@ -29,9 +29,13 @@ public class VanillaButtonWidget extends ButtonWidget {
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         this.drawTexturedModalRect(this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
         this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
-        int textColor = hovered ? 0xffffa0 : 0xe0e0e0;
+        int textColor = getTextColor(hovered);
 
         this.drawCenteredString(fontrenderer, this.text, this.x + this.width / 2, this.y + (this.height - 8) / 2, textColor);
+    }
+
+    protected int getTextColor(boolean hovered) {
+        return hovered ? 0xffffa0 : 0xe0e0e0;
     }
 
     private void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {

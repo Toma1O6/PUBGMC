@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -20,36 +21,37 @@ public final class Team implements Iterable<Team.Member> {
     private final Map<UUID, Member> members;
     private final Set<UUID> activeMembers;
     private final Map<UUID, String> usernames;
+    @Nullable
     private Member teamLeader;
 
-    public Team(Entity entity) {
-        this.teamLeader = Member.of(entity);
-        this.teamId = teamLeader.uuid;
+    public Team(UUID teamId) {
+        this.teamId = teamId;
         this.members = new LinkedHashMap<>();
         this.activeMembers = new HashSet<>();
         this.usernames = new HashMap<>();
+    }
+
+    public Team(Entity entity) {
+        this(entity.getUniqueID());
+        this.teamLeader = Member.of(entity);
         add(entity);
     }
 
     public Team(Member member) {
-        this.teamId = member.uuid;
+        this(member.getId());
         this.teamLeader = member;
-        this.members = new HashMap<>();
-        this.activeMembers = new HashSet<>();
-        this.usernames = new HashMap<>();
-
         addMember(member);
     }
 
-    private Team(UUID teamId, Member owner, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
+    private Team(UUID teamId, @Nullable Member teamLeader, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
         this.teamId = teamId;
-        this.teamLeader = owner;
+        this.teamLeader = teamLeader;
         this.members = members;
         this.activeMembers = activeMembers;
         this.usernames = usernames;
     }
 
-    public void setTeamLeader(Member teamLeader) {
+    public void setTeamLeader(@Nullable Member teamLeader) {
         this.teamLeader = teamLeader;
     }
 
@@ -69,6 +71,7 @@ public final class Team implements Iterable<Team.Member> {
         return members.size();
     }
 
+    @Nullable
     public Member getTeamLeader() {
         return teamLeader;
     }
@@ -128,7 +131,7 @@ public final class Team implements Iterable<Team.Member> {
     }
 
     public boolean isTeamLeader(UUID memberId) {
-        return teamLeader.uuid.equals(memberId);
+        return teamLeader != null && teamLeader.uuid.equals(memberId);
     }
 
     public boolean isTeamLeader(Entity entity) {
@@ -146,7 +149,7 @@ public final class Team implements Iterable<Team.Member> {
 
     // Useful for game AI despawning
     public void removeMemberById(UUID memberId) {
-        if (teamLeader.uuid.equals(memberId) && members.size() > 1) {
+        if (teamLeader != null && teamLeader.uuid.equals(memberId) && members.size() > 1) {
             throw new UnsupportedOperationException("Cannot remove owner of non-empty team");
         }
         members.remove(memberId);
@@ -168,7 +171,9 @@ public final class Team implements Iterable<Team.Member> {
     public NBTTagCompound serialize() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setUniqueId("teamId", teamId);
-        nbt.setUniqueId("teamLeader", teamLeader.uuid);
+        if (teamLeader != null) {
+            nbt.setUniqueId("teamLeader", teamLeader.uuid);
+        }
         nbt.setTag("members", SerializationHelper.mapToNbt(members, UUID::toString, Member::serialize));
         nbt.setTag("active", SerializationHelper.collectionToNbt(activeMembers, uuid -> new NBTTagString(uuid.toString())));
         nbt.setTag("usernames", SerializationHelper.mapToNbt(usernames, UUID::toString, NBTTagString::new));
@@ -177,11 +182,11 @@ public final class Team implements Iterable<Team.Member> {
 
     public static Team deserialize(NBTTagCompound nbt) {
         UUID teamId = nbt.getUniqueId("teamId");
-        UUID teamLeader = nbt.getUniqueId("teamLeader");
+        UUID teamLeader = nbt.hasKey("teamLeader") ? nbt.getUniqueId("teamLeader") : null;
         Map<UUID, Member> memberMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("members"), UUID::fromString, base -> Member.deserialize((NBTTagCompound) base));
         Set<UUID> activeMembers = SerializationHelper.collectionFromNbt(HashSet::new, nbt.getTagList("active", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
         Map<UUID, String> usernameMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("usernames"), UUID::fromString, base -> ((NBTTagString) base).getString());
-        Member leader = memberMap.get(teamLeader);
+        Member leader = teamLeader != null ? memberMap.get(teamLeader) : null;
         return new Team(teamId, leader, memberMap, activeMembers, usernameMap);
     }
 

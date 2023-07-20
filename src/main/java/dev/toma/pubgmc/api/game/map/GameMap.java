@@ -10,10 +10,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public final class GameMap implements Bounds {
+public final class GameMap implements Bounds2 {
 
     public static final Pattern ALLOWED_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9_]*");
     private final String mapName;
@@ -28,6 +29,16 @@ public final class GameMap implements Bounds {
         this.max = max;
         this.pointsByPosition = new HashMap<>();
         this.pointsByType = ArrayListMultimap.create();
+    }
+
+    @Nullable
+    public GameMap getOverlappingMap(Collection<GameMap> maps) {
+        for (GameMap map : maps) {
+            if (map.isWithin(min.getX(), min.getZ()) || map.isWithin(max.getX(), max.getZ())) {
+                return map;
+            }
+        }
+        return null;
     }
 
     public Collection<GameMapPoint> getPoints() {

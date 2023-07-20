@@ -13,8 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.api.item.MapPointItem {
 
@@ -22,7 +22,11 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
         super(name);
     }
 
-    public abstract EnumActionResult processPoints(PointClickContext context);
+    public abstract EnumActionResult handlePoiClick(PointClickContext context);
+
+    protected boolean filterPoint(GameMapPoint point) {
+        return true;
+    }
 
     @Override
     public final EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
@@ -30,17 +34,16 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
             if (!player.isCreative())
                 return EnumActionResult.FAIL;
             String activeMap = data.getActiveGameMapName();
-            Map<GameMap, GameMapPoint> viablePoiList = new HashMap<>();
             BlockPos interactionPos = pos.up();
             for (Map.Entry<String, GameMap> entry : data.getRegisteredGameMaps().entrySet()) {
                 if (entry.getKey().equals(activeMap)) {
                     continue;
                 }
                 GameMap map = entry.getValue();
-                map.getPointAt(interactionPos).ifPresent(point -> viablePoiList.put(map, point));
-            }
-            if (!viablePoiList.isEmpty()) {
-                return processPoints(new PointClickContext(viablePoiList, data, player, worldIn, interactionPos, hand, facing, new Vec3d(hitX, hitY, hitZ)));
+                Optional<GameMapPoint> pointOpt = map.getPointAt(interactionPos).filter(this::filterPoint);
+                if (pointOpt.isPresent()) {
+                    return handlePoiClick(new PointClickContext(map, pointOpt.get(), data, player, worldIn, interactionPos, hand, facing, new Vec3d(hitX, hitY, hitZ)));
+                }
             }
             return EnumActionResult.PASS;
         }).orElse(EnumActionResult.PASS);
@@ -48,7 +51,8 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
 
     public static final class PointClickContext {
 
-        private final Map<GameMap, GameMapPoint> mapPoints;
+        private final GameMap map;
+        private final GameMapPoint point;
         private final GameData data;
         private final EntityPlayer player;
         private final World world;
@@ -57,8 +61,9 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
         private final EnumFacing facing;
         private final Vec3d hitVec;
 
-        PointClickContext(Map<GameMap, GameMapPoint> map, GameData data, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, Vec3d hitVec) {
-            this.mapPoints = map;
+        PointClickContext(GameMap map, GameMapPoint point, GameData data, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, Vec3d hitVec) {
+            this.map = map;
+            this.point = point;
             this.data = data;
             this.player = player;
             this.world = world;
@@ -68,8 +73,17 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
             this.hitVec = hitVec;
         }
 
-        public Map<GameMap, GameMapPoint> getMapPoints() {
-            return mapPoints;
+        public GameMap getMap() {
+            return map;
+        }
+
+        public GameMapPoint getPoint() {
+            return point;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <G extends GameMapPoint> G castPoint() {
+            return (G) point;
         }
 
         public GameData getData() {

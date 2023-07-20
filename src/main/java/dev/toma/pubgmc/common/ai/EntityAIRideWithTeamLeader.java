@@ -100,8 +100,10 @@ public class EntityAIRideWithTeamLeader extends EntityAIBase {
                 Team team = teamManager.getEntityTeam(entity);
                 if (team != null && !team.isTeamLeader(entity)) {
                     Team.Member teamLead = team.getTeamLeader();
-                    WorldServer server = (WorldServer) entity.world;
-                    teamLeader = teamLead.getEntity(server);
+                    if (teamLead != null) {
+                        WorldServer server = (WorldServer) entity.world;
+                        teamLeader = teamLead.getEntity(server);
+                    }
                 }
             }
         });

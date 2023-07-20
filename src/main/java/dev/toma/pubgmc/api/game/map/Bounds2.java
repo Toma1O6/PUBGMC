@@ -3,7 +3,7 @@ package dev.toma.pubgmc.api.game.map;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 
-public interface Bounds {
+public interface Bounds2 {
 
     boolean isWithin(double x, double z);
 

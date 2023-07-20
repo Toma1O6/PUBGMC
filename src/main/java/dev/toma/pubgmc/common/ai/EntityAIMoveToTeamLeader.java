@@ -29,7 +29,7 @@ public class EntityAIMoveToTeamLeader extends EntityAIBase {
                 return false;
             }
             Team.Member teamLeaderMember = team.getTeamLeader();
-            if (!living.world.isRemote) {
+            if (teamLeaderMember != null && !living.world.isRemote) {
                 WorldServer server = (WorldServer) living.world;
                 teamLeader = teamLeaderMember.getEntity(server);
                 if (teamLeader == null) {

@@ -28,7 +28,9 @@ import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
+import dev.toma.pubgmc.common.items.map.CaptureZoneConfigurerItem;
 import dev.toma.pubgmc.common.items.map.MapPointRemovalItem;
+import dev.toma.pubgmc.common.items.map.TeamSpawnerConfigurerItem;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
@@ -900,7 +902,9 @@ public class CommonRegistry {
                         .build()
                         .renderer(() -> RenderAWM::new)
                         .build(),
-                new MapPointRemovalItem("mapitem_poi_removal")
+                new MapPointRemovalItem("mapitem_poi_removal"),
+                new TeamSpawnerConfigurerItem("mapitem_team_spawner"),
+                new CaptureZoneConfigurerItem("mapitem_capture_zone")
         );
         ITEM_BLOCKS.forEach(registry::register);
         ITEM_BLOCKS = null;
@@ -949,6 +953,7 @@ public class CommonRegistry {
         event.register(GameTypes.NO_GAME);
         event.register(GameTypes.BATTLE_ROYALE);
         event.register(GameTypes.FFA);
+        event.register(GameTypes.DOMINATION);
     }
 
     @SubscribeEvent
@@ -961,6 +966,8 @@ public class CommonRegistry {
     public static void registerPointTypes(PubgmcRegistryEvent.PointType event) {
         event.register(GameMapPoints.SPAWNER);
         event.register(GameMapPoints.POINT_OF_INTEREST);
+        event.register(GameMapPoints.CAPTURE_ZONE);
+        event.register(GameMapPoints.TEAM_SPAWNER);
     }
 
     @SubscribeEvent
@@ -979,6 +986,7 @@ public class CommonRegistry {
         event.registerMutator(GameTypes.BATTLE_ROYALE, InventoryMutator.TYPE, InventoryMutator.INSTANCE);
         event.registerMutator(GameTypes.BATTLE_ROYALE, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
         event.registerMutator(GameTypes.FFA, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
+        event.registerMutator(GameTypes.DOMINATION, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
     }
 
     public static void registerItemBlock(Block block) {
