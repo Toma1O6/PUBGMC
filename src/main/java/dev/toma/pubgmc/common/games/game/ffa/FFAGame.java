@@ -280,7 +280,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         SpawnerPoint point = spawnerSelector.getPoint(world, entities);
         BlockPos pos = point.getPointPosition();
         aiPlayer.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
-        initAi(aiPlayer);
         aiPlayer.assignGameId(gameId);
         participantManager.registerAi(aiPlayer);
         properties.register(aiPlayer);
@@ -294,13 +293,13 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         }
     }
 
-    private void initAi(EntityAIPlayer player) {
+    public static void initAi(EntityAIPlayer player, FFAGame game) {
         player.clearAI();
         EntityAIPlayer.addDefaultTasks(player);
         EntityAIGunAttack shootTask = new EntityAIGunAttack(player);
         shootTask.setIgnoresFriendlies();
         shootTask.setReactionTime(10);
-        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
+        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> game.playzone, 1.20F));
         player.tasks.addTask(2, shootTask);
         player.tasks.addTask(4, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAIHurtByTarget(player, false));
@@ -356,7 +355,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
             SpawnerPoint point = spawnerSelector.getPoint(world, entities);
             BlockPos pos = point.getPointPosition();
             player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
-            initAi(player);
             player.setUniqueId(uuid);
             player.assignGameId(gameId);
             loadoutManager.applyLoadout(player);

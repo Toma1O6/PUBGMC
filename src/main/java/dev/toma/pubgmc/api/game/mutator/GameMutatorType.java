@@ -25,6 +25,11 @@ public final class GameMutatorType<M extends GameMutator> {
         return Objects.hash(identifier);
     }
 
+    @Override
+    public String toString() {
+        return identifier.toString();
+    }
+
     public static <M extends GameMutator> GameMutatorType<M> createMutatorType(ResourceLocation identifier) {
         return new GameMutatorType<>(identifier);
     }

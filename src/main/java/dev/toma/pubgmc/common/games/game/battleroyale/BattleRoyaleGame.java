@@ -390,21 +390,20 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         int height = world.getHeight((int) spawnPos.getX(), (int) spawnPos.getZ());
         player.setPosition(spawnPos.getX(), height + 1, spawnPos.getZ());
         LoadoutManager.apply(player, getAiLoadoutType());
-        addAiTasks(player);
         player.assignGameId(gameId);
         return player;
     }
 
-    private void addAiTasks(EntityAIPlayer player) {
+    public static void addAiTasks(EntityAIPlayer player, BattleRoyaleGame game) {
         player.clearAI();
         EntityAIPlayer.addDefaultTasks(player);
         player.tasks.addTask(0, new EntityAIRideWithTeamLeader(player, 1.1F));
-        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
+        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> game.playzone, 1.20F));
         player.tasks.addTask(2, new EntityAIGunAttack(player));
-        player.tasks.addTask(3, new EntityAISearchLoot(player, () -> playzone, 5, 1.10F));
+        player.tasks.addTask(3, new EntityAISearchLoot(player, () -> game.playzone, 5, 1.10F));
         player.tasks.addTask(4, new EntityAIMoveToTeamLeader(player, 32, 1.20F));
-        player.tasks.addTask(5, new EntityAIHeal<>(player, this::shouldHeal, EntityAIPlayer::getInventory));
-        player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> playzone.getResultingPlayzone()));
+        player.tasks.addTask(5, new EntityAIHeal<>(player, game::shouldHeal, EntityAIPlayer::getInventory));
+        player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> game.playzone.getResultingPlayzone()));
         player.tasks.addTask(7, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAICallTeamForHelp(player));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));

@@ -1,25 +1,25 @@
 package dev.toma.pubgmc.common.games.game.domination;
 
+import com.google.common.collect.ImmutableList;
 import dev.toma.pubgmc.api.game.CaptureZones;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.game.util.CaptureStatus;
+import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DominationCapturePointManager {
@@ -36,6 +36,29 @@ public class DominationCapturePointManager {
         this.teamManager = teamManager;
         this.captureSpeed = captureSpeed;
         this.capturedCallback = capturedCallback;
+    }
+
+    public List<BlockPos> getCaptureablePoints() {
+        return ImmutableList.copyOf(pointMap.keySet());
+    }
+
+    public boolean shouldCaptureOrDefend(BlockPos pos, EntityLivingBase entity, DominationTeamManager manager) {
+        Tracker tracker = pointMap.get(pos);
+        if (tracker == null) {
+            return true;
+        }
+        Team team = manager.getEntityTeam(entity);
+        if (team == null) {
+            return true;
+        }
+        CaptureZones.CaptureData data = tracker.captureData;
+        if (data.getCaptureProgress() > 0.0F) {
+            return true;
+        }
+        if (tracker.owner != manager.getTeamType(team)) {
+            return true;
+        }
+        return data.getStatus() != CaptureStatus.CAPTURED;
     }
 
     public void init(GameMap map) {

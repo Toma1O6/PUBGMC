@@ -11,7 +11,6 @@ public class EntityAITeamAwareNearestAttackableTarget<E extends EntityLivingBase
 
     private final Predicate<TeamRelations> teamRelationsPredicate;
 
-
     public EntityAITeamAwareNearestAttackableTarget(EntityCreature creature, Class<E> classTarget, Predicate<TeamRelations> teamRelationsPredicate, boolean checkSight) {
         super(creature, classTarget, checkSight);
         this.teamRelationsPredicate = teamRelationsPredicate;

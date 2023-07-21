@@ -1,7 +1,10 @@
 package dev.toma.pubgmc.common.entity;
 
+import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.entity.EntityDebuffs;
+import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
@@ -9,6 +12,8 @@ import dev.toma.pubgmc.api.item.SpecialInventoryItem;
 import dev.toma.pubgmc.common.ai.EntityAIBeBlinded;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAILightSensitiveNearestAttackableTarget;
+import dev.toma.pubgmc.common.games.mutator.AIPlayerMutator;
+import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
@@ -40,6 +45,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider, EntityDebuffs {
@@ -110,12 +116,28 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
 
     @Override
     protected void initEntityAI() {
-        addDefaultTasks(this);
-        tasks.addTask(1, new EntityAIGunAttack(this));
+        initAi();
+    }
 
-        targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        targetTasks.addTask(2, new EntityAILightSensitiveNearestAttackableTarget<>(this, EntityPlayer.class, true));
-        targetTasks.addTask(3, new EntityAILightSensitiveNearestAttackableTarget<>(this, EntityAIPlayer.class, true));
+    @SuppressWarnings("unchecked")
+    private <G extends Game<?>> void initAi() {
+        Game<?> game = GameDataProvider.getGameData(world).map(GameData::getCurrentGame).orElse(null);
+        boolean useDefaultAi = true;
+        if (game != null && game.isStarted()) {
+            Optional<AIPlayerMutator<?>> mutatorOpt = GameMutatorManager.INSTANCE.getMutator(game.getGameType(), AIPlayerMutator.TYPE);
+            if (mutatorOpt.isPresent()) {
+                AIPlayerMutator<G> mutator = (AIPlayerMutator<G>) mutatorOpt.get();
+                mutator.apply((G) game, this);
+                useDefaultAi = false;
+            }
+        }
+        if (useDefaultAi) {
+            addDefaultTasks(this);
+            tasks.addTask(1, new EntityAIGunAttack(this));
+            targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
+            targetTasks.addTask(2, new EntityAILightSensitiveNearestAttackableTarget<>(this, EntityPlayer.class, true));
+            targetTasks.addTask(3, new EntityAILightSensitiveNearestAttackableTarget<>(this, EntityAIPlayer.class, true));
+        }
     }
 
     public static void addDefaultTasks(EntityAIPlayer ai) {

@@ -15,10 +15,7 @@ import dev.toma.pubgmc.api.game.team.TeamInviteManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.api.game.util.*;
 import dev.toma.pubgmc.api.properties.SharedProperties;
-import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
-import dev.toma.pubgmc.common.ai.EntityAIHurtByTargetTeamAware;
-import dev.toma.pubgmc.common.ai.EntityAIMoveIntoPlayzone;
-import dev.toma.pubgmc.common.ai.EntityAITeamAwareNearestAttackableTarget;
+import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.SimpleLoadoutManager;
@@ -319,6 +316,11 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
     }
 
     @Override
+    public boolean shouldCaptureOrDefend(BlockPos pos, EntityLivingBase entity) {
+        return pointManager.shouldCaptureOrDefend(pos, entity, teamManager);
+    }
+
+    @Override
     public SimpleLoadoutManager getLoadoutManager() {
         return loadoutManager;
     }
@@ -458,7 +460,6 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         TeamSpawnerPoint point = spawnPointSelector.getPoint(world, teamManager.getTeamEntities(team, world));
         BlockPos pos = point.getPointPosition();
         player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
-        initAi(player);
         player.assignGameId(gameId);
         properties.register(player);
         world.spawnEntity(player);
@@ -472,14 +473,14 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         }
     }
 
-    private void initAi(EntityAIPlayer player) {
+    public static void initAi(EntityAIPlayer player, DominationGame game) {
         player.clearAI();
         EntityAIPlayer.addDefaultTasks(player);
         EntityAIGunAttack shootTask = new EntityAIGunAttack(player);
         shootTask.setReactionTime(10);
-        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
+        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> game.playzone, 1.20F));
         player.tasks.addTask(2, shootTask);
-        // TODO add task to capture / defend zone
+        player.tasks.addTask(3, new EntityAICapturePoint(player, game.pointManager.getCaptureablePoints()));
         player.targetTasks.addTask(0, new EntityAIHurtByTargetTeamAware(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
@@ -505,7 +506,6 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             aiManager.markAlive(uuid);
             properties.setProperty(uuid, SharedProperties.GAME_TIMESTAMP, gameTime);
             world.spawnEntity(player);
-            initAi(player);
             bleedRespawnTickets(player);
         });
         GameHelper.requestClientGameDataSynchronization(world);
