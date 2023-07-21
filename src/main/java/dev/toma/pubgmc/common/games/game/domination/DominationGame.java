@@ -13,9 +13,7 @@ import dev.toma.pubgmc.api.game.team.NoInvitesManager;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamInviteManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
-import dev.toma.pubgmc.api.game.util.GameRuleStorage;
-import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.util.*;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAIHurtByTargetTeamAware;
@@ -76,6 +74,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
     private final SpawnPointSelector<SpawnerPoint> spawns;
     private final GameRuleStorage ruleStorage;
     private final DominationAIManager aiManager;
+    private final DeathMessageContainer deathMessages;
     private final List<GameEventListener> listeners;
     private AbstractDamagingPlayzone playzone;
 
@@ -98,6 +97,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         this.spawns = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMap);
         this.ruleStorage = new GameRuleStorage();
         this.aiManager = new DominationAIManager();
+        this.deathMessages = new DeathMessageContainer(7, 60);
         this.listeners = new ArrayList<>();
 
         this.addListener(new EventHandler(this));
@@ -212,6 +212,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             }
             tryCompleteGame(world);
         }
+        deathMessages.tick();
         if (++gameTime >= configuration.gameDuration) {
             tryCompleteGame(world);
         }
@@ -322,6 +323,34 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         return loadoutManager;
     }
 
+    public DeathMessageContainer getDeathMessageHolder() {
+        return deathMessages;
+    }
+
+    public PlayerPropertyHolder getProperties() {
+        return properties;
+    }
+
+    public int getRedTicketCount() {
+        return redTickets;
+    }
+
+    public int getBlueTicketCount() {
+        return blueTickets;
+    }
+
+    public Playzone getPlayzone() {
+        return playzone;
+    }
+
+    public int getTimeRemaining() {
+        return (int) Math.max(configuration.gameDuration - gameTime, 0);
+    }
+
+    public DominationCapturePointManager getPointManager() {
+        return pointManager;
+    }
+
     private boolean tryJoin(EntityPlayer player) {
         Team team = teamManager.getEntityTeam(player);
         if (team != null) {
@@ -358,38 +387,13 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
 
     private SpawnerPoint getRespawnPoint(WorldServer server, EntityLivingBase entity) {
         TeamType type = teamManager.getTeamType(entity);
-        TeamType enemy = type == TeamType.RED ? TeamType.BLUE : TeamType.RED;
-        List<Entity> entities = teamManager.getTeamEntities(teamManager.getTeamByType(enemy), server);
+        List<Entity> entities = teamManager.getAllActiveEntities(server).collect(Collectors.toList());
         if (gameTime >= 600L) {
             return spawns.getPoint(server, entities);
         } else {
             SpawnPointSelector<TeamSpawnerPoint> selector = type == TeamType.RED ? redSpawns : blueSpawns;
             return selector.getPoint(server, entities);
         }
-    }
-
-    public PlayerPropertyHolder getProperties() {
-        return properties;
-    }
-
-    public int getRedTicketCount() {
-        return redTickets;
-    }
-
-    public int getBlueTicketCount() {
-        return blueTickets;
-    }
-
-    public Playzone getPlayzone() {
-        return playzone;
-    }
-
-    public int getTimeRemaining() {
-        return (int) Math.max(configuration.gameDuration - gameTime, 0);
-    }
-
-    public DominationCapturePointManager getPointManager() {
-        return pointManager;
     }
 
     private void moveToGame(WorldServer world, List<EntityPlayer> players, SpawnPointSelector<TeamSpawnerPoint> selector) {
@@ -426,7 +430,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             teamManager.getAllActivePlayers(world).forEach(player -> {
                 TeamType playerTeam = teamManager.getTeamType(player);
                 boolean won = winnerTeam == playerTeam;
-                player.sendStatusMessage(component, true);
+                player.sendMessage(component);
                 MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, player, won));
             });
         }
@@ -535,10 +539,10 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
                 EntityPlayer player = (EntityPlayer) entity;
                 if (game.teamManager.getEntityTeam(player) != null) {
                     player.inventory.clear();
-                    awardKill(killer, entity);
+                    awardKill(killer, entity, source);
                 }
             } else if (game.teamManager.getEntityTeam(entity) != null) {
-                awardKill(killer, entity);
+                awardKill(killer, entity, source);
                 game.properties.setProperty(entity.getUniqueID(), SharedProperties.GAME_TIMESTAMP, game.gameTime);
                 game.aiManager.markDead(entity.getUniqueID());
             }
@@ -582,7 +586,11 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             }
         }
 
-        private void awardKill(@Nullable Entity killer, EntityLivingBase victim) {
+        private void awardKill(@Nullable Entity killer, EntityLivingBase victim, DamageSource source) {
+            if (!victim.world.isRemote) {
+                DeathMessage message = GameHelper.createDefaultDeathMessage(victim, source);
+                game.deathMessages.push(message);
+            }
             if (!(killer instanceof EntityLivingBase) || game.completed || !game.started)
                 return;
             if (game.teamManager.getEntityTeam(killer) != null) {
@@ -617,6 +625,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             nbt.setTag("properties", game.properties.serialize());
             nbt.setTag("loadouts", game.loadoutManager.serialize());
             nbt.setTag("ai", game.aiManager.serialize());
+            nbt.setTag("deathMessages", game.deathMessages.serialize());
             if (game.playzone != null) {
                 nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
             }
@@ -639,6 +648,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             game.properties.deserialize(nbt.getCompoundTag("properties"));
             game.loadoutManager.deserialize(nbt.getCompoundTag("loadouts"));
             game.aiManager.deserialize(nbt.getCompoundTag("ai"));
+            game.deathMessages.deserialize(nbt.getCompoundTag("deathMessages"));
             if (nbt.hasKey("playzone")) {
                 game.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
             }

@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.client.util.ScoreboardRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
@@ -39,12 +40,10 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
                     red.addAll(blue);
                     return red;
                 }, 0)
-                .addRenderableColumn(TextComponentHelper.NAME.getFormattedText(), PlayerPropertyHolder::getUsername, col -> {
-                    col.setTextColor((game, uuid) -> {
-                        TeamType type = game.getTeamManager().getTeamType(uuid);
-                        return type != null ? type.getColor() : 0xFFFFFF;
-                    });
-                })
+                .addRenderableColumn(TextComponentHelper.NAME.getFormattedText(), PlayerPropertyHolder::getUsername, col -> col.setTextColor((game, uuid) -> {
+                    TeamType type = game.getTeamManager().getTeamType(uuid);
+                    return type != null ? type.getColor() : 0xFFFFFF;
+                }))
                 .addRenderableColumn(TextComponentHelper.SCORE.getFormattedText(), (propertyHolder, uuid) -> String.valueOf(propertyHolder.getProperty(uuid, SharedProperties.SCORE, 0)), col -> {
                     col.setRightAlignment(true);
                     col.setTextColor(0xFFFF00);
@@ -73,7 +72,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             if (!game.isStarted())
                 return false;
-            renderHudOverlay(game, resolution);
+            renderHudOverlay(player, game, resolution);
             return false;
         } else if (elementType == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
             renderTabOverlay(game, resolution);
@@ -96,7 +95,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         scoreboardRenderer.renderScoreboard(game.getProperties(), game, resolution);
     }
 
-    private void renderHudOverlay(DominationGame game, ScaledResolution resolution) {
+    private void renderHudOverlay(EntityPlayer player, DominationGame game, ScaledResolution resolution) {
         int infoWidth = 120;
         int infoHeight = 16;
         int halfX = infoWidth / 2;
@@ -146,6 +145,17 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         String timeText = PUBGMCUtil.formatTime(timeRemaining);
         int textWidth = font.getStringWidth(timeText);
         font.drawString(timeText, resolution.getScaledWidth() - textWidth - 5, 5, 0xFFFFFF, true);
+
+        DeathMessage[] deathMessages = game.getDeathMessageHolder().getDeathMessages();
+        for (int i = 0; i < deathMessages.length; i++) {
+            DeathMessage deathMessage = deathMessages[i];
+            DeathMessage.Type type = deathMessage.getType();
+            if (type == null) {
+                type = DeathMessage.Type.getType(deathMessage, player.world, game.getTeamManager());
+                deathMessage.setType(type);
+            }
+            font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 10 + i * 10, type.getColor());
+        }
     }
 
     private boolean isFromTeam(UUID uuid, DominationGame game, TeamType type) {

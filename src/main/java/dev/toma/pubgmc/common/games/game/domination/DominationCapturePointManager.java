@@ -76,7 +76,10 @@ public class DominationCapturePointManager {
     }
 
     private boolean updateCaptureState(Tracker tracker, List<Entity> entityList, World world) {
-        List<Entity> entitiesOnPoint = entityList.stream().filter(tracker.point::isWithin).collect(Collectors.toList());
+        List<Entity> entitiesOnPoint = entityList.stream().filter(entity -> {
+            CaptureZonePoint point = tracker.point;
+            return entity.isEntityAlive() && point.isWithin(entity);
+        }).collect(Collectors.toList());
         CaptureZones.CaptureData data = tracker.captureData;
         int redCount = getNumberOfPlayers(entitiesOnPoint, TeamType.RED);
         int blueCount = getNumberOfPlayers(entitiesOnPoint, TeamType.BLUE);
