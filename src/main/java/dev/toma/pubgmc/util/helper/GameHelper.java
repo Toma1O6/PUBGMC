@@ -354,7 +354,7 @@ public final class GameHelper {
         return null;
     }
 
-    public static TeamRelations getEntityRelations(EntityLivingBase entity1, EntityLivingBase entity2) {
+    public static TeamRelations getEntityRelations(EntityLivingBase entity1, @Nullable EntityLivingBase entity2) {
         World world = entity1.world;
         GameData gameData = GameDataProvider.getGameData(world).orElse(null);
         if (gameData == null) {

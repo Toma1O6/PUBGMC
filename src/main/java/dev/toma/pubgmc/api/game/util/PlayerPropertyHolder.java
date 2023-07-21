@@ -9,7 +9,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public final class PlayerPropertyHolder {
@@ -30,7 +32,14 @@ public final class PlayerPropertyHolder {
     }
 
     public <T> List<UUID> getSortedOwners(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+        return getSortedOwners(type, comparator, defaultValue, null);
+    }
+
+    public <T> List<UUID> getSortedOwners(PropertyType<T> type, Comparator<T> comparator, T defaultValue, @Nullable Predicate<UUID> filter) {
         List<UUID> list = new ArrayList<>(playerScoreEntries.keySet());
+        if (filter != null) {
+            list.removeIf(uuid -> !filter.test(uuid));
+        }
         return list.stream()
                 .sorted(Comparator.comparing(uuid -> getProperty(uuid, type, defaultValue), comparator))
                 .collect(Collectors.toList());

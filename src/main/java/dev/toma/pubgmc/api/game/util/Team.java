@@ -100,6 +100,28 @@ public final class Team implements Iterable<Team.Member> {
         return activeMembers.size();
     }
 
+    public int memberCountByType(MemberType type, boolean requireActive) {
+        int counter = 0;
+        for (Member member : members.values()) {
+            MemberType memberType = member.getMemberType();
+            if (type == memberType && (!requireActive || activeMembers.contains(member.uuid))) {
+                ++counter;
+            }
+        }
+        return counter;
+    }
+
+    @Nullable
+    public Member getMemberByType(MemberType type, boolean requireActive) {
+        for (Member member : members.values()) {
+            MemberType memberType = member.getMemberType();
+            if (type == memberType && (!requireActive || activeMembers.contains(member.uuid))) {
+                return member;
+            }
+        }
+        return null;
+    }
+
     public Optional<Member> getMember(UUID memberUid) {
         return Optional.ofNullable(members.get(memberUid));
     }

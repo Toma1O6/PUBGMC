@@ -37,8 +37,8 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
     boolean tryLeaveTeam(EntityPlayer player, Team team, boolean kicked);
 
     @Nullable
-    default Team getEntityTeam(Entity entity) {
-        return getEntityTeamByEntityId(entity.getUniqueID());
+    default Team getEntityTeam(@Nullable Entity entity) {
+        return entity != null ? getEntityTeamByEntityId(entity.getUniqueID()) : null;
     }
 
     default boolean shouldRemoveFreshlyLoadedEntity(Entity entity) {

@@ -10,12 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DominationTeamManager implements TeamManager {
 
@@ -28,6 +27,10 @@ public class DominationTeamManager implements TeamManager {
     public DominationTeamManager() {
         teamMap.put(RED_TEAM, new Team(RED_TEAM));
         teamMap.put(BLUE_TEAM, new Team(BLUE_TEAM));
+    }
+
+    public Team getTeamByType(TeamType type) {
+        return type == TeamType.RED ? teamMap.get(RED_TEAM) : teamMap.get(BLUE_TEAM);
     }
 
     public TeamType getTeamType(Entity entity) {
@@ -46,12 +49,20 @@ public class DominationTeamManager implements TeamManager {
         return team.getTeamId().equals(RED_TEAM) ? TeamType.RED : TeamType.BLUE;
     }
 
-    public void autoJoinTeam(EntityLivingBase livingBase) {
+    public Team autoJoinTeam(EntityLivingBase livingBase) {
         int red = teamMap.get(RED_TEAM).getSize();
         int blue = teamMap.get(BLUE_TEAM).getSize();
-        Team team = red < blue ? teamMap.get(RED_TEAM) : teamMap.get(BLUE_TEAM);
+        Team team = red > blue ? teamMap.get(BLUE_TEAM) : teamMap.get(RED_TEAM);
         join(team, livingBase);
         livingBase.sendMessage(new TextComponentTranslation("message.pubgmc.game.domination.team_joined", getTeamType(team).getTitle()));
+        return team;
+    }
+
+    public List<Entity> getTeamEntities(Team team, WorldServer worldServer) {
+        return team.getAllMembers().values().stream()
+                .map(member -> member.getEntity(worldServer))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -95,6 +106,12 @@ public class DominationTeamManager implements TeamManager {
             team.removeMemberById(uuid);
             entityTeamMap.remove(uuid);
         }
+    }
+
+    @Override
+    public boolean canJoinTeam(Entity entity, Team team) {
+        Team.Member aiMember = team.getMemberByType(Team.MemberType.AI, false);
+        return TeamManager.super.canJoinTeam(entity, team) && aiMember != null;
     }
 
     @Override

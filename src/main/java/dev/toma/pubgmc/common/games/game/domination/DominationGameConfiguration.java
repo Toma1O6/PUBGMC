@@ -18,6 +18,8 @@ public final class DominationGameConfiguration implements TeamGameConfiguration 
     public int pointTicketLoss = 25;
     public int killTicketLoss = 10;
     public int gameDuration = 18000;
+    public boolean allowAi = true;
+    public boolean requirePointSuperiority = false;
     public String[] availableLoadouts = {
             LOADOUT_UMP45,
             LOADOUT_VECTOR,

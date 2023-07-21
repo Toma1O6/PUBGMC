@@ -6,8 +6,8 @@ import net.minecraft.util.text.TextFormatting;
 
 public enum TeamType {
 
-    RED(TextFormatting.RED, 0xAA0000),
-    BLUE(TextFormatting.BLUE, 0x0000AA);
+    RED(TextFormatting.RED, 0xCC0000),
+    BLUE(TextFormatting.BLUE, 0x4444CC);
 
     private final ITextComponent title;
     private final int color;

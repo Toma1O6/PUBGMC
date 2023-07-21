@@ -13,5 +13,6 @@ public interface MapPointRenderer<P extends GameMapPoint> {
 
     void renderPointInGame(P point, Game<?> game, double x, double y, double z, float partialTicks);
 
+    // TODO remove HUD rendering from point logic
     void renderInHud(P point, EntityPlayer player, Game<?> game, ScaledResolution resolution, float partialTicks);
 }

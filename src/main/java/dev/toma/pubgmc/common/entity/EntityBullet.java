@@ -75,7 +75,7 @@ public class EntityBullet extends Entity {
         Vec3d direct = getVectorForRotation(shooter.rotationPitch + getPitchRotationInaccuracy(shooter), shooter.getRotationYawHead() + getYawRotationInaccuracy(shooter));
         if (shooter instanceof EntityPlayer) {
             IPlayerData data = shooter.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-            calculateBulletHeading(direct, data.getAimInfo().isFullyAds());
+            calculateBulletHeading(direct, shooter.onGround && data.getAimInfo().isFullyAds());
             this.setPosition(shooter.posX, data.isProne() ? shooter.posY + 0.5f : shooter.posY + shooter.getEyeHeight(), shooter.posZ);
         } else {
             this.calculateBulletHeading(direct, 2.5F - this.world.getDifficulty().ordinal() * 0.5F);

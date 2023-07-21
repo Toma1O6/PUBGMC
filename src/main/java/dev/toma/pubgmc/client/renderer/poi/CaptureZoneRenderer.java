@@ -138,10 +138,10 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
         float left = (resolution.getScaledWidth() - width) / 2.0F;
         float top = 5.0F;
         ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
-        ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0x66 << 24 | data.getBackground());
+        ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0xFF << 24 | data.getBackground());
         if (data.getCaptureProgress() > 0.0F) {
             float right = left + (width - 2) * data.getCaptureProgress();
-            ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0x66 << 24 | data.getForeground());
+            ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0xFF << 24 | data.getForeground());
         }
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         StringBuilder text = new StringBuilder();

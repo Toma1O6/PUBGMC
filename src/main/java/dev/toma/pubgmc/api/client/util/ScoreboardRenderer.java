@@ -9,19 +9,15 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.ToIntBiFunction;
 
 public final class ScoreboardRenderer<G extends Game<?>> {
 
-    private final Sorter<?> sorter;
+    private final Sorter<?, G> sorter;
 
     private final Table<UUID, G> table;
     private boolean renderMyScore;
@@ -61,7 +57,7 @@ public final class ScoreboardRenderer<G extends Game<?>> {
         if (entity == null)
             return;
         UUID ownerId = entity.getUniqueID();
-        List<UUID> list = sorter.sort(propertyHolder);
+        List<UUID> list = sorter.get(propertyHolder, game);
         List<UUID> partial = list.subList(0, Math.min(displayLimit, list.size()));
         boolean hasMyScore = partial.contains(ownerId);
         if (!hasMyScore && renderMyScore) {
@@ -79,14 +75,22 @@ public final class ScoreboardRenderer<G extends Game<?>> {
 
     public static final class Builder<G extends Game<?>> {
 
-        private Sorter<?> sorter;
+        private Sorter<?, G> sorter;
         private final List<Table.Column<UUID, G>> columns = new ArrayList<>();
 
         private Builder() {}
 
-        public <T> Builder<G> withSorting(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
-            this.sorter = new Sorter<>(type, comparator, defaultValue);
+        public <T> Builder<G> withSorting(PropertyType<T> type, Comparator<T> comparator, Sorter.CollectionProvider<G> provider, T defaultValue) {
+            this.sorter = new Sorter<>(type, comparator, provider, defaultValue);
             return this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> Builder<G> withSorting(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+            return withSorting(type, comparator, (sorter, holder, game) -> {
+                Sorter<T, G> sort = (Sorter<T, G>)  sorter;
+                return holder.getSortedOwners(sort.getType(), sort.getComparator(), defaultValue);
+            }, defaultValue);
         }
 
         public Builder<G> addRenderableColumn(String name, BiFunction<PlayerPropertyHolder, UUID, String> provider, Consumer<Table.Column<UUID, G>> consumer) {
@@ -105,19 +109,37 @@ public final class ScoreboardRenderer<G extends Game<?>> {
         }
     }
 
-    private static final class Sorter<T> {
+    public static final class Sorter<T, G extends Game<?>> {
         private final PropertyType<T> type;
         private final Comparator<T> comparator;
+        private final CollectionProvider<G> provider;
         private final T defaultValue;
 
-        public Sorter(PropertyType<T> type, Comparator<T> comparator, T defaultValue) {
+        private Sorter(PropertyType<T> type, Comparator<T> comparator, CollectionProvider<G> provider, T defaultValue) {
             this.type = type;
             this.comparator = comparator;
+            this.provider = provider;
             this.defaultValue = defaultValue;
         }
 
-        public List<UUID> sort(PlayerPropertyHolder holder) {
-            return holder.getSortedOwners(type, comparator, defaultValue);
+        public List<UUID> get(PlayerPropertyHolder holder, G game) {
+            return provider.getList(this, holder, game);
+        }
+
+        public PropertyType<T> getType() {
+            return type;
+        }
+
+        public Comparator<T> getComparator() {
+            return comparator;
+        }
+
+        public T getDefaultValue() {
+            return defaultValue;
+        }
+
+        public interface CollectionProvider<G extends Game<?>> {
+            List<UUID> getList(Sorter<?, G> sorter, PlayerPropertyHolder properties, G game);
         }
     }
 
@@ -174,7 +196,7 @@ public final class ScoreboardRenderer<G extends Game<?>> {
                     int colTop = y + rowIndex++ * COLUMN_HEIGHT;
                     ImageUtil.drawShape(colLeft, colTop, colLeft + columnSize, colTop + COLUMN_HEIGHT, 0x66 << 24);
                     if (isName) {
-                        font.drawStringWithShadow(TextFormatting.BOLD + value, colLeft + (columnSize - valueSize) / 2.0F, colTop + 2, column.textColor.applyAsInt(game, null));
+                        font.drawStringWithShadow(value, colLeft + (columnSize - valueSize) / 2.0F, colTop + 2, column.textColor.applyAsInt(game, null));
                     } else {
                         if (column.rightAlignment) {
                             font.drawString(value, colLeft + columnSize - valueSize - margin, colTop + 2, column.textColor.applyAsInt(game, row), false);

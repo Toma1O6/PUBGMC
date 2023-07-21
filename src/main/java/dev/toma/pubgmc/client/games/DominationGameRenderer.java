@@ -15,23 +15,33 @@ import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
 public class DominationGameRenderer implements GameRenderer<DominationGame> {
 
     private final ScoreboardRenderer<DominationGame> scoreboardRenderer;
     private final PlayzoneRenderer<Playzone> playzoneRenderer;
 
+    @SuppressWarnings("unchecked")
     public DominationGameRenderer() {
         this.scoreboardRenderer = ScoreboardRenderer.<DominationGame>create()
-                .withSorting(SharedProperties.SCORE, Comparator.comparing(Integer::intValue), 0)
+                .withSorting(SharedProperties.SCORE, Comparator.comparing(Integer::intValue).reversed(), (sorter, holder, game) -> {
+                    ScoreboardRenderer.Sorter<UUID, DominationGame> sort = (ScoreboardRenderer.Sorter<UUID, DominationGame>) sorter;
+                    List<UUID> red = holder.getSortedOwners(sort.getType(), sort.getComparator(), sort.getDefaultValue(), uuid -> isFromTeam(uuid, game, TeamType.RED));
+                    List<UUID> blue = holder.getSortedOwners(sort.getType(), sort.getComparator(), sort.getDefaultValue(), uuid -> isFromTeam(uuid, game, TeamType.BLUE));
+                    red.addAll(blue);
+                    return red;
+                }, 0)
                 .addRenderableColumn(TextComponentHelper.NAME.getFormattedText(), PlayerPropertyHolder::getUsername, col -> {
                     col.setTextColor((game, uuid) -> {
-                        TeamType type = ((DominationTeamManager) game.getTeamManager()).getTeamType(uuid);
+                        TeamType type = game.getTeamManager().getTeamType(uuid);
                         return type != null ? type.getColor() : 0xFFFFFF;
                     });
                 })
@@ -55,7 +65,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         this.scoreboardRenderer.setDrawGrid(true);
         this.scoreboardRenderer.setDisplayLimit(32);
         this.playzoneRenderer = new PlayzoneRenderer<>();
-        this.playzoneRenderer.setColor(0x4439FF2B);
+        this.playzoneRenderer.setColor(0x44FFFFFF);
     }
 
     @Override
@@ -94,8 +104,8 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         float top = resolution.getScaledHeight() - 50 - infoHeight;
         ImageUtil.drawShape(left, top, left + infoWidth, top + infoHeight, 0x66 << 24);
         int totalTickets = game.getConfiguration().totalTicketCount;
-        int redTickets = game.getRedTicketCount();
-        int blueTickets = game.getBlueTicketCount();
+        int redTickets = Math.max(0, game.getRedTicketCount());
+        int blueTickets = Math.max(0, game.getBlueTicketCount());
         float red = redTickets / (float) totalTickets;
         float blue = blueTickets / (float) totalTickets;
         ImageUtil.drawShape(left + halfX - 0.5F, top + 2, left + halfX + 0.5F, top + infoHeight - 2, 0x66AAAAAA);
@@ -109,6 +119,25 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         ImageUtil.drawGradient(bMin - (1.0F - blue) * bDiff, top + infoHeight - 5, bMax, top + infoHeight - 2, 0xFF0000FF, 0xFF0000AA);
 
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        float scale = 0.50F;
+        GlStateManager.pushMatrix();
+        {
+            String displayedText = String.valueOf(redTickets);
+            GlStateManager.translate(left + halfX - font.getStringWidth(displayedText) / 2f - 2, top + 5, 0);
+            GlStateManager.scale(scale, scale, scale);
+            font.drawString(displayedText, 0, 0, 0xAA3333, true);
+        }
+        GlStateManager.popMatrix();
+
+        GlStateManager.pushMatrix();
+        {
+            String displayedText = String.valueOf(blueTickets);
+            GlStateManager.translate(left + halfX + 2, top + 5, 0);
+            GlStateManager.scale(scale, scale, scale);
+            font.drawString(displayedText, 0, 0, 0x4444FF, true);
+        }
+        GlStateManager.popMatrix();
+
         font.drawStringWithShadow(TeamType.RED.getTitle().getFormattedText(), left + 2, top + 2, 0xFFFFFF);
         String blueTitle = TeamType.BLUE.getTitle().getFormattedText();
         font.drawStringWithShadow(blueTitle, left + infoWidth - 2 - font.getStringWidth(blueTitle), top + 2, 0xFFFFFF);
@@ -117,5 +146,10 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         String timeText = PUBGMCUtil.formatTime(timeRemaining);
         int textWidth = font.getStringWidth(timeText);
         font.drawString(timeText, resolution.getScaledWidth() - textWidth - 5, 5, 0xFFFFFF, true);
+    }
+
+    private boolean isFromTeam(UUID uuid, DominationGame game, TeamType type) {
+        DominationTeamManager manager = game.getTeamManager();
+        return manager.getTeamType(uuid) == type;
     }
 }

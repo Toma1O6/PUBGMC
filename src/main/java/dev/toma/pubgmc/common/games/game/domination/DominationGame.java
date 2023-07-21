@@ -12,10 +12,16 @@ import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.NoInvitesManager;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamInviteManager;
-import dev.toma.pubgmc.api.game.team.TeamManager;
+import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.properties.SharedProperties;
+import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
+import dev.toma.pubgmc.common.ai.EntityAIHurtByTargetTeamAware;
+import dev.toma.pubgmc.common.ai.EntityAIMoveIntoPlayzone;
+import dev.toma.pubgmc.common.ai.EntityAITeamAwareNearestAttackableTarget;
+import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.SimpleLoadoutManager;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
@@ -27,12 +33,14 @@ import dev.toma.pubgmc.common.games.util.SpawnPointSelector;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.S2C_PacketLoadoutSelect;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -42,6 +50,9 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -64,6 +75,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
     private final SpawnPointSelector<TeamSpawnerPoint> blueSpawns;
     private final SpawnPointSelector<SpawnerPoint> spawns;
     private final GameRuleStorage ruleStorage;
+    private final DominationAIManager aiManager;
     private final List<GameEventListener> listeners;
     private AbstractDamagingPlayzone playzone;
 
@@ -85,6 +97,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         this.blueSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.BLUE, GameHelper::getActiveGameMap);
         this.spawns = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMap);
         this.ruleStorage = new GameRuleStorage();
+        this.aiManager = new DominationAIManager();
         this.listeners = new ArrayList<>();
 
         this.addListener(new EventHandler(this));
@@ -119,8 +132,10 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         properties.registerProperty(SharedProperties.DEATHS, 0);
         properties.registerProperty(SharedProperties.CAPTURES, 0);
         properties.registerProperty(SharedProperties.SCORE, 0);
+        properties.registerProperty(SharedProperties.GAME_TIMESTAMP, 0L);
         for (EntityPlayer player : world.playerEntities) {
-            registerEntity(player);
+            properties.register(player);
+            teamManager.autoJoinTeam(player);
             player.sendMessage(LOADOUT_MESSAGE);
             GameHelper.moveToLobby(player);
         }
@@ -147,7 +162,12 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             configuration.worldConfiguration.apply(server, ruleStorage);
             moveToGame(server, redPlayers, redSpawns);
             moveToGame(server, bluePlayers, blueSpawns);
-            // TODO spawn AI
+            if (configuration.allowAi) {
+                int aiCount = configuration.playerCount - (redPlayers.size() + bluePlayers.size());
+                for (int i = 0; i < aiCount; i++) {
+                    createAi(server);
+                }
+            }
         }
     }
 
@@ -173,13 +193,23 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
                 List<Entity> entityList = teamManager.getAllActiveEntities(server).collect(Collectors.toList());
                 pointManager.update(entityList, server);
             }
+            if (gameTime % 50 == 0) {
+                deadAiTick(server);
+            }
             playzone.hurtAllOutside(server, () -> teamManager.getAllActiveEntities(server).collect(Collectors.toList()));
         }
         if (gameTime % 100L == 0L) {
             int redZones = pointManager.getCapturedPoints(TeamType.RED).size();
             int blueZones = pointManager.getCapturedPoints(TeamType.BLUE).size();
-            redTickets -= blueZones * configuration.pointTicketLoss;
-            blueTickets -= redZones * configuration.pointTicketLoss;
+            int pointsDiff = Math.abs(redZones - blueZones);
+            if (!configuration.requirePointSuperiority || blueZones > redZones) {
+                int value = configuration.requirePointSuperiority ? pointsDiff : blueZones;
+                redTickets = redTickets - value * configuration.pointTicketLoss;
+            }
+            if (!configuration.requirePointSuperiority || redZones > blueZones) {
+                int value = configuration.requirePointSuperiority ? pointsDiff : redZones;
+                blueTickets = blueTickets - value * configuration.pointTicketLoss;
+            }
             tryCompleteGame(world);
         }
         if (++gameTime >= configuration.gameDuration) {
@@ -189,13 +219,39 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
 
     @Override
     public boolean playerJoinGame(EntityPlayer player) {
-        // TODO implement
+        if (tryJoin(player)) {
+            player.inventory.clear();
+            if (started && !player.world.isRemote) {
+                WorldServer server = (WorldServer) player.world;
+                respawn(player);
+                SpawnerPoint point = getRespawnPoint(server, player);
+                point.teleportOn(player);
+                Team team = teamManager.getEntityTeam(player);
+                Team.Member ai = team.getMemberByType(Team.MemberType.AI, false);
+                team.removeMemberById(ai.getId());
+                properties.delete(ai.getId());
+                GameHelper.requestClientGameDataSynchronization(player.world);
+            } else {
+                GameHelper.moveToLobby(player);
+            }
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean playerLeaveGame(EntityPlayer player) {
-        // TODO implement
+        Team playerTeam = teamManager.getEntityTeam(player);
+        if (playerTeam != null) {
+            playerTeam.removeMemberById(player.getUniqueID());
+            properties.delete(player.getUniqueID());
+            GameHelper.moveToLobby(player);
+            if (started && !completed && !player.world.isRemote) {
+                createAi((WorldServer) player.world);
+            }
+            player.inventory.clear();
+            return true;
+        }
         return false;
     }
 
@@ -230,7 +286,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
     }
 
     @Override
-    public TeamManager getTeamManager() {
+    public DominationTeamManager getTeamManager() {
         return teamManager;
     }
 
@@ -266,6 +322,52 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         return loadoutManager;
     }
 
+    private boolean tryJoin(EntityPlayer player) {
+        Team team = teamManager.getEntityTeam(player);
+        if (team != null) {
+            return false;
+        }
+        int playerCount = (int) teamManager.getAllActivePlayers(player.world).count();
+        if (playerCount >= configuration.playerCount) {
+            return false;
+        }
+        int redTeamCountAi = teamManager.getTeamByType(TeamType.RED).memberCountByType(Team.MemberType.AI, false);
+        int blueTeamCountAi = teamManager.getTeamByType(TeamType.RED).memberCountByType(Team.MemberType.AI, false);
+        if (redTeamCountAi == 0 && blueTeamCountAi == 0) {
+            throw new UnsupportedOperationException("This should never happen, why did it happen? Please report to mod author");
+        }
+        Team targetTeam = teamManager.getTeamByType(redTeamCountAi > blueTeamCountAi ? TeamType.RED : TeamType.BLUE);
+        teamManager.join(targetTeam, player);
+        properties.register(player);
+        return true;
+    }
+
+    private void respawn(EntityPlayer player) {
+        World world = player.world;
+        if (world.isRemote)
+            return;
+        bleedRespawnTickets(player);
+        SpawnerPoint point = getRespawnPoint((WorldServer) world, player);
+        point.teleportOn(player);
+        if (loadoutManager.hasSelectedLoadout(player.getUniqueID())) {
+            loadoutManager.applyLoadout(player);
+        } else {
+            openMenu((EntityPlayerMP) player);
+        }
+    }
+
+    private SpawnerPoint getRespawnPoint(WorldServer server, EntityLivingBase entity) {
+        TeamType type = teamManager.getTeamType(entity);
+        TeamType enemy = type == TeamType.RED ? TeamType.BLUE : TeamType.RED;
+        List<Entity> entities = teamManager.getTeamEntities(teamManager.getTeamByType(enemy), server);
+        if (gameTime >= 600L) {
+            return spawns.getPoint(server, entities);
+        } else {
+            SpawnPointSelector<TeamSpawnerPoint> selector = type == TeamType.RED ? redSpawns : blueSpawns;
+            return selector.getPoint(server, entities);
+        }
+    }
+
     public PlayerPropertyHolder getProperties() {
         return properties;
     }
@@ -290,11 +392,6 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         return pointManager;
     }
 
-    private void registerEntity(EntityLivingBase entity) {
-        properties.register(entity);
-        teamManager.autoJoinTeam(entity);
-    }
-
     private void moveToGame(WorldServer world, List<EntityPlayer> players, SpawnPointSelector<TeamSpawnerPoint> selector) {
         for (EntityPlayer player : players) {
             TeamSpawnerPoint point = selector.getPoint(world, players);
@@ -314,7 +411,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         int playerCount = (int) teamManager.getAllActivePlayers(world).count();
         if (world.isRemote || completed)
             return;
-        if (gameTime >= configuration.gameDuration || redTickets < 0 || blueTickets < 0 || playerCount == 0) {
+        if (gameTime >= configuration.gameDuration || redTickets <= 0 || blueTickets <= 0 || playerCount == 0) {
             completed = true;
             ITextComponent component;
             TeamType winnerTeam;
@@ -350,12 +447,155 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         });
     }
 
+    private void createAi(WorldServer world) {
+        EntityAIPlayer player = new EntityAIPlayer(world);
+        Team team = teamManager.autoJoinTeam(player);
+        SpawnPointSelector<TeamSpawnerPoint> spawnPointSelector = teamManager.getTeamType(team) == TeamType.RED ? redSpawns : blueSpawns;
+        TeamSpawnerPoint point = spawnPointSelector.getPoint(world, teamManager.getTeamEntities(team, world));
+        BlockPos pos = point.getPointPosition();
+        player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+        initAi(player);
+        player.assignGameId(gameId);
+        properties.register(player);
+        world.spawnEntity(player);
+        aiManager.register(player);
+        List<EntityLoadout> availableLoadouts = loadoutManager.getAvailableLoadouts();
+        EntityLoadout loadout = PUBGMCUtil.randomListElement(availableLoadouts, world.rand);
+        if (loadout != null) {
+            UUID playerId = player.getUniqueID();
+            loadoutManager.select(playerId, loadout);
+            loadoutManager.applyLoadout(player);
+        }
+    }
+
+    private void initAi(EntityAIPlayer player) {
+        player.clearAI();
+        EntityAIPlayer.addDefaultTasks(player);
+        EntityAIGunAttack shootTask = new EntityAIGunAttack(player);
+        shootTask.setReactionTime(10);
+        player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> playzone, 1.20F));
+        player.tasks.addTask(2, shootTask);
+        // TODO add task to capture / defend zone
+        player.targetTasks.addTask(0, new EntityAIHurtByTargetTeamAware(player, false));
+        player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
+        player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
+    }
+
+    private void deadAiTick(WorldServer world) {
+        aiManager.getDeadAIs().forEach(uuid -> {
+            long time = properties.getProperty(uuid, SharedProperties.GAME_TIMESTAMP, 0L);
+            if (gameTime - time < 60L) {
+                return;
+            }
+            EntityAIPlayer player = new EntityAIPlayer(world);
+            NBTTagCompound compound = aiManager.getNBTData(uuid);
+            if (compound != null) {
+                player.readFromNBT(compound);
+            }
+            player.setUniqueId(uuid);
+            player.assignGameId(gameId);
+            SpawnerPoint point = getRespawnPoint(world, player);
+            BlockPos pos = point.getPointPosition();
+            player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+            loadoutManager.applyLoadout(player);
+            aiManager.markAlive(uuid);
+            properties.setProperty(uuid, SharedProperties.GAME_TIMESTAMP, gameTime);
+            world.spawnEntity(player);
+            initAi(player);
+            bleedRespawnTickets(player);
+        });
+        GameHelper.requestClientGameDataSynchronization(world);
+    }
+
+    private void bleedRespawnTickets(EntityLivingBase respawningEntity) {
+        properties.increaseInt(respawningEntity.getUniqueID(), SharedProperties.DEATHS);
+        TeamType type = teamManager.getTeamType(respawningEntity);
+        if (type == TeamType.RED) {
+            redTickets -= configuration.killTicketLoss;
+        } else if (type == TeamType.BLUE) {
+            blueTickets -= configuration.killTicketLoss;
+        }
+        tryCompleteGame(respawningEntity.world);
+    }
+
     private static final class EventHandler implements GameEventListener {
 
         private final DominationGame game;
 
         public EventHandler(DominationGame game) {
             this.game = game;
+        }
+
+        @Override
+        public void onEntityDeath(LivingDeathEvent event) {
+            EntityLivingBase entity = event.getEntityLiving();
+            DamageSource source = event.getSource();
+            Entity killer = source.getTrueSource();
+            if (entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) entity;
+                if (game.teamManager.getEntityTeam(player) != null) {
+                    player.inventory.clear();
+                    awardKill(killer, entity);
+                }
+            } else if (game.teamManager.getEntityTeam(entity) != null) {
+                awardKill(killer, entity);
+                game.properties.setProperty(entity.getUniqueID(), SharedProperties.GAME_TIMESTAMP, game.gameTime);
+                game.aiManager.markDead(entity.getUniqueID());
+            }
+            GameHelper.requestClientGameDataSynchronization(entity.world);
+        }
+
+        @Override
+        public void onEntityAttack(LivingAttackEvent event) {
+            if (!game.started || game.completed) {
+                event.setCanceled(true);
+            }
+        }
+
+        @Override
+        public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+            EntityPlayer player = event.player;
+            if (game.teamManager.getEntityTeam(player) != null) {
+                if (game.started) {
+                    game.respawn(player);
+                    player.hurtResistantTime = 0;
+                    player.hurtTime = 0;
+                } else {
+                    GameHelper.moveToLobby(player);
+                }
+            }
+        }
+
+        @Override
+        public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+            EntityPlayer player = event.player;
+            if (player != null && game.isStarted()) {
+                game.playerLeaveGame(player);
+            }
+        }
+
+        @Override
+        public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+            EntityPlayer player = event.player;
+            if (game.tryJoin(player)) {
+                player.sendMessage(new TextComponentTranslation("message.pubgmc.game.joinable_game_in_progress"));
+            }
+        }
+
+        private void awardKill(@Nullable Entity killer, EntityLivingBase victim) {
+            if (!(killer instanceof EntityLivingBase) || game.completed || !game.started)
+                return;
+            if (game.teamManager.getEntityTeam(killer) != null) {
+                TeamRelations relations = GameHelper.getEntityRelations((EntityLivingBase) killer, victim);
+                if (relations != TeamRelations.UNKNOWN && relations != TeamRelations.FRIENDLY) {
+                    game.properties.increaseInt(killer.getUniqueID(), SharedProperties.KILLS);
+                    game.properties.increaseInt(killer.getUniqueID(), SharedProperties.SCORE, 25);
+                    if (!killer.world.isRemote) {
+                        game.tryCompleteGame(killer.world);
+                        GameHelper.requestClientGameDataSynchronization(killer.world);
+                    }
+                }
+            }
         }
     }
 
@@ -376,6 +616,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             nbt.setTag("ruleStorage", game.ruleStorage.serialize());
             nbt.setTag("properties", game.properties.serialize());
             nbt.setTag("loadouts", game.loadoutManager.serialize());
+            nbt.setTag("ai", game.aiManager.serialize());
             if (game.playzone != null) {
                 nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
             }
@@ -397,6 +638,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             game.ruleStorage.deserialize(nbt.getCompoundTag("ruleStorage"));
             game.properties.deserialize(nbt.getCompoundTag("properties"));
             game.loadoutManager.deserialize(nbt.getCompoundTag("loadouts"));
+            game.aiManager.deserialize(nbt.getCompoundTag("ai"));
             if (nbt.hasKey("playzone")) {
                 game.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
             }
@@ -405,22 +647,22 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
 
         @Override
         public NBTTagCompound serializeGameConfiguration(DominationGameConfiguration configuration) {
-            return new NBTTagCompound();
+            return new NBTTagCompound(); // TODO
         }
 
         @Override
         public DominationGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return new DominationGameConfiguration();
+            return new DominationGameConfiguration(); // TODO
         }
 
         @Override
         public JsonObject serializeConfigurationToJson(DominationGameConfiguration configuration) {
-            return new JsonObject();
+            return new JsonObject(); // TODO
         }
 
         @Override
         public DominationGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
-            return new DominationGameConfiguration();
+            return new DominationGameConfiguration(); // TODO
         }
     }
 
