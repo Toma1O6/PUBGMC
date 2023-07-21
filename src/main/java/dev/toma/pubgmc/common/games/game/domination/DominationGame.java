@@ -309,12 +309,6 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         return pointManager.getCaptureData(pos);
     }
 
-    @Nullable
-    @Override
-    public CaptureData getEntityCaptureData(Entity entity) {
-        return pointManager.getEntityCaptureData(entity);
-    }
-
     @Override
     public boolean shouldCaptureOrDefend(BlockPos pos, EntityLivingBase entity) {
         return pointManager.shouldCaptureOrDefend(pos, entity, teamManager);
@@ -657,22 +651,22 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
 
         @Override
         public NBTTagCompound serializeGameConfiguration(DominationGameConfiguration configuration) {
-            return new NBTTagCompound(); // TODO
+            return configuration.serialize();
         }
 
         @Override
         public DominationGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return new DominationGameConfiguration(); // TODO
+            return DominationGameConfiguration.deserialize(nbt);
         }
 
         @Override
         public JsonObject serializeConfigurationToJson(DominationGameConfiguration configuration) {
-            return new JsonObject(); // TODO
+            return configuration.jsonSerialize();
         }
 
         @Override
         public DominationGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
-            return new DominationGameConfiguration(); // TODO
+            return DominationGameConfiguration.jsonDeserialize(object);
         }
     }
 

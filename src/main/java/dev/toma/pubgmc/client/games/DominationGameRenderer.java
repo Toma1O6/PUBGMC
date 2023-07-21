@@ -3,10 +3,12 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.client.util.ScoreboardRenderer;
+import dev.toma.pubgmc.api.game.CaptureZones;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
+import dev.toma.pubgmc.common.games.game.domination.DominationCapturePointManager;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationTeamManager;
 import dev.toma.pubgmc.common.games.util.TeamType;
@@ -18,6 +20,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -156,6 +159,35 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
             }
             font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 10 + i * 10, type.getColor());
         }
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        renderCaptureOverlay(player, game, resolution);
+    }
+
+    private void renderCaptureOverlay(EntityPlayer player, DominationGame game, ScaledResolution resolution) {
+        DominationCapturePointManager manager = game.getPointManager();
+        DominationCapturePointManager.Tracker tracker = manager.getEntityCaptureData(player);
+        if (tracker == null)
+            return;
+        CaptureZones.CaptureData data = tracker.getCaptureData();
+        int width = 120;
+        int height = 25;
+        float left = (resolution.getScaledWidth() - width) / 2.0F;
+        float top = 5.0F;
+        ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
+        ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0xFF << 24 | data.getBackground());
+        if (data.getCaptureProgress() > 0.0F) {
+            float right = left + (width - 2) * data.getCaptureProgress();
+            ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0xFF << 24 | data.getForeground());
+        }
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        StringBuilder text = new StringBuilder();
+        String label = tracker.getPoint().getLabel();
+        if (label != null) {
+            text.append(label.toUpperCase()).append(": ");
+        }
+        text.append(data.getStatus().getTitle().getFormattedText());
+        font.drawStringWithShadow(TextFormatting.UNDERLINE + text.toString(), left + 5, top + 5, 0xFFFFFF);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     private boolean isFromTeam(UUID uuid, DominationGame game, TeamType type) {

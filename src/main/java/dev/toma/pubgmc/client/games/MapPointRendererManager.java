@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.client.game.MapPointRenderer;
 import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.map.Bounds2;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
@@ -11,10 +10,8 @@ import dev.toma.pubgmc.api.item.MapPointItem;
 import dev.toma.pubgmc.client.renderer.poi.SimplePoiRenderer;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -79,21 +76,6 @@ public final class MapPointRendererManager {
         });
     }
 
-    public void renderInHUD(EntityPlayer player, ScaledResolution resolution, float partialTicks) {
-        World world = player.world;
-        GameDataProvider.getGameData(world).ifPresent(gameData -> {
-            Game<?> game = gameData.getCurrentGame();
-            if (game != null && game.isStarted()) {
-                String mapName = gameData.getActiveGameMapName();
-                GameMap map = gameData.getGameMap(mapName);
-                if (map == null) {
-                    return;
-                }
-                map.getPoints().forEach(point -> renderPointHud(point, player, game, resolution, partialTicks));
-            }
-        });
-    }
-
     private void renderPoints(Collection<GameMapPoint> points, boolean debugMode, Game<?> game, double x, double y, double z, float partialTicks) {
         for (GameMapPoint point : points) {
             renderPoint(point, debugMode, game, x, y, z, partialTicks);
@@ -109,14 +91,6 @@ public final class MapPointRendererManager {
             renderer.renderInDebugMode(point, x, y, z, partialTicks);
         } else {
             renderer.renderPointInGame(point, game, x, y, z, partialTicks);
-        }
-    }
-
-    private <P extends GameMapPoint> void renderPointHud(P point, EntityPlayer player, Game<?> game, ScaledResolution resolution, float partialTicks) {
-        GameMapPointType<P> type = (GameMapPointType<P>) point.getType();
-        MapPointRenderer<P> renderer = this.getRendererForType(type);
-        if (point instanceof Bounds2 && ((Bounds2) point).isWithin(player)) {
-            renderer.renderInHud(point, player, game, resolution, partialTicks);
         }
     }
 }

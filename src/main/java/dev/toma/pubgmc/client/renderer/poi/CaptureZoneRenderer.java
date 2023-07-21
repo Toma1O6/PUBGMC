@@ -6,16 +6,13 @@ import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -121,36 +118,5 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
                 GlStateManager.depthMask(true);
             });
         }
-    }
-
-    @Override
-    public void renderInHud(CaptureZonePoint point, EntityPlayer player, Game<?> game, ScaledResolution resolution, float partialTicks) {
-        if (!game.isStarted())
-            return;
-        if (!(game instanceof CaptureZones))
-            return;
-        CaptureZones zones = (CaptureZones) game;
-        CaptureZones.CaptureData data = zones.getEntityCaptureData(player);
-        if (data == null)
-            return;
-        int width = 120;
-        int height = 25;
-        float left = (resolution.getScaledWidth() - width) / 2.0F;
-        float top = 5.0F;
-        ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
-        ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0xFF << 24 | data.getBackground());
-        if (data.getCaptureProgress() > 0.0F) {
-            float right = left + (width - 2) * data.getCaptureProgress();
-            ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0xFF << 24 | data.getForeground());
-        }
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-        StringBuilder text = new StringBuilder();
-        String label = point.getLabel();
-        if (label != null) {
-            text.append(label.toUpperCase()).append(": ");
-        }
-        text.append(data.getStatus().getTitle().getFormattedText());
-        font.drawStringWithShadow(TextFormatting.UNDERLINE + text.toString(), left + 5, top + 5, 0xFFFFFF);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

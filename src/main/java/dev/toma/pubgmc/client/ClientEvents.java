@@ -285,9 +285,6 @@ public class ClientEvents {
             }
         }
 
-        if (e.getType() == ElementType.ALL) {
-            MapPointRendererManager.INSTANCE.renderInHUD(sp, res, e.getPartialTicks());
-        }
         GameRendererManager.INSTANCE.renderCurrentGameHUDOverlay(e);
     }
 

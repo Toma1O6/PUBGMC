@@ -73,10 +73,10 @@ public class DominationCapturePointManager {
     }
 
     @Nullable
-    public CaptureZones.CaptureData getEntityCaptureData(Entity entity) {
+    public Tracker getEntityCaptureData(Entity entity) {
         for (Tracker tracker : pointMap.values()) {
             if (tracker.point.isWithin(entity)) {
-                return tracker.captureData;
+                return tracker;
             }
         }
         return null;
@@ -216,7 +216,7 @@ public class DominationCapturePointManager {
         list.forEach(tracker -> pointMap.put(tracker.point.getPointPosition(), tracker));
     }
 
-    private static final class Tracker {
+    public static final class Tracker {
 
         private final CaptureZonePoint point;
         private final CaptureZones.CaptureData captureData;
@@ -225,6 +225,14 @@ public class DominationCapturePointManager {
         public Tracker(CaptureZonePoint point, CaptureZones.CaptureData captureData) {
             this.point = point;
             this.captureData = captureData;
+        }
+
+        public CaptureZones.CaptureData getCaptureData() {
+            return captureData;
+        }
+
+        public CaptureZonePoint getPoint() {
+            return point;
         }
 
         public NBTTagCompound serialize() {
