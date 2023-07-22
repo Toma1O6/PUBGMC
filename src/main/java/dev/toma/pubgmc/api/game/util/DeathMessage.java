@@ -5,7 +5,6 @@ import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -126,6 +125,8 @@ public final class DeathMessage {
 
         FRIENDLY_KILL(0x00AAAA),
         FRIENDLY_DEATH(0xAA0000),
+        MY_KILL(0x00AAFF),
+        MY_DEATH(0xFF0000),
         NORMAL(0xFFFFFF);
 
         private final int color;
@@ -156,9 +157,9 @@ public final class DeathMessage {
             if (client.getRenderViewEntity() != null) {
                 UUID myId = client.getRenderViewEntity().getUniqueID();
                 if (Objects.equals(myId, deathMessage.victimId)) {
-                    return FRIENDLY_DEATH;
+                    return MY_DEATH;
                 } else if (Objects.equals(myId, deathMessage.killerId)) {
-                    return FRIENDLY_KILL;
+                    return MY_KILL;
                 }
             }
             return NORMAL;
@@ -169,28 +170,34 @@ public final class DeathMessage {
             UUID killer = message.killerId;
             UUID victim = message.victimId;
             Minecraft client = Minecraft.getMinecraft();
-            // my death
-            if (victim.equals(client.player.getUniqueID())) {
-                return FRIENDLY_DEATH;
-            }
-            // my kill
-            if (Objects.equals(killer, client.player.getUniqueID())) {
-                return FRIENDLY_KILL;
-            }
             Team myTeam = manager.getEntityTeam(client.player);
             // default, spectator
             if (myTeam == null) {
                 return NORMAL;
+            }
+            // my death
+            if (victim.equals(client.player.getUniqueID())) {
+                return MY_DEATH;
+            }
+            // my kill
+            if (Objects.equals(killer, client.player.getUniqueID())) {
+                Team victimTeam = manager.getEntityTeamByEntityId(victim);
+                if (victimTeam == null)
+                    return NORMAL;
+                if (victimTeam.getTeamId().equals(myTeam.getTeamId())) {
+                    return MY_DEATH;
+                }
+                return MY_KILL;
+            }
+            Team victimTeam = manager.getEntityTeamByEntityId(victim);
+            if (myTeam.equals(victimTeam)) {
+                return FRIENDLY_DEATH;
             }
             if (killer != null) {
                 Team team = manager.getEntityTeamByEntityId(killer);
                 if (myTeam.equals(team)) {
                     return FRIENDLY_KILL;
                 }
-            }
-            Team victimTeam = manager.getEntityTeamByEntityId(victim);
-            if (myTeam.equals(victimTeam)) {
-                return FRIENDLY_DEATH;
             }
             return NORMAL;
         }
