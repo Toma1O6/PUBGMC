@@ -140,6 +140,11 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
     }
 
     @Override
+    public double getCameraOffset() {
+        return 60.0D;
+    }
+
+    @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setInteger("flightDelay", flightDelay);
         compound.setInteger("flightHeight", flightHeight);

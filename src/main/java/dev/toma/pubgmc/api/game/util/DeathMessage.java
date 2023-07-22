@@ -183,7 +183,7 @@ public final class DeathMessage {
             if (Objects.equals(killer, client.player.getUniqueID())) {
                 Team victimTeam = manager.getEntityTeamByEntityId(victim);
                 if (victimTeam == null)
-                    return NORMAL;
+                    return MY_KILL;
                 if (victimTeam.getTeamId().equals(myTeam.getTeamId())) {
                     return MY_DEATH;
                 }

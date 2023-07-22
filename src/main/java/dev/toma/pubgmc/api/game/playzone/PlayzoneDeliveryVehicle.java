@@ -7,4 +7,8 @@ public interface PlayzoneDeliveryVehicle extends GameObject {
     default boolean disablePlayzoneDamageForPassengers() {
         return true;
     }
+
+    default double getCameraOffset() {
+        return -1;
+    }
 }

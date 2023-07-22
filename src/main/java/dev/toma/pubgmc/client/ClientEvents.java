@@ -4,6 +4,7 @@ import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.entity.IControllable;
+import dev.toma.pubgmc.api.game.playzone.PlayzoneDeliveryVehicle;
 import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.api.item.Consumable;
@@ -533,6 +534,20 @@ public class ClientEvents {
         map.registerSprite(ContainerPlayerEquipment.SLOT_NIGHT_VISION);
         map.registerSprite(ContainerPlayerEquipment.SLOT_BACKPACK);
         map.registerSprite(ContainerPlayerEquipment.SLOT_GHILLIE);
+    }
+
+    @SubscribeEvent
+    public void adjustCameraOffset(EntityViewRenderEvent.CameraSetup event) {
+        Entity entity = event.getEntity();
+        Entity vehicle = entity.getRidingEntity();
+        GameSettings settings = Minecraft.getMinecraft().gameSettings;
+        if (settings.thirdPersonView > 0 && vehicle instanceof PlayzoneDeliveryVehicle) {
+            double offset = ((PlayzoneDeliveryVehicle) vehicle).getCameraOffset();
+            if (offset > 0) {
+                int i = settings.thirdPersonView == 1 ? -1 : 1;
+                GlStateManager.translate(0, 0, offset * i);
+            }
+        }
     }
 
     private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
