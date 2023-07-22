@@ -7,13 +7,14 @@ import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
+import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.SpecialInventoryItem;
 import dev.toma.pubgmc.common.ai.EntityAIBeBlinded;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAILightSensitiveNearestAttackableTarget;
-import dev.toma.pubgmc.common.games.mutator.AIPlayerMutator;
-import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
+import dev.toma.pubgmc.api.game.mutator.AIPlayerMutator;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
@@ -124,7 +125,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         Game<?> game = GameDataProvider.getGameData(world).map(GameData::getCurrentGame).orElse(null);
         boolean useDefaultAi = true;
         if (game != null && game.isStarted()) {
-            Optional<AIPlayerMutator<?>> mutatorOpt = GameMutatorManager.INSTANCE.getMutator(game.getGameType(), AIPlayerMutator.TYPE);
+            Optional<AIPlayerMutator<?>> mutatorOpt = GameMutatorManager.INSTANCE.getMutator(game.getGameType(), GameMutators.AI_TASKS);
             if (mutatorOpt.isPresent()) {
                 AIPlayerMutator<G> mutator = (AIPlayerMutator<G>) mutatorOpt.get();
                 mutator.apply((G) game, this);

@@ -2,8 +2,13 @@ package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
-import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.Game;
+import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.api.game.GenerationType;
+import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
+import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
@@ -13,8 +18,6 @@ import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
-import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
-import dev.toma.pubgmc.common.games.mutator.InventoryMutator;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
@@ -385,7 +388,7 @@ public final class GameHelper {
     public static boolean hasRestrictedInventory(World world) {
         return GameDataProvider.getGameData(world).map(data -> {
             Game<?> game = data.getCurrentGame();
-            return game.isStarted() && GameMutatorManager.INSTANCE.hasMutator(game.getGameType(), InventoryMutator.TYPE);
+            return game.isStarted() && GameMutatorManager.INSTANCE.hasMutator(game.getGameType(), GameMutators.INVENTORY_LIMIT);
         }).orElse(false);
     }
 

@@ -20,7 +20,7 @@ import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.GeneratorCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
 import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
-import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.data.entity.DefaultEntityProviders;
 import dev.toma.pubgmc.data.entity.EntityProviderManager;

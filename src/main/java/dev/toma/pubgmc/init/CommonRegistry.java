@@ -3,8 +3,7 @@ package dev.toma.pubgmc.init;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
-import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameType;
+import dev.toma.pubgmc.api.game.mutator.*;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
@@ -22,9 +21,6 @@ import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
-import dev.toma.pubgmc.common.games.mutator.AIPlayerMutator;
-import dev.toma.pubgmc.common.games.mutator.InventoryMutator;
-import dev.toma.pubgmc.common.games.mutator.LightmapMutator;
 import dev.toma.pubgmc.common.games.playzone.PlayzoneTypes;
 import dev.toma.pubgmc.common.items.*;
 import dev.toma.pubgmc.common.items.attachment.*;
@@ -989,13 +985,16 @@ public class CommonRegistry {
 
     @SubscribeEvent
     public static void registerGameMutator(RegisterGameMutatorEvent event) {
-        event.registerMutator(GameTypes.BATTLE_ROYALE, InventoryMutator.TYPE, InventoryMutator.INSTANCE);
-        event.registerMutator(GameTypes.BATTLE_ROYALE, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
-        event.registerMutator(GameTypes.BATTLE_ROYALE, AIPlayerMutator.TYPE, new AIPlayerMutator<>(BattleRoyaleGame::addAiTasks));
-        event.registerMutator(GameTypes.FFA, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
-        event.registerMutator(GameTypes.FFA, AIPlayerMutator.TYPE, new AIPlayerMutator<>(FFAGame::initAi));
-        event.registerMutator(GameTypes.DOMINATION, LightmapMutator.TYPE, LightmapMutator.DEFAULT);
-        event.registerMutator(GameTypes.DOMINATION, AIPlayerMutator.TYPE, new AIPlayerMutator<>(DominationGame::initAi));
+        event.registerMutator(GameTypes.BATTLE_ROYALE, GameMutators.INVENTORY_LIMIT, InventoryMutator.INSTANCE);
+        event.registerMutator(GameTypes.BATTLE_ROYALE, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
+        event.registerMutator(GameTypes.BATTLE_ROYALE, GameMutators.AI_TASKS, new AIPlayerMutator<>(BattleRoyaleGame::addAiTasks));
+        event.registerMutator(GameTypes.FFA, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
+        event.registerMutator(GameTypes.FFA, GameMutators.AI_TASKS, new AIPlayerMutator<>(FFAGame::initAi));
+        event.registerMutator(GameTypes.FFA, GameMutators.KILL_REWARD, new KillRewardMutator(FFAGame::onEntityKilled));
+        event.registerMutator(GameTypes.FFA, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
+        event.registerMutator(GameTypes.DOMINATION, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
+        event.registerMutator(GameTypes.DOMINATION, GameMutators.AI_TASKS, new AIPlayerMutator<>(DominationGame::initAi));
+        event.registerMutator(GameTypes.DOMINATION, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
     }
 
     public static void registerItemBlock(Block block) {

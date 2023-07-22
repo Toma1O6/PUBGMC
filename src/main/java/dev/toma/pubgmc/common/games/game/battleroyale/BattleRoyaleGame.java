@@ -13,6 +13,7 @@ import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
@@ -500,6 +501,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 GameHelper.spawnAiPlayerDeathCrate(game.gameId, aiPlayer);
                 game.aiManager.onAiEntityDied(aiPlayer);
             }
+            GameMutatorHelper.giveKillReward(entity, source);
             Entity killer = source.getTrueSource();
             if (killer instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) killer;

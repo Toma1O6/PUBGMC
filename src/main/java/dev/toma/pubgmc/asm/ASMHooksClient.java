@@ -2,14 +2,15 @@ package dev.toma.pubgmc.asm;
 
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.game.Game;
+import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
 import dev.toma.pubgmc.client.event.ClientWorldTickEvent;
 import dev.toma.pubgmc.client.layers.LayerBackpack;
 import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.common.games.NoGame;
-import dev.toma.pubgmc.common.games.mutator.GameMutatorManager;
-import dev.toma.pubgmc.common.games.mutator.LightmapMutator;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
+import dev.toma.pubgmc.api.game.mutator.LightmapMutator;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -122,7 +123,7 @@ public class ASMHooksClient {
         Minecraft mc = Minecraft.getMinecraft();
         WorldClient client = mc.world;
         Game<?> game = GameDataProvider.getGameData(client).<Game<?>>map(GameData::getCurrentGame).orElse(NoGame.INSTANCE);
-        Optional<LightmapMutator> mutatorOptional = GameMutatorManager.INSTANCE.getMutator(game.getGameType(), LightmapMutator.TYPE);
+        Optional<LightmapMutator> mutatorOptional = GameMutatorManager.INSTANCE.getMutator(game.getGameType(), GameMutators.LIGHTMAP);
         if (!mutatorOptional.isPresent())
             return;
         LightmapMutator mutator = mutatorOptional.get();

@@ -22,12 +22,12 @@ public class ItemBulletproofArmor extends ItemArmor implements BulletproofArmor 
     }
 
     @Override
-    public float getDamageMultiplier(ProtectionArea affectedArea, ItemStack stack, EntityLivingBase hitEntity) {
+    public float getDamageMultiplier(DamageArea affectedArea, ItemStack stack, EntityLivingBase hitEntity) {
         return armorLevel.getProtectionMultiplier(affectedArea);
     }
 
     @Override
-    public ResourceLocation getArmorIcon(ProtectionArea area, float durabilityPercentage) {
+    public ResourceLocation getArmorIcon(DamageArea area, float durabilityPercentage) {
         return armorLevel.getIcon(area);
     }
 
@@ -51,11 +51,11 @@ public class ItemBulletproofArmor extends ItemArmor implements BulletproofArmor 
             };
         }
 
-        public float getProtectionMultiplier(ProtectionArea area) {
+        public float getProtectionMultiplier(DamageArea area) {
             return area.isHead() ? headProtection : bodyProtection;
         }
 
-        public ResourceLocation getIcon(ProtectionArea area) {
+        public ResourceLocation getIcon(DamageArea area) {
             return icons[area.ordinal()];
         }
     }

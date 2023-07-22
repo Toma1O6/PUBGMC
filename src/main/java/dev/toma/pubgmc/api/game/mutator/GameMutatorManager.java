@@ -1,11 +1,7 @@
-package dev.toma.pubgmc.common.games.mutator;
+package dev.toma.pubgmc.api.game.mutator;
 
-import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
-import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameType;
-import dev.toma.pubgmc.api.game.mutator.GameMutator;
-import dev.toma.pubgmc.api.game.mutator.GameMutatorType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,18 +23,6 @@ public final class GameMutatorManager implements RegisterGameMutatorEvent.Regist
             return Optional.empty();
         GameMutator mutator = map.get(type);
         return Optional.ofNullable((M) mutator);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <R, M extends GameMutator> Optional<R> getMutatorGeneric(GameType<?, ?> gameType, GameMutatorType<M> type) {
-        return getMutator(gameType, type).map(val -> {
-            try {
-                return (R) val;
-            } catch (ClassCastException e) {
-                Pubgmc.logger.error("Unable to get generic mutator for type " + type, e);
-                return null;
-            }
-        });
     }
 
     public boolean hasMutator(GameType<?, ?> gameType, GameMutatorType<?> type) {

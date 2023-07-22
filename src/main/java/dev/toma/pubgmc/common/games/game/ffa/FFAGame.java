@@ -2,12 +2,14 @@ package dev.toma.pubgmc.common.games.game.ffa;
 
 import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.event.SpawnPositionSetEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
@@ -293,6 +295,22 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         }
     }
 
+    public static void onEntityKilled(EntityLivingBase victim, DamageSource source) {
+        Entity killSrc = source.getTrueSource();
+        if (!(killSrc instanceof EntityLivingBase))
+            return;
+        GameDataProvider.getGameData(victim.world).ifPresent(data -> {
+            if (data.getCurrentGame().getGameType() == GameTypes.FFA) {
+                EntityLivingBase killer = (EntityLivingBase) killSrc;
+                FFAGame ffaGame = (FFAGame) data.getCurrentGame();
+                FFAGameConfiguration configuration = ffaGame.configuration;
+                if (configuration.healPerKill > 0) {
+                    killer.heal(configuration.healPerKill);
+                }
+            }
+        });
+    }
+
     public static void initAi(EntityAIPlayer player, FFAGame game) {
         player.clearAI();
         EntityAIPlayer.addDefaultTasks(player);
@@ -403,11 +421,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                 EntityPlayer player = (EntityPlayer) entity;
                 if (game.participantManager.isParticipant(player)) {
                     player.inventory.clear();
-                    awardKill(killer);
+                    awardKill(entity, source, killer);
                     deathMessage = true;
                 }
             } else if (game.participantManager.isAiParticipant(entity)) {
-                awardKill(killer);
+                awardKill(entity, source, killer);
                 game.properties.setProperty(entity.getUniqueID(), SharedProperties.GAME_TIMESTAMP, game.gametime);
                 game.participantManager.markAiAsDead(entity.getUniqueID());
                 deathMessage = true;
@@ -478,7 +496,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
             }
         }
 
-        private void awardKill(@Nullable Entity killer) {
+        private void awardKill(EntityLivingBase victim, DamageSource source, @Nullable Entity killer) {
             if (killer == null || game.completed || !game.started)
                 return;
             if (game.participantManager.isEntityParticipant(killer)) {
@@ -487,9 +505,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                     game.verifyGameCompletion(killer.world);
                     GameHelper.requestClientGameDataSynchronization(killer.world);
                 }
-                if (game.configuration.healPerKill > 0 && killer instanceof EntityLivingBase) {
-                    ((EntityLivingBase) killer).heal(game.configuration.healPerKill);
-                }
+                GameMutatorHelper.giveKillReward(victim, source);
             }
         }
     }

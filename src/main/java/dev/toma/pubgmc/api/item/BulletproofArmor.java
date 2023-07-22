@@ -6,15 +6,15 @@ import net.minecraft.util.ResourceLocation;
 
 public interface BulletproofArmor {
 
-    float getDamageMultiplier(ProtectionArea affectedArea, ItemStack stack, EntityLivingBase hitEntity);
+    float getDamageMultiplier(DamageArea affectedArea, ItemStack stack, EntityLivingBase hitEntity);
 
-    ResourceLocation getArmorIcon(ProtectionArea area, float durabilityPercentage);
+    ResourceLocation getArmorIcon(DamageArea area, float durabilityPercentage);
 
-    default float getItemDamageMultiplier(ProtectionArea area, ItemStack stack, EntityLivingBase hitEntity) {
+    default float getItemDamageMultiplier(DamageArea area, ItemStack stack, EntityLivingBase hitEntity) {
         return 0.8F;
     }
 
-    enum ProtectionArea {
+    enum DamageArea {
 
         HEAD,
         OTHER;

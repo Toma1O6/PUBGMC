@@ -5,6 +5,9 @@ import com.google.common.base.Predicates;
 import dev.toma.pubgmc.api.block.IBulletReaction;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.game.mutator.ArmorMutator;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
+import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.common.blocks.BlockLandMine;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
@@ -325,21 +328,22 @@ public class EntityBullet extends Entity {
     private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot) {
         if (isHeadShot) {
             ItemStack head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-            processArmorDamage(head, BulletproofArmor.ProtectionArea.HEAD, entity);
+            processArmorDamage(head, BulletproofArmor.DamageArea.HEAD, entity);
         } else {
             ItemStack body = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            processArmorDamage(body, BulletproofArmor.ProtectionArea.OTHER, entity);
+            processArmorDamage(body, BulletproofArmor.DamageArea.OTHER, entity);
         }
     }
 
-    private void processArmorDamage(ItemStack stack, BulletproofArmor.ProtectionArea area, EntityLivingBase target) {
+    private void processArmorDamage(ItemStack stack, BulletproofArmor.DamageArea area, EntityLivingBase target) {
         if (stack.isEmpty())
             return;
         if (!(stack.getItem() instanceof BulletproofArmor)) {
             return;
         }
         BulletproofArmor armor = (BulletproofArmor) stack.getItem();
-        damage *= armor.getDamageMultiplier(area, stack, target);
+        ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
+        damage *= mutator.getDamageMultiplier(armor, area, stack, target);
     }
 
     private void damageArmor(boolean headshot, float baseDamage, EntityLivingBase target) {
@@ -350,8 +354,9 @@ public class EntityBullet extends Entity {
             return;
         }
         BulletproofArmor armor = (BulletproofArmor) stack.getItem();
-        BulletproofArmor.ProtectionArea area = headshot ? BulletproofArmor.ProtectionArea.HEAD : BulletproofArmor.ProtectionArea.OTHER;
-        float itemDamageMultiplier = armor.getItemDamageMultiplier(area, stack, target);
+        BulletproofArmor.DamageArea area = headshot ? BulletproofArmor.DamageArea.HEAD : BulletproofArmor.DamageArea.OTHER;
+        ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
+        float itemDamageMultiplier = mutator.getDestructionMultiplier(armor, area, stack, target);
         int damageAmount = Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier);
         stack.damageItem(damageAmount, target);
     }

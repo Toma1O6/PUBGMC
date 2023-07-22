@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.NoInvitesManager;
@@ -540,6 +541,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
                 game.properties.setProperty(entity.getUniqueID(), SharedProperties.GAME_TIMESTAMP, game.gameTime);
                 game.aiManager.markDead(entity.getUniqueID());
             }
+            GameMutatorHelper.giveKillReward(entity, source);
             GameHelper.requestClientGameDataSynchronization(entity.world);
         }
 

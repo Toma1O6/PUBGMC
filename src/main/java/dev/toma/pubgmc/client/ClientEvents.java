@@ -625,7 +625,7 @@ public class ClientEvents {
             if (!(stack.getItem() instanceof BulletproofArmor))
                 continue;
             BulletproofArmor armor = (BulletproofArmor) stack.getItem();
-            BulletproofArmor.ProtectionArea protectionArea = slot == EntityEquipmentSlot.HEAD ? BulletproofArmor.ProtectionArea.HEAD : BulletproofArmor.ProtectionArea.OTHER;
+            BulletproofArmor.DamageArea protectionArea = slot == EntityEquipmentSlot.HEAD ? BulletproofArmor.DamageArea.HEAD : BulletproofArmor.DamageArea.OTHER;
             float durability = 1.0F - (stack.getItemDamage() / (float) stack.getMaxDamage());
             ResourceLocation image = armor.getArmorIcon(protectionArea, durability);
             float shadeDiff = 1.0F - shade;

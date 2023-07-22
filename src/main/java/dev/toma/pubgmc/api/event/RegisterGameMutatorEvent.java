@@ -1,9 +1,12 @@
 package dev.toma.pubgmc.api.event;
 
+import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.mutator.GameMutator;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorType;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import java.util.function.Function;
 
 public class RegisterGameMutatorEvent extends Event {
 
