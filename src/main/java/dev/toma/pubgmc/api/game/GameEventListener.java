@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.api.game;
 
 import dev.toma.pubgmc.api.event.ParachuteEvent;
-import dev.toma.pubgmc.api.event.SpawnPositionSetEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -41,6 +40,4 @@ public interface GameEventListener {
      * @param event Instance of {@link ParachuteEvent.Land} event
      */
     default void onEntityWithParachuteLanded(ParachuteEvent.Land event) {}
-
-    default void setSpawnPosition(SpawnPositionSetEvent event) {}
 }

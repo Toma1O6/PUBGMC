@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.event.GameEvent;
-import dev.toma.pubgmc.api.event.SpawnPositionSetEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
@@ -387,6 +386,10 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         World world = player.world;
         if (world.isRemote)
             return;
+        WorldServer server = (WorldServer) world;
+        List<Entity> participants = participantManager.getLoadedParticipants(server);
+        SpawnerPoint point = spawnerSelector.getPoint(world, participants);
+        point.teleportOn(player);
         properties.setProperty(player.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
         if (loadoutManager.hasSelectedLoadout(player.getUniqueID())) {
             loadoutManager.applyLoadout(player);
@@ -466,18 +469,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                     GameHelper.moveToLobby(player);
                 }
             }
-        }
-
-        @Override
-        public void setSpawnPosition(SpawnPositionSetEvent event) {
-            World world = event.getWorld();
-            if (world.isRemote)
-                return;
-            WorldServer server = (WorldServer) world;
-            List<Entity> participants = game.participantManager.getLoadedParticipants(server);
-            SpawnerPoint point = game.spawnerSelector.getPoint(world, participants);
-            BlockPos pos = point.getPointPosition();
-            event.setSpawnPosition(pos);
         }
 
         @Override
