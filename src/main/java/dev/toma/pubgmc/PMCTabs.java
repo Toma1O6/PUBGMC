@@ -31,4 +31,10 @@ public class PMCTabs {
             return new ItemStack(PMCItems.SCOPE4X);
         }
     };
+    public static final CreativeTabs TAB_MAP = new CreativeTabs("tab_map") {
+        @Override
+        public ItemStack getTabIconItem() {
+            return new ItemStack(PMCItems.MAPITEM_SPAWNER);
+        }
+    };
 }

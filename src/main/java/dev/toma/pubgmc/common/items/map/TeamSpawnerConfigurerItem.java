@@ -1,12 +1,18 @@
 package dev.toma.pubgmc.common.items.map;
 
+import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.client.games.screen.TeamSpawnerGui;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.map.TeamSpawnerPoint;
+import dev.toma.pubgmc.common.games.util.TeamType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -29,6 +35,14 @@ public class TeamSpawnerConfigurerItem extends MapPointItem {
             openScreen(map, context.castPoint());
         }
         return EnumActionResult.FAIL;
+    }
+
+    @Override
+    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMap map) {
+        TeamSpawnerPoint point = new TeamSpawnerPoint(pos, TeamType.RED);
+        map.setMapPoint(pos, point);
+        data.sendGameDataToClients();
+        return EnumActionResult.SUCCESS;
     }
 
     @SideOnly(Side.CLIENT)

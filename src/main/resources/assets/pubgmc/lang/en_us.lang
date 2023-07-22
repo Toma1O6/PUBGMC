@@ -113,6 +113,11 @@ item.armor2helmet.name=Level 2 helmet
 item.armor2body.name=Level 2 vest
 item.armor3helmet.name=Level 3 helmet
 item.armor3body.name=Level 3 vest
+item.mapitem_poi_removal.name=Remove Map Point
+item.mapitem_spawner.name=Add Entity Spawner
+item.mapitem_team_spawner.name=Add/Manage Entity Team Spawner
+item.mapitem_capture_zone.name=Add/Manage Capture Zone
+item.mapitem_point_of_interest.name=Add Point Of Interest
 
 key.category.pubgmc=PUBGMC
 pubgmc.key.reload=Reload
@@ -213,6 +218,7 @@ itemGroup.tab_items=PUBGMC: Items
 itemGroup.tab_blocks=PUBGMC: Blocks
 itemGroup.tab_guns=PUBGMC: Guns
 itemGroup.tab_accessories=PUBGMC: Accessories
+itemGroup.tab_map=PUBGMC: Map Accessories
 
 container.airdrop=Airdrop
 container.loot=Loot Spawner

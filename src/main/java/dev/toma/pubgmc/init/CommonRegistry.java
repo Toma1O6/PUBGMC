@@ -30,9 +30,7 @@ import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.guns.*;
 import dev.toma.pubgmc.common.items.heal.*;
-import dev.toma.pubgmc.common.items.map.CaptureZoneConfigurerItem;
-import dev.toma.pubgmc.common.items.map.MapPointRemovalItem;
-import dev.toma.pubgmc.common.items.map.TeamSpawnerConfigurerItem;
+import dev.toma.pubgmc.common.items.map.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGWeapons;
@@ -905,8 +903,10 @@ public class CommonRegistry {
                         .renderer(() -> RenderAWM::new)
                         .build(),
                 new MapPointRemovalItem("mapitem_poi_removal"),
+                new SimpleSpawnerItem("mapitem_spawner"),
                 new TeamSpawnerConfigurerItem("mapitem_team_spawner"),
-                new CaptureZoneConfigurerItem("mapitem_capture_zone")
+                new CaptureZoneConfigurerItem("mapitem_capture_zone"),
+                new PointOfInterestItem("mapitem_point_of_interest")
         );
         ITEM_BLOCKS.forEach(registry::register);
         ITEM_BLOCKS = null;

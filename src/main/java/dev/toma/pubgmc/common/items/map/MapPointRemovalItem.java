@@ -1,8 +1,13 @@
 package dev.toma.pubgmc.common.items.map;
 
+import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class MapPointRemovalItem extends MapPointItem {
 
@@ -19,5 +24,10 @@ public class MapPointRemovalItem extends MapPointItem {
             context.getData().sendGameDataToClients();
         }
         return EnumActionResult.SUCCESS;
+    }
+
+    @Override
+    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMap map) {
+        return EnumActionResult.PASS;
     }
 }

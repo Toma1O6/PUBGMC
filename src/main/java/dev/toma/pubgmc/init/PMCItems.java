@@ -8,6 +8,7 @@ import dev.toma.pubgmc.common.items.equipment.ItemNVGoggles;
 import dev.toma.pubgmc.common.items.guns.FlareGun;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.*;
+import dev.toma.pubgmc.common.items.map.MapPointItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -123,4 +124,5 @@ public final class PMCItems {
     public static final Item MACHETE = null;
     public static final Item CROWBAR = null;
     public static final Item SICKLE = null;
+    public static final MapPointItem MAPITEM_SPAWNER = null;
 }
