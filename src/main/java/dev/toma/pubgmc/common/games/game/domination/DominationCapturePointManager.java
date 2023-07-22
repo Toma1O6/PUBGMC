@@ -38,6 +38,10 @@ public class DominationCapturePointManager {
         this.capturedCallback = capturedCallback;
     }
 
+    public Collection<Tracker> getAllPointData() {
+        return pointMap.values();
+    }
+
     public List<BlockPos> getCaptureablePoints() {
         return ImmutableList.copyOf(pointMap.keySet());
     }

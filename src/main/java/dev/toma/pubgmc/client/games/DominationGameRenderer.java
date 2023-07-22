@@ -8,6 +8,7 @@ import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
+import dev.toma.pubgmc.client.renderer.poi.CaptureZoneRenderer;
 import dev.toma.pubgmc.common.games.game.domination.DominationCapturePointManager;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationTeamManager;
@@ -24,6 +25,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -160,34 +162,66 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
             font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 10 + i * 10, type.getColor());
         }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        renderCaptureOverlay(player, game, resolution);
+        renderPointInfo(player, game, resolution);
     }
 
-    private void renderCaptureOverlay(EntityPlayer player, DominationGame game, ScaledResolution resolution) {
+    private void renderPointInfo(EntityPlayer player, DominationGame game, ScaledResolution resolution) {
         DominationCapturePointManager manager = game.getPointManager();
         DominationCapturePointManager.Tracker tracker = manager.getEntityCaptureData(player);
-        if (tracker == null)
-            return;
-        CaptureZones.CaptureData data = tracker.getCaptureData();
-        int width = 120;
-        int height = 25;
-        float left = (resolution.getScaledWidth() - width) / 2.0F;
-        float top = 5.0F;
-        ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
-        ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0xFF << 24 | data.getBackground());
-        if (data.getCaptureProgress() > 0.0F) {
-            float right = left + (width - 2) * data.getCaptureProgress();
-            ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0xFF << 24 | data.getForeground());
-        }
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-        StringBuilder text = new StringBuilder();
-        String label = tracker.getPoint().getLabel();
-        if (label != null) {
-            text.append(label.toUpperCase()).append(": ");
+        if (tracker == null) {
+            int backgroundWidth = getPointOverlayWidth(manager, font);
+            float left = (resolution.getScaledWidth() - backgroundWidth) / 2f;
+            float top = 0.0F;
+            int offset = 5;
+            List<DominationCapturePointManager.Tracker> list = new ArrayList<>(manager.getAllPointData());
+            list.sort(Comparator.comparing(tr -> {
+                String label = tr.getPoint().getLabel();
+                return label != null ? label : "";
+            }));
+            for (DominationCapturePointManager.Tracker poiTracker : list) {
+                String label = poiTracker.getPoint().getLabel();
+                if (label != null && !label.isEmpty()) {
+                    String text = label.toUpperCase();
+                    int width = font.getStringWidth(text) + 2;
+                    CaptureZoneRenderer.drawPointLabel(poiTracker.getCaptureData(), font, text, left + offset, top + 4F, left + offset + width, top + 14F, 1.0F);
+                    offset += width + 5;
+                }
+            }
+        } else {
+            CaptureZones.CaptureData data = tracker.getCaptureData();
+            int width = 120;
+            int height = 25;
+            float left = (resolution.getScaledWidth() - width) / 2.0F;
+            float top = 5.0F;
+            ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
+            ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0xFF << 24 | data.getBackground());
+            if (data.getCaptureProgress() > 0.0F) {
+                float right = left + (width - 2) * data.getCaptureProgress();
+                ImageUtil.drawShape(left + 2, top + height - 7, right, top + height - 2, 0xFF << 24 | data.getForeground());
+            }
+            StringBuilder text = new StringBuilder();
+            String label = tracker.getPoint().getLabel();
+            if (label != null) {
+                text.append(label.toUpperCase()).append(": ");
+            }
+            text.append(data.getStatus().getTitle().getFormattedText());
+            font.drawStringWithShadow(TextFormatting.UNDERLINE + text.toString(), left + 5, top + 5, 0xFFFFFF);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
-        text.append(data.getStatus().getTitle().getFormattedText());
-        font.drawStringWithShadow(TextFormatting.UNDERLINE + text.toString(), left + 5, top + 5, 0xFFFFFF);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    private int getPointOverlayWidth(DominationCapturePointManager manager, FontRenderer font) {
+        int total = 0;
+        int count = 0;
+        for (DominationCapturePointManager.Tracker tracker : manager.getAllPointData()) {
+            String label = tracker.getPoint().getLabel();
+            if (label != null && !label.isEmpty()) {
+                total += font.getStringWidth(label.toUpperCase());
+                ++count;
+            }
+        }
+        return 5 + total + count * 5;
     }
 
     private boolean isFromTeam(UUID uuid, DominationGame game, TeamType type) {

@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.Backpack;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
@@ -50,6 +51,7 @@ public class LayerBackpack<E extends EntityLivingBase> implements LayerRenderer<
         }
         renderer.bindTexture(renderData.getTexture());
         renderData.getModel().render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        GlStateManager.color(1f, 1f, 1f);
     }
 
     @Override

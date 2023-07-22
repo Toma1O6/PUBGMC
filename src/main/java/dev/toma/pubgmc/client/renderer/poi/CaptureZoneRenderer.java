@@ -78,45 +78,52 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
             }
             float factor = (float) (distance * 0.00001F + 0.05F);
             renderTowardsViewer(mc, manager, x, y, z, pos.getX() + 0.5, pos.getY() + 5.0 + point.getRightScale().y, pos.getZ() + 0.5, factor, () -> {
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder builder = tessellator.getBuffer();
-                float progress = captureData.getCaptureProgress();
-                boolean capturing = progress > 0.0F;
                 int width = font.getStringWidth(label);
-                GlStateManager.disableTexture2D();
-                builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-                builder.pos(-width - 1, -4, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
-                builder.pos(-width - 1, 11, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
-                builder.pos(width + 1, 11, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
-                builder.pos(width + 1, -4, 0).color(0.0F, 0.0F, 0.0F, 0.7F).endVertex();
-                float[] bg = ImageUtil.decomposeRGB(captureData.getBackground());
-                builder.pos(-width, -3, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
-                builder.pos(-width, 10, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
-                builder.pos(width, 10, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
-                builder.pos(width, -3, 0).color(bg[0], bg[1], bg[2], 0.7F).endVertex();
-                int textColor = 0xFFFFFF;
-                if (capturing) {
-                    float[] fg = ImageUtil.decomposeRGB(captureData.getForeground());
-                    float min = -3.0F + 13.0F * (1.0F - progress);
-                    float max = 10.0F;
-                    builder.pos(-width, min, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
-                    builder.pos(-width, max, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
-                    builder.pos(width, max, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
-                    builder.pos(width, min, 0).color(fg[0], fg[1], fg[2], 0.7F).endVertex();
-
-                    long time = System.currentTimeMillis();
-                    float partial = (time % 1000L) / 1000.0F;
-                    float f = partial <= 0.5F ? partial / 0.5F : 1.0F - (partial - 0.5F) / 0.5F;
-                    float eased = f < 0.5F ? 2 * f * f : 1 - (float) Math.pow(-2 * f + 2, 2) / 2;
-                    int blue = (int) (255 * eased);
-                    textColor = 0xFFFF << 8 | blue;
-                }
-                tessellator.draw();
-                GlStateManager.enableTexture2D();
-                font.drawStringWithShadow(label, -width / 2f, 0, textColor);
+                drawPointLabel(captureData, font, label, -width, -3, width, 10, 0.7F);
                 GlStateManager.enableDepth();
                 GlStateManager.depthMask(true);
             });
         }
+    }
+
+    public static void drawPointLabel(CaptureZones.CaptureData data, FontRenderer font, String label, float x1, float y1, float x2, float y2, float opacity) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+        float progress = data.getCaptureProgress();
+        boolean capturing = progress > 0.0F;
+        GlStateManager.disableTexture2D();
+        builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        builder.pos(x1 - 1, y1 - 1, 0).color(0.0F, 0.0F, 0.0F, opacity).endVertex();
+        builder.pos(x1 - 1, y2 + 1, 0).color(0.0F, 0.0F, 0.0F, opacity).endVertex();
+        builder.pos(x2 + 1, y2 + 1, 0).color(0.0F, 0.0F, 0.0F, opacity).endVertex();
+        builder.pos(x2 + 1, y1 - 1, 0).color(0.0F, 0.0F, 0.0F, opacity).endVertex();
+        float[] bg = ImageUtil.decomposeRGB(data.getBackground());
+        builder.pos(x1, y1, 0).color(bg[0], bg[1], bg[2], opacity).endVertex();
+        builder.pos(x1, y2, 0).color(bg[0], bg[1], bg[2], opacity).endVertex();
+        builder.pos(x2, y2, 0).color(bg[0], bg[1], bg[2], opacity).endVertex();
+        builder.pos(x2, y1, 0).color(bg[0], bg[1], bg[2], opacity).endVertex();
+        int textColor = 0xFFFFFF;
+        if (capturing) {
+            float[] fg = ImageUtil.decomposeRGB(data.getForeground());
+            float diff = Math.abs(y1 - y2);
+            float min = y1 + diff * (1.0F - progress);
+            builder.pos(x1, min, 0).color(fg[0], fg[1], fg[2], opacity).endVertex();
+            builder.pos(x1, y2, 0).color(fg[0], fg[1], fg[2], opacity).endVertex();
+            builder.pos(x2, y2, 0).color(fg[0], fg[1], fg[2], opacity).endVertex();
+            builder.pos(x2, min, 0).color(fg[0], fg[1], fg[2], opacity).endVertex();
+
+            long time = System.currentTimeMillis();
+            float partial = (time % 1000L) / 1000.0F;
+            float f = partial <= 0.5F ? partial / 0.5F : 1.0F - (partial - 0.5F) / 0.5F;
+            float eased = f < 0.5F ? 2 * f * f : 1 - (float) Math.pow(-2 * f + 2, 2) / 2;
+            int blue = (int) (255 * eased);
+            textColor = 0xFFFF << 8 | blue;
+        }
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        float w = x2 - x1;
+        float h = y2 - y1;
+        font.drawStringWithShadow(label, x1 + (w - font.getStringWidth(label)) / 2.0F, y1 + (h - font.FONT_HEIGHT) / 2f + 1, textColor);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.client.model.AbstractNightVisionModel;
 import dev.toma.pubgmc.api.inventory.SpecialInventoryProvider;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
@@ -54,6 +55,7 @@ public class LayerNightVision<T extends EntityLivingBase> implements LayerRender
         model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTicks);
         model.setupRotations(entity, isNightVisionActive.test((T) entity));
         model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        GlStateManager.color(1f, 1f, 1f);
     }
 
     @Override
