@@ -194,7 +194,7 @@ public class ClientEvents {
             int top = height - 49;
 
             int color;
-            int boostLevel = data.getBoostStats().getLevel();
+            int boostLevel = data.getBoostStats().getBoostLevel();
             if (boostLevel >= 10) {
                 color = 14651904;
             } else {
@@ -316,7 +316,7 @@ public class ClientEvents {
                 ReloadInfo reloadInfo = data.getReloadInfo();
                 if (data.getAimInfo().isAiming()) this.setAiming(data, false);
                 if (reloadInfo.isReloading()) {
-                    reloadInfo.interrupt(data);
+                    reloadInfo.interrupt();
                     PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
                 }
                 PacketHandler.sendToServer(new PacketProne(data.isProne()));
@@ -617,7 +617,7 @@ public class ClientEvents {
             int topPos = top + overlayPos.getY();
             float color = 0.75F;
             ImageUtil.drawShape(leftPos, topPos, leftPos + barWidth, topPos + 3, color, color, color, 1.0F);
-            int boost = stats.getLevel();
+            int boost = stats.getBoostLevel();
             if (boost > 0) {
                 double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
                 ImageUtil.drawShape(leftPos, topPos, leftPos + (int) sizeX, topPos + 3, 1.0F, 0.8F, 0.0F, 1.0F);

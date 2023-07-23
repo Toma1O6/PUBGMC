@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.capability.AimInfo;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.capability.ReloadInfo;
+import dev.toma.pubgmc.common.capability.PlayerAimInfo;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
@@ -57,7 +58,7 @@ public class SPacketSetProperty implements IMessage {
         AIM((player, aBoolean) -> {
             IPlayerData data = PlayerDataProvider.get(player);
             AimInfo info = data.getAimInfo();
-            float speed = AimInfo.STOP_AIMING_SPEED;
+            float speed = PlayerAimInfo.STOP_AIMING_SPEED;
             if (aBoolean) {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (stack.getItem() instanceof GunBase) {
@@ -85,7 +86,7 @@ public class SPacketSetProperty implements IMessage {
                     }
                     player.world.playSound(null, player.posX, player.posY + 1, player.posZ, event, SoundCategory.MASTER, 1.0F, 1.0F);
                 } else {
-                    reloadInfo.interrupt(data);
+                    reloadInfo.interrupt();
                 }
             }
         }),

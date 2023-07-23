@@ -1,72 +1,49 @@
 package dev.toma.pubgmc.api.capability;
 
-import dev.toma.pubgmc.DevUtil;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.INBTSerializable;
+/**
+ * Manages boost values of entity
+ *
+ * @author Toma
+ * @since 1.9.0
+ */
+public interface BoostStats {
 
-public class BoostStats implements INBTSerializable<NBTTagCompound> {
+    /**
+     * Generic tick method
+     */
+    void onTick();
 
-    final IPlayerData data;
-    int level;
-    float saturation;
+    /**
+     * Adds specified amount of boost level to this entity
+     * @param amount Amount to be added
+     */
+    void add(int amount);
 
-    public BoostStats(IPlayerData data) {
-        this.data = data;
-    }
+    /**
+     * @return Current boost level
+     */
+    int getBoostLevel();
 
-    public void onTick(EntityPlayer player) {
-        World world = player.world;
-        if (!world.isRemote && level > 10) {
-            player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 20, 0, false, false));
-        }
-        if ((saturation = Math.max(0.0F, saturation - 0.002F)) <= 0.0F && level > 0) {
-            if (!world.isRemote) {
-                player.heal(level > 10 ? 2.0F : 1.0F);
-                --level;
-                saturation = 1.0F;
-                data.sync();
-            }
-        }
-    }
+    /**
+     * Sets boost level to provided value
+     * @param level Boost level to set
+     */
+    void setBoostLevel(int level);
 
-    public void add(int level) {
-        this.level = DevUtil.wrap(this.level + level, 0, 20);
-    }
+    /**
+     * @return Current boost level saturation
+     */
+    float getSaturation();
 
-    public int getLevel() {
-        return level;
-    }
+    /**
+     * Resets boost values to zero values
+     */
+    void reset();
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public float getSaturation() {
-        return saturation;
-    }
-
-    public boolean isEmpty() {
-        return level == 0 && saturation == 0.0F;
-    }
-
-    public void reset() {
-        this.level = 0;
-        this.saturation = 0.0F;
-    }
-
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("level", level);
-        nbt.setFloat("saturation", saturation);
-        return nbt;
-    }
-
-    public void deserializeNBT(NBTTagCompound nbt) {
-        level = nbt.getInteger("level");
-        saturation = nbt.getFloat("saturation");
+    /**
+     * @return Whether all boost values are equal to zero
+     */
+    default boolean isEmpty() {
+        return getBoostLevel() == 0 && getSaturation() == 0.0F;
     }
 }

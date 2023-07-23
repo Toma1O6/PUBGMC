@@ -25,9 +25,9 @@ public class PlayerData implements IPlayerData {
 
     private final InventoryBasic inventory;
     private final EntityPlayer player;
-    private final BoostStats boostStats;
-    private final AimInfo aimInfo;
-    private final ReloadInfo reloadInfo;
+    private final PlayerBoostStats boostStats;
+    private final PlayerAimInfo aimInfo;
+    private final PlayerReloadInfo reloadInfo;
     private final PlayerDebuffs debuffs;
     private boolean isProne;
     private boolean areNightVisionGogglesActive;
@@ -38,18 +38,18 @@ public class PlayerData implements IPlayerData {
 
     public PlayerData(EntityPlayer owner) {
         this.player = owner;
-        this.boostStats = new BoostStats(this);
-        this.aimInfo = new AimInfo(this);
-        this.reloadInfo = new ReloadInfo();
+        this.boostStats = new PlayerBoostStats(this);
+        this.aimInfo = new PlayerAimInfo(this);
+        this.reloadInfo = new PlayerReloadInfo(this);
         this.inventory = new InventoryBasic("pubgmc.equipment_inventory", false, SpecialEquipmentSlot.values().length);
         this.debuffs = new PlayerDebuffs();
     }
 
     @Override
     public void tick() {
-        boostStats.onTick(player);
+        boostStats.onTick();
         aimInfo.onTick();
-        reloadInfo.tick(this);
+        reloadInfo.onTick();
         debuffs.tick();
     }
 
