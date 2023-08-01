@@ -21,9 +21,6 @@ public abstract class ItemHealing extends PMCItem implements HealingItem, Consum
     }
 
     @Override
-    public abstract int getMaxItemUseDuration(ItemStack stack);
-
-    @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving) {
         if (canHeal(entityLiving, stack)) {
             heal(entityLiving, stack, worldIn);
