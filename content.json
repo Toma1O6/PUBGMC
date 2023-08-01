@@ -10,6 +10,10 @@
     ],
     "map": [],
     "mainMenuText": [
+        "Patch 1.9.1",
+        "- Resolved issues with crashing when AI started healing",
+        "",
+        "",
         "Update 1.9.0 - Game system",
         "- Reworked game system",
         "- Currently there are 3 available game types: BattleRoyale, Deathmatch and Domination",
