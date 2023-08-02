@@ -63,7 +63,7 @@ public class TeamAIManager {
                 despawnedEntities.add(memberId);
                 allowedAiSpawnCount++;
                 iterator.remove();
-                if (team.getTeamId().equals(memberId)) {
+                if (team.isTeamLeader(memberId)) {
                     // unloaded entity was team leader, new team needs to be created and original members transferred
                     teamManager.disbandAndTransferMembers(team);
                     continue;
