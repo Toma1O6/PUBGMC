@@ -10,6 +10,11 @@
     ],
     "map": [],
     "mainMenuText": [
+        "Patch 1.9.2",
+        "- Fixed possible error when synchronizing game to client",
+        "- Fixed issues with healing items",
+        "",
+        "",
         "Patch 1.9.1",
         "- Resolved issues with crashing when AI started healing",
         "",
