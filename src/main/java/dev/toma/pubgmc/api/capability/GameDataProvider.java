@@ -23,8 +23,8 @@ public class GameDataProvider implements ICapabilitySerializable<NBTTagCompound>
         this.instance = new GameDataImpl(world);
     }
 
-    public static Optional<GameData> getGameData(World world) {
-        return Optional.ofNullable(world.getCapability(GAME_DATA, null));
+    public static Optional<GameData> getGameData(@Nullable World world) {
+        return world != null ? Optional.ofNullable(world.getCapability(GAME_DATA, null)) : Optional.empty();
     }
 
     @Override
