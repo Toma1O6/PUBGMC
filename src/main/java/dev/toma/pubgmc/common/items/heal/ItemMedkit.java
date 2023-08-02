@@ -16,7 +16,7 @@ public class ItemMedkit extends ItemHealing {
     }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack stack) {
+    public int getUsageTime(ItemStack stack) {
         return 160;
     }
 

@@ -37,4 +37,9 @@ public abstract class ItemHealing extends PMCItem implements HealingItem, Consum
         }
         return ActionResult.newResult(EnumActionResult.FAIL, stack);
     }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack) {
+        return getUsageTime(stack);
+    }
 }

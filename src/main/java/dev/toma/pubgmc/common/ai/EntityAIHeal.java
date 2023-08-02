@@ -63,7 +63,7 @@ public class EntityAIHeal<T extends EntityLiving> extends EntityAIBase {
             }
             oldMainhandItem = mainHand.copy();
             entity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack.copy());
-            timeRemaining = healingItem.getMaxItemUseDuration(stack);
+            timeRemaining = healingItem.getUsageTime(stack);
             stack.setCount(0);
         }
     }

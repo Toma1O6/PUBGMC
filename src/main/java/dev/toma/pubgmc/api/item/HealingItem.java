@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 public interface HealingItem {
 
-    int getMaxItemUseDuration(ItemStack stack);
+    int getUsageTime(ItemStack stack);
 
     boolean canHeal(EntityLivingBase entity, ItemStack stack);
 
