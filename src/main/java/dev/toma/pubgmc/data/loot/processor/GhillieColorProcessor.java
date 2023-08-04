@@ -6,12 +6,13 @@ import dev.toma.pubgmc.api.game.loot.LootProcessorSerializer;
 import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import dev.toma.pubgmc.common.items.equipment.ItemGhillie;
 import dev.toma.pubgmc.data.loot.LootGenerationContext;
-import net.minecraft.init.Biomes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,10 +38,12 @@ public class GhillieColorProcessor implements LootProcessor {
             Biome biome = world.getBiome(pos);
             if (biome.isSnowyBiome()) {
                 color = 0xE8F2F2;
-            } else if (biome == Biomes.DESERT || biome == Biomes.DESERT_HILLS || biome == Biomes.MUTATED_DESERT) {
+            } else if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.SANDY)) {
                 color = 0xE2D6AA;
             } else {
-                color = biome.getFoliageColorAtPos(pos);
+                float temperature = MathHelper.clamp(biome.getTemperature(pos), 0.0F, 1.0F);
+                float humidity = MathHelper.clamp(biome.getRainfall(), 0.0F, 1.0F);
+                color = FoliageColor.getColor(temperature, humidity);
             }
         } else {
             Random random = world.rand;
@@ -62,6 +65,61 @@ public class GhillieColorProcessor implements LootProcessor {
 
         BIOME,
         COLOR_LIST
+    }
+
+    public static final class FoliageColor {
+
+        static final int[] foliage = new int[65536];
+
+        static int getColor(float temperature, float humidity) {
+            humidity = humidity * temperature;
+            int i = (int)((1.0D - temperature) * 255.0D);
+            int j = (int)((1.0D - humidity) * 255.0D);
+            return foliage[j << 8 | i];
+        }
+
+        static {
+            for (int y = 0; y < 256; y++) {
+                for (int x = 0; x < 256; x++) {
+                    boolean warm = x < y + 1;
+                    if (warm) {
+                        float f0 = y / 255.0F;
+                        float f1 = x  / (y + 1.0F);
+                        float f2 = f0 * f1;
+                        int result = lerp(f0, f1, f2, 0x1ABF00, 0xAEA42A, 0x60A17B);
+                        foliage[y << 8 | x] = result;
+                    } else {
+                        float f0 = y / 255.0F;
+                        float f1 = y  / (float) x;
+                        float f2 = f0 * f1;
+                        int result = lerp(f0, f1, f2, 0x6B9793, 0x749A3E, 0x1CA449);
+                        foliage[y << 8 | x] = result;
+                    }
+                }
+            }
+        }
+
+        static int lerp(float f0, float f1, float f2, int c0, int c1, int c2) {
+            int r0 = (c0 >> 16) & 255;
+            int g0 = (c0 >>  8) & 255;
+            int b0 = c0 & 255;
+            int r1 = (c1 >> 16) & 255;
+            int g1 = (c1 >>  8) & 255;
+            int b1 = c1 & 255;
+            int r2 = (c2 >> 16) & 255;
+            int g2 = (c2 >>  8) & 255;
+            int b2 = c2 & 255;
+            int red = mix(mix(r0, r1, f0), mix(r1, r2, f1), f2);
+            int green = mix(mix(g0, g1, f0), mix(g1, g2, f1), f2);
+            int blue = mix(mix(b0, b1, f0), mix(b1, b2, f1), f2);
+            return red << 16 | green << 8 | blue;
+        }
+
+        public static int mix(int a, int b, float f) {
+            int m = (int) ((1.0F - f) * a);
+            int n = (int) (f * b);
+            return m + n;
+        }
     }
 
     public static final class Serializer implements LootProcessorSerializer<GhillieColorProcessor> {
