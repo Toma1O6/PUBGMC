@@ -10,6 +10,12 @@
     ],
     "map": [],
     "mainMenuText": [
+        "Patch 1.9.3",
+        "- Fixed bug with incorrect resolution of team leader causing crash in some cases",
+        "- Fixed server side crashing when applying biome based color scheme for ghillie suit",
+        "- Bot names are now rendered only within games",
+        "",
+        "",
         "Patch 1.9.2",
         "- Fixed possible error when synchronizing game to client",
         "- Fixed issues with healing items",
