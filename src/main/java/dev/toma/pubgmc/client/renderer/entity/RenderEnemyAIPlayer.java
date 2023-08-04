@@ -6,6 +6,7 @@ import dev.toma.pubgmc.client.layers.LayerGhillie;
 import dev.toma.pubgmc.client.layers.LayerNightVision;
 import dev.toma.pubgmc.client.models.ModelAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.RenderBiped;
@@ -40,6 +41,9 @@ public class RenderEnemyAIPlayer extends RenderBiped<EntityAIPlayer> {
 
     @Override
     protected boolean canRenderName(EntityAIPlayer entity) {
+        if (entity.getCurrentGameId().equals(GameHelper.DEFAULT_UUID)) {
+            return false;
+        }
         EntityPlayerSP entityplayersp = Minecraft.getMinecraft().player;
         boolean flag = !entity.isInvisibleToPlayer(entityplayersp);
         boolean basePredicate = Minecraft.isGuiEnabled() && entity != renderManager.renderViewEntity && flag && !entity.isBeingRidden();

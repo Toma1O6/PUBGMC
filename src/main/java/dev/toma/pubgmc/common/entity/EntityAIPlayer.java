@@ -184,6 +184,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         NBTTagCompound nbtTag = new NBTTagCompound();
         nbtTag.setTag("inv", SerializationHelper.inventoryToNbt(specialEquipment));
         ByteBufUtils.writeTag(buffer, nbtTag);
+        ByteBufUtils.writeUTF8String(buffer, gameId.toString());
     }
 
     @Override
@@ -191,6 +192,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         variant = additionalData.readInt();
         NBTTagCompound nbtTag = ByteBufUtils.readTag(additionalData);
         SerializationHelper.inventoryFromNbt(specialEquipment, nbtTag.getTagList("inv", Constants.NBT.TAG_COMPOUND));
+        gameId = UUID.fromString(ByteBufUtils.readUTF8String(additionalData));
     }
 
     public void clearInventory() {
