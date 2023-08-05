@@ -416,6 +416,8 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
 
         @Override
         public void onEntityDeath(LivingDeathEvent event) {
+            if (event.isCanceled())
+                return;
             EntityLivingBase entity = event.getEntityLiving();
             DamageSource source = event.getSource();
             Entity killer = source.getTrueSource();

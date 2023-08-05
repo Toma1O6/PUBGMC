@@ -477,6 +477,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
         @Override
         public void onEntityDeath(LivingDeathEvent event) {
+            if (event.isCanceled())
+                return;
             EntityLivingBase entity = event.getEntityLiving();
             DamageSource source = event.getSource();
             World world = entity.world;
