@@ -212,7 +212,7 @@ public class GuiGunConfig extends GuiWidgets {
             for (Map.Entry<ItemAttachment, IRenderConfig> entry : map.entrySet()) {
                 ItemAttachment attachment = entry.getKey();
                 IRenderConfig config = entry.getValue();
-                String itemName = "PMCItems." + attachment.getRegistryName().getResourcePath().toUpperCase();
+                String itemName = "PMCItems." + attachment.getRegistryName().getResourcePath().toUpperCase(Locale.ROOT);
                 if (config instanceof MutableRenderConfig) {
                     MutableRenderConfig mcfg = (MutableRenderConfig) config;
                     String configDef = mcfg.toString();

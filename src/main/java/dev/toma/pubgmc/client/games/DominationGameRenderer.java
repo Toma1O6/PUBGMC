@@ -25,10 +25,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DominationGameRenderer implements GameRenderer<DominationGame> {
 
@@ -182,7 +179,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
             for (DominationCapturePointManager.Tracker poiTracker : list) {
                 String label = poiTracker.getPoint().getLabel();
                 if (label != null && !label.isEmpty()) {
-                    String text = label.toUpperCase();
+                    String text = label.toUpperCase(Locale.ROOT);
                     int width = font.getStringWidth(text) + 2;
                     CaptureZoneRenderer.drawPointLabel(poiTracker.getCaptureData(), font, text, left + offset, top + 4F, left + offset + width, top + 14F, 1.0F);
                     offset += width + 5;
@@ -203,7 +200,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
             StringBuilder text = new StringBuilder();
             String label = tracker.getPoint().getLabel();
             if (label != null) {
-                text.append(label.toUpperCase()).append(": ");
+                text.append(label.toUpperCase(Locale.ROOT)).append(": ");
             }
             text.append(data.getStatus().getTitle().getFormattedText());
             font.drawStringWithShadow(TextFormatting.UNDERLINE + text.toString(), left + 5, top + 5, 0xFFFFFF);
@@ -217,7 +214,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         for (DominationCapturePointManager.Tracker tracker : manager.getAllPointData()) {
             String label = tracker.getPoint().getLabel();
             if (label != null && !label.isEmpty()) {
-                total += font.getStringWidth(label.toUpperCase());
+                total += font.getStringWidth(label.toUpperCase(Locale.ROOT));
                 ++count;
             }
         }

@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import java.util.Locale;
+
 public final class AttachmentType<I extends ItemAttachment> {
 
     public static AttachmentType<?>[] allTypes = new AttachmentType[0];
@@ -17,7 +19,7 @@ public final class AttachmentType<I extends ItemAttachment> {
     final int y;
 
     public AttachmentType(String name, int slotX, int slotY) {
-        this(name, name.toLowerCase(), slotX, slotY);
+        this(name, name.toLowerCase(Locale.ROOT), slotX, slotY);
     }
 
     public AttachmentType(String name, String slotTexture, int slotX, int slotY) {

@@ -16,6 +16,7 @@ import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
 
@@ -36,7 +37,7 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
         builder.setTranslation(0, 0, 0);
         endColorState();
 
-        String label = point.getLabel() != null ? point.getLabel().toUpperCase() : null;
+        String label = point.getLabel() != null ? point.getLabel().toUpperCase(Locale.ROOT) : null;
         if (label != null) {
             Minecraft mc = Minecraft.getMinecraft();
             RenderManager manager = mc.getRenderManager();
@@ -66,7 +67,7 @@ public class CaptureZoneRenderer extends SimplePoiRenderer<CaptureZonePoint> {
         CaptureZones.CaptureData captureData = ((CaptureZones) game).getCapturePointData(pos);
         if (captureData == null)
             return;
-        String label = point.getLabel() != null ? point.getLabel().toUpperCase() : null;
+        String label = point.getLabel() != null ? point.getLabel().toUpperCase(Locale.ROOT) : null;
         if (label != null) {
             Minecraft mc = Minecraft.getMinecraft();
             FontRenderer font = mc.fontRenderer;

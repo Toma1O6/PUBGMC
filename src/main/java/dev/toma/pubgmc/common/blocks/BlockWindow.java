@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Random;
 
 public class BlockWindow extends PMCBlock {
@@ -282,7 +283,7 @@ public class BlockWindow extends PMCBlock {
 
         @Override
         public String getName() {
-            return this.name().toLowerCase();
+            return this.name().toLowerCase(Locale.ROOT);
         }
 
         public static EnumWindowAxis getAxisFromFacing(EnumFacing facing) {
@@ -306,7 +307,7 @@ public class BlockWindow extends PMCBlock {
 
         @Override
         public String getName() {
-            return this.name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
         public boolean isLower() {

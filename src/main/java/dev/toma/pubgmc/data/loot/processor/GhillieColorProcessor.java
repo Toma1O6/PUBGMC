@@ -16,6 +16,7 @@ import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -126,7 +127,7 @@ public class GhillieColorProcessor implements LootProcessor {
 
         @Override
         public GhillieColorProcessor parse(JsonObject object) throws JsonParseException {
-            String type = JsonUtils.getString(object, "colorProviderType").toUpperCase();
+            String type = JsonUtils.getString(object, "colorProviderType").toUpperCase(Locale.ROOT);
             ColorProvider colorProvider;
             try {
                 colorProvider = ColorProvider.valueOf(type);

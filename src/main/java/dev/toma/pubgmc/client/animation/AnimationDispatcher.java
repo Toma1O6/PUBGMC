@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Locale;
+
 public class AnimationDispatcher {
 
     public static void dispatchRecoilAnimationDefault(AnimationProcessor processor, AnimationType<TickableAnimation> type, EntityPlayer player) {
@@ -79,7 +81,7 @@ public class AnimationDispatcher {
         if (stack.getItem() instanceof GunBase) {
             GunBase gun = (GunBase) stack.getItem();
             GunBase.GunType gunType = gun.getGunType();
-            ResourceLocation key = Pubgmc.getResource("equip_" + gunType.name().toLowerCase());
+            ResourceLocation key = Pubgmc.getResource("equip_" + gunType.name().toLowerCase(Locale.ROOT));
             AnimationSpec spec = ClientProxy.getAnimationLoader().getAnimationSpecification(key);
             processor.play(type, new EquipAnimation(spec));
         }

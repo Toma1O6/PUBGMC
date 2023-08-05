@@ -59,6 +59,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public class ClientProxy extends Proxy {
@@ -72,7 +73,7 @@ public class ClientProxy extends Proxy {
         registerEntityRenderers();
         Pubgmc.getContentManager().initialize();
         for (GunBase.GunType type : GunBase.GunType.values()) {
-            ResourceLocation location = Pubgmc.getResource("equip_" + type.name().toLowerCase());
+            ResourceLocation location = Pubgmc.getResource("equip_" + type.name().toLowerCase(Locale.ROOT));
             animationLoader.registerEntry(location);
         }
     }

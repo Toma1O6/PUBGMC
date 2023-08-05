@@ -4,6 +4,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.Locale;
+
 public enum TeamType {
 
     RED(TextFormatting.RED, 0xCC0000),
@@ -13,7 +15,7 @@ public enum TeamType {
     private final int color;
 
     TeamType(TextFormatting formatting, int color) {
-        this.title = new TextComponentTranslation("label.pubgmc.team." + name().toLowerCase());
+        this.title = new TextComponentTranslation("label.pubgmc.team." + name().toLowerCase(Locale.ROOT));
         this.title.getStyle().setColor(formatting);
         this.color = color;
     }

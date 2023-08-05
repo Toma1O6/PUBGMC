@@ -13,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import java.util.Locale;
+
 public final class ItemBackpack extends PMCItem implements Backpack {
 
     private static final ResourceLocation[] ICONS = {
@@ -62,7 +64,7 @@ public final class ItemBackpack extends PMCItem implements Backpack {
         private final ResourceLocation texture;
 
         Variant() {
-            this.texture = Pubgmc.getResource("textures/models/backpack_" + name().toLowerCase() + ".png");
+            this.texture = Pubgmc.getResource("textures/models/backpack_" + name().toLowerCase(Locale.ROOT) + ".png");
         }
 
         public ResourceLocation getTexture() {
