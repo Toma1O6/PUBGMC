@@ -177,7 +177,7 @@ public final class GameHelper {
 
     public static void resetPlayerData(EntityPlayer player) {
         player.inventory.clear();
-        Collection<PotionEffect> effects = player.getActivePotionEffects();
+        Collection<PotionEffect> effects = new ArrayList<>(player.getActivePotionEffects());
         for (PotionEffect effect : effects) {
             player.removeActivePotionEffect(effect.getPotion());
         }
