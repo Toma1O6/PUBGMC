@@ -8,6 +8,7 @@ import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.game.GameConfiguration;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -29,7 +30,7 @@ public final class GameConfigurationManager implements Recreatable {
 
     public static void loadConfigurations(boolean rewriteData) {
         try {
-            DIRECTORY.mkdirs();
+            PUBGMCUtil.createDataDirectory(DIRECTORY);
             Collection<GameType<?, ?>> types = PubgmcRegistries.GAME_TYPES.getValues();
             for (GameType<?, ?> type : types) {
                 if (type == GameTypes.NO_GAME)

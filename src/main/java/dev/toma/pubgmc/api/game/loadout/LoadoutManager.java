@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.Recreatable;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.EntityLivingBase;
 
 import javax.annotation.Nullable;
@@ -39,13 +40,13 @@ public final class LoadoutManager implements Recreatable {
 
     public static void load(boolean rewriteExistingData) {
         File directory = new File("./pubgmc/loadout");
-        directory.mkdirs();
+        PUBGMCUtil.createDataDirectory(directory);
         Map<String, EntityLoadout> loadedValues = new HashMap<>();
         for (Map.Entry<String, EntityLoadout> entry : LOADOUT_MAP.entrySet()) {
             File file = new File(directory, entry.getKey() + ".json");
             File parent = file.getParentFile();
             parent.mkdirs();
-            if (!file.exists()) {
+            if (!file.exists() || rewriteExistingData) {
                 createDefaultLoadoutFile(file, entry.getValue());
             } else {
                 loadLoadoutFile(entry.getKey(), file, entry.getValue(), loadedValues);

@@ -22,6 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -188,5 +189,16 @@ public class PUBGMCUtil {
             }
         }
         return selected;
+    }
+
+    public static void createDataDirectory(File directory) {
+        if (!directory.exists()) {
+            Pubgmc.logger.debug("Data directory is missing, attempting to create");
+            if (!directory.mkdirs()) {
+                Pubgmc.logger.error("Unable to create data directory - " + directory.getPath());
+                return;
+            }
+            Pubgmc.logger.debug("Data directory created - " + directory.getPath());
+        }
     }
 }

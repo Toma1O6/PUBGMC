@@ -5,6 +5,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.event.LootEvent;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -60,9 +61,8 @@ public final class LootManager implements Recreatable {
         return Pubgmc.LOOT_DATA_VERSION;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void loadData() throws IOException {
-        DIRECTORY.mkdirs();
+        PUBGMCUtil.createDataDirectory(DIRECTORY);
         lootConfigurations.clear();
         File[] files = DIRECTORY.listFiles();
         for (File file : files) {

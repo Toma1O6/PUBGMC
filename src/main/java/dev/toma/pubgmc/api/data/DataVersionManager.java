@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.data.DataVersion.CompareResult;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
@@ -27,8 +28,7 @@ public final class DataVersionManager {
 
     public static void load() {
         LoadResult result = new LoadResult();
-        File dir = FILE.getParentFile();
-        dir.mkdirs();
+        PUBGMCUtil.createDataDirectory(FILE.getParentFile());
         try {
             if (!FILE.exists()) {
                 createDefaultVersionsFile();

@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.entity.EntityProvider;
 import dev.toma.pubgmc.api.entity.EntityProviderType;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -61,7 +62,7 @@ public final class EntityProviderManager implements Recreatable {
     }
 
     private void loadData() throws IOException {
-        DIRECTORY.mkdirs();
+        PUBGMCUtil.createDataDirectory(DIRECTORY);
         providers.clear();
         File[] files = DIRECTORY.listFiles();
         for (File file : files) {
