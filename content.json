@@ -10,6 +10,13 @@
     ],
     "map": [],
     "mainMenuText": [
+        "Patch 1.9.4",
+        "- Fixed server side crash when server locale was set to language with non UTF-8 characters",
+        "- Fixed CME error when resetting player data",
+        "- Improved compatibility with other mods",
+        "- Expanded data loading logging",
+        "",
+        "",
         "Patch 1.9.3",
         "- Fixed bug with incorrect resolution of team leader causing crash in some cases",
         "- Fixed server side crashing when applying biome based color scheme for ghillie suit",
