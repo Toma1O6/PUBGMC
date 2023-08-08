@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.map;
 
 import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.common.games.map.PointOfInterestPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
@@ -16,7 +16,7 @@ public class PointOfInterestItem extends MapPointItem {
     }
 
     @Override
-    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMap map) {
+    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMapInstance map) {
         PointOfInterestPoint point = new PointOfInterestPoint(pos);
         map.setMapPoint(pos, point);
         data.sendGameDataToClients();

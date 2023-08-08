@@ -21,7 +21,7 @@ public final class GameMapPointType<P extends GameMapPoint> extends RegistryObje
         this.serializer = serializer;
     }
 
-    public P createPointInstance(BlockPos pos, World world, GameMap map) {
+    public P createPointInstance(BlockPos pos, World world, GameMapInstance map) {
         return serializer.createDefaultInstance(pos, world, map);
     }
 
@@ -40,7 +40,7 @@ public final class GameMapPointType<P extends GameMapPoint> extends RegistryObje
     }
 
     @Nullable
-    public static <P extends GameMapPoint> P deserializePointData(NBTTagCompound nbt) {
+    public static <P extends GameMapPoint> P deserializePointData(NBTTagCompound nbt, GameMapInstance parent) {
         ResourceLocation type = new ResourceLocation(nbt.getString("type"));
         BlockPos position = NBTUtil.getPosFromTag(nbt.getCompoundTag("position"));
         GameMapPointType<P> pointType = PubgmcRegistries.GAME_MAP_POINTS.getUnsafeGenericValue(type);
@@ -48,6 +48,6 @@ public final class GameMapPointType<P extends GameMapPoint> extends RegistryObje
             Pubgmc.logger.error("Unknown point type: " + type);
             return null;
         }
-        return pointType.serializer.deserializePointData(position, nbt.getCompoundTag("poi"));
+        return pointType.serializer.deserializePointData(position, nbt.getCompoundTag("poi"), parent);
     }
 }

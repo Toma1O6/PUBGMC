@@ -35,6 +35,7 @@ public class PacketHandler {
         registerServerPacket(C2S_SelectLoadout.Handler.class, C2S_SelectLoadout.class);
         registerServerPacket(C2S_AdjustTeamSpawner.Handler.class, C2S_AdjustTeamSpawner.class);
         registerServerPacket(C2S_AdjustCaptureZone.Handler.class, C2S_AdjustCaptureZone.class);
+        registerServerPacket(C2S_AdjustPartialPlayZone.Handler.class, C2S_AdjustPartialPlayZone.class);
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);

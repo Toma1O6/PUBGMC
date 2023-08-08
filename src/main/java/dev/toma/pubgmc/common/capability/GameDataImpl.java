@@ -6,7 +6,7 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.network.PacketHandler;
@@ -29,7 +29,7 @@ public class GameDataImpl implements GameData {
     @Nullable
     private GameLobby lobby;
     private String activeMap = "";
-    private final Map<String, GameMap> maps;
+    private final Map<String, GameMapInstance> maps;
 
     public GameDataImpl() {
         this(null);
@@ -82,12 +82,12 @@ public class GameDataImpl implements GameData {
 
     @Nullable
     @Override
-    public GameMap getGameMap(String mapName) {
+    public GameMapInstance getGameMap(String mapName) {
         return maps.get(mapName);
     }
 
     @Override
-    public void registerGameMap(GameMap map) {
+    public void registerGameMap(GameMapInstance map) {
         maps.put(map.getMapName(), map);
     }
 
@@ -97,7 +97,7 @@ public class GameDataImpl implements GameData {
     }
 
     @Override
-    public Map<String, GameMap> getRegisteredGameMaps() {
+    public Map<String, GameMapInstance> getRegisteredGameMaps() {
         return ImmutableMap.copyOf(maps);
     }
 
@@ -141,7 +141,7 @@ public class GameDataImpl implements GameData {
         ResourceLocation gameType = new ResourceLocation(nbt.getString("selectedGameType"));
         GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
-        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"));
+        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), world);
         if (gameInstance == null) {
             gameInstance = NoGame.INSTANCE;
         }
@@ -152,7 +152,7 @@ public class GameDataImpl implements GameData {
         NBTTagList mapsNbt = nbt.getTagList("maps", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < mapsNbt.tagCount(); i++) {
             NBTTagCompound mapData = mapsNbt.getCompoundTagAt(i);
-            GameMap map = GameMap.deserialize(mapData);
+            GameMapInstance map = GameMapInstance.deserialize(mapData, world);
             maps.put(map.getMapName(), map);
         }
         activeMap = nbt.hasKey("activeMap") ? nbt.getString("activeMap") : null;

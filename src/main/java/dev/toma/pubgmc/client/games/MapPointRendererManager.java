@@ -3,7 +3,7 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.client.game.MapPointRenderer;
 import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.item.MapPointItem;
@@ -63,13 +63,13 @@ public final class MapPointRendererManager {
             boolean debugMode = mapPointItem != null && mapPointItem.shouldRenderAllPoints();
             if (game != null && game.isStarted()) {
                 String mapName = gameData.getActiveGameMapName();
-                GameMap map = gameData.getGameMap(mapName);
+                GameMapInstance map = gameData.getGameMap(mapName);
                 if (map == null) {
                     return;
                 }
                 renderPoints(map.getPoints(), debugMode, game, x, y, z, partialTicks);
             } else {
-                for (GameMap map : gameData.getRegisteredGameMaps().values()) {
+                for (GameMapInstance map : gameData.getRegisteredGameMaps().values()) {
                     renderPoints(map.getPoints(), debugMode, game, x, y, z, partialTicks);
                 }
             }

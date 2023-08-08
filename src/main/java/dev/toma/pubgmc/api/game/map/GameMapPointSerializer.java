@@ -8,7 +8,7 @@ public interface GameMapPointSerializer<P extends GameMapPoint> {
 
     NBTTagCompound serializePointData(P point);
 
-    P deserializePointData(BlockPos pointPosition, NBTTagCompound nbt);
+    P deserializePointData(BlockPos pointPosition, NBTTagCompound nbt, GameMapInstance parent);
 
-    P createDefaultInstance(BlockPos pos, World world, GameMap map);
+    P createDefaultInstance(BlockPos pos, World world, GameMapInstance map);
 }

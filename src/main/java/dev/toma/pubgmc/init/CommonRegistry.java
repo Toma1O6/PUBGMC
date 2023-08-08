@@ -906,7 +906,8 @@ public class CommonRegistry {
                 new SimpleSpawnerItem("mapitem_spawner"),
                 new TeamSpawnerConfigurerItem("mapitem_team_spawner"),
                 new CaptureZoneConfigurerItem("mapitem_capture_zone"),
-                new PointOfInterestItem("mapitem_point_of_interest")
+                new PointOfInterestItem("mapitem_point_of_interest"),
+                new SubMapConfigurerItem("mapitem_submap_config")
         );
         ITEM_BLOCKS.forEach(registry::register);
         ITEM_BLOCKS = null;
@@ -970,6 +971,7 @@ public class CommonRegistry {
         event.register(GameMapPoints.POINT_OF_INTEREST);
         event.register(GameMapPoints.CAPTURE_ZONE);
         event.register(GameMapPoints.TEAM_SPAWNER);
+        event.register(GameMapPoints.PARTIAL_PLAY_AREA);
     }
 
     @SubscribeEvent

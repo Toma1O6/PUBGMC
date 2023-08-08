@@ -49,12 +49,12 @@ public abstract class GameMapPoint {
         }
 
         @Override
-        public P deserializePointData(BlockPos pointPosition, NBTTagCompound nbt) {
+        public P deserializePointData(BlockPos pointPosition, NBTTagCompound nbt, GameMapInstance parent) {
             return factory.apply(pointPosition);
         }
 
         @Override
-        public P createDefaultInstance(BlockPos pos, World world, GameMap map) {
+        public P createDefaultInstance(BlockPos pos, World world, GameMapInstance map) {
             return factory.apply(pos);
         }
     }

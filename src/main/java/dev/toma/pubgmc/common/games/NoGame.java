@@ -91,7 +91,7 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
         }
 
         @Override
-        public NoGame deserializeGameData(NBTTagCompound nbt, NoConfiguration configuration) {
+        public NoGame deserializeGameData(NBTTagCompound nbt, NoConfiguration configuration, World world) {
             return (NoGame) INSTANCE;
         }
 

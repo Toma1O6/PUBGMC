@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.ai;
 
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -78,7 +78,7 @@ public class EntityAIVisitMapPoint<P extends GameMapPoint> extends EntityAIBase 
             if (currentMap == null) {
                 return Collections.emptyList();
             }
-            GameMap map = data.getGameMap(currentMap);
+            GameMapInstance map = data.getGameMap(currentMap);
             if (map == null) {
                 return Collections.emptyList();
             }

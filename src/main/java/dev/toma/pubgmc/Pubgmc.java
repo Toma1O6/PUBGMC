@@ -70,7 +70,7 @@ public class Pubgmc {
     public static final String DEPENDENCIES = "required-after:configuration@[1.0.3.1,)";
     public static final int CONTENT_DATA_VERSION = 1;
     public static final DataVersion LOOT_DATA_VERSION = DataVersion.of(1, 0);
-    public static final DataVersion GAME_CONFIGS_VERSION = DataVersion.of(1, 0);
+    public static final DataVersion GAME_CONFIGS_VERSION = DataVersion.of(1, 1);
     public static final DataVersion LOADOUT_DATA_VERSION = DataVersion.of(1, 0);
     public static final DataVersion ENTITY_PROVIDER_VERSION = DataVersion.of(1, 0);
 

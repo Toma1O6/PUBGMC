@@ -213,10 +213,10 @@ public class DominationCapturePointManager {
         return nbt;
     }
 
-    public void deserialize(NBTTagCompound nbt) {
+    public void deserialize(NBTTagCompound nbt, World world) {
         pointMap.clear();
         List<Tracker> list = new ArrayList<>();
-        SerializationHelper.collectionFromNbt(list, nbt.getTagList("points", Constants.NBT.TAG_COMPOUND), t -> Tracker.deserialize((NBTTagCompound) t));
+        SerializationHelper.collectionFromNbt(list, nbt.getTagList("points", Constants.NBT.TAG_COMPOUND), t -> Tracker.deserialize((NBTTagCompound) t, world));
         list.forEach(tracker -> pointMap.put(tracker.point.getPointPosition(), tracker));
     }
 
@@ -249,8 +249,8 @@ public class DominationCapturePointManager {
             return nbt;
         }
 
-        public static Tracker deserialize(NBTTagCompound nbt) {
-            CaptureZonePoint point = GameMapPointType.deserializePointData(nbt.getCompoundTag("poi"));
+        public static Tracker deserialize(NBTTagCompound nbt, World world) {
+            CaptureZonePoint point = GameMapPointType.deserializePointData(nbt.getCompoundTag("poi"), GameHelper.getActiveGameMap(world));
             CaptureZones.CaptureData data = new CaptureZones.CaptureData(nbt.getCompoundTag("data"));
             Tracker tracker = new Tracker(point, data);
             if (nbt.hasKey("owner")) {

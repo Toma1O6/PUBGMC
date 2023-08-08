@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.games.screen;
 
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
 import dev.toma.pubgmc.util.helper.ImageUtil;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public abstract class MapPointDialogGui<P extends GameMapPoint> extends GuiWidgets {
 
-    protected final GameMap ownerMap;
+    protected final GameMapInstance ownerMap;
     protected final P point;
 
     protected int dialogWidth;
@@ -18,7 +18,7 @@ public abstract class MapPointDialogGui<P extends GameMapPoint> extends GuiWidge
     protected int left;
     protected int top;
 
-    public MapPointDialogGui(GameMap ownerMap, P point) {
+    public MapPointDialogGui(GameMapInstance ownerMap, P point) {
         this.ownerMap = ownerMap;
         this.point = point;
     }

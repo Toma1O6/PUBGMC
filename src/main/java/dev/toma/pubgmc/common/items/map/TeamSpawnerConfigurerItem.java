@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.map;
 
 import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.client.games.screen.TeamSpawnerGui;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
@@ -29,7 +29,7 @@ public class TeamSpawnerConfigurerItem extends MapPointItem {
 
     @Override
     public EnumActionResult handlePoiClick(PointClickContext context) {
-        GameMap map = context.getMap();
+        GameMapInstance map = context.getMap();
         GameMapPoint point = context.getPoint();
         if (this.filterPoint(point) && !context.isServerCall()) {
             openScreen(map, context.castPoint());
@@ -38,7 +38,7 @@ public class TeamSpawnerConfigurerItem extends MapPointItem {
     }
 
     @Override
-    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMap map) {
+    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMapInstance map) {
         TeamSpawnerPoint point = new TeamSpawnerPoint(pos, TeamType.RED);
         map.setMapPoint(pos, point);
         data.sendGameDataToClients();
@@ -46,7 +46,7 @@ public class TeamSpawnerConfigurerItem extends MapPointItem {
     }
 
     @SideOnly(Side.CLIENT)
-    private void openScreen(GameMap map, TeamSpawnerPoint point) {
+    private void openScreen(GameMapInstance map, TeamSpawnerPoint point) {
         Minecraft.getMinecraft().displayGuiScreen(new TeamSpawnerGui(map, point));
     }
 }

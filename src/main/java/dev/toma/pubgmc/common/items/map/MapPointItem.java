@@ -3,7 +3,7 @@ package dev.toma.pubgmc.common.items.map;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.common.items.PMCItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +28,7 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
 
     public abstract EnumActionResult handlePoiClick(PointClickContext context);
 
-    public abstract EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMap map);
+    public abstract EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMapInstance map);
 
     protected boolean filterPoint(GameMapPoint point) {
         return true;
@@ -41,17 +41,18 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
                 return EnumActionResult.FAIL;
             String activeMap = data.getActiveGameMapName();
             BlockPos interactionPos = pos.up();
-            GameMap clickedMap = null;
-            for (Map.Entry<String, GameMap> entry : data.getRegisteredGameMaps().entrySet()) {
+            GameMapInstance clickedMap = null;
+            for (Map.Entry<String, GameMapInstance> entry : data.getRegisteredGameMaps().entrySet()) {
                 if (entry.getKey().equals(activeMap)) {
                     continue;
                 }
-                GameMap map = entry.getValue();
+                GameMapInstance map = entry.getValue();
+                Optional<GameMapPoint> point = map.getPointAt(interactionPos);
                 Optional<GameMapPoint> pointOpt = map.getPointAt(interactionPos).filter(this::filterPoint);
                 if (pointOpt.isPresent()) {
                     return handlePoiClick(new PointClickContext(map, pointOpt.get(), data, player, worldIn, interactionPos, hand, facing, new Vec3d(hitX, hitY, hitZ)));
                 }
-                if (map.isWithin(pos)) {
+                if (map.isWithin(pos) && !point.isPresent()) {
                     clickedMap = map;
                 }
             }
@@ -66,7 +67,7 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
 
     public static final class PointClickContext {
 
-        private final GameMap map;
+        private final GameMapInstance map;
         private final GameMapPoint point;
         private final GameData data;
         private final EntityPlayer player;
@@ -76,7 +77,7 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
         private final EnumFacing facing;
         private final Vec3d hitVec;
 
-        PointClickContext(GameMap map, GameMapPoint point, GameData data, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, Vec3d hitVec) {
+        PointClickContext(GameMapInstance map, GameMapPoint point, GameData data, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, Vec3d hitVec) {
             this.map = map;
             this.point = point;
             this.data = data;
@@ -88,7 +89,7 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
             this.hitVec = hitVec;
         }
 
-        public GameMap getMap() {
+        public GameMapInstance getMap() {
             return map;
         }
 

@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.games.screen;
 
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.client.gui.widget.EnumWidget;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.common.games.map.TeamSpawnerPoint;
@@ -13,7 +13,7 @@ public class TeamSpawnerGui extends MapPointDialogGui<TeamSpawnerPoint> {
 
     private EnumWidget<TeamType> teamSelector;
 
-    public TeamSpawnerGui(GameMap map, TeamSpawnerPoint point) {
+    public TeamSpawnerGui(GameMapInstance map, TeamSpawnerPoint point) {
         super(map, point);
         this.setSize(80, 55);
     }

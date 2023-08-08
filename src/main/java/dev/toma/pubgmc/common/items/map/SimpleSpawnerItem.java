@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items.map;
 
 import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.common.games.map.SpawnerPoint;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
@@ -16,7 +16,7 @@ public class SimpleSpawnerItem extends MapPointItem {
     }
 
     @Override
-    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMap map) {
+    public EnumActionResult handlePoiCreation(GameData data, World world, BlockPos pos, EntityPlayer player, EnumHand hand, GameMapInstance map) {
         SpawnerPoint point = new SpawnerPoint(pos);
         map.setMapPoint(pos, point);
         data.sendGameDataToClients();

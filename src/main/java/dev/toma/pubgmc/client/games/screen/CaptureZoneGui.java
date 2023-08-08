@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.games.screen;
 
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.client.gui.widget.TextFieldWidget;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
@@ -20,7 +20,7 @@ public class CaptureZoneGui extends MapPointDialogGui<CaptureZonePoint> {
 
     private TextFieldWidget[] inputFields;
 
-    public CaptureZoneGui(GameMap map, CaptureZonePoint point) {
+    public CaptureZoneGui(GameMapInstance map, CaptureZonePoint point) {
         super(map, point);
         this.setSize(110, 80);
     }

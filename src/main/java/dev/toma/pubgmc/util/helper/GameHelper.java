@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.GenerationType;
 import dev.toma.pubgmc.api.game.Generator;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
 import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
@@ -392,11 +393,24 @@ public final class GameHelper {
         }).orElse(false);
     }
 
-    public static GameMap getActiveGameMap(World world) {
+    @Nullable
+    public static GameMapInstance getActiveGameMap(World world) {
         return GameDataProvider.getGameData(world).map(data -> {
             String mapName = data.getActiveGameMapName();
             return data.getGameMap(mapName);
         }).orElse(null);
+    }
+
+    @Nullable
+    public static GameMap getActiveGameMapOrSubMap(World world, @Nullable String submapName) {
+        GameMapInstance mapInstance = GameDataProvider.getGameData(world).map(data -> {
+            String mapName = data.getActiveGameMapName();
+            return data.getGameMap(mapName);
+        }).orElse(null);
+        if (mapInstance != null && submapName != null) {
+            return mapInstance.getSubmapOrSelf(submapName);
+        }
+        return mapInstance;
     }
 
     public interface InventoryProvider {

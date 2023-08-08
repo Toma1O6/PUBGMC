@@ -4,10 +4,7 @@ import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.*;
-import dev.toma.pubgmc.api.game.map.GameLobby;
-import dev.toma.pubgmc.api.game.map.GameMap;
-import dev.toma.pubgmc.api.game.map.GameMapPoint;
-import dev.toma.pubgmc.api.game.map.GameMapPointType;
+import dev.toma.pubgmc.api.game.map.*;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.commands.core.*;
@@ -17,6 +14,8 @@ import dev.toma.pubgmc.common.commands.core.arg.PubgmcRegistryArgument;
 import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.map.GameMapPoints;
+import dev.toma.pubgmc.common.games.map.PartialPlayAreaPoint;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
@@ -79,7 +78,7 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(2)
                             .executes(GameCommand::startGame)
                             .node(
-                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
+                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMapInstance.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                                             .suggests(GameCommand::suggestMapName)
                             )
             )
@@ -93,7 +92,7 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(2)
                             .executes(GameCommand::executeMapNoArguments)
                             .node(
-                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
+                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMapInstance.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                                             .suggests(GameCommand::suggestMapName)
                                             .node(
                                                     CommandNodeProvider.literal("delete")
@@ -109,7 +108,7 @@ public class GameCommand extends AbstractCommand {
                                                             .node(
                                                                     CommandNodeProvider.argument(ARG_POINT_TYPE, PubgmcRegistryArgument.registry(PubgmcRegistries.GAME_MAP_POINTS))
                                                                             .node(
-                                                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
+                                                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMapInstance.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                                                                             )
                                                             )
                                             )
@@ -117,7 +116,7 @@ public class GameCommand extends AbstractCommand {
                             .node(
                                     CommandNodeProvider.literal("create")
                                             .node(
-                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMap.ALLOWED_NAME_PATTERN, "Map name must consist of atleast one a-zA-Z0-9 or _ character"))
+                                                    CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMapInstance.ALLOWED_NAME_PATTERN, "Map name must consist of atleast one a-zA-Z0-9 or _ character"))
                                                             .suggests(GameCommand::suggestMapName)
                                                             .node(
                                                                     CommandNodeProvider.literal("center")
@@ -289,6 +288,23 @@ public class GameCommand extends AbstractCommand {
         if (map == null) {
             throw new WrongUsageException("No map is registered under " + actualMapName + " name");
         }
+        GameConfiguration configuration = game.getConfiguration();
+        if (configuration instanceof PartialZoneSelectorConfig) {
+            PartialZoneSelectorConfig config = (PartialZoneSelectorConfig) configuration;
+            PartialZoneConfiguration zoneConfiguration = config.getZoneConfiguration();
+            String[] availableMaps = zoneConfiguration.availableSubMaps;
+            if (zoneConfiguration.enabled && availableMaps.length > 0) {
+                Random random = context.getSender().getEntityWorld().rand;
+                String subMapName = availableMaps[random.nextInt(availableMaps.length)];
+                Collection<PartialPlayAreaPoint> points = map.getPoints(GameMapPoints.PARTIAL_PLAY_AREA);
+                for (PartialPlayAreaPoint areaPoint : points) {
+                    if (areaPoint.getMapName().equalsIgnoreCase(subMapName)) {
+                        map = areaPoint;
+                        break;
+                    }
+                }
+            }
+        }
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
         try {
@@ -343,12 +359,12 @@ public class GameCommand extends AbstractCommand {
 
     private static void registerMap(CommandContext context, String name, Position2 min, Position2 max) throws CommandException {
         GameData data = getGameData(context);
-        GameMap map = data.getGameMap(name);
+        GameMapInstance map = data.getGameMap(name);
         if (map != null) {
             throw new WrongUsageException("Map with name '" + name + "' already exists!");
         }
-        GameMap gameMap = new GameMap(name, min, max);
-        GameMap overlap = gameMap.getOverlappingMap(data.getRegisteredGameMaps().values());
+        GameMapInstance gameMap = new GameMapInstance(name, min, max);
+        GameMapInstance overlap = gameMap.getOverlappingMap(data.getRegisteredGameMaps().values());
         if (overlap != null) {
             throw new WrongUsageException("Map overlaps over '" + overlap.getMapName() + "' map");
         }
@@ -360,7 +376,7 @@ public class GameCommand extends AbstractCommand {
     private static void deleteMapByName(CommandContext context) throws CommandException {
         String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
         GameData data = getGameData(context);
-        GameMap map = data.getGameMap(mapName);
+        GameMapInstance map = data.getGameMap(mapName);
         if (map == null) {
             throw new WrongUsageException("No map found by name '" + mapName + "'");
         }
@@ -376,7 +392,7 @@ public class GameCommand extends AbstractCommand {
     private static void deleteMapPoints(CommandContext context) throws CommandException {
         String mapName = context.getArgumentMandatory(ARG_MAP_NAME);
         GameData data = getGameData(context);
-        GameMap map = data.getGameMap(mapName);
+        GameMapInstance map = data.getGameMap(mapName);
         Game<?> activeGame = data.getCurrentGame();
         if (map == null) {
             throw new WrongUsageException("No map found by name '" + mapName + "'");
@@ -399,14 +415,14 @@ public class GameCommand extends AbstractCommand {
         if (game != null && game.isStarted()) {
             throw new WrongUsageException("Unable to add point as there is game in progress");
         }
-        GameMap map;
+        GameMapInstance map;
         if (providedMapName.isPresent()) {
             map = gameData.getGameMap(providedMapName.get());
             if (map == null) {
                 throw new WrongUsageException("No map found by name '" + providedMapName.get() + "'");
             }
         } else {
-            List<GameMap> insideMaps = gameData.getRegisteredGameMaps().values().stream()
+            List<GameMapInstance> insideMaps = gameData.getRegisteredGameMaps().values().stream()
                     .filter(gameMap -> gameMap.isWithin(pos))
                     .collect(Collectors.toList());
             if (insideMaps.size() != 1) {
@@ -425,12 +441,12 @@ public class GameCommand extends AbstractCommand {
 
     private static void listMaps(CommandContext context) throws CommandException {
         GameData gameData = getGameData(context);
-        Map<String, GameMap> maps = gameData.getRegisteredGameMaps();
+        Map<String, GameMapInstance> maps = gameData.getRegisteredGameMaps();
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        for (Map.Entry<String, GameMap> entry : maps.entrySet()) {
+        for (Map.Entry<String, GameMapInstance> entry : maps.entrySet()) {
             String mapName = entry.getKey();
-            GameMap map = entry.getValue();
+            GameMapInstance map = entry.getValue();
             Playzone bounds = map.bounds();
             Position2 center = bounds.center();
             int y = world.getHeight((int) center.getX(), (int) center.getZ());
@@ -546,7 +562,7 @@ public class GameCommand extends AbstractCommand {
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
         return GameDataProvider.getGameData(world).map(data -> {
-            Map<String, GameMap> maps = data.getRegisteredGameMaps();
+            Map<String, GameMapInstance> maps = data.getRegisteredGameMaps();
             return (List<String>) new ArrayList<>(maps.keySet());
         }).orElse(Collections.emptyList());
     }

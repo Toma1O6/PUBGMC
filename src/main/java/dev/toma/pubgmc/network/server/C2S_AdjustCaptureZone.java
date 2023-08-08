@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.network.server;
 
 import dev.toma.pubgmc.api.capability.GameDataProvider;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.util.helper.PacketHelper;
@@ -63,7 +63,7 @@ public class C2S_AdjustCaptureZone implements IMessage {
                 if (!player.isCreative())
                     return;
                 GameDataProvider.getGameData(player.world).ifPresent(data -> {
-                    GameMap gameMap = data.getGameMap(message.map);
+                    GameMapInstance gameMap = data.getGameMap(message.map);
                     if (gameMap == null)
                         return;
                     gameMap.getPointAt(message.pos).filter(point -> point.is(GameMapPoints.CAPTURE_ZONE))

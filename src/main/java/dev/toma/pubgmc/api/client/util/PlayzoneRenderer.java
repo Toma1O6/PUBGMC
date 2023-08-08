@@ -28,6 +28,11 @@ public class PlayzoneRenderer<P extends Playzone> {
     public void renderPlayzone(P playzone, double x, double y, double z, float partialTicks) {
         Position2 min = playzone.getPositionMin(partialTicks);
         Position2 max = playzone.getPositionMax(partialTicks);
+        int color = colorProvider.applyAsInt(playzone);
+        render(x, y, z, min, max, color);
+    }
+
+    public static void render(double x, double y, double z, Position2 min, Position2 max, int color) {
         double minX = min.getX();
         double minZ = min.getZ();
         double maxX = max.getX();
@@ -42,7 +47,6 @@ public class PlayzoneRenderer<P extends Playzone> {
             GlStateManager.disableTexture2D();
             GlStateManager.disableCull();
             GlStateManager.depthMask(false);
-            int color = colorProvider.applyAsInt(playzone);
             int alpha = (color >> 24) & 0xff;
             int red = (color >> 16) & 0xff;
             int green = (color >> 8) & 0xff;

@@ -4,13 +4,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.game.GameConfiguration;
 import dev.toma.pubgmc.api.game.GameWorldConfiguration;
+import dev.toma.pubgmc.api.game.PartialZoneConfiguration;
+import dev.toma.pubgmc.api.game.map.PartialZoneSelectorConfig;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.util.Constants;
 
-public class FFAGameConfiguration implements GameConfiguration {
+public class FFAGameConfiguration implements GameConfiguration, PartialZoneSelectorConfig {
 
     public static final String LOADOUT_UMP45 = "ffa/ump45";
     public static final String LOADOUT_VECTOR = "ffa/vector";
@@ -33,7 +35,13 @@ public class FFAGameConfiguration implements GameConfiguration {
             LOADOUT_SLR,
             LOADOUT_M24
     };
-    public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
+    public final GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
+    private final PartialZoneConfiguration zoneConfiguration = new PartialZoneConfiguration();
+
+    @Override
+    public PartialZoneConfiguration getZoneConfiguration() {
+        return zoneConfiguration;
+    }
 
     @Override
     public void performCorrections() {
@@ -59,6 +67,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         }
         nbt.setTag("loadouts", loadouts);
         nbt.setTag("worldCfg", worldConfiguration.serialize());
+        nbt.setTag("zoneCfg", zoneConfiguration.serialize());
         return nbt;
     }
 
@@ -76,6 +85,7 @@ public class FFAGameConfiguration implements GameConfiguration {
             cfg.loadoutFiles[i] = loadouts.getStringTagAt(i);
         }
         cfg.worldConfiguration.deserialize(nbt.getCompoundTag("worldCfg"));
+        cfg.zoneConfiguration.deserialize(nbt.getCompoundTag("zoneCfg"));
         return cfg;
     }
 
@@ -93,6 +103,7 @@ public class FFAGameConfiguration implements GameConfiguration {
         }
         object.add("loadouts", loadouts);
         object.add("worldConfiguration", worldConfiguration.jsonSerialize());
+        object.add("partialZoneConfiguration", zoneConfiguration.jsonSerialize());
         return object;
     }
 
@@ -110,6 +121,7 @@ public class FFAGameConfiguration implements GameConfiguration {
             cfg.loadoutFiles[i] = loadouts.get(i).getAsString();
         }
         cfg.worldConfiguration.jsonDeserialize(JsonUtils.getJsonObject(object, "worldConfiguration", new JsonObject()));
+        cfg.zoneConfiguration.jsonDeserialize(JsonUtils.getJsonObject(object, "partialZoneConfiguration", new JsonObject()));
         return cfg;
     }
 }

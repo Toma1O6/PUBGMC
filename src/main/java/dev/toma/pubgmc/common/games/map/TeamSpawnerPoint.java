@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.games.map;
 
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.map.GameMapPointSerializer;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.common.games.util.TeamType;
@@ -41,13 +41,13 @@ public class TeamSpawnerPoint extends SpawnerPoint {
         }
 
         @Override
-        public TeamSpawnerPoint deserializePointData(BlockPos pointPosition, NBTTagCompound nbt) {
+        public TeamSpawnerPoint deserializePointData(BlockPos pointPosition, NBTTagCompound nbt, GameMapInstance parent) {
             TeamType type = SerializationHelper.enumByIndex(nbt.getInteger("teamType"), TeamType.class);
             return new TeamSpawnerPoint(pointPosition, type);
         }
 
         @Override
-        public TeamSpawnerPoint createDefaultInstance(BlockPos pos, World world, GameMap map) {
+        public TeamSpawnerPoint createDefaultInstance(BlockPos pos, World world, GameMapInstance map) {
             return new TeamSpawnerPoint(pos, TeamType.RED);
         }
     }

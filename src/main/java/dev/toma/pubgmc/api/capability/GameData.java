@@ -3,7 +3,7 @@ package dev.toma.pubgmc.api.capability;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
-import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -43,16 +43,16 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
     /**
      * Tries to lookup registered map by name
      * @param mapName Name of map
-     * @return Registered {@link GameMap} or {@code null} when no map exists for this name
+     * @return Registered {@link GameMapInstance} or {@code null} when no map exists for this name
      */
     @Nullable
-    GameMap getGameMap(String mapName);
+    GameMapInstance getGameMap(String mapName);
 
     /**
      * Registers new map
-     * @param map New {@link GameMap} instance
+     * @param map New {@link GameMapInstance} instance
      */
-    void registerGameMap(GameMap map);
+    void registerGameMap(GameMapInstance map);
 
     /**
      * Deletes game map by name or silently ignores when no map exists for such name
@@ -63,7 +63,7 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
     /**
      * @return Mapping of all maps
      */
-    Map<String, GameMap> getRegisteredGameMaps();
+    Map<String, GameMapInstance> getRegisteredGameMaps();
 
     /**
      * Assigns new GameLobby for this world instance
@@ -104,7 +104,7 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
      * @return Optional holding active GameMap instance
      */
     @Nullable
-    default Optional<GameMap> getActiveGameMap() {
+    default Optional<GameMapInstance> getActiveGameMap() {
         return Optional.ofNullable(getActiveGameMapName()).map(this::getGameMap);
     }
 }

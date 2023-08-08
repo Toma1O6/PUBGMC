@@ -4,8 +4,6 @@ import dev.toma.pubgmc.api.game.map.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -76,7 +74,7 @@ public class CaptureZonePoint extends GameMapPoint implements Bounds3 {
         }
 
         @Override
-        public CaptureZonePoint deserializePointData(BlockPos pointPosition, NBTTagCompound nbt) {
+        public CaptureZonePoint deserializePointData(BlockPos pointPosition, NBTTagCompound nbt, GameMapInstance parent) {
             Vec3d nSize = new Vec3d(nbt.getDouble("nx"), nbt.getDouble("ny"), nbt.getDouble("nz"));
             Vec3d pSize = new Vec3d(nbt.getDouble("px"), nbt.getDouble("py"), nbt.getDouble("pz"));
             String label = nbt.hasKey("label") ? nbt.getString("label") : null;
@@ -84,7 +82,7 @@ public class CaptureZonePoint extends GameMapPoint implements Bounds3 {
         }
 
         @Override
-        public CaptureZonePoint createDefaultInstance(BlockPos pos, World world, GameMap map) {
+        public CaptureZonePoint createDefaultInstance(BlockPos pos, World world, GameMapInstance map) {
             return new CaptureZonePoint(pos, new Vec3d(-5, -5, -5), new Vec3d(5, 5, 5), null);
         }
     }

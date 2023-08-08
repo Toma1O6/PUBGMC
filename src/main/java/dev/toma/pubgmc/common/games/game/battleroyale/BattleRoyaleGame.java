@@ -126,9 +126,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     @Override
     public void validateAndSetupForMap(World world, GameMap map) {
-        mapPlayzone = new StaticPlayzone(map.bounds());
+        AbstractDamagingPlayzone damagingPlayzone = map.bounds();
+        mapPlayzone = new StaticPlayzone(damagingPlayzone);
         mapPlayzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
-        playzone = new DynamicPlayzone(map.bounds());
+        playzone = new DynamicPlayzone(damagingPlayzone);
         playzone.onResizeCompleted(this::playzoneResizeCompleted);
     }
 
@@ -597,7 +598,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
 
         @Override
-        public BattleRoyaleGame deserializeGameData(NBTTagCompound nbt, BattleRoyaleGameConfiguration configuration) {
+        public BattleRoyaleGame deserializeGameData(NBTTagCompound nbt, BattleRoyaleGameConfiguration configuration, World world) {
             UUID gameId = nbt.getUniqueId("gameId");
             BattleRoyaleGame game = new BattleRoyaleGame(gameId, configuration);
             game.teamManager.deserializeNBT(nbt.getCompoundTag("teams"));

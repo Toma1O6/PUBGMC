@@ -46,6 +46,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -82,6 +83,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
     private boolean completed;
     private int completionTimer;
     private long gameTime;
+    private String submapName;
 
     public DominationGame(UUID gameId, DominationGameConfiguration configuration) {
         this.gameId = gameId;
@@ -90,9 +92,9 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         this.properties = new PlayerPropertyHolder();
         this.pointManager = new DominationCapturePointManager(this.teamManager, this.configuration.captureSpeed, this::onPointCaptured);
         this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
-        this.redSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.RED, GameHelper::getActiveGameMap);
-        this.blueSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.BLUE, GameHelper::getActiveGameMap);
-        this.spawns = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMap);
+        this.redSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.RED, world -> GameHelper.getActiveGameMapOrSubMap(world, submapName));
+        this.blueSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.BLUE, world -> GameHelper.getActiveGameMapOrSubMap(world, submapName));
+        this.spawns = new SpawnPointSelector<>(GameMapPoints.SPAWNER, world -> GameHelper.getActiveGameMapOrSubMap(world, submapName));
         this.ruleStorage = new GameRuleStorage();
         this.aiManager = new DominationAIManager();
         this.deathMessages = new DeathMessageContainer(7, 60);
@@ -122,6 +124,9 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         this.playzone = map.bounds();
         this.playzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
         this.pointManager.init(map);
+        if (map.isSubMap()) {
+            submapName = map.getMapName();
+        }
     }
 
     @Override
@@ -456,6 +461,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         BlockPos pos = point.getPointPosition();
         player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
         player.assignGameId(gameId);
+        player.forceSpawn = true;
         properties.register(player);
         world.spawnEntity(player);
         aiManager.register(player);
@@ -494,6 +500,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             }
             player.setUniqueId(uuid);
             player.assignGameId(gameId);
+            player.forceSpawn = true;
             SpawnerPoint point = getRespawnPoint(world, player);
             BlockPos pos = point.getPointPosition();
             player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
@@ -627,11 +634,14 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             if (game.playzone != null) {
                 nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
             }
+            if (game.submapName != null) {
+                nbt.setString("submap", game.submapName);
+            }
             return nbt;
         }
 
         @Override
-        public DominationGame deserializeGameData(NBTTagCompound nbt, DominationGameConfiguration configuration) {
+        public DominationGame deserializeGameData(NBTTagCompound nbt, DominationGameConfiguration configuration, World world) {
             UUID gameId = nbt.getUniqueId("gameId");
             DominationGame game = new DominationGame(gameId, configuration);
             game.gameTime = nbt.getLong("gameTime");
@@ -641,7 +651,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             game.redTickets = nbt.getInteger("redTickets");
             game.blueTickets = nbt.getInteger("blueTickets");
             game.teamManager.deserializeNBT(nbt.getCompoundTag("teams"));
-            game.pointManager.deserialize(nbt.getCompoundTag("points"));
+            game.pointManager.deserialize(nbt.getCompoundTag("points"), world);
             game.ruleStorage.deserialize(nbt.getCompoundTag("ruleStorage"));
             game.properties.deserialize(nbt.getCompoundTag("properties"));
             game.loadoutManager.deserialize(nbt.getCompoundTag("loadouts"));
@@ -649,6 +659,9 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             game.deathMessages.deserialize(nbt.getCompoundTag("deathMessages"));
             if (nbt.hasKey("playzone")) {
                 game.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
+            }
+            if (nbt.hasKey("submap", Constants.NBT.TAG_STRING)) {
+                game.submapName = nbt.getString("submap");
             }
             return game;
         }

@@ -2,8 +2,8 @@ package dev.toma.pubgmc.client.gui.widget;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.ChatAllowedCharacters;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -72,7 +72,7 @@ public class TextFieldWidget extends Widget {
         } else {
             if (text.length() < maxLength - 1) {
                 if (inputValidator.test(character)) {
-                    text += character;
+                    text += ChatAllowedCharacters.filterAllowedCharacters(String.valueOf(character));
                     callback();
                 }
             }
