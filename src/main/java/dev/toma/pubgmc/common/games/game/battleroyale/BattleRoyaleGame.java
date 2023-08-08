@@ -312,7 +312,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     }
 
     private boolean isGameCompleted(int players, int ai, int aiForSpawn, int teams) {
-        if (players > 0 && (teams == 1 || ai == 0 && aiForSpawn == 0)) {
+        if (players > 0 && (teams == 1 || ai <= 0 && aiForSpawn == 0)) {
             if (ai > 0) {
                 Team team = new ArrayList<>(teamManager.getTeams()).get(0);
                 int activeMembers = team.getActiveMemberCount();
@@ -501,7 +501,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             } else if (entity instanceof EntityAIPlayer) {
                 EntityAIPlayer aiPlayer = (EntityAIPlayer) entity;
                 GameHelper.spawnAiPlayerDeathCrate(game.gameId, aiPlayer);
-                game.aiManager.onAiEntityDied(aiPlayer);
+                game.aiManager.onAiEntityDied(aiPlayer.getUniqueID());
             }
             GameMutatorHelper.giveKillReward(entity, source);
             Entity killer = source.getTrueSource();

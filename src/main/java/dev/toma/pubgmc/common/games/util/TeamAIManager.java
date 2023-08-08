@@ -1,17 +1,16 @@
 package dev.toma.pubgmc.common.games.util;
 
-import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class TeamAIManager {
 
@@ -20,10 +19,14 @@ public class TeamAIManager {
     private int allowedAiSpawnCount;
     private int deadEntities;
     private final Set<UUID> spawnedEntities = new HashSet<>();
-    private final Set<UUID> despawnedEntities = new HashSet<>();
+    private Consumer<UUID> unloadListener = uuid -> {};
 
     public TeamAIManager(TeamManager teamManager) {
         this.teamManager = teamManager;
+    }
+
+    public void onEntityUnloaded(Consumer<UUID> listener) {
+        this.unloadListener = listener;
     }
 
     public void entitySpawned(Entity entity) {
@@ -31,10 +34,8 @@ public class TeamAIManager {
         allowedAiSpawnCount--;
     }
 
-    public void onAiEntityDied(Entity entity) {
-        UUID uuid = entity.getUniqueID();
-        spawnedEntities.remove(uuid);
-        despawnedEntities.remove(uuid);
+    public void onAiEntityDied(UUID entity) {
+        spawnedEntities.remove(entity);
         ++deadEntities;
     }
 
@@ -60,31 +61,10 @@ public class TeamAIManager {
             Entity entity = server.getEntityFromUuid(memberId);
             if (entity == null) {
                 // Entity was unloaded
-                despawnedEntities.add(memberId);
-                allowedAiSpawnCount++;
+                teamManager.eliminate(memberId);
+                deadEntities++;
+                unloadListener.accept(memberId);
                 iterator.remove();
-                if (team.isTeamLeader(memberId)) {
-                    // unloaded entity was team leader, new team needs to be created and original members transferred
-                    teamManager.disbandAndTransferMembers(team);
-                    continue;
-                }
-                team.removeMemberById(memberId);
-                if (team.isTeamEliminated()) {
-                    teamManager.removeTeam(team.getTeamId());
-                }
-            }
-        }
-
-        // Check if despawned entity got loaded again
-        Iterator<UUID> despawnedEntityIterator = despawnedEntities.iterator();
-        while (despawnedEntityIterator.hasNext()) {
-            UUID entityId = despawnedEntityIterator.next();
-            Entity entity = server.getEntityFromUuid(entityId);
-            if (entity instanceof LivingGameEntity) {
-                if (teamManager.shouldRemoveFreshlyLoadedEntity(entity)) {
-                    entity.setDead();
-                    despawnedEntityIterator.remove();
-                }
             }
         }
     }
@@ -112,17 +92,14 @@ public class TeamAIManager {
         nbt.setInteger("toSpawn", allowedAiSpawnCount);
         nbt.setInteger("dead", deadEntities);
         nbt.setTag("spawned", SerializationHelper.collectionToNbt(spawnedEntities, uuid -> new NBTTagString(uuid.toString())));
-        nbt.setTag("despawned", SerializationHelper.collectionToNbt(despawnedEntities, uuid -> new NBTTagString(uuid.toString())));
         return nbt;
     }
 
     public void deserialize(NBTTagCompound nbt) {
         spawnedEntities.clear();
-        despawnedEntities.clear();
         totalAiCount = nbt.getInteger("total");
         allowedAiSpawnCount = nbt.getInteger("toSpawn");
         deadEntities = nbt.getInteger("dead");
         SerializationHelper.collectionFromNbt(spawnedEntities, nbt.getTagList("spawned", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
-        SerializationHelper.collectionFromNbt(despawnedEntities, nbt.getTagList("despawned", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
     }
 }

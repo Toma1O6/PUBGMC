@@ -30,7 +30,11 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
 
     void join(Team team, Entity entity);
 
-    void eliminate(Entity entity);
+    default void eliminate(Entity entity) {
+        eliminate(entity.getUniqueID());
+    }
+
+    void eliminate(UUID memberId);
 
     void disbandAndTransferMembers(Team team);
 
@@ -39,10 +43,6 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
     @Nullable
     default Team getEntityTeam(@Nullable Entity entity) {
         return entity != null ? getEntityTeamByEntityId(entity.getUniqueID()) : null;
-    }
-
-    default boolean shouldRemoveFreshlyLoadedEntity(Entity entity) {
-        return true;
     }
 
     default boolean canJoinTeam(Entity entity, Team team) {

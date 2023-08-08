@@ -99,8 +99,7 @@ public class DominationTeamManager implements TeamManager {
     }
 
     @Override
-    public void eliminate(Entity entity) {
-        UUID uuid = entity.getUniqueID();
+    public void eliminate(UUID uuid) {
         Team team = entityTeamMap.get(uuid);
         if (team != null) {
             team.removeMemberById(uuid);
