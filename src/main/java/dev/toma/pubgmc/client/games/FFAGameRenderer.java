@@ -8,6 +8,9 @@ import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.client.CFG2DCoords;
+import dev.toma.pubgmc.config.client.game.FFAOverlays;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
@@ -39,7 +42,7 @@ public class FFAGameRenderer implements GameRenderer<FFAGame> {
         this.scoreboardRenderer.setMyScoreAlwaysRendered(true);
         this.scoreboardRenderer.setDisplayLimit(20);
         this.playzoneRenderer = new PlayzoneRenderer<>();
-        this.playzoneRenderer.setColor(0x660033FF);
+        this.playzoneRenderer.setColor(ConfigPMC.client.overlays.ffaOverlays.playzoneColor.getColor());
     }
 
     @Override
@@ -53,12 +56,15 @@ public class FFAGameRenderer implements GameRenderer<FFAGame> {
             return true;
         } else if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+            FFAOverlays overlays = ConfigPMC.client.overlays.ffaOverlays;
 
+            CFG2DCoords timePos = overlays.timePanel;
             int timeRemaining = game.getTimeRemaining();
             String timeText = PUBGMCUtil.formatTime(timeRemaining);
             int textWidth = font.getStringWidth(timeText);
-            font.drawString(timeText, resolution.getScaledWidth() - textWidth - 5, 5, 0xFFFFFF, true);
+            font.drawString(timeText, timePos.getX() + resolution.getScaledWidth() - textWidth - 5, timePos.getY() + 5, 0xFFFFFF, true);
 
+            CFG2DCoords dmPos = overlays.deathMessagesPanel;
             DeathMessage[] deathMessages = game.getDeathMessageHolder().getDeathMessages();
             for (int i = 0; i < deathMessages.length; i++) {
                 DeathMessage deathMessage = deathMessages[i];
@@ -67,7 +73,7 @@ public class FFAGameRenderer implements GameRenderer<FFAGame> {
                     type = DeathMessage.Type.getSoloType(deathMessage, player.world);
                     deathMessage.setType(type);
                 }
-                font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 10 + i * 10, type.getColor());
+                font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), dmPos.getX() + 10, dmPos.getY() + 10 + i * 10, type.getColor());
             }
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }

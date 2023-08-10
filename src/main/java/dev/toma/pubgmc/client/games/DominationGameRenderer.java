@@ -13,6 +13,9 @@ import dev.toma.pubgmc.common.games.game.domination.DominationCapturePointManage
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationTeamManager;
 import dev.toma.pubgmc.common.games.util.TeamType;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.client.CFG2DCoords;
+import dev.toma.pubgmc.config.client.game.DominationOverlays;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
@@ -66,7 +69,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         this.scoreboardRenderer.setDrawGrid(true);
         this.scoreboardRenderer.setDisplayLimit(32);
         this.playzoneRenderer = new PlayzoneRenderer<>();
-        this.playzoneRenderer.setColor(0x44FFFFFF);
+        this.playzoneRenderer.setColor(ConfigPMC.client.overlays.dominationOverlays.playzoneColor.getColor());
     }
 
     @Override
@@ -98,57 +101,64 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
     }
 
     private void renderHudOverlay(EntityPlayer player, DominationGame game, ScaledResolution resolution) {
-        int infoWidth = 120;
-        int infoHeight = 16;
-        int halfX = infoWidth / 2;
-        float left = (resolution.getScaledWidth() - infoWidth) / 2.0F;
-        float top = resolution.getScaledHeight() - 50 - infoHeight;
-        ImageUtil.drawShape(left, top, left + infoWidth, top + infoHeight, 0x66 << 24);
-        int totalTickets = game.getConfiguration().totalTicketCount;
-        int redTickets = Math.max(0, game.getRedTicketCount());
-        int blueTickets = Math.max(0, game.getBlueTicketCount());
-        float red = redTickets / (float) totalTickets;
-        float blue = blueTickets / (float) totalTickets;
-        ImageUtil.drawShape(left + halfX - 0.5F, top + 2, left + halfX + 0.5F, top + infoHeight - 2, 0x66AAAAAA);
-        float rMin = left + 2;
-        float rMax = left + halfX - 2;
-        float rDiff = rMax - rMin;
-        ImageUtil.drawGradient(rMin, top + infoHeight - 5, rMin + rDiff * red, top + infoHeight - 2, 0xFFFF0000, 0xFFAA0000);
-        float bMin = left + halfX + 2;
-        float bMax = left + infoWidth - 2;
-        float bDiff = bMin - bMax;
-        ImageUtil.drawGradient(bMin - (1.0F - blue) * bDiff, top + infoHeight - 5, bMax, top + infoHeight - 2, 0xFF0000FF, 0xFF0000AA);
-
+        DominationOverlays overlays = ConfigPMC.client.overlays.dominationOverlays;
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-        float scale = 0.50F;
-        GlStateManager.pushMatrix();
-        {
-            String displayedText = String.valueOf(redTickets);
-            GlStateManager.translate(left + halfX - font.getStringWidth(displayedText) / 2f - 2, top + 5, 0);
-            GlStateManager.scale(scale, scale, scale);
-            font.drawString(displayedText, 0, 0, 0xAA3333, true);
+
+        if (overlays.showTicketStatus.get()) {
+            int infoWidth = 120;
+            int infoHeight = 16;
+            int halfX = infoWidth / 2;
+            CFG2DCoords ticketsPos = overlays.ticketPanel;
+            float left = ticketsPos.getX() + (resolution.getScaledWidth() - infoWidth) / 2.0F;
+            float top = ticketsPos.getY() + resolution.getScaledHeight() - 50 - infoHeight;
+            ImageUtil.drawShape(left, top, left + infoWidth, top + infoHeight, 0x66 << 24);
+            int totalTickets = game.getConfiguration().totalTicketCount;
+            int redTickets = Math.max(0, game.getRedTicketCount());
+            int blueTickets = Math.max(0, game.getBlueTicketCount());
+            float red = redTickets / (float) totalTickets;
+            float blue = blueTickets / (float) totalTickets;
+            ImageUtil.drawShape(left + halfX - 0.5F, top + 2, left + halfX + 0.5F, top + infoHeight - 2, 0x66AAAAAA);
+            float rMin = left + 2;
+            float rMax = left + halfX - 2;
+            float rDiff = rMax - rMin;
+            ImageUtil.drawGradient(rMin, top + infoHeight - 5, rMin + rDiff * red, top + infoHeight - 2, 0xFFFF0000, 0xFFAA0000);
+            float bMin = left + halfX + 2;
+            float bMax = left + infoWidth - 2;
+            float bDiff = bMin - bMax;
+            ImageUtil.drawGradient(bMin - (1.0F - blue) * bDiff, top + infoHeight - 5, bMax, top + infoHeight - 2, 0xFF0000FF, 0xFF0000AA);
+
+            float scale = 0.50F;
+            GlStateManager.pushMatrix();
+            {
+                String displayedText = String.valueOf(redTickets);
+                GlStateManager.translate(left + halfX - font.getStringWidth(displayedText) / 2f - 2, top + 5, 0);
+                GlStateManager.scale(scale, scale, scale);
+                font.drawString(displayedText, 0, 0, 0xAA3333, true);
+            }
+            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+            {
+                String displayedText = String.valueOf(blueTickets);
+                GlStateManager.translate(left + halfX + 2, top + 5, 0);
+                GlStateManager.scale(scale, scale, scale);
+                font.drawString(displayedText, 0, 0, 0x4444FF, true);
+            }
+            GlStateManager.popMatrix();
+
+            font.drawStringWithShadow(TeamType.RED.getTitle().getFormattedText(), left + 2, top + 2, 0xFFFFFF);
+            String blueTitle = TeamType.BLUE.getTitle().getFormattedText();
+            font.drawStringWithShadow(blueTitle, left + infoWidth - 2 - font.getStringWidth(blueTitle), top + 2, 0xFFFFFF);
         }
-        GlStateManager.popMatrix();
 
-        GlStateManager.pushMatrix();
-        {
-            String displayedText = String.valueOf(blueTickets);
-            GlStateManager.translate(left + halfX + 2, top + 5, 0);
-            GlStateManager.scale(scale, scale, scale);
-            font.drawString(displayedText, 0, 0, 0x4444FF, true);
-        }
-        GlStateManager.popMatrix();
-
-        font.drawStringWithShadow(TeamType.RED.getTitle().getFormattedText(), left + 2, top + 2, 0xFFFFFF);
-        String blueTitle = TeamType.BLUE.getTitle().getFormattedText();
-        font.drawStringWithShadow(blueTitle, left + infoWidth - 2 - font.getStringWidth(blueTitle), top + 2, 0xFFFFFF);
-
+        CFG2DCoords timePos = overlays.timePanel;
         int timeRemaining = game.getTimeRemaining();
         String timeText = PUBGMCUtil.formatTime(timeRemaining);
         int textWidth = font.getStringWidth(timeText);
-        font.drawString(timeText, resolution.getScaledWidth() - textWidth - 5, 5, 0xFFFFFF, true);
+        font.drawString(timeText, timePos.getX() + resolution.getScaledWidth() - textWidth - 5, timePos.getY() + 5, 0xFFFFFF, true);
 
         DeathMessage[] deathMessages = game.getDeathMessageHolder().getDeathMessages();
+        CFG2DCoords dmPos = overlays.deathMessagesPanel;
         for (int i = 0; i < deathMessages.length; i++) {
             DeathMessage deathMessage = deathMessages[i];
             DeathMessage.Type type = deathMessage.getType();
@@ -156,20 +166,22 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
                 type = DeathMessage.Type.getType(deathMessage, player.world, game.getTeamManager());
                 deathMessage.setType(type);
             }
-            font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), 10, 10 + i * 10, type.getColor());
+            font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), dmPos.getX() + 10, dmPos.getY() + 10 + i * 10, type.getColor());
         }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        renderPointInfo(player, game, resolution);
+        if (overlays.showCaptureZoneStatus.get()) {
+            renderPointInfo(player, game, resolution, overlays.captureZonePanel);
+        }
     }
 
-    private void renderPointInfo(EntityPlayer player, DominationGame game, ScaledResolution resolution) {
+    private void renderPointInfo(EntityPlayer player, DominationGame game, ScaledResolution resolution, CFG2DCoords offsets) {
         DominationCapturePointManager manager = game.getPointManager();
         DominationCapturePointManager.Tracker tracker = manager.getEntityCaptureData(player);
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         if (tracker == null) {
             int backgroundWidth = getPointOverlayWidth(manager, font);
-            float left = (resolution.getScaledWidth() - backgroundWidth) / 2f;
-            float top = 0.0F;
+            float left = offsets.getX() + (resolution.getScaledWidth() - backgroundWidth) / 2f;
+            float top = offsets.getY();
             int offset = 5;
             List<DominationCapturePointManager.Tracker> list = new ArrayList<>(manager.getAllPointData());
             list.sort(Comparator.comparing(tr -> {
@@ -189,8 +201,8 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
             CaptureZones.CaptureData data = tracker.getCaptureData();
             int width = 120;
             int height = 25;
-            float left = (resolution.getScaledWidth() - width) / 2.0F;
-            float top = 5.0F;
+            float left = offsets.getX() + (resolution.getScaledWidth() - width) / 2.0F;
+            float top = offsets.getY() + 5.0F;
             ImageUtil.drawShape(left, top, left + width, top + height, 0x66 << 24);
             ImageUtil.drawShape(left + 2, top + height - 7, left + width - 2, top + height - 2, 0xFF << 24 | data.getBackground());
             if (data.getCaptureProgress() > 0.0F) {

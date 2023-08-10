@@ -6,10 +6,16 @@ import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.ColorType;
 import dev.toma.configuration.api.type.EnumType;
 import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.pubgmc.config.client.game.BattleRoyaleOverlays;
+import dev.toma.pubgmc.config.client.game.DominationOverlays;
+import dev.toma.pubgmc.config.client.game.FFAOverlays;
 
 public final class CFGOverlaySettings extends ObjectType {
 
     final ConfigPlugin plugin;
+    public BattleRoyaleOverlays battleRoyaleOverlays;
+    public FFAOverlays ffaOverlays;
+    public DominationOverlays dominationOverlays;
     public EnumType<CFGEnumOverlayStyle> imageBoostOverlay;
     public CFG2DCoords textBoostOverlayPos;
     public CFG2DCoords imgBoostOverlayPos;
@@ -24,6 +30,9 @@ public final class CFGOverlaySettings extends ObjectType {
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
+        battleRoyaleOverlays = configCreator.createObject(new BattleRoyaleOverlays(plugin), plugin);
+        ffaOverlays = configCreator.createObject(new FFAOverlays(plugin), plugin);
+        dominationOverlays = configCreator.createObject(new DominationOverlays(plugin), plugin);
         imageBoostOverlay = configCreator.createEnum("Boost Overlay", CFGEnumOverlayStyle.IMAGE, "Changes boost overlay render style");
         textBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Text Overlay Coords"), plugin);
         imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Image Overlay Coords"), plugin);
