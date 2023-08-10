@@ -444,6 +444,7 @@ public class GameCommand extends AbstractCommand {
         Map<String, GameMapInstance> maps = gameData.getRegisteredGameMaps();
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
+        sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.list_header"));
         for (Map.Entry<String, GameMapInstance> entry : maps.entrySet()) {
             String mapName = entry.getKey();
             GameMapInstance map = entry.getValue();
@@ -460,7 +461,7 @@ public class GameCommand extends AbstractCommand {
             Position2 max = bounds.getPositionMax(1.0F);
             double lenX = Math.abs(max.getX() - min.getX());
             double lenZ = Math.abs(max.getZ() - min.getZ());
-            String dimensions = String.format("[%d x %d]", (int) lenX, (int) lenZ);
+            String dimensions = String.format("[%d x %d]", (int) lenX + 1, (int) lenZ + 1);
             sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.map.info", mapName, centerComponent, dimensions));
         }
     }

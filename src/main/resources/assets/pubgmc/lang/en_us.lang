@@ -306,6 +306,7 @@ commands.pubgmc.game.map.deleted=Map '%s' has been removed
 commands.pubgmc.game.map.pois_deleted=All map points have been removed from map '%s'
 commands.pubgmc.game.map.poi_added=New %s point has been added to %s map
 commands.pubgmc.game.map.info=%s - Center %s, Dimensions %s
+commands.pubgmc.game.map.list_header=List of registered game maps
 commands.pubgmc.game.lobby.not_created=There is no lobby defined
 commands.pubgmc.game.lobby.info=Lobby is currently at position [%s;%s;%s]
 commands.pubgmc.game.lobby.created=Lobby has been successfully created
