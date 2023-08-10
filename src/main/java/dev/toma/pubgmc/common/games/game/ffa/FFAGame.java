@@ -9,6 +9,7 @@ import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
@@ -205,6 +206,12 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                     GameHelper.resetPlayerData(player);
                     GameHelper.moveToLobby(player);
                 });
+    }
+
+    @Nullable
+    @Override
+    public Playzone getMapArea() {
+        return playzone;
     }
 
     @Override

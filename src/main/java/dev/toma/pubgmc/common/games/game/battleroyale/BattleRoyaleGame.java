@@ -54,6 +54,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -243,6 +244,18 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 GameHelper.resetPlayerData(player);
             });
         }
+    }
+
+    @Nullable
+    @Override
+    public Playzone getMapArea() {
+        return mapPlayzone;
+    }
+
+    @Nullable
+    @Override
+    public Playzone getPlayArea() {
+        return playzone;
     }
 
     @Override

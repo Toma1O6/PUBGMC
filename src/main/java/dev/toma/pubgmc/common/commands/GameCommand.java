@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.commands;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.*;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
@@ -32,6 +33,7 @@ import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.*;
 import java.util.function.ToIntFunction;
@@ -259,6 +261,7 @@ public class GameCommand extends AbstractCommand {
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
         game.onGameInit(world);
+        MinecraftForge.EVENT_BUS.post(new GameEvent.Initialized(game));
         data.setActiveGame(game);
         data.sendGameDataToClients();
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.initialized"));
@@ -309,8 +312,10 @@ public class GameCommand extends AbstractCommand {
         World world = sender.getEntityWorld();
         try {
             game.validateAndSetupForMap(world, map);
+            MinecraftForge.EVENT_BUS.post(new GameEvent.MapCreated(game, map));
             data.setActiveGameMapName(actualMapName);
             game.onGameStart(world);
+            MinecraftForge.EVENT_BUS.post(new GameEvent.Started(game, map));
         } catch (GameException e) {
             data.setActiveGameMapName(actualMapName);
             throw new WrongUsageException("Unable to start game: " + e.getMessage());

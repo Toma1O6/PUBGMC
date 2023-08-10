@@ -2,9 +2,11 @@ package dev.toma.pubgmc.api.game;
 
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.map.GameMap;
+import dev.toma.pubgmc.api.game.playzone.Playzone;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -33,6 +35,14 @@ public interface Game<CFG extends GameConfiguration> {
 
     // Call when /game stop command is executed. Should stop the game and return everyone to lobby, reset world options and more
     void onGameStopped(World world, GameData data);
+
+    @Nullable
+    Playzone getMapArea();
+
+    @Nullable
+    default Playzone getPlayArea() {
+        return null;
+    }
 
     // Called when player leaves via /game leave command. Return false when player is not between active participants
     boolean playerLeaveGame(EntityPlayer player);

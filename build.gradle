@@ -49,6 +49,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     compile "curse.maven:configuration-444699:${configuration_version}"
+    compile group: "info.journeymap", name: "journeymap-api", version: "${journeymap_version}", changing: true
 }
 
 jar {

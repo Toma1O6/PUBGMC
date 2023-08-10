@@ -184,6 +184,12 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         });
     }
 
+    @Nullable
+    @Override
+    public Playzone getMapArea() {
+        return playzone;
+    }
+
     @Override
     public void onGameTick(World world) {
         if (completed && ++completionTimer > 100) {

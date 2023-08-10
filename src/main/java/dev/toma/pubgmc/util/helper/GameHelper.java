@@ -2,6 +2,7 @@ package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
+import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.api.game.GenerationType;
@@ -40,6 +41,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -227,6 +229,7 @@ public final class GameHelper {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             game.onGameStopped(world, data);
+            MinecraftForge.EVENT_BUS.post(new GameEvent.Stopped(game));
             data.setActiveGame(null);
             data.setActiveGameMapName(null);
             data.sendGameDataToClients();
