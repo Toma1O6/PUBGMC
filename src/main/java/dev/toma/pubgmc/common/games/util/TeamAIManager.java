@@ -105,6 +105,7 @@ public class TeamAIManager {
         nbt.setInteger("toSpawn", allowedAiSpawnCount);
         nbt.setInteger("dead", deadEntities);
         nbt.setTag("spawned", SerializationHelper.collectionToNbt(spawnedEntities, uuid -> new NBTTagString(uuid.toString())));
+        nbt.setTag("despawned", SerializationHelper.collectionToNbt(despawnedEntities, uuid -> new NBTTagString(uuid.toString())));
         return nbt;
     }
 
@@ -114,5 +115,6 @@ public class TeamAIManager {
         allowedAiSpawnCount = nbt.getInteger("toSpawn");
         deadEntities = nbt.getInteger("dead");
         SerializationHelper.collectionFromNbt(spawnedEntities, nbt.getTagList("spawned", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
+        SerializationHelper.collectionFromNbt(despawnedEntities, nbt.getTagList("despawned", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
     }
 }
