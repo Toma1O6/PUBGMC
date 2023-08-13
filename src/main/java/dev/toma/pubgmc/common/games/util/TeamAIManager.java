@@ -19,6 +19,7 @@ public class TeamAIManager {
     private int allowedAiSpawnCount;
     private int deadEntities;
     private final Set<UUID> spawnedEntities = new HashSet<>();
+    private final Set<UUID> despawnedEntities = new HashSet<>();
     private Consumer<UUID> unloadListener = uuid -> {};
 
     public TeamAIManager(TeamManager teamManager) {
@@ -36,6 +37,7 @@ public class TeamAIManager {
 
     public void onAiEntityDied(UUID entity) {
         spawnedEntities.remove(entity);
+        despawnedEntities.remove(entity);
         ++deadEntities;
     }
 
@@ -64,7 +66,18 @@ public class TeamAIManager {
                 teamManager.eliminate(memberId);
                 deadEntities++;
                 unloadListener.accept(memberId);
+                despawnedEntities.add(memberId);
                 iterator.remove();
+            }
+        }
+
+        Iterator<UUID> despawnedIterator = despawnedEntities.iterator();
+        while (despawnedIterator.hasNext()) {
+            UUID entityId = despawnedIterator.next();
+            Entity entity = server.getEntityFromUuid(entityId);
+            if (entity != null) {
+                entity.setDead();
+                despawnedIterator.remove();
             }
         }
     }
