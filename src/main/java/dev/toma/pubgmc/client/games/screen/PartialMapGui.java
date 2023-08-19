@@ -28,8 +28,8 @@ public class PartialMapGui extends MapPointDialogGui<PartialPlayAreaPoint> {
     @Override
     public void init() {
         super.init();
-        Position2 min = point.getMin();
-        Position2 max = point.getMax();
+        Position2 min = point.getPositionMin(1.0F);
+        Position2 max = point.getPositionMax(1.0F);
         Predicate<Character> textFilter = character -> Character.isDigit(character) || character == '.';
         fromX = addWidget(new TextFieldWidget(left + 5, top + 5, 80, 20, String.valueOf(min.getX()), 16).ghostText("From X"));
         fromX.withValidator(textFilter);
@@ -55,8 +55,8 @@ public class PartialMapGui extends MapPointDialogGui<PartialPlayAreaPoint> {
     @Override
     protected void confirmed() {
         if (this.isValid()) {
-            Position2 from = parsePos(fromX, fromZ, point.getMin());
-            Position2 to = parsePos(toX, toZ, point.getMax());
+            Position2 from = parsePos(fromX, fromZ, point.getPositionMin(1.0F));
+            Position2 to = parsePos(toX, toZ, point.getPositionMax(1.0F));
             String label = this.label.getText();
             PacketHandler.sendToServer(new C2S_AdjustPartialPlayZone(ownerMap.getMapName(), point.getPointPosition(), from, to, label));
             mc.displayGuiScreen(null);

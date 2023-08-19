@@ -82,6 +82,11 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
         return target != null ? new StaticPlayzone(target.newDamageOptions, target.nextMin, target.nextMax) : this;
     }
 
+    @Nullable
+    public ResizeTarget getTarget() {
+        return target;
+    }
+
     @Override
     public String toString() {
         return String.format("DynamicPlayzone: [%s] -> [%s], DamageSettings: %s, ResizeTarget: %s", min, max, getDamageOptions(), target);

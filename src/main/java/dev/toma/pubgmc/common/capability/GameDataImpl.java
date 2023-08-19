@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
+import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
@@ -16,10 +17,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class GameDataImpl implements GameData {
 
@@ -29,6 +32,7 @@ public class GameDataImpl implements GameData {
     @Nullable
     private GameLobby lobby;
     private String activeMap = "";
+    private String activeSubMap = "";
     private final Map<String, GameMapInstance> maps;
 
     public GameDataImpl() {
@@ -102,14 +106,30 @@ public class GameDataImpl implements GameData {
     }
 
     @Override
-    public void setActiveGameMapName(@Nullable String mapName) {
+    public void setActiveGameMapName(@Nullable String mapName, @Nullable String subMapName) {
         this.activeMap = mapName;
+        this.activeSubMap = subMapName;
     }
 
     @Nullable
     @Override
     public String getActiveGameMapName() {
         return activeMap;
+    }
+
+    @Override
+    public Optional<GameMap> getActiveGameMap() {
+        if (StringUtils.isBlank(activeMap)) {
+            return Optional.empty();
+        }
+        GameMapInstance instance = getGameMap(activeMap);
+        if (instance == null) {
+            return Optional.empty();
+        }
+        if (!StringUtils.isBlank(activeSubMap)) {
+            return Optional.of(instance.getSubmapOrSelf(activeMap));
+        }
+        return Optional.of(instance);
     }
 
     @Override
@@ -132,6 +152,9 @@ public class GameDataImpl implements GameData {
         nbt.setTag("maps", mapsNbt);
         if (activeMap != null) {
             nbt.setString("activeMap", activeMap);
+        }
+        if (activeSubMap != null) {
+            nbt.setString("activeSubMap", activeSubMap);
         }
         return nbt;
     }
@@ -156,5 +179,6 @@ public class GameDataImpl implements GameData {
             maps.put(map.getMapName(), map);
         }
         activeMap = nbt.hasKey("activeMap") ? nbt.getString("activeMap") : null;
+        activeSubMap = nbt.hasKey("activeSubMap") ? nbt.getString("activeSubMap") : null;
     }
 }

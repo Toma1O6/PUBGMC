@@ -246,18 +246,6 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
     }
 
-    @Nullable
-    @Override
-    public Playzone getMapArea() {
-        return mapPlayzone;
-    }
-
-    @Nullable
-    @Override
-    public Playzone getPlayArea() {
-        return playzone;
-    }
-
     @Override
     public boolean playerLeaveGame(EntityPlayer player) {
         Team team = teamManager.getEntityTeam(player);

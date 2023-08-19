@@ -9,7 +9,7 @@ public class SubMapPointRenderer extends SimplePoiRenderer<PartialPlayAreaPoint>
     @Override
     public void renderInDebugMode(PartialPlayAreaPoint point, double x, double y, double z, float partialTicks) {
         super.renderInDebugMode(point, x, y, z, partialTicks);
-        PlayzoneRenderer.render(x, y, z, point.getMin(), point.getMax(), 0x44FF0000);
+        PlayzoneRenderer.render(x, y, z, point, 0x44FF0000, partialTicks);
     }
 
     @Override

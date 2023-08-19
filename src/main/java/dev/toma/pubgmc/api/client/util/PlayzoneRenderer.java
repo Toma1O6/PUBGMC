@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.client.util;
 
+import dev.toma.pubgmc.api.game.map.Area;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.util.Position2;
 import net.minecraft.client.Minecraft;
@@ -26,13 +27,13 @@ public class PlayzoneRenderer<P extends Playzone> {
     }
 
     public void renderPlayzone(P playzone, double x, double y, double z, float partialTicks) {
-        Position2 min = playzone.getPositionMin(partialTicks);
-        Position2 max = playzone.getPositionMax(partialTicks);
         int color = colorProvider.applyAsInt(playzone);
-        render(x, y, z, min, max, color);
+        render(x, y, z, playzone, color, partialTicks);
     }
 
-    public static void render(double x, double y, double z, Position2 min, Position2 max, int color) {
+    public static void render(double x, double y, double z, Area area, int color, float partialTicks) {
+        Position2 min = area.getPositionMin(partialTicks);
+        Position2 max = area.getPositionMax(partialTicks);
         double minX = min.getX();
         double minZ = min.getZ();
         double maxX = max.getX();

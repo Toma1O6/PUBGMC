@@ -292,6 +292,7 @@ public class GameCommand extends AbstractCommand {
             throw new WrongUsageException("No map is registered under " + actualMapName + " name");
         }
         GameConfiguration configuration = game.getConfiguration();
+        String submap = null;
         if (configuration instanceof PartialZoneSelectorConfig) {
             PartialZoneSelectorConfig config = (PartialZoneSelectorConfig) configuration;
             PartialZoneConfiguration zoneConfiguration = config.getZoneConfiguration();
@@ -303,6 +304,7 @@ public class GameCommand extends AbstractCommand {
                 for (PartialPlayAreaPoint areaPoint : points) {
                     if (areaPoint.getMapName().equalsIgnoreCase(subMapName)) {
                         map = areaPoint;
+                        submap = areaPoint.getMapName();
                         break;
                     }
                 }
@@ -313,11 +315,11 @@ public class GameCommand extends AbstractCommand {
         try {
             game.validateAndSetupForMap(world, map);
             MinecraftForge.EVENT_BUS.post(new GameEvent.MapCreated(game, map));
-            data.setActiveGameMapName(actualMapName);
+            data.setActiveGameMapName(actualMapName, submap);
             game.onGameStart(world);
             MinecraftForge.EVENT_BUS.post(new GameEvent.Started(game, map));
         } catch (GameException e) {
-            data.setActiveGameMapName(actualMapName);
+            data.setActiveGameMapName(actualMapName, submap);
             throw new WrongUsageException("Unable to start game: " + e.getMessage());
         }
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.started"));

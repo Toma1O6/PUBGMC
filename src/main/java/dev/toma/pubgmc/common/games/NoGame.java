@@ -4,13 +4,11 @@ import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
-import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -78,11 +76,6 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
 
     @Override
     public void invokeEvent(Consumer<GameEventListener> consumer) {
-    }
-
-    @Override
-    public @Nullable Playzone getMapArea() {
-        return null;
     }
 
     @Override

@@ -73,11 +73,13 @@ public class PartialPlayAreaPoint extends GameMapPoint implements GameMap {
         return x >= min.getX() && x <= max.getX() && z >= min.getZ() && z <= max.getZ();
     }
 
-    public Position2 getMin() {
+    @Override
+    public Position2 getPositionMin(float partialTicks) {
         return min;
     }
 
-    public Position2 getMax() {
+    @Override
+    public Position2 getPositionMax(float partialTicks) {
         return max;
     }
 

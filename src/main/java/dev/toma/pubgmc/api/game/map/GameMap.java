@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface GameMap extends Bounds2 {
+public interface GameMap extends Area {
 
     Collection<GameMapPoint> getPoints();
 

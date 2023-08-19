@@ -9,7 +9,6 @@ import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
-import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
@@ -48,7 +47,6 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -77,7 +75,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
     private int timeRemaining;
     private boolean completed;
     private int completionTimer = 60;
-    private String submapName;
 
     public FFAGame(UUID gameId, FFAGameConfiguration configuration) {
         this.gameId = gameId;
@@ -86,7 +83,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         this.participantManager = new FFAParticipantManager();
         this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
         this.properties = new PlayerPropertyHolder();
-        this.spawnerSelector = new SpawnPointSelector<>(GameMapPoints.SPAWNER, world -> GameHelper.getActiveGameMapOrSubMap(world, submapName));
+        this.spawnerSelector = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMapOrSubMap);
         this.deathMessages = new DeathMessageContainer(7, 60);
 
         this.addListener(new EventListener(this));
@@ -116,9 +113,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         }
         playzone = new StaticPlayzone(map.bounds());
         playzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
-        if (map.isSubMap()) {
-            this.submapName = map.getMapName();
-        }
     }
 
     @Override
@@ -206,12 +200,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                     GameHelper.resetPlayerData(player);
                     GameHelper.moveToLobby(player);
                 });
-    }
-
-    @Nullable
-    @Override
-    public Playzone getMapArea() {
-        return playzone;
     }
 
     @Override
@@ -536,9 +524,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
             }
             nbt.setTag("loadouts", game.loadoutManager.serialize());
             nbt.setTag("deathMessages", game.deathMessages.serialize());
-            if (game.submapName != null) {
-                nbt.setString("submap", game.submapName);
-            }
             return nbt;
         }
 
@@ -559,9 +544,6 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
             }
             ffaGame.loadoutManager.deserialize(nbt.getCompoundTag("loadouts"));
             ffaGame.deathMessages.deserialize(nbt.getCompoundTag("deathMessages"));
-            if (nbt.hasKey("submap", Constants.NBT.TAG_STRING)) {
-                ffaGame.submapName = nbt.getString("submap");
-            }
             return ffaGame;
         }
 

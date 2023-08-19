@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.integrations.journeymap;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.common.games.GameTypes;
 import journeymap.client.api.ClientPlugin;
 import journeymap.client.api.IClientAPI;
 import journeymap.client.api.IClientPlugin;
@@ -18,6 +19,10 @@ public final class JourneyMapPlugin implements IClientPlugin {
         api = jmClientApi;
         listener = new JourneyMapEventListener(api);
         MinecraftForge.EVENT_BUS.register(listener);
+
+        JourneyMapGameOverlay.registerJourneyMapOverlay(GameTypes.BATTLE_ROYALE, new JourneyMapOverlays.BattleRoyaleJourneyMapOverlay());
+        JourneyMapGameOverlay.registerJourneyMapOverlay(GameTypes.FFA, new JourneyMapOverlays.FreeForAllJourneyMapOverlay());
+        JourneyMapGameOverlay.registerJourneyMapOverlay(GameTypes.DOMINATION, new JourneyMapOverlays.DominationJourneyMapOverlay());
     }
 
     @Override

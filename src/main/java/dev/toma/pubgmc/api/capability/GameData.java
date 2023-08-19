@@ -3,6 +3,7 @@ package dev.toma.pubgmc.api.capability;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.map.GameLobby;
+import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -85,9 +86,11 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
 
     /**
      * Assigns name of map which is currently active
-     * @param mapName Name of currently active game map
+     *
+     * @param mapName    Name of currently active game map
+     * @param subMapName Name of currently active sub map
      */
-    void setActiveGameMapName(@Nullable String mapName);
+    void setActiveGameMapName(@Nullable String mapName, @Nullable String subMapName);
 
     /**
      * @return Name of currently active map. Can be {@code null}
@@ -103,8 +106,5 @@ public interface GameData extends INBTSerializable<NBTTagCompound> {
     /**
      * @return Optional holding active GameMap instance
      */
-    @Nullable
-    default Optional<GameMapInstance> getActiveGameMap() {
-        return Optional.ofNullable(getActiveGameMapName()).map(this::getGameMap);
-    }
+    Optional<GameMap> getActiveGameMap();
 }

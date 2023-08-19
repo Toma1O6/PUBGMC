@@ -231,7 +231,7 @@ public final class GameHelper {
             game.onGameStopped(world, data);
             MinecraftForge.EVENT_BUS.post(new GameEvent.Stopped(game));
             data.setActiveGame(null);
-            data.setActiveGameMapName(null);
+            data.setActiveGameMapName(null, null);
             data.sendGameDataToClients();
         });
     }
@@ -405,15 +405,8 @@ public final class GameHelper {
     }
 
     @Nullable
-    public static GameMap getActiveGameMapOrSubMap(World world, @Nullable String submapName) {
-        GameMapInstance mapInstance = GameDataProvider.getGameData(world).map(data -> {
-            String mapName = data.getActiveGameMapName();
-            return data.getGameMap(mapName);
-        }).orElse(null);
-        if (mapInstance != null && submapName != null) {
-            return mapInstance.getSubmapOrSelf(submapName);
-        }
-        return mapInstance;
+    public static GameMap getActiveGameMapOrSubMap(World world) {
+        return GameDataProvider.getGameData(world).flatMap(GameData::getActiveGameMap).orElse(null);
     }
 
     public interface InventoryProvider {

@@ -109,6 +109,16 @@ public final class GameMapInstance implements GameMap {
     }
 
     @Override
+    public Position2 getPositionMin(float partialTicks) {
+        return min;
+    }
+
+    @Override
+    public Position2 getPositionMax(float partialTicks) {
+        return max;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
