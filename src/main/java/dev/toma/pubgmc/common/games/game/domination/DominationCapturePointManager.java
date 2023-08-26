@@ -239,6 +239,11 @@ public class DominationCapturePointManager {
             return point;
         }
 
+        @Nullable
+        public TeamType getOwner() {
+            return owner;
+        }
+
         public NBTTagCompound serialize() {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setTag("poi", GameMapPointType.serializePointData(point));

@@ -85,7 +85,8 @@ public class JourneyMapOverlays {
 
         @Override
         public void apply(FFAGame game, GameData data, IClientAPI api) {
-
+            Playzone playzone = game.getPlayzone();
+            showArea(api, playzone, MAP_BORDER, "bounds");
         }
     }
 
@@ -93,7 +94,8 @@ public class JourneyMapOverlays {
 
         @Override
         public void apply(DominationGame game, GameData data, IClientAPI api) {
-
+            Playzone playzone = game.getPlayzone();
+            showArea(api, playzone, MAP_BORDER, "bounds");
         }
     }
 

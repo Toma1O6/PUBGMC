@@ -24,6 +24,8 @@ import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCDamageSources;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.client.S2C_ReloadChunks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -407,6 +409,12 @@ public final class GameHelper {
     @Nullable
     public static GameMap getActiveGameMapOrSubMap(World world) {
         return GameDataProvider.getGameData(world).flatMap(GameData::getActiveGameMap).orElse(null);
+    }
+
+    public static void reloadChunks(EntityPlayer player) {
+        if (!player.world.isRemote) {
+            PacketHandler.sendToClient(new S2C_ReloadChunks(), (EntityPlayerMP) player);
+        }
     }
 
     public interface InventoryProvider {

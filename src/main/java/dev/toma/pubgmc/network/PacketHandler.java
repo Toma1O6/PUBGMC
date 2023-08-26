@@ -49,6 +49,7 @@ public class PacketHandler {
         registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
         registerClientPacket(S2C_SendGameData.Handler.class, S2C_SendGameData.class);
         registerClientPacket(S2C_PacketLoadoutSelect.Handler.class, S2C_PacketLoadoutSelect.class);
+        registerClientPacket(S2C_ReloadChunks.Handler.class, S2C_ReloadChunks.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

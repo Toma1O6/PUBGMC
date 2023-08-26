@@ -392,6 +392,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         List<Entity> participants = participantManager.getLoadedParticipants(server);
         SpawnerPoint point = spawnerSelector.getPoint(world, participants);
         point.teleportOn(player);
+        GameHelper.reloadChunks(player);
         properties.setProperty(player.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
         if (loadoutManager.hasSelectedLoadout(player.getUniqueID())) {
             loadoutManager.applyLoadout(player);

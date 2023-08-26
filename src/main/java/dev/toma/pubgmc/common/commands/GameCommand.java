@@ -15,8 +15,6 @@ import dev.toma.pubgmc.common.commands.core.arg.PubgmcRegistryArgument;
 import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
-import dev.toma.pubgmc.common.games.map.GameMapPoints;
-import dev.toma.pubgmc.common.games.map.PartialPlayAreaPoint;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
@@ -37,6 +35,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.*;
 import java.util.function.ToIntFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GameCommand extends AbstractCommand {
@@ -44,6 +43,7 @@ public class GameCommand extends AbstractCommand {
     private static final ITextComponent TEXT_EXECUTE_CMD = new TextComponentTranslation("commands.pubgmc.game.leave.confirm.hover_cmd_text");
     private static final String ARG_GAME_TYPE = "gameType";
     private static final String ARG_MAP_NAME = "mapName";
+    private static final String ARG_SUB_MAP_NAME = "subMapName";
     private static final String ARG_MAP_CENTER_X = "mapCreateCenterX";
     private static final String ARG_MAP_CENTER_Z = "mapCreateCenterZ";
     private static final String ARG_MAP_SIZE = "mapCreateSize";
@@ -82,6 +82,10 @@ public class GameCommand extends AbstractCommand {
                             .node(
                                     CommandNodeProvider.argument(ARG_MAP_NAME, StringArgument.stringArgument(GameMapInstance.ALLOWED_NAME_PATTERN, ERROR_MAP_NAME_FORMAT))
                                             .suggests(GameCommand::suggestMapName)
+                                            .node(
+                                                    CommandNodeProvider.argument(ARG_SUB_MAP_NAME, StringArgument.stringArgument(Pattern.compile(".+")))
+                                                            .permissionLevel(2)
+                                            )
                             )
             )
             .node(
@@ -287,27 +291,17 @@ public class GameCommand extends AbstractCommand {
         if (actualMapName == null) {
             throw new WrongUsageException("You must specify game map. Use /game start <mapName>");
         }
-        GameMap map = data.getGameMap(actualMapName);
-        if (map == null) {
+        GameMapInstance mainMap = data.getGameMap(actualMapName);
+        if (mainMap == null) {
             throw new WrongUsageException("No map is registered under " + actualMapName + " name");
         }
-        GameConfiguration configuration = game.getConfiguration();
-        String submap = null;
-        if (configuration instanceof PartialZoneSelectorConfig) {
-            PartialZoneSelectorConfig config = (PartialZoneSelectorConfig) configuration;
-            PartialZoneConfiguration zoneConfiguration = config.getZoneConfiguration();
-            String[] availableMaps = zoneConfiguration.availableSubMaps;
-            if (zoneConfiguration.enabled && availableMaps.length > 0) {
-                Random random = context.getSender().getEntityWorld().rand;
-                String subMapName = availableMaps[random.nextInt(availableMaps.length)];
-                Collection<PartialPlayAreaPoint> points = map.getPoints(GameMapPoints.PARTIAL_PLAY_AREA);
-                for (PartialPlayAreaPoint areaPoint : points) {
-                    if (areaPoint.getMapName().equalsIgnoreCase(subMapName)) {
-                        map = areaPoint;
-                        submap = areaPoint.getMapName();
-                        break;
-                    }
-                }
+        String submap = context.<String>getArgument(ARG_SUB_MAP_NAME)
+                .orElse(null);
+        GameMap map = mainMap;
+        if (submap != null) {
+            map = mainMap.getSubmapOrSelf(submap);
+            if (mainMap == map) {
+                throw new WrongUsageException("Unknown submap: " + submap);
             }
         }
         ICommandSender sender = context.getSender();
@@ -458,6 +452,9 @@ public class GameCommand extends AbstractCommand {
             Playzone bounds = map.bounds();
             Position2 center = bounds.center();
             int y = world.getHeight((int) center.getX(), (int) center.getZ());
+            if (y == 0) {
+                y = 200;
+            }
             BlockPos mapCenter = new BlockPos(center.getX(), y, center.getZ());
             ITextComponent centerComponent = new TextComponentString(String.format("[%d; %d; %d]", mapCenter.getX(), mapCenter.getY(), mapCenter.getZ()));
             Style style = centerComponent.getStyle();

@@ -375,6 +375,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         bleedRespawnTickets(player);
         SpawnerPoint point = getRespawnPoint((WorldServer) world, player);
         point.teleportOn(player);
+        GameHelper.reloadChunks(player);
         if (loadoutManager.hasSelectedLoadout(player.getUniqueID())) {
             loadoutManager.applyLoadout(player);
         } else {
