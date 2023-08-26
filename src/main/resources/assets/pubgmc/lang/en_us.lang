@@ -118,6 +118,7 @@ item.mapitem_spawner.name=Add Entity Spawner
 item.mapitem_team_spawner.name=Add/Manage Entity Team Spawner
 item.mapitem_capture_zone.name=Add/Manage Capture Zone
 item.mapitem_point_of_interest.name=Add Point Of Interest
+item.mapitem_submap_config.name=Add Submap Area
 
 key.category.pubgmc=PUBGMC
 pubgmc.key.reload=Reload
