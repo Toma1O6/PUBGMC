@@ -19,6 +19,7 @@ public final class CFGOverlaySettings extends ObjectType {
     public EnumType<CFGEnumOverlayStyle> imageBoostOverlay;
     public CFG2DCoords textBoostOverlayPos;
     public CFG2DCoords imgBoostOverlayPos;
+    public CFG2DCoords equipmentInventoryButtonPos;
     public BooleanType renderArmorIcons;
     public ColorType jmMapBorderColor;
     public ColorType jmBorderColor;
@@ -37,6 +38,7 @@ public final class CFGOverlaySettings extends ObjectType {
         imageBoostOverlay = configCreator.createEnum("Boost Overlay", CFGEnumOverlayStyle.IMAGE, "Changes boost overlay render style");
         textBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Text Overlay Coords"), plugin);
         imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Image Overlay Coords"), plugin);
+        equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
         jmMapBorderColor = configCreator.createColorRGB("Map Border Color", "#FF0000", "Map Border color for JourneyMap");
         jmBorderColor = configCreator.createColorRGB("Border Playzone Color", "#FFFFFF", "Border playzone color for JourneyMap");

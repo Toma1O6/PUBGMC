@@ -104,7 +104,8 @@ public class ClientEvents {
         Gui gui = event.getGui();
         if (gui instanceof GuiInventory) {
             GuiInventory inventoryGui = (GuiInventory) gui;
-            event.getButtonList().add(new EquipmentInventoryButton(inventoryGui.getGuiLeft() + 66, inventoryGui.getGuiTop() + 9, "+"));
+            CFG2DCoords offsets = ConfigPMC.overlays().equipmentInventoryButtonPos;
+            event.getButtonList().add(new EquipmentInventoryButton(inventoryGui.getGuiLeft() + 66 + offsets.getX(), inventoryGui.getGuiTop() + 9 + offsets.getY(), "+"));
         }
     }
 
