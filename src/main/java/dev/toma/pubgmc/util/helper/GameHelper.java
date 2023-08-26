@@ -21,6 +21,7 @@ import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCDamageSources;
@@ -392,6 +393,9 @@ public final class GameHelper {
     }
 
     public static boolean hasRestrictedInventory(World world) {
+        if (ConfigPMC.common.players.forceInventoryRestrictions.get()) {
+            return true;
+        }
         return GameDataProvider.getGameData(world).map(data -> {
             Game<?> game = data.getCurrentGame();
             return game.isStarted() && GameMutatorManager.INSTANCE.hasMutator(game.getGameType(), GameMutators.INVENTORY_LIMIT);

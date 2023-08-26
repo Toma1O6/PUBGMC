@@ -31,11 +31,13 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = new NBTTagCompound();
         c.setTag("weapons", weapons.serializeNBT());
+        c.setBoolean("inventoryRestrictions", players.forceInventoryRestrictions.get());
         return c;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         weapons.deserializeNBT(nbt.getCompoundTag("weapons"));
+        players.forceInventoryRestrictions.set(nbt.getBoolean("inventoryRestrictions"));
     }
 }
