@@ -389,3 +389,11 @@ data.pubgmc.loot_schema=Loot configurations
 data.pubgmc.game_configs=Game configurations
 data.pubgmc.entity_loadouts=Entity loadouts
 data.pubgmc.entity_providers=Entity spawn configurations
+
+pubgmc.menu.settings=Settings
+pubgmc.menu.quit=Quit
+pubgmc.menu.events=Events & Announcements
+pubgmc.menu.noevents=No events
+pubgmc.menu.receive_error=Unable to receive latest news, check your internet connection
+pubgmc.news.error=Couldn't get latest mod news. Check your internet connection and try again (or wait 30 seconds for auto-refresh)
+pubgmc.news.back=Back to menu

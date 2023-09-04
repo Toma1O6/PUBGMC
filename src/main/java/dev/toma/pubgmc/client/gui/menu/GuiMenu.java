@@ -11,6 +11,7 @@ import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -50,18 +51,18 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         // anouncements
         addWidget(new EventPanelComponent(this, 15, initialHeight + 20, w, 68));
         // singleplayer
-        addWidget(new ButtonWidget(15, initialHeight + 100, w, 20, "Singleplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this))));
-        addWidget(new ButtonWidget(15, initialHeight + 125, w, 20, "Multiplayer", (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this))));
+        addWidget(new ButtonWidget(15, initialHeight + 100, w, 20, I18n.format("menu.singleplayer"), (c, x, y, b) -> mc.displayGuiScreen(new GuiWorldSelection(this))));
+        addWidget(new ButtonWidget(15, initialHeight + 125, w, 20, I18n.format("menu.multiplayer"), (c, x, y, b) -> mc.displayGuiScreen(new GuiMultiplayer(this))));
         // settings
-        addWidget(new ButtonWidget(15, initialHeight + 150, w, 20, "Settings", (c, x, y, b) -> mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings))));
+        addWidget(new ButtonWidget(15, initialHeight + 150, w, 20, I18n.format("pubgmc.menu.settings"), (c, x, y, b) -> mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings))));
         // mods & quit buttons
         if (splitModsAndQuitButtons) {
             int half = w / 2;
             addWidget(new ButtonWidget(15, 175, half - 5, 20, "Mods", (c, x, y, b) -> mc.displayGuiScreen(new GuiModList(this))));
-            addWidget(new ButtonWidget(15 + half + 5, 175, half - 5, 20, "Quit", (c, x, y, b) -> mc.shutdown()));
+            addWidget(new ButtonWidget(15 + half + 5, 175, half - 5, 20, I18n.format("pubgmc.menu.quit"), (c, x, y, b) -> mc.shutdown()));
         } else {
             addWidget(new ButtonWidget(15, initialHeight + 175, w, 20, "Mods", (c, x, y, b) -> mc.displayGuiScreen(new GuiModList(this))));
-            addWidget(new ButtonWidget(15, initialHeight + 200, w, 20, "Quit", (c, x, y, b) -> mc.shutdown()));
+            addWidget(new ButtonWidget(15, initialHeight + 200, w, 20, I18n.format("pubgmc.menu.quit"), (c, x, y, b) -> mc.shutdown()));
         }
         // news panel
         addWidget(new InfoPanelComponent(15 + 2 * wd4, 20, 2 * wd4 - 30, lowestPoint - 20 + initialHeight, this));
@@ -174,7 +175,7 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
                 }
             }
             if (textComponents.isEmpty()) {
-                TextComponentString stc = new TextComponentString(TextFormatting.RED + "Unable to receive latest news, check your internet connection");
+                TextComponentString stc = new TextComponentString(TextFormatting.RED + I18n.format("pubgmc.menu.receive_error"));
                 textComponents.addAll(GuiUtilRenderComponents.splitText(stc, max, renderer, true, true));
             }
             int lineLimit = height / (renderer.FONT_HEIGHT + 1) - 1;
@@ -282,11 +283,11 @@ public class GuiMenu extends GuiWidgets implements RefreshListener {
         public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             Widget.drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
             FontRenderer renderer = mc.fontRenderer;
-            renderer.drawString(TextFormatting.BOLD + "Events & Announcements", x + 4, y + 4, 0xffffff);
+            renderer.drawString(TextFormatting.BOLD + I18n.format("pubgmc.menu.events"), x + 4, y + 4, 0xffffff);
             if (count > 0) {
                 msgComponents.get(currentMsg).render(mc, mouseX, mouseY, partialTicks);
             } else {
-                String text = TextFormatting.BOLD + "No events";
+                String text = TextFormatting.BOLD + I18n.format("pubgmc.menu.noevents");
                 renderer.drawStringWithShadow(text, x + (width - renderer.getStringWidth(text)) / 2.0F, y + (height - renderer.FONT_HEIGHT) / 2.0F, 0xff3333);
             }
             for (Widget child : children) {

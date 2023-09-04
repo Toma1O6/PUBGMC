@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import org.lwjgl.input.Mouse;
@@ -42,7 +43,7 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
         lineCount = panelHeight / (mc.fontRenderer.FONT_HEIGHT + 1);
         int quarter = width / 4;
         int w = quarter * 2;
-        addWidget(new ButtonWidget(quarter, height - 30, w, 30, "Back to menu", (c, x, y, b) -> mc.displayGuiScreen(lastScreen)));
+        addWidget(new ButtonWidget(quarter, height - 30, w, 30, I18n.format("pubgmc.news.back"), (c, x, y, b) -> mc.displayGuiScreen(lastScreen)));
         ContentResult result = manager.getCachedResult();
         String[] news = new String[0];
         int max = w - 20;
@@ -50,7 +51,7 @@ public class GuiNews extends GuiWidgets implements RefreshListener {
             news = result.getNews();
         }
         if (news.length == 0) {
-            news = new String[]{"Couldn't get latest mod news. Check your internet connection and try again (or wait 30 seconds for auto-refresh)"};
+            news = new String[]{I18n.format("pubgmc.news.error")};
         }
         FontRenderer renderer = mc.fontRenderer;
         for (String string : news) {

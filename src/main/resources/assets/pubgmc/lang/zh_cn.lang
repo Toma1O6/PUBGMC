@@ -389,3 +389,11 @@ data.pubgmc.loot_schema=掉落物配置
 data.pubgmc.game_configs=游戏配置
 data.pubgmc.entity_loadouts=实体装备
 data.pubgmc.entity_providers=实体生成配置
+
+pubgmc.menu.settings=设置
+pubgmc.menu.quit=退出
+pubgmc.menu.events=活动与公告
+pubgmc.menu.noevents=没有活动
+pubgmc.menu.receive_error=无法接收最新消息，请检查您的互联网连接
+pubgmc.news.error=无法获得最新消息。检查您的互联网连接，然后重试（或等待 30 秒自动刷新）
+pubgmc.news.back=回到主菜单
