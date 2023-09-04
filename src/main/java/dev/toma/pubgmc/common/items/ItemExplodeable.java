@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.items;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.entity.throwables.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -116,9 +117,9 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add("Right-click: Long throw");
-        tooltip.add("Left-click: Short throw");
-        if (maxFuse > 0) tooltip.add("Fuse: " + this.maxFuse);
+        tooltip.add(I18n.format("grenade.desc.right"));
+        tooltip.add(I18n.format("grenade.desc.left"));
+        if (maxFuse > 0) tooltip.add(I18n.format("grenade.he.fuse") + this.maxFuse);
         if (description != null) {
             Collections.addAll(tooltip, description);
         }

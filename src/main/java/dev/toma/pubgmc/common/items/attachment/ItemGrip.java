@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -46,15 +47,15 @@ public class ItemGrip extends ItemAttachment {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (verticalRecoil < 1) {
             int i = Math.round((1.0F - verticalRecoil) * 100);
-            tooltip.add(formatProperty("Vertical recoil", "-" + i) + "%");
+            tooltip.add(formatProperty(I18n.format("accessories.vertical.tooltip"), "-" + i) + "%");
         }
         if (horizontalRecoil < 1) {
             int i = Math.round((1.0F - horizontalRecoil) * 100);
-            tooltip.add(formatProperty("Horizontal recoil", "-" + i) + "%");
+            tooltip.add(formatProperty(I18n.format("accessories.horizontal.tooltip"), "-" + i) + "%");
         }
         if (ads < 1) {
             int i = Math.round((1.0F - ads) * 100);
-            tooltip.add(formatProperty("ADS speed", "-" + i) + "%");
+            tooltip.add(formatProperty(I18n.format("accessories.ads.tooltip"), "-" + i) + "%");
         }
     }
 }

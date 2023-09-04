@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -51,13 +52,13 @@ public class ItemMuzzle extends ItemAttachment {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (verticalRecoil < 1) {
             int i = Math.round((1.0F - verticalRecoil) * 100);
-            tooltip.add(formatProperty("Vertical recoil", "-" + i) + "%");
+            tooltip.add(formatProperty(I18n.format("accessories.vertical.tooltip"), "-" + i) + "%");
         }
         if (horizontalRecoil < 1) {
             int i = Math.round((1.0F - horizontalRecoil) * 100);
-            tooltip.add(formatProperty("Horizontal recoil", "-" + i) + "%");
+            tooltip.add(formatProperty(I18n.format("accessories.horizontal.tooltip"), "-" + i) + "%");
         }
         if (silent)
-            tooltip.add(TextFormatting.AQUA + "Silences weapon");
+            tooltip.add(TextFormatting.AQUA + I18n.format("accessories.silences.tooltip"));
     }
 }

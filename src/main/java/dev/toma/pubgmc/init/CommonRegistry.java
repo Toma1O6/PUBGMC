@@ -44,6 +44,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -205,8 +206,8 @@ public class CommonRegistry {
                 new ItemGhillie("ghillie_suit"),
                 new ItemNVGoggles("nv_goggles"),
                 new ItemExplodeable("grenade", 110, ItemExplodeable.Helper::onFragRemoved),
-                new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved).addAditionalDescription("Effect duration: 20s", TextFormatting.RED + "Water will cancel the effect!"),
-                new ItemExplodeable("molotov", -1, ItemExplodeable.Helper::onMolotovRemoved).addAditionalDescription("Effect duration: 10s", TextFormatting.RED + "Water will cancel the effect!"),
+                new ItemExplodeable("smoke", 110, ItemExplodeable.Helper::onSmokeRemoved).addAditionalDescription(I18n.format("grenade.molotov.effect"), TextFormatting.RED + I18n.format("grenade.water.warn")),
+                new ItemExplodeable("molotov", -1, ItemExplodeable.Helper::onMolotovRemoved).addAditionalDescription(I18n.format("grenade.smoke.effect"), TextFormatting.RED + I18n.format("grenade.water.warn")),
                 new ItemExplodeable("flashbang", 60, ItemExplodeable.Helper::onFlashBangRemoved),
                 new ItemAmmo("ammo_9mm", AmmoType.AMMO9MM),
                 new ItemAmmo("ammo_45acp", AmmoType.AMMO45ACP),
