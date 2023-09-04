@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -37,6 +38,6 @@ public class ItemScope extends ItemAttachment {
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         int fov = this.getZoom((int) Minecraft.getMinecraft().gameSettings.fovSetting);
-        tooltip.add(formatProperty("FOV", fov + ""));
+        tooltip.add(formatProperty(I18n.format("accessories.fov.tooltip"), fov + ""));
     }
 }

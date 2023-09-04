@@ -127,6 +127,7 @@ pubgmc.key.nv=Night Vision
 pubgmc.key.attachment=Attachment GUI
 pubgmc.key.scopetype=Change Scope Type
 pubgmc.key.scopecolor=Change Scope Color
+pubgmc.key.prone=Prone
 
 tile.roadasphalt.name=Asphalt road
 tile.schoolwall.name=School wall
@@ -185,7 +186,7 @@ tile.big_crate_gun.name=Gun Crate
 tile.wood_stairs.name=Wooden Stairs
 tile.clean_metal.name=Clean Metal
 tile.dark_wood.name=Dark Wood
-tile.sandbag_sand=Sandbag Sand
+tile.sandbag_sand.name=Sandbag Sand
 tile.tire.name=Tire
 tile.tire_stack.name=Tire Stack
 tile.metal_table.name=Metal Table
@@ -245,6 +246,19 @@ fuel.desc.useage=Hold right click while driving vehicle
 fuel.desc.stationary=Vehicle must be stationary!
 fuel.info.inside=You must sit inside vehicle to refill fuel!
 
+target.desc.info=Right-Click to enable hit information
+target.info.enable=Hit information enabled
+target.info.disable=Hit information disabled
+
+accessories.silences.tooltip=Silences weapon
+accessories.vertical.tooltip=Vertical recoil
+accessories.horizontal.tooltip=Horizontal recoil
+accessories.fov.tooltip=FOV
+accessories.extended.tooltip=Extended
+accessories.quickdraw.tooltip=Quickdraw
+accessories.reload.tooltip=Faster reload
+accessories.ads.tooltip=ADS speed
+
 ammo.9mm=9mm Bullet
 ammo.12g=Shotgun Ammo
 ammo.45acp=.45acp Bullet
@@ -257,17 +271,12 @@ gun.firemode.single=SINGLE
 gun.firemode.burst=BURST
 gun.firemode.auto=FULL-AUTO
 
-grenade.desc.info=Right-Click to throw. Run to throw further
-grenade.he.fuse=Fuse
-grenade.he.fuse.time=4 seconds
-grenade.molotov.fire=Fire
-grenade.molotov.fire.time=10 seconds
-grenade.molotov.range=Range
-grenade.molotov.range.blocks=4 blocks
-grenade.molotov.warn=Water will extinguish the fire!
-grenade.smoke.effect=Effect
-grenade.smoke.effect.duration=20 seconds
-grenade.smoke.warn=Water will cancel the effect!
+grenade.desc.right=Right-click: Long throw
+grenade.desc.left=Left-click: Short throw
+grenade.he.fuse=Fuse:
+grenade.molotov.effect=Effect duration: 20s
+grenade.smoke.effect=Effect duration: 10s
+grenade.water.warn=Water will cancel the effect!
 
 death.attack.vehicle=%s has been run over by wild vehicle!
 death.attack.zone=%s couldn't outrun the zone.

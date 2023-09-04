@@ -8,6 +8,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,7 +29,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
     public BlockTarget(String name) {
         super(name, Material.WOOD);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(UPPER, false).withProperty(FEEDBACK, false));
-        this.addDescription("Right-Click to enable hit information");
+        this.addDescription(I18n.format("target.desc.info"));
     }
 
     @Override
@@ -87,7 +88,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
             EnumFacing facing1 = state.getValue(UPPER) ? EnumFacing.DOWN : EnumFacing.UP;
             worldIn.setBlockState(pos, state.withProperty(FEEDBACK, b));
             worldIn.setBlockState(pos.offset(facing1), worldIn.getBlockState(pos.offset(facing1)).withProperty(FEEDBACK, b));
-            playerIn.sendStatusMessage(new TextComponentString(b ? "Hit information enabled" : "Hit information disabled"), true);
+            playerIn.sendStatusMessage(new TextComponentString(b ? I18n.format("target.info.enable") : I18n.format("target.info.disable")), true);
         }
         return true;
     }
