@@ -241,6 +241,10 @@ gun.velocity.info=blocks per second
 gun.gravity.info=blocks per second
 gun.firerate.info=shots per second
 
+fuel.desc.useage=Hold right click while driving vehicle
+fuel.desc.stationary=Vehicle must be stationary!
+fuel.info.inside=You must sit inside vehicle to refill fuel!
+
 ammo.9mm=9mm Bullet
 ammo.12g=Shotgun Ammo
 ammo.45acp=.45acp Bullet

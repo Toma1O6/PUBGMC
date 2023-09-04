@@ -241,6 +241,10 @@ gun.velocity.info=方块/秒
 gun.gravity.info=方块/秒
 gun.firerate.info=射击次数/秒
 
+fuel.desc.useage=驾驶载具时右击
+fuel.desc.stationary=载具必须静止不动！
+fuel.info.inside=你必须坐在载具里填充燃料！
+
 ammo.9mm=9毫米子弹
 ammo.12g=霰弹枪弹药
 ammo.45acp=.45口径子弹

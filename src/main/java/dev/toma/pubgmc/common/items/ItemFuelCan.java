@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,14 +55,14 @@ public class ItemFuelCan extends PMCItem implements Consumable {
             if (((EntityVehicle) playerIn.getRidingEntity()).currentSpeed == 0) {
                 playerIn.setActiveHand(handIn);
                 return new ActionResult<>(EnumActionResult.PASS, stack);
-            } else warnPlayer(playerIn, "Vehicle must be stationary!");
-        } else warnPlayer(playerIn, "You must sit inside vehicle to refill fuel!");
+            } else warnPlayer(playerIn, I18n.format("fuel.desc.stationary"));
+        } else warnPlayer(playerIn, I18n.format("fuel.info.inside"));
         return new ActionResult(EnumActionResult.FAIL, stack);
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add("Hold right click while driving vehicle");
-        tooltip.add("Vehicle must be stationary!");
+        tooltip.add(I18n.format("fuel.desc.useage"));
+        tooltip.add(I18n.format("fuel.desc.stationary"));
     }
 }
