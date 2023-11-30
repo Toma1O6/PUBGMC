@@ -37,17 +37,8 @@ public class ContainerLootSpawner extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-
-        for (int i = 0; i < this.listeners.size(); ++i) {
-            IContainerListener listener = this.listeners.get(i);
-        }
-    }
-
-    @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return this.tileentity.isUsableByPlayer(playerIn);
+        return tileentity.isUsableByPlayer(playerIn);
     }
 
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {

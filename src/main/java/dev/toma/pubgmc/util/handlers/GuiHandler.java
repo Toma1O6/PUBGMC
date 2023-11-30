@@ -2,10 +2,7 @@ package dev.toma.pubgmc.util.handlers;
 
 import dev.toma.pubgmc.client.gui.*;
 import dev.toma.pubgmc.common.container.*;
-import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
-import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
-import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
+import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketSyncTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +20,7 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUI_GUNCRAFTINGTABLE = 4;
     public static final int GUI_BIG_AIRDROP = 5;
     public static final int GUI_PLAYER_EQUIPMENT = 6;
+    public static final int GUI_LOOT_CRATE = 7;
 
     public static void update(World world, EntityPlayer player, int x, int y, int z) {
         if (player instanceof EntityPlayerMP) {
@@ -50,6 +48,8 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerBigAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
             case GUI_PLAYER_EQUIPMENT:
                 return new ContainerPlayerEquipment(player.inventory);
+            case GUI_LOOT_CRATE:
+                return new ContainerLootCrate(player.inventory, (TileEntityLootCrate) world.getTileEntity(new BlockPos(x, y, z)));
             default:
                 return null;
         }
@@ -72,6 +72,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiBigAirdrop(player.inventory, (TileEntityAirdrop) world.getTileEntity(new BlockPos(x, y, z)));
             case GUI_PLAYER_EQUIPMENT:
                 return new GuiPlayerEquipment(new ContainerPlayerEquipment(player.inventory));
+            case GUI_LOOT_CRATE:
+                return new GuiLootCrate(player.inventory, (TileEntityLootCrate) world.getTileEntity(new BlockPos(x, y, z)));
             default:
                 return null;
         }

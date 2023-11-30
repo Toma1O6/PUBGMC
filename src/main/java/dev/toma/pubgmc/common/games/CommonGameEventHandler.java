@@ -123,7 +123,7 @@ public final class CommonGameEventHandler {
             gameItem.motionZ = entityItem.motionZ;
             gameItem.setThrower(entityItem.getThrower());
             gameItem.assignGameId(GameHelper.getGameUUID(world));
-            gameItem.setPickupDelay(60);
+            gameItem.setPickupDelay(entityItem.pickupDelay);
             world.spawnEntity(gameItem);
         }
         if (entity instanceof LivingGameEntity) {

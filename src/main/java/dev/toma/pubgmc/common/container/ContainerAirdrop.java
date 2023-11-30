@@ -43,19 +43,11 @@ public class ContainerAirdrop extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-
-        for (int i = 0; i < this.listeners.size(); ++i) {
-            IContainerListener listener = (IContainerListener) this.listeners.get(i);
-        }
-    }
-
-    @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
         return this.tileentity.isUsableByPlayer(playerIn);
     }
 
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);

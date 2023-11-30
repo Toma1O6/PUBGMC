@@ -1031,6 +1031,7 @@ public class CommonRegistry {
         registerTileEntity(TileEntityLandMine.class, "landmine");
         registerTileEntity(TileEntityWindow.class, "window");
         registerTileEntity(TileEntityGameEntitySpawner.class, "entity_spawner");
+        registerTileEntity(TileEntityLootCrate.class, "loot_crate");
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name) {

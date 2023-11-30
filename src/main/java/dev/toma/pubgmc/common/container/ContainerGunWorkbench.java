@@ -36,7 +36,7 @@ public class ContainerGunWorkbench extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return true;
+        return te.isUsableByPlayer(playerIn);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ContainerGunWorkbench extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack stack1 = slot.getStack();
@@ -57,12 +57,12 @@ public class ContainerGunWorkbench extends Container {
                     return ItemStack.EMPTY;
                 }
                 slot.onSlotChange(stack1, stack);
-            } else if (index >= 0 && index < 8) {
+            } else if (index < 8) {
                 if (!this.mergeItemStack(stack1, 9, 45, false)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onSlotChange(stack1, stack);
-            } else if (index >= 9 && index <= 44) {
+            } else if (index <= 44) {
                 if (!this.mergeItemStack(stack1, 0, 8, false)) {
                     return ItemStack.EMPTY;
                 }

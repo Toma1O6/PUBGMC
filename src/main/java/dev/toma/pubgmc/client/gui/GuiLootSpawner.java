@@ -9,7 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiLootSpawner extends GuiContainer {
-    private static final ResourceLocation TEXTURES = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/loot_spawner.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/loot_spawner.png");
     private final InventoryPlayer player;
     private final TileEntityLootGenerator tileentity;
 

@@ -63,6 +63,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
         clear();
         ItemStackHelper.loadAllItems(compound, this.inventory);
         if (compound.hasKey("CustomName", 8)) this.setCustomName(compound.getString("CustomName"));
+        gameId = compound.getUniqueId("gameId");
     }
 
     @Override
@@ -70,6 +71,7 @@ public class TileEntityLootGenerator extends TileEntitySync implements IInventor
         super.writeToNBT(compound);
         ItemStackHelper.saveAllItems(compound, this.inventory);
         if (this.hasCustomName()) compound.setString("CustomName", this.customName);
+        compound.setUniqueId("gameId", gameId);
         return compound;
     }
 

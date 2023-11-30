@@ -83,12 +83,12 @@ public class ContainerAttachments extends Container {
                     }
                 }
                 if (handleInventoryTransfer) {
-                    if (index > 4 && index < 32) {
+                    if (index < 32) {
                         if (!mergeItemStack(itemStack1, 32, 41, false)) {
                             return ItemStack.EMPTY;
                         }
                         slot.onSlotChange(itemStack1, itemStack);
-                    } else if (index >= 32) {
+                    } else {
                         if (!mergeItemStack(itemStack1, 5, 32, false)) {
                             return ItemStack.EMPTY;
                         }
@@ -109,13 +109,6 @@ public class ContainerAttachments extends Container {
             super(inventory, type.getIndex(), type.getX(), type.getY());
             this.stack = stack;
             this.type = type;
-        }
-
-        boolean isSupported() {
-            if (stack.getItem() instanceof GunBase) {
-                return ((GunBase) stack.getItem()).getAttachments().supportsType(type);
-            }
-            return false;
         }
 
         @Override

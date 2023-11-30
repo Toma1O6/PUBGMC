@@ -19,6 +19,8 @@ public final class LootConfigurations {
     };
     public static final String AIRDROP = "airdrop";
     public static final String AIRDROP_LARGE = "airdrop_large";
+    public static final String AMMO_CRATE = "crate_ammo";
+    public static final String WEAPON_CRATE = "crate_weapon";
 
     static Map<String, LootConfiguration> registerDefaultLootConfigurations(RegistrationHandler handler, boolean force) {
         Map<String, LootConfiguration> created = new HashMap<>();
@@ -27,7 +29,27 @@ public final class LootConfigurations {
         generateLootTier3(handler, created, force);
         generateAirdropDefault(handler, created, force);
         generateAirdropLarge(handler, created, force);
+        generateAmmoCrate(handler, created, force);
+        generateWeaponCrate(handler, created, force);
         return created;
+    }
+
+    private static void generateAmmoCrate(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
+        LootProvider pool = new CountLootProvider(1, 5, new RandomLootProvider(Arrays.asList(
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_9MM, 30), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_45ACP, 30), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_556, 30), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_762, 30), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_SHOTGUN, 10), Collections.emptyList())
+        )));
+        LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
+        register(handler, defaultConfigMap, AMMO_CRATE, configuration, force);
+    }
+
+    private static void generateWeaponCrate(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
+        LootProvider pool = new CountLootProvider(1, 3, getWeapons(15, 25, 10, 30, 20, 10, 0, false));
+        LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
+        register(handler, defaultConfigMap, WEAPON_CRATE, configuration, force);
     }
 
     private static void generateLootTier1(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
@@ -35,7 +57,7 @@ public final class LootConfigurations {
                 new WeightedRandom.Entry<>(7, getMeds(10, 7, 5, 1)),
                 new WeightedRandom.Entry<>(10, getArmor(30, 17, 3)),
                 new WeightedRandom.Entry<>(15, getAttachments(40, 15, 2)),
-                new WeightedRandom.Entry<>(10, getWeapons(30, 45, 30, 12, 6, 3, 0)),
+                new WeightedRandom.Entry<>(10, getWeapons(30, 45, 30, 12, 6, 3, 0, true)),
                 new WeightedRandom.Entry<>(5, getRandomAmmoPack()),
                 new WeightedRandom.Entry<>(5, getThrowables()),
                 new WeightedRandom.Entry<>(5, getOtherLoot())
@@ -49,7 +71,7 @@ public final class LootConfigurations {
                 new WeightedRandom.Entry<>(10, getMeds(6, 8, 5, 2)),
                 new WeightedRandom.Entry<>(15, getArmor(20, 17, 6)),
                 new WeightedRandom.Entry<>(15, getAttachments(25, 30, 8)),
-                new WeightedRandom.Entry<>(15, getWeapons(20, 40, 30, 60, 45, 30, 1)),
+                new WeightedRandom.Entry<>(15, getWeapons(20, 40, 30, 60, 45, 30, 1, true)),
                 new WeightedRandom.Entry<>(1, getRandomAmmoPack()),
                 new WeightedRandom.Entry<>(5, getThrowables()),
                 new WeightedRandom.Entry<>(1, getOtherLoot())
@@ -63,7 +85,7 @@ public final class LootConfigurations {
                 new WeightedRandom.Entry<>(8, getMeds(2, 10, 10, 5)),
                 new WeightedRandom.Entry<>(5, getArmor(5, 22, 10)),
                 new WeightedRandom.Entry<>(7, getAttachments(5, 25, 15)),
-                new WeightedRandom.Entry<>(12, getWeapons(5, 10, 10, 75, 55, 40, 1)),
+                new WeightedRandom.Entry<>(12, getWeapons(5, 10, 10, 75, 55, 40, 1, true)),
                 new WeightedRandom.Entry<>(0, getRandomAmmoPack()),
                 new WeightedRandom.Entry<>(5, getThrowables()),
                 new WeightedRandom.Entry<>(1, getOtherLoot())
@@ -149,11 +171,11 @@ public final class LootConfigurations {
         ));
     }
 
-    private static LootProvider getWeapons(int pistols, int smgs, int shotguns, int ar, int dmr, int sr, int flare) {
-        List<LootProcessor> ammo30 = Collections.singletonList(new AmmoPackProcessor(30, 1, 3));
-        List<LootProcessor> ammo15 = Collections.singletonList(new AmmoPackProcessor(15, 1, 3));
-        List<LootProcessor> ammo10 = Collections.singletonList(new AmmoPackProcessor(10, 1, 3));
-        List<LootProcessor> ammo01 = Collections.singletonList(new AmmoPackProcessor(1, 1, 1));
+    private static LootProvider getWeapons(int pistols, int smgs, int shotguns, int ar, int dmr, int sr, int flare, boolean ammo) {
+        List<LootProcessor> ammo30 = ammo ? Collections.singletonList(new AmmoPackProcessor(30, 1, 3)) : Collections.emptyList();
+        List<LootProcessor> ammo15 = ammo ? Collections.singletonList(new AmmoPackProcessor(15, 1, 3)) : Collections.emptyList();
+        List<LootProcessor> ammo10 = ammo ? Collections.singletonList(new AmmoPackProcessor(10, 1, 3)) : Collections.emptyList();
+        List<LootProcessor> ammo01 = ammo ? Collections.singletonList(new AmmoPackProcessor(1, 1, 1)) : Collections.emptyList();
         return new WeightedLootProvider(Arrays.asList(
                 new WeightedRandom.Entry<>(pistols, new RandomLootProvider(Arrays.asList(
                         new ItemStackLootProvider(new ItemStack(PMCItems.P92), ammo15),

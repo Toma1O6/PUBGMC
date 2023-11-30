@@ -47,15 +47,6 @@ public class ContainerPlayerCrate extends Container {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-
-        for (int i = 0; i < this.listeners.size(); ++i) {
-            IContainerListener listener = this.listeners.get(i);
-        }
-    }
-
-    @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
         return this.te.isUsableByPlayer(playerIn);
     }
