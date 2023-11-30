@@ -10,6 +10,12 @@
     ],
     "map": [],
     "mainMenuText": [
+        "Patch 1.9.6",
+        "- Reworked damage sources, so grenade/vehicle kills are counter properly",
+        "- Added new loot generators - Ammo and Weapon crate",
+        "- Fixed problems with dropped item delay",
+        "",
+        "",
         "Patch 1.9.5",
         "- Improved handling of entity unloading in BattleRoyale mode. This should resolve issues with \"infinite\" games",
         "- Added new map point type - Partial map. This allows you to use only specific part of your entire map. Useable for example for deathmatch etc",
