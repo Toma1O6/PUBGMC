@@ -312,7 +312,7 @@ public final class GameHelper {
                 headshot = damageSourceGun.wasHeadshot();
             }
             ITextComponent label = killWeapon.isEmpty() ? TextComponentHelper.GENERIC_DEATH_BY_ENTITY : new TextComponentString(killWeapon.getDisplayName());
-            if (source == PMCDamageSources.VEHICLE && killer.getRidingEntity() != null) {
+            if (source.damageType.equals("vehicle") && killer.getRidingEntity() != null) {
                 label = killer.getRidingEntity().getDisplayName();
             }
             return new DeathMessage(killer, victim, label, headshot);

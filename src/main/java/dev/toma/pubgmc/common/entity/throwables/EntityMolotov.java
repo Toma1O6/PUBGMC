@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
 import com.google.common.base.Predicates;
+import dev.toma.pubgmc.init.PMCDamageSources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -74,7 +75,7 @@ public class EntityMolotov extends EntityThrowableExplodeable {
                             if (p0.equals(p1) || p00.equals(p1)) {
                                 e.setFire(5);
                                 if (this.ticksExisted % 10 == 0) {
-                                    e.attackEntityFrom(DamageSource.ON_FIRE, 4);
+                                    e.attackEntityFrom(PMCDamageSources.molotov(getThrower()), 4);
                                 }
                                 break;
                             }

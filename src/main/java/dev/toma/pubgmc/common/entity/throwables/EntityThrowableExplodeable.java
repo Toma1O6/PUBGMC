@@ -18,8 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 public abstract class EntityThrowableExplodeable extends Entity implements IEntityAdditionalSpawnData {
 
@@ -35,6 +39,8 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public int timesBounced = 0;
     public boolean isFrozen = false;
 
+    private UUID thrower;
+
     public EntityThrowableExplodeable(World world) {
         this(world, null, EnumEntityThrowState.FORCED);
     }
@@ -46,7 +52,12 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public EntityThrowableExplodeable(World world, EntityLivingBase thrower, EnumEntityThrowState state, int time) {
         super(world);
         this.setSize(0.2F, 0.2F);
-        if (thrower != null) this.setPosition(thrower.posX, thrower.posY + thrower.getEyeHeight(), thrower.posZ);
+        if (thrower != null) {
+            this.thrower = thrower.getUniqueID();
+            this.setPosition(thrower.posX, thrower.posY + thrower.getEyeHeight(), thrower.posZ);
+        } else {
+            this.thrower = null;
+        }
         this.fuse = time;
 
         this.setInitialMotion(state, thrower);
@@ -169,11 +180,19 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     protected void entityInit() {
     }
 
+    @Nullable
+    public Entity getThrower() {
+        return thrower != null && !world.isRemote ? ((WorldServer) world).getEntityFromUuid(thrower) : null;
+    }
+
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setInteger("fuse", this.fuse);
         compound.setBoolean("frozen", this.isFrozen);
         compound.setInteger("timesBounced", this.timesBounced);
+        if (thrower != null) {
+            compound.setUniqueId("thrower", thrower);
+        }
     }
 
     @Override
@@ -181,6 +200,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.fuse = compound.getInteger("fuse");
         this.isFrozen = compound.getBoolean("frozen");
         this.timesBounced = compound.getInteger("timesBounced");
+        this.thrower = compound.hasKey("thrower") ? compound.getUniqueId("thrower") : null;
     }
 
     protected void onEntityFrozen() {

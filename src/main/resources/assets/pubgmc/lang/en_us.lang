@@ -385,3 +385,6 @@ data.pubgmc.loot_schema=Loot configurations
 data.pubgmc.game_configs=Game configurations
 data.pubgmc.entity_loadouts=Entity loadouts
 data.pubgmc.entity_providers=Entity spawn configurations
+
+entity.pubgmc:uaz.name=UAZ
+entity.pubgmc:dacia.name=Dacia

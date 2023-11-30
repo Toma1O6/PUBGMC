@@ -21,7 +21,7 @@ public class EntityFragGrenade extends EntityThrowableExplodeable {
     public void onExplode() {
         if (!world.isRemote) {
             this.setPosition(this.posX, this.posY + 1, this.posZ);
-            world.createExplosion(null, this.posX, this.posY, this.posZ, 5.0F, false);
+            world.createExplosion(getThrower(), this.posX, this.posY, this.posZ, 5.0F, false);
         }
         this.setDead();
     }

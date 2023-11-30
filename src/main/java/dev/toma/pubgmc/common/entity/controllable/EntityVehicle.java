@@ -122,7 +122,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             e.motionX += motionX * currentSpeed * 3;
             e.motionY += currentSpeed;
             e.motionZ += motionZ * currentSpeed * 3;
-            e.attackEntityFrom(PMCDamageSources.VEHICLE, Math.abs(currentSpeed) * 15f);
+            e.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), Math.abs(currentSpeed) * 15f);
         }
     }
 
