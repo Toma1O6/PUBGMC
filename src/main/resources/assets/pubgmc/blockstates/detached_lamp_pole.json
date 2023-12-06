@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pubgmc:detached_lamp_pole",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pubgmc:detached_lamp_pole",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pubgmc:detached_lamp_pole",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "pubgmc:detached_lamp_pole",
+      "y": 270
+    }
+  }
+}

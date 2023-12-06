@@ -25,7 +25,7 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
     protected Material blockMaterial;
     protected SoundType soundType;
     protected BlockRenderLayer renderLayer;
-    protected MapColor mapColor;
+    protected MapColor mapColor = MapColor.AIR;
     protected boolean opaque, fullCube;
     protected float lightValue = 0;
     protected AxisAlignedBB[] boxes;
@@ -120,6 +120,7 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
     public PMCBlock build() {
         checkFloat(lightValue, 0f, 1f);
         checkNotNull(soundType);
+        checkNotNull(mapColor);
 
         PMCBlock builtBlock = new PMCBlock(name, blockMaterial) {
             @Override

@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/orientable",
 	"textures": {
-		"0": "pubgmc:blocks/anvil",
-		"1": "pubgmc:blocks/andesite",
+		"0": "minecraft:blocks/anvil_base",
+		"1": "minecraft:blocks/stone_andesite",
 		"2": "pubgmc:blocks/wood_light",
 		"3": "pubgmc:blocks/low_gray",
 		"particle": "pubgmc:blocks/wood_light"

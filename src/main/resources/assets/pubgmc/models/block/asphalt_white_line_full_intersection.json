@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "pubgmc:blocks/asphalt",
+    "up": "pubgmc:blocks/asphalt_white_line_full_intersection",
+    "down": "pubgmc:blocks/asphalt",
+    "north": "pubgmc:blocks/asphalt",
+    "south": "pubgmc:blocks/asphalt",
+    "east": "pubgmc:blocks/asphalt",
+    "west": "pubgmc:blocks/asphalt"
+  }
+}

@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Pubgmc.MOD_ID)
 public final class PMCBlocks {
+    public static final Block ASPHALT = null;
     public static final Block AIRDROP = null;
     public static final Block BIG_AIRDROP = null;
     public static final Block TARGET = null;

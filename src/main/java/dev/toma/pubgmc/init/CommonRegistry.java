@@ -61,7 +61,9 @@ import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
 public class CommonRegistry {
@@ -70,9 +72,35 @@ public class CommonRegistry {
     private static List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
     @SubscribeEvent
+    public static void remap(RegistryEvent.MissingMappings<Block> event) {
+        List<RegistryEvent.MissingMappings.Mapping<Block>> mappings = event.getMappings();
+        Map<ResourceLocation, Block> remappings = new HashMap<>();
+        remappings.put(new ResourceLocation("pubgmc:roadasphalt"), PMCBlocks.ASPHALT);
+
+        for (RegistryEvent.MissingMappings.Mapping<Block> mapping : mappings) {
+            ResourceLocation key = mapping.key;
+            Block replacement = remappings.get(key);
+            if (replacement != null) {
+                mapping.remap(replacement);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
-                BlockBuilder.create("roadasphalt", Material.ROCK).soundType(SoundType.STONE).build(),
+                BlockBuilder.create("asphalt", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.BLACK).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_full", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_full_intersection", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_full_corner", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_partial", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_edge", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_edge_corner", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_edge_corner2", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_edge_intersection", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_edge_intersection2", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                HorizontalBlockBuilder.create("asphalt_white_line_edge_intersection3", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.SNOW).build(),
+                BlockBuilder.create("caution_stripes", Material.ROCK).soundType(SoundType.STONE).mapColor(MapColor.BLACK).build(),
                 BlockBuilder.create("schoolwall", Material.ROCK).soundType(SoundType.STONE).build(),
                 BlockBuilder.create("schoolroof", Material.ROCK).soundType(SoundType.STONE).build(),
                 BlockBuilder.create("schoolwindow", Material.GLASS).soundType(SoundType.GLASS).setGlass().build(),
@@ -160,7 +188,14 @@ public class CommonRegistry {
                 BlockBuilder.create("metal_table", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("road_blocker", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.4, 0, 0.4, 0.6, 1, 0.6), new AxisAlignedBB(0.4, 0.0, 0.4, 0.6, 1.2, 0.6)).build(),
                 BlockBuilder.create("modern_lamp", Material.ROCK).soundType(SoundType.GLASS).light(1.0F).build(),
-                HorizontalBlockBuilder.create("radiator", Material.IRON).soundType(SoundType.METAL).setTransparent().nullAABB().build(),
+                HorizontalBlockBuilder.create("radiator", Material.IRON).soundType(SoundType.METAL).setTransparent()
+                        .aabb(
+                                new AxisAlignedBB(0, 0, 0.8, 1, 0.5, 1),
+                                new AxisAlignedBB(0, 0, 0, 0.2, 0.5, 1),
+                                new AxisAlignedBB(0, 0, 0, 1, 0.5, 0.2),
+                                new AxisAlignedBB(0.8, 0, 0, 1, 0.5, 1)
+                        )
+                        .nullAABB().build(),
                 new BlockSmallChest(),
                 BlockBuilder.create("canister", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("carrier_barrels_blue", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
@@ -172,6 +207,10 @@ public class CommonRegistry {
                 BlockBuilder.create("pole", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 1.0, 0.65)).build(),
                 BlockBuilder.create("pole_base", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.2, 0.0, 0.2, 0.8, 1.0, 0.8)).build(),
                 HorizontalBlockBuilder.create("pole_lamp_modern", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.7, 1.0)).build(),
+                HorizontalBlockBuilder.create("detached_lamp", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0, 0.6, 0, 1, 0.9, 1)).build(),
+                HorizontalBlockBuilder.create("detached_lamp_angled", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0, 0.6, 0, 1, 0.9, 1)).build(),
+                HorizontalBlockBuilder.create("detached_lamp_pole", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0, 0.6, 0, 1, 0.9, 1)).build(),
+                HorizontalBlockBuilder.create("detached_lamp_post", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 1.0, 0.65)).build(),
                 HorizontalBlockBuilder.create("roadblocker_light_gray", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(Block.FULL_BLOCK_AABB, new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.25, 1.0)).build(),
                 HorizontalBlockBuilder.create("roadblocker_red", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(Block.FULL_BLOCK_AABB, new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.25, 1.0)).build(),
                 BlockBuilder.create("rocks_andesite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),

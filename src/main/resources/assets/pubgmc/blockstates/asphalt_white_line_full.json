@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pubgmc:asphalt_white_line_full"
+    },
+    "facing=east": {
+      "model": "pubgmc:asphalt_white_line_full",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pubgmc:asphalt_white_line_full",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pubgmc:asphalt_white_line_full",
+      "y": 270
+    }
+  }
+}

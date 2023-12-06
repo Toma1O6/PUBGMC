@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pubgmc:asphalt_white_line_edge_intersection"
+    },
+    "facing=east": {
+      "model": "pubgmc:asphalt_white_line_edge_intersection",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pubgmc:asphalt_white_line_edge_intersection",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pubgmc:asphalt_white_line_edge_intersection",
+      "y": 270
+    }
+  }
+}

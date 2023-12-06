@@ -25,7 +25,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private Material material;
     private SoundType soundType;
     private BlockRenderLayer renderLayer;
-    private MapColor mapColor;
+    private MapColor mapColor = MapColor.AIR;
     private boolean opaque, fullCube;
     private float lightValue;
     private AxisAlignedBB[] boxes = new AxisAlignedBB[]{Block.FULL_BLOCK_AABB};
@@ -139,6 +139,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
         checkNotNull(material);
         checkFloat(lightValue, 0, 1.0F);
         checkNotNull(soundType);
+        checkNotNull(mapColor);
 
         PMCBlockHorizontal builtBlock = new PMCBlockHorizontal(name, material) {
             @Override

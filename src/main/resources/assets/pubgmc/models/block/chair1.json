@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/orientable",
 	"textures": {
-		"0": "pubgmc:blocks/anvil",
+		"0": "minecraft:blocks/anvil_base",
 		"2": "pubgmc:blocks/wood_light",
 		"particle": "pubgmc:blocks/wood_light"
 	},
