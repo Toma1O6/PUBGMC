@@ -256,6 +256,11 @@ public class BlockWindow extends PMCBlock {
     }
 
     @Override
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+        return true;
+    }
+
+    @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, PART, AXIS, BROKEN);
     }

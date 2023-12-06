@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "pubgmc:blocks/asphalt"
+    "all": "pubgmc:blocks/door_closer"
   }
 }

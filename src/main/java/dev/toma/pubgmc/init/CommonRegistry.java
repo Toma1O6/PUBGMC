@@ -131,11 +131,6 @@ public class CommonRegistry {
                         .aabb(new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1), new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6), new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1), new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6))
                         .build(),
                 HorizontalBlockBuilder.create("concrete", Material.ROCK).soundType(SoundType.STONE).setTransparent().build(),
-                BlockBuilder.create("electricpole", Material.WOOD).soundType(SoundType.WOOD)
-                        .aabb(new AxisAlignedBB(0.2, 0, 0.2, 0.8, 1, 0.8)).setTransparent().build(),
-                HorizontalBlockBuilder.create("electricpoletop", Material.WOOD).soundType(SoundType.WOOD).setTransparent().build(),
-                HorizontalBlockBuilder.create("electriccable", Material.IRON).soundType(SoundType.METAL).setTransparent()
-                        .setPassable().build(),
                 BlockBuilder.create("radiotower", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("radiotowertop", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 new BlockGunWorkbench("gun_workbench"),
@@ -202,7 +197,7 @@ public class CommonRegistry {
                 BlockBuilder.create("carrier_barrels_red", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("carrier_barrels_white", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("carrier_empty_ground", Material.WOOD).soundType(SoundType.WOOD).setTransparent().aabb(new AxisAlignedBB(0, 0, 0, 1.0, 0.2, 1.0)).build(),
-                BlockBuilder.create("flare_stick", Material.CLOTH).soundType(SoundType.CLOTH).setTransparent().light(0.25F).nullAABB(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 0.1, 0.65)).build(),
+                BlockBuilder.create("flare_stick", Material.CLOTH).soundType(SoundType.CLOTH).setTransparent().light(0.75F).nullAABB(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 0.1, 0.65)).build(),
                 BlockBuilder.create("metal_light", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.9, 0.7)).build(),
                 BlockBuilder.create("pole", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 1.0, 0.65)).build(),
                 BlockBuilder.create("pole_base", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.2, 0.0, 0.2, 0.8, 1.0, 0.8)).build(),
@@ -217,7 +212,8 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_cobblestone", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_diorite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_granite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
-                BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build()
+                BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
+                new BlockDoorCloser("door_closer", Material.ROCK)
         );
     }
 
@@ -1071,6 +1067,7 @@ public class CommonRegistry {
         registerTileEntity(TileEntityWindow.class, "window");
         registerTileEntity(TileEntityGameEntitySpawner.class, "entity_spawner");
         registerTileEntity(TileEntityLootCrate.class, "loot_crate");
+        registerTileEntity(TileEntityDoorCloser.class, "door_closer");
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name) {
