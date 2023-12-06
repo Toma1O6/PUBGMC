@@ -167,7 +167,8 @@ public final class LootConfigurations {
                 new WeightedRandom.Entry<>(tier2, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER))),
                 new WeightedRandom.Entry<>(tier3, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER))),
                 new WeightedRandom.Entry<>(tier3, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_AR))),
-                new WeightedRandom.Entry<>(tier3, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER)))
+                new WeightedRandom.Entry<>(tier3, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SNIPER))),
+                new WeightedRandom.Entry<>(tier3, new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE8X)))
         ));
     }
 
