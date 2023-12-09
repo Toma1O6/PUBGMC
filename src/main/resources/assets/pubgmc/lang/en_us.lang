@@ -119,6 +119,7 @@ item.mapitem_team_spawner.name=Add/Manage Entity Team Spawner
 item.mapitem_capture_zone.name=Add/Manage Capture Zone
 item.mapitem_point_of_interest.name=Add Point Of Interest
 item.mapitem_submap_config.name=Add Submap Area
+item.old_room_secret_key.name=Old Room Secret Key
 
 key.category.pubgmc=PUBGMC
 pubgmc.key.reload=Reload
@@ -227,6 +228,7 @@ tile.detached_lamp_pole.name=Detached Street Lamp Pole
 tile.detached_lamp_post.name=Detached Street Lamp Post
 tile.caution_stripes.name=Caution Stripes
 tile.door_closer.name=Door Closer
+tile.modern_light.name=Modern Light
 
 itemGroup.tab_items=PUBGMC: Items
 itemGroup.tab_blocks=PUBGMC: Blocks
@@ -373,7 +375,6 @@ label.pubgmc.kills=Kills
 label.pubgmc.deaths=Deaths
 label.pubgmc.score=Score
 label.pubgmc.captures=Captures
-
 label.pubgmc.team.red=RED
 label.pubgmc.team.blue=BLUE
 label.pubgmc.game.battleroyale.kill.single=%s KILL
@@ -384,6 +385,7 @@ label.pubgmc.capture_status.new=New
 label.pubgmc.capture_status.captured=Captured
 label.pubgmc.capture_status.capturing=Capturing
 label.pubgmc.capture_status.blocked=Blocked
+label.pubgmc.item.old_room_secret_key.location=Key Location: %s
 
 message.pubgmc.healing.unreached_threshold=You must have below %s hearts to use this item
 message.pubgmc.healing.max_health=You must not have max health in order to use this item

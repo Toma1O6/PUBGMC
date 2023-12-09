@@ -213,7 +213,8 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_diorite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_granite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
-                new BlockDoorCloser("door_closer", Material.ROCK)
+                new BlockDoorCloser("door_closer", Material.ROCK),
+                BlockBuilder.create("modern_light", Material.ROCK).soundType(SoundType.STONE).setTransparent().light(1.0F).nullAABB(new AxisAlignedBB(0.2, 0.7, 0.2, 0.8, 1.0, 0.8)).build()
         );
     }
 
@@ -942,7 +943,8 @@ public class CommonRegistry {
                 new TeamSpawnerConfigurerItem("mapitem_team_spawner"),
                 new CaptureZoneConfigurerItem("mapitem_capture_zone"),
                 new PointOfInterestItem("mapitem_point_of_interest"),
-                new SubMapConfigurerItem("mapitem_submap_config")
+                new SubMapConfigurerItem("mapitem_submap_config"),
+                new ItemSecretRoomKey("old_room_secret_key")
         );
         ITEM_BLOCKS.forEach(registry::register);
         ITEM_BLOCKS = null;
