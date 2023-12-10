@@ -16,7 +16,6 @@ public class GuiHandler implements IGuiHandler {
     public static final int GUI_AIRDROP = 0;
     public static final int LOOT_SPAWNER = 1;
     public static final int GUI_CRATE = 2;
-    public static final int GUI_ATTACHMENTS = 3;
     public static final int GUI_GUNCRAFTINGTABLE = 4;
     public static final int GUI_BIG_AIRDROP = 5;
     public static final int GUI_PLAYER_EQUIPMENT = 6;
@@ -38,8 +37,6 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerLootSpawner(player.inventory, (TileEntityLootGenerator) world.getTileEntity(new BlockPos(x, y, z)));
             case GUI_CRATE:
                 return new ContainerPlayerCrate(player.inventory, (TileEntityPlayerCrate) world.getTileEntity(new BlockPos(x, y, z)));
-            case GUI_ATTACHMENTS:
-                return new ContainerAttachments(player);
             case GUI_GUNCRAFTINGTABLE:
                 ContainerGunWorkbench c = new ContainerGunWorkbench((TileEntityGunWorkbench) world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
                 update(world, player, x, y, z);
@@ -64,8 +61,6 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiLootSpawner(player.inventory, (TileEntityLootGenerator) world.getTileEntity(new BlockPos(x, y, z)));
             case GUI_CRATE:
                 return new GuiPlayerCrate(player.inventory, (TileEntityPlayerCrate) world.getTileEntity(new BlockPos(x, y, z)));
-            case GUI_ATTACHMENTS:
-                return new GuiAttachments(player);
             case GUI_GUNCRAFTINGTABLE:
                 return new GuiGunWorkbench((TileEntityGunWorkbench) world.getTileEntity(new BlockPos(x, y, z)), player.inventory);
             case GUI_BIG_AIRDROP:

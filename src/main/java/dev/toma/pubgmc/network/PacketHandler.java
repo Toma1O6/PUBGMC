@@ -25,7 +25,6 @@ public class PacketHandler {
         registerServerPacket(SPacketFiremode.Handler.class, SPacketFiremode.class);
         registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
         registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
-        registerServerPacket(PacketOpenGui.Handler.class, PacketOpenGui.class);
         registerServerPacket(PacketProne.Handler.class, PacketProne.class);
         registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
         registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
