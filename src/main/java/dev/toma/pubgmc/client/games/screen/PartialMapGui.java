@@ -30,7 +30,7 @@ public class PartialMapGui extends MapPointDialogGui<PartialPlayAreaPoint> {
         super.init();
         Position2 min = point.getPositionMin(1.0F);
         Position2 max = point.getPositionMax(1.0F);
-        Predicate<Character> textFilter = character -> Character.isDigit(character) || character == '.';
+        Predicate<Character> textFilter = character -> Character.isDigit(character) || character == '.' || character == '-';
         fromX = addWidget(new TextFieldWidget(left + 5, top + 5, 80, 20, String.valueOf(min.getX()), 16).ghostText("From X"));
         fromX.withValidator(textFilter);
         fromX.withCallback(this::onNumberInputChange);

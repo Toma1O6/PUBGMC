@@ -15,6 +15,7 @@ import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAILightSensitiveNearestAttackableTarget;
 import dev.toma.pubgmc.api.game.mutator.AIPlayerMutator;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
+import dev.toma.pubgmc.common.entity.navigate.ExtendedRangeGroundNavigator;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
@@ -22,6 +23,7 @@ import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunAttachments;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.heal.ItemHealing;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.RandomBotNameGenerator;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -38,6 +40,8 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -65,6 +69,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         this.enablePersistence();
         this.setSize(0.6F, 1.95F);
         this.variant = worldIn.rand.nextInt(4);
+        ((PathNavigateGround) this.navigator).setBreakDoors(true);
 
         setRandomName(this);
     }
@@ -120,6 +125,11 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         initAi();
     }
 
+    @Override
+    protected PathNavigate createNavigator(World worldIn) {
+        return new ExtendedRangeGroundNavigator(this, worldIn, ConfigPMC.world().aiPathFindRange.get());
+    }
+
     @SuppressWarnings("unchecked")
     private <G extends Game<?>> void initAi() {
         Game<?> game = GameDataProvider.getGameData(world).map(GameData::getCurrentGame).orElse(null);
@@ -144,6 +154,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     public static void addDefaultTasks(EntityAIPlayer ai) {
         ai.tasks.addTask(0, new EntityAIBeBlinded<>(ai));
         ai.tasks.addTask(0, new EntityAISwimming(ai));
+        ai.tasks.addTask(4, new EntityAIOpenDoor(ai, false));
         ai.tasks.addTask(5, new EntityAIWanderAvoidWater(ai, 1.0));
         ai.tasks.addTask(8, new EntityAILookIdle(ai));
     }

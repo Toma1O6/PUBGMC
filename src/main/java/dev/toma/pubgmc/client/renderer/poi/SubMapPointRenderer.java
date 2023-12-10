@@ -15,4 +15,14 @@ public class SubMapPointRenderer extends SimplePoiRenderer<PartialPlayAreaPoint>
     @Override
     public void renderPointInGame(PartialPlayAreaPoint point, Game<?> game, double x, double y, double z, float partialTicks) {
     }
+
+    @Override
+    protected int getPrimaryColor(PartialPlayAreaPoint point) {
+        return 0xFFFF00FF;
+    }
+
+    @Override
+    protected int getSecondaryColor(PartialPlayAreaPoint point) {
+        return 0x44FF00FF;
+    }
 }

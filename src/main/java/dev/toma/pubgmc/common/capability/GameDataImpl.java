@@ -127,7 +127,7 @@ public class GameDataImpl implements GameData {
             return Optional.empty();
         }
         if (!StringUtils.isBlank(activeSubMap)) {
-            return Optional.of(instance.getSubmapOrSelf(activeMap));
+            return Optional.of(instance.getSubmapOrSelf(activeSubMap));
         }
         return Optional.of(instance);
     }
