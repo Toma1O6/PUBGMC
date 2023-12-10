@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketSyncEntity;
 import net.minecraft.entity.Entity;
@@ -94,7 +95,7 @@ public class SerializationHelper {
         }
     }
 
-    public static void syncEntity(Entity entity) {
+    public static <T extends Entity & SynchronizableEntity> void syncEntity(T entity) {
         PacketHandler.sendToAllTracking(new PacketSyncEntity(entity), entity);
     }
 

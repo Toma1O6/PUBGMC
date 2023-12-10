@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.api.entity.EntityDebuffs;
+import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
@@ -53,7 +54,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider, EntityDebuffs {
+public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider, EntityDebuffs, SynchronizableEntity {
 
     public static final String DEFAULT_LOADOUT = "default_loadout";
     private final InventoryBasic inventory = new InventoryBasic("container.aiPlayer", false, 9);
@@ -187,6 +188,18 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         SerializationHelper.inventoryFromNbt(specialEquipment, compound.getTagList("equipmentInventory", Constants.NBT.TAG_COMPOUND));
         blindTime = compound.getInteger("blindTime");
         deafTime = compound.getInteger("deafTime");
+    }
+
+    @Override
+    public NBTTagCompound encodeNetworkData() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        writeEntityToNBT(nbt);
+        return nbt;
+    }
+
+    @Override
+    public void decodeNetworkData(NBTTagCompound nbt) {
+        readEntityFromNBT(nbt);
     }
 
     @Override

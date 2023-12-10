@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.network.client;
 
+import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -21,9 +22,9 @@ public class PacketSyncEntity implements IMessage {
 
     }
 
-    public PacketSyncEntity(Entity entity) {
+    public <T extends Entity & SynchronizableEntity> PacketSyncEntity(T entity) {
         this.entityID = entity.getEntityId();
-        this.nbt = entity.writeToNBT(new NBTTagCompound());
+        this.nbt = entity.encodeNetworkData();
     }
 
     @Override
@@ -46,8 +47,8 @@ public class PacketSyncEntity implements IMessage {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 WorldClient client = Minecraft.getMinecraft().world;
                 Entity entity = client.getEntityByID(message.entityID);
-                if (entity != null) {
-                    entity.readFromNBT(message.nbt);
+                if (entity instanceof SynchronizableEntity) {
+                    ((SynchronizableEntity) entity).decodeNetworkData(message.nbt);
                 }
             });
             return null;

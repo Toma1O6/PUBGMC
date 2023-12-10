@@ -3,11 +3,13 @@ package dev.toma.pubgmc.common.entity.controllable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -26,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject {
+public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject, SynchronizableEntity {
     private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
     private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
 
@@ -223,8 +225,8 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         // if whole vehicle is under water -> can drive in shallow water
         if (this.isInWater() && world.getBlockState(getPosition().up()).getMaterial().isLiquid()) {
             timeInInvalidState++;
-            motionX *= 0.4d;
-            motionZ *= 0.4d;
+            motionX *= 0.1d;
+            motionZ *= 0.1d;
             motionY = -0.15d;
         }
 
@@ -265,6 +267,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public boolean attackEntityFrom(DamageSource source, float amount) {
         if (!getPassengers().contains(source.getTrueSource())) {
             this.health -= amount;
+            SerializationHelper.syncEntity(this);
         }
 
         return true;
@@ -302,10 +305,6 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public boolean isInRangeToRenderDist(double distance) {
         return true;
-    }
-
-    public boolean isPlayerDriver(EntityPlayer player) {
-        return player.isRiding() && player.getRidingEntity() instanceof EntityVehicle && player.getRidingEntity().getPassengers().get(0) == player;
     }
 
     private boolean isVehicleMoving() {
@@ -346,6 +345,18 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         compound.setFloat("fuel", this.fuel);
         compound.setFloat("speed", this.currentSpeed);
         compound.setBoolean("isBroken", this.isBroken);
+    }
+
+    @Override
+    public NBTTagCompound encodeNetworkData() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        writeEntityToNBT(nbt);
+        return nbt;
+    }
+
+    @Override
+    public void decodeNetworkData(NBTTagCompound nbt) {
+        readEntityFromNBT(nbt);
     }
 
     @Override

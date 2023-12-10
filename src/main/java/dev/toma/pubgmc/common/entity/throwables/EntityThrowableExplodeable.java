@@ -1,10 +1,10 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
+import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketSyncEntity;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class EntityThrowableExplodeable extends Entity implements IEntityAdditionalSpawnData {
+public abstract class EntityThrowableExplodeable extends Entity implements IEntityAdditionalSpawnData, SynchronizableEntity {
 
     public static final float AIR_DRAG_MODIFIER = 0.98F;
     public static final float GROUND_DRAG_MODIFIER = 0.7F;
@@ -203,8 +203,20 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.thrower = compound.hasKey("thrower") ? compound.getUniqueId("thrower") : null;
     }
 
+    @Override
+    public NBTTagCompound encodeNetworkData() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        writeEntityToNBT(nbt);
+        return nbt;
+    }
+
+    @Override
+    public void decodeNetworkData(NBTTagCompound nbt) {
+        readEntityFromNBT(nbt);
+    }
+
     protected void onEntityFrozen() {
-        PacketHandler.sendToAllTracking(new PacketSyncEntity(this), this);
+        SerializationHelper.syncEntity(this);
     }
 
     private void setInitialMotion(EnumEntityThrowState state, EntityLivingBase thrower) {
