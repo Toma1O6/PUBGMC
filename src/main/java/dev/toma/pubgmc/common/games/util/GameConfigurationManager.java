@@ -57,6 +57,7 @@ public final class GameConfigurationManager implements Recreatable {
         try (FileReader reader = new FileReader(file)) {
             JsonElement element = new JsonParser().parse(reader);
             CFG config = GameType.deserializeConfigurationFromJson(type, element.getAsJsonObject());
+            config.performCorrections();
             CONFIGURATION_MAP.put(type, config);
         } catch (JsonParseException e) {
             createDefaultGameConfiguration(type, file);
@@ -66,6 +67,7 @@ public final class GameConfigurationManager implements Recreatable {
     private static <CFG extends GameConfiguration> void createDefaultGameConfiguration(GameType<CFG, ?> type, File file) throws IOException {
         file.createNewFile();
         CFG configuration = type.getGameConfiguration();
+        configuration.performCorrections();
         JsonObject object = GameType.serializeConfigurationToJson(type, configuration);
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(GSON.toJson(object));

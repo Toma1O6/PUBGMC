@@ -186,6 +186,9 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
             if (gametime % 20L == 0L) {
                 respawnAiEntities(server);
             }
+            if (gametime % 200L == 0L) {
+                participantManager.getPlayerParticipants(world).forEach(GameHelper::fillPlayerHunger);
+            }
         }
         deathMessages.tick();
         ++gametime;
