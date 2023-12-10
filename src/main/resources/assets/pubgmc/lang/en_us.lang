@@ -120,6 +120,7 @@ item.mapitem_capture_zone.name=Add/Manage Capture Zone
 item.mapitem_point_of_interest.name=Add Point Of Interest
 item.mapitem_submap_config.name=Add Submap Area
 item.old_room_secret_key.name=Old Room Secret Key
+item.old_secret_door.name=Old Secret Door
 
 key.category.pubgmc=PUBGMC
 pubgmc.key.reload=Reload
@@ -148,6 +149,7 @@ tile.schoolwindow.name=School window
 tile.blueglass.name=Blue glass
 tile.target.name=Target
 tile.bush.name=Bush
+tile.bush_half.name=Half Bush
 tile.table.name=Table
 tile.crate.name=Crate
 tile.crates.name=Crates
@@ -351,6 +353,9 @@ pubgmc.game.label.alive_players=Alive:
 
 gui.pubgmc.update_data_files.header=Old data versions have been detected
 gui.pubgmc.update_data_files.warning=All selected items will regenerate it's configuration. This will rewrite your data
+gui.pubgmc.attachments.title=%s's Attachment Manager
+gui.pubgmc.attachments.detach_all=Detach all
+gui.pubgmc.attachments.detach_all_close=Detach all & Close
 
 label.pubgmc.false=False
 label.pubgmc.true=True
@@ -386,6 +391,7 @@ label.pubgmc.capture_status.captured=Captured
 label.pubgmc.capture_status.capturing=Capturing
 label.pubgmc.capture_status.blocked=Blocked
 label.pubgmc.item.old_room_secret_key.location=Key Location: %s
+label.pubgmc.remove_attachment=Remove
 
 message.pubgmc.healing.unreached_threshold=You must have below %s hearts to use this item
 message.pubgmc.healing.max_health=You must not have max health in order to use this item

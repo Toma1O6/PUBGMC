@@ -1,33 +1,29 @@
 package dev.toma.pubgmc.common.tileentity;
 
+import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.common.blocks.BlockSecretDoor;
 import dev.toma.pubgmc.util.helper.GameHelper;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-public class TileEntityDoorCloser extends TileEntity implements RecoverableStateTile {
+public class TileEntitySecretDoor extends TileEntity implements GameObject, Predicate<UUID> {
 
     private UUID gameId = GameHelper.DEFAULT_UUID;
-    private int offset;
+    private UUID assignedDoorKey;
 
-    @Override
-    public void walk(int direction) {
-        this.offset += direction;
+    public void assignDoorKey(UUID doorKey) {
+        this.assignedDoorKey = doorKey;
         markDirty();
     }
 
     @Override
-    public int getOffset() {
-        return offset;
-    }
-
-    @Override
-    public boolean canLink(IBlockState state) {
-        return state.getBlock() instanceof BlockDoor;
+    public boolean test(UUID uuid) {
+        return Objects.equals(assignedDoorKey, uuid);
     }
 
     @Override
@@ -44,10 +40,9 @@ public class TileEntityDoorCloser extends TileEntity implements RecoverableState
     @Override
     public void onNewGameDetected(UUID newGameId) {
         assignGameId(newGameId);
-        BlockPos offsetPos = pos.up(offset);
-        IBlockState state = world.getBlockState(offsetPos);
-        if (canLink(state)) {
-            ((BlockDoor) state.getBlock()).toggleDoor(world, offsetPos, false);
+        IBlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof BlockSecretDoor) {
+            ((BlockSecretDoor) state.getBlock()).toggleDoor(world, pos, false);
         }
     }
 
@@ -55,7 +50,8 @@ public class TileEntityDoorCloser extends TileEntity implements RecoverableState
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         compound.setUniqueId("gameId", gameId);
-        compound.setInteger("offset", offset);
+        if (assignedDoorKey != null)
+            compound.setUniqueId("doorId", assignedDoorKey);
         return compound;
     }
 
@@ -63,6 +59,7 @@ public class TileEntityDoorCloser extends TileEntity implements RecoverableState
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         gameId = compound.getUniqueId("gameId");
-        offset = compound.getInteger("offset");
+        if (compound.hasKey("doorId"))
+            assignedDoorKey = compound.getUniqueId("doorId");
     }
 }

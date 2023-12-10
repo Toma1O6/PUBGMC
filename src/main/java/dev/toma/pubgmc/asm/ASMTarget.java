@@ -13,6 +13,10 @@ public class ASMTarget {
         return obfuscatedEnvironment ? obfuscated : development;
     }
 
+    public String getValue() {
+        return getValue(PMCClassTransformer.isObfuscated);
+    }
+
     @Override
     public String toString() {
         return getValue(PMCClassTransformer.isObfuscated);

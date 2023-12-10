@@ -38,19 +38,25 @@ import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.GunBuilder;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
+import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ColorizerFoliage;
+import net.minecraft.world.biome.BiomeColorHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -82,8 +88,12 @@ public class ClientProxy extends Proxy {
     public void init(FMLInitializationEvent e) {
         KeyBinds.registerKeybinding();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLootGenerator.class, new LootSpawnerRenderer());
-        ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
-        itemColors.registerItemColorHandler((stack, tintIndex) -> stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor") ? stack.getTagCompound().getInteger("ghillieColor") : 0x359E35, PMCItems.GHILLIE_SUIT);
+
+        Minecraft minecraft = Minecraft.getMinecraft();
+        BlockColors blockColors = minecraft.getBlockColors();
+        registerBlockColors(blockColors);
+        registerItemColors(minecraft.getItemColors(), blockColors);
+
         registerWeaponRenderers();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(animationLoader);
 
@@ -188,5 +198,30 @@ public class ClientProxy extends Proxy {
 
     private static void registerBackpackModel(ItemBackpack item, ModelBase model) {
         LayerBackpack.registerRenderer(item, model, item.getVariant().getTexture());
+    }
+
+    private static void registerBlockColors(BlockColors colors) {
+        colors.registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
+            if (tintIndex != 0) {
+                return -1;
+            }
+            if (worldIn != null && pos != null) {
+                return BiomeColorHelper.getFoliageColorAtPos(worldIn, pos);
+            } else {
+                return ColorizerFoliage.getFoliageColorBasic();
+            }
+        }, PMCBlocks.BUSH, PMCBlocks.BUSH_HALF);
+    }
+
+    private static void registerItemColors(ItemColors colors, BlockColors blockColors) {
+        colors.registerItemColorHandler((stack, tintIndex) -> stack.hasTagCompound() && stack.getTagCompound().hasKey("ghillieColor")
+                ? stack.getTagCompound().getInteger("ghillieColor")
+                : 0x359E35, PMCItems.GHILLIE_SUIT);
+        colors.registerItemColorHandler((stack, tintIndex) -> {
+            if (tintIndex != 0)
+                return -1;
+            IBlockState iblockstate = ((ItemBlock) stack.getItem()).getBlock().getStateFromMeta(stack.getMetadata());
+            return blockColors.colorMultiplier(iblockstate, null, null, tintIndex);
+        }, PMCBlocks.BUSH, PMCBlocks.BUSH_HALF);
     }
 }

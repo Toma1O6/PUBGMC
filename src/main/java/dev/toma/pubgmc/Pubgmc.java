@@ -8,6 +8,7 @@ import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
 import dev.toma.pubgmc.api.properties.Properties;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.client.content.ContentManager;
@@ -20,7 +21,6 @@ import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.GeneratorCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
 import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
-import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.data.entity.DefaultEntityProviders;
 import dev.toma.pubgmc.data.entity.EntityProviderManager;
@@ -63,7 +63,7 @@ public class Pubgmc {
 
     public static final String MOD_ID = "pubgmc";
     public static final String NAME = "PUBGMC";
-    public static final String VERSION = "1.10.0-beta.1";
+    public static final String VERSION = "1.10.0-beta.3";
     public static final String CLIENT_PROXY_CLASS = "dev.toma.pubgmc.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "dev.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";

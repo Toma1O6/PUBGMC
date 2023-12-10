@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "#bush"
+  },
+  "elements": [
+    {
+      "from": [ 4, -1, 0 ],
+      "to": [ 4, 15, 16 ],
+      "shade": false,
+      "faces": {
+        "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 },
+        "east": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 }
+      }
+    },
+    {
+      "from": [ 12, -1, 0 ],
+      "to": [ 12, 15, 16 ],
+      "shade": false,
+      "faces": {
+        "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 },
+        "east": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 }
+      }
+    },
+    {
+      "from": [ 0, -1, 4 ],
+      "to": [ 16, 15, 4 ],
+      "shade": false,
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 }
+      }
+    },
+    {
+      "from": [ 0, -1, 12 ],
+      "to": [ 16, 15, 12 ],
+      "shade": false,
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#bush", "tintindex": 0 }
+      }
+    },
+    {
+      "from": [ 0.8, 0, 8 ],
+      "to": [ 15.2, 16, 8 ],
+      "rotation": { "origin": [ 8, 8, 8 ], "axis": "y", "angle": 45, "rescale": true },
+      "shade": false,
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#wood", "tintindex": 1 },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#wood", "tintindex": 1 }
+      }
+    },
+    {   "from": [ 8, 0, 0.8 ],
+      "to": [ 8, 16, 15.2 ],
+      "rotation": { "origin": [ 8, 8, 8 ], "axis": "y", "angle": 45, "rescale": true },
+      "shade": false,
+      "faces": {
+        "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#wood", "tintindex": 1 },
+        "east": { "uv": [ 0, 0, 16, 16 ], "texture": "#wood", "tintindex": 1 }
+      }
+    }
+
+  ]
+}

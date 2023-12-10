@@ -1,0 +1,7 @@
+{
+    "parent": "pubgmc:block/half_bush_base",
+    "textures": {
+        "bush": "minecraft:blocks/leaves_acacia",
+        "wood": "pubgmc:blocks/bush_wood"
+    }
+}

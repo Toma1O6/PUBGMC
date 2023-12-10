@@ -64,12 +64,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Mod.EventBusSubscriber(modid = Pubgmc.MOD_ID)
 public class CommonRegistry {
 
     private static int entityID = 0;
-    private static List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
+    private static List<Item> ITEM_BLOCKS = new ArrayList<>();
 
     @SubscribeEvent
     public static void remap(RegistryEvent.MissingMappings<Block> event) {
@@ -118,7 +119,9 @@ public class CommonRegistry {
                         .aabb(new AxisAlignedBB(0.1, 0.75, 0.1, 0.9, 1.0, 0.9), Block.NULL_AABB).build(),
                 BlockBuilder.create("crate", Material.WOOD).soundType(SoundType.WOOD).transparency(false, true).build(),
                 BlockBuilder.create("crates", Material.IRON).soundType(SoundType.METAL).transparency(false, true).build(),
-                HorizontalBlockBuilder.create("bush", Material.PLANTS).soundType(SoundType.PLANT).aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB)
+                BlockBuilder.create("bush", Material.PLANTS).soundType(SoundType.PLANT).nullAABB(Block.FULL_BLOCK_AABB)
+                        .renderType(BlockRenderLayer.CUTOUT).setTransparent().build(),
+                BlockBuilder.create("bush_half", Material.PLANTS).soundType(SoundType.PLANT).nullAABB(new AxisAlignedBB(0, 0, 0, 1, 0.5, 1))
                         .renderType(BlockRenderLayer.CUTOUT).setTransparent().build(),
                 new BlockPlant("wheat", Material.PLANTS, SoundType.PLANT, MapColor.YELLOW),
                 HorizontalBlockBuilder.create("prop1", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
@@ -214,7 +217,8 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_granite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 new BlockDoorCloser("door_closer", Material.ROCK),
-                BlockBuilder.create("modern_light", Material.ROCK).soundType(SoundType.STONE).setTransparent().light(1.0F).nullAABB(new AxisAlignedBB(0.2, 0.7, 0.2, 0.8, 1.0, 0.8)).build()
+                BlockBuilder.create("modern_light", Material.ROCK).soundType(SoundType.STONE).setTransparent().light(1.0F).nullAABB(new AxisAlignedBB(0.2, 0.7, 0.2, 0.8, 1.0, 0.8)).build(),
+                new BlockSecretDoor("old_secret_door", Material.IRON)
         );
     }
 
@@ -1042,6 +1046,12 @@ public class CommonRegistry {
         ITEM_BLOCKS.add(itemBlock);
     }
 
+    public static void registerItemBlock(Block block, Function<Block, Item> function) {
+        Item itemBlock = function.apply(block);
+        itemBlock.setRegistryName(block.getRegistryName());
+        ITEM_BLOCKS.add(itemBlock);
+    }
+
     private static EntityEntry registerEntity(String name, Class<? extends Entity> cl, int trackRange, int frequency) {
         return createEntityBuilder(name).entity(cl).tracker(trackRange, frequency, true).build();
     }
@@ -1070,6 +1080,7 @@ public class CommonRegistry {
         registerTileEntity(TileEntityGameEntitySpawner.class, "entity_spawner");
         registerTileEntity(TileEntityLootCrate.class, "loot_crate");
         registerTileEntity(TileEntityDoorCloser.class, "door_closer");
+        registerTileEntity(TileEntitySecretDoor.class, "secret_door");
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name) {

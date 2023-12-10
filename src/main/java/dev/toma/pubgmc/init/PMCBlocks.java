@@ -12,4 +12,6 @@ public final class PMCBlocks {
     public static final Block TARGET = null;
     public static final Block PLAYER_CRATE = null;
     public static final Block COPPER_ORE = null;
+    public static final Block BUSH = null;
+    public static final Block BUSH_HALF = null;
 }

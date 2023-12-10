@@ -18,6 +18,7 @@ import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.HandAnimate;
 import dev.toma.pubgmc.client.games.GameRendererManager;
 import dev.toma.pubgmc.client.games.MapPointRendererManager;
+import dev.toma.pubgmc.client.gui.GuiAttachmentSelector;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
@@ -40,7 +41,6 @@ import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.server.*;
-import dev.toma.pubgmc.util.handlers.GuiHandler;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -326,7 +326,8 @@ public class ClientEvents {
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         if (KeyBinds.ATTACHMENT.isPressed()) {
             if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
-                PacketHandler.INSTANCE.sendToServer(new PacketOpenGui(GuiHandler.GUI_ATTACHMENTS));
+                Minecraft mc = Minecraft.getMinecraft();
+                mc.displayGuiScreen(new GuiAttachmentSelector());
             } else {
                 sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
             }

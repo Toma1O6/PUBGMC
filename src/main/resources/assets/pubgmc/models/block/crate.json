@@ -1,8 +1,8 @@
 {
     "parent": "block/orientable",
     "textures": {
-        "0": "pubgmc:blocks/spruce_wood",
-        "particle": "pubgmc:blocks/spruce_wood"
+        "0": "blocks/planks_spruce",
+        "particle": "blocks/planks_spruce"
     },
     "elements": [
         {

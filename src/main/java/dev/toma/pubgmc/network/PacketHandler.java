@@ -36,6 +36,7 @@ public class PacketHandler {
         registerServerPacket(C2S_AdjustTeamSpawner.Handler.class, C2S_AdjustTeamSpawner.class);
         registerServerPacket(C2S_AdjustCaptureZone.Handler.class, C2S_AdjustCaptureZone.class);
         registerServerPacket(C2S_AdjustPartialPlayZone.Handler.class, C2S_AdjustPartialPlayZone.class);
+        registerServerPacket(C2S_AttachmentRequestPacket.Handler.class, C2S_AttachmentRequestPacket.class);
 
         registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
         registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
@@ -50,6 +51,7 @@ public class PacketHandler {
         registerClientPacket(S2C_SendGameData.Handler.class, S2C_SendGameData.class);
         registerClientPacket(S2C_PacketLoadoutSelect.Handler.class, S2C_PacketLoadoutSelect.class);
         registerClientPacket(S2C_ReloadChunks.Handler.class, S2C_ReloadChunks.class);
+        registerClientPacket(S2C_SendExternalGuiEvent.Handler.class, S2C_SendExternalGuiEvent.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

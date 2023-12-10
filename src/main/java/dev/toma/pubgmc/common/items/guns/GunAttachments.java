@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -48,16 +48,16 @@ public class GunAttachments {
     public void attach(ItemStack gunStack, ItemAttachment attachment) {
         if (gunStack.getItem() instanceof GunBase) {
             GunBase gunBase = (GunBase) gunStack.getItem();
-            NBTTagCompound nbt = gunBase.getOrCreateGunData(gunStack);
-            NBTTagCompound attachmentTag;
-            if (!nbt.hasKey("attachments")) {
-                attachmentTag = new NBTTagCompound();
-                nbt.setTag("attachments", attachmentTag);
-            } else {
-                attachmentTag = nbt.getCompoundTag("attachments");
-            }
+            NBTTagCompound attachmentTag = getAttachmentsTag(gunBase, gunStack);
             String key = attachment.getType().getName();
             attachmentTag.setString(key, attachment.getRegistryName().toString());
+        }
+    }
+
+    public void detach(ItemStack gunStack, AttachmentType<?> type) {
+        if (gunStack.getItem() instanceof GunBase) {
+            NBTTagCompound attachmentTag = getAttachmentsTag((GunBase) gunStack.getItem(), gunStack);
+            attachmentTag.removeTag(type.getName());
         }
     }
 
@@ -74,7 +74,22 @@ public class GunAttachments {
         return false;
     }
 
+    public NBTTagCompound getAttachmentsTag(GunBase gunBase, ItemStack itemStack) {
+        NBTTagCompound nbt = gunBase.getOrCreateGunData(itemStack);
+        NBTTagCompound attachmentTag;
+        if (!nbt.hasKey("attachments")) {
+            attachmentTag = new NBTTagCompound();
+            nbt.setTag("attachments", attachmentTag);
+        } else {
+            attachmentTag = nbt.getCompoundTag("attachments");
+        }
+        return attachmentTag;
+    }
+
     public Map<AttachmentType<?>, List<ItemAttachment>> getCompatibilityMap() {
+        if (!isLoaded()) {
+            load();
+        }
         return initializedAttachments;
     }
 
@@ -83,7 +98,7 @@ public class GunAttachments {
     }
 
     public void load() {
-        initializedAttachments = new HashMap<>();
+        initializedAttachments = new LinkedHashMap<>();
         uninitialized.forEach((k, v) -> initializedAttachments.put(k, v.get()));
         uninitialized = null;
     }
@@ -91,7 +106,7 @@ public class GunAttachments {
     public static class Builder {
 
         final GunBuilder gunBuilder;
-        Map<AttachmentType<?>, LazyLoad<List<ItemAttachment>>> map = new HashMap<>();
+        Map<AttachmentType<?>, LazyLoad<List<ItemAttachment>>> map = new LinkedHashMap<>();
 
         public Builder(GunBuilder builder) {
             this.gunBuilder = builder;

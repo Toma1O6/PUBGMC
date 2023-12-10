@@ -5,8 +5,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,7 +34,7 @@ public class ItemSecretRoomKey extends PMCItem implements SecretRoomKey {
 
     @Override
     public UUID getLinkedDoorId(ItemStack stack) {
-        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey(DOOR_ID_NBT_KEY)) {
+        if (stack.getTagCompound() == null || !stack.getTagCompound().hasKey(DOOR_ID_NBT_KEY + "Most")) {
             return null;
         }
         return stack.getTagCompound().getUniqueId(DOOR_ID_NBT_KEY);
