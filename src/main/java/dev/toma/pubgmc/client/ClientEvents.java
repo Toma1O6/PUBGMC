@@ -313,7 +313,7 @@ public class ClientEvents {
         if (KeyBinds.PRONE.isPressed()) {
             IPlayerData data = PlayerDataProvider.get(sp);
             if (data != null) {
-                data.setProne(!data.isProne());
+                data.setProne(!data.isProne(), false);
                 ReloadInfo reloadInfo = data.getReloadInfo();
                 if (data.getAimInfo().isAiming()) this.setAiming(data, false);
                 if (reloadInfo.isReloading()) {

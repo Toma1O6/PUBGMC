@@ -32,6 +32,7 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
         NBTTagCompound c = new NBTTagCompound();
         c.setTag("weapons", weapons.serializeNBT());
         c.setBoolean("inventoryRestrictions", players.forceInventoryRestrictions.get());
+        c.setInteger("proneCooldown", players.proneCooldown.get());
         return c;
     }
 
@@ -39,5 +40,6 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
     public void deserializeNBT(NBTTagCompound nbt) {
         weapons.deserializeNBT(nbt.getCompoundTag("weapons"));
         players.forceInventoryRestrictions.set(nbt.getBoolean("inventoryRestrictions"));
+        players.proneCooldown.set(nbt.getInteger("proneCooldown"));
     }
 }

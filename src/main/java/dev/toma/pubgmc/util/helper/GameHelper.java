@@ -192,7 +192,7 @@ public final class GameHelper {
         IPlayerData playerData = PlayerDataProvider.get(player);
         if (playerData != null) {
             playerData.setNightVisionActive(false);
-            playerData.setProne(false);
+            playerData.setProne(false, true);
             playerData.getBoostStats().reset();
             playerData.getEquipmentInventory().clear();
             playerData.getDebuffs().clearBlindStatus();

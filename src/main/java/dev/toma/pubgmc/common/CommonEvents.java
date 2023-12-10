@@ -23,7 +23,6 @@ import dev.toma.pubgmc.network.client.CPacketAnimation;
 import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
 import dev.toma.pubgmc.network.client.PacketLoadConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
-import dev.toma.pubgmc.util.RandomBotNameGenerator;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -178,7 +177,7 @@ public class CommonEvents {
             return;
         data.tick();
         if ((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProne() && !player.world.isRemote) {
-            data.setProne(false);
+            data.setProne(false, true);
             data.sync();
         }
         if (!player.world.isRemote) {

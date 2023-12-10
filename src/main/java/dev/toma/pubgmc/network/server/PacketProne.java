@@ -34,7 +34,7 @@ public class PacketProne implements IMessage {
         public static void handle(PacketProne p, EntityPlayer player) {
             IPlayerData data = PlayerDataProvider.get(player);
             if (data != null) {
-                data.setProne(p.prone);
+                data.setProne(p.prone, false);
                 data.sync();
             }
         }

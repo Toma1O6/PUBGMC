@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.capability;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.entity.EntityDebuffs;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.client.PacketClientCapabilitySync;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
@@ -31,6 +32,7 @@ public class PlayerData implements IPlayerData {
     private final PlayerDebuffs debuffs;
     private boolean isProne;
     private boolean areNightVisionGogglesActive;
+    private int proneCooldown;
 
     public PlayerData() {
         this(null);
@@ -51,6 +53,9 @@ public class PlayerData implements IPlayerData {
         aimInfo.onTick();
         reloadInfo.onTick();
         debuffs.tick();
+        if (proneCooldown > 0) {
+            --proneCooldown;
+        }
     }
 
     @Override
@@ -113,8 +118,11 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
-    public void setProne(boolean proning) {
-        this.isProne = proning;
+    public void setProne(boolean proning, boolean force) {
+        if (isProne != proning && (proneCooldown <= 0 || force)) {
+            this.isProne = proning;
+            this.proneCooldown = ConfigPMC.common.players.proneCooldown.get();
+        }
     }
 
     @Override

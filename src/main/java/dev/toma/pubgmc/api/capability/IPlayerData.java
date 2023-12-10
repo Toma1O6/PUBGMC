@@ -29,7 +29,7 @@ public interface IPlayerData extends INBTSerializable<NBTTagCompound>, SpecialIn
 
     boolean isProne();
 
-    void setProne(boolean proning);
+    void setProne(boolean proning, boolean force);
 
     void sync();
 }
