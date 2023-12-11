@@ -31,6 +31,7 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
     protected AxisAlignedBB[] boxes;
     protected boolean isGlass = false;
     protected String[] description = null;
+    protected Boolean aiPassable = false;
 
     protected BlockBuilder() {
     }
@@ -90,6 +91,7 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
     public BlockBuilder nullAABB(AxisAlignedBB bound) {
         this.boxes[0] = bound;
         this.boxes[1] = Block.NULL_AABB;
+        setPathfindable(true);
         return this;
     }
 
@@ -113,6 +115,11 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
 
     public BlockBuilder description(String... strings) {
         this.description = strings;
+        return this;
+    }
+
+    public BlockBuilder setPathfindable(boolean pathfindable) {
+        this.aiPassable = pathfindable;
         return this;
     }
 
@@ -168,6 +175,11 @@ public class BlockBuilder implements IBuilder<PMCBlock> {
                 if (description != null) {
                     tooltip.addAll(Arrays.asList(description));
                 }
+            }
+
+            @Override
+            public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+                return aiPassable != null ? aiPassable : super.isPassable(worldIn, pos);
             }
         };
         builtBlock.setLightLevel(lightValue);

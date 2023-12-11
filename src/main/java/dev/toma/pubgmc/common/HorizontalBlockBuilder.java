@@ -32,6 +32,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
     private AxisAlignedBB[] coll_boxes = new AxisAlignedBB[]{Block.FULL_BLOCK_AABB};
     private BlockFaceShape faceShape;
     private String[] desc;
+    private Boolean aiPassable;
 
     private HorizontalBlockBuilder() {
     }
@@ -97,6 +98,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
 
     public HorizontalBlockBuilder nullAABB() {
         this.coll_boxes = new AxisAlignedBB[]{Block.NULL_AABB};
+        setPathfindable(true);
         return this;
     }
 
@@ -120,7 +122,7 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
         aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB);
         setTransparent();
         renderLayer = BlockRenderLayer.CUTOUT;
-
+        setPathfindable(true);
         return this;
     }
 
@@ -131,6 +133,11 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
 
     public HorizontalBlockBuilder description(String... strings) {
         this.desc = strings;
+        return this;
+    }
+
+    public HorizontalBlockBuilder setPathfindable(boolean pathfindable) {
+        this.aiPassable = pathfindable;
         return this;
     }
 
@@ -189,6 +196,11 @@ public class HorizontalBlockBuilder implements IBuilder<PMCBlockHorizontal> {
                         tooltip.add(s);
                     }
                 }
+            }
+
+            @Override
+            public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+                return aiPassable != null ? aiPassable : super.isPassable(worldIn, pos);
             }
         };
         builtBlock.setLightLevel(lightValue);

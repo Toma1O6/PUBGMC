@@ -129,7 +129,7 @@ public class CommonRegistry {
                 HorizontalBlockBuilder.create("prop3", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
                 HorizontalBlockBuilder.create("prop4", Material.IRON).soundType(SoundType.METAL).setProp().build(),
                 HorizontalBlockBuilder.create("prop5", Material.CLOTH).soundType(SoundType.CLOTH).setProp().build(),
-                BlockBuilder.create("prop6", Material.ROCK).soundType(SoundType.GLASS).aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB).transparency(false, false).description("OfficialMajonaise's prop for doing great models").renderType(BlockRenderLayer.CUTOUT).build(),
+                BlockBuilder.create("prop6", Material.ROCK).soundType(SoundType.GLASS).aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB).transparency(false, false).setPathfindable(true).description("OfficialMajonaise's prop for doing great models").renderType(BlockRenderLayer.CUTOUT).build(),
                 HorizontalBlockBuilder.create("fence", Material.IRON).soundType(SoundType.METAL).setTransparent()
                         .aabb(new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1), new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6), new AxisAlignedBB(0.4, 0, 0, 0.6, 1, 1), new AxisAlignedBB(0, 0, 0.4, 1, 1, 0.6))
                         .build(),
@@ -161,6 +161,7 @@ public class CommonRegistry {
                         .build(),
                 HorizontalBlockBuilder.create("screen", Material.ROCK).soundType(SoundType.STONE)
                         .aabb(Block.FULL_BLOCK_AABB, Block.NULL_AABB)
+                        .setPathfindable(true)
                         .transparency(false, false).build(),
                 HorizontalBlockBuilder.create("box_single", Material.IRON).aabb(new AxisAlignedBB(0, 0, 0, 1, 0.5, 1))
                         .soundType(SoundType.METAL).transparency(false, false)
@@ -199,7 +200,7 @@ public class CommonRegistry {
                 BlockBuilder.create("carrier_barrels_blue", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("carrier_barrels_red", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
                 BlockBuilder.create("carrier_barrels_white", Material.IRON).soundType(SoundType.METAL).setTransparent().build(),
-                BlockBuilder.create("carrier_empty_ground", Material.WOOD).soundType(SoundType.WOOD).setTransparent().aabb(new AxisAlignedBB(0, 0, 0, 1.0, 0.2, 1.0)).build(),
+                BlockBuilder.create("carrier_empty_ground", Material.WOOD).soundType(SoundType.WOOD).setTransparent().aabb(new AxisAlignedBB(0, 0, 0, 1.0, 0.2, 1.0)).setPathfindable(true).build(),
                 BlockBuilder.create("flare_stick", Material.CLOTH).soundType(SoundType.CLOTH).setTransparent().light(0.75F).nullAABB(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 0.1, 0.65)).build(),
                 BlockBuilder.create("metal_light", Material.IRON).soundType(SoundType.METAL).setTransparent().light(1.0F).aabb(new AxisAlignedBB(0.3, 0.0, 0.3, 0.7, 0.9, 0.7)).build(),
                 BlockBuilder.create("pole", Material.IRON).soundType(SoundType.METAL).setTransparent().aabb(new AxisAlignedBB(0.35, 0.0, 0.35, 0.65, 1.0, 0.65)).build(),

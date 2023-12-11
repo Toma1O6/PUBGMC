@@ -56,4 +56,9 @@ public class BlockPlant extends PMCBlock {
     public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
         return true;
     }
+
+    @Override
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+        return true;
+    }
 }

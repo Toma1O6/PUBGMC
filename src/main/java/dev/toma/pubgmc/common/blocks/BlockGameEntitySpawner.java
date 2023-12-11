@@ -61,4 +61,9 @@ public class BlockGameEntitySpawner extends PMCBlockHorizontal {
         spawner.setEntityProviderConfigPath(spawnConfigurationPath);
         return spawner;
     }
+
+    @Override
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos) {
+        return true;
+    }
 }
