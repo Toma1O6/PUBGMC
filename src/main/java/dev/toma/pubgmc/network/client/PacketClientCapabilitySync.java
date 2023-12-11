@@ -56,10 +56,12 @@ public class PacketClientCapabilitySync implements IMessage {
                     return;
                 IPlayerData data = PlayerDataProvider.get(target);
                 boolean oldAim = data.getAimInfo().isAiming();
+                boolean oldReload = data.getReloadInfo().isReloading();
                 data.deserializeNBT(m.nbt);
                 boolean newAim = data.getAimInfo().isAiming();
+                boolean newReload = data.getReloadInfo().isReloading();
 
-                if (!data.getReloadInfo().isReloading()) {
+                if (oldReload != newReload && !newReload) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 }
                 if (oldAim && !newAim) {
