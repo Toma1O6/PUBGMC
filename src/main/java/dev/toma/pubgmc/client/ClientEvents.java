@@ -431,8 +431,7 @@ public class ClientEvents {
                 if (gs.keyBindUseItem.isPressed() && isEquipAnimationDone(mc)) {
                     if (!data.getAimInfo().isAiming()) {
                         player.setSprinting(false);
-                        RenderHandler.fovBackup = gs.fovSetting;
-                        RenderHandler.sensBackup = gs.mouseSensitivity;
+                        RenderHandler.saveCurrentOptions();
                         ScopeData scopeData = gun.getScopeData(stack);
                         if (scopeData != null && scopeData.getMouseSens() < 1.0F) {
                             gs.mouseSensitivity *= scopeData.getMouseSens();
@@ -440,8 +439,7 @@ public class ClientEvents {
                         PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
                     } else {
-                        gs.fovSetting = RenderHandler.fovBackup;
-                        gs.mouseSensitivity = RenderHandler.sensBackup;
+                        RenderHandler.restore();
                         PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
                     }
                 }

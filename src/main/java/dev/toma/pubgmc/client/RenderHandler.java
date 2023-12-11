@@ -11,20 +11,27 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.OptionalDouble;
+
 public class RenderHandler {
 
-    public static float fovBackup;
-    public static float sensBackup;
+    private static OptionalDouble fovBackup = OptionalDouble.empty();
+    private static OptionalDouble sensBackup = OptionalDouble.empty();
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
     }
 
-    public RenderHandler() {
-        Minecraft mc = Minecraft.getMinecraft();
-        GameSettings settings = mc.gameSettings;
-        fovBackup = settings.fovSetting;
-        sensBackup = settings.mouseSensitivity;
+    public static void saveCurrentOptions() {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        GameSettings settings = minecraft.gameSettings;
+        fovBackup = OptionalDouble.of(settings.fovSetting);
+        sensBackup = OptionalDouble.of(settings.mouseSensitivity);
+    }
+
+    public static void restore() {
+        fovBackup.ifPresent(fov -> Minecraft.getMinecraft().gameSettings.fovSetting = (float) fov);
+        sensBackup.ifPresent(sens -> Minecraft.getMinecraft().gameSettings.mouseSensitivity = (float) sens);
     }
 
     @SubscribeEvent

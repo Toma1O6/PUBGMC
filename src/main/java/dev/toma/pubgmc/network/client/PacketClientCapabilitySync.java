@@ -55,14 +55,15 @@ public class PacketClientCapabilitySync implements IMessage {
                 if (target == null)
                     return;
                 IPlayerData data = PlayerDataProvider.get(target);
+                boolean oldAim = data.getAimInfo().isAiming();
                 data.deserializeNBT(m.nbt);
+                boolean newAim = data.getAimInfo().isAiming();
 
                 if (!data.getReloadInfo().isReloading()) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 }
-                if (!data.getAimInfo().isAiming()) {
-                    mc.gameSettings.fovSetting = RenderHandler.fovBackup;
-                    mc.gameSettings.mouseSensitivity = RenderHandler.sensBackup;
+                if (oldAim && !newAim) {
+                    RenderHandler.restore();
                 }
             });
             return null;
