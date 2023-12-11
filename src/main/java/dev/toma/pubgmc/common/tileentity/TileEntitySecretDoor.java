@@ -6,6 +6,8 @@ import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -19,6 +21,11 @@ public class TileEntitySecretDoor extends TileEntity implements GameObject, Pred
     public void assignDoorKey(UUID doorKey) {
         this.assignedDoorKey = doorKey;
         markDirty();
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return false;
     }
 
     @Override
@@ -59,7 +66,7 @@ public class TileEntitySecretDoor extends TileEntity implements GameObject, Pred
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         gameId = compound.getUniqueId("gameId");
-        if (compound.hasKey("doorId"))
+        if (compound.hasKey("doorIdMost"))
             assignedDoorKey = compound.getUniqueId("doorId");
     }
 }
