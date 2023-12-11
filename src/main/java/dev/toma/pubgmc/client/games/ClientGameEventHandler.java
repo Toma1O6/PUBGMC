@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameConfiguration;
+import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
 import dev.toma.pubgmc.api.game.team.TeamManager;
@@ -49,36 +49,27 @@ public final class ClientGameEventHandler {
         Minecraft minecraft = Minecraft.getMinecraft();
         WorldClient worldClient = minecraft.world;
         GameDataProvider.getGameData(worldClient).ifPresent(data -> {
-            event.setCanceled(true);
             Game<?> game = data.getCurrentGame();
             if (game.isStarted() && !game.getConfiguration().shouldShowNameplates()) {
                 event.setCanceled(true);
-            }
-        });
-    }
 
-    @SubscribeEvent
-    public static void renderEntityNamesInGame(RenderLivingEvent.Specials.Pre<EntityLivingBase> event) {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        WorldClient worldClient = minecraft.world;
-        GameDataProvider.getGameData(worldClient).ifPresent(data -> {
-            Game<?> game = data.getCurrentGame();
-            if (!game.isStarted() || !(game instanceof TeamGame<?>)) {
-                return;
-            }
-            TeamGame<?> teamGame = (TeamGame<?>) game;
-            Entity clientEntity = minecraft.getRenderViewEntity();
-            EntityLivingBase renderingEntity = event.getEntity();
-            if (clientEntity == null || clientEntity == renderingEntity) {
-                return;
-            }
-            TeamGameConfiguration teamGameConfiguration = teamGame.getConfiguration();
-            if (teamGameConfiguration.shouldShowTeamNameplates()) {
-                TeamManager teamManager = teamGame.getTeamManager();
-                Team myTeam = teamManager.getEntityTeam(clientEntity);
-                Team renderingTeam = teamManager.getEntityTeam(renderingEntity);
-                if (teamManager.getTeamRelationship(myTeam, renderingTeam) == TeamRelations.FRIENDLY) {
-                    renderEntityName(minecraft.getRenderManager(), renderingEntity, event.getX(), event.getY(), event.getZ());
+                if (!game.isStarted() || !(game instanceof TeamGame<?>)) {
+                    return;
+                }
+                TeamGame<?> teamGame = (TeamGame<?>) game;
+                Entity clientEntity = minecraft.getRenderViewEntity();
+                EntityLivingBase renderingEntity = event.getEntity();
+                if (clientEntity == null || clientEntity == renderingEntity) {
+                    return;
+                }
+                TeamGameConfiguration teamGameConfiguration = teamGame.getConfiguration();
+                if (teamGameConfiguration.shouldShowTeamNameplates()) {
+                    TeamManager teamManager = teamGame.getTeamManager();
+                    Team myTeam = teamManager.getEntityTeam(clientEntity);
+                    Team renderingTeam = teamManager.getEntityTeam(renderingEntity);
+                    if (teamManager.getTeamRelationship(myTeam, renderingTeam) == TeamRelations.FRIENDLY) {
+                        renderEntityName(minecraft.getRenderManager(), renderingEntity, event.getX(), event.getY(), event.getZ());
+                    }
                 }
             }
         });
@@ -100,7 +91,7 @@ public final class ClientGameEventHandler {
         EntityPlayerSP entityplayersp = Minecraft.getMinecraft().player;
         boolean visible = !livingBase.isInvisibleToPlayer(entityplayersp);
         boolean playerCondition = Minecraft.isGuiEnabled() && livingBase != minecraft.getRenderManager().renderViewEntity && visible && !livingBase.isBeingRidden();
-        if (livingBase instanceof EntityLiving) {
+        if (livingBase instanceof EntityLiving && !(livingBase instanceof LivingGameEntity)) {
             return playerCondition && (livingBase.getAlwaysRenderNameTagForRender() || livingBase.hasCustomName() && livingBase == minecraft.getRenderManager().pointedEntity);
         }
         return playerCondition;
