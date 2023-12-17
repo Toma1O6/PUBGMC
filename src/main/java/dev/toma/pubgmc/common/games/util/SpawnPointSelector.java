@@ -24,6 +24,8 @@ public final class SpawnPointSelector<P extends GameMapPoint> {
     private final Predicate<P> selector;
     private final Function<World, GameMap> mapProvider;
 
+    private boolean allowUnloaded;
+
     public SpawnPointSelector(GameMapPointType<P> mapPointType, Predicate<P> selector, Function<World, GameMap> mapProvider) {
         this.mapPointType = mapPointType;
         this.selector = selector;
@@ -34,9 +36,14 @@ public final class SpawnPointSelector<P extends GameMapPoint> {
         this(mapPointType, t -> true, mapProvider);
     }
 
+    public void allowUnloadedSpawnPoints(boolean allowUnloaded) {
+        this.allowUnloaded = allowUnloaded;
+    }
+
     public P getPoint(World world, Collection<? extends Entity> enemyEntities) {
         GameMap map = mapProvider.apply(world);
-        Collection<P> points = map.getPoints(mapPointType).stream().filter(selector).collect(Collectors.toList());
+        Predicate<P> filter = allowUnloaded ? selector : p -> selector.test(p) && world.isBlockLoaded(p.getPointPosition());
+        Collection<P> points = map.getPoints(mapPointType).stream().filter(filter).collect(Collectors.toList());
         if (points.isEmpty()) {
             throw new UnsupportedOperationException("Map has to contain atleast one point");
         }

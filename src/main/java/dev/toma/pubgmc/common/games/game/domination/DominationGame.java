@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.games.game.domination;
 
 import com.google.gson.JsonObject;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
@@ -91,7 +92,9 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         this.pointManager = new DominationCapturePointManager(this.teamManager, this.configuration.captureSpeed, this::onPointCaptured);
         this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
         this.redSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.RED, GameHelper::getActiveGameMapOrSubMap);
+        this.redSpawns.allowUnloadedSpawnPoints(true);
         this.blueSpawns = new SpawnPointSelector<>(GameMapPoints.TEAM_SPAWNER, teamSpawnerPoint -> teamSpawnerPoint.getTeamType() == TeamType.BLUE, GameHelper::getActiveGameMapOrSubMap);
+        this.blueSpawns.allowUnloadedSpawnPoints(true);
         this.spawns = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMapOrSubMap);
         this.ruleStorage = new GameRuleStorage();
         this.aiManager = new DominationAIManager();
@@ -407,6 +410,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
                 loadoutManager.applyLoadout(player);
             }
         }
+        selector.allowUnloadedSpawnPoints(false);
     }
 
     private void tryCompleteGame(World world) {
@@ -459,8 +463,12 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         player.assignGameId(gameId);
         player.forceSpawn = true;
         properties.register(player);
-        world.spawnEntity(player);
+        boolean spawned = world.spawnEntity(player);
         aiManager.register(player);
+        if (!spawned) {
+            Pubgmc.logger.warn("Failed to spawn AI {}, marking as dead", player);
+            markEntityForRespawn(player);
+        }
         List<EntityLoadout> availableLoadouts = loadoutManager.getAvailableLoadouts();
         EntityLoadout loadout = PUBGMCUtil.randomListElement(availableLoadouts, world.rand);
         if (loadout != null) {
@@ -468,6 +476,11 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             loadoutManager.select(playerId, loadout);
             loadoutManager.applyLoadout(player);
         }
+    }
+
+    private void markEntityForRespawn(EntityAIPlayer ai) {
+        properties.setProperty(ai.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gameTime);
+        aiManager.markDead(ai.getUniqueID());
     }
 
     public static void initAi(EntityAIPlayer player, DominationGame game) {
@@ -496,15 +509,18 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
             }
             player.setUniqueId(uuid);
             player.assignGameId(gameId);
-            player.forceSpawn = true;
             SpawnerPoint point = getRespawnPoint(world, player);
             BlockPos pos = point.getPointPosition();
             player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
             loadoutManager.applyLoadout(player);
             aiManager.markAlive(uuid);
             properties.setProperty(uuid, SharedProperties.GAME_TIMESTAMP, gameTime);
-            world.spawnEntity(player);
-            bleedRespawnTickets(player);
+            if (!world.spawnEntity(player)) {
+                Pubgmc.logger.warn("Failed to spawn AI {}, marking as dead", player);
+                markEntityForRespawn(player);
+            } else {
+                bleedRespawnTickets(player);
+            }
         });
         GameHelper.requestClientGameDataSynchronization(world);
     }

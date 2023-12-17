@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.games.game.ffa;
 
 import com.google.gson.JsonObject;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.event.GameEvent;
@@ -288,13 +289,19 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         aiPlayer.forceSpawn = true;
         participantManager.registerAi(aiPlayer);
         properties.register(aiPlayer);
-        world.spawnEntity(aiPlayer);
+        boolean spawned = world.spawnEntity(aiPlayer);
+        if (!spawned) {
+            Pubgmc.logger.warn("Failed to spawn AI {}, marking as dead", aiPlayer);
+            markAiForRespawn(aiPlayer);
+        }
         List<EntityLoadout> available = getAvailableLoadouts();
         EntityLoadout loadout = PUBGMCUtil.randomListElement(available, world.rand);
         if (loadout != null) {
             UUID uuid = aiPlayer.getUniqueID();
             loadoutManager.select(uuid, loadout);
-            loadoutManager.applyLoadout(aiPlayer);
+            if (spawned) {
+                loadoutManager.applyLoadout(aiPlayer);
+            }
         }
     }
 
@@ -378,11 +385,13 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
             player.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
             player.setUniqueId(uuid);
             player.assignGameId(gameId);
-            player.forceSpawn = true;
             loadoutManager.applyLoadout(player);
             participantManager.markRespawned(uuid);
             properties.setProperty(uuid, SharedProperties.GAME_TIMESTAMP, gametime);
-            world.spawnEntity(player);
+            if (!world.spawnEntity(player)) {
+                Pubgmc.logger.warn("Failed to spawn AI {}, marking as dead", player);
+                markAiForRespawn(player);
+            }
         });
         GameHelper.requestClientGameDataSynchronization(world);
     }
@@ -402,6 +411,11 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         } else {
             openMenu((EntityPlayerMP) player);
         }
+    }
+
+    private void markAiForRespawn(EntityAIPlayer aiPlayer) {
+        properties.setProperty(aiPlayer.getUniqueID(), SharedProperties.GAME_TIMESTAMP, gametime);
+        participantManager.markAiAsDead(aiPlayer.getUniqueID());
     }
 
     private boolean isJoinable(EntityPlayer player) {
