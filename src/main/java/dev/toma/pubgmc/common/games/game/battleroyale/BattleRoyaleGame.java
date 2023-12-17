@@ -54,12 +54,12 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
@@ -138,23 +138,21 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public void onGameInit(World world) {
         playerProperties.registerProperty(SharedProperties.KILLS, 0);
         List<EntityPlayer> playerList = world.playerEntities;
-        if (playerList.size() <= EntityPlane.PLANE_CAPACITY) {
-            GameDataProvider.getGameData(world)
-                    .map(GameData::getGameLobby)
-                    .ifPresent(lobby -> {
-                        Team team = null;
-                        for (EntityPlayer player : playerList) {
-                            lobby.teleport(player);
-                            if (!configuration.automaticGameJoining || team == null || team.getSize() >= configuration.teamSize) {
-                                team = teamManager.createNewTeam(player);
-                                playerProperties.register(player);
-                                continue;
-                            }
-                            teamManager.join(team, player);
+        GameDataProvider.getGameData(world)
+                .map(GameData::getGameLobby)
+                .ifPresent(lobby -> {
+                    Team team = null;
+                    for (EntityPlayer player : playerList) {
+                        lobby.teleport(player);
+                        if (!configuration.automaticGameJoining || team == null || team.getSize() >= configuration.teamSize) {
+                            team = teamManager.createNewTeam(player);
                             playerProperties.register(player);
+                            continue;
                         }
-                    });
-        }
+                        teamManager.join(team, player);
+                        playerProperties.register(player);
+                    }
+                });
     }
 
     @Override
@@ -167,14 +165,17 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
-            EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, 1200);
-            plane.setMovementSpeedMultiplier(configuration.planeSpeed);
-            plane.setFlightHeight(configuration.planeFlightHeight);
-            GameHelper.spawnPlaneWithPlayers(plane, teamManager, world, player -> {
+            Supplier<EntityPlane> planeProvider = () -> {
+                EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, 1200);
+                plane.setMovementSpeedMultiplier(configuration.planeSpeed);
+                plane.setFlightHeight(configuration.planeFlightHeight);
+                return plane;
+            };
+            GameHelper.spawnPlanesWithPlayers(teamManager, world, player -> {
                 GameHelper.resetPlayerData(player);
                 LoadoutManager.apply(player, PLAYER_INITIAL_LOOT_PATH);
                 player.setGameType(net.minecraft.world.GameType.ADVENTURE);
-            });
+            }, planeProvider);
             configuration.worldConfiguration.apply(worldServer, ruleStorage);
             ruleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
             ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);

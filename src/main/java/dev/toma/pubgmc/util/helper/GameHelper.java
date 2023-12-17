@@ -53,6 +53,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -278,14 +279,27 @@ public final class GameHelper {
         return plane;
     }
 
-    public static void spawnPlaneWithPlayers(EntityPlane plane, TeamManager teamManager, World world, Consumer<EntityPlayer> playerConsumer) {
+    public static void spawnPlanesWithPlayers(TeamManager teamManager, World world, Consumer<EntityPlayer> playerConsumer, Supplier<EntityPlane> planeProvider) {
         List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
-        playerList.forEach(player -> teleport(player, plane.posX, plane.posY, plane.posZ));
-        world.spawnEntity(plane);
-        playerList.forEach(player -> {
-            player.startRiding(plane);
-            playerConsumer.accept(player);
-        });
+        int pool = playerList.size();
+        int cursor = 0;
+        while (pool > 0) {
+            List<EntityPlayer> sublist = playerList.subList(cursor, Math.min(playerList.size(), cursor + EntityPlane.PLANE_CAPACITY));
+
+            EntityPlane plane = planeProvider.get();
+            sublist.forEach(player -> teleport(player, plane.posX, plane.posY, plane.posZ));
+            if (!world.spawnEntity(plane)) {
+                Pubgmc.logger.fatal("Plane spawning failed for plane {}", plane);
+            } else {
+                sublist.forEach(player -> {
+                    player.startRiding(plane);
+                    playerConsumer.accept(player);
+                });
+            }
+
+            pool -= sublist.size();
+            cursor += EntityPlane.PLANE_CAPACITY;
+        }
     }
 
     public static void teleport(Entity entity, double x, double y, double z) {
