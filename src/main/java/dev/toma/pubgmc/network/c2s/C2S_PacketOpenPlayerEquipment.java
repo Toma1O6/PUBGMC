@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.util.handlers.GuiHandler;

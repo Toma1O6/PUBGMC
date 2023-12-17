@@ -5,7 +5,7 @@ import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.C2S_SelectLoadout;
+import dev.toma.pubgmc.network.c2s.C2S_PacketSelectLoadout;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.client.Minecraft;
@@ -97,7 +97,7 @@ public class LoadoutSelectGui extends GuiWidgets {
     private void confirmed() {
         if (selected == null)
             return;
-        PacketHandler.sendToServer(new C2S_SelectLoadout(index));
+        PacketHandler.sendToServer(new C2S_PacketSelectLoadout(index));
         mc.displayGuiScreen(null);
     }
 

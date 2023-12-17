@@ -6,7 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketSyncEntity;
+import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -96,7 +96,7 @@ public class SerializationHelper {
     }
 
     public static <T extends Entity & SynchronizableEntity> void syncEntity(T entity) {
-        PacketHandler.sendToAllTracking(new PacketSyncEntity(entity), entity);
+        PacketHandler.sendToAllTracking(new S2C_PacketSendEntityData(entity), entity);
     }
 
     public static <T> NBTTagList arrayToNbt(T[] array, Function<T, NBTBase> encoder) {

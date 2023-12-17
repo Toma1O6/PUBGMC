@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
@@ -10,16 +10,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketUpdateWorkbench implements IMessage {
+public class C2S_PacketUpdateWorkbench implements IMessage {
 
     BlockPos pos;
     CraftingCategory cat;
     int page;
 
-    public PacketUpdateWorkbench() {
+    public C2S_PacketUpdateWorkbench() {
     }
 
-    public PacketUpdateWorkbench(TileEntityGunWorkbench te, CraftingCategory cat, int page) {
+    public C2S_PacketUpdateWorkbench(TileEntityGunWorkbench te, CraftingCategory cat, int page) {
         this.pos = te.getPos();
         this.cat = cat;
         this.page = page;
@@ -41,14 +41,14 @@ public class PacketUpdateWorkbench implements IMessage {
         page = buf.readInt();
     }
 
-    public static class Handler implements IMessageHandler<PacketUpdateWorkbench, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketUpdateWorkbench, IMessage> {
 
         @Override
-        public IMessage onMessage(PacketUpdateWorkbench message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketUpdateWorkbench message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 TileEntity t = player.world.getTileEntity(message.pos);
-                if (t != null && t instanceof TileEntityGunWorkbench) {
+                if (t instanceof TileEntityGunWorkbench) {
                     TileEntityGunWorkbench te = (TileEntityGunWorkbench) t;
                     te.selectedCat = message.cat;
                     te.selectedIndex = message.page;

@@ -19,9 +19,9 @@ import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.event.LandmineExplodeEvent;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.CPacketAnimation;
-import dev.toma.pubgmc.network.client.PacketGetConfigFromServer;
-import dev.toma.pubgmc.network.client.PacketLoadConfig;
+import dev.toma.pubgmc.network.s2c.S2C_PacketAnimation;
+import dev.toma.pubgmc.network.s2c.S2C_PacketNotifyRestoreConfig;
+import dev.toma.pubgmc.network.s2c.S2C_PacketReceiveServerConfig;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -35,7 +35,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -65,7 +64,6 @@ import java.util.UUID;
 
 public class CommonEvents {
 
-    public static final HashMap<UUID, NBTTagCompound> CONFIGS = new HashMap<>();
     public static final AttributeModifier PRONE_MODIFIER = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Prone modifier", -0.7, 2);
     Map<UUID, Integer> selectedSlotCache = new HashMap<>();
 
@@ -128,7 +126,7 @@ public class CommonEvents {
                 instance.applyModifier(((GunBase) stack.getItem()).getGunType().getModifier());
                 int last = selectedSlotCache.getOrDefault(player.getUniqueID(), 0);
                 if (last != player.inventory.currentItem) {
-                    PacketHandler.sendToClient(new CPacketAnimation(true, AnimationType.EQUIP_ANIMATION_TYPE), (EntityPlayerMP) player);
+                    PacketHandler.sendToClient(new S2C_PacketAnimation(true, AnimationType.EQUIP_ANIMATION_TYPE), (EntityPlayerMP) player);
                 }
             }
             if (event.getSlot() == EntityEquipmentSlot.MAINHAND) {
@@ -199,7 +197,7 @@ public class CommonEvents {
             handleUpdateResults(version, player);
         }
         selectedSlotCache.put(event.player.getUniqueID(), event.player.inventory.currentItem);
-        PacketHandler.sendToClient(new PacketGetConfigFromServer(ConfigPMC.common.serializeNBT()), player);
+        PacketHandler.sendToClient(new S2C_PacketReceiveServerConfig(ConfigPMC.common.serializeNBT()), player);
         //We get the last player data and later sync it to client
         player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -216,8 +214,7 @@ public class CommonEvents {
             IPlayerData data = PlayerDataProvider.get(e.player);
             data.getAimInfo().setAiming(false, 1.0F);
             data.sync();
-            PacketHandler.sendToClient(new PacketLoadConfig(CONFIGS.get(e.player.getUniqueID())), (EntityPlayerMP) e.player);
-            CONFIGS.remove(e.player.getUniqueID());
+            PacketHandler.sendToClient(new S2C_PacketNotifyRestoreConfig(), (EntityPlayerMP) e.player);
         }
     }
 

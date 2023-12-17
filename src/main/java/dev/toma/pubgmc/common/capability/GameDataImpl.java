@@ -11,7 +11,7 @@ import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.S2C_SendGameData;
+import dev.toma.pubgmc.network.s2c.S2C_PacketSendGameData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -135,7 +135,7 @@ public class GameDataImpl implements GameData {
     @Override
     public void sendGameDataToClients() {
         if (!world.isRemote) {
-            PacketHandler.sendToAllClients(new S2C_SendGameData(serializeNBT()));
+            PacketHandler.sendToAllClients(new S2C_PacketSendGameData(serializeNBT()));
         }
     }
 

@@ -6,8 +6,8 @@ import dev.toma.pubgmc.client.util.RecipeButton;
 import dev.toma.pubgmc.common.container.ContainerGunWorkbench;
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.PacketCraft;
-import dev.toma.pubgmc.network.server.PacketUpdateWorkbench;
+import dev.toma.pubgmc.network.c2s.C2S_PacketCraftItem;
+import dev.toma.pubgmc.network.c2s.C2S_PacketUpdateWorkbench;
 import dev.toma.pubgmc.util.recipes.PMCRecipe;
 import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
 import dev.toma.pubgmc.util.recipes.RecipeRegistry;
@@ -81,7 +81,7 @@ public class GuiGunWorkbench extends GuiContainer {
             RecipeButton btn = (RecipeButton) button;
             PMCRecipe recipe = btn.recipe;
             if (btn.active && timeSinceCraft == 0) {
-                PacketHandler.sendToServer(new PacketCraft(tileentity.getPos(), RecipeRegistry.RECIPES.indexOf(recipe)));
+                PacketHandler.sendToServer(new C2S_PacketCraftItem(tileentity.getPos(), RecipeRegistry.RECIPES.indexOf(recipe)));
                 this.updateButtons();
                 timeSinceCraft = Minecraft.getDebugFPS();
             }
@@ -132,7 +132,7 @@ public class GuiGunWorkbench extends GuiContainer {
     }
 
     private void update(int page, CraftingCategory category) {
-        PacketHandler.sendToServer(new PacketUpdateWorkbench(tileentity, category, page));
+        PacketHandler.sendToServer(new C2S_PacketUpdateWorkbench(tileentity, category, page));
         tileentity.selectedIndex = page;
         tileentity.selectedCat = category;
     }

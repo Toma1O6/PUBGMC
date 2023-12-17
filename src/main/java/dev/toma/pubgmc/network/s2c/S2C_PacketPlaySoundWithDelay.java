@@ -1,9 +1,8 @@
-package dev.toma.pubgmc.network.client;
+package dev.toma.pubgmc.network.s2c;
 
 import dev.toma.pubgmc.Pubgmc;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -11,15 +10,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PacketDelayedSound implements IMessage {
+public class S2C_PacketPlaySoundWithDelay implements IMessage {
     private SoundEvent event;
     private float volume;
     private double x, y, z;
 
-    public PacketDelayedSound() {
+    public S2C_PacketPlaySoundWithDelay() {
     }
 
-    public PacketDelayedSound(SoundEvent sound, float volume, double x, double y, double z) {
+    public S2C_PacketPlaySoundWithDelay(SoundEvent sound, float volume, double x, double y, double z) {
         this.event = sound;
         this.volume = volume;
         this.x = x;
@@ -45,14 +44,13 @@ public class PacketDelayedSound implements IMessage {
         z = buf.readDouble();
     }
 
-    public static class Handler implements IMessageHandler<PacketDelayedSound, IMessage> {
+    public static class Handler implements IMessageHandler<S2C_PacketPlaySoundWithDelay, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketDelayedSound message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketPlaySoundWithDelay message, MessageContext ctx) {
             Minecraft mc = Minecraft.getMinecraft();
             mc.addScheduledTask(() -> {
-                EntityPlayer player = mc.player;
                 Pubgmc.proxy.playDelayedSound(message.event, message.x, message.y, message.z, message.volume);
             });
             return null;

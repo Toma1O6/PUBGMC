@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
@@ -10,14 +10,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class C2S_SelectLoadout implements IMessage {
+public class C2S_PacketSelectLoadout implements IMessage {
 
     private int loadout;
 
-    public C2S_SelectLoadout() {
+    public C2S_PacketSelectLoadout() {
     }
 
-    public C2S_SelectLoadout(int loadout) {
+    public C2S_PacketSelectLoadout(int loadout) {
         this.loadout = loadout;
     }
 
@@ -31,10 +31,10 @@ public class C2S_SelectLoadout implements IMessage {
         loadout = buf.readInt();
     }
 
-    public static final class Handler implements IMessageHandler<C2S_SelectLoadout, IMessage> {
+    public static final class Handler implements IMessageHandler<C2S_PacketSelectLoadout, IMessage> {
 
         @Override
-        public IMessage onMessage(C2S_SelectLoadout message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketSelectLoadout message, MessageContext ctx) {
             EntityPlayerMP sender = ctx.getServerHandler().player;
             sender.getServer().addScheduledTask(() -> GameDataProvider.getGameData(sender.world).ifPresent(gameData -> {
                 Game<?> game = gameData.getCurrentGame();

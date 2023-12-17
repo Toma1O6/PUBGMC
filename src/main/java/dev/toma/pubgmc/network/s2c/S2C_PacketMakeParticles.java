@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.client;
+package dev.toma.pubgmc.network.s2c;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.util.helper.PacketHelper;
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-public class PacketParticle implements IMessage {
+public class S2C_PacketMakeParticles implements IMessage {
     private EnumParticleTypes particle;
     private double x, y, z;
     private BlockPos hitBlock;
@@ -27,19 +27,19 @@ public class PacketParticle implements IMessage {
     private int parameter;
     private int additional;
 
-    public PacketParticle() {
+    public S2C_PacketMakeParticles() {
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, Block block, ParticleAction action, int par) {
+    public S2C_PacketMakeParticles(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, Block block, ParticleAction action, int par) {
         this(particle, amountOfParticles, x, y, z, new BlockPos(0, 0, 0), action, par);
         this.additional = Block.getIdFromBlock(block);
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, Vec3d hitVec, BlockPos block, ParticleAction action, int par) {
+    public S2C_PacketMakeParticles(EnumParticleTypes particle, int amountOfParticles, Vec3d hitVec, BlockPos block, ParticleAction action, int par) {
         this(particle, amountOfParticles, hitVec.x, hitVec.y, hitVec.z, block, action, par);
     }
 
-    public PacketParticle(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, BlockPos block, ParticleAction action, int par) {
+    public S2C_PacketMakeParticles(EnumParticleTypes particle, int amountOfParticles, double x, double y, double z, BlockPos block, ParticleAction action, int par) {
         this.particle = particle;
         this.x = x;
         this.y = y;
@@ -82,11 +82,11 @@ public class PacketParticle implements IMessage {
         HIT_EFFECT
     }
 
-    public static class Handler implements IMessageHandler<PacketParticle, IMessage> {
+    public static class Handler implements IMessageHandler<S2C_PacketMakeParticles, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketParticle message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketMakeParticles message, MessageContext ctx) {
             Minecraft mc = Minecraft.getMinecraft();
             mc.addScheduledTask(() -> {
                 EntityPlayer player = mc.player;

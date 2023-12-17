@@ -28,7 +28,7 @@ import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.util.SpawnPointSelector;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.S2C_PacketLoadoutSelect;
+import dev.toma.pubgmc.network.s2c.S2C_PacketLoadoutSelect;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;

@@ -3,8 +3,8 @@ package dev.toma.pubgmc.network;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.capability.IPlayerData;
-import dev.toma.pubgmc.network.client.*;
-import dev.toma.pubgmc.network.server.*;
+import dev.toma.pubgmc.network.s2c.*;
+import dev.toma.pubgmc.network.c2s.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -21,36 +21,32 @@ public class PacketHandler {
     private static int ID = 0;
 
     public static void initialize() {
-        registerServerPacket(SPacketSetProperty.Handler.class, SPacketSetProperty.class);
-        registerServerPacket(SPacketFiremode.Handler.class, SPacketFiremode.class);
-        registerServerPacket(PacketReloading.Handler.class, PacketReloading.class);
-        registerServerPacket(PacketShoot.Handler.class, PacketShoot.class);
-        registerServerPacket(PacketProne.Handler.class, PacketProne.class);
-        registerServerPacket(PacketUpdateWorkbench.Handler.class, PacketUpdateWorkbench.class);
-        registerServerPacket(PacketCraft.Handler.class, PacketCraft.class);
-        registerServerPacket(PacketSaveConfig.Handler.class, PacketSaveConfig.class);
-        registerServerPacket(SPacketControllableInput.Handler.class, SPacketControllableInput.class);
+        registerServerPacket(C2S_PacketSetProperty.Handler.class, C2S_PacketSetProperty.class);
+        registerServerPacket(C2S_PacketFiremode.Handler.class, C2S_PacketFiremode.class);
+        registerServerPacket(C2S_PacketShoot.Handler.class, C2S_PacketShoot.class);
+        registerServerPacket(C2S_PacketProneStatus.Handler.class, C2S_PacketProneStatus.class);
+        registerServerPacket(C2S_PacketUpdateWorkbench.Handler.class, C2S_PacketUpdateWorkbench.class);
+        registerServerPacket(C2S_PacketCraftItem.Handler.class, C2S_PacketCraftItem.class);
+        registerServerPacket(C2S_PacketControllableInput.Handler.class, C2S_PacketControllableInput.class);
         registerServerPacket(C2S_PacketOpenPlayerEquipment.Handler.class, C2S_PacketOpenPlayerEquipment.class);
-        registerServerPacket(C2S_SelectLoadout.Handler.class, C2S_SelectLoadout.class);
-        registerServerPacket(C2S_AdjustTeamSpawner.Handler.class, C2S_AdjustTeamSpawner.class);
-        registerServerPacket(C2S_AdjustCaptureZone.Handler.class, C2S_AdjustCaptureZone.class);
-        registerServerPacket(C2S_AdjustPartialPlayZone.Handler.class, C2S_AdjustPartialPlayZone.class);
-        registerServerPacket(C2S_AttachmentRequestPacket.Handler.class, C2S_AttachmentRequestPacket.class);
+        registerServerPacket(C2S_PacketSelectLoadout.Handler.class, C2S_PacketSelectLoadout.class);
+        registerServerPacket(C2S_PacketAdjustTeamSpawner.Handler.class, C2S_PacketAdjustTeamSpawner.class);
+        registerServerPacket(C2S_PacketAdjustCaptureZone.Handler.class, C2S_PacketAdjustCaptureZone.class);
+        registerServerPacket(C2S_PacketAdjustPartialPlayZone.Handler.class, C2S_PacketAdjustPartialPlayZone.class);
+        registerServerPacket(C2S_PacketAttachmentRequest.Handler.class, C2S_PacketAttachmentRequest.class);
 
-        registerClientPacket(PacketReloadingSP.Handler.class, PacketReloadingSP.class);
-        registerClientPacket(PacketDelayedSound.Handler.class, PacketDelayedSound.class);
-        registerClientPacket(PacketParticle.Handler.class, PacketParticle.class);
-        registerClientPacket(PacketClientCapabilitySync.Handler.class, PacketClientCapabilitySync.class);
-        registerClientPacket(PacketVehicleData.Handler.class, PacketVehicleData.class);
-        registerClientPacket(PacketSyncTileEntity.Handler.class, PacketSyncTileEntity.class);
-        registerClientPacket(PacketGetConfigFromServer.Handler.class, PacketGetConfigFromServer.class);
-        registerClientPacket(PacketLoadConfig.Handler.class, PacketLoadConfig.class);
-        registerClientPacket(PacketSyncEntity.Handler.class, PacketSyncEntity.class);
-        registerClientPacket(CPacketAnimation.Handler.class, CPacketAnimation.class);
-        registerClientPacket(S2C_SendGameData.Handler.class, S2C_SendGameData.class);
+        registerClientPacket(S2C_PacketPlaySoundWithDelay.Handler.class, S2C_PacketPlaySoundWithDelay.class);
+        registerClientPacket(S2C_PacketMakeParticles.Handler.class, S2C_PacketMakeParticles.class);
+        registerClientPacket(S2C_PacketSendPlayerCapability.Handler.class, S2C_PacketSendPlayerCapability.class);
+        registerClientPacket(S2C_PacketSendTileEntityData.Handler.class, S2C_PacketSendTileEntityData.class);
+        registerClientPacket(S2C_PacketReceiveServerConfig.Handler.class, S2C_PacketReceiveServerConfig.class);
+        registerClientPacket(S2C_PacketNotifyRestoreConfig.Handler.class, S2C_PacketNotifyRestoreConfig.class);
+        registerClientPacket(S2C_PacketSendEntityData.Handler.class, S2C_PacketSendEntityData.class);
+        registerClientPacket(S2C_PacketAnimation.Handler.class, S2C_PacketAnimation.class);
+        registerClientPacket(S2C_PacketSendGameData.Handler.class, S2C_PacketSendGameData.class);
         registerClientPacket(S2C_PacketLoadoutSelect.Handler.class, S2C_PacketLoadoutSelect.class);
-        registerClientPacket(S2C_ReloadChunks.Handler.class, S2C_ReloadChunks.class);
-        registerClientPacket(S2C_SendExternalGuiEvent.Handler.class, S2C_SendExternalGuiEvent.class);
+        registerClientPacket(S2C_PacketReloadChunks.Handler.class, S2C_PacketReloadChunks.class);
+        registerClientPacket(S2C_PacketSendExternalGuiEvent.Handler.class, S2C_PacketSendExternalGuiEvent.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {
@@ -94,11 +90,11 @@ public class PacketHandler {
     }
 
     public static void syncPlayerDataToClient(IPlayerData data, EntityPlayerMP player) {
-        sendToClient(new PacketClientCapabilitySync(player.getUniqueID(), data.serializeNBT()), player);
+        sendToClient(new S2C_PacketSendPlayerCapability(player.getUniqueID(), data.serializeNBT()), player);
     }
 
     public static void syncGameDataToClient(EntityPlayerMP player) {
-        GameDataProvider.getGameData(player.world).ifPresent(data -> sendToClient(new S2C_SendGameData(data.serializeNBT()), player));
+        GameDataProvider.getGameData(player.world).ifPresent(data -> sendToClient(new S2C_PacketSendGameData(data.serializeNBT()), player));
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerClientPacket(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> packet) {

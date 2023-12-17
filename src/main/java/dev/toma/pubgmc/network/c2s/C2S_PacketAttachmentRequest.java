@@ -1,11 +1,11 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunAttachments;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.S2C_SendExternalGuiEvent;
+import dev.toma.pubgmc.network.s2c.S2C_PacketSendExternalGuiEvent;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,30 +19,30 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class C2S_AttachmentRequestPacket implements IMessage {
+public class C2S_PacketAttachmentRequest implements IMessage {
 
     private RequestType requestType;
     private AttachmentType<?> attachmentType;
     private ItemStack itemStack;
 
-    public C2S_AttachmentRequestPacket() {}
+    public C2S_PacketAttachmentRequest() {}
 
-    private C2S_AttachmentRequestPacket(RequestType requestType, AttachmentType<?> attachmentType, ItemStack itemStack) {
+    private C2S_PacketAttachmentRequest(RequestType requestType, AttachmentType<?> attachmentType, ItemStack itemStack) {
         this.requestType = requestType;
         this.attachmentType = attachmentType;
         this.itemStack = itemStack;
     }
 
-    public static C2S_AttachmentRequestPacket detachAllRequest() {
-        return new C2S_AttachmentRequestPacket(RequestType.DETACH_ALL, null, null);
+    public static C2S_PacketAttachmentRequest detachAllRequest() {
+        return new C2S_PacketAttachmentRequest(RequestType.DETACH_ALL, null, null);
     }
 
-    public static C2S_AttachmentRequestPacket detachByType(AttachmentType<?> type) {
-        return new C2S_AttachmentRequestPacket(RequestType.DETACH_TYPE, type, null);
+    public static C2S_PacketAttachmentRequest detachByType(AttachmentType<?> type) {
+        return new C2S_PacketAttachmentRequest(RequestType.DETACH_TYPE, type, null);
     }
 
-    public static C2S_AttachmentRequestPacket attach(AttachmentType<?> attachmentType, ItemStack stack) {
-        return new C2S_AttachmentRequestPacket(RequestType.ATTACH, attachmentType, stack);
+    public static C2S_PacketAttachmentRequest attach(AttachmentType<?> attachmentType, ItemStack stack) {
+        return new C2S_PacketAttachmentRequest(RequestType.ATTACH, attachmentType, stack);
     }
 
     @Override
@@ -75,19 +75,19 @@ public class C2S_AttachmentRequestPacket implements IMessage {
             pkt.itemStack = ByteBufUtils.readItemStack(buffer);
         });
 
-        private final BiConsumer<C2S_AttachmentRequestPacket, ByteBuf> encoder;
-        private final BiConsumer<C2S_AttachmentRequestPacket, ByteBuf> decoder;
+        private final BiConsumer<C2S_PacketAttachmentRequest, ByteBuf> encoder;
+        private final BiConsumer<C2S_PacketAttachmentRequest, ByteBuf> decoder;
 
-        RequestType(BiConsumer<C2S_AttachmentRequestPacket, ByteBuf> encoder, BiConsumer<C2S_AttachmentRequestPacket, ByteBuf> decoder) {
+        RequestType(BiConsumer<C2S_PacketAttachmentRequest, ByteBuf> encoder, BiConsumer<C2S_PacketAttachmentRequest, ByteBuf> decoder) {
             this.encoder = encoder;
             this.decoder = decoder;
         }
     }
 
-    public static final class Handler implements IMessageHandler<C2S_AttachmentRequestPacket, IMessage> {
+    public static final class Handler implements IMessageHandler<C2S_PacketAttachmentRequest, IMessage> {
 
         @Override
-        public IMessage onMessage(C2S_AttachmentRequestPacket message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketAttachmentRequest message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 ItemStack heldStack = player.getHeldItemMainhand();
@@ -124,7 +124,7 @@ public class C2S_AttachmentRequestPacket implements IMessage {
                         inInventoryStack.shrink(1);
                     }
                 }
-                PacketHandler.sendToClient(new S2C_SendExternalGuiEvent(), player);
+                PacketHandler.sendToClient(new S2C_PacketSendExternalGuiEvent(), player);
             });
             return null;
         }

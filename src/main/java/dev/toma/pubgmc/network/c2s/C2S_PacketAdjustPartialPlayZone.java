@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.map.GameMapInstance;
@@ -14,17 +14,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class C2S_AdjustPartialPlayZone implements IMessage {
+public class C2S_PacketAdjustPartialPlayZone implements IMessage {
 
     private String map;
     private BlockPos pos;
     private Position2 min, max;
     private String label;
 
-    public C2S_AdjustPartialPlayZone() {
+    public C2S_PacketAdjustPartialPlayZone() {
     }
 
-    public C2S_AdjustPartialPlayZone(String map, BlockPos pos, Position2 min, Position2 max, String label) {
+    public C2S_PacketAdjustPartialPlayZone(String map, BlockPos pos, Position2 min, Position2 max, String label) {
         this.map = map;
         this.pos = pos;
         this.min = min;
@@ -52,10 +52,10 @@ public class C2S_AdjustPartialPlayZone implements IMessage {
         label = ByteBufUtils.readUTF8String(buf);
     }
 
-    public static final class Handler implements IMessageHandler<C2S_AdjustPartialPlayZone, IMessage> {
+    public static final class Handler implements IMessageHandler<C2S_PacketAdjustPartialPlayZone, IMessage> {
 
         @Override
-        public IMessage onMessage(C2S_AdjustPartialPlayZone message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketAdjustPartialPlayZone message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 if (!player.isCreative())

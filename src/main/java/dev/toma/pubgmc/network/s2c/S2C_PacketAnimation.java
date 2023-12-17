@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.client;
+package dev.toma.pubgmc.network.s2c;
 
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
@@ -12,15 +12,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Objects;
 
-public class CPacketAnimation implements IMessage {
+public class S2C_PacketAnimation implements IMessage {
 
     boolean play;
     int index;
 
-    public CPacketAnimation() {
+    public S2C_PacketAnimation() {
     }
 
-    public CPacketAnimation(boolean play, AnimationType<?> type) {
+    public S2C_PacketAnimation(boolean play, AnimationType<?> type) {
         this.play = play;
         this.index = Objects.requireNonNull(type).getIndex();
     }
@@ -37,11 +37,11 @@ public class CPacketAnimation implements IMessage {
         index = buf.readInt();
     }
 
-    public static class Handler implements IMessageHandler<CPacketAnimation, IMessage> {
+    public static class Handler implements IMessageHandler<S2C_PacketAnimation, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(CPacketAnimation message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketAnimation message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 AnimationType<?> type = AnimationType.getFromID(message.index);
                 AnimationProcessor processor = AnimationProcessor.instance();

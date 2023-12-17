@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.api.entity.IControllable;
 import io.netty.buffer.ByteBuf;
@@ -9,16 +9,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class SPacketControllableInput implements IMessage {
+public class C2S_PacketControllableInput implements IMessage {
 
     int entity;
     int rawInput;
 
-    public SPacketControllableInput() {
+    public C2S_PacketControllableInput() {
 
     }
 
-    public <T extends Entity & IControllable> SPacketControllableInput(T controllableEntity, int rawInput) {
+    public <T extends Entity & IControllable> C2S_PacketControllableInput(T controllableEntity, int rawInput) {
         this.entity = controllableEntity.getEntityId();
         this.rawInput = rawInput;
     }
@@ -35,10 +35,10 @@ public class SPacketControllableInput implements IMessage {
         rawInput = buf.readInt();
     }
 
-    public static class Handler implements IMessageHandler<SPacketControllableInput, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketControllableInput, IMessage> {
 
         @Override
-        public IMessage onMessage(SPacketControllableInput message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketControllableInput message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 WorldServer world = player.getServerWorld();

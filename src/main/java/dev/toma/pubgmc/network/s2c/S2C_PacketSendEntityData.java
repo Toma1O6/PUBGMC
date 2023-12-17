@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.client;
+package dev.toma.pubgmc.network.s2c;
 
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import io.netty.buffer.ByteBuf;
@@ -13,16 +13,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PacketSyncEntity implements IMessage {
+public class S2C_PacketSendEntityData implements IMessage {
 
     private int entityID;
     private NBTTagCompound nbt;
 
-    public PacketSyncEntity() {
+    public S2C_PacketSendEntityData() {
 
     }
 
-    public <T extends Entity & SynchronizableEntity> PacketSyncEntity(T entity) {
+    public <T extends Entity & SynchronizableEntity> S2C_PacketSendEntityData(T entity) {
         this.entityID = entity.getEntityId();
         this.nbt = entity.encodeNetworkData();
     }
@@ -39,11 +39,11 @@ public class PacketSyncEntity implements IMessage {
         this.nbt = ByteBufUtils.readTag(buf);
     }
 
-    public static class Handler implements IMessageHandler<PacketSyncEntity, IMessage> {
+    public static class Handler implements IMessageHandler<S2C_PacketSendEntityData, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketSyncEntity message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketSendEntityData message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 WorldClient client = Minecraft.getMinecraft().world;
                 Entity entity = client.getEntityByID(message.entityID);

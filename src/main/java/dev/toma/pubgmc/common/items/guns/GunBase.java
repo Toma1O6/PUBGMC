@@ -12,7 +12,7 @@ import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketDelayedSound;
+import dev.toma.pubgmc.network.s2c.S2C_PacketPlaySoundWithDelay;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -126,7 +126,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
                 if (!player.capabilities.isCreativeMode) {
                     this.consumeAmmo(stack);
                 }
-                PacketHandler.sendToClientsAround(new PacketDelayedSound(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 256));
+                PacketHandler.sendToClientsAround(new S2C_PacketPlaySoundWithDelay(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 256));
             }
         }
     }

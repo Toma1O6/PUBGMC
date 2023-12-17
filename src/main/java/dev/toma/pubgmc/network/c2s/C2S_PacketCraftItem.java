@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.util.helper.PacketHelper;
@@ -11,15 +11,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketCraft implements IMessage {
+public class C2S_PacketCraftItem implements IMessage {
 
     BlockPos pos;
     int id;
 
-    public PacketCraft() {
+    public C2S_PacketCraftItem() {
     }
 
-    public PacketCraft(BlockPos pos, int id) {
+    public C2S_PacketCraftItem(BlockPos pos, int id) {
         this.pos = pos;
         this.id = id;
     }
@@ -36,10 +36,10 @@ public class PacketCraft implements IMessage {
         id = buf.readInt();
     }
 
-    public static class Handler implements IMessageHandler<PacketCraft, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketCraftItem, IMessage> {
 
         @Override
-        public IMessage onMessage(PacketCraft message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketCraftItem message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 TileEntity te = player.world.getTileEntity(message.pos);

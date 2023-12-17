@@ -26,7 +26,7 @@ import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.S2C_ReloadChunks;
+import dev.toma.pubgmc.network.s2c.S2C_PacketReloadChunks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -417,7 +417,7 @@ public final class GameHelper {
 
     public static void reloadChunks(EntityPlayer player) {
         if (!player.world.isRemote) {
-            PacketHandler.sendToClient(new S2C_ReloadChunks(), (EntityPlayerMP) player);
+            PacketHandler.sendToClient(new S2C_PacketReloadChunks(), (EntityPlayerMP) player);
         }
     }
 

@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import io.netty.buffer.ByteBuf;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketShoot implements IMessage {
+public class C2S_PacketShoot implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
@@ -19,9 +19,9 @@ public class PacketShoot implements IMessage {
     public void fromBytes(ByteBuf buf) {
     }
 
-    public static class Handler implements IMessageHandler<PacketShoot, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketShoot, IMessage> {
         @Override
-        public IMessage onMessage(PacketShoot message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketShoot message, MessageContext ctx) {
             World world = ctx.getServerHandler().player.world;
             EntityPlayer player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> handle(player, world));

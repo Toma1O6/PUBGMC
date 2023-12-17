@@ -40,7 +40,7 @@ import dev.toma.pubgmc.config.client.CFG2DCoords;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.*;
+import dev.toma.pubgmc.network.c2s.*;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -318,9 +318,9 @@ public class ClientEvents {
                 if (data.getAimInfo().isAiming()) this.setAiming(data, false);
                 if (reloadInfo.isReloading()) {
                     reloadInfo.interrupt();
-                    PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                    PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
                 }
-                PacketHandler.sendToServer(new PacketProne(data.isProne()));
+                PacketHandler.sendToServer(new C2S_PacketProneStatus(data.isProne()));
             }
         }
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
@@ -341,7 +341,7 @@ public class ClientEvents {
                     IReloader reloader = gun.getReloader();
                     if (reloader.canInterrupt(gun, stack)) {
                         reloadInfo.setReloading(false);
-                        PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                        PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
                         AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                         return;
                     }
@@ -361,7 +361,7 @@ public class ClientEvents {
                         if (hasAmmo && !reloadInfo.isReloading()) {
                             AnimationDispatcher.dispatchReloadAnimation(gun, stack, sp);
                             reloadInfo.startReload(sp, gun, stack);
-                            PacketHandler.INSTANCE.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.RELOAD));
+                            PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
                         }
                     }
                 }
@@ -373,7 +373,7 @@ public class ClientEvents {
             if (!data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
                 boolean status = !data.isNightVisionActive();
                 data.setNightVisionActive(status);
-                PacketHandler.sendToServer(new SPacketSetProperty(status, SPacketSetProperty.Action.NIGHT_VISION));
+                PacketHandler.sendToServer(new C2S_PacketSetProperty(status, C2S_PacketSetProperty.Action.NIGHT_VISION));
             }
         }
 
@@ -381,7 +381,7 @@ public class ClientEvents {
         if (KeyBinds.FIREMODE.isPressed()) {
             ItemStack stack = sp.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
-                PacketHandler.sendToServer(new SPacketFiremode());
+                PacketHandler.sendToServer(new C2S_PacketFiremode());
             }
         }
     }
@@ -401,7 +401,7 @@ public class ClientEvents {
                         if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
                             if (!isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
                                 if (gun.hasAmmo(stack)) {
-                                    PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketShoot());
                                     tracker.add(gun);
                                     if (gun.getAction() != null) {
                                         Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
@@ -436,11 +436,11 @@ public class ClientEvents {
                         if (scopeData != null && scopeData.getMouseSens() < 1.0F) {
                             gs.mouseSensitivity *= scopeData.getMouseSens();
                         }
-                        PacketHandler.sendToServer(new SPacketSetProperty(true, SPacketSetProperty.Action.AIM));
+                        PacketHandler.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
                     } else {
                         RenderHandler.restore();
-                        PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.AIM));
+                        PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.AIM));
                     }
                 }
             }
@@ -466,7 +466,7 @@ public class ClientEvents {
                 IControllable controllable = (IControllable) player.getRidingEntity();
                 int inputs = controllable.encode(gs);
                 controllable.handle((byte) inputs);
-                PacketHandler.sendToServer(new SPacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
+                PacketHandler.sendToServer(new C2S_PacketControllableInput((Entity & IControllable) player.getRidingEntity(), inputs));
             }
             if (gs.keyBindAttack.isKeyDown() && isEquipAnimationDone(mc)) {
                 ItemStack stack = player.getHeldItemMainhand();
@@ -474,7 +474,7 @@ public class ClientEvents {
                     GunBase gun = (GunBase) stack.getItem();
                     if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
                         if (gun.hasAmmo(stack)) {
-                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                            PacketHandler.INSTANCE.sendToServer(new C2S_PacketShoot());
                             this.applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                             tracker.add(gun);
                         } else {
@@ -492,7 +492,7 @@ public class ClientEvents {
                     if (shooting && gun.getFiremode(stack) == GunBase.Firemode.BURST) {
                         shootingTimer++;
                         if (shootingTimer >= gun.getFireRate() && shotsFired < maxRounds) {
-                            PacketHandler.INSTANCE.sendToServer(new PacketShoot());
+                            PacketHandler.INSTANCE.sendToServer(new C2S_PacketShoot());
                             applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                             shotsFired++;
                             shootingTimer = 0;
@@ -556,7 +556,7 @@ public class ClientEvents {
         if (info.isReloading()) {
             if (reloader.canInterrupt(gun, stack)) {
                 info.setReloading(false);
-                PacketHandler.sendToServer(new SPacketSetProperty(false, SPacketSetProperty.Action.RELOAD));
+                PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
                 AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 return false;
             }
@@ -595,7 +595,7 @@ public class ClientEvents {
     }
 
     private void setAiming(IPlayerData data, boolean aim) {
-        PacketHandler.sendToServer(new SPacketSetProperty(aim, SPacketSetProperty.Action.AIM));
+        PacketHandler.sendToServer(new C2S_PacketSetProperty(aim, C2S_PacketSetProperty.Action.AIM));
     }
 
     /**

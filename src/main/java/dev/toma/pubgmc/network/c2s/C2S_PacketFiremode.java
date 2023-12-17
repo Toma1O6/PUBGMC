@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import io.netty.buffer.ByteBuf;
@@ -8,9 +8,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class SPacketFiremode implements IMessage {
+public class C2S_PacketFiremode implements IMessage {
 
-    public SPacketFiremode() {
+    public C2S_PacketFiremode() {
     }
 
     @Override
@@ -21,9 +21,9 @@ public class SPacketFiremode implements IMessage {
     public void fromBytes(ByteBuf buf) {
     }
 
-    public static class Handler implements IMessageHandler<SPacketFiremode, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketFiremode, IMessage> {
         @Override
-        public IMessage onMessage(SPacketFiremode message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketFiremode message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
                 ItemStack stack = player.getHeldItemMainhand();

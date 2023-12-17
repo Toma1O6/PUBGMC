@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.api.capability.AimInfo;
 import dev.toma.pubgmc.api.capability.IPlayerData;
@@ -20,15 +20,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.function.BiConsumer;
 
-public class SPacketSetProperty implements IMessage {
+public class C2S_PacketSetProperty implements IMessage {
 
     private Action action;
     private boolean data;
 
-    public SPacketSetProperty() {
+    public C2S_PacketSetProperty() {
     }
 
-    public SPacketSetProperty(boolean data, Action action) {
+    public C2S_PacketSetProperty(boolean data, Action action) {
         this.data = data;
         this.action = action;
     }
@@ -45,9 +45,9 @@ public class SPacketSetProperty implements IMessage {
         action = Action.values()[buf.readInt()];
     }
 
-    public static class Handler implements IMessageHandler<SPacketSetProperty, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketSetProperty, IMessage> {
         @Override
-        public IMessage onMessage(SPacketSetProperty message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketSetProperty message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> message.action.handle(player, message.data));
             return null;

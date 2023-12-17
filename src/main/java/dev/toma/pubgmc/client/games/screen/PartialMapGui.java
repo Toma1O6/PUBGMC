@@ -6,7 +6,7 @@ import dev.toma.pubgmc.client.gui.widget.TextFieldWidget;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.common.games.map.PartialPlayAreaPoint;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.C2S_AdjustPartialPlayZone;
+import dev.toma.pubgmc.network.c2s.C2S_PacketAdjustPartialPlayZone;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 
 import java.util.function.Predicate;
@@ -58,7 +58,7 @@ public class PartialMapGui extends MapPointDialogGui<PartialPlayAreaPoint> {
             Position2 from = parsePos(fromX, fromZ, point.getPositionMin(1.0F));
             Position2 to = parsePos(toX, toZ, point.getPositionMax(1.0F));
             String label = this.label.getText();
-            PacketHandler.sendToServer(new C2S_AdjustPartialPlayZone(ownerMap.getMapName(), point.getPointPosition(), from, to, label));
+            PacketHandler.sendToServer(new C2S_PacketAdjustPartialPlayZone(ownerMap.getMapName(), point.getPointPosition(), from, to, label));
             mc.displayGuiScreen(null);
         }
     }

@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.client;
+package dev.toma.pubgmc.network.s2c;
 
 import dev.toma.pubgmc.util.helper.PacketHelper;
 import io.netty.buffer.ByteBuf;
@@ -13,15 +13,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PacketSyncTileEntity implements IMessage {
+public class S2C_PacketSendTileEntityData implements IMessage {
 
     private NBTTagCompound nbt;
     private BlockPos pos;
 
-    public PacketSyncTileEntity() {
+    public S2C_PacketSendTileEntityData() {
     }
 
-    public PacketSyncTileEntity(NBTTagCompound nbt, BlockPos pos) {
+    public S2C_PacketSendTileEntityData(NBTTagCompound nbt, BlockPos pos) {
         this.nbt = nbt;
         this.pos = pos;
     }
@@ -38,11 +38,11 @@ public class PacketSyncTileEntity implements IMessage {
         pos = PacketHelper.readBlockPos(buf);
     }
 
-    public static class Handler implements IMessageHandler<PacketSyncTileEntity, IMessage> {
+    public static class Handler implements IMessageHandler<S2C_PacketSendTileEntityData, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(PacketSyncTileEntity message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketSendTileEntityData message, MessageContext ctx) {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 TileEntity te = Minecraft.getMinecraft().player.world.getTileEntity(message.pos);
                 if (te != null) {

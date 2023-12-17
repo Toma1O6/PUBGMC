@@ -7,7 +7,7 @@ import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketDelayedSound;
+import dev.toma.pubgmc.network.s2c.S2C_PacketPlaySoundWithDelay;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -164,7 +164,7 @@ public class EntityAIGunAttack extends EntityAIBase {
         boolean isSilenced = muzzle != null && muzzle.isSilenced();
         SoundEvent event = isSilenced ? gun.getGunSilencedSound() : gun.getGunSound();
         float volume = isSilenced ? gun.getGunSilencedVolume() : gun.getGunVolume();
-        PacketHandler.sendToDimension(new PacketDelayedSound(event, volume, aiPlayer.posX, aiPlayer.posY, aiPlayer.posZ), aiPlayer.dimension);
+        PacketHandler.sendToDimension(new S2C_PacketPlaySoundWithDelay(event, volume, aiPlayer.posX, aiPlayer.posY, aiPlayer.posZ), aiPlayer.dimension);
         for (int i = 0; i < shotAmount; i++) {
             EntityBullet bullet = new EntityBullet(aiPlayer.world, aiPlayer, gun);
             bullet.setPosition(bullet.posX, bullet.posY - 0.5, bullet.posZ);

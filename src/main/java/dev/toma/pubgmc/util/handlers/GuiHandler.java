@@ -4,7 +4,7 @@ import dev.toma.pubgmc.client.gui.*;
 import dev.toma.pubgmc.common.container.*;
 import dev.toma.pubgmc.common.tileentity.*;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketSyncTileEntity;
+import dev.toma.pubgmc.network.s2c.S2C_PacketSendTileEntityData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -24,7 +24,7 @@ public class GuiHandler implements IGuiHandler {
     public static void update(World world, EntityPlayer player, int x, int y, int z) {
         if (player instanceof EntityPlayerMP) {
             BlockPos p = new BlockPos(x, y, z);
-            PacketHandler.sendToClient(new PacketSyncTileEntity(world.getTileEntity(p).serializeNBT(), p), (EntityPlayerMP) player);
+            PacketHandler.sendToClient(new S2C_PacketSendTileEntityData(world.getTileEntity(p).serializeNBT(), p), (EntityPlayerMP) player);
         }
     }
 

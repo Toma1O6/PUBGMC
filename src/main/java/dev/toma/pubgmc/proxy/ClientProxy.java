@@ -51,6 +51,7 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -66,10 +67,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 public class ClientProxy extends Proxy {
 
+    public static Optional<NBTTagCompound> CONFIG_STORE = Optional.empty();
     private static AnimationLoader animationLoader = new AnimationLoader();
 
     @Override

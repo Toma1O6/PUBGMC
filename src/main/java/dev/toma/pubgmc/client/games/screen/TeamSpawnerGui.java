@@ -6,7 +6,7 @@ import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.common.games.map.TeamSpawnerPoint;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.C2S_AdjustTeamSpawner;
+import dev.toma.pubgmc.network.c2s.C2S_PacketAdjustTeamSpawner;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 
 public class TeamSpawnerGui extends MapPointDialogGui<TeamSpawnerPoint> {
@@ -27,7 +27,7 @@ public class TeamSpawnerGui extends MapPointDialogGui<TeamSpawnerPoint> {
 
     @Override
     protected void confirmed() {
-        PacketHandler.sendToServer(new C2S_AdjustTeamSpawner(ownerMap.getMapName(), point.getPointPosition(), teamSelector.getValue()));
+        PacketHandler.sendToServer(new C2S_PacketAdjustTeamSpawner(ownerMap.getMapName(), point.getPointPosition(), teamSelector.getValue()));
         mc.displayGuiScreen(null);
     }
 }

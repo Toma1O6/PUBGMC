@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.server;
+package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
@@ -8,14 +8,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketProne implements IMessage {
+public class C2S_PacketProneStatus implements IMessage {
 
     boolean prone;
 
-    public PacketProne() {
+    public C2S_PacketProneStatus() {
     }
 
-    public PacketProne(boolean prone) {
+    public C2S_PacketProneStatus(boolean prone) {
         this.prone = prone;
     }
 
@@ -29,9 +29,9 @@ public class PacketProne implements IMessage {
         prone = buf.readBoolean();
     }
 
-    public static class Handler implements IMessageHandler<PacketProne, IMessage> {
+    public static class Handler implements IMessageHandler<C2S_PacketProneStatus, IMessage> {
 
-        public static void handle(PacketProne p, EntityPlayer player) {
+        public static void handle(C2S_PacketProneStatus p, EntityPlayer player) {
             IPlayerData data = PlayerDataProvider.get(player);
             if (data != null) {
                 data.setProne(p.prone, false);
@@ -40,7 +40,7 @@ public class PacketProne implements IMessage {
         }
 
         @Override
-        public IMessage onMessage(PacketProne message, MessageContext ctx) {
+        public IMessage onMessage(C2S_PacketProneStatus message, MessageContext ctx) {
             EntityPlayer player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> handle(message, player));
             return null;

@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.network.client;
+package dev.toma.pubgmc.network.s2c;
 
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
@@ -15,14 +15,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Optional;
 
-public class S2C_SendGameData implements IMessage {
+public class S2C_PacketSendGameData implements IMessage {
 
     private NBTTagCompound nbt;
 
-    public S2C_SendGameData() {
+    public S2C_PacketSendGameData() {
     }
 
-    public S2C_SendGameData(NBTTagCompound nbt) {
+    public S2C_PacketSendGameData(NBTTagCompound nbt) {
         this.nbt = nbt;
     }
 
@@ -36,11 +36,11 @@ public class S2C_SendGameData implements IMessage {
         nbt = ByteBufUtils.readTag(buf);
     }
 
-    public static final class Handler implements IMessageHandler<S2C_SendGameData, IMessage> {
+    public static final class Handler implements IMessageHandler<S2C_PacketSendGameData, IMessage> {
 
         @SideOnly(Side.CLIENT)
         @Override
-        public IMessage onMessage(S2C_SendGameData message, MessageContext ctx) {
+        public IMessage onMessage(S2C_PacketSendGameData message, MessageContext ctx) {
             Minecraft client = Minecraft.getMinecraft();
             WorldClient worldClient = client.world;
             client.addScheduledTask(() -> {

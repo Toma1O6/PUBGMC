@@ -9,7 +9,7 @@ import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunAttachments;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.C2S_AttachmentRequestPacket;
+import dev.toma.pubgmc.network.c2s.C2S_PacketAttachmentRequest;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -107,18 +107,18 @@ public class GuiAttachmentSelector extends GuiWidgets implements ExternalGuiEven
     }
 
     private void detachAllClicked(boolean closeGui) {
-        PacketHandler.sendToServer(C2S_AttachmentRequestPacket.detachAllRequest());
+        PacketHandler.sendToServer(C2S_PacketAttachmentRequest.detachAllRequest());
         if (closeGui) {
             mc.displayGuiScreen(null);
         }
     }
 
     private void detachSingleClicked(AttachmentType<?> type) {
-        PacketHandler.sendToServer(C2S_AttachmentRequestPacket.detachByType(type));
+        PacketHandler.sendToServer(C2S_PacketAttachmentRequest.detachByType(type));
     }
 
     private void attachClicked(AttachmentType<?> type, ItemStack itemStack) {
-        PacketHandler.sendToServer(C2S_AttachmentRequestPacket.attach(type, itemStack));
+        PacketHandler.sendToServer(C2S_PacketAttachmentRequest.attach(type, itemStack));
     }
 
     private static final class AttachmentWidget extends Widget {

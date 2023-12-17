@@ -5,7 +5,7 @@ import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketClientCapabilitySync;
+import dev.toma.pubgmc.network.s2c.S2C_PacketSendPlayerCapability;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -152,7 +152,7 @@ public class PlayerData implements IPlayerData {
     @Override
     public void sync() {
         if (!player.world.isRemote) {
-            PacketHandler.sendToAllClients(new PacketClientCapabilitySync(player.getUniqueID(), this.serializeNBT()));
+            PacketHandler.sendToAllClients(new S2C_PacketSendPlayerCapability(player.getUniqueID(), this.serializeNBT()));
         }
     }
 
@@ -192,7 +192,7 @@ public class PlayerData implements IPlayerData {
         public static void onStartTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event) {
             if (event.getTarget() instanceof EntityPlayerMP) {
                 EntityPlayer player = (EntityPlayer) event.getTarget();
-                PacketHandler.sendToClient(new PacketClientCapabilitySync(player.getUniqueID(), PlayerDataProvider.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
+                PacketHandler.sendToClient(new S2C_PacketSendPlayerCapability(player.getUniqueID(), PlayerDataProvider.get(player).serializeNBT()), (EntityPlayerMP) event.getEntityPlayer());
             }
         }
 

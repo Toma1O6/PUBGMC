@@ -5,7 +5,7 @@ import dev.toma.pubgmc.client.gui.widget.TextFieldWidget;
 import dev.toma.pubgmc.client.gui.widget.VanillaButtonWidget;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.server.C2S_AdjustCaptureZone;
+import dev.toma.pubgmc.network.c2s.C2S_PacketAdjustCaptureZone;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -64,7 +64,7 @@ public class CaptureZoneGui extends MapPointDialogGui<CaptureZonePoint> {
             Vec3d nPos = parseVec(nx, ny, nz, point.getLeftScale(), true);
             Vec3d pPos = parseVec(px, py, pz, point.getRightScale(), false);
             String label = this.label.getText();
-            PacketHandler.sendToServer(new C2S_AdjustCaptureZone(ownerMap.getMapName(), point.getPointPosition(), nPos, pPos, label));
+            PacketHandler.sendToServer(new C2S_PacketAdjustCaptureZone(ownerMap.getMapName(), point.getPointPosition(), nPos, pPos, label));
             mc.displayGuiScreen(null);
         }
     }

@@ -20,7 +20,7 @@ import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCItems;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
-import dev.toma.pubgmc.network.client.PacketParticle;
+import dev.toma.pubgmc.network.s2c.S2C_PacketMakeParticles;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -128,7 +128,7 @@ public class EntityBullet extends Entity {
                 canBePenetrated = griefingFlag;
             } else if (!block.isReplaceable(world, pos)) {
                 Vec3d vec = rayTraceResult.hitVec;
-                PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, PacketParticle.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+                PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
                 if (block instanceof BlockLandMine) {
                     ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);
@@ -252,7 +252,7 @@ public class EntityBullet extends Entity {
 
         Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
         if (isLivingEntity || entity instanceof EntityVehicle) {
-            PacketHandler.sendToDimension(new PacketParticle(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, PacketParticle.ParticleAction.HIT_EFFECT, 0), this.dimension);
+            PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, S2C_PacketMakeParticles.ParticleAction.HIT_EFFECT, 0), this.dimension);
         }
     }
 
