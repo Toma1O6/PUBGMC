@@ -103,6 +103,9 @@ public class TeamCommand extends AbstractCommand {
         TeamManager teamManager = teamGame.getTeamManager();
         TeamInviteManager inviteManager = teamGame.getInviteManager();
         String teamName = context.getArgumentMandatory(ARG_TEAM_NAME);
+        if (teamGame.isStarted()) {
+            throw new WrongUsageException("You cannot join teams in active games");
+        }
         TeamInvite teamInvite = findInvite(inviteManager, sender, teamName);
         Team team = teamManager.getTeamById(teamInvite.getTeamId());
         Collection<Team.Member> members = team != null ? team.getAllMembers().values() : Collections.emptyList();
@@ -168,6 +171,9 @@ public class TeamCommand extends AbstractCommand {
         }
         if (!team.isTeamLeader(sender)) {
             throw new WrongUsageException("Only team leader can send invites");
+        }
+        if (game.isStarted()) {
+            throw new WrongUsageException("You cannot invite players to your team in active games");
         }
         TeamInviteManager inviteHandler = game.getInviteManager();
         EntityPlayer invitee = getPlayerByName(context, inviteeName);
