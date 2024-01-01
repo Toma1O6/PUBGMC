@@ -20,6 +20,7 @@ import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
+import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
@@ -240,11 +241,25 @@ public final class GameHelper {
     public static void stopGame(World world) {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.onGameStopped(world, data);
-            MinecraftForge.EVENT_BUS.post(new GameEvent.Stopped(game));
-            data.setActiveGame(null);
+            try {
+                game.onGameStopped(world, data);
+                MinecraftForge.EVENT_BUS.post(new GameEvent.Stopped(game));
+                data.setActiveGame(null);
+                data.setActiveGameMapName(null, null);
+                data.sendGameDataToClients();
+            } catch (Exception e) {
+                Pubgmc.logger.fatal("Fatal error while attempting to stop game", e);
+                GameHelper.resetErroredGameData(world);
+            }
+        });
+    }
+
+    public static void resetErroredGameData(World world) {
+        GameDataProvider.getGameData(world).ifPresent(data -> {
+            data.setActiveGame(NoGame.INSTANCE);
             data.setActiveGameMapName(null, null);
             data.sendGameDataToClients();
+            world.playerEntities.forEach(GameHelper::moveToLobby);
         });
     }
 

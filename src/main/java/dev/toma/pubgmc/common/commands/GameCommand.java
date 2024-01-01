@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.commands;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
@@ -264,10 +265,15 @@ public class GameCommand extends AbstractCommand {
         }
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        game.onGameInit(world);
-        MinecraftForge.EVENT_BUS.post(new GameEvent.Initialized(game));
-        data.setActiveGame(game);
-        data.sendGameDataToClients();
+        try {
+            game.onGameInit(world);
+            MinecraftForge.EVENT_BUS.post(new GameEvent.Initialized(game));
+            data.setActiveGame(game);
+            data.sendGameDataToClients();
+        } catch (Exception e) {
+            Pubgmc.logger.fatal("Fatal error while attempting to initialize game, cancelling", e);
+            GameHelper.resetErroredGameData(world);
+        }
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.initialized"));
     }
 
@@ -315,6 +321,10 @@ public class GameCommand extends AbstractCommand {
         } catch (GameException e) {
             data.setActiveGameMapName(null, null);
             throw new WrongUsageException("Unable to start game: " + e.getMessage());
+        } catch (Exception e) {
+            GameHelper.resetErroredGameData(world);
+            Pubgmc.logger.fatal("Fatal error while starting game", e);
+            throw new WrongUsageException("Fatal error while attempting to start game", e);
         }
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.started"));
         data.sendGameDataToClients();

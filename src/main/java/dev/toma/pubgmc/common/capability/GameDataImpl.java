@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.capability;
 
 import com.google.common.collect.ImmutableMap;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.Game;
@@ -12,6 +13,7 @@ import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketSendGameData;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -49,7 +51,12 @@ public class GameDataImpl implements GameData {
     @Override
     public void tick() {
         if (gameInstance.isStarted()) {
-            gameInstance.onGameTick(world);
+            try {
+                gameInstance.onGameTick(world);
+            } catch (Exception e) {
+                Pubgmc.logger.fatal("Fatal error occurred while during game tick, cancelling game", e);
+                GameHelper.resetErroredGameData(world);
+            }
         }
     }
 
