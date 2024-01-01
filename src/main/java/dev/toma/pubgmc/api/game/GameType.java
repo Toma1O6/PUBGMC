@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.api.game;
 
-import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.util.RegistryObject;
+import dev.toma.pubgmc.data.serialization.NbtSerializer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -43,7 +45,9 @@ public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> 
         NBTTagCompound nbt = new NBTTagCompound();
         GameType<CFG, G> gameType = (GameType<CFG, G>) game.getGameType();
         nbt.setString("type", gameType.getIdentifier().toString());
-        nbt.setTag("config", serializeConfiguration(gameType, game.getConfiguration()));
+        NbtSerializer nbtCfgSerializer = new NbtSerializer();
+        serializeConfiguration(gameType, game.getConfiguration(), nbtCfgSerializer);
+        nbt.setTag("config", nbtCfgSerializer.getNbt());
         nbt.setTag("game", gameType.serializer.serializeGameData(game));
         return nbt;
     }
@@ -55,24 +59,17 @@ public final class GameType<CFG extends GameConfiguration, G extends Game<CFG>> 
         if (gameType == null) {
             return null;
         }
-        CFG configuration = deserializeConfiguration(gameType, nbt.getCompoundTag("config"));
+        NbtSerializer nbtSerializer = new NbtSerializer(nbt.getCompoundTag("config"));
+        CFG configuration = deserializeConfiguration(gameType, nbtSerializer);
         return gameType.serializer.deserializeGameData(nbt.getCompoundTag("game"), configuration, world);
     }
 
-    public static <CFG extends GameConfiguration> NBTTagCompound serializeConfiguration(GameType<CFG, ?> gameType, CFG config) {
-        return gameType.serializer.serializeGameConfiguration(config);
+    public static <CFG extends GameConfiguration> void serializeConfiguration(GameType<CFG, ?> gameType, CFG config, DataWriter<?> writer) {
+        gameType.serializer.serializeGameConfiguration(config, writer);
     }
 
-    public static <CFG extends GameConfiguration> CFG deserializeConfiguration(GameType<CFG, ?> gameType, NBTTagCompound nbt) {
-        return gameType.serializer.deserializeGameConfiguration(nbt);
-    }
-
-    public static <CFG extends GameConfiguration> JsonObject serializeConfigurationToJson(GameType<CFG, ?> gameType, CFG config) {
-        return gameType.serializer.serializeConfigurationToJson(config);
-    }
-
-    public static <CFG extends GameConfiguration> CFG deserializeConfigurationFromJson(GameType<CFG, ?> gameType, JsonObject object) {
-        return gameType.serializer.deserializeConfigurationFromJson(object);
+    public static <CFG extends GameConfiguration> CFG deserializeConfiguration(GameType<CFG, ?> gameType, DataReader<?> reader) {
+        return gameType.serializer.deserializeGameConfiguration(reader);
     }
 
     @FunctionalInterface

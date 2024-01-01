@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.common.games.game.ffa;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.game.GameConfiguration;
 import dev.toma.pubgmc.api.game.GameWorldConfiguration;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.JsonUtils;
-import net.minecraftforge.common.util.Constants;
 
 public class FFAGameConfiguration implements GameConfiguration {
 
@@ -33,7 +28,7 @@ public class FFAGameConfiguration implements GameConfiguration {
             LOADOUT_SLR,
             LOADOUT_M24
     };
-    public final GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
+    public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
 
     @Override
     public void performCorrections() {
@@ -45,71 +40,27 @@ public class FFAGameConfiguration implements GameConfiguration {
         worldConfiguration.correct();
     }
 
-    public NBTTagCompound serialize() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("entityCount", entityCount);
-        nbt.setInteger("gameDuration", gameDuration);
-        nbt.setInteger("killTarget", killTarget);
-        nbt.setBoolean("allowAi", allowAi);
-        nbt.setInteger("spawnProtection", spawnProtectionTime);
-        nbt.setInteger("healPerKill", healPerKill);
-        NBTTagList loadouts = new NBTTagList();
-        for (String loadout : loadoutFiles) {
-            loadouts.appendTag(new NBTTagString(loadout));
-        }
-        nbt.setTag("loadouts", loadouts);
-        nbt.setTag("worldCfg", worldConfiguration.serialize());
-        return nbt;
+    public void serialize(DataWriter<?> writer) {
+        writer.writeInt("entityCount", entityCount);
+        writer.writeInt("gameDuration", gameDuration);
+        writer.writeInt("killTarget", killTarget);
+        writer.writeBoolean("allowAi", allowAi);
+        writer.writeInt("spawnProtection", spawnProtectionTime);
+        writer.writeInt("healPerKill", healPerKill);
+        writer.writeStringArray("loadouts", loadoutFiles);
+        writer.write("worldConfig", worldConfiguration, GameWorldConfiguration::serialize);
     }
 
-    public static FFAGameConfiguration deserialize(NBTTagCompound nbt) {
+    public static FFAGameConfiguration deserialize(DataReader<?> reader) {
         FFAGameConfiguration cfg = new FFAGameConfiguration();
-        cfg.entityCount = nbt.getInteger("entityCount");
-        cfg.gameDuration = nbt.getInteger("gameDuration");
-        cfg.killTarget = nbt.getInteger("killTarget");
-        cfg.allowAi = nbt.getBoolean("allowAi");
-        cfg.spawnProtectionTime = nbt.getInteger("spawnProtection");
-        cfg.healPerKill = nbt.getInteger("healPerKill");
-        NBTTagList loadouts = nbt.getTagList("loadouts", Constants.NBT.TAG_STRING);
-        cfg.loadoutFiles = new String[loadouts.tagCount()];
-        for (int i = 0; i < loadouts.tagCount(); i++) {
-            cfg.loadoutFiles[i] = loadouts.getStringTagAt(i);
-        }
-        cfg.worldConfiguration.deserialize(nbt.getCompoundTag("worldCfg"));
-        return cfg;
-    }
-
-    public JsonObject jsonSerialize() {
-        JsonObject object = new JsonObject();
-        object.addProperty("entityCount", entityCount);
-        object.addProperty("allowAi", allowAi);
-        object.addProperty("gameDuration", gameDuration);
-        object.addProperty("killTarget", killTarget);
-        object.addProperty("spawnProtection", spawnProtectionTime);
-        object.addProperty("healPerKill", healPerKill);
-        JsonArray loadouts = new JsonArray();
-        for (String loadout : loadoutFiles) {
-            loadouts.add(loadout);
-        }
-        object.add("loadouts", loadouts);
-        object.add("worldConfiguration", worldConfiguration.jsonSerialize());
-        return object;
-    }
-
-    public static FFAGameConfiguration jsonDeserialize(JsonObject object) {
-        FFAGameConfiguration cfg = new FFAGameConfiguration();
-        cfg.entityCount = JsonUtils.getInt(object, "entityCount", 8);
-        cfg.allowAi = JsonUtils.getBoolean(object, "allowAi", true);
-        cfg.gameDuration = JsonUtils.getInt(object, "gameDuration", 12000);
-        cfg.killTarget = JsonUtils.getInt(object, "killTarget", 30);
-        cfg.spawnProtectionTime = JsonUtils.getInt(object, "spawnProtection", 60);
-        cfg.healPerKill = JsonUtils.getInt(object, "healPerKill", 3);
-        JsonArray loadouts = JsonUtils.getJsonArray(object, "loadouts", new JsonArray());
-        cfg.loadoutFiles = new String[loadouts.size()];
-        for (int i = 0; i < loadouts.size(); i++) {
-            cfg.loadoutFiles[i] = loadouts.get(i).getAsString();
-        }
-        cfg.worldConfiguration.jsonDeserialize(JsonUtils.getJsonObject(object, "worldConfiguration", new JsonObject()));
+        cfg.entityCount = reader.readInt("entityCount", cfg.entityCount);
+        cfg.gameDuration = reader.readInt("gameDuration", cfg.gameDuration);
+        cfg.killTarget = reader.readInt("killTarget", cfg.killTarget);
+        cfg.allowAi = reader.readBoolean("allowAi", cfg.allowAi);
+        cfg.spawnProtectionTime = reader.readInt("spawnProtection", cfg.spawnProtectionTime);
+        cfg.healPerKill = reader.readInt("healPerKill", cfg.healPerKill);
+        cfg.loadoutFiles = reader.readStringArray("loadouts", cfg.loadoutFiles);
+        cfg.worldConfiguration = reader.read("worldConfig", GameWorldConfiguration::deserialize, cfg.worldConfiguration);
         return cfg;
     }
 }

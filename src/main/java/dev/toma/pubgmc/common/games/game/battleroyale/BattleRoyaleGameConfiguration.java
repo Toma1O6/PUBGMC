@@ -1,26 +1,20 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.game.GameWorldConfiguration;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
-import dev.toma.pubgmc.util.helper.SerializationHelper;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
 
 public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
 
-    public final GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
+    public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
     public boolean automaticGameJoining = true;
     public int teamSize = 4;
     public float planeSpeed = 1.0F;
@@ -52,89 +46,35 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         worldConfiguration.correct();
     }
 
-    public NBTTagCompound serialize() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setBoolean("autoJoin", automaticGameJoining);
-        nbt.setInteger("teamSize", teamSize);
-        nbt.setInteger("playzoneGenerationDelay", playzoneGenerationDelay);
-        nbt.setFloat("planeSpeed", planeSpeed);
-        nbt.setInteger("planeFlightHeight", planeFlightHeight);
-        nbt.setInteger("entityCount", entityCount);
-        nbt.setBoolean("allowAi", allowAi);
-        nbt.setBoolean("allowAiCompanions", allowAiCompanions);
-        nbt.setInteger("aiSpawnInterval", aiSpawnInterval);
-        nbt.setInteger("initialAiSpawnDelay", initialAiSpawnDelay);
-        NBTTagList zones = new NBTTagList();
-        for (ZonePhaseConfiguration configuration : zonePhases) {
-            zones.appendTag(configuration.serialize());
-        }
-        nbt.setTag("zonePhases", zones);
-        nbt.setTag("worldCfg", worldConfiguration.serialize());
-        return nbt;
+    public void serialize(DataWriter<?> writer) {
+        writer.writeBoolean("autoJoin", automaticGameJoining);
+        writer.writeInt("teamSize", teamSize);
+        writer.writeInt("playzoneGenerationDelay", playzoneGenerationDelay);
+        writer.writeFloat("planeSpeed", planeSpeed);
+        writer.writeInt("planeFlightHeight", planeFlightHeight);
+        writer.writeInt("entityCount", entityCount);
+        writer.writeBoolean("allowAi", allowAi);
+        writer.writeBoolean("allowAiCompanions", allowAiCompanions);
+        writer.writeInt("aiSpawnInterval", aiSpawnInterval);
+        writer.writeInt("initialAiSpawnDelay", initialAiSpawnDelay);
+        writer.writeArray("zonePhases", zonePhases, ZonePhaseConfiguration::serialize);
+        writer.write("worldConfig", worldConfiguration, GameWorldConfiguration::serialize);
     }
 
-    public static BattleRoyaleGameConfiguration deserialize(NBTTagCompound nbt) {
+    public static BattleRoyaleGameConfiguration deserialize(DataReader<?> reader) {
         BattleRoyaleGameConfiguration configuration = new BattleRoyaleGameConfiguration();
-        configuration.automaticGameJoining = nbt.getBoolean("autoJoin");
-        configuration.teamSize = nbt.getInteger("teamSize");
-        configuration.playzoneGenerationDelay = nbt.getInteger("playzoneGenerationDelay");
-        configuration.planeSpeed = nbt.getFloat("planeSpeed");
-        configuration.planeFlightHeight = nbt.getInteger("planeFlightHeight");
-        configuration.entityCount = nbt.getInteger("entityCount");
-        configuration.allowAi = nbt.getBoolean("allowAi");
-        configuration.allowAiCompanions = nbt.getBoolean("allowAiCompanions");
-        configuration.aiSpawnInterval = nbt.getInteger("aiSpawnInterval");
-        configuration.initialAiSpawnDelay = nbt.getInteger("initialAiSpawnDelay");
-        NBTTagList zones = nbt.getTagList("zonePhases", Constants.NBT.TAG_COMPOUND);
-        configuration.zonePhases = new ZonePhaseConfiguration[zones.tagCount()];
-        for (int i = 0; i < zones.tagCount(); i++) {
-            NBTTagCompound zoneTag = zones.getCompoundTagAt(i);
-            configuration.zonePhases[i] = ZonePhaseConfiguration.deserialize(zoneTag);
-        }
-        configuration.worldConfiguration.deserialize(nbt.getCompoundTag("worldCfg"));
-        return configuration;
-    }
-
-    public JsonObject jsonSerialize() {
-        JsonObject object = new JsonObject();
-        object.addProperty("autoJoin", automaticGameJoining);
-        object.addProperty("teamSize", teamSize);
-        object.addProperty("playzoneGenerationDelay", playzoneGenerationDelay);
-        object.addProperty("planeSpeed", planeSpeed);
-        object.addProperty("planeFlightHeight", planeFlightHeight);
-        object.addProperty("entityCount", entityCount);
-        object.addProperty("allowAi", allowAi);
-        object.addProperty("allowAiCompanions", allowAiCompanions);
-        object.addProperty("aiSpawnInterval", aiSpawnInterval);
-        object.addProperty("initialAiSpawnDelay", initialAiSpawnDelay);
-        JsonArray zones = new JsonArray();
-        for (ZonePhaseConfiguration configuration : zonePhases) {
-            zones.add(configuration.jsonSerialize());
-        }
-        object.add("zonePhases", zones);
-        object.add("worldConfig", worldConfiguration.jsonSerialize());
-        return object;
-    }
-
-    public static BattleRoyaleGameConfiguration jsonDeserialize(JsonObject object) {
-        BattleRoyaleGameConfiguration configuration = new BattleRoyaleGameConfiguration();
-        configuration.automaticGameJoining = JsonUtils.getBoolean(object, "autoJoin", true);
-        configuration.teamSize = JsonUtils.getInt(object, "teamSize", 1);
-        configuration.playzoneGenerationDelay = JsonUtils.getInt(object, "playzoneGenerationDelay", 2400);
-        configuration.planeSpeed = JsonUtils.getFloat(object, "planeSpeed", 1.0F);
-        configuration.planeFlightHeight = JsonUtils.getInt(object, "planeFlightHeight", 255);
-        configuration.entityCount = JsonUtils.getInt(object, "entityCount", 64);
-        configuration.allowAi = JsonUtils.getBoolean(object, "allowAi", true);
-        configuration.allowAiCompanions = JsonUtils.getBoolean(object, "allowAiCompanions", true);
-        configuration.aiSpawnInterval = JsonUtils.getInt(object, "aiSpawnInterval", 300);
-        configuration.initialAiSpawnDelay = JsonUtils.getInt(object, "initialAiSpawnDelay", 1200);
-        JsonArray zones = JsonUtils.getJsonArray(object, "zonePhases", new JsonArray());
-        configuration.zonePhases = new ZonePhaseConfiguration[zones.size()];
-        int i = 0;
-        for (JsonElement element : zones) {
-            configuration.zonePhases[i++] = ZonePhaseConfiguration.jsonDeserialize(element);
-        }
-        configuration.worldConfiguration.jsonDeserialize(JsonUtils.getJsonObject(object, "worldConfig"));
+        configuration.automaticGameJoining = reader.readBoolean("autoJoin", configuration.automaticGameJoining);
+        configuration.teamSize = reader.readInt("teamSize", configuration.teamSize);
+        configuration.playzoneGenerationDelay = reader.readInt("playzoneGenerationDelay", configuration.playzoneGenerationDelay);
+        configuration.planeSpeed = reader.readFloat("planeSpeed", configuration.planeSpeed);
+        configuration.planeFlightHeight = reader.readInt("planeFlightHeight", configuration.planeFlightHeight);
+        configuration.entityCount = reader.readInt("entityCount", configuration.entityCount);
+        configuration.allowAi = reader.readBoolean("allowAi", configuration.allowAi);
+        configuration.allowAiCompanions = reader.readBoolean("allowAiCompanions", configuration.allowAiCompanions);
+        configuration.aiSpawnInterval = reader.readInt("aiSpawnInterval", configuration.aiSpawnInterval);
+        configuration.initialAiSpawnDelay = reader.readInt("initialAiSpawnDelay", configuration.initialAiSpawnDelay);
+        configuration.zonePhases = reader.readArray("zonePhases", ZonePhaseConfiguration[]::new, ZonePhaseConfiguration::deserialize, configuration.zonePhases);
+        configuration.worldConfiguration = reader.read("worldConfig", GameWorldConfiguration::deserialize, configuration.worldConfiguration);
         return configuration;
     }
 
@@ -174,42 +114,20 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
             return new DynamicPlayzone.ResizeTarget(newMin, newMax, opt, shrinkTime, shrinkDelay);
         }
 
-        public NBTTagCompound serialize() {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setFloat("scale", shrinkScale);
-            nbt.setFloat("damage", damage);
-            nbt.setInteger("interval", damageInterval);
-            nbt.setInteger("shrinkTime", shrinkTime);
-            nbt.setInteger("shrinkDelay", shrinkDelay);
-            return nbt;
+        public void serialize(DataWriter<?> writer) {
+            writer.writeFloat("scale", shrinkScale);
+            writer.writeFloat("damage", damage);
+            writer.writeInt("interval", damageInterval);
+            writer.writeInt("shrinkTime", shrinkTime);
+            writer.writeInt("shrinkDelay", shrinkDelay);
         }
 
-        public static ZonePhaseConfiguration deserialize(NBTTagCompound nbt) {
-            float scale = nbt.getFloat("scale");
-            float damage = nbt.getFloat("damage");
-            int interval = nbt.getInteger("interval");
-            int shrinkTime = nbt.getInteger("shrinkTime");
-            int shrinkDelay = nbt.getInteger("shrinkDelay");
-            return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay);
-        }
-
-        private JsonObject jsonSerialize() {
-            JsonObject object = new JsonObject();
-            object.addProperty("scale", shrinkScale);
-            object.addProperty("damage", damage);
-            object.addProperty("interval", damageInterval);
-            object.addProperty("shrinkTime", shrinkTime);
-            object.addProperty("shrinkDelay", shrinkDelay);
-            return object;
-        }
-
-        private static ZonePhaseConfiguration jsonDeserialize(JsonElement json) {
-            JsonObject object = SerializationHelper.asObject(json);
-            float scale = JsonUtils.getFloat(object, "scale");
-            float damage = JsonUtils.getFloat(object, "damage");
-            int interval = JsonUtils.getInt(object, "interval");
-            int shrinkTime = JsonUtils.getInt(object, "shrinkTime");
-            int shrinkDelay = JsonUtils.getInt(object, "shrinkDelay");
+        public static ZonePhaseConfiguration deserialize(DataReader<?> reader) {
+            float scale = reader.readFloat("scale");
+            float damage = reader.readFloat("damage");
+            int interval = reader.readInt("interval");
+            int shrinkTime = reader.readInt("shrinkTime");
+            int shrinkDelay = reader.readInt("shrinkDelay");
             return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay);
         }
     }

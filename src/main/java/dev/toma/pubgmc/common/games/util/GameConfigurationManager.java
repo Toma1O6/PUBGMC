@@ -8,7 +8,9 @@ import dev.toma.pubgmc.api.data.Recreatable;
 import dev.toma.pubgmc.api.game.GameConfiguration;
 import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.common.games.GameTypes;
+import dev.toma.pubgmc.data.serialization.GsonSerializer;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import org.apache.logging.log4j.message.FormattedMessage;
 
 import java.io.File;
 import java.io.FileReader;
@@ -56,10 +58,15 @@ public final class GameConfigurationManager implements Recreatable {
         }
         try (FileReader reader = new FileReader(file)) {
             JsonElement element = new JsonParser().parse(reader);
-            CFG config = GameType.deserializeConfigurationFromJson(type, element.getAsJsonObject());
+            GsonSerializer serializer = new GsonSerializer(element.getAsJsonObject());
+            CFG config = GameType.deserializeConfiguration(type, serializer);
             config.performCorrections();
             CONFIGURATION_MAP.put(type, config);
         } catch (JsonParseException e) {
+            Pubgmc.logger.error(new FormattedMessage("Failed to parse game configuration for \"{}\" game due to error", type.getIdentifier()), e);
+            createDefaultGameConfiguration(type, file);
+        } catch (Exception e) {
+            Pubgmc.logger.fatal(new FormattedMessage("Critical failure while reading game configuration for \"{}\" game", type.getIdentifier()), e);
             createDefaultGameConfiguration(type, file);
         }
     }
@@ -68,7 +75,9 @@ public final class GameConfigurationManager implements Recreatable {
         file.createNewFile();
         CFG configuration = type.getGameConfiguration();
         configuration.performCorrections();
-        JsonObject object = GameType.serializeConfigurationToJson(type, configuration);
+        GsonSerializer serializer = new GsonSerializer();
+        GameType.serializeConfiguration(type, configuration, serializer);
+        JsonObject object = serializer.getJson();
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(GSON.toJson(object));
         }

@@ -1,14 +1,9 @@
 package dev.toma.pubgmc.common.games.game.domination;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.game.GameWorldConfiguration;
 import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.JsonUtils;
-import net.minecraftforge.common.util.Constants;
 
 public final class DominationGameConfiguration implements TeamGameConfiguration {
 
@@ -35,7 +30,7 @@ public final class DominationGameConfiguration implements TeamGameConfiguration 
             LOADOUT_SLR,
             LOADOUT_M24
     };
-    public final GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
+    public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
 
     @Override
     public void performCorrections() {
@@ -48,79 +43,31 @@ public final class DominationGameConfiguration implements TeamGameConfiguration 
         worldConfiguration.correct();
     }
 
-    public NBTTagCompound serialize() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("playerCount", playerCount);
-        nbt.setFloat("captureSpeed", captureSpeed);
-        nbt.setInteger("totalTickets", totalTicketCount);
-        nbt.setInteger("pointTicketLoss", pointTicketLoss);
-        nbt.setInteger("killTicketLoss", killTicketLoss);
-        nbt.setInteger("gameDuration", gameDuration);
-        nbt.setBoolean("allowAi", allowAi);
-        nbt.setBoolean("requirePointSuperiority", requirePointSuperiority);
-        NBTTagList loadouts = new NBTTagList();
-        for (String loadout : availableLoadouts) {
-            loadouts.appendTag(new NBTTagString(loadout));
-        }
-        nbt.setTag("loadouts", loadouts);
-        nbt.setTag("worldCfg", worldConfiguration.serialize());
-        return nbt;
+    public void serialize(DataWriter<?> writer) {
+        writer.writeInt("playerCount", playerCount);
+        writer.writeFloat("captureSpeed", captureSpeed);
+        writer.writeInt("totalTickets", totalTicketCount);
+        writer.writeInt("pointTicketLoss", pointTicketLoss);
+        writer.writeInt("killTicketLoss", killTicketLoss);
+        writer.writeInt("gameDuration", gameDuration);
+        writer.writeBoolean("allowAi", allowAi);
+        writer.writeBoolean("requirePointSuperiority", requirePointSuperiority);
+        writer.writeStringArray("loadouts", availableLoadouts);
+        writer.write("worldConfig", worldConfiguration, GameWorldConfiguration::serialize);
     }
 
-    public static DominationGameConfiguration deserialize(NBTTagCompound nbt) {
+    public static DominationGameConfiguration deserialize(DataReader<?> reader) {
         DominationGameConfiguration cfg = new DominationGameConfiguration();
-        cfg.playerCount = nbt.getInteger("playerCount");
-        cfg.captureSpeed = nbt.getFloat("captureSpeed");
-        cfg.totalTicketCount = nbt.getInteger("totalTickets");
-        cfg.pointTicketLoss = nbt.getInteger("pointTicketLoss");
-        cfg.killTicketLoss = nbt.getInteger("killTicketLoss");
-        cfg.gameDuration = nbt.getInteger("gameDuration");
-        cfg.allowAi = nbt.getBoolean("allowAi");
-        cfg.requirePointSuperiority = nbt.getBoolean("requirePointSuperiority");
-        NBTTagList loadouts = nbt.getTagList("loadouts", Constants.NBT.TAG_STRING);
-        cfg.availableLoadouts = new String[loadouts.tagCount()];
-        for (int i = 0; i < loadouts.tagCount(); i++) {
-            cfg.availableLoadouts[i] = loadouts.getStringTagAt(i);
-        }
-        cfg.worldConfiguration.deserialize(nbt.getCompoundTag("worldCfg"));
-        return cfg;
-    }
-
-    public JsonObject jsonSerialize() {
-        JsonObject object = new JsonObject();
-        object.addProperty("playerCount", playerCount);
-        object.addProperty("captureSpeed", captureSpeed);
-        object.addProperty("totalTickets", totalTicketCount);
-        object.addProperty("pointTicketLoss", pointTicketLoss);
-        object.addProperty("killTicketLoss", killTicketLoss);
-        object.addProperty("gameDuration", gameDuration);
-        object.addProperty("allowAi", allowAi);
-        object.addProperty("requirePointSuperiority", requirePointSuperiority);
-        JsonArray loadouts = new JsonArray();
-        for (String loadout : availableLoadouts) {
-            loadouts.add(loadout);
-        }
-        object.add("loadouts", loadouts);
-        object.add("worldConfiguration", worldConfiguration.jsonSerialize());
-        return object;
-    }
-
-    public static DominationGameConfiguration jsonDeserialize(JsonObject object) {
-        DominationGameConfiguration cfg = new DominationGameConfiguration();
-        cfg.playerCount = JsonUtils.getInt(object, "playerCount", 16);
-        cfg.captureSpeed = JsonUtils.getFloat(object, "captureSpeed", 0.0125F);
-        cfg.totalTicketCount = JsonUtils.getInt(object, "totalTickets", 10000);
-        cfg.pointTicketLoss = JsonUtils.getInt(object, "pointTicketLoss", 50);
-        cfg.killTicketLoss = JsonUtils.getInt(object, "killTicketLoss", 15);
-        cfg.gameDuration = JsonUtils.getInt(object, "gameDuration", 18000);
-        cfg.allowAi = JsonUtils.getBoolean(object, "allowAi", true);
-        cfg.requirePointSuperiority = JsonUtils.getBoolean(object, "requirePointSuperiority", false);
-        JsonArray loadouts = JsonUtils.getJsonArray(object, "loadouts", new JsonArray());
-        cfg.availableLoadouts = new String[loadouts.size()];
-        for (int i = 0; i < loadouts.size(); i++) {
-            cfg.availableLoadouts[i] = loadouts.get(i).getAsString();
-        }
-        cfg.worldConfiguration.jsonDeserialize(JsonUtils.getJsonObject(object, "worldConfiguration", new JsonObject()));
+        cfg.playerCount = reader.readInt("playerCount", cfg.playerCount);
+        cfg.captureSpeed = reader.readFloat("captureSpeed", cfg.captureSpeed);
+        cfg.totalTicketCount = reader.readInt("totalTickets", cfg.totalTicketCount);
+        cfg.pointTicketLoss = reader.readInt("pointTicketLoss", cfg.pointTicketLoss);
+        cfg.killTicketLoss = reader.readInt("killTicketLoss", cfg.killTicketLoss);
+        cfg.gameDuration = reader.readInt("gameDuration", cfg.gameDuration);
+        cfg.allowAi = reader.readBoolean("allowAi", cfg.allowAi);
+        cfg.requirePointSuperiority = reader.readBoolean("requirePointSuperiority", cfg.requirePointSuperiority);
+        cfg.availableLoadouts = reader.readStringArray("loadouts", cfg.availableLoadouts);
+        cfg.worldConfiguration = reader.read("worldConfig", GameWorldConfiguration::deserialize, cfg.worldConfiguration);
         return cfg;
     }
 }

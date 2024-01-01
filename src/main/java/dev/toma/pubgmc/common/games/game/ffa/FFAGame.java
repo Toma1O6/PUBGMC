@@ -1,9 +1,10 @@
 package dev.toma.pubgmc.common.games.game.ffa;
 
-import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
@@ -566,23 +567,13 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         }
 
         @Override
-        public NBTTagCompound serializeGameConfiguration(FFAGameConfiguration configuration) {
-            return configuration.serialize();
+        public void serializeGameConfiguration(FFAGameConfiguration configuration, DataWriter<?> writer) {
+            configuration.serialize(writer);
         }
 
         @Override
-        public FFAGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return FFAGameConfiguration.deserialize(nbt);
-        }
-
-        @Override
-        public JsonObject serializeConfigurationToJson(FFAGameConfiguration configuration) {
-            return configuration.jsonSerialize();
-        }
-
-        @Override
-        public FFAGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
-            return FFAGameConfiguration.jsonDeserialize(object);
+        public FFAGameConfiguration deserializeGameConfiguration(DataReader<?> reader) {
+            return FFAGameConfiguration.deserialize(reader);
         }
     }
 

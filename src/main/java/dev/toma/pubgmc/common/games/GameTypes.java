@@ -9,6 +9,8 @@ import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGameConfiguration;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGameConfiguration;
+import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
+import dev.toma.pubgmc.common.games.game.tournament.TournamentGameConfiguration;
 
 import java.util.UUID;
 
@@ -20,4 +22,5 @@ public final class GameTypes {
     public static final GameType<BattleRoyaleGameConfiguration, BattleRoyaleGame> BATTLE_ROYALE = GameType.create(Pubgmc.getResource("battle_royale"), BattleRoyaleGame::new, new BattleRoyaleGame.Serializer(), BattleRoyaleGameConfiguration::new);
     public static final GameType<FFAGameConfiguration, FFAGame> FFA = GameType.create(Pubgmc.getResource("ffa"), FFAGame::new, new FFAGame.Serializer(), FFAGameConfiguration::new);
     public static final GameType<DominationGameConfiguration, DominationGame> DOMINATION = GameType.create(Pubgmc.getResource("domination"), DominationGame::new, new DominationGame.Serializer(), DominationGameConfiguration::new);
+    public static final GameType<TournamentGameConfiguration, TournamentGame> TOURNAMENT = GameType.create(Pubgmc.getResource("tournament"), TournamentGame::new, new TournamentGame.Serializer(), TournamentGameConfiguration::new);
 }

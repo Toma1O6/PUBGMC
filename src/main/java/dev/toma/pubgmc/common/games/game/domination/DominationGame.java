@@ -1,8 +1,9 @@
 package dev.toma.pubgmc.common.games.game.domination;
 
-import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
@@ -673,23 +674,13 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         }
 
         @Override
-        public NBTTagCompound serializeGameConfiguration(DominationGameConfiguration configuration) {
-            return configuration.serialize();
+        public void serializeGameConfiguration(DominationGameConfiguration configuration, DataWriter<?> writer) {
+            configuration.serialize(writer);
         }
 
         @Override
-        public DominationGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return DominationGameConfiguration.deserialize(nbt);
-        }
-
-        @Override
-        public JsonObject serializeConfigurationToJson(DominationGameConfiguration configuration) {
-            return configuration.jsonSerialize();
-        }
-
-        @Override
-        public DominationGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
-            return DominationGameConfiguration.jsonDeserialize(object);
+        public DominationGameConfiguration deserializeGameConfiguration(DataReader<?> reader) {
+            return DominationGameConfiguration.deserialize(reader);
         }
     }
 

@@ -3,6 +3,7 @@ package dev.toma.pubgmc.init;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
+import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.mutator.*;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
@@ -20,6 +21,7 @@ import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
+import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.playzone.PlayzoneTypes;
 import dev.toma.pubgmc.common.items.*;
@@ -999,6 +1001,7 @@ public class CommonRegistry {
         event.register(GameTypes.BATTLE_ROYALE);
         event.register(GameTypes.FFA);
         event.register(GameTypes.DOMINATION);
+        event.register(GameTypes.TOURNAMENT);
     }
 
     @SubscribeEvent
@@ -1039,6 +1042,9 @@ public class CommonRegistry {
         event.registerMutator(GameTypes.DOMINATION, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
         event.registerMutator(GameTypes.DOMINATION, GameMutators.AI_TASKS, new AIPlayerMutator<>(DominationGame::initAi));
         event.registerMutator(GameTypes.DOMINATION, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
+        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
+        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.AI_TASKS, new AIPlayerMutator<>(TournamentGame::initAi));
+        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
     }
 
     public static void registerItemBlock(Block block) {

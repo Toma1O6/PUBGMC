@@ -1,7 +1,8 @@
 package dev.toma.pubgmc.common.games;
 
-import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -96,22 +97,11 @@ public final class NoGame implements Game<NoGame.NoConfiguration> {
         }
 
         @Override
-        public NBTTagCompound serializeGameConfiguration(NoConfiguration configuration) {
-            return new NBTTagCompound();
+        public void serializeGameConfiguration(NoConfiguration configuration, DataWriter<?> writer) {
         }
 
         @Override
-        public NoConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return NoConfiguration.INSTANCE;
-        }
-
-        @Override
-        public JsonObject serializeConfigurationToJson(NoConfiguration configuration) {
-            return new JsonObject();
-        }
-
-        @Override
-        public NoConfiguration deserializeConfigurationFromJson(JsonObject object) {
+        public NoConfiguration deserializeGameConfiguration(DataReader<?> reader) {
             return NoConfiguration.INSTANCE;
         }
     }

@@ -1,9 +1,10 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
-import com.google.gson.JsonObject;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.data.DataReader;
+import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.api.game.GameDataSerializer;
@@ -627,23 +628,13 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
 
         @Override
-        public NBTTagCompound serializeGameConfiguration(BattleRoyaleGameConfiguration configuration) {
-            return configuration.serialize();
+        public void serializeGameConfiguration(BattleRoyaleGameConfiguration configuration, DataWriter<?> writer) {
+            configuration.serialize(writer);
         }
 
         @Override
-        public BattleRoyaleGameConfiguration deserializeGameConfiguration(NBTTagCompound nbt) {
-            return BattleRoyaleGameConfiguration.deserialize(nbt);
-        }
-
-        @Override
-        public JsonObject serializeConfigurationToJson(BattleRoyaleGameConfiguration configuration) {
-            return configuration.jsonSerialize();
-        }
-
-        @Override
-        public BattleRoyaleGameConfiguration deserializeConfigurationFromJson(JsonObject object) {
-            return BattleRoyaleGameConfiguration.jsonDeserialize(object);
+        public BattleRoyaleGameConfiguration deserializeGameConfiguration(DataReader<?> reader) {
+            return BattleRoyaleGameConfiguration.deserialize(reader);
         }
     }
 }
