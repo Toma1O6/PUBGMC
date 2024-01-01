@@ -3,6 +3,9 @@ package dev.toma.pubgmc.api.data;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 public interface DataReader<T> {
@@ -132,4 +135,24 @@ public interface DataReader<T> {
             throw e;
         }
     }
+
+    default UUID readUuid(String name) {
+        return readUuid(name, null);
+    }
+
+    default UUID readUuid(String name, @Nullable UUID defaultValue) {
+        return defaultValue != null ? UUID.fromString(readString(name, defaultValue.toString())) : UUID.fromString(readString(name));
+    }
+
+    default <V, C extends Collection<V>> C readCollection(String name, Function<Integer, C> collectionConstructor, Function<DataReader<T>, V> parser) {
+        return readCollection(name, collectionConstructor, parser, null);
+    }
+
+    <V, C extends Collection<V>> C readCollection(String name, Function<Integer, C> collectionConstructor, Function<DataReader<T>, V> parser, @Nullable C defaultValue);
+
+    default <K, V, M extends Map<K, V>> M readMap(String name, Function<Integer, M> mapConstructor, Function<String, K> keyParser, Function<DataReader<T>, V> valueParser) {
+        return readMap(name, mapConstructor, keyParser, valueParser, null);
+    }
+
+    <K, V, M extends Map<K, V>> M readMap(String name, Function<Integer, M> mapConstructor, Function<String, K> keyParser, Function<DataReader<T>, V> valueParser, @Nullable M defaultValue);
 }

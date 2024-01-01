@@ -144,13 +144,21 @@ public final class GameHelper {
     }
 
     public static <T> Stream<T> mergeTileEntitiesAndEntitiesByRule(World world, Predicate<Object> filter, Function<Object, T> mapper) {
-        Stream<T> entityObjects = world.loadedEntityList.stream()
-                .filter(filter)
-                .map(mapper);
-        Stream<T> blockObjects = world.loadedTileEntityList.stream()
-                .filter(filter)
-                .map(mapper);
+        Stream<T> entityObjects = getLoadedEntityGameObjects(world, filter, mapper);
+        Stream<T> blockObjects = getLoadedTileGameObjects(world, filter, mapper);
         return Stream.concat(entityObjects, blockObjects);
+    }
+
+    public static <T> Stream<T> getLoadedTileGameObjects(World world, Predicate<Object> filter, Function<Object, T> mapper) {
+        return world.loadedTileEntityList.stream()
+                .filter(filter)
+                .map(mapper);
+    }
+
+    public static <T> Stream<T> getLoadedEntityGameObjects(World world, Predicate<Object> filter, Function<Object, T> mapper) {
+        return world.loadedEntityList.stream()
+                .filter(filter)
+                .map(mapper);
     }
 
     public static <E extends Entity & GameObject> boolean validateGameEntityStillValid(E entity) {

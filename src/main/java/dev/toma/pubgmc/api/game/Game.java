@@ -26,7 +26,7 @@ public interface Game<CFG extends GameConfiguration> {
     void onGameInit(World world);
 
     // Call when /game start command is executed. Should start the game
-    void onGameStart(World world);
+    void onGameStart(World world) throws GameException;
 
     // Called every world tick on client/server
     void onGameTick(World world);

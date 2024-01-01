@@ -6,11 +6,9 @@ import dev.toma.pubgmc.api.client.event.RegisterMapPointRendererEvent;
 import dev.toma.pubgmc.client.games.BattleRoyaleGameRenderer;
 import dev.toma.pubgmc.client.games.DominationGameRenderer;
 import dev.toma.pubgmc.client.games.FFAGameRenderer;
+import dev.toma.pubgmc.client.games.TournamentGameRenderer;
 import dev.toma.pubgmc.client.models.BakedModelGun;
-import dev.toma.pubgmc.client.renderer.poi.CaptureZoneRenderer;
-import dev.toma.pubgmc.client.renderer.poi.PointOfInterestRenderer;
-import dev.toma.pubgmc.client.renderer.poi.SubMapPointRenderer;
-import dev.toma.pubgmc.client.renderer.poi.TeamSpawnerRenderer;
+import dev.toma.pubgmc.client.renderer.poi.*;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -58,6 +56,7 @@ public class ClientRegistry {
         event.registerRenderer(GameTypes.BATTLE_ROYALE, new BattleRoyaleGameRenderer());
         event.registerRenderer(GameTypes.FFA, new FFAGameRenderer());
         event.registerRenderer(GameTypes.DOMINATION, new DominationGameRenderer());
+        event.registerRenderer(GameTypes.TOURNAMENT, new TournamentGameRenderer());
     }
 
     @SubscribeEvent
@@ -66,6 +65,7 @@ public class ClientRegistry {
         event.registerRenderer(GameMapPoints.CAPTURE_ZONE, new CaptureZoneRenderer());
         event.registerRenderer(GameMapPoints.TEAM_SPAWNER, new TeamSpawnerRenderer());
         event.registerRenderer(GameMapPoints.PARTIAL_PLAY_AREA, new SubMapPointRenderer());
+        event.registerRenderer(GameMapPoints.SPECTATOR_POINT, new SpectatorPointRenderer());
     }
 
     private static void registerModel(Item item) {

@@ -313,7 +313,7 @@ public class GameCommand extends AbstractCommand {
             game.onGameStart(world);
             MinecraftForge.EVENT_BUS.post(new GameEvent.Started(game, map));
         } catch (GameException e) {
-            data.setActiveGameMapName(actualMapName, submap);
+            data.setActiveGameMapName(null, null);
             throw new WrongUsageException("Unable to start game: " + e.getMessage());
         }
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.started"));

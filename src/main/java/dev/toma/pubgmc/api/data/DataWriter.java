@@ -1,6 +1,10 @@
 package dev.toma.pubgmc.api.data;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public interface DataWriter<T> {
 
@@ -43,4 +47,12 @@ public interface DataWriter<T> {
     default <E extends Enum<E>> void writeEnum(String name, E enumVal) {
         writeInt(name, enumVal.ordinal());
     }
+
+    default void writeUuid(String name, UUID value) {
+        writeString(name, value.toString());
+    }
+
+    <V> void writeCollection(String name, Collection<V> collection, BiConsumer<V, DataWriter<T>> objectSerializer);
+
+    <K, V> void writeMap(String name, Map<K, V> map, Function<K, String> keySerializer, BiConsumer<V, DataWriter<T>> valueSerializer);
 }

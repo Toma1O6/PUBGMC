@@ -6,7 +6,7 @@ import net.minecraft.nbt.*;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -151,6 +151,29 @@ public class NbtSerializer implements DataWriter<NBTTagCompound>, DataReader<NBT
             list.appendTag(serializer.getNbt());
         }
         root.setTag(name, list);
+    }
+
+    @Override
+    public <V> void writeCollection(String name, Collection<V> collection, BiConsumer<V, DataWriter<NBTTagCompound>> objectSerializer) {
+        NBTTagList list = new NBTTagList();
+        for (V v : collection) {
+            NbtSerializer serializer = new NbtSerializer();
+            objectSerializer.accept(v, serializer);
+            list.appendTag(serializer.getNbt());
+        }
+        root.setTag(name, list);
+    }
+
+    @Override
+    public <K, V> void writeMap(String name, Map<K, V> map, Function<K, String> keySerializer, BiConsumer<V, DataWriter<NBTTagCompound>> valueSerializer) {
+        NBTTagCompound compound = new NBTTagCompound();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            String key = keySerializer.apply(entry.getKey());
+            NbtSerializer serializer = new NbtSerializer();
+            valueSerializer.accept(entry.getValue(), serializer);
+            compound.setTag(key, serializer.getNbt());
+        }
+        root.setTag(name, compound);
     }
 
     @Override
@@ -320,6 +343,40 @@ public class NbtSerializer implements DataWriter<NBTTagCompound>, DataReader<NBT
             array[i] = parser.apply(serializer);
         }
         return array;
+    }
+
+    @Override
+    public <V, C extends Collection<V>> C readCollection(String name, Function<Integer, C> collectionConstructor, Function<DataReader<NBTTagCompound>, V> parser, @Nullable C defaultValue) {
+        if (!root.hasKey(name, Constants.NBT.TAG_LIST) && defaultValue != null) {
+            return defaultValue;
+        }
+        NBTTagList list = root.getTagList(name, Constants.NBT.TAG_COMPOUND);
+        int length = list.tagCount();
+        C collection = collectionConstructor.apply(length);
+        for (int i = 0; i < length; i++) {
+            NBTTagCompound compound = list.getCompoundTagAt(i);
+            NbtSerializer serializer = new NbtSerializer(compound);
+            collection.add(parser.apply(serializer));
+        }
+        return collection;
+    }
+
+    @Override
+    public <K, V, M extends Map<K, V>> M readMap(String name, Function<Integer, M> mapConstructor, Function<String, K> keyParser, Function<DataReader<NBTTagCompound>, V> valueParser, @Nullable M defaultValue) {
+        if (!root.hasKey(name, Constants.NBT.TAG_COMPOUND) && defaultValue != null) {
+            return defaultValue;
+        }
+        NBTTagCompound compound = root.getCompoundTag(name);
+        Set<String> keySet = compound.getKeySet();
+        M map = mapConstructor.apply(keySet.size());
+        for (String keyString : keySet) {
+            K key = keyParser.apply(keyString);
+            NBTTagCompound nbt = compound.getCompoundTag(keyString);
+            NbtSerializer serializer = new NbtSerializer(nbt);
+            V value = valueParser.apply(serializer);
+            map.put(key, value);
+        }
+        return map;
     }
 
     public NBTTagCompound getNbt() {

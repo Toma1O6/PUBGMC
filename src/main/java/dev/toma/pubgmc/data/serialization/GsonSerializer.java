@@ -1,13 +1,17 @@
 package dev.toma.pubgmc.data.serialization;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.toma.pubgmc.api.data.DataReader;
 import dev.toma.pubgmc.api.data.DataWriter;
 import net.minecraft.util.JsonUtils;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -151,6 +155,29 @@ public class GsonSerializer implements DataWriter<JsonObject>, DataReader<JsonOb
             jsonArray.add(serializer.getJson());
         }
         root.add(name, jsonArray);
+    }
+
+    @Override
+    public <V> void writeCollection(String name, Collection<V> collection, BiConsumer<V, DataWriter<JsonObject>> objectSerializer) {
+        JsonArray array = new JsonArray();
+        collection.stream().map(v -> {
+            GsonSerializer serializer = new GsonSerializer();
+            objectSerializer.accept(v, serializer);
+            return serializer.getJson();
+        }).forEach(array::add);
+        root.add(name, array);
+    }
+
+    @Override
+    public <K, V> void writeMap(String name, Map<K, V> map, Function<K, String> keySerializer, BiConsumer<V, DataWriter<JsonObject>> valueSerializer) {
+        JsonObject object = new JsonObject();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            String key = keySerializer.apply(entry.getKey());
+            GsonSerializer serializer = new GsonSerializer();
+            valueSerializer.accept(entry.getValue(), serializer);
+            object.add(key, serializer.getJson());
+        }
+        root.add(name, object);
     }
 
     @Override
@@ -334,6 +361,39 @@ public class GsonSerializer implements DataWriter<JsonObject>, DataReader<JsonOb
             // assume that atleast one enum constant is always defined
             return defaultValue != null ? defaultValue : enumType.getEnumConstants()[0];
         }
+    }
+
+    @Override
+    public <V, C extends Collection<V>> C readCollection(String name, Function<Integer, C> collectionConstructor, Function<DataReader<JsonObject>, V> parser, @Nullable C defaultValue) {
+        if (!root.has(name) && defaultValue != null) {
+            return defaultValue;
+        }
+        JsonArray array = JsonUtils.getJsonArray(root, name);
+        int length = array.size();
+        C collection = collectionConstructor.apply(length);
+        for (JsonElement element : array) {
+            GsonSerializer serializer = new GsonSerializer(element.getAsJsonObject());
+            V value = parser.apply(serializer);
+            collection.add(value);
+        }
+        return collection;
+    }
+
+    @Override
+    public <K, V, M extends Map<K, V>> M readMap(String name, Function<Integer, M> mapConstructor, Function<String, K> keyParser, Function<DataReader<JsonObject>, V> valueParser, @Nullable M defaultValue) {
+        if (!root.has(name) && defaultValue != null) {
+            return defaultValue;
+        }
+        JsonObject object = JsonUtils.getJsonObject(root, name);
+        Set<Map.Entry<String, JsonElement>> entries = object.entrySet();
+        M map = mapConstructor.apply(entries.size());
+        for (Map.Entry<String, JsonElement> entry : entries) {
+            K key = keyParser.apply(entry.getKey());
+            GsonSerializer serializer = new GsonSerializer(entry.getValue().getAsJsonObject());
+            V value = valueParser.apply(serializer);
+            map.put(key, value);
+        }
+        return map;
     }
 
     public JsonObject getJson() {

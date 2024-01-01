@@ -66,11 +66,6 @@ public class BlockSecretDoor extends BlockDoor {
     }
 
     @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        super.updateTick(worldIn, pos, state, rand);
-    }
-
-    @Override
     public boolean hasTileEntity(IBlockState state) {
         return state.getValue(HALF) == EnumDoorHalf.LOWER;
     }

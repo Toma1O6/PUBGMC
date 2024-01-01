@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.api.game.map;
 
 import dev.toma.pubgmc.util.helper.GameHelper;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,7 +27,7 @@ public abstract class GameMapPoint {
         return this.getType() == type;
     }
 
-    public final void teleportOn(EntityLivingBase entity) {
+    public final void teleportOn(Entity entity) {
         GameHelper.teleport(entity, pointPosition.getX() + 0.5, pointPosition.getY() + 1.0, pointPosition.getZ() + 0.5);
     }
 

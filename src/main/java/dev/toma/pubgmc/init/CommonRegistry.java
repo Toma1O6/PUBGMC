@@ -3,7 +3,6 @@ package dev.toma.pubgmc.init;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
-import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.mutator.*;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
@@ -221,7 +220,8 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 new BlockDoorCloser("door_closer", Material.ROCK),
                 BlockBuilder.create("modern_light", Material.ROCK).soundType(SoundType.STONE).setTransparent().light(1.0F).nullAABB(new AxisAlignedBB(0.2, 0.7, 0.2, 0.8, 1.0, 0.8)).build(),
-                new BlockSecretDoor("old_secret_door", Material.IRON)
+                new BlockSecretDoor("old_secret_door", Material.IRON),
+                new BlockGameDoor("metal_garage_door", Material.IRON)
         );
     }
 
@@ -951,6 +951,7 @@ public class CommonRegistry {
                 new CaptureZoneConfigurerItem("mapitem_capture_zone"),
                 new PointOfInterestItem("mapitem_point_of_interest"),
                 new SubMapConfigurerItem("mapitem_submap_config"),
+                new SpectatorPointItem("mapitem_spectator"),
                 new ItemSecretRoomKey("old_room_secret_key")
         );
         ITEM_BLOCKS.forEach(registry::register);
@@ -1017,6 +1018,7 @@ public class CommonRegistry {
         event.register(GameMapPoints.CAPTURE_ZONE);
         event.register(GameMapPoints.TEAM_SPAWNER);
         event.register(GameMapPoints.PARTIAL_PLAY_AREA);
+        event.register(GameMapPoints.SPECTATOR_POINT);
     }
 
     @SubscribeEvent
@@ -1088,6 +1090,7 @@ public class CommonRegistry {
         registerTileEntity(TileEntityLootCrate.class, "loot_crate");
         registerTileEntity(TileEntityDoorCloser.class, "door_closer");
         registerTileEntity(TileEntitySecretDoor.class, "secret_door");
+        registerTileEntity(TileEntityGameDoor.class, "game_door");
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String name) {

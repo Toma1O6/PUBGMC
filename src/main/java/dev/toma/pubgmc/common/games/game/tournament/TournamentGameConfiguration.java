@@ -12,12 +12,19 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
     public boolean allowPlacementMatchDraws = true;
     public int placementWinScore = 3;
     public int placementDrawScore = 1;
-    public boolean includeAiCompanions;
     public boolean hardcoreMode;
+    public int matchWaitTime = 200;
+    public int matchStartTime = 100;
+    public int matchEndTime = 100;
     public String[] availableLoadouts = {};
     public MatchConfiguration placementRoundConfig = MatchConfiguration.DEFAULT_PLACEMENT;
     public MatchConfiguration finalRoundConfig = MatchConfiguration.DEFAULT_FINAL;
     public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
+
+    @Override
+    public boolean shouldShowTeamNameplates() {
+        return !hardcoreMode;
+    }
 
     @Override
     public void performCorrections() {
@@ -25,6 +32,9 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
         this.requiredTeamCount = Math.max(2, requiredTeamCount);
         this.placementWinScore = Math.max(1, placementWinScore);
         this.placementDrawScore = Math.max(0, placementDrawScore);
+        this.matchWaitTime = Math.max(100, matchWaitTime);
+        this.matchStartTime = Math.max(100, matchStartTime);
+        this.matchEndTime = Math.max(100, matchEndTime);
         this.placementRoundConfig.correct();
         this.finalRoundConfig.correct();
         this.worldConfiguration.correct();
@@ -36,8 +46,10 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
         writer.writeBoolean("allowPlacementMatchDraws", allowPlacementMatchDraws);
         writer.writeInt("placementWinScore", placementWinScore);
         writer.writeInt("placementDrawScore", placementDrawScore);
-        writer.writeBoolean("includeAiCompanions", includeAiCompanions);
         writer.writeBoolean("hardcoreMode", hardcoreMode);
+        writer.writeInt("matchWaitTime", matchWaitTime);
+        writer.writeInt("matchStartTime", matchStartTime);
+        writer.writeInt("matchEndTime", matchEndTime);
         writer.writeStringArray("defaultLoadouts", availableLoadouts);
         writer.write("placementRound", placementRoundConfig, MatchConfiguration::serialize);
         writer.write("finalRound", finalRoundConfig, MatchConfiguration::serialize);
@@ -51,8 +63,10 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
         cfg.allowPlacementMatchDraws = reader.readBoolean("allowPlacementMatchDraws", cfg.allowPlacementMatchDraws);
         cfg.placementWinScore = reader.readInt("placementWinScore", cfg.placementWinScore);
         cfg.placementDrawScore = reader.readInt("placementDrawScore", cfg.placementDrawScore);
-        cfg.includeAiCompanions = reader.readBoolean("includeAiCompanions", cfg.includeAiCompanions);
         cfg.hardcoreMode = reader.readBoolean("hardcoreMode", cfg.hardcoreMode);
+        cfg.matchWaitTime = reader.readInt("matchWaitTime", cfg.matchWaitTime);
+        cfg.matchStartTime = reader.readInt("matchStartTime", cfg.matchStartTime);
+        cfg.matchEndTime = reader.readInt("matchEndTime", cfg.matchEndTime);
         cfg.availableLoadouts = reader.readStringArray("defaultLoadouts", cfg.availableLoadouts);
         cfg.placementRoundConfig = reader.read("placementRound", MatchConfiguration::deserialize, cfg.placementRoundConfig);
         cfg.finalRoundConfig = reader.read("finalRound", MatchConfiguration::deserialize, cfg.finalRoundConfig);
