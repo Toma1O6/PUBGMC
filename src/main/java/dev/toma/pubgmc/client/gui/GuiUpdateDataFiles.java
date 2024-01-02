@@ -76,9 +76,7 @@ public class GuiUpdateDataFiles extends GuiWidgets {
     }
 
     private void confirmButtonClicked(ButtonWidget widget, int x, int y, int button) {
-        if (!selected.isEmpty()) {
-            DataVersionManager.markCorrected(selected);
-        }
+        DataVersionManager.markCorrected(selected);
         mc.displayGuiScreen(parent);
     }
 
