@@ -51,12 +51,7 @@ public class GameDataImpl implements GameData {
     @Override
     public void tick() {
         if (gameInstance.isStarted()) {
-            try {
-                gameInstance.onGameTick(world);
-            } catch (Exception e) {
-                Pubgmc.logger.fatal("Fatal error occurred while during game tick, cancelling game", e);
-                GameHelper.resetErroredGameData(world);
-            }
+            GameHelper.executeGameEventSafely(world, () -> gameInstance.onGameTick(world));
         }
     }
 

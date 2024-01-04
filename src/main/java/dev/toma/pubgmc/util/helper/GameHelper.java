@@ -3,10 +3,7 @@ package dev.toma.pubgmc.util.helper;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.event.GameEvent;
-import dev.toma.pubgmc.api.game.Game;
-import dev.toma.pubgmc.api.game.GameObject;
-import dev.toma.pubgmc.api.game.GenerationType;
-import dev.toma.pubgmc.api.game.Generator;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
@@ -43,6 +40,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -241,17 +239,30 @@ public final class GameHelper {
     public static void stopGame(World world) {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            try {
+            executeGameEventSafely(world, () -> {
                 game.onGameStopped(world, data);
                 MinecraftForge.EVENT_BUS.post(new GameEvent.Stopped(game));
                 data.setActiveGame(null);
                 data.setActiveGameMapName(null, null);
                 data.sendGameDataToClients();
-            } catch (Exception e) {
-                Pubgmc.logger.fatal("Fatal error while attempting to stop game", e);
-                GameHelper.resetErroredGameData(world);
-            }
+            });
         });
+    }
+
+    public static void executeGameEventSafely(World world, HandledGameEvent action) {
+        executeGameEventSafely(world, action, GameExceptionConsumer.RETHROW);
+    }
+
+    public static void executeGameEventSafely(World world, HandledGameEvent action, GameExceptionConsumer customErrorHandler) {
+        try {
+            action.run();
+        } catch (GameException e) {
+            Pubgmc.logger.error("Game error occurred", e);
+            customErrorHandler.handle(e);
+        } catch (Exception e) {
+            Pubgmc.logger.fatal("Critical exception occurred in game, aborting", e);
+            resetErroredGameData(world);
+        }
     }
 
     public static void resetErroredGameData(World world) {
@@ -259,7 +270,10 @@ public final class GameHelper {
             data.setActiveGame(NoGame.INSTANCE);
             data.setActiveGameMapName(null, null);
             data.sendGameDataToClients();
-            world.playerEntities.forEach(GameHelper::moveToLobby);
+            world.playerEntities.forEach(player -> {
+                GameHelper.moveToLobby(player);
+                player.sendMessage(new TextComponentString(TextFormatting.RED + "Critical error in current game, cancelling"));
+            });
         });
     }
 
@@ -491,5 +505,20 @@ public final class GameHelper {
                 }
             };
         }
+    }
+
+    @FunctionalInterface
+    public interface HandledGameEvent {
+        void run() throws GameException;
+    }
+
+    @FunctionalInterface
+    public interface GameExceptionConsumer {
+
+        GameExceptionConsumer RETHROW = e -> {
+            throw new IllegalStateException("Game error", e);
+        };
+
+        void handle(GameException e);
     }
 }

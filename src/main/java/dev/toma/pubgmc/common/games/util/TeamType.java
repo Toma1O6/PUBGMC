@@ -20,6 +20,10 @@ public enum TeamType {
         this.color = color;
     }
 
+    public TeamType getEnemy() {
+        return this == RED ? BLUE : RED;
+    }
+
     public ITextComponent getTitle() {
         return title;
     }

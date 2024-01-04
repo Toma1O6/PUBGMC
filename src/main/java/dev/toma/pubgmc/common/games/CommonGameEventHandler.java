@@ -44,7 +44,7 @@ public final class CommonGameEventHandler {
     public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.invokeEvent(listener -> listener.onPlayerLoggedIn(event));
+            GameHelper.executeGameEventSafely(event.player.world, () -> game.invokeEvent(listener -> listener.onPlayerLoggedIn(event)));
         });
     }
 
@@ -52,7 +52,7 @@ public final class CommonGameEventHandler {
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
-            game.invokeEvent(listener -> listener.onPlayerLoggedOut(event));
+            GameHelper.executeGameEventSafely(event.player.world, () -> game.invokeEvent(listener -> listener.onPlayerLoggedOut(event)));
         });
     }
 
@@ -63,7 +63,7 @@ public final class CommonGameEventHandler {
             GameDataProvider.getGameData(entity.world).ifPresent(data -> {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    game.invokeEvent(listener -> listener.onEntityDeath(event));
+                    GameHelper.executeGameEventSafely(entity.world, () -> game.invokeEvent(listener -> listener.onEntityDeath(event)));
                 }
             });
         }
@@ -76,7 +76,7 @@ public final class CommonGameEventHandler {
             GameDataProvider.getGameData(entity.world).ifPresent(data -> {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    game.invokeEvent(listener -> listener.onEntityAttack(event));
+                    GameHelper.executeGameEventSafely(entity.world, () -> game.invokeEvent(listener -> listener.onEntityAttack(event)));
                 }
             });
         }
@@ -94,7 +94,7 @@ public final class CommonGameEventHandler {
                 }
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    game.invokeEvent(listener -> listener.onEntityHurt(event));
+                    GameHelper.executeGameEventSafely(entity.world, () -> game.invokeEvent(listener -> listener.onEntityHurt(event)));
                 }
             });
         }
@@ -105,7 +105,7 @@ public final class CommonGameEventHandler {
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             if (game.isStarted()) {
-                game.invokeEvent(listener -> listener.onPlayerRespawn(event));
+                GameHelper.executeGameEventSafely(event.player.world, () -> game.invokeEvent(listener -> listener.onPlayerRespawn(event)));
             }
         });
     }
@@ -130,7 +130,7 @@ public final class CommonGameEventHandler {
             GameDataProvider.getGameData(world).ifPresent(data -> {
                 Game<?> game = data.getCurrentGame();
                 if (game.isStarted()) {
-                    game.invokeEvent(listener -> listener.onEntitySpawnInWorld(event));
+                    GameHelper.executeGameEventSafely(world, () -> game.invokeEvent(listener -> listener.onEntitySpawnInWorld(event)));
                 }
             });
         }
@@ -167,7 +167,7 @@ public final class CommonGameEventHandler {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             if (game.isStarted()) {
-                game.invokeEvent(listener -> listener.onEntityOpenParachute(event));
+                GameHelper.executeGameEventSafely(world, () -> game.invokeEvent(listener -> listener.onEntityOpenParachute(event)));
             }
         });
     }
@@ -180,7 +180,7 @@ public final class CommonGameEventHandler {
         GameDataProvider.getGameData(world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             if (game.isStarted()) {
-                game.invokeEvent(listener -> listener.onEntityWithParachuteLanded(event));
+                GameHelper.executeGameEventSafely(world, () -> game.invokeEvent(listener -> listener.onEntityWithParachuteLanded(event)));
             }
         });
     }

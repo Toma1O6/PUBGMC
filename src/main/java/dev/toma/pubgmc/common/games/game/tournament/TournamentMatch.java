@@ -3,11 +3,11 @@ package dev.toma.pubgmc.common.games.game.tournament;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.common.games.util.TeamType;
-import dev.toma.pubgmc.data.serialization.NbtSerializer;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
@@ -18,17 +18,28 @@ public class TournamentMatch {
 
     private final Team redTeam;
     private final Team blueTeam;
-    private final boolean placementMatch;
+    private final TournamentMatchType matchType;
 
     private TournamentMatchStatus matchStatus;
     private int roundNumber;
     private final List<TournamentMatchStatus> matchHistory = new ArrayList<>();
 
-    public TournamentMatch(Team redTeam, Team blueTeam, boolean placementMatch) {
+    private FinishCallback callback;
+
+    public TournamentMatch(Team redTeam, Team blueTeam, TournamentMatchType matchType) {
         this.redTeam = redTeam;
         this.blueTeam = blueTeam;
         this.matchStatus = TournamentMatchStatus.WAITING;
-        this.placementMatch = placementMatch;
+        this.matchType = matchType;
+    }
+
+    public void setCallback(FinishCallback callback) {
+        this.callback = callback;
+    }
+
+    public void completeRound() {
+        this.matchHistory.add(matchStatus);
+        ++this.roundNumber;
     }
 
     public boolean isMatchParticipant(Entity entity) {
@@ -36,17 +47,26 @@ public class TournamentMatch {
         return redTeam.isMember(uuid) || blueTeam.isMember(uuid);
     }
 
-    public boolean isPlacementMatch() {
-        return placementMatch;
+    public TournamentMatchType getMatchType() {
+        return matchType;
     }
 
-    public boolean isCompleted(TournamentGameConfiguration cfg, TournamentGameConfiguration.MatchConfiguration configuration) {
+    public int getRoundNumber() {
+        return roundNumber;
+    }
+
+    public List<TournamentMatchStatus> getMatchHistory() {
+        return matchHistory;
+    }
+
+    public boolean isCompleted(TournamentGameConfiguration cfg) {
+        TournamentGameConfiguration.MatchConfiguration configuration = matchType.getMatchConfig(cfg);
         int matchLimit = configuration.matchCount;
         int remainingMatchCount = matchLimit - roundNumber;
-        if (remainingMatchCount == 0) {
+        if (remainingMatchCount <= 0) {
             return true;
         }
-        int availableScorePool = remainingMatchCount * cfg.placementWinScore;
+        int availableScorePool = remainingMatchCount * cfg.winScore;
         int redPoints = getTeamPoints(TeamType.RED, cfg);
         int bluePoints = getTeamPoints(TeamType.BLUE, cfg);
         return redPoints > bluePoints + availableScorePool || bluePoints > redPoints + availableScorePool;
@@ -55,7 +75,7 @@ public class TournamentMatch {
     public int getTeamPoints(TeamType type, TournamentGameConfiguration configuration) {
         TournamentMatchStatus winStatus = type == TeamType.RED ? TournamentMatchStatus.RED_WIN : TournamentMatchStatus.BLUE_WIN;
         return matchHistory.stream()
-                .mapToInt(status -> status == winStatus ? configuration.placementWinScore : status == TournamentMatchStatus.DRAW ? configuration.placementDrawScore : 0)
+                .mapToInt(status -> status == winStatus ? configuration.winScore : status == TournamentMatchStatus.DRAW ? configuration.drawScore : 0)
                 .sum();
     }
 
@@ -67,8 +87,11 @@ public class TournamentMatch {
         return type == TeamType.RED ? redTeam : blueTeam;
     }
 
-    public void setMatchStatus(TournamentMatchStatus matchStatus) {
+    public void setMatchStatus(World world, TournamentMatchStatus matchStatus) {
         this.matchStatus = matchStatus;
+        if (matchStatus.isFinalState() && callback != null) {
+            this.callback.onMatchFinished(world, this);
+        }
     }
 
     public TournamentMatchStatus getMatchStatus() {
@@ -80,7 +103,7 @@ public class TournamentMatch {
         nbt.setUniqueId("red", redTeam.getTeamId());
         nbt.setUniqueId("blue", blueTeam.getTeamId());
         nbt.setInteger("status", matchStatus.ordinal());
-        nbt.setBoolean("placement", placementMatch);
+        nbt.setInteger("type", matchType.ordinal());
         nbt.setInteger("roundNumber", roundNumber);
         nbt.setTag("history", SerializationHelper.collectionToNbt(matchHistory, t -> new NBTTagInt(t.ordinal())));
         return nbt;
@@ -90,10 +113,16 @@ public class TournamentMatch {
         UUID redTeamId = nbt.getUniqueId("red");
         UUID blueTeamId = nbt.getUniqueId("blue");
         TournamentMatchStatus status = TournamentMatchStatus.values()[nbt.getInteger("status")];
-        boolean placementMatch = nbt.getBoolean("placement");
-        TournamentMatch match = new TournamentMatch(manager.getTeamById(redTeamId), manager.getTeamById(blueTeamId), placementMatch);
-        match.setMatchStatus(status);
+        TournamentMatchType matchType = TournamentMatchType.values()[nbt.getInteger("type")];
+        TournamentMatch match = new TournamentMatch(manager.getTeamById(redTeamId), manager.getTeamById(blueTeamId), matchType);
+        match.matchStatus = status;
+        match.roundNumber = nbt.getInteger("roundNumber");
         SerializationHelper.collectionFromNbt(match.matchHistory, nbt.getTagList("history", Constants.NBT.TAG_INT), t -> TournamentMatchStatus.values()[((NBTTagInt) t).getInt()]);
         return match;
+    }
+
+    @FunctionalInterface
+    public interface FinishCallback {
+        void onMatchFinished(World world, TournamentMatch match);
     }
 }

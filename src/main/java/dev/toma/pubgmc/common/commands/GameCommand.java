@@ -227,7 +227,7 @@ public class GameCommand extends AbstractCommand {
         }
     }
 
-    private static void reloadGameConfigurations(CommandContext context) throws CommandException {
+    private static void reloadGameConfigurations(CommandContext context) {
         GameConfigurationManager.loadConfigurations(false);
         context.getSender().sendMessage(new TextComponentTranslation("commands.pubgmc.game.config.reloaded"));
     }
@@ -265,15 +265,12 @@ public class GameCommand extends AbstractCommand {
         }
         ICommandSender sender = context.getSender();
         World world = sender.getEntityWorld();
-        try {
+        GameHelper.executeGameEventSafely(world, () -> {
             game.onGameInit(world);
             MinecraftForge.EVENT_BUS.post(new GameEvent.Initialized(game));
             data.setActiveGame(game);
             data.sendGameDataToClients();
-        } catch (Exception e) {
-            Pubgmc.logger.fatal("Fatal error while attempting to initialize game, cancelling", e);
-            GameHelper.resetErroredGameData(world);
-        }
+        });
         sender.sendMessage(new TextComponentTranslation("commands.pubgmc.game.initialized"));
     }
 

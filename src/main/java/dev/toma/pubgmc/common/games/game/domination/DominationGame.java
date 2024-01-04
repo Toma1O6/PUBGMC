@@ -27,6 +27,7 @@ import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.map.SpawnerPoint;
 import dev.toma.pubgmc.common.games.map.TeamSpawnerPoint;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
+import dev.toma.pubgmc.common.games.util.SimpleAiManager;
 import dev.toma.pubgmc.common.games.util.SpawnPointSelector;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.network.PacketHandler;
@@ -73,7 +74,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
     private final SpawnPointSelector<TeamSpawnerPoint> blueSpawns;
     private final SpawnPointSelector<SpawnerPoint> spawns;
     private final GameRuleStorage ruleStorage;
-    private final DominationAIManager aiManager;
+    private final SimpleAiManager aiManager;
     private final DeathMessageContainer deathMessages;
     private final List<GameEventListener> listeners;
     private AbstractDamagingPlayzone playzone;
@@ -98,7 +99,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         this.blueSpawns.allowUnloadedSpawnPoints(true);
         this.spawns = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMapOrSubMap);
         this.ruleStorage = new GameRuleStorage();
-        this.aiManager = new DominationAIManager();
+        this.aiManager = new SimpleAiManager();
         this.deathMessages = new DeathMessageContainer(7, 60);
         this.listeners = new ArrayList<>();
 

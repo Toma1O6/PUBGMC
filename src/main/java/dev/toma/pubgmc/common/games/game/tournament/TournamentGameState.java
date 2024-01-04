@@ -10,4 +10,8 @@ public enum TournamentGameState {
     END_ROUND,
     ENDING,
     GAME_FINISHED;
+
+    public boolean isPlayState() {
+        return this == STARTING || this == KILL_ROUND || this == CAPTURE_ROUND || this == END_ROUND || this == ENDING;
+    }
 }

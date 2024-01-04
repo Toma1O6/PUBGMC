@@ -225,6 +225,15 @@ public final class Team implements Iterable<Team.Member> {
         return teamId.hashCode();
     }
 
+    @Override
+    public String toString() {
+        if (teamLeader != null) {
+            return "TeamLeader: " + usernames.get(teamLeader.uuid);
+        } else {
+            return String.format("Owner: %s, Member count: %d", usernames.get(teamId), members.size());
+        }
+    }
+
     public static final class Member {
 
         private final UUID uuid;

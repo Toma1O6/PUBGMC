@@ -1,21 +1,22 @@
-package dev.toma.pubgmc.common.games.game.domination;
+package dev.toma.pubgmc.common.games.util;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 
-public final class DominationAIManager {
+public final class SimpleAiManager {
 
     private final Map<UUID, NBTTagCompound> data;
     private final Set<UUID> dead;
 
-    public DominationAIManager() {
+    public SimpleAiManager() {
         this.data = new HashMap<>();
         this.dead = new HashSet<>();
     }
@@ -31,6 +32,19 @@ public final class DominationAIManager {
         NBTTagCompound nbt = new NBTTagCompound();
         entity.writeToNBT(nbt);
         data.put(uuid, nbt);
+    }
+
+    public void despawn(Entity entity) {
+        if (!contains(entity.getUniqueID())) {
+            Pubgmc.logger.warn("Attempted to despawn AI which is not registered to game - {}", entity);
+            return;
+        }
+        markDead(entity.getUniqueID());
+        entity.setDead();
+    }
+
+    public boolean contains(UUID entity) {
+        return data.containsKey(entity);
     }
 
     public NBTTagCompound getNBTData(UUID ai) {
