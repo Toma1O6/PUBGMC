@@ -45,6 +45,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -74,12 +75,14 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     private final PlayerPropertyHolder playerProperties;
     private final TournamentGameAiManager aiManager;
     private final SimpleLoadoutManager loadoutManager;
+    private final Object2IntMap<Team> teamScores;
 
     private TournamentGameState gameState;
     private TournamentGameCaptureManager captureManager;
     private TournamentMatch activeMatch;
     private AbstractDamagingPlayzone playzone;
     private int eventTimer;
+    private long tickTime;
     private boolean started;
 
     public TournamentGame(UUID gameId, TournamentGameConfiguration cfg) {
@@ -93,6 +96,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         this.playerProperties = new PlayerPropertyHolder();
         this.aiManager = new TournamentGameAiManager();
         this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts(), false);
+        this.teamScores = new Object2IntOpenHashMap<>();
         this.setGameState(null, TournamentGameState.NEW);
 
         this.addListener(new EventListener(this));
@@ -186,11 +190,12 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 List<UUID> players = teamManager.getRegisteredMembersOfType(Team.MemberType.PLAYER);
                 int playerCount = players.size();
                 int selectedCount = loadoutManager.getSelectedLoadoutsCount();
-                if (--eventTimer <= 0 || selectedCount >= playerCount) {
+                if (++tickTime >= eventTimer || selectedCount >= playerCount) {
                     loadoutManager.selectRandomly(players, world.rand, true);
                     if (!world.isRemote) {
                         WorldServer server = (WorldServer) world;
                         createAiTeams(server);
+                        updateTeamScores();
                         this.matches.addAll(this.generateMatches(new ArrayList<>(teamManager.getTeams()), TournamentMatchType.PLACEMENT));
                     }
                     loadoutManager.setLocked(true);
@@ -198,17 +203,17 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 }
                 break;
             case WAITING:
-                if (--eventTimer <= 0) {
+                if (++tickTime >= eventTimer) {
                     this.setGameState(world, TournamentGameState.STARTING);
                 }
                 break;
             case STARTING:
-                if (--eventTimer <= 0) {
+                if (++tickTime >= eventTimer) {
                     this.setGameState(world, TournamentGameState.KILL_ROUND);
                 }
                 break;
             case KILL_ROUND:
-                if (--eventTimer <= 0) {
+                if (++tickTime >= eventTimer) {
                     TournamentGameState state = captureManager != null ? TournamentGameState.CAPTURE_ROUND : TournamentGameState.END_ROUND;
                     this.setGameState(world, state);
                 }
@@ -216,7 +221,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 break;
             case CAPTURE_ROUND:
                 // TODO tick game, tick captures, once time runs our move to end phase
-                if (--eventTimer <= 0) {
+                if (++tickTime >= eventTimer) {
                     TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
                     if (matchConfig.endRound) {
                         this.setGameState(world, TournamentGameState.END_ROUND);
@@ -228,7 +233,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 break;
             case END_ROUND:
                 TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
-                if (matchConfig.endOfRoundDamageInterval > 0 && ++eventTimer % matchConfig.endOfRoundDamageInterval == 0) {
+                if (matchConfig.endOfRoundDamageInterval > 0 && ++tickTime % matchConfig.endOfRoundDamageInterval == 0) {
                     if (!world.isRemote) {
                         WorldServer server = (WorldServer) world;
                         teamManager.getActiveMatchEntities(server, activeMatch).forEach(entity -> entity.attackEntityFrom(PMCDamageSources.ZONE, matchConfig.endOfRoundDamage));
@@ -241,7 +246,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 break;
             case ENDING:
                 // TODO notify about winner, tick count down and then move back to spectator menu and schedule another match
-                if (--eventTimer <= 0) {
+                if (++tickTime >= eventTimer) {
                     if (this.activeMatch.isCompleted(configuration)) {
                         this.setActiveMatch(null);
                     } else {
@@ -251,7 +256,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 }
                 break;
             case GAME_FINISHED:
-                if (--eventTimer <= 0) {
+                if (++tickTime >= eventTimer) {
                     GameHelper.stopGame(world);
                 }
                 break;
@@ -263,14 +268,14 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         switch (state) {
             case LOADOUT_SELECT:
                 Objects.requireNonNull(world);
-                this.eventTimer = configuration.loadoutSelectTime;
+                this.setEventTimer(configuration.loadoutSelectTime);
                 if (!world.isRemote) {
                     teamManager.getAllActivePlayers(world).forEach(player -> openMenu((EntityPlayerMP) player));
                 }
                 break;
             case WAITING:
                 Objects.requireNonNull(world);
-                this.eventTimer = configuration.matchWaitTime;
+                this.setEventTimer(configuration.matchWaitTime);
                 if (!world.isRemote) {
                     WorldServer server = (WorldServer) world;
                     teamManager.getTeams().forEach(team -> setSpectating(server, team));
@@ -297,7 +302,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                     spawnPlayersInArena(server, TeamType.RED);
                     spawnPlayersInArena(server, TeamType.BLUE);
                     setGateState(world, false);
-                    this.eventTimer = configuration.matchStartTime;
+                    this.setEventTimer(configuration.matchStartTime);
                     GameHelper.requestClientGameDataSynchronization(world);
                 }
                 break;
@@ -305,14 +310,14 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 Objects.requireNonNull(world);
                 Objects.requireNonNull(activeMatch);
                 setGateState(world, true);
-                eventTimer = getMatchConfig().killRoundDuration;
+                setEventTimer(getMatchConfig().killRoundDuration);
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
             case CAPTURE_ROUND:
                 // TODO send notification about capture zone
                 Objects.requireNonNull(world);
                 TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
-                this.eventTimer = matchConfig.captureRoundDuration;
+                this.setEventTimer(matchConfig.captureRoundDuration);
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
             case END_ROUND:
@@ -320,12 +325,12 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 break;
             case ENDING:
                 Objects.requireNonNull(world);
-                this.eventTimer = configuration.matchEndTime;
+                this.setEventTimer(configuration.matchEndTime);
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
             case GAME_FINISHED:
                 Objects.requireNonNull(world);
-                eventTimer = 300;
+                setEventTimer(300);
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
         }
@@ -333,6 +338,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
 
     private void matchFinished(World world, TournamentMatch match) {
         match.completeRound();
+        updateTeamScores();
         despawnAiEntities(world);
         if (match.getMatchType() == TournamentMatchType.FINAL && match.isCompleted(configuration)) {
             TournamentMatchStatus status = match.getMatchStatus();
@@ -452,6 +458,10 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         return eventTimer;
     }
 
+    public long getTickTimer() {
+        return tickTime;
+    }
+
     public TournamentMatch getActiveMatch() {
         return activeMatch;
     }
@@ -459,6 +469,32 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     @Override
     public GameLoadoutManager getLoadoutManager() {
         return loadoutManager;
+    }
+
+    public Object2IntMap<Team> getTeamScores() {
+        return teamScores;
+    }
+
+    public void setEventTimer(int targetTime) {
+        this.eventTimer = targetTime;
+        this.tickTime = 0;
+    }
+
+    public void updateTeamScores() {
+        teamManager.getTeams().forEach(team -> teamScores.put(team, 0));
+        for (TournamentMatch match : matches) {
+            if (!match.isCompleted(configuration)) {
+                continue;
+            }
+            TournamentMatchStatus status = match.getFinalStatus(configuration);
+            TeamType teamType = status.getWinningTeam();
+            if (teamType == null) {
+                increaseScore(teamScores, match.getTeam(TeamType.RED), configuration.drawScore);
+                increaseScore(teamScores, match.getTeam(TeamType.BLUE), configuration.drawScore);
+            } else {
+                increaseScore(teamScores, match.getTeam(teamType), configuration.winScore);
+            }
+        }
     }
 
     public void setSpectating(WorldServer server, Team team) {
@@ -559,7 +595,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     }
 
     private void scheduleQualificationOrFinalRound(World world) {
-        Multimap<Integer, Team> teamScores = this.getTeamScores();
+        Multimap<Integer, Team> teamScores = this.getScoreboard();
         List<Integer> sortedScoreSet = teamScores.keySet().stream()
                 .sorted(Comparator.<Integer>comparingInt(t -> t).reversed())
                 .collect(Collectors.toList());
@@ -583,23 +619,10 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         this.setGameState(world, TournamentGameState.WAITING);
     }
 
-    private Multimap<Integer, Team> getTeamScores() {
+    private Multimap<Integer, Team> getScoreboard() {
         Multimap<Integer, Team> map = ArrayListMultimap.create();
-        Object2IntMap<Team> preliminaryScores = new Object2IntOpenHashMap<>();
-        teamManager.getTeams().forEach(team -> preliminaryScores.put(team, 0));
-        for (TournamentMatch match : matches) {
-            TournamentMatchStatus status = match.getMatchStatus();
-            if (!status.isFinalState()) {
-                continue;
-            }
-            TeamType teamType = status.getWinningTeam();
-            if (teamType == null) {
-                increaseScore(preliminaryScores, match.getTeam(TeamType.RED), configuration.drawScore);
-                increaseScore(preliminaryScores, match.getTeam(TeamType.BLUE), configuration.drawScore);
-            } else {
-                increaseScore(preliminaryScores, match.getTeam(teamType), configuration.winScore);
-            }
-        }
+        updateTeamScores();
+        Object2IntMap<Team> preliminaryScores = getTeamScores();
         for (Map.Entry<Team, Integer> entry : preliminaryScores.entrySet()) {
             map.put(entry.getValue(), entry.getKey());
         }
@@ -850,6 +873,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 if (team != null) {
                     team.addActiveMember(player.getUniqueID());
                 }
+                GameHelper.reloadChunks(player);
             }
         }
     }
@@ -875,10 +899,12 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             }
             nbt.setInteger("gameState", game.gameState.ordinal());
             nbt.setInteger("eventTimer", game.eventTimer);
+            nbt.setLong("tickTime", game.tickTime);
             nbt.setTag("gameRules", game.ruleStorage.serialize());
             nbt.setTag("properties", game.playerProperties.serialize());
             nbt.setTag("aiManager", game.aiManager.serialize());
             nbt.setTag("loadoutManager", game.loadoutManager.serialize());
+            nbt.setTag("scoreboard", SerializationHelper.mapToNbt(game.teamScores, team -> team.getTeamId().toString(), NBTTagInt::new));
             return nbt;
         }
 
@@ -902,10 +928,15 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             }
             game.gameState = TournamentGameState.values()[nbt.getInteger("gameState")];
             game.eventTimer = nbt.getInteger("eventTimer");
+            game.tickTime = nbt.getLong("tickTime");
             game.ruleStorage.deserialize(nbt.getCompoundTag("gameRules"));
             game.playerProperties.deserialize(nbt.getCompoundTag("properties"));
             game.aiManager.deserialize(nbt.getCompoundTag("aiManager"));
             game.loadoutManager.deserialize(nbt.getCompoundTag("loadoutManager"));
+            SerializationHelper.mapFromNbt(game.teamScores, nbt.getCompoundTag("scoreboard"), key -> {
+                UUID teamId = UUID.fromString(key);
+                return game.teamManager.getTeamById(teamId);
+            }, nbtBase -> ((NBTTagInt) nbtBase).getInt());
             return game;
         }
 

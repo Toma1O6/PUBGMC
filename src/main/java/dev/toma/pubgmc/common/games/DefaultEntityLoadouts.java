@@ -185,6 +185,25 @@ public final class DefaultEntityLoadouts {
                 .withGeneralLootProvider(new ItemStackLootProvider(new ItemStack(PMCItems.MEDKIT)))
                 .build()
         );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_DEATH_SQUAD, new EntityLoadout.Builder()
+                .withWeaponProvider(new RandomLootProvider(Arrays.asList(
+                        new ItemStackLootProvider(new ItemStack(PMCItems.M416)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.AKM)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.QBZ)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.MICROUZI)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SLR))
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        new RandomLootProvider(Arrays.asList(
+                                helmet(1), helmet(2), helmet(3)
+                        )),
+                        new RandomLootProvider(Arrays.asList(
+                                armor(1), armor(2), armor(3)
+                        ))
+                )))
+                .withGeneralLootProvider(new CountLootProvider(5, 5, new ItemStackLootProvider(new ItemStack(PMCItems.MEDKIT))))
+                .build()
+        );
     }
 
     private static void registerDominationLoadouts() {

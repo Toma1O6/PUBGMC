@@ -63,6 +63,15 @@ public class TournamentMatch {
         return matchHistory;
     }
 
+    public TournamentMatchStatus getFinalStatus(TournamentGameConfiguration configuration) {
+        if (!isCompleted(configuration)) {
+            throw new UnsupportedOperationException("Cannot obtain final match status for incomplete match");
+        }
+        int red = getTeamPoints(TeamType.RED, configuration);
+        int blue = getTeamPoints(TeamType.BLUE, configuration);
+        return red == blue ? TournamentMatchStatus.DRAW : red > blue ? TournamentMatchStatus.RED_WIN : TournamentMatchStatus.BLUE_WIN;
+    }
+
     public boolean isCompleted(TournamentGameConfiguration cfg) {
         TournamentGameConfiguration.MatchConfiguration configuration = matchType.getMatchConfig(cfg);
         int matchLimit = configuration.matchCount;
