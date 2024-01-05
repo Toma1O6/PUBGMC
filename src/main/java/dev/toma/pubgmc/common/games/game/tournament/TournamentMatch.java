@@ -100,6 +100,10 @@ public class TournamentMatch {
         return type == TeamType.RED ? redTeam : blueTeam;
     }
 
+    public TeamType getTeamType(Team team) {
+        return team.equals(redTeam) ? TeamType.RED : team.equals(blueTeam) ? TeamType.BLUE : null;
+    }
+
     public void setMatchStatus(World world, TournamentMatchStatus matchStatus) {
         this.matchStatus = matchStatus;
         if (matchStatus.isFinalState() && callback != null) {

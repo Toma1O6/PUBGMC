@@ -5,6 +5,7 @@ import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
+import dev.toma.pubgmc.common.games.game.tournament.TournamentGameCaptureManager;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGameConfiguration;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentMatch;
 import dev.toma.pubgmc.common.games.util.TeamType;
@@ -20,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
 
@@ -46,6 +48,14 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
             renderDebugText(font, "§eMatch history:§r§5 " + match.getMatchHistory());
             renderDebugText(font, "§eTeam §r§cRed§r§e:§r " + match.getTeam(TeamType.RED));
             renderDebugText(font, "§eTeam §r§9Blue§r§e:§r " + match.getTeam(TeamType.BLUE));
+
+            TournamentGameCaptureManager manager = game.getCaptureManager();
+            if (configuration.hasCaptureZoneEnabled()) {
+                renderDebugText(font, "§eCapture Manager:§r");
+                renderDebugText(font, "  §eCapture Zone:§r§a " + manager.getCaptureZone());
+                renderDebugText(font, "  §eCapture Team:§r " + manager.getCapturingTeam());
+                renderDebugText(font, "  §eCapture Timings:§r§b " + manager.getCapturingTime() + "/" + configuration.captureTime);
+            }
         }
         renderDebugText(font, "§eScoreboard:§r");
         Object2IntMap<Team> scoreboard = game.getTeamScores();

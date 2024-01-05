@@ -51,7 +51,6 @@ public final class DefaultEntityLoadouts {
         registerTournamentLoadouts();
     }
 
-    // TODO add meds
     private static void registerTournamentLoadouts() {
         LoadoutManager.register(TournamentGameConfiguration.LOADOUT_DEAGLE, new EntityLoadout.Builder()
                 .withName("Deagle")

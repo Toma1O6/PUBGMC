@@ -492,7 +492,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         shootTask.setReactionTime(10);
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> game.playzone, 1.20F));
         player.tasks.addTask(2, shootTask);
-        player.tasks.addTask(3, new EntityAICapturePoint(player, game.pointManager.getCaptureablePoints()));
+        player.tasks.addTask(3, new EntityAICapturePoint(player, game.pointManager::getCaptureablePoints));
         player.targetTasks.addTask(0, new EntityAIHurtByTargetTeamAware(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));

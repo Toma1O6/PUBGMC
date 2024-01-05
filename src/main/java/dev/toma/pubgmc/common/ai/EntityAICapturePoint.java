@@ -10,18 +10,19 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class EntityAICapturePoint extends EntityAIBase {
 
     private final EntityLiving taskOwner;
-    private final List<BlockPos> pointList;
+    private final Supplier<List<BlockPos>> pointList;
 
     private BlockPos target;
     private int updateInterval;
 
-    public EntityAICapturePoint(EntityLiving taskOwner, List<BlockPos> pointList) {
+    public EntityAICapturePoint(EntityLiving taskOwner, Supplier<List<BlockPos>> pointListProvider) {
         this.taskOwner = taskOwner;
-        this.pointList = pointList;
+        this.pointList = pointListProvider;
         setMutexBits(3);
     }
 
@@ -81,7 +82,8 @@ public class EntityAICapturePoint extends EntityAIBase {
 
     private void updateTarget(CaptureZones zones) {
         List<BlockPos> positions = new ArrayList<>();
-        for (BlockPos pos : pointList) {
+        List<BlockPos> capturePositions = pointList.get();
+        for (BlockPos pos : capturePositions) {
             if (zones.shouldCaptureOrDefend(pos, taskOwner)) {
                 positions.add(pos);
             }

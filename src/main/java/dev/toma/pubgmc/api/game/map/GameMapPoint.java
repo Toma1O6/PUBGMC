@@ -35,6 +35,13 @@ public abstract class GameMapPoint {
         return new SimpleSerializerImpl<>(pointFactory);
     }
 
+    @Override
+    public String toString() {
+        return "GameMapPoint{" +
+                "pointPosition=" + pointPosition +
+                '}';
+    }
+
     private static final class SimpleSerializerImpl<P extends GameMapPoint> implements GameMapPointSerializer<P> {
 
         private final Function<BlockPos, P> factory;

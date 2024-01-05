@@ -63,7 +63,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class TournamentGame implements TeamGame<TournamentGameConfiguration>, GameMenuProvider, LoadoutHandler {
+public class TournamentGame implements TeamGame<TournamentGameConfiguration>, GameMenuProvider, LoadoutHandler, CaptureZones {
 
     private final UUID gameId;
     private final TournamentGameConfiguration configuration;
@@ -76,9 +76,9 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     private final TournamentGameAiManager aiManager;
     private final SimpleLoadoutManager loadoutManager;
     private final Object2IntMap<Team> teamScores;
+    private final TournamentGameCaptureManager captureManager;
 
     private TournamentGameState gameState;
-    private TournamentGameCaptureManager captureManager;
     private TournamentMatch activeMatch;
     private AbstractDamagingPlayzone playzone;
     private int eventTimer;
@@ -96,6 +96,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         this.playerProperties = new PlayerPropertyHolder();
         this.aiManager = new TournamentGameAiManager();
         this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts(), false);
+        this.captureManager = new TournamentGameCaptureManager();
         this.teamScores = new Object2IntOpenHashMap<>();
         this.setGameState(null, TournamentGameState.NEW);
 
@@ -115,12 +116,11 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             throw new GameException("Not enough spawns for BLUE team. Required " + teamSize + ", found " + blue);
         }
         // Require capture zone if capturing is enabled in config
-        if (configuration.placementRoundConfig.captureRoundDuration > 0 || configuration.finalRoundConfig.captureRoundDuration > 0) {
+        if (configuration.hasCaptureZones()) {
             Collection<CaptureZonePoint> points = map.getPoints(GameMapPoints.CAPTURE_ZONE);
-            if (points.size() != 1) {
-                throw new GameException("Incorrectly setup capture map point! Required capture points: 1, found " + points.size());
+            if (points.isEmpty()) {
+                throw new GameException("Incorrectly setup capture map point! At least one capture zone is required");
             }
-            this.captureManager = new TournamentGameCaptureManager(points.toArray(new CaptureZonePoint[0])[0]);
         }
         // Spectator area
         if (map.getPoints(GameMapPoints.SPECTATOR_POINT).size() == 0) {
@@ -214,13 +214,14 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 break;
             case KILL_ROUND:
                 if (++tickTime >= eventTimer) {
-                    TournamentGameState state = captureManager != null ? TournamentGameState.CAPTURE_ROUND : TournamentGameState.END_ROUND;
+                    TournamentGameConfiguration.MatchConfiguration configuration = getMatchConfig();
+                    TournamentGameState state = configuration.hasCaptureZoneEnabled() ? TournamentGameState.CAPTURE_ROUND : TournamentGameState.END_ROUND;
                     this.setGameState(world, state);
                 }
                 tickPlayZone(world);
                 break;
             case CAPTURE_ROUND:
-                // TODO tick game, tick captures, once time runs our move to end phase
+                tickCaptureManager(world);
                 if (++tickTime >= eventTimer) {
                     TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
                     if (matchConfig.endRound) {
@@ -242,10 +243,13 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 if (matchConfig.endRoundAiSpawnInterval > 0 && eventTimer > 0 && eventTimer % matchConfig.endRoundAiSpawnInterval == 0) {
                     createDeathSquadAi(world);
                 }
+                if (matchConfig.hasCaptureZoneEnabled()) {
+                    tickCaptureManager(world);
+                }
                 tickPlayZone(world);
                 break;
             case ENDING:
-                // TODO notify about winner, tick count down and then move back to spectator menu and schedule another match
+                // TODO notify about winner
                 if (++tickTime >= eventTimer) {
                     if (this.activeMatch.isCompleted(configuration)) {
                         this.setActiveMatch(null);
@@ -316,8 +320,10 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             case CAPTURE_ROUND:
                 // TODO send notification about capture zone
                 Objects.requireNonNull(world);
+                Objects.requireNonNull(captureManager);
                 TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
                 this.setEventTimer(matchConfig.captureRoundDuration);
+                this.captureManager.selectRandomCaptureZone(world, GameHelper.getActiveGameMap(world));
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
             case END_ROUND:
@@ -326,13 +332,34 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             case ENDING:
                 Objects.requireNonNull(world);
                 this.setEventTimer(configuration.matchEndTime);
+                this.captureManager.clearData();
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
             case GAME_FINISHED:
                 Objects.requireNonNull(world);
                 setEventTimer(300);
+                this.captureManager.clearData();
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
+        }
+    }
+
+    private void tickCaptureManager(World world) {
+        if (world.isRemote) {
+            if (world.getTotalWorldTime() % 3L == 0L) {
+                captureManager.doParticles(world);
+            }
+        } else {
+            WorldServer server = (WorldServer) world;
+            captureManager.updateCapture(server, teamManager, activeMatch);
+            int captureTime = captureManager.getCapturingTime();
+            int captureTimeLimit = getMatchConfig().captureTime;
+            if (captureTime >= captureTimeLimit && captureManager.getCapturingTeam() != null) {
+                TeamType type = activeMatch.getTeamType(captureManager.getCapturingTeam());
+                Objects.requireNonNull(type, "Not participating team cannot capture zone");
+                TournamentMatchStatus status = type == TeamType.RED ? TournamentMatchStatus.RED_WIN : TournamentMatchStatus.BLUE_WIN;
+                activeMatch.setMatchStatus(world, status);
+            }
         }
     }
 
@@ -411,6 +438,19 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         this.gameEventListeners.forEach(consumer);
     }
 
+    @Nullable
+    @Override
+    public CaptureData getCapturePointData(BlockPos pos) {
+        return null;
+    }
+
+    @Override
+    public boolean shouldCaptureOrDefend(BlockPos pos, EntityLivingBase entity) {
+        Team capturingTeam = captureManager.getCapturingTeam();
+        Team entityTeam = teamManager.getEntityTeam(entity);
+        return capturingTeam == null || !capturingTeam.equals(entityTeam) || captureManager.getCapturingTime() == 0;
+    }
+
     @Override
     public GenerationType.Context getGeneratorContext() {
         return GenerationType.empty();
@@ -452,6 +492,11 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
 
     public TournamentGameState getGameState() {
         return gameState;
+    }
+
+    @Nullable
+    public TournamentGameCaptureManager getCaptureManager() {
+        return captureManager;
     }
 
     public int getEventTimer() {
@@ -537,11 +582,15 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         EntityAIGunAttack shootTask = new EntityAIGunAttack(player);
         shootTask.setReactionTime(5);
         player.tasks.addTask(2, shootTask);
-        player.tasks.addTask(3, new EntityAIHeal<>(player, game::shouldHeal, EntityAIPlayer::getInventory));
-        player.tasks.addTask(4, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
+        player.tasks.addTask(3, new EntityAICapturePoint(player, () -> game.captureManager.getCaptureZone() != null ?
+                Collections.singletonList(game.captureManager.getCaptureZone().getPointPosition()) :
+                Collections.emptyList()));
+        player.tasks.addTask(4, new EntityAIHeal<>(player, game::shouldHeal, EntityAIPlayer::getInventory));
+        player.tasks.addTask(5, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAIHurtByTargetTeamAware(player, false));
-        player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
-        player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
+        player.targetTasks.addTask(1, new EntityAICallTeamForHelp(player));
+        player.targetTasks.addTask(2, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
+        player.targetTasks.addTask(2, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
     }
 
     private boolean shouldHeal(EntityLivingBase entity) {
@@ -795,6 +844,13 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             boolean matchParticipant = game.activeMatch != null && (game.activeMatch.isMatchParticipant(livingBase) || game.teamManager.getEntityTeam(livingBase) == null);
             if (!matchParticipant) {
                 event.setCanceled(true);
+            } else if (game.activeMatch != null) {
+                CaptureZonePoint point = game.captureManager.getCaptureZone();
+                TournamentGameConfiguration.MatchConfiguration configuration = game.getMatchConfig();
+                if (point != null && point.isWithin(livingBase)) {
+                    game.captureManager.applyCapturePenalty(configuration);
+                    GameHelper.requestClientGameDataSynchronization(livingBase.world);
+                }
             }
         }
 
@@ -887,9 +943,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             nbt.setBoolean("started", game.started);
             nbt.setTag("teamManager", game.teamManager.serializeNBT());
             nbt.setTag("inviteManager", game.inviteManager.serializeNBT());
-            if (game.captureManager != null) {
-                nbt.setTag("captureManager", game.captureManager.serialize());
-            }
+            nbt.setTag("captureManager", game.captureManager.serialize());
             nbt.setTag("matches", SerializationHelper.collectionToNbt(game.matches, TournamentMatch::serialize));
             if (game.activeMatch != null) {
                 nbt.setTag("activeMatch", game.activeMatch.serialize());
@@ -915,9 +969,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             game.started = nbt.getBoolean("started");
             game.teamManager.deserializeNBT(nbt.getCompoundTag("teamManager"));
             game.inviteManager.deserializeNBT(nbt.getCompoundTag("inviteManager"));
-            if (game.captureManager != null) {
-                game.captureManager.deserialize(nbt.getCompoundTag("captureManager"), game.teamManager);
-            }
+            game.captureManager.deserialize(nbt.getCompoundTag("captureManager"), game.teamManager, world);
             SerializationHelper.collectionFromNbt(game.matches, nbt.getTagList("matches", Constants.NBT.TAG_COMPOUND), nbtBase -> TournamentMatch.deserialize((NBTTagCompound) nbtBase, game.teamManager));
             game.setActiveMatch(nbt.hasKey("activeMatch") ? TournamentMatch.deserialize(nbt.getCompoundTag("activeMatch"), game.teamManager) : null);
             if (game.activeMatch != null) {
