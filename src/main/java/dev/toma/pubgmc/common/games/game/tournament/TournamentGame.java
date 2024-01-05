@@ -234,7 +234,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                         teamManager.getActiveMatchEntities(server, activeMatch).forEach(entity -> entity.attackEntityFrom(PMCDamageSources.ZONE, matchConfig.endOfRoundDamage));
                     }
                 }
-                if (matchConfig.endRoundAiSpawnInterval > 0 && eventTimer % matchConfig.endRoundAiSpawnInterval == 0) {
+                if (matchConfig.endRoundAiSpawnInterval > 0 && eventTimer > 0 && eventTimer % matchConfig.endRoundAiSpawnInterval == 0) {
                     createDeathSquadAi(world);
                 }
                 tickPlayZone(world);

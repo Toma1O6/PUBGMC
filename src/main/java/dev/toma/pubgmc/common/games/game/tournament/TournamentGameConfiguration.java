@@ -130,7 +130,7 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
             //this.killRoundDuration = Math.max(1200, killRoundDuration);
             this.captureRoundDuration = Math.max(0, captureRoundDuration);
             this.captureTime = captureRoundDuration > 0 ? Math.max(100, captureTime) : captureTime;
-            this.endRoundAiSpawnInterval = Math.max(0, endOfRoundDamageInterval);
+            this.endRoundAiSpawnInterval = Math.max(0, endRoundAiSpawnInterval);
             this.endOfRoundDamage = Math.max(0, endOfRoundDamage);
             this.endOfRoundDamageInterval = Math.max(0, endOfRoundDamageInterval);
         }
