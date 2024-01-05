@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 
-public final class SimpleAiManager {
+public class SimpleAiManager {
 
     private final Map<UUID, NBTTagCompound> data;
     private final Set<UUID> dead;
@@ -40,7 +40,7 @@ public final class SimpleAiManager {
             return;
         }
         markDead(entity.getUniqueID());
-        entity.setDead();
+        entity.world.removeEntity(entity);
     }
 
     public boolean contains(UUID entity) {

@@ -10,4 +10,8 @@ public enum TeamRelations {
     public boolean areNameplatesVisible() {
         return this == FRIENDLY;
     }
+
+    public boolean isDefaultAttackable() {
+        return this == UNKNOWN || this == ENEMY;
+    }
 }

@@ -13,7 +13,7 @@ public class EntityAIHurtByTargetTeamAware extends EntityAIHurtByTarget {
     private final Predicate<TeamRelations> relationsPredicate;
 
     public EntityAIHurtByTargetTeamAware(EntityCreature creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes) {
-        this(creatureIn, entityCallsForHelpIn, relations -> relations != TeamRelations.FRIENDLY, excludedReinforcementTypes);
+        this(creatureIn, entityCallsForHelpIn, TeamRelations::isDefaultAttackable, excludedReinforcementTypes);
     }
 
     public EntityAIHurtByTargetTeamAware(EntityCreature creatureIn, boolean entityCallsForHelpIn, Predicate<TeamRelations> relationsPredicate, Class<?>... excludedReinforcementTypes) {

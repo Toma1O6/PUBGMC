@@ -7,16 +7,30 @@ import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
 
 public class TournamentGameConfiguration implements TeamGameConfiguration {
 
+    public static final String LOADOUT_DEAGLE = "tournament/deagle";
+    public static final String LOADOUT_CQB = "tournament/cqb";
+    public static final String LOADOUT_TANK = "tournament/tank";
+    public static final String LOADOUT_ASSAULT = "tournament/assault";
+    public static final String LOADOUT_ASSAULT2 = "tournament/assault2";
+    public static final String LOADOUT_MARKSMAN = "tournament/marksman";
+    public static final String LOADOUT_SNIPER = "tournament/sniper";
+
+    public static final String LOADOUT_DEATH_SQUAD = "tournament/deathsquad_ai";
+
     public int teamSize = 2;
     public int requiredTeamCount = 5;
     public boolean allowPlacementMatchDraws = true;
     public int winScore = 3;
     public int drawScore = 1;
     public boolean hardcoreMode;
+    public int loadoutSelectTime = 1200;
     public int matchWaitTime = 200;
     public int matchStartTime = 100;
     public int matchEndTime = 100;
-    public String[] availableLoadouts = {};
+    public String[] availableLoadouts = {
+            LOADOUT_DEAGLE, LOADOUT_CQB, LOADOUT_TANK, LOADOUT_ASSAULT, LOADOUT_ASSAULT2, LOADOUT_MARKSMAN, LOADOUT_SNIPER
+    };
+    public String deathSquadEntityLoadout = LOADOUT_DEATH_SQUAD;
     public MatchConfiguration placementRoundConfig = MatchConfiguration.DEFAULT_PLACEMENT;
     public MatchConfiguration qualificationRoundConfig = MatchConfiguration.DEFAULT_QUALIFICATION;
     public MatchConfiguration finalRoundConfig = MatchConfiguration.DEFAULT_FINAL;
@@ -25,6 +39,10 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
     @Override
     public boolean shouldShowTeamNameplates() {
         return !hardcoreMode;
+    }
+
+    public boolean hasAiSpawns() {
+        return placementRoundConfig.hasAiEnabled() || qualificationRoundConfig.hasAiEnabled() || finalRoundConfig.hasAiEnabled();
     }
 
     @Override
@@ -53,6 +71,7 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
         writer.writeInt("matchStartTime", matchStartTime);
         writer.writeInt("matchEndTime", matchEndTime);
         writer.writeStringArray("defaultLoadouts", availableLoadouts);
+        writer.writeString("deathSquadAiLoadout", deathSquadEntityLoadout);
         writer.write("placementRound", placementRoundConfig, MatchConfiguration::serialize);
         writer.write("qualificationRound", qualificationRoundConfig, MatchConfiguration::serialize);
         writer.write("finalRound", finalRoundConfig, MatchConfiguration::serialize);
@@ -71,6 +90,7 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
         cfg.matchStartTime = reader.readInt("matchStartTime", cfg.matchStartTime);
         cfg.matchEndTime = reader.readInt("matchEndTime", cfg.matchEndTime);
         cfg.availableLoadouts = reader.readStringArray("defaultLoadouts", cfg.availableLoadouts);
+        cfg.deathSquadEntityLoadout = reader.readString("deathSquadAiLoadout", cfg.deathSquadEntityLoadout);
         cfg.placementRoundConfig = reader.read("placementRound", MatchConfiguration::deserialize, cfg.placementRoundConfig);
         cfg.qualificationRoundConfig = reader.read("qualificationRound", MatchConfiguration::deserialize, cfg.qualificationRoundConfig);
         cfg.finalRoundConfig = reader.read("finalRound", MatchConfiguration::deserialize, cfg.finalRoundConfig);
@@ -113,6 +133,10 @@ public class TournamentGameConfiguration implements TeamGameConfiguration {
             this.endRoundAiSpawnInterval = Math.max(0, endOfRoundDamageInterval);
             this.endOfRoundDamage = Math.max(0, endOfRoundDamage);
             this.endOfRoundDamageInterval = Math.max(0, endOfRoundDamageInterval);
+        }
+
+        public boolean hasAiEnabled() {
+            return endRound && endRoundAiSpawnInterval > 0;
         }
 
         public void serialize(DataWriter<?> writer) {

@@ -47,6 +47,10 @@ public class TournamentMatch {
         return redTeam.isMember(uuid) || blueTeam.isMember(uuid);
     }
 
+    public boolean containsTeam(Team team) {
+        return redTeam.equals(team) || blueTeam.equals(team);
+    }
+
     public TournamentMatchType getMatchType() {
         return matchType;
     }

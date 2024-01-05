@@ -4,9 +4,13 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.data.DataReader;
 import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.game.*;
+import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
+import dev.toma.pubgmc.api.game.loadout.GameLoadoutManager;
+import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameDoor;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -19,21 +23,17 @@ import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.api.properties.SharedProperties;
-import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
-import dev.toma.pubgmc.common.ai.EntityAIHurtByTargetTeamAware;
-import dev.toma.pubgmc.common.ai.EntityAITeamAwareNearestAttackableTarget;
-import dev.toma.pubgmc.common.ai.EntityAIVisitMapPoint;
+import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
-import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
-import dev.toma.pubgmc.common.games.map.GameMapPoints;
-import dev.toma.pubgmc.common.games.map.SpectatorPoint;
-import dev.toma.pubgmc.common.games.map.TeamSpawnerPoint;
+import dev.toma.pubgmc.common.games.game.SimpleLoadoutManager;
+import dev.toma.pubgmc.common.games.map.*;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
-import dev.toma.pubgmc.common.games.util.SimpleAiManager;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.init.PMCDamageSources;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.s2c.S2C_PacketLoadoutSelect;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.Pair;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -43,9 +43,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -59,7 +62,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
+public class TournamentGame implements TeamGame<TournamentGameConfiguration>, GameMenuProvider, LoadoutHandler {
 
     private final UUID gameId;
     private final TournamentGameConfiguration configuration;
@@ -69,7 +72,8 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
     private final List<TournamentMatch> matches;
     private final GameRuleStorage ruleStorage;
     private final PlayerPropertyHolder playerProperties;
-    private final SimpleAiManager aiManager;
+    private final TournamentGameAiManager aiManager;
+    private final SimpleLoadoutManager loadoutManager;
 
     private TournamentGameState gameState;
     private TournamentGameCaptureManager captureManager;
@@ -87,7 +91,8 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
         this.matches = new ArrayList<>();
         this.ruleStorage = new GameRuleStorage();
         this.playerProperties = new PlayerPropertyHolder();
-        this.aiManager = new SimpleAiManager();
+        this.aiManager = new TournamentGameAiManager();
+        this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts(), false);
         this.setGameState(null, TournamentGameState.NEW);
 
         this.addListener(new EventListener(this));
@@ -120,6 +125,15 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
         StaticPlayzone staticPlayzone = map.bounds();
         staticPlayzone.setDamageOptions(new AbstractDamagingPlayzone.DamageOptions(100, 20));
         this.playzone = staticPlayzone;
+
+        if (this.loadoutManager.getAvailableLoadouts().size() == 0) {
+            throw new GameException("Game must support at least one loadout");
+        }
+        if (this.configuration.hasAiSpawns()) {
+            if (map.getPoints(GameMapPoints.SPAWNER).size() < 1) {
+                throw new GameException("Game has deathsquad enabled, you must include at least one generic entity spawn on map");
+            }
+        }
     }
 
     @Override
@@ -132,6 +146,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
         Team fillTeam = null;
         for (EntityPlayer player : players) {
             GameHelper.moveToLobby(player);
+            GameHelper.resetPlayerData(player);
             playerProperties.register(player);
             if (fillTeam == null || fillTeam.getSize() >= configuration.teamSize) {
                 fillTeam = teamManager.createNewTeam(player);
@@ -151,50 +166,37 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 setSpectating(server, team);
             }
 
-            // Create AI teams
-            int activeTeamCount = teamManager.getTeams().size();
-            int requiredTeamCount = configuration.requiredTeamCount;
-            int aiTeams = requiredTeamCount - activeTeamCount;
-            if (aiTeams > 0) {
-                for (int i = 0; i < aiTeams; i++) {
-                    Team team = null;
-                    SpectatorPoint point = getRandomSpectatorPoint(server);
-                    BlockPos pointPos = point.getPointPosition();
-                    for (int j = 0; j < configuration.teamSize; j++) {
-                        EntityAIPlayer player = new EntityAIPlayer(world);
-                        player.setPosition(pointPos.getX(), pointPos.getY() + 1, pointPos.getZ());
-                        player.assignGameId(gameId);
-
-                        if (!world.spawnEntity(player)) {
-                            throw new GameException("Creation of AI has failed, try again");
-                        }
-                        playerProperties.register(player);
-                        // TODO select and save loadout
-                        // TODO save entity data
-                        aiManager.register(player);
-
-                        if (team == null) {
-                            team = teamManager.createNewTeam(player);
-                        } else {
-                            teamManager.join(team, player);
-                        }
-                    }
-                }
-            }
             ruleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
             ruleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
             ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
             ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
             configuration.worldConfiguration.apply(server, ruleStorage);
+
+            teamManager.getAllActivePlayers(world).forEach(player -> player.setGameType(net.minecraft.world.GameType.ADVENTURE));
         }
 
-        this.matches.addAll(this.generateMatches(new ArrayList<>(teamManager.getTeams()), TournamentMatchType.PLACEMENT));
-        this.setGameState(world, TournamentGameState.WAITING);
+        this.setGameState(world, TournamentGameState.LOADOUT_SELECT);
     }
 
     @Override
     public void onGameTick(World world) {
         switch (gameState) {
+            case LOADOUT_SELECT:
+                Objects.requireNonNull(world);
+                List<UUID> players = teamManager.getRegisteredMembersOfType(Team.MemberType.PLAYER);
+                int playerCount = players.size();
+                int selectedCount = loadoutManager.getSelectedLoadoutsCount();
+                if (--eventTimer <= 0 || selectedCount >= playerCount) {
+                    loadoutManager.selectRandomly(players, world.rand, true);
+                    if (!world.isRemote) {
+                        WorldServer server = (WorldServer) world;
+                        createAiTeams(server);
+                        this.matches.addAll(this.generateMatches(new ArrayList<>(teamManager.getTeams()), TournamentMatchType.PLACEMENT));
+                    }
+                    loadoutManager.setLocked(true);
+                    this.setGameState(world, TournamentGameState.WAITING);
+                }
+                break;
             case WAITING:
                 if (--eventTimer <= 0) {
                     this.setGameState(world, TournamentGameState.STARTING);
@@ -210,25 +212,21 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                     TournamentGameState state = captureManager != null ? TournamentGameState.CAPTURE_ROUND : TournamentGameState.END_ROUND;
                     this.setGameState(world, state);
                 }
-                // TODO tick game, once time runs out move either to capture phase or end phase
                 tickPlayZone(world);
                 break;
             case CAPTURE_ROUND:
                 // TODO tick game, tick captures, once time runs our move to end phase
                 if (--eventTimer <= 0) {
-                    // TODO if endRoundTime in config == 0 then end active match as draw
                     TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
                     if (matchConfig.endRound) {
                         this.setGameState(world, TournamentGameState.END_ROUND);
                     } else {
                         this.activeMatch.setMatchStatus(world, TournamentMatchStatus.DRAW);
                     }
-
                 }
                 tickPlayZone(world);
                 break;
             case END_ROUND:
-                // TODO spawn hostile AI (?)
                 TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
                 if (matchConfig.endOfRoundDamageInterval > 0 && ++eventTimer % matchConfig.endOfRoundDamageInterval == 0) {
                     if (!world.isRemote) {
@@ -236,13 +234,16 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                         teamManager.getActiveMatchEntities(server, activeMatch).forEach(entity -> entity.attackEntityFrom(PMCDamageSources.ZONE, matchConfig.endOfRoundDamage));
                     }
                 }
+                if (matchConfig.endRoundAiSpawnInterval > 0 && eventTimer % matchConfig.endRoundAiSpawnInterval == 0) {
+                    createDeathSquadAi(world);
+                }
                 tickPlayZone(world);
                 break;
             case ENDING:
                 // TODO notify about winner, tick count down and then move back to spectator menu and schedule another match
                 if (--eventTimer <= 0) {
                     if (this.activeMatch.isCompleted(configuration)) {
-                        this.activeMatch = null;
+                        this.setActiveMatch(null);
                     } else {
                         this.activeMatch.setMatchStatus(world, TournamentMatchStatus.WAITING);
                     }
@@ -260,6 +261,13 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
     public void setGameState(@Nullable World world, TournamentGameState state) {
         this.gameState = state;
         switch (state) {
+            case LOADOUT_SELECT:
+                Objects.requireNonNull(world);
+                this.eventTimer = configuration.loadoutSelectTime;
+                if (!world.isRemote) {
+                    teamManager.getAllActivePlayers(world).forEach(player -> openMenu((EntityPlayerMP) player));
+                }
+                break;
             case WAITING:
                 Objects.requireNonNull(world);
                 this.eventTimer = configuration.matchWaitTime;
@@ -271,7 +279,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                     TournamentMatch match = matches.stream().filter(placementMatch -> placementMatch.getMatchStatus() == TournamentMatchStatus.WAITING)
                             .findFirst().orElse(null);
                     if (match != null) {
-                        this.activeMatch = match;
+                        this.setActiveMatch(match);
                         this.activeMatch.setCallback(this::matchFinished);
                     } else {
                         scheduleQualificationOrFinalRound(world);
@@ -289,7 +297,6 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                     spawnPlayersInArena(server, TeamType.RED);
                     spawnPlayersInArena(server, TeamType.BLUE);
                     setGateState(world, false);
-                    // TODO apply loadouts
                     this.eventTimer = configuration.matchStartTime;
                     GameHelper.requestClientGameDataSynchronization(world);
                 }
@@ -302,7 +309,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 GameHelper.requestClientGameDataSynchronization(world);
                 break;
             case CAPTURE_ROUND:
-                // TODO send notification about capture zone, unlock arena gate
+                // TODO send notification about capture zone
                 Objects.requireNonNull(world);
                 TournamentGameConfiguration.MatchConfiguration matchConfig = getMatchConfig();
                 this.eventTimer = matchConfig.captureRoundDuration;
@@ -312,7 +319,6 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 // TODO send notification about end phase
                 break;
             case ENDING:
-                // TODO set end timer
                 Objects.requireNonNull(world);
                 this.eventTimer = configuration.matchEndTime;
                 GameHelper.requestClientGameDataSynchronization(world);
@@ -367,6 +373,15 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 GameHelper.resetPlayerData(player);
                 lobby.teleport(player);
             });
+        }
+    }
+
+    @Override
+    public void openMenu(EntityPlayerMP player) {
+        if (gameState != TournamentGameState.LOADOUT_SELECT) {
+            player.sendMessage(new TextComponentString(TextFormatting.RED + "You cannot change loadout after game start"));
+        } else {
+            PacketHandler.sendToClient(new S2C_PacketLoadoutSelect(loadoutManager.getAvailableLoadouts()), player);
         }
     }
 
@@ -441,12 +456,18 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
         return activeMatch;
     }
 
+    @Override
+    public GameLoadoutManager getLoadoutManager() {
+        return loadoutManager;
+    }
+
     public void setSpectating(WorldServer server, Team team) {
         SpectatorPoint point = getRandomSpectatorPoint(server);
         team.getAllMembers().values().forEach(member -> {
             Entity entity = member.getEntity(server);
             if (entity != null) {
                 point.teleportOn(entity);
+                clearInventory(entity);
             }
         });
     }
@@ -454,6 +475,17 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
     public void setSpectating(WorldServer server, Entity entity) {
         SpectatorPoint point = getRandomSpectatorPoint(server);
         point.teleportOn(entity);
+        clearInventory(entity);
+    }
+
+    public void clearInventory(Entity entity) {
+        if (entity instanceof EntityPlayer) {
+            GameHelper.resetPlayerData((EntityPlayer) entity);
+        } else if (entity instanceof EntityAIPlayer) {
+            EntityAIPlayer aiPlayer = (EntityAIPlayer) entity;
+            aiPlayer.getInventory().clear();
+            aiPlayer.getSpecialEquipmentInventory().clear();
+        }
     }
 
     public static SpectatorPoint getRandomSpectatorPoint(WorldServer server) {
@@ -469,10 +501,23 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
         EntityAIGunAttack shootTask = new EntityAIGunAttack(player);
         shootTask.setReactionTime(5);
         player.tasks.addTask(2, shootTask);
+        player.tasks.addTask(3, new EntityAIHeal<>(player, game::shouldHeal, EntityAIPlayer::getInventory));
         player.tasks.addTask(4, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
         player.targetTasks.addTask(0, new EntityAIHurtByTargetTeamAware(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
+    }
+
+    private boolean shouldHeal(EntityLivingBase entity) {
+        return entity.getHealth() < (entity.getMaxHealth() / 2.0F);
+    }
+
+    private List<EntityLoadout> getAvailableLoadouts() {
+        List<EntityLoadout> list = new ArrayList<>();
+        for (String path : configuration.availableLoadouts) {
+            LoadoutManager.getLoadout(path).ifPresent(list::add);
+        }
+        return list;
     }
 
     private void spawnPlayersInArena(WorldServer world, TeamType teamType) {
@@ -482,10 +527,13 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 .collect(Collectors.toList());
         Team team = activeMatch.getTeam(teamType);
         List<Entity> entities = team.getActiveMemberStream().map(m -> m.getEntity(world))
-                .filter(Objects::nonNull).collect(Collectors.toList());
+                .filter(e -> e instanceof EntityLivingBase).collect(Collectors.toList());
         for (int i = 0; i < entities.size(); i++) {
             TeamSpawnerPoint spawnerPoint = spawners.get(i);
-            spawnerPoint.teleportOn(entities.get(i));
+            EntityLivingBase entity = (EntityLivingBase) entities.get(i);
+            entity.isDead = false;
+            spawnerPoint.teleportOn(entity);
+            loadoutManager.applyLoadout(entity);
         }
     }
 
@@ -527,9 +575,10 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
             this.matches.addAll(generateMatches(qualifiedTeams, TournamentMatchType.QUALIFICATION));
         } else {
             // schedule final match
-            this.activeMatch = new TournamentMatch(qualifiedTeams.get(0), qualifiedTeams.get(1), TournamentMatchType.FINAL);
-            this.activeMatch.setMatchStatus(world, TournamentMatchStatus.WAITING);
-            this.activeMatch.setCallback(this::matchFinished);
+            TournamentMatch finalMatch = new TournamentMatch(qualifiedTeams.get(0), qualifiedTeams.get(1), TournamentMatchType.FINAL);
+            finalMatch.setMatchStatus(world, TournamentMatchStatus.WAITING);
+            finalMatch.setCallback(this::matchFinished);
+            this.setActiveMatch(finalMatch);
         }
         this.setGameState(world, TournamentGameState.WAITING);
     }
@@ -572,6 +621,14 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
             Objects.requireNonNull(activeMatch);
             removeAiEntities(server, activeMatch.getTeam(TeamType.RED));
             removeAiEntities(server, activeMatch.getTeam(TeamType.BLUE));
+
+            aiManager.getAdditionalEntities().forEach(uuid -> {
+                Entity entity = server.getEntityFromUuid(uuid);
+                if (entity != null) {
+                    world.removeEntity(entity);
+                }
+            });
+            aiManager.getAdditionalEntities().clear();
         }
     }
 
@@ -627,10 +684,70 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
             throw new IllegalStateException("Attempted to respawn entity without team");
         }
         team.addActiveMember(player.getUniqueID());
-        // TODO loadout
         if (!world.spawnEntity(player)) {
             throw new IllegalStateException("Unable to respawn AI in world");
         }
+    }
+
+    private void createAiTeams(WorldServer world) {
+        int activeTeamCount = teamManager.getTeams().size();
+        int requiredTeamCount = configuration.requiredTeamCount;
+        int aiTeams = requiredTeamCount - activeTeamCount;
+        if (aiTeams > 0) {
+            for (int i = 0; i < aiTeams; i++) {
+                Team team = null;
+                SpectatorPoint point = getRandomSpectatorPoint(world);
+                BlockPos pointPos = point.getPointPosition();
+                for (int j = 0; j < configuration.teamSize; j++) {
+                    EntityAIPlayer player = new EntityAIPlayer(world);
+                    player.setPosition(pointPos.getX(), pointPos.getY() + 1, pointPos.getZ());
+                    player.assignGameId(gameId);
+
+                    if (!world.spawnEntity(player)) {
+                        throw new IllegalStateException("Creation of AI has failed, try again");
+                    }
+                    playerProperties.register(player);
+                    loadoutManager.selectRandomly(player.getUniqueID(), world.rand);
+                    aiManager.register(player);
+
+                    if (team == null) {
+                        team = teamManager.createNewTeam(player);
+                    } else {
+                        teamManager.join(team, player);
+                    }
+                }
+            }
+        }
+    }
+
+    private void createDeathSquadAi(World world) {
+        if (world.isRemote) {
+            return;
+        }
+        Pubgmc.logger.debug("Attempting to spawn death squad entity");
+        EntityLoadout loadout = LoadoutManager.getLoadout(configuration.deathSquadEntityLoadout).orElse(EntityLoadout.EMPTY);
+        EntityAIPlayer player = new EntityAIPlayer(world);
+        player.assignGameId(gameId);
+        player.setCustomNameTag("DeathSquad");
+
+        GameMap map = GameHelper.getActiveGameMapOrSubMap(world);
+        Objects.requireNonNull(map);
+        List<SpawnerPoint> spawnPoints = new ArrayList<>(map.getPoints(GameMapPoints.SPAWNER));
+        SpawnerPoint point = PUBGMCUtil.randomListElement(spawnPoints, world.rand);
+        BlockPos pos = point.getPointPosition();
+        player.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+
+        if (!world.spawnEntity(player)) {
+            Pubgmc.logger.error("Could not spawn deathsquad entity: {}", player);
+            return;
+        }
+        aiManager.addExtraEntity(player.getUniqueID());
+        LoadoutManager.apply(player, loadout);
+    }
+
+    private void setActiveMatch(@Nullable TournamentMatch match) {
+        this.activeMatch = match;
+        this.teamManager.setMatch(match);
     }
 
     public TournamentGameConfiguration.MatchConfiguration getMatchConfig() {
@@ -652,7 +769,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 event.setCanceled(true);
                 return;
             }
-            boolean matchParticipant = game.activeMatch != null && game.activeMatch.isMatchParticipant(livingBase);
+            boolean matchParticipant = game.activeMatch != null && (game.activeMatch.isMatchParticipant(livingBase) || game.teamManager.getEntityTeam(livingBase) == null);
             if (!matchParticipant) {
                 event.setCanceled(true);
             }
@@ -666,7 +783,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 event.setCanceled(true);
                 return;
             }
-            if (sourceEntity != null && (game.activeMatch == null || !game.activeMatch.isMatchParticipant(sourceEntity))) {
+            if (sourceEntity != null && (game.activeMatch == null || (!game.activeMatch.isMatchParticipant(sourceEntity)) && game.teamManager.getEntityTeam(sourceEntity) != null)) {
                 event.setCanceled(true);
             }
         }
@@ -711,6 +828,15 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                     game.playerProperties.increaseInt(killer.getUniqueID(), SharedProperties.KILLS);
                 }
             }
+
+            if (!event.isCanceled() && entity instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) entity;
+                player.inventory.clear();
+                PlayerDataProvider.getOptional(player).ifPresent(data -> {
+                    data.getEquipmentInventory().clear();
+                    data.sync();
+                });
+            }
         }
 
         @Override
@@ -719,6 +845,11 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
             if (!player.world.isRemote) {
                 WorldServer server = (WorldServer) player.world;
                 game.setSpectating(server, player);
+
+                Team team = game.teamManager.getEntityTeam(player);
+                if (team != null) {
+                    team.addActiveMember(player.getUniqueID());
+                }
             }
         }
     }
@@ -747,6 +878,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
             nbt.setTag("gameRules", game.ruleStorage.serialize());
             nbt.setTag("properties", game.playerProperties.serialize());
             nbt.setTag("aiManager", game.aiManager.serialize());
+            nbt.setTag("loadoutManager", game.loadoutManager.serialize());
             return nbt;
         }
 
@@ -761,7 +893,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
                 game.captureManager.deserialize(nbt.getCompoundTag("captureManager"), game.teamManager);
             }
             SerializationHelper.collectionFromNbt(game.matches, nbt.getTagList("matches", Constants.NBT.TAG_COMPOUND), nbtBase -> TournamentMatch.deserialize((NBTTagCompound) nbtBase, game.teamManager));
-            game.activeMatch = nbt.hasKey("activeMatch") ? TournamentMatch.deserialize(nbt.getCompoundTag("activeMatch"), game.teamManager) : null;
+            game.setActiveMatch(nbt.hasKey("activeMatch") ? TournamentMatch.deserialize(nbt.getCompoundTag("activeMatch"), game.teamManager) : null);
             if (game.activeMatch != null) {
                 game.activeMatch.setCallback(game::matchFinished);
             }
@@ -773,6 +905,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration> {
             game.ruleStorage.deserialize(nbt.getCompoundTag("gameRules"));
             game.playerProperties.deserialize(nbt.getCompoundTag("properties"));
             game.aiManager.deserialize(nbt.getCompoundTag("aiManager"));
+            game.loadoutManager.deserialize(nbt.getCompoundTag("loadoutManager"));
             return game;
         }
 

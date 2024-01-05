@@ -12,4 +12,8 @@ public interface GameLoadoutManager {
     void selectLoadout(UUID uuid, int loadoutIndex, World world);
 
     void applyLoadout(EntityLivingBase entity);
+
+    default boolean shouldApplyLoadoutAfterSelection(EntityLivingBase entity) {
+        return true;
+    }
 }

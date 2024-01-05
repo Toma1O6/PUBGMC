@@ -1,8 +1,11 @@
 package dev.toma.pubgmc.common.games.game;
 
+import com.google.common.collect.ImmutableList;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.loadout.EntityLoadout;
 import dev.toma.pubgmc.api.game.loadout.GameLoadoutManager;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
+import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,11 +20,22 @@ public final class SimpleLoadoutManager implements GameLoadoutManager {
     private final Map<UUID, EntityLoadout> selectedLoadouts;
     private final EntityLoadout defaultLoadout;
     private final List<EntityLoadout> available;
+    private final boolean applyLoadoutImmediately;
+    private boolean locked;
 
     public SimpleLoadoutManager(EntityLoadout defaultLoadout, List<EntityLoadout> available) {
+        this(defaultLoadout, available, true);
+    }
+
+    public SimpleLoadoutManager(EntityLoadout defaultLoadout, List<EntityLoadout> available, boolean applyLoadoutImmediately) {
         this.defaultLoadout = defaultLoadout;
         this.available = available;
+        this.applyLoadoutImmediately = applyLoadoutImmediately;
         this.selectedLoadouts = new HashMap<>();
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     public EntityLoadout getLoadout(UUID uuid) {
@@ -36,7 +50,7 @@ public final class SimpleLoadoutManager implements GameLoadoutManager {
     @Override
     public void selectLoadout(UUID uuid, int loadout, World world) {
         if (loadout >= 0 && loadout < available.size()) {
-            selectedLoadouts.put(uuid, available.get(loadout));
+            select(uuid, available.get(loadout));
         }
     }
 
@@ -46,12 +60,41 @@ public final class SimpleLoadoutManager implements GameLoadoutManager {
         LoadoutManager.apply(entity, loadout);
     }
 
+    @Override
+    public boolean shouldApplyLoadoutAfterSelection(EntityLivingBase entity) {
+        return applyLoadoutImmediately;
+    }
+
     public void select(UUID uuid, EntityLoadout loadout) {
+        if (locked) {
+            Pubgmc.logger.warn("{} entity has attempted to select loadout while selection was locked", uuid);
+            return;
+        }
         selectedLoadouts.put(uuid, loadout);
     }
 
+    public void selectRandomly(UUID uuid, Random random) {
+        EntityLoadout loadout = PUBGMCUtil.randomListElement(available, random);
+        if (loadout != null) {
+            select(uuid, loadout);
+        }
+    }
+
+    public void selectRandomly(Collection<UUID> collection, Random random, boolean onlyMissing) {
+        for (UUID uuid : collection) {
+            boolean selectFlag = !hasSelectedLoadout(uuid) || !onlyMissing;
+            if (selectFlag) {
+                selectRandomly(uuid, random);
+            }
+        }
+    }
+
     public List<EntityLoadout> getAvailableLoadouts() {
-        return available;
+        return ImmutableList.copyOf(available);
+    }
+
+    public int getSelectedLoadoutsCount() {
+        return selectedLoadouts.size();
     }
 
     public NBTTagCompound serialize() {
@@ -64,6 +107,7 @@ public final class SimpleLoadoutManager implements GameLoadoutManager {
         NBTTagList list = new NBTTagList();
         available.forEach(loadout -> list.appendTag(new NBTTagString(LoadoutManager.loadoutToString(loadout))));
         nbt.setTag("available", list);
+        nbt.setBoolean("locked", locked);
         return nbt;
     }
 
@@ -82,5 +126,6 @@ public final class SimpleLoadoutManager implements GameLoadoutManager {
         for (int i = 0; i < list.tagCount(); i++) {
             available.add(LoadoutManager.loadoutFromString(list.getStringTagAt(i)));
         }
+        locked = nbt.getBoolean("locked");
     }
 }

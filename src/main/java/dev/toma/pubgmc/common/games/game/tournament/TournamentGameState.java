@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.games.game.tournament;
 public enum TournamentGameState {
 
     NEW,
+    LOADOUT_SELECT,
     WAITING,
     STARTING,
     KILL_ROUND,

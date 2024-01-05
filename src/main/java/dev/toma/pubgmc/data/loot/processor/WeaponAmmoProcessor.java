@@ -16,6 +16,8 @@ import java.util.Random;
 
 public class WeaponAmmoProcessor implements LootProcessor {
 
+    public static final WeaponAmmoProcessor FULL_AMMO = new WeaponAmmoProcessor(1.0F);
+
     private final float minPct;
     private final float maxPct;
 

@@ -13,6 +13,7 @@ import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGameConfiguration;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGameConfiguration;
+import dev.toma.pubgmc.common.games.game.tournament.TournamentGameConfiguration;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.data.loot.*;
 import dev.toma.pubgmc.data.loot.processor.AmmoPackProcessor;
@@ -47,6 +48,143 @@ public final class DefaultEntityLoadouts {
         registerBattleRoyaleLoadouts();
         registerFfaLoadouts();
         registerDominationLoadouts();
+        registerTournamentLoadouts();
+    }
+
+    // TODO add meds
+    private static void registerTournamentLoadouts() {
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_DEAGLE, new EntityLoadout.Builder()
+                .withName("Deagle")
+                .withIcon(new ItemStack(PMCItems.DEAGLE))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.DEAGLE), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)));
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(20, 2, 2)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(2)
+                )))
+                .withGeneralLootProvider(new MultiValueLootProvider(Arrays.asList(
+                        new ItemStackLootProvider(new ItemStack(PMCItems.GRENADE)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.MEDKIT))
+                )))
+                .build()
+        );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_CQB, new EntityLoadout.Builder()
+                .withName("CQB")
+                .withIcon(new ItemStack(PMCItems.VECTOR))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.VECTOR), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SMG)));
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)));
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(60, 2, 2)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(1)
+                )))
+                .withGeneralLootProvider(new MultiValueLootProvider(Arrays.asList(
+                        new CountLootProvider(2, 2, new ItemStackLootProvider(new ItemStack(PMCItems.FLASHBANG))),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.FIRSTAIDKIT)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.ADRENALINESYRINGE))
+                )))
+                .build()
+        );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_TANK, new EntityLoadout.Builder()
+                .withName("Tank")
+                .withIcon(new ItemStack(PMCItems.TOMMY_GUN))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.TOMMY_GUN), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_QUICKDRAW_MAG_SMG)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(50, 4, 4)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(3), helmet(3)
+                )))
+                .withGeneralLootProvider(new CountLootProvider(2, 2, new ItemStackLootProvider(new ItemStack(PMCItems.BANDAGE, 5))))
+                .build()
+        );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_ASSAULT, new EntityLoadout.Builder()
+                .withName("Assault Light")
+                .withIcon(new ItemStack(PMCItems.SCAR_L))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.SCAR_L), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_AR)));
+                            map.put(AttachmentType.GRIP, new ItemStackLootProvider(new ItemStack(PMCItems.GRIP_ANGLED)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)));
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(60, 2, 2)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(1), helmet(2)
+                )))
+                .withGeneralLootProvider(new MultiValueLootProvider(Arrays.asList(
+                        new ItemStackLootProvider(new ItemStack(PMCItems.GRENADE)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.BANDAGE, 5)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.PAINKILLERS))
+                )))
+                .build()
+        );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_ASSAULT2, new EntityLoadout.Builder()
+                .withName("Assault Heavy")
+                .withIcon(new ItemStack(PMCItems.BERYL_M762))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.BERYL_M762), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_AR)));
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(30, 3, 3)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(2)
+                )))
+                .withGeneralLootProvider(new ItemStackLootProvider(new ItemStack(PMCItems.FIRSTAIDKIT)))
+                .build()
+        );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_MARKSMAN, new EntityLoadout.Builder()
+                .withName("Marksman")
+                .withIcon(new ItemStack(PMCItems.MINI14))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.MINI14), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE2X)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(40, 2, 2)
+                )))
+                .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
+                        armor(2), helmet(2)
+                )))
+                .withGeneralLootProvider(new MultiValueLootProvider(Arrays.asList(
+                        new ItemStackLootProvider(new ItemStack(PMCItems.SMOKE)),
+                        new ItemStackLootProvider(new ItemStack(PMCItems.BANDAGE, 5))
+                )))
+                .build()
+        );
+        LoadoutManager.register(TournamentGameConfiguration.LOADOUT_SNIPER, new EntityLoadout.Builder()
+                .withName("Sniper")
+                .withIcon(new ItemStack(PMCItems.AWM))
+                .withWeaponProvider(new ItemStackLootProvider(new ItemStack(PMCItems.AWM), Arrays.asList(
+                        new AttachmentProcessor(map -> {
+                            map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.SCOPE4X)));
+                            map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER)));
+                        }),
+                        WeaponAmmoProcessor.FULL_AMMO,
+                        new AmmoPackProcessor(15, 1, 1)
+                )))
+                .withArmorProvider(armor(2))
+                .withGeneralLootProvider(new ItemStackLootProvider(new ItemStack(PMCItems.MEDKIT)))
+                .build()
+        );
     }
 
     private static void registerDominationLoadouts() {
@@ -58,7 +196,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)));
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SMG)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -75,7 +213,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SMG)));
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -91,7 +229,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)));
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -108,7 +246,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_AR)));
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_AR)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -125,7 +263,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)));
                             map.put(AttachmentType.STOCK, new ItemStackLootProvider(new ItemStack(PMCItems.CHEEKPAD)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(45, 2, 2)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -142,7 +280,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER)));
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(20, 2, 2)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -164,7 +302,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.RED_DOT)));
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_SMG)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -181,7 +319,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SMG)));
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SMG)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -197,7 +335,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.SCOPE, new ItemStackLootProvider(new ItemStack(PMCItems.HOLOGRAPHIC)));
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.COMPENSATOR_AR)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -214,7 +352,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_AR)));
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_AR)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(60, 3, 3)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -231,7 +369,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.EXTENDED_MAG_SNIPER)));
                             map.put(AttachmentType.STOCK, new ItemStackLootProvider(new ItemStack(PMCItems.CHEEKPAD)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(45, 2, 2)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(
@@ -248,7 +386,7 @@ public final class DefaultEntityLoadouts {
                             map.put(AttachmentType.MUZZLE, new ItemStackLootProvider(new ItemStack(PMCItems.SILENCER_SNIPER)));
                             map.put(AttachmentType.MAGAZINE, new ItemStackLootProvider(new ItemStack(PMCItems.QUICKDRAW_MAG_SNIPER)));
                         }),
-                        new WeaponAmmoProcessor(1.0F),
+                        WeaponAmmoProcessor.FULL_AMMO,
                         new AmmoPackProcessor(20, 2, 2)
                 )))
                 .withArmorProvider(new MultiValueLootProvider(Arrays.asList(

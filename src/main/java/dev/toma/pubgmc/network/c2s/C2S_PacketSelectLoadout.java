@@ -43,7 +43,7 @@ public class C2S_PacketSelectLoadout implements IMessage {
                     GameLoadoutManager loadoutManager = handler.getLoadoutManager();
                     boolean noLoadout = !loadoutManager.hasSelectedLoadout(sender.getUniqueID());
                     loadoutManager.selectLoadout(sender.getUniqueID(), message.loadout, sender.world);
-                    if (game.isStarted() && noLoadout) {
+                    if (loadoutManager.shouldApplyLoadoutAfterSelection(sender) && game.isStarted() && noLoadout) {
                         loadoutManager.applyLoadout(sender);
                     }
                 }

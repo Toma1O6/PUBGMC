@@ -17,7 +17,7 @@ public class EntityAITeamAwareNearestAttackableTarget<E extends EntityLivingBase
     }
 
     public EntityAITeamAwareNearestAttackableTarget(EntityCreature creature, Class<E> classTarget, boolean checkSight) {
-        this(creature, classTarget, relations -> relations != TeamRelations.FRIENDLY, checkSight);
+        this(creature, classTarget, TeamRelations::isDefaultAttackable, checkSight);
     }
 
     @Override
