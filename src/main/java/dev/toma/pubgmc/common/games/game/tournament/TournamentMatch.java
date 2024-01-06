@@ -111,6 +111,16 @@ public class TournamentMatch {
         }
     }
 
+    public void cancelActive(World world, TournamentGameConfiguration cfg, TournamentMatchStatus matchStatus) {
+        this.matchHistory.clear();
+        TournamentGameConfiguration.MatchConfiguration configuration = matchType.getMatchConfig(cfg);
+        for (int i = 0; i < configuration.matchCount - 1; i++) {
+            matchHistory.add(matchStatus);
+        }
+        setMatchStatus(world, matchStatus);
+        this.roundNumber = configuration.matchCount;
+    }
+
     public TournamentMatchStatus getMatchStatus() {
         return matchStatus;
     }

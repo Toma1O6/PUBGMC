@@ -78,6 +78,11 @@ public class SimpleTeamInviteManager implements TeamInviteManager {
     }
 
     @Override
+    public void cancelPendingInvites() {
+        this.invites.clear();
+    }
+
+    @Override
     public List<TeamInvite> getPlayerInvites(EntityPlayer player) {
         UUID playerId = player.getUniqueID();
         return invites.values().stream()

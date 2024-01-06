@@ -19,5 +19,7 @@ public interface TeamInviteManager extends INBTSerializable<NBTTagCompound> {
 
     void cancelInvite(TeamInvite invite);
 
+    void cancelPendingInvites();
+
     List<TeamInvite> getPlayerInvites(EntityPlayer player);
 }

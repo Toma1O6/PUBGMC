@@ -163,6 +163,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     @Override
     public void onGameStart(World world) throws GameException {
         this.started = true;
+        this.inviteManager.cancelPendingInvites();
         // Move all to spectator position
         if (!world.isRemote) {
             WorldServer server = (WorldServer) world;
@@ -420,7 +421,23 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
 
     @Override
     public boolean playerLeaveGame(EntityPlayer player) {
-        return false;
+        playerProperties.delete(player.getUniqueID());
+        List<Team> emptyTeams = teamManager.getTeams().stream()
+                .filter(Team::isTeamEliminated)
+                .collect(Collectors.toList());
+        for (Team team : emptyTeams) {
+            for (TournamentMatch match : matches) {
+                match.setMatchStatus(player.world, TournamentMatchStatus.CANCELLED);
+            }
+            if (activeMatch != null && activeMatch.containsTeam(team)) {
+                TeamType teamType = activeMatch.getTeamType(team).getEnemy();
+                TournamentMatchStatus status = TournamentMatchStatus.getWinStatusByTeamType(teamType);
+                activeMatch.cancelActive(player.world, configuration, status);
+            }
+            teamScores.remove(team);
+        }
+        GameHelper.requestClientGameDataSynchronization(player.world);
+        return true;
     }
 
     @Override
@@ -526,7 +543,11 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     }
 
     public void updateTeamScores() {
-        teamManager.getTeams().forEach(team -> teamScores.put(team, 0));
+        teamManager.getTeams().forEach(team -> {
+            if (!team.isTeamEliminated()) {
+                teamScores.put(team, 0);
+            }
+        });
         for (TournamentMatch match : matches) {
             if (!match.isCompleted(configuration)) {
                 continue;
@@ -631,8 +652,12 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         List<TournamentMatch> matches = new ArrayList<>();
         int index = 1;
         for (Team red : teams) {
+            if (red.isTeamEliminated())
+                continue;
             for (int i = index; i < teams.size(); i++) {
                 Team blue = teams.get(i);
+                if (blue.isTeamEliminated())
+                    continue;
                 TournamentMatch match = new TournamentMatch(red, blue, matchType);
                 match.setMatchStatus(null, TournamentMatchStatus.WAITING);
                 matches.add(match);
@@ -930,6 +955,24 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                     team.addActiveMember(player.getUniqueID());
                 }
                 GameHelper.reloadChunks(player);
+            }
+        }
+
+        @Override
+        public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+            GameHelper.resetPlayerData(event.player);
+            GameHelper.moveToLobby(event.player);
+        }
+
+        @Override
+        public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+            Team team = game.teamManager.getEntityTeam(event.player);
+            if (team != null) {
+                GameHelper.resetPlayerData(event.player);
+                team.removeMemberById(event.player.getUniqueID());
+                if (game.isStarted()) {
+                    game.playerLeaveGame(event.player);
+                }
             }
         }
     }

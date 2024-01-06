@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGameCaptureManager;
@@ -16,12 +17,10 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
 
@@ -32,6 +31,21 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
     public TournamentGameRenderer() {
         this.playzoneRenderer = new PlayzoneRenderer<>();
         this.playzoneRenderer.setColor(0x44FFFFFF); // TODO config
+    }
+
+    public void renderScoreboard(EntityPlayer player, TournamentGame game, ScaledResolution resolution, float partialTicks) {
+        TeamManager manager = game.getTeamManager();
+        Team team = manager.getEntityTeam(player);
+        TournamentMatch match = game.getActiveMatch();
+
+        int width = resolution.getScaledWidth();
+        int height = resolution.getScaledHeight();
+        ImageUtil.drawShape(0, 0, width, height, 0x88 << 24);
+        if (match != null && team != null && match.containsTeam(team)) {
+            // Render match rounds and player scores
+        } else {
+            // Render match scores and planned matches
+        }
     }
 
     public void renderHudText(EntityPlayer player, TournamentGame game, ScaledResolution resolution, float partialTicks) {
@@ -71,6 +85,9 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
             return false;
         if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             renderHudText(player, game, resolution, partialTicks);
+        } else if (elementType == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
+            renderScoreboard(player, game, resolution, partialTicks);
+            return true;
         }
         return false;
     }

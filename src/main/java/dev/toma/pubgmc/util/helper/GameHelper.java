@@ -428,7 +428,12 @@ public final class GameHelper {
         TeamManager manager = ((TeamGame<?>) game).getTeamManager();
         Team team1 = manager.getEntityTeam(entity1);
         Team team2 = manager.getEntityTeam(entity2);
-        return manager.getTeamRelationship(team1, team2);
+        try {
+            return manager.getTeamRelationship(team1, team2);
+        } catch (Exception e) {
+            Pubgmc.logger.fatal("Fatal error while attempting to resolve entity team relations in game", e);
+            return TeamRelations.UNKNOWN;
+        }
     }
 
     public static Optional<Team> getEntityTeam(Entity entity) {

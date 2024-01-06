@@ -145,7 +145,12 @@ public class GameDataImpl implements GameData {
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString("selectedGameType", selectedGameType.getIdentifier().toString());
-        nbt.setTag("game", GameType.serialize(gameInstance));
+        try {
+            nbt.setTag("game", GameType.serialize(gameInstance));
+        } catch (Exception e) {
+            Pubgmc.logger.fatal("Fatal error while attempting to serialize game data", e);
+            nbt.setTag("game", GameType.serialize(NoGame.INSTANCE));
+        }
         if (lobby != null) {
             nbt.setTag("gameLobby", lobby.serialize());
         }
@@ -166,7 +171,12 @@ public class GameDataImpl implements GameData {
         ResourceLocation gameType = new ResourceLocation(nbt.getString("selectedGameType"));
         GameType<?, ?> type = PubgmcRegistries.GAME_TYPES.getValue(gameType);
         selectedGameType = type != null ? type : GameTypes.NO_GAME;
-        gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), world);
+        try {
+            gameInstance = GameType.deserialize(nbt.getCompoundTag("game"), world);
+        } catch (Exception e) {
+            Pubgmc.logger.fatal("Fatal error while attempting to deserialize game data", e);
+            gameInstance = null;
+        }
         if (gameInstance == null) {
             gameInstance = NoGame.INSTANCE;
         }

@@ -38,6 +38,10 @@ public final class NoInvitesManager implements TeamInviteManager {
     }
 
     @Override
+    public void cancelPendingInvites() {
+    }
+
+    @Override
     public List<TeamInvite> getPlayerInvites(EntityPlayer player) {
         return Collections.emptyList();
     }

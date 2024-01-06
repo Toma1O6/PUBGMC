@@ -159,6 +159,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     @Override
     public void onGameStart(World world) {
         started = true;
+        this.inviteManager.cancelPendingInvites();
         int playerCount = (int) teamManager.getAllActivePlayers(world).count();
         int aiCount = configuration.allowAi ? configuration.entityCount - playerCount : 0;
         aiManager.setAllowedAiSpawnCount(aiCount);
