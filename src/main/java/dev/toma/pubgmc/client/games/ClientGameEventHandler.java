@@ -5,6 +5,8 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
+import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamGameConfiguration;
 import dev.toma.pubgmc.api.game.team.TeamManager;
@@ -20,6 +22,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,6 +32,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = Pubgmc.MOD_ID)
 public final class ClientGameEventHandler {
+
+    private static int deadTimer;
 
     @SubscribeEvent
     public static void onClientWorldTick(ClientWorldTickEvent event) {
@@ -73,6 +78,25 @@ public final class ClientGameEventHandler {
                 }
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START)
+            return;
+        Minecraft minecraft = Minecraft.getMinecraft();
+        EntityPlayer player = minecraft.player;
+        if (player != null && player.isDead) {
+            GameMutatorHelper.getMutator(player.world, GameMutators.FORCE_RESPAWN).ifPresent(mutator -> {
+                int limit = mutator.getRespawnAfterTime();
+                if (++deadTimer >= limit) {
+                    player.respawnPlayer();
+                    minecraft.displayGuiScreen(null);
+                }
+            });
+        } else {
+            deadTimer = 0;
+        }
     }
 
     private static void renderEntityName(RenderManager renderManager, EntityLivingBase entity, double x, double y, double z) {

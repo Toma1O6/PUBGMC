@@ -1047,6 +1047,7 @@ public class CommonRegistry {
         event.registerMutator(GameTypes.TOURNAMENT, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
         event.registerMutator(GameTypes.TOURNAMENT, GameMutators.AI_TASKS, new AIPlayerMutator<>(TournamentGame::initAi));
         event.registerMutator(GameTypes.TOURNAMENT, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
+        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.FORCE_RESPAWN, new ForcedRespawnMutator(40));
     }
 
     public static void registerItemBlock(Block block) {

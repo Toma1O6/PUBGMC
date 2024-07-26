@@ -124,16 +124,20 @@ public final class GameHelper {
     }
 
     public static void updateLoadedGameObjects(World world, GenerationType.Context context) {
-        List<GameObject> loadedGameObjects = mergeTileEntitiesAndEntitiesByRule(world, t -> t instanceof GameObject, t -> (GameObject) t)
-                .collect(Collectors.toList());
-        updateGameObjects(loadedGameObjects, world, context);
+        updateLoadedGameObjects(world, context, false);
     }
 
-    public static void updateGameObjects(Collection<GameObject> collection, World world, GenerationType.Context context) {
+    public static void updateLoadedGameObjects(World world, GenerationType.Context context, boolean forceUpdate) {
+        List<GameObject> loadedGameObjects = mergeTileEntitiesAndEntitiesByRule(world, t -> t instanceof GameObject, t -> (GameObject) t)
+                .collect(Collectors.toList());
+        updateGameObjects(loadedGameObjects, world, context, forceUpdate);
+    }
+
+    public static void updateGameObjects(Collection<GameObject> collection, World world, GenerationType.Context context, boolean forceUpdate) {
         UUID currentGameId = getGameUUID(world);
         collection.forEach(object -> {
             UUID objectId = object.getCurrentGameId();
-            if (!objectId.equals(currentGameId)) {
+            if (!objectId.equals(currentGameId) || forceUpdate) {
                 object.onNewGameDetected(currentGameId);
                 if (!context.isEmpty() && object instanceof Generator) {
                     ((Generator) object).generate(context);

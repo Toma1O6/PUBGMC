@@ -17,10 +17,14 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
 
@@ -46,6 +50,38 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
         } else {
             // Render match scores and planned matches
         }
+    }
+
+    public void renderTeamList(EntityPlayer player, TournamentGame game, ScaledResolution resolution, float partialTicks) {
+        int width = resolution.getScaledWidth();
+        int height = resolution.getScaledHeight();
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        TournamentGameConfiguration configuration = game.getConfiguration();
+        TeamManager manager = game.getTeamManager();
+
+        ImageUtil.drawShape(0, 0, width, height, 0x88 << 24);
+        Collection<Team> teams = manager.getTeams();
+        int teamWidth = 120;
+        int teamHeight = teams.stream().mapToInt(team -> 15 + 10 * team.getSize()).sum();
+        int left = (width - teamWidth) / 2;
+        int top = (height - teamHeight) / 2;
+        int topOffset = 0;
+        for (Team team : teams) {
+            ImageUtil.drawShape(left, top + topOffset, left + teamWidth, top + topOffset + 2, 0xFFFFFFFF);
+            String teamName = team.getUsername(team.getTeamId());
+            if (teamName == null) {
+                teamName = "Team";
+            }
+            font.drawString(TextFormatting.BOLD + teamName, left, top + topOffset + 4, 0xFFFFFF);
+            topOffset += 15;
+            Set<UUID> memberIds = team.getAllMembers().keySet();
+            for (UUID memberId : memberIds) {
+                String username = team.getUsername(memberId);
+                font.drawString(username, left + 5, top + topOffset, 0xFFFFFF);
+                topOffset += 10;
+            }
+        }
+        ImageUtil.drawShape(left, top + topOffset, left + teamWidth, top + topOffset + 2, 0xFFFFFFFF);
     }
 
     public void renderHudText(EntityPlayer player, TournamentGame game, ScaledResolution resolution, float partialTicks) {
@@ -81,8 +117,13 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
 
     @Override
     public boolean renderHudOverlay(EntityPlayer player, TournamentGame game, ScaledResolution resolution, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
-        if (!game.isStarted())
+        if (!game.isStarted()) {
+            if (elementType == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {
+                renderTeamList(player, game, resolution, partialTicks);
+                return true;
+            }
             return false;
+        }
         if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
             renderHudText(player, game, resolution, partialTicks);
         } else if (elementType == RenderGameOverlayEvent.ElementType.PLAYER_LIST) {

@@ -301,6 +301,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             case STARTING:
                 Objects.requireNonNull(world);
                 Objects.requireNonNull(activeMatch);
+                GameHelper.updateLoadedGameObjects(world, getGeneratorContext(), true);
                 this.activeMatch.setMatchStatus(world, TournamentMatchStatus.PLAYING);
                 if (!world.isRemote) {
                     WorldServer server = (WorldServer) world;
@@ -543,11 +544,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
     }
 
     public void updateTeamScores() {
-        teamManager.getTeams().forEach(team -> {
-            if (!team.isTeamEliminated()) {
-                teamScores.put(team, 0);
-            }
-        });
+        teamManager.getTeams().forEach(team -> teamScores.put(team, 0));
         for (TournamentMatch match : matches) {
             if (!match.isCompleted(configuration)) {
                 continue;
@@ -962,6 +959,21 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
         public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
             GameHelper.resetPlayerData(event.player);
             GameHelper.moveToLobby(event.player);
+
+            TournamentGameConfiguration gameConfiguration = game.getConfiguration();
+            Team joinedTeam = game.getTeamManager().getTeams().stream()
+                    .filter(team -> team.getSize() < gameConfiguration.teamSize)
+                    .findFirst()
+                    .orElseGet(() -> {
+                        game.getTeamManager().createNewTeam(event.player);
+                        return null;
+                    });
+            if (joinedTeam != null) {
+                game.teamManager.join(joinedTeam, event.player);
+            }
+            Pubgmc.logger.debug("Newly joined player {} has been added to team {}", event.player, game.teamManager.getEntityTeam(event.player));
+            game.playerProperties.register(event.player);
+            GameHelper.requestClientGameDataSynchronization(event.player.world);
         }
 
         @Override
@@ -972,7 +984,10 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 team.removeMemberById(event.player.getUniqueID());
                 if (game.isStarted()) {
                     game.playerLeaveGame(event.player);
+                } else if (team.isTeamEliminated()) {
+                    game.teamManager.removeTeam(team.getTeamId());
                 }
+                GameHelper.requestClientGameDataSynchronization(event.player.world);
             }
         }
     }

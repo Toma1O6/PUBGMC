@@ -4,7 +4,6 @@ import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -227,11 +226,7 @@ public final class Team implements Iterable<Team.Member> {
 
     @Override
     public String toString() {
-        if (teamLeader != null) {
-            return "TeamLeader: " + usernames.get(teamLeader.uuid);
-        } else {
-            return String.format("Owner: %s, Member count: %d", usernames.get(teamId), members.size());
-        }
+        return usernames.values().toString();
     }
 
     public static final class Member {

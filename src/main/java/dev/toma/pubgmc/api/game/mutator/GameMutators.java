@@ -9,6 +9,7 @@ public final class GameMutators {
     public static final GameMutatorType<AIPlayerMutator<?>> AI_TASKS = GameMutatorType.createMutatorType(Pubgmc.getResource("ai"));
     public static final GameMutatorType<KillRewardMutator> KILL_REWARD = GameMutatorType.createMutatorType(Pubgmc.getResource("kill_reward"));
     public static final GameMutatorType<ArmorMutator> ARMOR = GameMutatorType.createMutatorType(Pubgmc.getResource("armor"));
+    public static final GameMutatorType<ForcedRespawnMutator> FORCE_RESPAWN = GameMutatorType.createMutatorType(Pubgmc.getResource("forced_respawns"));
 
     private GameMutators() {}
 }
