@@ -395,6 +395,7 @@ label.pubgmc.remove_attachment=Remove
 
 message.pubgmc.healing.unreached_threshold=You must have below %s hearts to use this item
 message.pubgmc.healing.max_health=You must not have max health in order to use this item
+message.pubgmc.parachute.cannot_open_yet=You cannot open parachute yet!
 message.pubgmc.game.joinable_game_in_progress=There is ongoing game which can be joined. Run command '/game join' to join the game
 message.pubgmc.game.select_loadout=This game requires you to select custom loadout. You can select it now using '/game menu' command or by clicking on this message
 message.pubgmc.game.ffa.game_ended=You have ended at %s. place with %s kills
