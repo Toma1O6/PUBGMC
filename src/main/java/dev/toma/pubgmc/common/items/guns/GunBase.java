@@ -339,7 +339,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
 
     public int getAmmo(ItemStack stack) {
         NBTTagCompound nbt = getOrCreateGunData(stack);
-        return DevUtil.wrap(nbt.getInteger("ammo"), 0, getWeaponAmmoLimit(stack));
+        return Math.max(nbt.getInteger("ammo"), 0);
     }
 
     public void setAmmo(ItemStack stack, int ammo) {
