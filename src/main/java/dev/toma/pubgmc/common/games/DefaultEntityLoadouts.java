@@ -48,7 +48,8 @@ public final class DefaultEntityLoadouts {
         registerBattleRoyaleLoadouts();
         registerFfaLoadouts();
         registerDominationLoadouts();
-        registerTournamentLoadouts();
+        // TODO implement tournament game mode
+        //registerTournamentLoadouts();
     }
 
     private static void registerTournamentLoadouts() {

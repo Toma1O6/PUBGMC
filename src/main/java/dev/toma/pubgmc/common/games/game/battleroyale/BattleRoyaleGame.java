@@ -214,11 +214,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             playzone.hurtAllOutside(worldServer, () -> teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList()));
             tickAIEntities(worldServer);
             if (world.getTotalWorldTime() % 20 == 0) {
-                int teamCount = teamManager.getTeams().size();
-                int playerCount = (int) teamManager.getAllActivePlayers(world).count();
-                int aiCount = aiManager.getRemainingAliveEntityCount();
-                int aiToSpawn = aiManager.getAiEntitiesToSpawn();
-                if (isGameCompleted(playerCount, aiCount, aiToSpawn, teamCount)) {
+                if (isGameCompleted(worldServer)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
                     teamManager.getAllActivePlayers(world).forEach(player -> {
@@ -316,16 +312,19 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return players + ai;
     }
 
-    private boolean isGameCompleted(int players, int ai, int aiForSpawn, int teams) {
-        if (players > 0 && (teams == 1 || ai <= 0 && aiForSpawn == 0)) {
-            if (ai > 0) {
-                Team team = new ArrayList<>(teamManager.getTeams()).get(0);
-                int activeMembers = team.getActiveMemberCount();
-                return activeMembers == players + ai;
-            }
+    private boolean isGameCompleted(WorldServer server) {
+        int playerCount = (int) this.teamManager.getAllActivePlayers(server).count();
+        // No players left, end the game. Does not allow AI vs AI games, but that does not matter right now
+        if (playerCount <= 0) {
             return true;
         }
-        return players <= 0;
+        int notSpawnedBots = this.aiManager.getAiEntitiesToSpawn();
+        int activeTeamCount = this.teamManager.getTeams().size();
+        // There is still some AI left to be spawned
+        if (notSpawnedBots > 0) {
+            return false;
+        }
+        return activeTeamCount == 1;
     }
 
     private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {

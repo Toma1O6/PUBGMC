@@ -220,8 +220,8 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 new BlockDoorCloser("door_closer", Material.ROCK),
                 BlockBuilder.create("modern_light", Material.ROCK).soundType(SoundType.STONE).setTransparent().light(1.0F).nullAABB(new AxisAlignedBB(0.2, 0.7, 0.2, 0.8, 1.0, 0.8)).build(),
-                new BlockSecretDoor("old_secret_door", Material.IRON),
-                new BlockGameDoor("metal_garage_door", Material.IRON)
+                new BlockSecretDoor("old_secret_door", Material.IRON)
+                //new BlockGameDoor("metal_garage_door", Material.IRON)
         );
     }
 
@@ -951,7 +951,7 @@ public class CommonRegistry {
                 new CaptureZoneConfigurerItem("mapitem_capture_zone"),
                 new PointOfInterestItem("mapitem_point_of_interest"),
                 new SubMapConfigurerItem("mapitem_submap_config"),
-                new SpectatorPointItem("mapitem_spectator"),
+                //new SpectatorPointItem("mapitem_spectator"),
                 new ItemSecretRoomKey("old_room_secret_key")
         );
         ITEM_BLOCKS.forEach(registry::register);
@@ -1002,7 +1002,8 @@ public class CommonRegistry {
         event.register(GameTypes.BATTLE_ROYALE);
         event.register(GameTypes.FFA);
         event.register(GameTypes.DOMINATION);
-        event.register(GameTypes.TOURNAMENT);
+        // TODO implement Tournament game mode
+        //event.register(GameTypes.TOURNAMENT);
     }
 
     @SubscribeEvent
@@ -1044,10 +1045,11 @@ public class CommonRegistry {
         event.registerMutator(GameTypes.DOMINATION, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
         event.registerMutator(GameTypes.DOMINATION, GameMutators.AI_TASKS, new AIPlayerMutator<>(DominationGame::initAi));
         event.registerMutator(GameTypes.DOMINATION, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
-        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
-        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.AI_TASKS, new AIPlayerMutator<>(TournamentGame::initAi));
-        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
-        event.registerMutator(GameTypes.TOURNAMENT, GameMutators.FORCE_RESPAWN, new ForcedRespawnMutator(40));
+        // TODO TournamentGame
+        //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
+        //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.AI_TASKS, new AIPlayerMutator<>(TournamentGame::initAi));
+        //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
+        //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.FORCE_RESPAWN, new ForcedRespawnMutator(40));
     }
 
     public static void registerItemBlock(Block block) {
