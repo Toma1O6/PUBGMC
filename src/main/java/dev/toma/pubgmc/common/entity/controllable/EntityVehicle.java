@@ -73,7 +73,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         if (currentSpeed != 0) {
             rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
         }
-        if (!isBeingRidden() && (!hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken)) {
+        if (!isBeingRidden() || !hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken) {
             reset();
         }
         this.handleEntityCollisions();
@@ -100,7 +100,8 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
                 currentSpeed = 0f;
 
             if (currentSpeed != 0) {
-                currentSpeed = currentSpeed > 0 ? currentSpeed - stats.acceleration.getAsFloat() * 0.1F : currentSpeed + stats.acceleration.getAsFloat() * 0.1F;
+                float multiplier = this.isBeingRidden() ? 0.1F : 0.5F;
+                currentSpeed = currentSpeed > 0 ? currentSpeed - stats.acceleration.getAsFloat() * multiplier : currentSpeed + stats.acceleration.getAsFloat() * multiplier;
             }
         }
         if (!hasTurnInput()) {
