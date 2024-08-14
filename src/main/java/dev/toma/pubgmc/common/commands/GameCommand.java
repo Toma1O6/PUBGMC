@@ -256,6 +256,7 @@ public class GameCommand extends AbstractCommand {
         if (config == null) {
             throw new WrongUsageException("Selected game type has no configuration. Create one by command '/game configure " + type.getIdentifier().toString() + "'");
         }
+        config.performCorrections();
         GameType.GameConstructor<CFG, G> constructor = type.getConstructor();
         G game;
         try {
