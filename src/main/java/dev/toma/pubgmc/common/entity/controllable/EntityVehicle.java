@@ -66,6 +66,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public void updatePre() {
         this.handleEmptyInputs();
+        fallDistance = 0.0F;
         Vec3d look = this.getLookVec();
         motionX = look.x * currentSpeed;
         motionZ = look.z * currentSpeed;
@@ -265,6 +266,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (source == DamageSource.FALL)
+            return false;
+
         if (!getPassengers().contains(source.getTrueSource())) {
             this.health -= amount;
             SerializationHelper.syncEntity(this);
@@ -280,13 +284,13 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             float z = -0.55F;
             float f1 = (float) ((this.isDead ? 0.009999999776482582D : this.getMountedYOffset()));
 
-            if (this.getPassengers().size() > 0) {
+            if (!this.getPassengers().isEmpty()) {
                 int i = this.getPassengers().indexOf(passenger);
                 x = getPassengerXOffset(i);
                 z = getPassengerZOffset(i);
             }
 
-            Vec3d vec3d = (new Vec3d((double) x, 0.0D, (double) z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+            Vec3d vec3d = (new Vec3d(x, 0.0D, z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
             passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
 
             if (passenger instanceof EntityAnimal && this.getPassengers().size() > 1) {

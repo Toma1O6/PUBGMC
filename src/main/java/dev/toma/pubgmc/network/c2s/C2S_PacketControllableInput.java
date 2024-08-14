@@ -43,7 +43,7 @@ public class C2S_PacketControllableInput implements IMessage {
             player.getServer().addScheduledTask(() -> {
                 WorldServer world = player.getServerWorld();
                 Entity entity = world.getEntityByID(message.entity);
-                if (entity.getControllingPassenger() == player && entity instanceof IControllable) {
+                if (entity instanceof IControllable && entity.getControllingPassenger() == player) {
                     ((IControllable) entity).handle((byte) message.rawInput);
                 }
             });
