@@ -37,7 +37,7 @@ public class IntArgument extends ArgumentType<Integer> {
             throw new SyntaxErrorException(String.format("Invalid number: %s must be bigger than %s!", value, min));
         }
         if (max != null && value > max) {
-            throw new SyntaxErrorException(String.format("Invalid number: %s must be smaller than %s!", value, min));
+            throw new SyntaxErrorException(String.format("Invalid number: %s must be smaller than %s!", value, max));
         }
     }
 
