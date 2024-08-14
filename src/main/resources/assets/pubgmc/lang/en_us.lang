@@ -254,8 +254,6 @@ gun.desc.maxammo=Max ammo
 gun.desc.moreinfo=Hold SHIFT for more info!
 gun.desc.moreinfo2=Hold CTRL to show attachments!
 gun.reloadtime.info=seconds
-gun.velocity.info=blocks per second
-gun.gravity.info=blocks per second
 gun.firerate.info=shots per second
 
 ammo.9mm=9mm Bullet

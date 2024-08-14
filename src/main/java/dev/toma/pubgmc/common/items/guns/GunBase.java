@@ -172,7 +172,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
             tooltip.add(I18n.format("gun.desc.damage") + ": " + TextFormatting.RED + DevUtil.formatToTwoDecimals(wepStats.getDamage()));
             tooltip.add(I18n.format("gun.desc.velocity") + ": " + TextFormatting.AQUA + DevUtil.formatToTwoDecimals(wepStats.getVelocity() * 20) + " m/s");
             tooltip.add(I18n.format("gun.desc.ammotype") + ": " + TextFormatting.GREEN + ammoType.translatedName());
-            tooltip.add(I18n.format("gun.desc.firerate") + ": " + TextFormatting.GOLD + DevUtil.formatToTwoDecimals(20.0D / firerate) + " shots per second");
+            tooltip.add(I18n.format("gun.desc.firerate") + ": " + TextFormatting.GOLD + DevUtil.formatToTwoDecimals(20.0D / firerate) + " " + I18n.format("gun.firerate.info"));
         } else if (GuiScreen.isCtrlKeyDown()) {
             tooltip.add("Attachments");
             for (AttachmentType<?> type : AttachmentType.allTypes) {
