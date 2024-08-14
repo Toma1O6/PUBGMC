@@ -216,7 +216,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     private void explode() {
         if (!world.isRemote) {
-            this.world.createExplosion(this, posX, posY, posZ, 3f, false);
+            this.world.createExplosion(this, posX, posY, posZ, 5f, false);
             this.setDead();
         }
     }
