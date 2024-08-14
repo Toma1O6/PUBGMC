@@ -175,7 +175,7 @@ public class GameCommand extends AbstractCommand {
                                     CommandNodeProvider.argument(ARG_LOBBY_CENTER, BlockPosArgument.blockpos())
                                             .executes(GameCommand::createLobby)
                                             .node(
-                                                    CommandNodeProvider.argument(ARG_LOBBY_RADIUS, IntArgument.range(0, 256))
+                                                    CommandNodeProvider.argument(ARG_LOBBY_RADIUS, IntArgument.range(0, 512))
                                             )
                             )
             )
