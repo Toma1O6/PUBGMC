@@ -62,6 +62,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
@@ -692,8 +693,8 @@ public class ClientEvents {
     }
 
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
-        int useTime = player.getItemInUseCount();
         int useDuration = stack.getMaxItemUseDuration();
+        int useTime = Math.min(player.getItemInUseCount(), useDuration);
         float progress = 1.0F - (useTime / (float) useDuration);
         FontRenderer font = mc.fontRenderer;
         int width = res.getScaledWidth();
