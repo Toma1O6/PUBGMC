@@ -390,6 +390,10 @@ label.pubgmc.capture_status.capturing=Capturing
 label.pubgmc.capture_status.blocked=Blocked
 label.pubgmc.item.old_room_secret_key.location=Key Location: %s
 label.pubgmc.remove_attachment=Remove
+label.pubgmc.offset.increase=Right-Click to increase detection block offset
+label.pubgmc.offset.decrease=Shift + Right-Click to decrease detection block offset
+label.pubgmc.generator.tooltip=Use command '/generator generate' for generation
+label.pubgmc.generator.tooltip.loot=Shift + Right click to cycle loot generator tier
 
 message.pubgmc.healing.unreached_threshold=You must have below %s hearts to use this item
 message.pubgmc.healing.max_health=You must not have max health in order to use this item

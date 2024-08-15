@@ -3,21 +3,29 @@ package dev.toma.pubgmc.common.blocks;
 import dev.toma.pubgmc.common.tileentity.RecoverableStateTile;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Used for recovery of states of various vanilla blocks within game system such as doors etc
  */
 public abstract class AbstractRecoveableStateBlock extends PMCBlock {
+
+    private static final ITextComponent OFFSET_INCREASE = new TextComponentTranslation("label.pubgmc.offset.increase");
+    private static final ITextComponent OFFSET_DECREASE = new TextComponentTranslation("label.pubgmc.offset.decrease");
 
     public AbstractRecoveableStateBlock(String name, Material material) {
         super(name, material);
@@ -53,5 +61,11 @@ public abstract class AbstractRecoveableStateBlock extends PMCBlock {
     @Override
     public final TileEntity createTileEntity(World world, IBlockState state) {
         return createRecoverableTileEntity(world, state);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
+        tooltip.add(OFFSET_INCREASE.getFormattedText());
+        tooltip.add(OFFSET_DECREASE.getFormattedText());
     }
 }

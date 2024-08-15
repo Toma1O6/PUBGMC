@@ -19,7 +19,8 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -28,6 +29,9 @@ import java.util.List;
 public class BlockLootSpawner extends PMCBlock {
     public static final PropertyInteger LOOT = PropertyInteger.create("loot", 0, 2);
     public static final AxisAlignedBB BB = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.25, 1.0);
+
+    public static final ITextComponent GENERIC_GENERATOR_TITLE = new TextComponentTranslation("label.pubgmc.generator.tooltip");
+    private static final ITextComponent LOOT_TIER_TITLE = new TextComponentTranslation("label.pubgmc.generator.tooltip.loot");
 
     public BlockLootSpawner(String name, Material material, SoundType sound) {
         super(name, material);
@@ -111,11 +115,8 @@ public class BlockLootSpawner extends PMCBlock {
 
     @Override
     public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
-        tooltip.add(TextFormatting.BOLD + "Shift-Right Click in Creative mode to change tier:");
-        tooltip.add(TextFormatting.RED + "COMMON, multiplier x1");
-        tooltip.add(TextFormatting.YELLOW + "RARE, multiplier x1.4");
-        tooltip.add(TextFormatting.GREEN + "VERY RARE, multiplier x2");
-        tooltip.add(TextFormatting.ITALIC + "Loot can be generated using the " + TextFormatting.UNDERLINE + "/loot generate");
+        tooltip.add(GENERIC_GENERATOR_TITLE.getFormattedText());
+        tooltip.add(LOOT_TIER_TITLE.getFormattedText());
     }
 
     public enum LootType {

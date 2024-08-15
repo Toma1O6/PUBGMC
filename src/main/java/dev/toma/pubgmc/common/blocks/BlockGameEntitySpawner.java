@@ -3,6 +3,8 @@ package dev.toma.pubgmc.common.blocks;
 import dev.toma.pubgmc.common.tileentity.TileEntityGameEntitySpawner;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -11,6 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class BlockGameEntitySpawner extends PMCBlockHorizontal {
@@ -60,6 +63,11 @@ public class BlockGameEntitySpawner extends PMCBlockHorizontal {
         TileEntityGameEntitySpawner spawner = new TileEntityGameEntitySpawner();
         spawner.setEntityProviderConfigPath(spawnConfigurationPath);
         return spawner;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced) {
+        tooltip.add(BlockLootSpawner.GENERIC_GENERATOR_TITLE.getFormattedText());
     }
 
     @Override
