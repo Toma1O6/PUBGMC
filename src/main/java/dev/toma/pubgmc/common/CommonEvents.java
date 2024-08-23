@@ -168,6 +168,14 @@ public class CommonEvents {
             player.setEntityBoundingBox(proneBB);
             player.height = 0.9F;
             player.eyeHeight = 0.6F;
+        } else if (player.isSneaking()) {
+            float size = 0.3F;
+            float width = player.width / 2.0F;
+            float height = player.height - size;
+            AxisAlignedBB crouchedBB = new AxisAlignedBB(player.posX - width, player.posY, player.posZ - width, player.posX + width, player.posY + height, player.posZ + width);
+            player.setEntityBoundingBox(crouchedBB);
+            player.height = height;
+            player.eyeHeight = player.eyeHeight - size;
         }
         if (ev.phase == Phase.END)
             return;
