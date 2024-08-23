@@ -62,7 +62,7 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
                 } else {
                     font.drawStringWithShadow(" -", infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0x00CC00);
                 }
-                int playerCount = game.getAlivePlayerCount(player.world);
+                int playerCount = game.getAlivePlayerCount();
                 String playersText = PLAYERS.getFormattedText();
                 font.drawStringWithShadow(playersText, infoPos.getX() + 5, infoPos.getY() + 16, 0xFFFFFF);
                 font.drawStringWithShadow(" " + playerCount, infoPos.getX() + 5 + font.getStringWidth(playersText), infoPos.getY() + 16, 0x00FFFF);

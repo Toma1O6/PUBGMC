@@ -7,7 +7,7 @@ import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamInvite;
 import dev.toma.pubgmc.api.game.team.TeamInviteManager;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.common.commands.core.*;
 import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;

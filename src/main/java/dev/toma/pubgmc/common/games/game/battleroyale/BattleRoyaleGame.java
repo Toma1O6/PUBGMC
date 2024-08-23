@@ -18,7 +18,10 @@ import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
-import dev.toma.pubgmc.api.game.util.*;
+import dev.toma.pubgmc.api.game.util.DeathMessage;
+import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
+import dev.toma.pubgmc.api.game.util.GameRuleStorage;
+import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.ai.*;
@@ -306,8 +309,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return playzoneReady ? playzone.getRemainingStationaryTime() : -1;
     }
 
-    public int getAlivePlayerCount(World world) {
-        int players = (int) teamManager.getAllActivePlayers(world).count();
+    public int getAlivePlayerCount() {
+        int players = teamManager.getAlivePlayerCount();
         int ai = aiManager.getRemainingAliveEntityCount();
         return players + ai;
     }

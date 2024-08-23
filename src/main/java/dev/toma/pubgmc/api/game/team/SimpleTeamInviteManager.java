@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.api.game.team;
 
-import dev.toma.pubgmc.api.game.util.Team;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +32,7 @@ public class SimpleTeamInviteManager implements TeamInviteManager {
         if (!teamManager.canJoinTeam(invitee, team)) {
             return null;
         }
-        TeamInvite teamInvite = new TeamInvite(team.getTeamId(), invitee.getUniqueID(), team.getUsername(sender.getUniqueID()));
+        TeamInvite teamInvite = new TeamInvite(team.getId(), invitee.getUniqueID(), team.getUsername(sender.getUniqueID()));
         String key = teamInvite.getUniqueKey();
         TeamInvite invite = invites.getOrDefault(key, teamInvite);
         invites.put(key, invite);

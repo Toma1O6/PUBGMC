@@ -1,5 +1,6 @@
-package dev.toma.pubgmc.api.game.util;
+package dev.toma.pubgmc.api.game.team;
 
+import dev.toma.pubgmc.api.game.groups.Group;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +15,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-public final class Team implements Iterable<Team.Member> {
+public final class Team implements Iterable<Team.Member>, Group {
 
     private final UUID teamId;
     private final Map<UUID, Member> members;
@@ -54,7 +55,13 @@ public final class Team implements Iterable<Team.Member> {
         this.teamLeader = teamLeader;
     }
 
-    public UUID getTeamId() {
+    @Override
+    public UUID getLeader() {
+        return this.teamLeader != null ? this.teamLeader.getId() : this.teamId;
+    }
+
+    @Override
+    public UUID getId() {
         return teamId;
     }
 
@@ -147,6 +154,7 @@ public final class Team implements Iterable<Team.Member> {
         return activeMembers.isEmpty();
     }
 
+    @Override
     public String getUsername(UUID memberId) {
         return usernames.getOrDefault(memberId, "<none>");
     }
@@ -256,10 +264,14 @@ public final class Team implements Iterable<Team.Member> {
         }
 
         public EntityPlayer getPlayer(World world) {
-            if (!memberType.isPlayer()) {
+            if (!this.isPlayer()) {
                 throw new UnsupportedOperationException("Invalid member type");
             }
             return world.getPlayerEntityByUUID(uuid);
+        }
+
+        public boolean isPlayer() {
+            return this.memberType.isPlayer();
         }
 
         public NBTTagCompound serialize() {

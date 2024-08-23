@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -12,12 +12,16 @@ import java.util.List;
 
 public class ItemScope extends ItemAttachment {
 
-    final ScopeData data;
+    private final ScopeZoom scopeZoom;
 
-    public ItemScope(String name, ScopeData data) {
+    public ItemScope(String name) {
+        this(name, null);
+    }
+
+    public ItemScope(String name, ScopeZoom scopeZoom) {
         super(name);
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
-        this.data = data;
+        this.scopeZoom = scopeZoom;
     }
 
     @Override
@@ -25,18 +29,22 @@ public class ItemScope extends ItemAttachment {
         return AttachmentType.SCOPE;
     }
 
-    public int getZoom(int fov) {
-        return data.getZoom() < 0 ? fov : data.getZoom();
+    public boolean hasCustomZoom() {
+        return this.scopeZoom != null;
     }
 
-    public ScopeData getData() {
-        return data;
+    public ScopeZoom getZoomSettings() {
+        return this.scopeZoom;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        int fov = this.getZoom((int) Minecraft.getMinecraft().gameSettings.fovSetting);
-        tooltip.add(formatProperty("FOV", fov + ""));
+        if (this.hasCustomZoom()) {
+            tooltip.add(formatProperty("FOV", this.scopeZoom.toString()));
+            if (this.scopeZoom.hasMouseScrollOverrides()) {
+                tooltip.add(TextFormatting.DARK_GRAY + "LeftAlt + Mouse scroll to change zoom");
+            }
+        }
     }
 }

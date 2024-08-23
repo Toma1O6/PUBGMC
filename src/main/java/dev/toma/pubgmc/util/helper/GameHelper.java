@@ -13,7 +13,7 @@ import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
@@ -34,6 +34,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -349,7 +350,12 @@ public final class GameHelper {
         entity.dismountRidingEntity();
         if (entity instanceof EntityPlayerMP) {
             entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
-            ((EntityPlayerMP) entity).connection.setPlayerLocation(x, y, z, entity.rotationYaw, entity.rotationPitch);
+            NetHandlerPlayServer serverConnection = ((EntityPlayerMP) entity).connection;
+            if (serverConnection == null) {
+                Pubgmc.logger.warn("Unable to move player {} to position [{},{},{}] as their server side connection is not established!", entity.getName(), x, y, z);
+            } else {
+                serverConnection.setPlayerLocation(x, y, z, entity.rotationYaw, entity.rotationPitch);
+            }
         } else {
             entity.setPositionAndUpdate(x, y, z);
         }

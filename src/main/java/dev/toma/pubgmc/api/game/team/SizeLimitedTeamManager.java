@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.api.game.team;
 
-import dev.toma.pubgmc.api.game.util.Team;
 import net.minecraft.entity.Entity;
 
 public class SizeLimitedTeamManager extends SimpleTeamManager {

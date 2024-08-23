@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.common.ai;
 
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

@@ -4,7 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.common.games.map.CaptureZonePoint;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -108,7 +108,7 @@ public final class TournamentGameCaptureManager {
             nbt.setTag("captureZone", GameMapPointType.serializePointData(captureZone));
         }
         if (capturingTeam != null) {
-            nbt.setUniqueId("capturingTeam", capturingTeam.getTeamId());
+            nbt.setUniqueId("capturingTeam", capturingTeam.getId());
             nbt.setInteger("captureTime", capturingTime);
         }
         return nbt;

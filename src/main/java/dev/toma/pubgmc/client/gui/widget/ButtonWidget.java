@@ -21,12 +21,13 @@ public class ButtonWidget extends Widget {
     @Override
     public void render(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         boolean isHovered = this.isMouseOver(mouseX, mouseY);
+        boolean active = this.isActive();
         drawColorShape(x, y, x + width, y + height, 0.0F, 0.0F, 0.0F, 0.5F);
-        if (isHovered) {
+        if (active && isHovered) {
             drawColorShape(x, y, x + width, y + height, 1.0F, 1.0F, 1.0F, 0.5F);
         }
         int w = mc.fontRenderer.getStringWidth(text);
-        mc.fontRenderer.drawStringWithShadow(text, x + (width - w) / 2.0F, y + (height - mc.fontRenderer.FONT_HEIGHT) / 2.0F, isHovered ? 0xffff00 : 0xffffff);
+        mc.fontRenderer.drawStringWithShadow(text, x + (width - w) / 2.0F, y + (height - mc.fontRenderer.FONT_HEIGHT) / 2.0F, active ? isHovered ? 0xffff00 : 0xffffff : 0xA0A0A0);
     }
 
     public interface IPressable {

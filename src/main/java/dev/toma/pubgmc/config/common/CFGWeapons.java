@@ -2,13 +2,20 @@ package dev.toma.pubgmc.config.common;
 
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
+import dev.toma.configuration.api.type.DoubleType;
 import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.configuration.api.util.NumberDisplayType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public final class CFGWeapons extends ObjectType implements INBTSerializable<NBTTagCompound> {
 
     final ConfigPlugin plugin;
+    public DoubleType globalVerticalRecoil;
+    public DoubleType globalHorizontalRecoil;
+    public DoubleType crouchRecoilScale;
+    public DoubleType proneRecoilScale;
+    public AttachmentsConfig attachmentsConfig;
     public CFGWeapon p92;
     public CFGWeapon p1911;
     public CFGWeapon p18c;
@@ -56,6 +63,11 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
+        globalVerticalRecoil = configCreator.createDouble("Global Vertical Recoil", 1.0, 0.0, 10.0);
+        globalHorizontalRecoil = configCreator.createDouble("Global Horizontal Recoil", 1.0, 0.0, 10.0);
+        crouchRecoilScale = configCreator.createDouble("Crouched Recoil Scale", 0.85, 0.0, 1.0).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
+        proneRecoilScale = configCreator.createDouble("Prone Recoil Scale", 0.7, 0.0, 1.0).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
+        attachmentsConfig = configCreator.createObject(new AttachmentsConfig(plugin), plugin);
         p92 = configCreator.createObject(new CFGWeapon("P92", 4f, 11, 0.015f, 4), plugin);
         p1911 = configCreator.createObject(new CFGWeapon("P1911", 5f, 12, 0.01f, 5), plugin);
         p18c = configCreator.createObject(new CFGWeapon("P18C", 4f, 11, 0.015f, 4), plugin);
@@ -100,6 +112,11 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = new NBTTagCompound();
+        c.setDouble("vertical", globalVerticalRecoil.get());
+        c.setDouble("horizontal", globalHorizontalRecoil.get());
+        c.setDouble("crouched", crouchRecoilScale.get());
+        c.setDouble("prone", proneRecoilScale.get());
+        c.setTag("attachments", attachmentsConfig.serializeNBT());
         writeToNBT("p92", p92, c);
         writeToNBT("p1911", p1911, c);
         writeToNBT("p18c", p18c, c);
@@ -144,6 +161,11 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
 
     @Override
     public void deserializeNBT(NBTTagCompound c) {
+        globalVerticalRecoil.set(c.getDouble("vertical"));
+        globalHorizontalRecoil.set(c.getDouble("horizontal"));
+        crouchRecoilScale.set(c.getDouble("crouched"));
+        proneRecoilScale.set(c.getDouble("prone"));
+        attachmentsConfig.deserializeNBT(c.getCompoundTag("attachments"));
         readFromNBT("p92", p92, c);
         readFromNBT("p1911", p1911, c);
         readFromNBT("p18c", p18c, c);

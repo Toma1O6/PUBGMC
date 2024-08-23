@@ -3,7 +3,7 @@ package dev.toma.pubgmc.api.client.util;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

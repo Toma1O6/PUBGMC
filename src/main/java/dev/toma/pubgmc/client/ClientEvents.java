@@ -28,26 +28,21 @@ import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.ItemAmmo;
-import dev.toma.pubgmc.common.items.attachment.AttachmentType;
-import dev.toma.pubgmc.common.items.attachment.ItemGrip;
-import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
-import dev.toma.pubgmc.common.items.attachment.ScopeData;
+import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DCoords;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
+import dev.toma.pubgmc.config.common.CFGWeapons;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.c2s.*;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -62,7 +57,6 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
@@ -300,7 +294,23 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event) {
-        EntityPlayerSP sp = Minecraft.getMinecraft().player;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+
+        //Same as above, we just send packet to server and everything else will be done in the rendering method above
+        if (KeyBinds.NV.isPressed()) {
+            if (!data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
+                boolean status = !data.isNightVisionActive();
+                data.setNightVisionActive(status);
+                PacketHandler.sendToServer(new C2S_PacketSetProperty(status, C2S_PacketSetProperty.Action.NIGHT_VISION));
+            }
+        }
+
+        if (player.isSpectator() || data == null) {
+            return; // No other key processing for spectator game mode
+        }
+
+        // Dev keybinds
         if (ConfigPMC.developerMode.get()) {
             Minecraft mc = Minecraft.getMinecraft();
             if (Keyboard.isKeyDown(Keyboard.KEY_O)) {
@@ -311,30 +321,29 @@ public class ClientEvents {
                 mc.displayGuiScreen(new GuiHandPlacer());
             }
         }
+        // Prone
         if (KeyBinds.PRONE.isPressed()) {
-            IPlayerData data = PlayerDataProvider.get(sp);
-            if (data != null) {
-                data.setProne(!data.isProne(), false);
-                ReloadInfo reloadInfo = data.getReloadInfo();
-                if (data.getAimInfo().isAiming()) this.setAiming(data, false);
-                if (reloadInfo.isReloading()) {
-                    reloadInfo.interrupt();
-                    PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
-                }
-                PacketHandler.sendToServer(new C2S_PacketProneStatus(data.isProne()));
+            data.setProne(!data.isProne(), false);
+            ReloadInfo reloadInfo = data.getReloadInfo();
+            if (data.getAimInfo().isAiming()) this.setAiming(data, false);
+            if (reloadInfo.isReloading()) {
+                reloadInfo.interrupt();
+                PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
             }
+            PacketHandler.sendToServer(new C2S_PacketProneStatus(data.isProne()));
         }
-        IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        // Attachment menu
         if (KeyBinds.ATTACHMENT.isPressed()) {
-            if (sp.getHeldItemMainhand().getItem() instanceof GunBase) {
+            if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
                 Minecraft mc = Minecraft.getMinecraft();
                 mc.displayGuiScreen(new GuiAttachmentSelector());
             } else {
-                sp.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true);
+                player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "You must hold gun in your hand!"), true); // TODO localization
             }
         }
+        // Reloading
         if (KeyBinds.RELOAD.isPressed()) {
-            ItemStack stack = sp.getHeldItemMainhand();
+            ItemStack stack = player.getHeldItemMainhand();
             ReloadInfo reloadInfo = data.getReloadInfo();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
@@ -352,16 +361,16 @@ public class ClientEvents {
                     AmmoType type = gun.getAmmoType();
                     if (ammo < gun.getWeaponAmmoLimit(stack)) {
                         boolean hasAmmo = false;
-                        for (int i = 0; i < sp.inventory.getSizeInventory(); i++) {
-                            ItemStack ammoStack = sp.inventory.getStackInSlot(i);
+                        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                            ItemStack ammoStack = player.inventory.getStackInSlot(i);
                             if (!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
                                 hasAmmo = true;
                                 break;
                             }
                         }
                         if (hasAmmo && !reloadInfo.isReloading()) {
-                            AnimationDispatcher.dispatchReloadAnimation(gun, stack, sp);
-                            reloadInfo.startReload(sp, gun, stack);
+                            AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
+                            reloadInfo.startReload(player, gun, stack);
                             PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
                         }
                     }
@@ -369,22 +378,50 @@ public class ClientEvents {
             }
         }
 
-        //Same as above, we just send packet to server and everything else will be done in the rendering method above
-        if (KeyBinds.NV.isPressed()) {
-            if (!data.getSpecialItemFromSlot(SpecialEquipmentSlot.NIGHT_VISION).isEmpty()) {
-                boolean status = !data.isNightVisionActive();
-                data.setNightVisionActive(status);
-                PacketHandler.sendToServer(new C2S_PacketSetProperty(status, C2S_PacketSetProperty.Action.NIGHT_VISION));
-            }
-        }
-
         //Switch firemode
         if (KeyBinds.FIREMODE.isPressed()) {
-            ItemStack stack = sp.getHeldItemMainhand();
+            ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() instanceof GunBase) {
                 PacketHandler.sendToServer(new C2S_PacketFiremode());
             }
         }
+
+        // Request game GUI
+        if (KeyBinds.GAME_MENU.isPressed()) {
+            PacketHandler.sendToServer(new C2S_RequestGameMenuGUI());
+        }
+
+        // Equipment inventory
+        if (KeyBinds.EQUIPMENT_INVENTORY.isPressed()) {
+            PacketHandler.sendToServer(new C2S_PacketOpenPlayerEquipment());
+        }
+    }
+
+    @SubscribeEvent
+    public void handleMouseEvent(MouseEvent event) {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        GameSettings gameSettings = minecraft.gameSettings;
+        EntityPlayer player = minecraft.player;
+        if (player == null || player.isSpectator())
+            return;
+        int wheelAmount = Integer.signum(event.getDwheel());
+        if (wheelAmount == 0 || !GuiScreen.isAltKeyDown())
+            return;
+        ItemStack itemStack = player.getHeldItemMainhand();
+        if (!(itemStack.getItem() instanceof GunBase))
+            return;
+        ScopeZoom scopeZoom = ((GunBase) itemStack.getItem()).getScopeData(itemStack);
+        if (scopeZoom == null || !scopeZoom.hasMouseScrollOverrides())
+            return;
+
+        if (wheelAmount > 0) {
+            scopeZoom.zoomIn(itemStack.getItem());
+        } else {
+            scopeZoom.zoomOut(itemStack.getItem());
+        }
+        RenderHandler.restore();
+        gameSettings.mouseSensitivity *= scopeZoom.getSensitivity(itemStack.getItem());
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -433,9 +470,9 @@ public class ClientEvents {
                     if (!data.getAimInfo().isAiming()) {
                         player.setSprinting(false);
                         RenderHandler.saveCurrentOptions();
-                        ScopeData scopeData = gun.getScopeData(stack);
-                        if (scopeData != null && scopeData.getMouseSens() < 1.0F) {
-                            gs.mouseSensitivity *= scopeData.getMouseSens();
+                        ScopeZoom scopeData = gun.getScopeData(stack);
+                        if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
+                            gs.mouseSensitivity *= scopeData.getSensitivity(gun);
                         }
                         PacketHandler.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.AIM));
                         AnimationDispatcher.dispatchAimAnimation(gun, stack);
@@ -458,6 +495,7 @@ public class ClientEvents {
                 ((ITickable) mc.currentScreen).update();
             }
             AnimationProcessor.instance().processTick();
+            ScrollableScopeZoom.tick();
         }
 
         if (player != null && ev.phase == Phase.END && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
@@ -569,15 +607,18 @@ public class ClientEvents {
     private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun, boolean aiming) {
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         ItemGrip grip = gun.getAttachment(AttachmentType.GRIP, stack);
-        float vertical = 1.0F;
-        float horizontal = 1.0F;
+        CFGWeapons config = ConfigPMC.guns();
+        float vertical = config.globalVerticalRecoil.getAsFloat();
+        float horizontal = config.globalHorizontalRecoil.getAsFloat();
         IPlayerData data = PlayerDataProvider.get(player);
         if (data.isProne()) {
-            vertical *= 0.3F;
-            horizontal *= 0.3F;
+            float multiplier = config.proneRecoilScale.getAsFloat();
+            vertical *= multiplier;
+            horizontal *= multiplier;
         } else if (player.isSneaking()) {
-            vertical *= 0.85F;
-            horizontal *= 0.85F;
+            float multiplier = config.crouchRecoilScale.getAsFloat();
+            vertical *= multiplier;
+            horizontal *= multiplier;
         }
         if (muzzle != null) {
             vertical = muzzle.applyVerticalRecoilMultiplier(vertical);

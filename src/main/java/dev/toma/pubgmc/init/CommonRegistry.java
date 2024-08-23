@@ -20,7 +20,6 @@ import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
-import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
 import dev.toma.pubgmc.common.games.playzone.PlayzoneTypes;
 import dev.toma.pubgmc.common.items.*;
@@ -274,12 +273,12 @@ public class CommonRegistry {
                 new ItemMuzzle("compensator_smg", 0.7F, 0.7F),
                 new ItemMuzzle("compensator_ar", 0.7F, 0.7F),
                 new ItemMuzzle("compensator_sniper", 0.7F, 0.7F),
-                new ItemScope("red_dot", new ScopeData()),
-                new ItemScope("holographic", new ScopeData()),
-                new ItemScope("scope2x", new ScopeData(Constants.SCOPE_2X_ZOOM, () -> ConfigPMC.client.reticles.scope2xSensitivity.getAsFloat())),
-                new ItemScope("scope4x", new ScopeData(Constants.SCOPE_4X_ZOOM, () -> ConfigPMC.client.reticles.scope4xSensitivity.getAsFloat())),
-                new ItemScope("scope8x", new ScopeData(Constants.SCOPE_8X_ZOOM, () -> ConfigPMC.client.reticles.scope8xSensitivity.getAsFloat())),
-                new ItemScope("scope15x", new ScopeData(Constants.SCOPE_15X_ZOOM, () -> ConfigPMC.client.reticles.scope15xSensitivity.getAsFloat())),
+                new ItemScope("red_dot"),
+                new ItemScope("holographic"),
+                new ItemScope("scope2x", new StaticScopeZoom(Constants.SCOPE_2X_ZOOM, ConfigPMC.client.reticles.scope2xSensitivity)),
+                new ItemScope("scope4x", new StaticScopeZoom(Constants.SCOPE_4X_ZOOM, ConfigPMC.client.reticles.scope4xSensitivity)),
+                new ItemScope("scope8x", new ScrollableScopeZoom(Constants.SCOPE_8X_ZOOM, Constants.SCOPE_4X_ZOOM, ConfigPMC.client.reticles.scope8xSensitivity, ConfigPMC.client.reticles.scope4xSensitivity)),
+                new ItemScope("scope15x", new ScrollableScopeZoom(Constants.SCOPE_15X_ZOOM, Constants.SCOPE_8X_ZOOM, ConfigPMC.client.reticles.scope15xSensitivity, ConfigPMC.client.reticles.scope8xSensitivity)),
                 new ItemGrip("grip_vertical", 0.8F, 1.0F),
                 new ItemGrip("grip_angled", 1.0F, 0.8F),
                 new ItemMagazine("quickdraw_mag_smg", false, true),
@@ -784,7 +783,7 @@ public class CommonRegistry {
                         .firemode(GunBase.Firemode.AUTO, GunBase.Firemode::ignoreBurst)
                         .weaponType(GunBase.GunType.DMR)
                         .sound(PMCSounds.gun_vss, 5f)
-                        .builtInScope(Constants.SCOPE_4X_ZOOM, () -> ConfigPMC.client.reticles.scope4xSensitivity.getAsFloat())
+                        .builtInScope(new StaticScopeZoom(Constants.SCOPE_4X_ZOOM, ConfigPMC.client.reticles.scope4xSensitivity))
                         .attachments()
                         .addForType(AttachmentType.MAGAZINE, AttachmentHelper::getDMRMags)
                         .addForType(AttachmentType.STOCK, () -> new ItemStock[]{PMCItems.CHEEKPAD})

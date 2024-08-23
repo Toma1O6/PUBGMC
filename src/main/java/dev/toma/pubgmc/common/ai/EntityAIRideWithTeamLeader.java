@@ -4,7 +4,7 @@ import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

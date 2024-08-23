@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.api.game.team;
 
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.groups.Group;
+import dev.toma.pubgmc.api.game.groups.GroupManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +15,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface TeamManager extends INBTSerializable<NBTTagCompound> {
+public interface TeamManager extends INBTSerializable<NBTTagCompound>, GroupManager {
 
     Collection<Team> getTeams();
 
@@ -53,7 +54,7 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
         if (team1 == null || team2 == null) {
             return TeamRelations.UNKNOWN;
         }
-        return team1.getTeamId().equals(team2.getTeamId()) ? TeamRelations.FRIENDLY : TeamRelations.ENEMY;
+        return team1.getId().equals(team2.getId()) ? TeamRelations.FRIENDLY : TeamRelations.ENEMY;
     }
 
     default Stream<Entity> getAllActiveEntities(WorldServer worldServer) {
@@ -69,5 +70,17 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound> {
                 .filter(member -> member.getMemberType().isPlayer())
                 .map(member -> member.getPlayer(world))
                 .filter(Objects::nonNull);
+    }
+
+    default int getAlivePlayerCount() {
+        return (int) this.getTeams().stream()
+                .flatMap(Team::getActiveMemberStream)
+                .filter(Team.Member::isPlayer)
+                .count();
+    }
+
+    @Override
+    default Group getGroupForPlayer(UUID playerId) {
+        return this.getEntityTeamByEntityId(playerId);
     }
 }

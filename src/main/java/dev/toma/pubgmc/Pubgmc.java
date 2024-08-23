@@ -3,6 +3,7 @@ package dev.toma.pubgmc;
 import dev.toma.pubgmc.api.PubgmcRegistries;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PartyData;
 import dev.toma.pubgmc.api.data.DataVersion;
 import dev.toma.pubgmc.api.data.DataVersionManager;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
@@ -14,6 +15,7 @@ import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
 import dev.toma.pubgmc.common.capability.GameDataImpl;
+import dev.toma.pubgmc.common.capability.GamePartyData;
 import dev.toma.pubgmc.common.capability.PlayerData;
 import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
@@ -98,6 +100,7 @@ public class Pubgmc {
 
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
         CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
+        CapabilityManager.INSTANCE.register(PartyData.class, SimpleStorageImpl.instance(), GamePartyData::new);
 
         registerProperties();
         DataVersionManager.register(Pubgmc.getResource("loot_schema"), LootManager.getInstance());

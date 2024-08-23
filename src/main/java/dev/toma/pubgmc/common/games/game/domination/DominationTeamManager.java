@@ -1,7 +1,8 @@
 package dev.toma.pubgmc.common.games.game.domination;
 
+import dev.toma.pubgmc.api.game.groups.Group;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
@@ -46,7 +47,7 @@ public class DominationTeamManager implements TeamManager {
     }
 
     public TeamType getTeamType(Team team) {
-        return team.getTeamId().equals(RED_TEAM) ? TeamType.RED : TeamType.BLUE;
+        return team.getId().equals(RED_TEAM) ? TeamType.RED : TeamType.BLUE;
     }
 
     public Team autoJoinTeam(EntityLivingBase livingBase) {
@@ -138,7 +139,7 @@ public class DominationTeamManager implements TeamManager {
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("teams", SerializationHelper.mapToNbt(teamMap, UUID::toString, Team::serialize));
-        nbt.setTag("entityTeams", SerializationHelper.mapToNbt(entityTeamMap, UUID::toString, team -> new NBTTagString(team.getTeamId().toString())));
+        nbt.setTag("entityTeams", SerializationHelper.mapToNbt(entityTeamMap, UUID::toString, team -> new NBTTagString(team.getId().toString())));
         return nbt;
     }
 
@@ -158,11 +159,11 @@ public class DominationTeamManager implements TeamManager {
     }
 
     private boolean isValidTeam(Team team) {
-        return team.getTeamId().equals(RED_TEAM) || team.getTeamId().equals(BLUE_TEAM);
+        return team.getId().equals(RED_TEAM) || team.getId().equals(BLUE_TEAM);
     }
 
     private Team getOpposingTeam(Team current) {
-        UUID opposingTeam = current.getTeamId().equals(RED_TEAM) ? BLUE_TEAM : RED_TEAM;
+        UUID opposingTeam = current.getId().equals(RED_TEAM) ? BLUE_TEAM : RED_TEAM;
         return teamMap.get(opposingTeam);
     }
 }

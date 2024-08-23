@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.api.game.team;
 
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.groups.Group;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,14 +40,14 @@ public class SimpleTeamManager implements TeamManager {
     @Override
     public Team createNewTeam(Entity entity) {
         Team team = new Team(entity);
-        teamById.put(team.getTeamId(), team);
+        teamById.put(team.getId(), team);
         teamByEntityId.put(entity.getUniqueID(), team);
         return team;
     }
 
     @Override
     public void join(Team team, Entity entity) {
-        if (getTeamById(team.getTeamId()) == null) {
+        if (getTeamById(team.getId()) == null) {
             return;
         }
         team.add(entity);
@@ -60,7 +60,7 @@ public class SimpleTeamManager implements TeamManager {
         if (team != null && team.isMember(uuid)) {
             team.eliminate(uuid);
             if (team.isTeamEliminated()) {
-                teamById.remove(team.getTeamId());
+                teamById.remove(team.getId());
             }
         }
     }
@@ -79,14 +79,14 @@ public class SimpleTeamManager implements TeamManager {
     @Override
     public void disbandAndTransferMembers(Team oldTeam) {
         Map<UUID, Team.Member> memberMap = new HashMap<>(oldTeam.getAllMembers());
-        memberMap.remove(oldTeam.getTeamId());
+        memberMap.remove(oldTeam.getId());
         Team team = null;
         for (Map.Entry<UUID, Team.Member> entry : memberMap.entrySet()) {
             UUID memberId = entry.getKey();
             Team.Member member = entry.getValue();
             if (team == null) {
                 team = new Team(member);
-                teamById.put(team.getTeamId(), team);
+                teamById.put(team.getId(), team);
             }
             if (oldTeam.isMember(memberId)) {
                 team.addActiveMember(memberId);
@@ -105,7 +105,7 @@ public class SimpleTeamManager implements TeamManager {
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("teams", SerializationHelper.mapToNbt(teamById, UUID::toString, Team::serialize));
-        nbt.setTag("entityTeams", SerializationHelper.mapToNbt(teamByEntityId, UUID::toString, team -> new NBTTagString(team.getTeamId().toString())));
+        nbt.setTag("entityTeams", SerializationHelper.mapToNbt(teamByEntityId, UUID::toString, team -> new NBTTagString(team.getId().toString())));
         return nbt;
     }
 

@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.api.game.util;
 
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.client.Minecraft;
@@ -185,7 +186,7 @@ public final class DeathMessage {
                 Team victimTeam = manager.getEntityTeamByEntityId(victim);
                 if (victimTeam == null)
                     return MY_KILL;
-                if (victimTeam.getTeamId().equals(myTeam.getTeamId())) {
+                if (victimTeam.getId().equals(myTeam.getId())) {
                     return MY_DEATH;
                 }
                 return MY_KILL;

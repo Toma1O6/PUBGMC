@@ -4,7 +4,7 @@ import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGameCaptureManager;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGameConfiguration;
@@ -68,7 +68,7 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
         int topOffset = 0;
         for (Team team : teams) {
             ImageUtil.drawShape(left, top + topOffset, left + teamWidth, top + topOffset + 2, 0xFFFFFFFF);
-            String teamName = team.getUsername(team.getTeamId());
+            String teamName = team.getUsername(team.getId());
             if (teamName == null) {
                 teamName = "Team";
             }

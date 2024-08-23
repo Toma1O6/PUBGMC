@@ -23,8 +23,11 @@ public class C2S_PacketOpenPlayerEquipment implements IMessage {
         @Override
         public IMessage onMessage(C2S_PacketOpenPlayerEquipment message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
-            player.getServer().addScheduledTask(() ->
-                    player.openGui(Pubgmc.instance, GuiHandler.GUI_PLAYER_EQUIPMENT, player.world, (int) player.posX, (int) player.posY, (int) player.posZ));
+            player.getServer().addScheduledTask(() -> {
+                if (player.isEntityAlive()) {
+                    player.openGui(Pubgmc.instance, GuiHandler.GUI_PLAYER_EQUIPMENT, player.world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                }
+            });
             return null;
         }
     }

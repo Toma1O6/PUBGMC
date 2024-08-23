@@ -21,7 +21,7 @@ import dev.toma.pubgmc.api.game.team.TeamInviteManager;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
@@ -985,7 +985,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 if (game.isStarted()) {
                     game.playerLeaveGame(event.player);
                 } else if (team.isTeamEliminated()) {
-                    game.teamManager.removeTeam(team.getTeamId());
+                    game.teamManager.removeTeam(team.getId());
                 }
                 GameHelper.requestClientGameDataSynchronization(event.player.world);
             }
@@ -1016,7 +1016,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             nbt.setTag("properties", game.playerProperties.serialize());
             nbt.setTag("aiManager", game.aiManager.serialize());
             nbt.setTag("loadoutManager", game.loadoutManager.serialize());
-            nbt.setTag("scoreboard", SerializationHelper.mapToNbt(game.teamScores, team -> team.getTeamId().toString(), NBTTagInt::new));
+            nbt.setTag("scoreboard", SerializationHelper.mapToNbt(game.teamScores, team -> team.getId().toString(), NBTTagInt::new));
             return nbt;
         }
 

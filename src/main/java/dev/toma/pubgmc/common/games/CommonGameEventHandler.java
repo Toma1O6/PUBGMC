@@ -11,6 +11,7 @@ import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,6 +51,11 @@ public final class CommonGameEventHandler {
 
     @SubscribeEvent
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        EntityPlayer player = event.player;
+        if (player == null) {
+            Pubgmc.logger.warn("Received logout event for unknown player, skipping execution of event {}", event.getClass().getSimpleName());
+            return;
+        }
         GameDataProvider.getGameData(event.player.world).ifPresent(data -> {
             Game<?> game = data.getCurrentGame();
             GameHelper.executeGameEventSafely(event.player.world, () -> game.invokeEvent(listener -> listener.onPlayerLoggedOut(event)));

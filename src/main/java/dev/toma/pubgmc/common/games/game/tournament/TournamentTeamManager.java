@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.games.game.tournament;
 
 import dev.toma.pubgmc.api.game.team.SizeLimitedTeamManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
-import dev.toma.pubgmc.api.game.util.Team;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.common.games.util.TeamType;
 import dev.toma.pubgmc.util.Pair;
 import net.minecraft.entity.Entity;

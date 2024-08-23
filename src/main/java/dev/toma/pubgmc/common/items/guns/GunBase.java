@@ -66,7 +66,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     private final SoundEvent shootSound, silentShootSound, reloadSound;
     private final float gunVolume, silentGunVolume;
     private final GunAttachments attachments;
-    private final ScopeData customScope;
+    private final ScopeZoom customScope;
 
     protected GunBase(GunBuilder builder) {
         super(builder.name);
@@ -234,12 +234,12 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
         return firemodeSwitch.apply(current);
     }
 
-    public ScopeData getScopeData(ItemStack stack) {
+    public ScopeZoom getScopeData(ItemStack stack) {
         if (customScope != null) {
             return customScope;
         }
         ItemScope scope = getAttachment(AttachmentType.SCOPE, stack);
-        return scope != null ? scope.getData() : null;
+        return scope != null ? scope.getZoomSettings() : null;
     }
 
     public float getAimSpeedMultiplier(ItemStack stack) {

@@ -2,7 +2,7 @@ package dev.toma.pubgmc.common.items.guns;
 
 import com.google.common.base.Preconditions;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
-import dev.toma.pubgmc.common.items.attachment.ScopeData;
+import dev.toma.pubgmc.common.items.attachment.ScopeZoom;
 import dev.toma.pubgmc.common.items.guns.GunBase.Firemode;
 import dev.toma.pubgmc.common.items.guns.GunBase.GunType;
 import net.minecraft.util.SoundEvent;
@@ -35,7 +35,7 @@ public class GunBuilder {
     WeaponStats weaponStats;
     GunAttachments attachments;
     Supplier<SoundEvent> action;
-    ScopeData customScope;
+    ScopeZoom customScope;
     Supplier<Callable<WeaponRenderer>> renderer;
     IReloader reloader;
 
@@ -132,8 +132,8 @@ public class GunBuilder {
         return this;
     }
 
-    public GunBuilder builtInScope(int zoom, Supplier<Float> mouseSens) {
-        this.customScope = new ScopeData(zoom, mouseSens);
+    public GunBuilder builtInScope(ScopeZoom scopeZoomConfig) {
+        this.customScope = scopeZoomConfig;
         return this;
     }
 
