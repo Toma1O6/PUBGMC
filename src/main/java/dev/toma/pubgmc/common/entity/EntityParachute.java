@@ -3,9 +3,11 @@ package dev.toma.pubgmc.common.entity;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
 import dev.toma.pubgmc.common.entity.controllable.EntityControllable;
+import dev.toma.pubgmc.init.PMCSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,6 +53,7 @@ public class EntityParachute extends EntityControllable {
         if (isBeingRidden()) {
             if (onGround || collided) {
                 Entity passenger = getControllingPassenger();
+                world.playSound(null, posX, posY, posZ, PMCSounds.chute_land, SoundCategory.MASTER, 1.0F, 1.0F);
                 if (passenger instanceof EntityLivingBase) {
                     MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Land(this, (EntityLivingBase) passenger));
                 }

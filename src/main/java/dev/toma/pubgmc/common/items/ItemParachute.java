@@ -35,7 +35,7 @@ public class ItemParachute extends PMCItem {
                 if (MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Open(chute, playerIn))) {
                     return ActionResult.newResult(EnumActionResult.PASS, stack);
                 }
-                worldIn.playSound(playerIn, playerIn.getPosition(), PMCSounds.chute_open, SoundCategory.MASTER, 1.0F, 1.0F);
+                worldIn.playSound(null, playerIn.getPosition(), PMCSounds.chute_open, SoundCategory.MASTER, 1.0F, 1.0F);
                 worldIn.spawnEntity(chute);
                 playerIn.startRiding(chute);
                 if (!playerIn.capabilities.isCreativeMode) {
