@@ -476,7 +476,7 @@ public class ClientEvents {
                 if (gs.keyBindUseItem.isPressed() && isEquipAnimationDone(mc)) {
                     if (!data.getAimInfo().isAiming()) {
                         player.setSprinting(false);
-                        RenderHandler.saveCurrentOptions();
+                        RenderHandler.restoreAndSaveValues();
                         ScopeZoom scopeData = gun.getScopeData(stack);
                         if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
                             gs.mouseSensitivity *= scopeData.getSensitivity(gun);

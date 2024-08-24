@@ -39,6 +39,11 @@ public class RenderHandler {
         }
     }
 
+    public static void restoreAndSaveValues() {
+        restore();
+        saveCurrentOptions();
+    }
+
     @SubscribeEvent
     public void onFOVChanged(FOVUpdateEvent e) {
         EntityPlayer player = e.getEntity();
