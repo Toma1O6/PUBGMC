@@ -122,10 +122,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
                         world.spawnEntity(bullet);
                     }
                 }
-
-                if (!player.capabilities.isCreativeMode) {
-                    this.consumeAmmo(stack);
-                }
+                this.consumeAmmo(stack);
                 PacketHandler.sendToClientsAround(new S2C_PacketPlaySoundWithDelay(playWeaponSound(stack), playWeaponSoundVolume(stack), player.posX, player.posY, player.posZ), new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 256));
             }
         }
