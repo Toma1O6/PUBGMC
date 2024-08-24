@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.common.games.game.battleroyale;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
@@ -7,10 +9,7 @@ import dev.toma.pubgmc.api.data.DataReader;
 import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
-import dev.toma.pubgmc.api.game.GameDataSerializer;
-import dev.toma.pubgmc.api.game.GameEventListener;
-import dev.toma.pubgmc.api.game.GameType;
-import dev.toma.pubgmc.api.game.GenerationType;
+import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -58,6 +57,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +66,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration> {
+public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>, DiagnosticsDumpSupport {
 
     public static final String PLAYER_INITIAL_LOOT_PATH = "battleroyale/player_start_gear";
     public static final String AI_INITIAL_LOOT_PATH = "battleroyale/initial_loot";
@@ -142,7 +142,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     @Override
     public void onGameInit(World world) {
         playerProperties.registerProperty(SharedProperties.KILLS, 0);
-        List<EntityPlayer> playerList = world.playerEntities;
+        List<EntityPlayer> playerList = world.playerEntities.stream()
+                .filter(player -> !player.isCreative() && !player.isSpectator() && player.isEntityAlive())
+                .collect(Collectors.toList());
         GameDataProvider.getGameData(world)
                 .map(GameData::getGameLobby)
                 .ifPresent(lobby -> {
@@ -466,6 +468,20 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
     }
 
+    @Override
+    public JsonElement createDump(Gson gson) {
+        DiagnosticsData data = new DiagnosticsData();
+        data.setTimestamp(ZonedDateTime.now());
+        data.setConfiguration(this.configuration);
+        data.setTeamManager(this.teamManager);
+        data.setAiManager(this.aiManager);
+        data.setStarted(this.started);
+        data.setTimeElapsed(this.gameTime);
+        data.setPhase(this.phase);
+        data.setCompleted(this.completed);
+        return gson.toJsonTree(data);
+    }
+
     private boolean hasAiCompanions() {
         return configuration.allowAi && configuration.allowAiCompanions;
     }
@@ -661,6 +677,50 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         @Override
         public BattleRoyaleGameConfiguration deserializeGameConfiguration(DataReader<?> reader) {
             return BattleRoyaleGameConfiguration.deserialize(reader);
+        }
+    }
+
+    private static final class DiagnosticsData {
+
+        private ZonedDateTime timestamp;
+        private BattleRoyaleGameConfiguration configuration;
+        private TeamManager teamManager;
+        private TeamAIManager aiManager;
+        private boolean started;
+        private long timeElapsed;
+        private int phase;
+        private boolean completed;
+
+        public void setTimestamp(ZonedDateTime timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public void setConfiguration(BattleRoyaleGameConfiguration configuration) {
+            this.configuration = configuration;
+        }
+
+        public void setTeamManager(TeamManager teamManager) {
+            this.teamManager = teamManager;
+        }
+
+        public void setAiManager(TeamAIManager aiManager) {
+            this.aiManager = aiManager;
+        }
+
+        public void setStarted(boolean started) {
+            this.started = started;
+        }
+
+        public void setTimeElapsed(long timeElapsed) {
+            this.timeElapsed = timeElapsed;
+        }
+
+        public void setPhase(int phase) {
+            this.phase = phase;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
         }
     }
 }

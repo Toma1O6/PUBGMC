@@ -16,6 +16,7 @@ import dev.toma.pubgmc.common.commands.core.arg.PubgmcRegistryArgument;
 import dev.toma.pubgmc.common.commands.core.arg.StringArgument;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.util.DiagnosticsGameDataExporter;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
@@ -34,6 +35,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.regex.Pattern;
@@ -203,6 +205,11 @@ public class GameCommand extends AbstractCommand {
                             .permissionLevel(0)
                             .executes(GameCommand::openGameMenu)
             )
+            .node(
+                    CommandNodeProvider.literal("diagnosticsDump")
+                            .permissionLevel(2)
+                            .executes(GameCommand::createDiagnosticsDump)
+            )
             .build();
 
     public GameCommand() {
@@ -215,6 +222,23 @@ public class GameCommand extends AbstractCommand {
 
     private static void executeMapNoArguments(CommandContext context) throws CommandException {
         throw new WrongUsageException("Not enough arguments. Use '/game map create <name> ...' or '/game map <name> [delete|clearPois]'");
+    }
+
+    private static void createDiagnosticsDump(CommandContext context) throws CommandException {
+        GameData gameData = getGameData(context);
+        Game<?> game = gameData.getCurrentGame();
+        if (!(game instanceof DiagnosticsDumpSupport)) {
+            throw new WrongUsageException("Currently set game does not support diagnostics dumps");
+        }
+        try {
+            File exportFile = DiagnosticsGameDataExporter.export("diagnostics-data-" + game.getGameId().toString(), (DiagnosticsDumpSupport) game).getCanonicalFile();
+            String filePath = exportFile.getAbsolutePath();
+            ITextComponent component = new TextComponentString("Dump exported into file - " + filePath);
+            component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, filePath));
+            context.getSender().sendMessage(component);
+        } catch (Exception e) {
+            throw new SyntaxErrorException("Could not export diagnostics dump", e);
+        }
     }
 
     private static void openGameMenu(CommandContext context) throws CommandException {
