@@ -11,16 +11,14 @@ import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -305,6 +303,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public boolean canFitPassenger(Entity passenger) {
         return this.getPassengers().size() < getMaximumCapacity();
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, Block blockIn) {
     }
 
     @Override
