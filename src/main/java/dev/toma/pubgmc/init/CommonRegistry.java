@@ -120,9 +120,9 @@ public class CommonRegistry {
                 BlockBuilder.create("crate", Material.WOOD).soundType(SoundType.WOOD).transparency(false, true).build(),
                 BlockBuilder.create("crates", Material.IRON).soundType(SoundType.METAL).transparency(false, true).build(),
                 BlockBuilder.create("bush", Material.PLANTS).soundType(SoundType.PLANT).nullAABB(Block.FULL_BLOCK_AABB)
-                        .renderType(BlockRenderLayer.CUTOUT).setTransparent().build(),
+                        .renderType(BlockRenderLayer.CUTOUT).setTransparent().mapColor(MapColor.FOLIAGE).build(),
                 BlockBuilder.create("bush_half", Material.PLANTS).soundType(SoundType.PLANT).nullAABB(new AxisAlignedBB(0, 0, 0, 1, 0.5, 1))
-                        .renderType(BlockRenderLayer.CUTOUT).setTransparent().build(),
+                        .renderType(BlockRenderLayer.CUTOUT).setTransparent().mapColor(MapColor.FOLIAGE).build(),
                 new BlockPlant("wheat", Material.PLANTS, SoundType.PLANT, MapColor.YELLOW),
                 HorizontalBlockBuilder.create("prop1", Material.PLANTS).soundType(SoundType.PLANT).setProp().build(),
                 HorizontalBlockBuilder.create("prop2", Material.PLANTS).soundType(SoundType.PLANT).setProp().description("My own prop.. For making the mod I guess").build(),
