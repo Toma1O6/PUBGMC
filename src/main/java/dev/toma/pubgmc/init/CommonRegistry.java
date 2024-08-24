@@ -3,6 +3,7 @@ package dev.toma.pubgmc.init;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
+import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.mutator.*;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
@@ -1041,9 +1042,11 @@ public class CommonRegistry {
         event.registerMutator(GameTypes.FFA, GameMutators.AI_TASKS, new AIPlayerMutator<>(FFAGame::initAi));
         event.registerMutator(GameTypes.FFA, GameMutators.KILL_REWARD, new KillRewardMutator(FFAGame::onEntityKilled));
         event.registerMutator(GameTypes.FFA, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
+        event.registerMutator(GameTypes.FFA, GameMutators.FREE_AMMO, FreeAmmoMutator.INSTANCE);
         event.registerMutator(GameTypes.DOMINATION, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
         event.registerMutator(GameTypes.DOMINATION, GameMutators.AI_TASKS, new AIPlayerMutator<>(DominationGame::initAi));
         event.registerMutator(GameTypes.DOMINATION, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
+        event.registerMutator(GameTypes.DOMINATION, GameMutators.FREE_AMMO, FreeAmmoMutator.INSTANCE);
         // TODO TournamentGame
         //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.LIGHTMAP, LightmapMutator.DEFAULT);
         //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.AI_TASKS, new AIPlayerMutator<>(TournamentGame::initAi));

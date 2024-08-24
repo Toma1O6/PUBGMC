@@ -10,6 +10,7 @@ public final class GameMutators {
     public static final GameMutatorType<KillRewardMutator> KILL_REWARD = GameMutatorType.createMutatorType(Pubgmc.getResource("kill_reward"));
     public static final GameMutatorType<ArmorMutator> ARMOR = GameMutatorType.createMutatorType(Pubgmc.getResource("armor"));
     public static final GameMutatorType<ForcedRespawnMutator> FORCE_RESPAWN = GameMutatorType.createMutatorType(Pubgmc.getResource("forced_respawns"));
+    public static final GameMutatorType<FreeAmmoMutator> FREE_AMMO = GameMutatorType.createMutatorType(Pubgmc.getResource("free_ammo"));
 
     private GameMutators() {}
 }

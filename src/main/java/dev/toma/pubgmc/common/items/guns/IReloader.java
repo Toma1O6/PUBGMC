@@ -2,6 +2,8 @@ package dev.toma.pubgmc.common.items.guns;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
+import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.client.animation.AnimationLoader;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemMagazine;
@@ -54,6 +56,9 @@ public interface IReloader {
             return false;
         AmmoType type = gun.getAmmoType();
         Item item = type.ammo();
+        if (isFreeReload(player)) {
+            return true;
+        }
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack itemStack = player.inventory.getStackInSlot(i);
             if (itemStack.getItem() == item && itemStack.getCount() > 0) {
@@ -61,6 +66,10 @@ public interface IReloader {
             }
         }
         return false;
+    }
+
+    static boolean isFreeReload(EntityPlayer player) {
+        return player.isCreative() || GameMutatorHelper.getMutator(player.world, GameMutators.FREE_AMMO).isPresent();
     }
 
     class Magazine implements IReloader {
@@ -72,17 +81,22 @@ public interface IReloader {
             int left = max - actual;
             AmmoType type = gun.getAmmoType();
             Item target = type.ammo();
-            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                ItemStack itemStack = player.inventory.getStackInSlot(i);
-                if (!itemStack.isEmpty() && itemStack.getItem() == target) {
-                    int count = Math.min(left, itemStack.getCount());
-                    left -= count;
-                    itemStack.shrink(count);
-                    if (left <= 0)
-                        break;
+            if (isFreeReload(player)) {
+                gun.setAmmo(stack, max);
+            } else {
+                for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                    ItemStack itemStack = player.inventory.getStackInSlot(i);
+                    if (!itemStack.isEmpty() && itemStack.getItem() == target) {
+                        int count = Math.min(left, itemStack.getCount());
+                        left -= count;
+                        itemStack.shrink(count);
+                        if (left <= 0)
+                            break;
+                    }
                 }
+                gun.setAmmo(stack, max - left);
             }
-            gun.setAmmo(stack, max - left);
+
             return true;
         }
 
@@ -117,11 +131,13 @@ public interface IReloader {
             int left = max - actual;
             AmmoType type = gun.getAmmoType();
             Item target = type.ammo();
+            boolean freeAmmo = isFreeReload(player);
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack itemStack = player.inventory.getStackInSlot(i);
-                if (!itemStack.isEmpty() && itemStack.getItem() == target) {
+                if (freeAmmo || (!itemStack.isEmpty() && itemStack.getItem() == target)) {
                     --left;
-                    itemStack.shrink(1);
+                    if (!freeAmmo)
+                        itemStack.shrink(1);
                     gun.setAmmo(stack, actual + 1);
                     boolean b = left <= 0;
                     if (!b) {
