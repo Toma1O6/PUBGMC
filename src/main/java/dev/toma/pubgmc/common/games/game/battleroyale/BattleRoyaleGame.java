@@ -135,6 +135,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         mapPlayzone = new StaticPlayzone(damagingPlayzone);
         mapPlayzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
         playzone = new DynamicPlayzone(damagingPlayzone);
+        playzone.onResizeStarted(this::playzoneResizeStarted);
         playzone.onResizeCompleted(this::playzoneResizeCompleted);
     }
 
@@ -172,6 +173,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
             Supplier<EntityPlane> planeProvider = () -> {
                 EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, 1200);
+                plane.setFlightDelay(configuration.planeFlightDelay);
                 plane.setMovementSpeedMultiplier(configuration.planeSpeed);
                 plane.setFlightHeight(configuration.planeFlightHeight);
                 return plane;
@@ -330,10 +332,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return activeTeamCount == 1;
     }
 
-    private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
+    private void playzoneResizeStarted(DynamicPlayzone playzone, World world) {
+        Pubgmc.logger.debug("Triggering playzone resize start event");
         BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
-        // airdrop
-        if (!world.isRemote && phase > 0) {
+        if (!world.isRemote && phase < configurations.length && configurations[phase].getAirdropTrigger().shouldDrop(false)) {
             Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
             List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
             Position2 pos = GameHelper.findLoadedPositionWithinPlayzone(airdropPlayzone, world, playerList, 0, 128);
@@ -342,6 +344,25 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 int z = (int) pos.getZ();
                 int y = world.getHeight(x, z) + 80;
                 PUBGMCUtil.spawnAirdrop(world, new BlockPos(x, y, z), false);
+            }
+        }
+    }
+
+    private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
+        Pubgmc.logger.debug("Triggering playzone resize complete event");
+        BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
+        // airdrop
+        if (!world.isRemote) {
+            if (phase < configurations.length && configurations[phase].getAirdropTrigger().shouldDrop(true)) {
+                Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
+                List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
+                Position2 pos = GameHelper.findLoadedPositionWithinPlayzone(airdropPlayzone, world, playerList, 0, 128);
+                if (pos != null) {
+                    int x = (int) pos.getX();
+                    int z = (int) pos.getZ();
+                    int y = world.getHeight(x, z) + 80;
+                    PUBGMCUtil.spawnAirdrop(world, new BlockPos(x, y, z), false);
+                }
             }
         }
         // Zone resize
@@ -534,6 +555,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                     player.sendStatusMessage(component, true);
                 }
             }
+            Pubgmc.logger.debug("Entity death event processed, remaining players: {}, AIs: {} and not spawned AIs: {}", game.teamManager.getAlivePlayerCount(), game.aiManager.getRemainingAliveEntityCount(), game.aiManager.getAiEntitiesToSpawn());
             GameHelper.requestClientGameDataSynchronization(world);
         }
 
@@ -622,6 +644,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             }
             if (nbt.hasKey("playzone", Constants.NBT.TAG_COMPOUND)) {
                 game.playzone = PlayzoneType.deserialize(nbt.getCompoundTag("playzone"));
+                game.playzone.onResizeStarted(game::playzoneResizeStarted);
                 game.playzone.onResizeCompleted(game::playzoneResizeCompleted);
             }
             game.firstShrinkDelay = nbt.getInteger("playzoneStart");

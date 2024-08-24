@@ -17,7 +17,9 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
     @Nullable
     private ResizeTarget target;
     @Nullable
-    private ResizeCompletedCallback resizeCompletedCallback;
+    private ResizeCallback onPlayzoneResizeStart;
+    @Nullable
+    private ResizeCallback onPlayzoneResized;
 
     public DynamicPlayzone(DamageOptions damageOptions, Position2 min, Position2 max) {
         super(damageOptions);
@@ -29,8 +31,12 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
         this(playzone.getDamageOptions(), playzone.getPositionMin(1.0F), playzone.getPositionMax(1.0F));
     }
 
-    public void onResizeCompleted(ResizeCompletedCallback callback) {
-        this.resizeCompletedCallback = callback;
+    public void onResizeStarted(ResizeCallback callback) {
+        this.onPlayzoneResized = callback;
+    }
+
+    public void onResizeCompleted(ResizeCallback callback) {
+        this.onPlayzoneResized = callback;
     }
 
     @Override
@@ -41,7 +47,12 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
     @Override
     public void tickPlayzone(World world) {
         if (target != null) {
+            boolean wasShrinking = target.isShrinking();
             target.tick();
+            boolean isShrinking = target.isShrinking();
+            if (wasShrinking != isShrinking && this.onPlayzoneResizeStart != null) {
+                this.onPlayzoneResizeStart.onResizeChange(this, world);
+            }
             if (target.isCompleted()) {
                 min = target.nextMin;
                 max = target.nextMax;
@@ -49,8 +60,8 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
                     setDamageOptions(target.newDamageOptions);
                 }
                 target = null;
-                if (resizeCompletedCallback != null) {
-                    resizeCompletedCallback.onResizeCompleted(this, world);
+                if (onPlayzoneResized != null) {
+                    onPlayzoneResized.onResizeChange(this, world);
                 }
             }
         }
@@ -107,6 +118,10 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
             this.newDamageOptions = newDamageOptions;
             this.resizeTimeTotal = resizeTimeTotal;
             this.initiationDelay = initiationDelay;
+        }
+
+        public boolean isShrinking() {
+            return startTimer < initiationDelay;
         }
 
         public void tick() {
@@ -195,8 +210,8 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
     }
 
     @FunctionalInterface
-    public interface ResizeCompletedCallback {
-        void onResizeCompleted(DynamicPlayzone playzone, World world);
+    public interface ResizeCallback {
+        void onResizeChange(DynamicPlayzone playzone, World world);
     }
 
     public static final class Serializer implements PlayzoneSerializer<DynamicPlayzone> {

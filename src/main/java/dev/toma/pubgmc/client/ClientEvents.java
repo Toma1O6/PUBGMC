@@ -742,7 +742,7 @@ public class ClientEvents {
 
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {
         int useDuration = stack.getMaxItemUseDuration();
-        int useTime = Math.min(player.getItemInUseCount(), useDuration);
+        int useTime = Math.max(player.getItemInUseCount(), 0);
         float progress = 1.0F - (useTime / (float) useDuration);
         FontRenderer font = mc.fontRenderer;
         int width = res.getScaledWidth();

@@ -18,6 +18,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public boolean automaticGameJoining = true;
     public int teamSize = 4;
     public float planeSpeed = 1.0F;
+    public int planeFlightDelay = 100;
     public int planeFlightHeight = 256;
     public int playzoneGenerationDelay = 2400;
     public int entityCount = 64;
@@ -26,18 +27,19 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public int aiSpawnInterval = 300;
     public int initialAiSpawnDelay = 1200;
     public ZonePhaseConfiguration[] zonePhases = {
-            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000),
-            new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600),
-            new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400),
-            new ZonePhaseConfiguration(0.50F, 2.0F, 20, 800, 1800),
-            new ZonePhaseConfiguration(0.25F, 3.5F, 20, 450, 1200),
-            new ZonePhaseConfiguration(0.00F, 5.0F, 20, 1200, 3600)
+            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.50F, 2.0F, 20, 800, 1800, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.25F, 3.5F, 20, 450, 1200, AirdropTrigger.NONE),
+            new ZonePhaseConfiguration(0.00F, 5.0F, 20, 1200, 3600, AirdropTrigger.NONE)
     };
 
     @Override
     public void performCorrections() {
         teamSize = Math.max(1, teamSize);
         planeSpeed = MathHelper.clamp(planeSpeed, 0.1F, 10.0F);
+        planeFlightDelay = Math.max(0, planeFlightDelay);
         planeFlightHeight = MathHelper.clamp(planeFlightHeight, 15, 270);
         playzoneGenerationDelay = Math.max(0, playzoneGenerationDelay);
         entityCount = Math.max(1, entityCount);
@@ -51,6 +53,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         writer.writeInt("teamSize", teamSize);
         writer.writeInt("playzoneGenerationDelay", playzoneGenerationDelay);
         writer.writeFloat("planeSpeed", planeSpeed);
+        writer.writeInt("planeFlightDelay", planeFlightDelay);
         writer.writeInt("planeFlightHeight", planeFlightHeight);
         writer.writeInt("entityCount", entityCount);
         writer.writeBoolean("allowAi", allowAi);
@@ -67,6 +70,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         configuration.teamSize = reader.readInt("teamSize", configuration.teamSize);
         configuration.playzoneGenerationDelay = reader.readInt("playzoneGenerationDelay", configuration.playzoneGenerationDelay);
         configuration.planeSpeed = reader.readFloat("planeSpeed", configuration.planeSpeed);
+        configuration.planeFlightDelay = reader.readInt("planeFlightDelay", 100);
         configuration.planeFlightHeight = reader.readInt("planeFlightHeight", configuration.planeFlightHeight);
         configuration.entityCount = reader.readInt("entityCount", configuration.entityCount);
         configuration.allowAi = reader.readBoolean("allowAi", configuration.allowAi);
@@ -85,17 +89,23 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         private final int damageInterval;
         private final int shrinkTime;
         private final int shrinkDelay;
+        private final AirdropTrigger airdropTrigger;
 
-        public ZonePhaseConfiguration(float shrinkScale, float damage, int damageInterval, int shrinkTime, int shrinkDelay) {
+        public ZonePhaseConfiguration(float shrinkScale, float damage, int damageInterval, int shrinkTime, int shrinkDelay, AirdropTrigger trigger) {
             this.shrinkScale = MathHelper.clamp(shrinkScale, 0.0F, 1.0F);
             this.damage = Math.max(damage, 0.0F);
             this.damageInterval = Math.max(-1, damageInterval);
             this.shrinkTime = Math.max(0, shrinkTime);
             this.shrinkDelay = Math.max(0, shrinkDelay);
+            this.airdropTrigger = trigger;
         }
 
         public AbstractDamagingPlayzone.DamageOptions getDamageOptions() {
             return new AbstractDamagingPlayzone.DamageOptions(damage, damageInterval);
+        }
+
+        public AirdropTrigger getAirdropTrigger() {
+            return airdropTrigger;
         }
 
         public DynamicPlayzone.ResizeTarget createNewShrinkTarget(Playzone playzone, Random random) {
@@ -120,6 +130,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
             writer.writeInt("interval", damageInterval);
             writer.writeInt("shrinkTime", shrinkTime);
             writer.writeInt("shrinkDelay", shrinkDelay);
+            writer.writeString("airdropTrigger", airdropTrigger.name());
         }
 
         public static ZonePhaseConfiguration deserialize(DataReader<?> reader) {
@@ -128,7 +139,24 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
             int interval = reader.readInt("interval");
             int shrinkTime = reader.readInt("shrinkTime");
             int shrinkDelay = reader.readInt("shrinkDelay");
-            return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay);
+            AirdropTrigger trigger;
+            try {
+                trigger = AirdropTrigger.valueOf(reader.readString("airdropTrigger", AirdropTrigger.ON_SHRINK_END.name()));
+            } catch (IllegalArgumentException e) {
+                trigger = AirdropTrigger.ON_SHRINK_END;
+            }
+            return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay, trigger);
+        }
+    }
+
+    public enum AirdropTrigger {
+
+        NONE,
+        ON_SHRINK_START,
+        ON_SHRINK_END;
+
+        public boolean shouldDrop(boolean completedResize) {
+            return this != NONE && ((completedResize && this == ON_SHRINK_END) || (!completedResize && this == ON_SHRINK_START));
         }
     }
 }

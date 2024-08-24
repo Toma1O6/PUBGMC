@@ -86,6 +86,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         this.loadoutManager = new SimpleLoadoutManager(EntityLoadout.EMPTY, getAvailableLoadouts());
         this.properties = new PlayerPropertyHolder();
         this.spawnerSelector = new SpawnPointSelector<>(GameMapPoints.SPAWNER, GameHelper::getActiveGameMapOrSubMap);
+        this.spawnerSelector.allowUnloadedSpawnPoints(true);
         this.deathMessages = new DeathMessageContainer(7, 60);
 
         this.addListener(new EventListener(this));
@@ -168,6 +169,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                 createAi(worldServer);
             }
         }
+        spawnerSelector.allowUnloadedSpawnPoints(false);
     }
 
     @Override
