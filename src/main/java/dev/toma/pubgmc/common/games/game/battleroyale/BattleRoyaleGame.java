@@ -257,6 +257,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         Team team = teamManager.getEntityTeam(player);
         if (started && team != null && team.isMember(player.getUniqueID())) {
             teamManager.eliminate(player);
+            Pubgmc.logger.debug("Player {}[{}] has left the game, removing them from game", player, player.getUniqueID());
             return true;
         }
         return false;
@@ -264,7 +265,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     @Override
     public boolean playerJoinGame(EntityPlayer player) {
-        if (!started && teamManager.getAllActivePlayers(player.world).count() < EntityPlane.PLANE_CAPACITY) {
+        if (!started) {
             teamManager.createNewTeam(player);
             playerProperties.register(player);
             return true;
@@ -514,6 +515,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             EntityPlayer player = event.player;
             if (player != null && game.started) {
                 game.teamManager.eliminate(player);
+                Pubgmc.logger.debug("Player {}[{}] has disconnected from the game, removing them from player list", player, player.getUniqueID());
                 GameHelper.moveToLobby(player);
                 GameHelper.requestClientGameDataSynchronization(player.world);
             }
