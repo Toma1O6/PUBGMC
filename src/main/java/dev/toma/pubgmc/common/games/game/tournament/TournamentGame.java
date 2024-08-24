@@ -15,13 +15,9 @@ import dev.toma.pubgmc.api.game.map.GameDoor;
 import dev.toma.pubgmc.api.game.map.GameLobby;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
-import dev.toma.pubgmc.api.game.team.SimpleTeamInviteManager;
-import dev.toma.pubgmc.api.game.team.TeamGame;
-import dev.toma.pubgmc.api.game.team.TeamInviteManager;
-import dev.toma.pubgmc.api.game.team.TeamManager;
+import dev.toma.pubgmc.api.game.team.*;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
-import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
@@ -170,11 +166,7 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
             for (Team team : teamManager.getTeams()) {
                 setSpectating(server, team);
             }
-
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
+            GameRuleStorage.applyDefaultGameRules(world, ruleStorage);
             configuration.worldConfiguration.apply(server, ruleStorage);
 
             teamManager.getAllActivePlayers(world).forEach(player -> player.setGameType(net.minecraft.world.GameType.ADVENTURE));
@@ -604,7 +596,9 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 Collections.singletonList(game.captureManager.getCaptureZone().getPointPosition()) :
                 Collections.emptyList()));
         player.tasks.addTask(4, new EntityAIHeal<>(player, game::shouldHeal, EntityAIPlayer::getInventory));
-        player.tasks.addTask(5, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
+        EntityAIVisitMapPoint<PointOfInterestPoint> visitMapPointTask = new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0F);
+        visitMapPointTask.setAreaProvider(game::getPlayzone);
+        player.tasks.addTask(5, visitMapPointTask);
         player.targetTasks.addTask(0, new EntityAIHurtByTargetTeamAware(player, false));
         player.targetTasks.addTask(1, new EntityAICallTeamForHelp(player));
         player.targetTasks.addTask(2, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));

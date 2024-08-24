@@ -153,10 +153,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
         List<EntityPlayer> bluePlayers = teamManager.getTeamById(DominationTeamManager.BLUE_TEAM).getAllMembers().values().stream()
                 .map(member -> member.getPlayer(world))
                 .collect(Collectors.toList());
-        ruleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
-        ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
-        ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
-        ruleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
+        GameRuleStorage.applyDefaultGameRules(world, ruleStorage);
         if (!world.isRemote) {
             WorldServer server = (WorldServer) world;
             configuration.worldConfiguration.apply(server, ruleStorage);

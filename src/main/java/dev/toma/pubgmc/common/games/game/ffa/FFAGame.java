@@ -25,6 +25,7 @@ import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.SimpleLoadoutManager;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
+import dev.toma.pubgmc.common.games.map.PointOfInterestPoint;
 import dev.toma.pubgmc.common.games.map.SpawnerPoint;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
@@ -160,10 +161,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         if (!world.isRemote) {
             WorldServer worldServer = (WorldServer) world;
             configuration.worldConfiguration.apply(worldServer, gameRuleStorage);
-            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
-            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
-            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
-            gameRuleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
+            GameRuleStorage.applyDefaultGameRules(world, gameRuleStorage);
             int aiCount = configuration.allowAi ? configuration.entityCount - participants.size() : 0;
             for (int i = 0; i < aiCount; i++) {
                 createAi(worldServer);
@@ -332,7 +330,9 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
         shootTask.setReactionTime(10);
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> game.playzone, 1.20F));
         player.tasks.addTask(2, shootTask);
-        player.tasks.addTask(4, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
+        EntityAIVisitMapPoint<PointOfInterestPoint> visitMapPointTask = new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0F);
+        visitMapPointTask.setAreaProvider(game::getPlayzone);
+        player.tasks.addTask(4, visitMapPointTask);
         player.targetTasks.addTask(0, new EntityAIHurtByTarget(player, false));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));

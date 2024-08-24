@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
-import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.data.DataReader;
 import dev.toma.pubgmc.api.data.DataWriter;
 import dev.toma.pubgmc.api.event.GameEvent;
@@ -28,6 +27,7 @@ import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.map.GameMapPoints;
+import dev.toma.pubgmc.common.games.map.PointOfInterestPoint;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
@@ -186,10 +186,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 player.setGameType(net.minecraft.world.GameType.ADVENTURE);
             }, planeProvider);
             configuration.worldConfiguration.apply(worldServer, ruleStorage);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
-            ruleStorage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, GameRuleStorage.FALSE);
+            GameRuleStorage.applyDefaultGameRules(world, ruleStorage);
         }
     }
 
@@ -405,22 +402,24 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 if (spawnPosition != null) {
                     EntityAIPlayer leader = initAi(world, spawnPosition);
                     Team team = teamManager.createNewTeam(leader);
-                    world.spawnEntity(leader);
-                    Pubgmc.logger.debug("AI spawned: {}", leader);
-                    aiManager.entitySpawned(leader);
+                    this.spawnAi(world, leader);
                     if (memberCount > 0) {
                         for (int i = 0; i < memberCount; i++) {
                             EntityAIPlayer member = initAi(world, spawnPosition.around(world.rand, 6.0));
                             teamManager.join(team, member);
-                            world.spawnEntity(member);
-                            Pubgmc.logger.debug("AI spawned: {}", member);
-                            aiManager.entitySpawned(member);
+                            this.spawnAi(world, member);
                         }
                     }
                 }
                 GameHelper.requestClientGameDataSynchronization(world);
             }
         }
+    }
+
+    private void spawnAi(World world, EntityAIPlayer player) {
+        world.spawnEntity(player);
+        Pubgmc.logger.debug("AI spawned: {}", player);
+        aiManager.entitySpawned(player);
     }
 
     private EntityAIPlayer initAi(World world, Position2 spawnPos) {
@@ -438,11 +437,15 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         player.tasks.addTask(0, new EntityAIRideWithTeamLeader(player, 1.1F));
         player.tasks.addTask(1, new EntityAIMoveIntoPlayzone(player, level -> game.playzone, 1.20F));
         player.tasks.addTask(2, new EntityAIGunAttack(player));
-        player.tasks.addTask(3, new EntityAISearchLoot(player, () -> game.playzone, 5, 1.10F));
+        EntityAISearchLoot lootTask = new EntityAISearchLoot(player, 5, 1.10F);
+        lootTask.setAreaProvider(game::getPlayzone);
+        player.tasks.addTask(3, lootTask);
         player.tasks.addTask(4, new EntityAIMoveToTeamLeader(player, 32, 1.20F));
         player.tasks.addTask(5, new EntityAIHeal<>(player, game::shouldHeal, EntityAIPlayer::getInventory));
         player.tasks.addTask(6, new EntityAIMoveIntoPlayzone(player, level -> game.playzone.getResultingPlayzone()));
-        player.tasks.addTask(7, new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0));
+        EntityAIVisitMapPoint<PointOfInterestPoint> visitMapPointTask = new EntityAIVisitMapPoint<>(player, GameMapPoints.POINT_OF_INTEREST, 1.0F);
+        visitMapPointTask.setAreaProvider(game::getPlayzone);
+        player.tasks.addTask(7, visitMapPointTask);
         player.targetTasks.addTask(0, new EntityAICallTeamForHelp(player));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityPlayer.class, true));
         player.targetTasks.addTask(1, new EntityAITeamAwareNearestAttackableTarget<>(player, EntityAIPlayer.class, true));
@@ -690,6 +693,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         }
     }
 
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private static final class DiagnosticsData {
 
         private ZonedDateTime timestamp;

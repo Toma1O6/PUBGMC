@@ -6,13 +6,15 @@ import dev.toma.pubgmc.api.game.map.GameMapPoint;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EntityAIVisitMapPoint<P extends GameMapPoint> extends EntityAIBase {
+public class EntityAIVisitMapPoint<P extends GameMapPoint> extends AbstractMapBoundTask {
 
     private final EntityLiving livingEntity;
     private final GameMapPointType<P> pointType;
@@ -35,14 +37,14 @@ public class EntityAIVisitMapPoint<P extends GameMapPoint> extends EntityAIBase 
         List<BlockPos> positions = getPositionsForVisiting();
         if (!positions.isEmpty()) {
             target = PUBGMCUtil.getClosestPosition(positions, livingEntity.getPosition());
-            return target != null;
+            return target != null && this.canMoveTo(target);
         }
         return false;
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        return target != null && !livingEntity.getNavigator().noPath();
+        return target != null && this.canMoveTo(target) && !livingEntity.getNavigator().noPath();
     }
 
     @Override
@@ -83,7 +85,7 @@ public class EntityAIVisitMapPoint<P extends GameMapPoint> extends EntityAIBase 
                 return Collections.emptyList();
             }
             return map.getPoints(pointType).stream().map(GameMapPoint::getPointPosition)
-                    .filter(pos -> !visitedPositions.contains(pos))
+                    .filter(pos -> !visitedPositions.contains(pos) && this.canMoveTo(pos))
                     .collect(Collectors.toList());
         }).orElse(Collections.emptyList());
     }

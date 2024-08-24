@@ -1,37 +1,34 @@
 package dev.toma.pubgmc.common.ai;
 
 import dev.toma.pubgmc.api.game.loot.LootableContainer;
-import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.InventoryHelper;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EntityAISearchLoot extends EntityAIBase {
+public class EntityAISearchLoot extends AbstractMapBoundTask {
 
     private final EntityAIPlayer aiPlayer;
     private final int chance;
     private final float moveSpeed;
     private final Set<BlockPos> checkedLootSpawners = new HashSet<>();
-    private final Supplier<Playzone> bounds;
 
     @Nullable
     private LootableContainer lootable;
     private boolean lootingCompleted;
     private int updateInterval;
 
-    public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, Supplier<Playzone> bounds, int chance, float moveSpeed) {
+    public EntityAISearchLoot(EntityAIPlayer entityAIPlayer, int chance, float moveSpeed) {
         this.aiPlayer = entityAIPlayer;
-        this.bounds = bounds;
         this.chance = Math.max(1, chance);
         this.moveSpeed = moveSpeed;
         this.setMutexBits(1);
@@ -57,11 +54,11 @@ public class EntityAISearchLoot extends EntityAIBase {
         int dist = Integer.MAX_VALUE;
         LootableContainer closest = null;
         List<LootableContainer> containers = GameHelper.mergeTileEntitiesAndEntitiesByRule(aiPlayer.world, obj -> obj instanceof LootableContainer, obj -> (LootableContainer) obj)
+                .filter(container -> this.canMoveTo(container.getWorldPosition()))
                 .collect(Collectors.toList());
-        Playzone playzone = bounds.get();
         for (LootableContainer lootable : containers) {
             BlockPos pos = lootable.getWorldPosition();
-            if (checkedLootSpawners.contains(pos) || (playzone != null && !playzone.isWithin(pos))) {
+            if (checkedLootSpawners.contains(pos)) {
                 continue;
             }
             int distance = (int) pos.distanceSq(aiPlayer.getPosition());
@@ -93,6 +90,10 @@ public class EntityAISearchLoot extends EntityAIBase {
         if (lootable == null)
             return;
         BlockPos pos = lootable.getWorldPosition();
+        if (!this.canMoveTo(pos)) {
+            this.checkedLootSpawners.add(pos);
+            return;
+        }
         this.aiPlayer.getNavigator().tryMoveToXYZ(pos.getX(), pos.getY() + 1, pos.getZ(), moveSpeed);
         if (moveSpeed > 1.0F) {
             this.aiPlayer.setSprinting(true);
@@ -108,7 +109,7 @@ public class EntityAISearchLoot extends EntityAIBase {
             if (pos.distanceSq(this.aiPlayer.getPosition()) > 4) {
                 PathNavigate navigator = aiPlayer.getNavigator();
                 navigator.tryMoveToXYZ(pos.getX(), pos.getY(), pos.getZ(), moveSpeed);
-                if (navigator.noPath()) {
+                if (navigator.noPath() || !canMoveTo(pos)) {
                     markSearched(pos);
                 }
             } else {
