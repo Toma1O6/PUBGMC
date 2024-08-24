@@ -4,6 +4,7 @@ import dev.toma.pubgmc.api.game.playzone.Playzone;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -30,7 +31,7 @@ public class EntityAIMoveIntoPlayzone extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         Playzone playzone = playzoneProvider.getPlayzone(living.world);
-        return playzone != null && !playzone.isWithin(living.posX, living.posZ) && playzone.length() > 16;
+        return living.getAttackTarget() == null && playzone != null && !playzone.isWithin(living.posX, living.posZ) && playzone.length() > 8;
     }
 
     @Override
@@ -58,7 +59,16 @@ public class EntityAIMoveIntoPlayzone extends EntityAIBase {
             Playzone playzone = playzoneProvider.getPlayzone(living.world);
             if (playzone != null) {
                 BlockPos pos = playzone.findNearestPositionWithin(living.getPositionVector(), living.world);
-                living.getNavigator().tryMoveToXYZ(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, moveSpeed);
+                if (living.getDistanceSq(pos) >= 1024) { // split the path into smaller segments
+                    double diffX = pos.getX() - living.posX;
+                    double diffZ = pos.getZ() - living.posZ;
+                    double targetX = living.posX + MathHelper.clamp(diffX, -128, 128);
+                    double targetZ = living.posZ + MathHelper.clamp(diffZ, -128, 128);
+                    double targetY = living.world.getHeight((int) targetX, (int) targetZ);
+                    living.getNavigator().tryMoveToXYZ(targetX, targetY, targetZ, moveSpeed);
+                } else {
+                    living.getNavigator().tryMoveToXYZ(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, moveSpeed);
+                }
             }
         }
     }
