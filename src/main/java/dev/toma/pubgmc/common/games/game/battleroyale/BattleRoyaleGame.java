@@ -344,14 +344,14 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     private void playzoneResizeStarted(DynamicPlayzone playzone, World world) {
         Pubgmc.logger.debug("Triggering playzone resize start event");
-        this.triggerAirdropGenerator(world);
+        this.triggerAirdropGenerator(world, false);
         GameHelper.requestClientGameDataSynchronization(world);
     }
 
     private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
         Pubgmc.logger.debug("Triggering playzone resize complete event");
         // airdrop
-        this.triggerAirdropGenerator(world);
+        this.triggerAirdropGenerator(world, true);
 
         // Zone resize
         BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
@@ -362,9 +362,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         GameHelper.requestClientGameDataSynchronization(world);
     }
 
-    private void triggerAirdropGenerator(World world) {
+    private void triggerAirdropGenerator(World world, boolean resizeCompleted) {
         BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
-        if (!world.isRemote && phase < configurations.length && configurations[phase].getAirdropTrigger().shouldDrop(false)) {
+        if (!world.isRemote && phase < configurations.length && configurations[phase].getAirdropTrigger().shouldDrop(resizeCompleted)) {
             Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
             List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
             Position2 pos = GameHelper.findLoadedPositionWithinPlayzone(airdropPlayzone, world, playerList, 0, 128);

@@ -50,7 +50,7 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
             boolean wasShrinking = target.isShrinking();
             target.tick();
             boolean isShrinking = target.isShrinking();
-            if (wasShrinking != isShrinking && this.onPlayzoneResizeStart != null) {
+            if (!wasShrinking && isShrinking && this.onPlayzoneResizeStart != null) {
                 this.onPlayzoneResizeStart.onResizeChange(this, world);
             }
             if (target.isCompleted()) {

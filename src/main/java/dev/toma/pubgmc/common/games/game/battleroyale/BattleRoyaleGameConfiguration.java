@@ -27,11 +27,11 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public int aiSpawnInterval = 300;
     public int initialAiSpawnDelay = 1200;
     public ZonePhaseConfiguration[] zonePhases = {
-            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000, AirdropTrigger.ON_SHRINK_START),
-            new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600, AirdropTrigger.ON_SHRINK_START),
-            new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000, AirdropTrigger.NONE),
+            new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600, AirdropTrigger.ANY),
+            new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400, AirdropTrigger.ON_SHRINK_END),
             new ZonePhaseConfiguration(0.50F, 2.0F, 20, 800, 1800, AirdropTrigger.ON_SHRINK_START),
-            new ZonePhaseConfiguration(0.25F, 3.5F, 20, 450, 1200, AirdropTrigger.NONE),
+            new ZonePhaseConfiguration(0.25F, 3.5F, 20, 450, 1200, AirdropTrigger.ON_SHRINK_START),
             new ZonePhaseConfiguration(0.00F, 5.0F, 20, 1200, 3600, AirdropTrigger.NONE)
     };
 
@@ -152,11 +152,12 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public enum AirdropTrigger {
 
         NONE,
+        ANY,
         ON_SHRINK_START,
         ON_SHRINK_END;
 
         public boolean shouldDrop(boolean completedResize) {
-            return this != NONE && ((completedResize && this == ON_SHRINK_END) || (!completedResize && this == ON_SHRINK_START));
+            return this == ANY || (this != NONE && ((completedResize && this == ON_SHRINK_END) || (!completedResize && this == ON_SHRINK_START)));
         }
     }
 }
