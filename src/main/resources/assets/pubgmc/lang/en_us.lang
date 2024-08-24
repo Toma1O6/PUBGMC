@@ -345,6 +345,7 @@ commands.pubgmc.team.member_kick.team=%s has been kicked from your team
 commands.pubgmc.team.member_kick.team.reason=%s has been kicked from your team with reason: %s
 
 pubgmc.game.won.label=You are victorious!
+pubgmc.game.completed.label=Game completed!
 pubgmc.playzone.label=Zone:
 pubgmc.playzone.status.shrinking=Shrinking...
 pubgmc.game.label.alive_players=Alive:

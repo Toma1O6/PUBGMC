@@ -96,6 +96,8 @@ public class SerializationHelper {
     }
 
     public static <T extends Entity & SynchronizableEntity> void syncEntity(T entity) {
+        if (entity == null)
+            return;
         PacketHandler.sendToAllTracking(new S2C_PacketSendEntityData(entity), entity);
     }
 

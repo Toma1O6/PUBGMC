@@ -20,6 +20,7 @@ public class TextComponentHelper {
     public static final ITextComponent GENERIC_DEATH_BY_ENTITY = new TextComponentTranslation("label.pubgmc.death_message.generic.entity");
     public static final ITextComponent GENERIC_ZONE = new TextComponentTranslation("label.pubgmc.death_message.zone");
     public static final ITextComponent GAME_WON = applyColor(new TextComponentTranslation("pubgmc.game.won.label"), TextFormatting.GREEN);
+    public static final ITextComponent GAME_COMPLETED = applyColor(new TextComponentTranslation("pubgmc.game.completed.label"), TextFormatting.AQUA);
     public static final ITextComponent NAME = new TextComponentTranslation("label.pubgmc.name");
     public static final ITextComponent KILLS = new TextComponentTranslation("label.pubgmc.kills");
     public static final ITextComponent DEATHS = new TextComponentTranslation("label.pubgmc.deaths");

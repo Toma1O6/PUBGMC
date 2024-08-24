@@ -224,11 +224,14 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 if (isGameCompleted(worldServer)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
-                    teamManager.getAllActivePlayers(world).forEach(player -> {
-                        EntityPlayerMP playerMP = (EntityPlayerMP) player;
-                        playerMP.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_WON, 20, 120, 60));
-                        MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(this, playerMP, true));
-                    });
+                    for (EntityPlayerMP player : worldServer.getMinecraftServer().getPlayerList().getPlayers()) {
+                        Team team = this.teamManager.getEntityTeam(player);
+                        if (team != null && team.isMember(player.getUniqueID())) {
+                            player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_WON, 20, 120, 60));
+                        } else {
+                            player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_COMPLETED, 20, 120, 60));
+                        }
+                    }
                     return;
                 }
             }

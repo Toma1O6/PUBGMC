@@ -111,7 +111,6 @@ public class EntityMolotov extends EntityThrowableExplodeable {
         this.hasStartedSpreading = true;
         this.startedSpreadingAt = this.ticksExisted;
         this.world.playSound(null, this.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0F, 1.0F);
-        super.onEntityFrozen();
     }
 
     protected void createMolotovParticles(World world, MolotovFirePosEntry entry, int amount, int spreadAmount) {
