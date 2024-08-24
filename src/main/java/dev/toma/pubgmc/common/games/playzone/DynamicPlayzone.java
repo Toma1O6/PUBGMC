@@ -32,7 +32,7 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
     }
 
     public void onResizeStarted(ResizeCallback callback) {
-        this.onPlayzoneResized = callback;
+        this.onPlayzoneResizeStart = callback;
     }
 
     public void onResizeCompleted(ResizeCallback callback) {
@@ -121,7 +121,7 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
         }
 
         public boolean isShrinking() {
-            return startTimer < initiationDelay;
+            return startTimer >= initiationDelay;
         }
 
         public void tick() {

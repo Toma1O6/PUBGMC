@@ -143,7 +143,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     public void onGameInit(World world) {
         playerProperties.registerProperty(SharedProperties.KILLS, 0);
         List<EntityPlayer> playerList = world.playerEntities.stream()
-                .filter(player -> !player.isCreative() && !player.isSpectator() && player.isEntityAlive())
+                .filter(EntityLivingBase::isEntityAlive)
                 .collect(Collectors.toList());
         GameDataProvider.getGameData(world)
                 .map(GameData::getGameLobby)
@@ -332,7 +332,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         if (notSpawnedBots > 0) {
             return false;
         }
-        return activeTeamCount == 1;
+        return activeTeamCount <= 1;
     }
 
     private void playzoneResizeStarted(DynamicPlayzone playzone, World world) {
