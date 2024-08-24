@@ -5,16 +5,24 @@ import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.game.map.Area;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.util.Position2;
+import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import journeymap.client.api.IClientAPI;
+import journeymap.client.api.display.ImageOverlay;
 import journeymap.client.api.display.PolygonOverlay;
+import journeymap.client.api.model.MapImage;
 import journeymap.client.api.model.MapPolygon;
 import journeymap.client.api.model.ShapeProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.List;
+import java.util.UUID;
 
 public class JourneyMapOverlays {
 
@@ -32,6 +40,22 @@ public class JourneyMapOverlays {
         }
     }
 
+    private static void showImage(IClientAPI api, BlockPos pos, int scale, String name, ResourceLocation image, int textureSize) {
+        BlockPos north = pos.north(scale).west(scale);
+        BlockPos south = pos.south(scale).east(scale);
+        MapImage mapImage = new MapImage(image, textureSize, textureSize);
+        mapImage.setRotation(0);
+        mapImage.setAnchorX(0);
+        mapImage.setAnchorY(0);
+        ImageOverlay imageOverlay = new ImageOverlay(OVERLAYS_ID, name, north, south, mapImage);
+        imageOverlay.setDimension(0);
+        try {
+            api.show(imageOverlay);
+        } catch (Exception e) {
+            Pubgmc.logger.error("Failed to generate JEI map image due to error", e);
+        }
+    }
+
     private static BlockPos[] getPolygonCorners(Area area) {
         Position2 min = area.getPositionMin(1.0F);
         Position2 max = area.getPositionMax(1.0F);
@@ -45,8 +69,12 @@ public class JourneyMapOverlays {
 
     public static final class BattleRoyaleJourneyMapOverlay implements JourneyMapGameOverlay.JourneyMapOverlay<BattleRoyaleGame> {
 
+        private static final ResourceLocation AIRDROP_IMAGE = Pubgmc.getResource("textures/overlay/airdrop.png");
         private static final ShapeProperties SAFE;
         private static final ShapeProperties UNSAFE;
+
+        private UUID targetGameId = GameHelper.DEFAULT_UUID;
+        private int displayedAirdrops = 0;
 
         @Override
         public void apply(BattleRoyaleGame game, GameData data, IClientAPI api) {
@@ -65,6 +93,19 @@ public class JourneyMapOverlays {
                     showArea(api, playzone, UNSAFE, "shrinking");
                 }
             }
+
+            UUID activeGameId = game.getGameId();
+            if (!activeGameId.equals(targetGameId)) {
+                displayedAirdrops = 0;
+                targetGameId = activeGameId;
+            }
+            List<BlockPos> airdrops = game.getAirdrops();
+            int diff = airdrops.size() - displayedAirdrops;
+            for (int i = 0; i < diff; i++) {
+                int index = displayedAirdrops + i;
+                showImage(api, airdrops.get(index), 8, "airdrop" + index, AIRDROP_IMAGE, 16);
+            }
+            displayedAirdrops = airdrops.size();
         }
 
         static {

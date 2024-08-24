@@ -34,12 +34,14 @@ import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import dev.toma.pubgmc.common.games.util.TeamAIManager;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
+import dev.toma.pubgmc.util.helper.SerializationHelper;
 import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
@@ -83,6 +85,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private final DeathMessageContainer deathMessages;
     private final PlayerPropertyHolder playerProperties;
     private final List<GameEventListener> listeners;
+    private final List<BlockPos> airdrops;
     private boolean started;
     private boolean completed;
     private int completedTimer;
@@ -103,6 +106,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         this.deathMessages = new DeathMessageContainer(5, 100);
         this.playerProperties = new PlayerPropertyHolder();
         this.listeners = new ArrayList<>();
+        this.airdrops = new ArrayList<>();
         this.firstShrinkDelay = configuration.playzoneGenerationDelay;
         this.completedTimer = 200;
 
@@ -323,6 +327,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return players + ai;
     }
 
+    public List<BlockPos> getAirdrops() {
+        return airdrops;
+    }
+
     private boolean isGameCompleted(WorldServer server) {
         int playerCount = (int) this.teamManager.getAllActivePlayers(server).count();
         // No players left, end the game. Does not allow AI vs AI games, but that does not matter right now
@@ -340,6 +348,25 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     private void playzoneResizeStarted(DynamicPlayzone playzone, World world) {
         Pubgmc.logger.debug("Triggering playzone resize start event");
+        this.triggerAirdropGenerator(world);
+        GameHelper.requestClientGameDataSynchronization(world);
+    }
+
+    private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
+        Pubgmc.logger.debug("Triggering playzone resize complete event");
+        // airdrop
+        this.triggerAirdropGenerator(world);
+
+        // Zone resize
+        BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
+        if (configurations != null && configurations.length > phase) {
+            DynamicPlayzone.ResizeTarget target = configurations[phase++].createNewShrinkTarget(playzone, Pubgmc.rng());
+            playzone.setTarget(target);
+        }
+        GameHelper.requestClientGameDataSynchronization(world);
+    }
+
+    private void triggerAirdropGenerator(World world) {
         BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
         if (!world.isRemote && phase < configurations.length && configurations[phase].getAirdropTrigger().shouldDrop(false)) {
             Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
@@ -350,33 +377,13 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 int z = (int) pos.getZ();
                 int y = world.getHeight(x, z) + 80;
                 PUBGMCUtil.spawnAirdrop(world, new BlockPos(x, y, z), false);
+                this.airdrops.add(new BlockPos(x, y, z));
+                playerList.forEach(player -> {
+                    EntityPlayerMP serverPlayer = (EntityPlayerMP) player;
+                    serverPlayer.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.ACTIONBAR, TextComponentHelper.AIRDROP_SPAWNED, 20, 120, 60));
+                });
             }
         }
-    }
-
-    private void playzoneResizeCompleted(DynamicPlayzone playzone, World world) {
-        Pubgmc.logger.debug("Triggering playzone resize complete event");
-        BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
-        // airdrop
-        if (!world.isRemote) {
-            if (phase < configurations.length && configurations[phase].getAirdropTrigger().shouldDrop(true)) {
-                Playzone airdropPlayzone = this.playzone.getResultingPlayzone();
-                List<EntityPlayer> playerList = teamManager.getAllActivePlayers(world).collect(Collectors.toList());
-                Position2 pos = GameHelper.findLoadedPositionWithinPlayzone(airdropPlayzone, world, playerList, 0, 128);
-                if (pos != null) {
-                    int x = (int) pos.getX();
-                    int z = (int) pos.getZ();
-                    int y = world.getHeight(x, z) + 80;
-                    PUBGMCUtil.spawnAirdrop(world, new BlockPos(x, y, z), false);
-                }
-            }
-        }
-        // Zone resize
-        if (configurations != null && configurations.length > phase) {
-            DynamicPlayzone.ResizeTarget target = configurations[phase++].createNewShrinkTarget(playzone, Pubgmc.rng());
-            playzone.setTarget(target);
-        }
-        GameHelper.requestClientGameDataSynchronization(world);
     }
 
     private void tickAIEntities(WorldServer world) {
@@ -643,6 +650,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             nbt.setInteger("playzoneStart", game.firstShrinkDelay);
             nbt.setBoolean("playzoneReady", game.playzoneReady);
             nbt.setInteger("phase", game.phase);
+            nbt.setTag("airdrops", SerializationHelper.collectionToNbt(game.airdrops, NBTUtil::createPosTag));
             return nbt;
         }
 
@@ -671,6 +679,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             game.firstShrinkDelay = nbt.getInteger("playzoneStart");
             game.playzoneReady = nbt.getBoolean("playzoneReady");
             game.phase = nbt.getInteger("phase");
+            SerializationHelper.collectionFromNbt(game.airdrops, nbt.getTagList("airdrops", Constants.NBT.TAG_COMPOUND), nbtBase -> NBTUtil.getPosFromTag((NBTTagCompound) nbtBase));
             return game;
         }
 
