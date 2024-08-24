@@ -348,7 +348,6 @@ pubgmc.game.won.label=You are victorious!
 pubgmc.game.completed.label=Game completed!
 pubgmc.game.airdrop_spawned.label=Airdrop has been spawned!
 pubgmc.playzone.label=Zone:
-pubgmc.playzone.status.shrinking=Shrinking...
 pubgmc.game.label.alive_players=Alive:
 
 gui.pubgmc.update_data_files.header=Old data versions have been detected

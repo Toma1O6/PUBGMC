@@ -23,7 +23,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyaleGame> {
 
     private static final ITextComponent ZONE_LABEL = new TextComponentTranslation("pubgmc.playzone.label");
-    private static final ITextComponent SHRINKING = new TextComponentTranslation("pubgmc.playzone.status.shrinking");
     private static final ITextComponent PLAYERS = new TextComponentTranslation("pubgmc.game.label.alive_players");
 
     private final TeamPanelRenderer teamPanelRenderer;
@@ -56,9 +55,11 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
                 boolean shrinking = game.isZoneShrinking();
                 int timeToShrinkStart = game.getRemainingTimeBeforeShrinking();
                 if (shrinking) {
-                    font.drawStringWithShadow(" " + SHRINKING.getFormattedText(), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0xAA0000);
+                    int timeToShrinkFinish = game.getRemainingTimeBeforeShrinkComplete();
+                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkFinish), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0xCC0000);
                 } else if (timeToShrinkStart >= 0) {
-                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkStart), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0x00CC00);
+                    int textColor = timeToShrinkStart < 1200 ? 0xEEEE00 : 0x00CC00; // Yellow text when only 1 minute is left
+                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkStart), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, textColor);
                 } else {
                     font.drawStringWithShadow(" -", infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0x00CC00);
                 }

@@ -89,6 +89,10 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
         return target == null ? -1 : target.initiationDelay - target.startTimer;
     }
 
+    public int getRemainingResizingTime() {
+        return target == null ? -1 : target.resizeTimeTotal - target.resizeTimer;
+    }
+
     public Playzone getResultingPlayzone() {
         return target != null ? new StaticPlayzone(target.newDamageOptions, target.nextMin, target.nextMax) : this;
     }

@@ -310,6 +310,10 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return playzoneReady && playzone.isResizing();
     }
 
+    public int getRemainingTimeBeforeShrinkComplete() {
+        return this.isZoneShrinking() ? playzone.getRemainingResizingTime() : -1;
+    }
+
     public int getRemainingTimeBeforeShrinking() {
         return playzoneReady ? playzone.getRemainingStationaryTime() : -1;
     }
