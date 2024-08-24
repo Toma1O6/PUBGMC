@@ -6,18 +6,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ItemGrip extends ItemAttachment {
 
-    final float verticalRecoil;
-    final float horizontalRecoil;
+    private final Supplier<Float> verticalRecoil;
+    private final Supplier<Float> horizontalRecoil;
     final float ads;
 
-    public ItemGrip(String name, float verticalRecoil, float horizontalRecoil) {
+    public ItemGrip(String name, Supplier<Float> verticalRecoil, Supplier<Float> horizontalRecoil) {
         this(name, verticalRecoil, horizontalRecoil, 1.0F);
     }
 
-    public ItemGrip(String name, float verticalRecoil, float horizontalRecoil, float ads) {
+    public ItemGrip(String name, Supplier<Float> verticalRecoil, Supplier<Float> horizontalRecoil, float ads) {
         super(name);
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.verticalRecoil = verticalRecoil;
@@ -31,11 +32,11 @@ public class ItemGrip extends ItemAttachment {
     }
 
     public float applyVerticalRecoilMultiplier(float in) {
-        return in * verticalRecoil;
+        return in * verticalRecoil.get();
     }
 
     public float applyHorizontalRecoilMultiplier(float in) {
-        return in * horizontalRecoil;
+        return in * horizontalRecoil.get();
     }
 
     public float applyAdsSpeedMultiplier(float in) {
@@ -44,6 +45,8 @@ public class ItemGrip extends ItemAttachment {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        float verticalRecoil = this.verticalRecoil.get();
+        float horizontalRecoil = this.horizontalRecoil.get();
         if (verticalRecoil < 1) {
             int i = Math.round((1.0F - verticalRecoil) * 100);
             tooltip.add(formatProperty("Vertical recoil", "-" + i) + "%");

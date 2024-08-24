@@ -7,22 +7,23 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ItemMuzzle extends ItemAttachment {
 
-    final float verticalRecoil;
-    final float horizontalRecoil;
-    final boolean silent;
+    private final Supplier<Float> verticalRecoil;
+    private final Supplier<Float> horizontalRecoil;
+    private final boolean silent;
 
     public ItemMuzzle(String name, boolean silent) {
-        this(name, 1.0F, 1.0F, silent);
+        this(name, () -> 1.0F, () -> 1.0F, silent);
     }
 
-    public ItemMuzzle(String name, float verticalRecoil, float horizontalRecoil) {
+    public ItemMuzzle(String name, Supplier<Float> verticalRecoil, Supplier<Float> horizontalRecoil) {
         this(name, verticalRecoil, horizontalRecoil, false);
     }
 
-    public ItemMuzzle(String name, float verticalRecoil, float horizontalRecoil, boolean silent) {
+    public ItemMuzzle(String name, Supplier<Float> verticalRecoil, Supplier<Float> horizontalRecoil, boolean silent) {
         super(name);
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
         this.verticalRecoil = verticalRecoil;
@@ -36,11 +37,11 @@ public class ItemMuzzle extends ItemAttachment {
     }
 
     public float applyVerticalRecoilMultiplier(float in) {
-        return in * verticalRecoil;
+        return in * verticalRecoil.get();
     }
 
     public float applyHorizontalRecoilMultiplier(float in) {
-        return in * horizontalRecoil;
+        return in * horizontalRecoil.get();
     }
 
     public boolean isSilenced() {
@@ -49,6 +50,8 @@ public class ItemMuzzle extends ItemAttachment {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        float verticalRecoil = this.verticalRecoil.get();
+        float horizontalRecoil = this.horizontalRecoil.get();
         if (verticalRecoil < 1) {
             int i = Math.round((1.0F - verticalRecoil) * 100);
             tooltip.add(formatProperty("Vertical recoil", "-" + i) + "%");
