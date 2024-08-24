@@ -149,21 +149,17 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         List<EntityPlayer> playerList = world.playerEntities.stream()
                 .filter(EntityLivingBase::isEntityAlive)
                 .collect(Collectors.toList());
-        GameDataProvider.getGameData(world)
-                .map(GameData::getGameLobby)
-                .ifPresent(lobby -> {
-                    Team team = null;
-                    for (EntityPlayer player : playerList) {
-                        lobby.teleport(player);
-                        if (!configuration.automaticGameJoining || team == null || team.getSize() >= configuration.teamSize) {
-                            team = teamManager.createNewTeam(player);
-                            playerProperties.register(player);
-                            continue;
-                        }
-                        teamManager.join(team, player);
-                        playerProperties.register(player);
-                    }
-                });
+        Team team = null;
+        for (EntityPlayer player : playerList) {
+            GameHelper.moveToLobby(player);
+            if (!configuration.automaticGameJoining || team == null || team.getSize() >= configuration.teamSize) {
+                team = teamManager.createNewTeam(player);
+                playerProperties.register(player);
+                continue;
+            }
+            teamManager.join(team, player);
+            playerProperties.register(player);
+        }
     }
 
     @Override

@@ -9,11 +9,11 @@ import dev.toma.pubgmc.api.game.map.GameMapInstance;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorManager;
 import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
 import dev.toma.pubgmc.api.game.util.DeathMessage;
-import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
@@ -238,7 +238,10 @@ public final class GameHelper {
     public static void moveToLobby(EntityPlayer player) {
         World world = player.world;
         GameDataProvider.getGameData(world).map(GameData::getGameLobby)
-                .ifPresent(lobby -> lobby.teleport(player));
+                .ifPresent(lobby -> {
+                    if (!lobby.isWithin(player))
+                        lobby.teleport(player);
+                });
     }
 
     public static void stopGame(World world) {
