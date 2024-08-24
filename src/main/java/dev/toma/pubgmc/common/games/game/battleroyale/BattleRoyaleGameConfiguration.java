@@ -70,7 +70,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         configuration.teamSize = reader.readInt("teamSize", configuration.teamSize);
         configuration.playzoneGenerationDelay = reader.readInt("playzoneGenerationDelay", configuration.playzoneGenerationDelay);
         configuration.planeSpeed = reader.readFloat("planeSpeed", configuration.planeSpeed);
-        configuration.planeFlightDelay = reader.readInt("planeFlightDelay", 100);
+        configuration.planeFlightDelay = reader.readInt("planeFlightDelay", configuration.planeFlightDelay);
         configuration.planeFlightHeight = reader.readInt("planeFlightHeight", configuration.planeFlightHeight);
         configuration.entityCount = reader.readInt("entityCount", configuration.entityCount);
         configuration.allowAi = reader.readBoolean("allowAi", configuration.allowAi);
@@ -134,11 +134,11 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         }
 
         public static ZonePhaseConfiguration deserialize(DataReader<?> reader) {
-            float scale = reader.readFloat("scale");
-            float damage = reader.readFloat("damage");
-            int interval = reader.readInt("interval");
-            int shrinkTime = reader.readInt("shrinkTime");
-            int shrinkDelay = reader.readInt("shrinkDelay");
+            float scale = reader.readFloat("scale", 0.5F);
+            float damage = reader.readFloat("damage", 2.0F);
+            int interval = reader.readInt("interval", 20);
+            int shrinkTime = reader.readInt("shrinkTime", 600);
+            int shrinkDelay = reader.readInt("shrinkDelay", 600);
             AirdropTrigger trigger;
             try {
                 trigger = AirdropTrigger.valueOf(reader.readString("airdropTrigger", AirdropTrigger.ON_SHRINK_END.name()));
