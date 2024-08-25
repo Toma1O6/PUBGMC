@@ -45,7 +45,7 @@ public final class GameMapPointType<P extends GameMapPoint> extends RegistryObje
         BlockPos position = NBTUtil.getPosFromTag(nbt.getCompoundTag("position"));
         GameMapPointType<P> pointType = PubgmcRegistries.GAME_MAP_POINTS.getUnsafeGenericValue(type);
         if (pointType == null) {
-            Pubgmc.logger.error("Unknown point type: " + type);
+            Pubgmc.logger.error("Unknown point type: {}", type);
             return null;
         }
         return pointType.serializer.deserializePointData(position, nbt.getCompoundTag("poi"), parent);

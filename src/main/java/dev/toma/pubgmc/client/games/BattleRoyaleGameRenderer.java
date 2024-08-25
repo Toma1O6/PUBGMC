@@ -58,7 +58,10 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
                     int timeToShrinkFinish = game.getRemainingTimeBeforeShrinkComplete();
                     font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkFinish), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0xCC0000);
                 } else if (timeToShrinkStart >= 0) {
-                    int textColor = timeToShrinkStart < 1200 ? 0xEEEE00 : 0x00CC00; // Yellow text when only 1 minute is left
+                    DynamicPlayzone playzone = game.getPlayzone();
+                    DynamicPlayzone.ResizeTarget target = playzone.getTarget();
+                    boolean isWithin = target != null ? target.isWithinTargetArea(player.posX, player.posZ) : playzone.isWithin(player);
+                    int textColor = !isWithin ? 0xEEEE00 : 0x00CC00;
                     font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkStart), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, textColor);
                 } else {
                     font.drawStringWithShadow(" -", infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0x00CC00);

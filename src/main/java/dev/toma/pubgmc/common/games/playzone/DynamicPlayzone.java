@@ -143,24 +143,30 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
         }
 
         public Position2 getAdjustedMinPosition(Position2 current, float partialTicks) {
-            return getAdjustedPosition(current, nextMin, partialTicks);
+            return getAdjustedPosition(current, nextMin, this.getResizeProgress(partialTicks));
         }
 
         public Position2 getAdjustedMaxPosition(Position2 current, float partialTicks) {
-            return getAdjustedPosition(current, nextMax, partialTicks);
+            return getAdjustedPosition(current, nextMax, this.getResizeProgress(partialTicks));
         }
 
-        private Position2 getAdjustedPosition(Position2 current, Position2 target, float partialTicks) {
-            float f = getResizeProgress(partialTicks);
-            if (f == 0.0F) {
+        public boolean isWithinTargetArea(double x, double z) {
+            Position2 currentPos = new Position2(x, z);
+            Position2 min = this.getAdjustedPosition(currentPos, nextMin, 1.0F);
+            Position2 max = this.getAdjustedPosition(currentPos, nextMax, 1.0F);
+            return x > min.getX() && x < max.getX() && z > min.getZ() && z < max.getZ();
+        }
+
+        private Position2 getAdjustedPosition(Position2 current, Position2 target, float resizeProgress) {
+            if (resizeProgress <= 0.0F) {
                 return current;
             }
-            if (f == 1.0F) {
+            if (resizeProgress >= 1.0F) {
                 return target;
             }
             double xDiff = target.getX() - current.getX();
             double zDiff = target.getZ() - current.getZ();
-            return new Position2(current.getX() + xDiff * f, current.getZ() + zDiff * f);
+            return new Position2(current.getX() + xDiff * resizeProgress, current.getZ() + zDiff * resizeProgress);
         }
 
         private float getResizeProgress(float partialTicks) {
