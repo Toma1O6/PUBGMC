@@ -22,7 +22,7 @@ public class KeyBinds {
         ClientRegistry.registerKeyBinding(NV);
         ClientRegistry.registerKeyBinding(ATTACHMENT);
         ClientRegistry.registerKeyBinding(PRONE);
-        ClientRegistry.registerKeyBinding(GAME_MENU);
+        //ClientRegistry.registerKeyBinding(GAME_MENU);
         ClientRegistry.registerKeyBinding(EQUIPMENT_INVENTORY);
     }
 }

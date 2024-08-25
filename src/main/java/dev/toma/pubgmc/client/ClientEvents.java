@@ -393,10 +393,10 @@ public class ClientEvents {
             }
         }
 
-        // Request game GUI
-        if (KeyBinds.GAME_MENU.isPressed()) {
+        // Request game GUI - TODO
+        /*if (KeyBinds.GAME_MENU.isPressed()) {
             PacketHandler.sendToServer(new C2S_RequestGameMenuGUI());
-        }
+        }*/
 
         // Equipment inventory
         if (KeyBinds.EQUIPMENT_INVENTORY.isPressed()) {
