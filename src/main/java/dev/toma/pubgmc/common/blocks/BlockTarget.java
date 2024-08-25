@@ -8,6 +8,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,6 +17,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -28,9 +30,10 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
     public BlockTarget(String name) {
         super(name, Material.WOOD);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(UPPER, false).withProperty(FEEDBACK, false));
-        this.addDescription("Right-Click to enable hit information");
+        this.setDescription("label.pubgmc.target.description");
     }
 
+    @SuppressWarnings("ConstantValue")
     @Override
     public void onHit(EntityBullet bullet, Vec3d hit, BlockPos pos) {
         if (bullet.getShooter() != null && bullet.getShooter() instanceof EntityPlayerMP) {
@@ -38,7 +41,10 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
             IBlockState state = bullet.world.getBlockState(pos);
             double delta = hit.y - (int) hit.y;
             boolean headShot = state.getBlock() == PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
-            player.sendStatusMessage(new TextComponentString(headShot ? TextFormatting.RED + "Headshot! Damage: " + bullet.getDamage() * 2.5 : "Damage: " + bullet.getDamage()), true);
+            player.sendStatusMessage(new TextComponentString(headShot
+                    ? TextFormatting.RED + I18n.format("label.pubgmc.target.headshot", bullet.getDamage() * 2.5)
+                    : I18n.format("label.pubgmc.target.hit", bullet.getDamage())
+            ), true);
         }
     }
 
@@ -87,7 +93,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
             EnumFacing facing1 = state.getValue(UPPER) ? EnumFacing.DOWN : EnumFacing.UP;
             worldIn.setBlockState(pos, state.withProperty(FEEDBACK, b));
             worldIn.setBlockState(pos.offset(facing1), worldIn.getBlockState(pos.offset(facing1)).withProperty(FEEDBACK, b));
-            playerIn.sendStatusMessage(new TextComponentString(b ? "Hit information enabled" : "Hit information disabled"), true);
+            playerIn.sendStatusMessage(new TextComponentTranslation(b ? "label.pubgmc.target.enabled" : "label.pubgmc.target.disabled"), true);
         }
         return true;
     }
