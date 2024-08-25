@@ -187,8 +187,8 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
         }
 
         private static boolean validateUsage(ItemStack stack) {
-            boolean canUse = !(stack.getItem() instanceof ItemExplodeable) || (stack.hasTagCompound() && !stack.getTagCompound().hasKey("ownerID"));
-            if (!canUse) {
+            boolean missingData = !(stack.getItem() instanceof ItemExplodeable) || (stack.hasTagCompound() && !stack.getTagCompound().hasKey("ownerID"));
+            if (missingData) {
                 Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
                 return false;
             }

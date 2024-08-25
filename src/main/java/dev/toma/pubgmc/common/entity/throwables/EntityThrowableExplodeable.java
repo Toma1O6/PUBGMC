@@ -29,7 +29,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
 
     public static final float AIR_DRAG_MODIFIER = 0.98F;
     public static final float GROUND_DRAG_MODIFIER = 0.7F;
-    public static final float BOUNCE_MODIFIER = 0.8F;
+    public static final float BOUNCE_MODIFIER = 0.3F;
 
     public int fuse;
 
