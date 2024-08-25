@@ -186,7 +186,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 player.setGameType(net.minecraft.world.GameType.ADVENTURE);
             }, planeProvider);
             configuration.worldConfiguration.apply(worldServer, ruleStorage);
-            GameRuleStorage.applyDefaultGameRules(world, ruleStorage);
+            GameRuleStorage.applyDefaultGameRules(world, ruleStorage, configuration.displayChatDeathMessages);
         }
     }
 

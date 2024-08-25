@@ -26,6 +26,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public boolean allowAiCompanions = true;
     public int aiSpawnInterval = 300;
     public int initialAiSpawnDelay = 1200;
+    public boolean displayChatDeathMessages = false;
     public ZonePhaseConfiguration[] zonePhases = {
             new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000, AirdropTrigger.NONE),
             new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600, AirdropTrigger.ANY),
@@ -60,6 +61,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         writer.writeBoolean("allowAiCompanions", allowAiCompanions);
         writer.writeInt("aiSpawnInterval", aiSpawnInterval);
         writer.writeInt("initialAiSpawnDelay", initialAiSpawnDelay);
+        writer.writeBoolean("displayChatDeathMessages", displayChatDeathMessages);
         writer.writeArray("zonePhases", zonePhases, ZonePhaseConfiguration::serialize);
         writer.write("worldConfig", worldConfiguration, GameWorldConfiguration::serialize);
     }
@@ -77,6 +79,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         configuration.allowAiCompanions = reader.readBoolean("allowAiCompanions", configuration.allowAiCompanions);
         configuration.aiSpawnInterval = reader.readInt("aiSpawnInterval", configuration.aiSpawnInterval);
         configuration.initialAiSpawnDelay = reader.readInt("initialAiSpawnDelay", configuration.initialAiSpawnDelay);
+        configuration.displayChatDeathMessages = reader.readBoolean("displayChatDeathMessages", configuration.displayChatDeathMessages);
         configuration.zonePhases = reader.readArray("zonePhases", ZonePhaseConfiguration[]::new, ZonePhaseConfiguration::deserialize, configuration.zonePhases);
         configuration.worldConfiguration = reader.read("worldConfig", GameWorldConfiguration::deserialize, configuration.worldConfiguration);
         return configuration;
