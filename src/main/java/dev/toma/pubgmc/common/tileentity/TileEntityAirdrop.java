@@ -18,7 +18,11 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +42,13 @@ public class TileEntityAirdrop extends TileEntitySync implements IInventoryTileE
 
     @Override
     public String getName() {
-        return "airdrop";
+        return "container.airdrop";
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getDisplayName() {
+        return this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
     }
 
     @Override

@@ -6,6 +6,7 @@ import dev.toma.pubgmc.client.gui.widget.Widget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 
 public class GuiConfirm extends GuiWidgets {
 
@@ -39,8 +40,8 @@ public class GuiConfirm extends GuiWidgets {
         this.xSize = sixth * 4;
         this.ySize = half;
         int seventh = xSize / 7;
-        addWidget(new CustomButton(guiLeft + seventh, guiTop + ySize - 25, 2 * seventh, 20, "Confirm", (widget, mouseX, mouseY, button) -> onConfirm()));
-        addWidget(new CustomButton(guiLeft + 4 * seventh, guiTop + ySize - 25, 2 * seventh, 20, "Cancel", (widget, mouseX, mouseY, button) -> onCancel()));
+        addWidget(new CustomButton(guiLeft + seventh, guiTop + ySize - 25, 2 * seventh, 20, I18n.format("label.pubgmc.accept"), (widget, mouseX, mouseY, button) -> onConfirm()));
+        addWidget(new CustomButton(guiLeft + 4 * seventh, guiTop + ySize - 25, 2 * seventh, 20, I18n.format("label.pubgmc.decline"), (widget, mouseX, mouseY, button) -> onCancel()));
     }
 
     protected void onConfirm() {
@@ -57,7 +58,7 @@ public class GuiConfirm extends GuiWidgets {
         Widget.drawColorShape(guiLeft, guiTop, guiLeft + xSize, guiTop + ySize, 0.0F, 0.0F, 0.0F, 0.8F);
         Widget.drawColorShape(guiLeft, guiTop + 15, guiLeft + xSize, guiTop + 17, 1.0F, 1.0F, 1.0F, 1.0F);
         FontRenderer renderer = mc.fontRenderer;
-        String info = "Confirm action";
+        String info = I18n.format("label.pubgmc.confirm");
         int textWidth = renderer.getStringWidth(info);
         int titleWidth = renderer.getStringWidth(title);
         renderer.drawString(info, guiLeft + (xSize - textWidth) / 2.0F, guiTop + 4, 0xFFFFFF, false);

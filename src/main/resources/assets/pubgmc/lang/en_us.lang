@@ -239,8 +239,10 @@ itemGroup.tab_accessories=PUBGMC: Accessories
 itemGroup.tab_map=PUBGMC: Map Accessories
 
 container.airdrop=Airdrop
+container.player_crate=Player Crate
 container.loot=Loot Spawner
 container.gun_workbench=Gun Workbench
+container.crate=Loot Crate
 
 gun.desc.ammo=Ammo
 gun.desc.firemode=Firemode

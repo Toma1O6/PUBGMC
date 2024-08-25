@@ -14,6 +14,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentString(this.getName());
+        return hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName());
     }
 
     @Override
