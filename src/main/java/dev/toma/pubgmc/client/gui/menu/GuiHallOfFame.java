@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -54,7 +55,7 @@ public class GuiHallOfFame extends GuiWidgets {
             int textWidth = renderer.getStringWidth(name) + 20;
             addWidget(new NameWidget(name, center - textWidth / 2, 30 + j * 12, textWidth, 30));
         }
-        addWidget(new ButtonWidget(center - 60, height - 30, 120, 20, "Back to menu", (w, x, y, b) -> mc.displayGuiScreen(lastScreen)));
+        addWidget(new ButtonWidget(center - 60, height - 30, 120, 20, I18n.format("gui.back"), (w, x, y, b) -> mc.displayGuiScreen(lastScreen)));
     }
 
     @Override
@@ -88,11 +89,11 @@ public class GuiHallOfFame extends GuiWidgets {
         drawWidgets(mc, mouseX, mouseY, partialTicks);
         renderHeader();
         if (vipPatrons.length > 0) {
-            String text = String.format("Showing %d-%d out of %d VIP Patrons", scrollIndex, Math.min(scrollIndex + displayOnPage, vipPatrons.length), vipPatrons.length);
+            String text = I18n.format("pubgmc.menu.patreon_supporters.page_info", scrollIndex, Math.min(scrollIndex + displayOnPage, vipPatrons.length), vipPatrons.length);
             int w = fontRenderer.getStringWidth(text);
             fontRenderer.drawStringWithShadow(text, width - 10 - w, height - 15, 0xffffff);
         } else {
-            String text = "There are no VIP patreons. Maybe become the first? *wink*";
+            String text = I18n.format("pubgmc.menu.patreon_supporters.none");
             int tw = fontRenderer.getStringWidth(text);
             fontRenderer.drawStringWithShadow(text, (width - tw) / 2f, (height - fontRenderer.FONT_HEIGHT) / 2f, 0xffffff);
         }
@@ -101,11 +102,11 @@ public class GuiHallOfFame extends GuiWidgets {
     void renderHeader() {
         int height = 30;
         Widget.drawColorShape(0, 0, width, height, 0.0F, 0.0F, 0.0F, 0.4F);
-        String title = "Hall Of Fame";
+        String title = I18n.format("pubgmc.menu.patreon_supporters.title");
         FontRenderer fr = mc.fontRenderer;
         int titleW = fr.getStringWidth(title);
         mc.fontRenderer.drawStringWithShadow(TextFormatting.ITALIC + title, (width - titleW) / 2f, 7, 0xffffff);
-        String th = "Huge thanks to everyone listed here";
+        String th = I18n.format("pubgmc.menu.patreon_supporters.subtitle");
         int thw = fr.getStringWidth(th);
         mc.fontRenderer.drawStringWithShadow(TextFormatting.ITALIC + th, (width - thw) / 2f, 17, 0xffffff);
     }

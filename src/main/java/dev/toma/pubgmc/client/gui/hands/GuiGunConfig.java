@@ -1,6 +1,7 @@
-package dev.toma.pubgmc.client.gui.menu;
+package dev.toma.pubgmc.client.gui.hands;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
 import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.CheckboxWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;

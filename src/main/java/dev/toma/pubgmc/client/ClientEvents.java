@@ -21,7 +21,7 @@ import dev.toma.pubgmc.client.games.MapPointRendererManager;
 import dev.toma.pubgmc.client.gui.GuiAttachmentSelector;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
-import dev.toma.pubgmc.client.gui.menu.GuiGunConfig;
+import dev.toma.pubgmc.client.gui.hands.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
