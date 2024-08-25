@@ -362,6 +362,7 @@ commands.pubgmc.team.member_kick.team.reason=%s has been kicked from your team w
 
 pubgmc.game.won.label=You are victorious!
 pubgmc.game.completed.label=Game completed!
+pubgmc.game.completed.winning_team=%s's team has won the game
 pubgmc.game.airdrop_spawned.label=Airdrop has been spawned!
 pubgmc.playzone.label=Zone:
 pubgmc.game.label.alive_players=Alive:

@@ -46,10 +46,7 @@ import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -221,12 +218,26 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 if (isGameCompleted(worldServer)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
+                    List<Team> teams = new ArrayList<>(this.teamManager.getTeams());
+                    Team winningTeam = teams.size() == 1 ? teams.get(0) : null;
                     for (EntityPlayerMP player : worldServer.getMinecraftServer().getPlayerList().getPlayers()) {
                         Team team = this.teamManager.getEntityTeam(player);
+                        ITextComponent winningTeamInfo = null;
+                        if (winningTeam != null) {
+                            Team.Member teamLeader = winningTeam.getTeamLeader();
+                            if (teamLeader != null) {
+                                String username = winningTeam.getUsername(teamLeader.getId());
+                                winningTeamInfo = new TextComponentTranslation("pubgmc.game.completed.winning_team", username);
+                                winningTeamInfo.getStyle().setColor(TextFormatting.AQUA);
+                            }
+                        }
                         if (team != null && team.isMember(player.getUniqueID())) {
                             player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_WON, 20, 120, 60));
                         } else {
                             player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_COMPLETED, 20, 120, 60));
+                            if (winningTeam != null) {
+                                player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.SUBTITLE, winningTeamInfo, 20, 120, 60));
+                            }
                         }
                     }
                     return;
