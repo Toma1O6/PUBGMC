@@ -156,7 +156,7 @@ public class GuiAttachmentSelector extends GuiWidgets implements ExternalGuiEven
             RenderItem renderer = mc.getRenderItem();
             ImageUtil.drawShape(x, y, x + SIZE, y + SIZE, 0x66 << 24);
             boolean hoveredMain = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + SIZE;
-            String displayedText = type.getName();
+            String displayedText = type.getTranslatedName();
             if (!attached.isEmpty()) {
                 ImageUtil.drawShape(x + 17, y + 17, x + 33, y + 33, 0x66FFFFFF);
                 // Draw equipped item

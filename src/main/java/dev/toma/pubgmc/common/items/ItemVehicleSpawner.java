@@ -12,8 +12,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+// TODO registry factories for new vehicle entities so that it can be used in generators properly
 public class ItemVehicleSpawner extends PMCItem {
-    private Vehicles car;
+
+    private final Vehicles car;
 
     public ItemVehicleSpawner(String name, Vehicles vehicle) {
         super(name);
@@ -34,11 +36,8 @@ public class ItemVehicleSpawner extends PMCItem {
         return EnumActionResult.PASS;
     }
 
-    private String formattedInfo(String s1, String value) {
-        return TextFormatting.GRAY + s1 + ": " + TextFormatting.YELLOW + value;
-    }
-
     public enum Vehicles {
+
         UAZ,
         DACIA;
 

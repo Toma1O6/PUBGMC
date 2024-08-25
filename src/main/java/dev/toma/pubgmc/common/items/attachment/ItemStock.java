@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -36,10 +37,10 @@ public class ItemStock extends ItemAttachment {
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (fastReload)
-            tooltip.add(TextFormatting.AQUA + "Faster reload");
+            tooltip.add(TextFormatting.AQUA + I18n.format("gun.attachment.magazine.quickdraw"));
         if (ads < 1) {
             int i = Math.round((1.0F - ads) * 100);
-            tooltip.add(formatProperty("ADS speed", "-" + i) + "%");
+            tooltip.add(formatProperty(I18n.format("gun.attachment.ads_speed"), "-" + i) + "%");
         }
     }
 }

@@ -2,10 +2,10 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -16,14 +16,9 @@ import java.util.List;
 
 public class ItemFuelCan extends PMCItem implements Consumable {
 
-    public ItemFuelCan() {
-        super("fuelcan");
+    public ItemFuelCan(String name) {
+        super(name);
         setMaxStackSize(1);
-    }
-
-    @Override
-    public EnumAction getItemUseAction(ItemStack stack) {
-        return EnumAction.NONE;
     }
 
     @Override
@@ -54,14 +49,14 @@ public class ItemFuelCan extends PMCItem implements Consumable {
             if (((EntityVehicle) playerIn.getRidingEntity()).currentSpeed == 0) {
                 playerIn.setActiveHand(handIn);
                 return new ActionResult<>(EnumActionResult.PASS, stack);
-            } else warnPlayer(playerIn, "Vehicle must be stationary!");
-        } else warnPlayer(playerIn, "You must sit inside vehicle to refill fuel!");
-        return new ActionResult(EnumActionResult.FAIL, stack);
+            } else warnPlayer(playerIn, I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));
+        } else warnPlayer(playerIn, I18n.format("label.pubgmc.fuel_can.not_in_vehicle"));
+        return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add("Hold right click while driving vehicle");
-        tooltip.add("Vehicle must be stationary!");
+        tooltip.add(I18n.format("label.pubgmc.fuel_can.tooltip.usage"));
+        tooltip.add(I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));
     }
 }

@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -36,8 +37,8 @@ public class ItemMagazine extends ItemAttachment {
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (extended)
-            tooltip.add(TextFormatting.AQUA + "Extended");
+            tooltip.add(TextFormatting.AQUA + I18n.format("gun.attachment.magazine.extended"));
         if (quickdraw)
-            tooltip.add(TextFormatting.AQUA + "Quickdraw");
+            tooltip.add(TextFormatting.AQUA + I18n.format("gun.attachment.magazine.quickdraw"));
     }
 }

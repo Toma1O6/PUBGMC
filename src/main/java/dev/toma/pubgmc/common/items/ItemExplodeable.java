@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.items;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.entity.throwables.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,14 +19,14 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     private final int maxFuse;
     private final ExplodeableItemAction explodeableItemAction;
-    private String[] description;
+    private List<String> description;
 
     public ItemExplodeable(final String name, final int maxFuse, final ExplodeableItemAction action) {
         super(name);
@@ -36,7 +37,7 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     }
 
     public ItemExplodeable addAditionalDescription(String... description) {
-        this.description = description;
+        this.description = Arrays.asList(description);
         return this;
     }
 
@@ -116,11 +117,11 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add("Right-click: Long throw");
-        tooltip.add("Left-click: Short throw");
-        if (maxFuse > 0) tooltip.add("Fuse: " + this.maxFuse);
+        tooltip.add(I18n.format("label.pubgmc.throwable.right_click"));
+        tooltip.add(I18n.format("label.pubgmc.throwable.left_click"));
+        if (maxFuse > 0) tooltip.add(I18n.format("label.pubgmc.throwable.fuse", this.maxFuse));
         if (description != null) {
-            Collections.addAll(tooltip, description);
+            tooltip.addAll(description);
         }
     }
 
@@ -153,47 +154,45 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     public static class Helper {
 
         public static void onFragRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (failedNBTCheck(stack)) {
-                Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
-                return;
-            }
-            if (!world.isRemote) {
-                EntityFragGrenade grenade = new EntityFragGrenade(world, player, state, timeLeft);
-                world.spawnEntity(grenade);
+            if (validateUsage(stack)) {
+                if (!world.isRemote) {
+                    EntityFragGrenade grenade = new EntityFragGrenade(world, player, state, timeLeft);
+                    world.spawnEntity(grenade);
+                }
             }
         }
 
         public static void onSmokeRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (failedNBTCheck(stack)) {
-                Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
-                return;
-            }
-            if (!world.isRemote) {
-                EntitySmokeGrenade smokeGrenade = new EntitySmokeGrenade(world, player, state, timeLeft);
-                world.spawnEntity(smokeGrenade);
+            if (validateUsage(stack)) {
+                if (!world.isRemote) {
+                    EntitySmokeGrenade smokeGrenade = new EntitySmokeGrenade(world, player, state, timeLeft);
+                    world.spawnEntity(smokeGrenade);
+                }
             }
         }
 
         public static void onMolotovRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (failedNBTCheck(stack)) {
-                Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
-                return;
-            }
-            if (!world.isRemote) {
-                world.spawnEntity(new EntityMolotov(world, player, state));
+            if (validateUsage(stack)) {
+                if (!world.isRemote) {
+                    world.spawnEntity(new EntityMolotov(world, player, state));
+                }
             }
         }
 
         public static void onFlashBangRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (failedNBTCheck(stack)) {
-                Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
-                return;
+            if (validateUsage(stack)) {
+                if (!world.isRemote)
+                    world.spawnEntity(new EntityFlashBang(world, player, state, timeLeft));
             }
-            if (!world.isRemote) world.spawnEntity(new EntityFlashBang(world, player, state, timeLeft));
         }
 
-        private static boolean failedNBTCheck(ItemStack stack) {
-            return !(stack.getItem() instanceof ItemExplodeable) || (stack.hasTagCompound() && !stack.getTagCompound().hasKey("ownerID"));
+        private static boolean validateUsage(ItemStack stack) {
+            boolean canUse = !(stack.getItem() instanceof ItemExplodeable) || (stack.hasTagCompound() && !stack.getTagCompound().hasKey("ownerID"));
+            if (!canUse) {
+                Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
+                return false;
+            }
+            return true;
         }
     }
 }

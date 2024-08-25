@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import dev.toma.pubgmc.PMCTabs;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -41,9 +42,9 @@ public class ItemScope extends ItemAttachment {
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (this.hasCustomZoom()) {
-            tooltip.add(formatProperty("FOV", this.scopeZoom.toString()));
+            tooltip.add(formatProperty(I18n.format("gun.attachment.scope.fov"), this.scopeZoom.toString()));
             if (this.scopeZoom.hasMouseScrollOverrides()) {
-                tooltip.add(TextFormatting.DARK_GRAY + "LeftAlt + Mouse scroll to change zoom");
+                tooltip.add(TextFormatting.DARK_GRAY + I18n.format("gun.attachment.scope.variable_zoom"));
             }
         }
     }

@@ -12,8 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import java.util.Map;
@@ -59,7 +58,9 @@ public abstract class MapPointItem extends PMCItem implements dev.toma.pubgmc.ap
             if (clickedMap != null) {
                 return handlePoiCreation(data, worldIn, interactionPos, player, hand, clickedMap);
             } else if (!worldIn.isRemote) {
-                player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "This item must be used within game map"), true);
+                ITextComponent component = new TextComponentTranslation("label.pubgmc.map_configuration.must_use_on_map");
+                component.getStyle().setColor(TextFormatting.RED);
+                player.sendStatusMessage(component, true);
             }
             return EnumActionResult.PASS;
         }).orElse(EnumActionResult.PASS);

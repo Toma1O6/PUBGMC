@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.common.items.attachment;
 
+import net.minecraft.client.resources.I18n;
+
 import java.util.Locale;
 
 public final class AttachmentType<I extends ItemAttachment> {
@@ -12,11 +14,12 @@ public final class AttachmentType<I extends ItemAttachment> {
     public static final AttachmentType<ItemStock> STOCK = new AttachmentType<>("Stock", 134, 45);
     public static final AttachmentType<ItemScope> SCOPE = new AttachmentType<>("Scope", 80, 15);
 
-    final int index;
-    final String name;
-    final String slotTexture;
-    final int x;
-    final int y;
+    private final int index;
+    private final String name;
+    private final String slotTexture;
+    private final int x;
+    private final int y;
+    private final String localizationKey;
 
     public AttachmentType(String name, int slotX, int slotY) {
         this(name, name.toLowerCase(Locale.ROOT), slotX, slotY);
@@ -24,6 +27,7 @@ public final class AttachmentType<I extends ItemAttachment> {
 
     public AttachmentType(String name, String slotTexture, int slotX, int slotY) {
         this.name = name;
+        this.localizationKey = "gun.attachment.type." + name.toLowerCase(Locale.ROOT);
         this.slotTexture = "pubgmc:textures/items/" + slotTexture + ".png";
         this.x = slotX;
         this.y = slotY;
@@ -37,6 +41,10 @@ public final class AttachmentType<I extends ItemAttachment> {
 
     public String getName() {
         return name;
+    }
+
+    public String getTranslatedName() {
+        return I18n.format(this.localizationKey);
     }
 
     public String getSlotTexture() {
