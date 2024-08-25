@@ -6,6 +6,7 @@ import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
+import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.animation.interfaces.Animation;
 import dev.toma.pubgmc.client.animation.interfaces.KeyFrame;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -51,7 +52,8 @@ public class HeldAnimation implements Animation {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         progressPrev = progress;
-        if (player != null && player.isSprinting()) {
+        AnimationProcessor processor = AnimationProcessor.instance();
+        if (player != null && player.isSprinting() && !processor.isPlaying(AnimationType.RELOAD_ANIMATION_TYPE)) {
             progress = Math.min(1.0F, progress + 0.1F);
         } else {
             progress = Math.max(0.0F, progress - 0.1F);
