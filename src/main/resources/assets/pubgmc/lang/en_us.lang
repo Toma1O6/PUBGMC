@@ -127,6 +127,7 @@ pubgmc.key.reload=Reload
 pubgmc.key.firemode=Firemode
 pubgmc.key.nv=Night Vision
 pubgmc.key.attachment=Attachment GUI
+pubgmc.key.prone=Prone
 pubgmc.key.scopetype=Change Scope Type
 pubgmc.key.scopecolor=Change Scope Color
 pubgmc.key.equipment_inventory=Equipment Inventory
