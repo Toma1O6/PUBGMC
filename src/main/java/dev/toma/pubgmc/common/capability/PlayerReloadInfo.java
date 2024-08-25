@@ -2,18 +2,23 @@ package dev.toma.pubgmc.common.capability;
 
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.ReloadInfo;
+import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.s2c.S2C_PacketAnimation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class PlayerReloadInfo implements ReloadInfo {
 
-    final IPlayerData data;
-    boolean reloading;
-    int reloadingSlot;
-    int reloadingTime;
+    private final IPlayerData data;
+    private boolean reloading;
+    private int reloadingSlot;
+    private int reloadingTime;
+    private ItemStack reloadingItem;
 
     public PlayerReloadInfo(IPlayerData data) {
         this.data = data;
@@ -27,7 +32,7 @@ public class PlayerReloadInfo implements ReloadInfo {
             int slot = player.inventory.currentItem;
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
-                if (slot != reloadingSlot) {
+                if (slot != reloadingSlot || !ItemStack.areItemsEqual(this.reloadingItem, stack)) {
                     interrupt();
                     return;
                 }
@@ -36,6 +41,7 @@ public class PlayerReloadInfo implements ReloadInfo {
                     boolean finished = reloader.finishCycle(gun, stack, player);
                     if (finished) {
                         reloading = false;
+                        reloadingItem = ItemStack.EMPTY;
                     } else {
                         reloadingTime = reloader.getReloadTime(gun, stack);
                     }
@@ -54,12 +60,18 @@ public class PlayerReloadInfo implements ReloadInfo {
             setReloading(true);
             reloadingSlot = player.inventory.currentItem;
             reloadingTime = gun.getReloader().getReloadTime(gun, stack);
+            reloadingItem = stack.copy();
         }
     }
 
     @Override
     public void interrupt() {
         reloading = false;
+        reloadingItem = ItemStack.EMPTY;
+        EntityPlayer player = data.getPlayer();
+        if (!player.world.isRemote) {
+            PacketHandler.sendToClient(new S2C_PacketAnimation(false, AnimationType.RELOAD_ANIMATION_TYPE), (EntityPlayerMP) player);
+        }
         data.sync();
     }
 
@@ -78,6 +90,7 @@ public class PlayerReloadInfo implements ReloadInfo {
         nbt.setBoolean("reloading", reloading);
         nbt.setInteger("reloadingSlot", reloadingSlot);
         nbt.setInteger("reloadingTime", reloadingTime);
+        nbt.setTag("reloadingItemStack", reloadingItem.serializeNBT());
         return nbt;
     }
 
@@ -85,5 +98,6 @@ public class PlayerReloadInfo implements ReloadInfo {
         reloading = nbt.getBoolean("reloading");
         reloadingSlot = nbt.getInteger("reloadingSlot");
         reloadingTime = nbt.getInteger("reloadingTime");
+        reloadingItem = new ItemStack(nbt.getCompoundTag("reloadingItemStack"));
     }
 }
