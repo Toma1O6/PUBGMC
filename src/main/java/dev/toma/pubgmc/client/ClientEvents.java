@@ -20,8 +20,8 @@ import dev.toma.pubgmc.client.games.GameRendererManager;
 import dev.toma.pubgmc.client.games.MapPointRendererManager;
 import dev.toma.pubgmc.client.gui.GuiAttachmentSelector;
 import dev.toma.pubgmc.client.gui.animator.GuiAnimator;
-import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.hands.GuiGunConfig;
+import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
@@ -59,7 +59,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
@@ -330,6 +329,8 @@ public class ClientEvents {
         }
         // Prone
         if (KeyBinds.PRONE.isPressed()) {
+            if (!player.onGround)
+                return;
             data.setProne(!data.isProne(), false);
             ReloadInfo reloadInfo = data.getReloadInfo();
             if (data.getAimInfo().isAiming()) this.setAiming(data, false);
