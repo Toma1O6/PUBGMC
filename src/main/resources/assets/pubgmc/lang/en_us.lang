@@ -432,6 +432,7 @@ label.pubgmc.throwable.fuse=Fuse: %s
 label.pubgmc.throwable.duration=Effect duration: %ss
 label.pubgmc.throwable.water_cancel=Water will cancel the effect!
 label.pubgmc.map_configuration.must_use_on_map=This item must be used within game map
+label.pubgmc.must_hold_weapon=You must hold gun in your main hand!
 pubgmc.menu.discord=Our Discord Server
 pubgmc.menu.curseforge=CurseForge page
 pubgmc.menu.patreon=Donate to support this project
