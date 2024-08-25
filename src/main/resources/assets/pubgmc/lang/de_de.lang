@@ -164,7 +164,6 @@ tile.loot_spawner.name=Loot Spawner
 tile.player_crate.name=Death Box
 tile.gun_workbench.name=Waffenbank
 tile.copper_ore.name=Kupfererz
-tile.landmine.name=Mine
 tile.chair1.name=Schulstuhl
 tile.desk.name=Schultisch
 tile.storagebase.name=Schrank

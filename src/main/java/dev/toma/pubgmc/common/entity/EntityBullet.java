@@ -9,12 +9,10 @@ import dev.toma.pubgmc.api.game.mutator.ArmorMutator;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
-import dev.toma.pubgmc.common.blocks.BlockLandMine;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.WeaponStats;
-import dev.toma.pubgmc.common.tileentity.TileEntityLandMine;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCItems;
@@ -130,9 +128,6 @@ public class EntityBullet extends Entity {
                 Vec3d vec = rayTraceResult.hitVec;
                 PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
-                if (block instanceof BlockLandMine) {
-                    ((TileEntityLandMine) world.getTileEntity(pos)).explode(world, pos);
-                }
                 this.setDead();
             }
 

@@ -8,18 +8,15 @@ import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.content.ContentResult;
 import dev.toma.pubgmc.client.content.ExternalLinks;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
 import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.event.LandmineExplodeEvent;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketAnimation;
 import dev.toma.pubgmc.network.s2c.S2C_PacketNotifyRestoreConfig;
 import dev.toma.pubgmc.network.s2c.S2C_PacketReceiveServerConfig;
-import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.handlers.CustomDateEvents;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -128,18 +125,6 @@ public class CommonEvents {
             }
             if (event.getSlot() == EntityEquipmentSlot.MAINHAND) {
                 selectedSlotCache.put(player.getUniqueID(), player.inventory.currentItem);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void landmineExploded(LandmineExplodeEvent e) {
-        for (Entity entity : e.getAffectedEntities()) {
-            if (entity instanceof EntityVehicle) {
-                EntityVehicle car = (EntityVehicle) entity;
-                double d0 = PUBGMCUtil.getDistanceToBlockPos3D(car.getPosition(), e.getExplosionPosition());
-                float damage = 200f * (float) (1 - d0 / 10);
-                car.health -= damage;
             }
         }
     }

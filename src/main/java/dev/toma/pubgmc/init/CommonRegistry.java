@@ -3,7 +3,6 @@ package dev.toma.pubgmc.init;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
-import dev.toma.pubgmc.api.game.GameType;
 import dev.toma.pubgmc.api.game.mutator.*;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
@@ -140,7 +139,6 @@ public class CommonRegistry {
                 new BlockGunWorkbench("gun_workbench"),
                 new BlockBigAirdrop("big_airdrop"),
                 new BlockOre("copper_ore"),
-                new BlockLandMine("landmine"),
                 HorizontalBlockBuilder.create("desk", Material.WOOD)
                         .soundType(SoundType.WOOD).transparency(false, false)
                         .build(),
@@ -1089,7 +1087,6 @@ public class CommonRegistry {
         registerTileEntity(TileEntityLootGenerator.class, "lootspawner");
         registerTileEntity(TileEntityPlayerCrate.class, "player_crate");
         registerTileEntity(TileEntityGunWorkbench.class, "gun_workbench");
-        registerTileEntity(TileEntityLandMine.class, "landmine");
         registerTileEntity(TileEntityWindow.class, "window");
         registerTileEntity(TileEntityGameEntitySpawner.class, "entity_spawner");
         registerTileEntity(TileEntityLootCrate.class, "loot_crate");
