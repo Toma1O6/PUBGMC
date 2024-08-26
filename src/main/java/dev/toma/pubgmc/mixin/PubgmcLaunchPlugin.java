@@ -1,18 +1,24 @@
-package dev.toma.pubgmc.asm;
+package dev.toma.pubgmc.mixin;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @IFMLLoadingPlugin.TransformerExclusions("dev.toma.pubgmc.asm")
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE)
-public class PMCPlugin implements IFMLLoadingPlugin {
+public class PubgmcLaunchPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
+
+    private static final String[] CLASS_TRANSFORMERS = new String[0];
+    private static final List<String> MIXIN_CONFIGS = Collections.singletonList("mixins.pubgmc.json");
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[]{"dev.toma.pubgmc.asm.PMCClassTransformer"};
+        return CLASS_TRANSFORMERS;
     }
 
     @Override
@@ -33,6 +39,10 @@ public class PMCPlugin implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
+    }
 
+    @Override
+    public List<String> getMixinConfigs() {
+        return MIXIN_CONFIGS;
     }
 }

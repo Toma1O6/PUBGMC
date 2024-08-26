@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
-import dev.toma.pubgmc.asm.ASMHooksClient;
 import dev.toma.pubgmc.common.items.attachment.ScopeZoom;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import net.minecraft.client.Minecraft;
@@ -55,7 +54,7 @@ public class RenderHandler {
                 GunBase gunBase = (GunBase) stack.getItem();
                 ScopeZoom zoom = gunBase.getScopeData(stack);
                 if (zoom != null) {
-                    float zoomFov = zoom.getCurrentZoom(gunBase, ASMHooksClient.getRenderTickTime());
+                    float zoomFov = zoom.getCurrentZoom(gunBase, MixinClientHooks.getRenderTickTime());
                     if (zoomFov > 0) {
                         settings.fovSetting = zoomFov;
                     }

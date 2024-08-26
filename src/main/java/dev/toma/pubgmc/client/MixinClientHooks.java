@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.asm;
+package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.game.Game;
@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Optional;
 
-public class ASMHooksClient {
+public class MixinClientHooks {
 
     private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND;
     private static float renderTickTime;
@@ -158,16 +158,12 @@ public class ASMHooksClient {
         MinecraftForge.EVENT_BUS.post(new ClientWorldTickEvent(TickEvent.Phase.END, worldClient));
     }
 
-    public static int getPlayerLimitForTabOverlayRender() {
-        return 0; // Allows rendering of player list even when player is alone
-    }
-
     public static ItemCameraTransforms.TransformType getTransformType() {
         return transformType;
     }
 
     public static void setRenderTickTime(float renderTickTime) {
-        ASMHooksClient.renderTickTime = renderTickTime;
+        MixinClientHooks.renderTickTime = renderTickTime;
     }
 
     public static float getRenderTickTime() {

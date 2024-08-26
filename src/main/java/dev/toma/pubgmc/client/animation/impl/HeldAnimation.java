@@ -3,7 +3,7 @@ package dev.toma.pubgmc.client.animation.impl;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
-import dev.toma.pubgmc.asm.ASMHooksClient;
+import dev.toma.pubgmc.client.MixinClientHooks;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.animation.AnimationType;
@@ -32,7 +32,7 @@ public class HeldAnimation implements Animation {
                 return;
             }
             if (element == AnimationElement.ITEM_AND_HANDS) {
-                float partialTicks = ASMHooksClient.getRenderTickTime();
+                float partialTicks = MixinClientHooks.getRenderTickTime();
                 AnimationProcessor.processKeyFrame(bigWeaponSprintFrame, progressSmooth);
                 IPlayerData data = PlayerDataProvider.get(player);
                 float bobbingScale = 0.4F;

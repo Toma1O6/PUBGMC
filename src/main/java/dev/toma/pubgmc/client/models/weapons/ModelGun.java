@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.models.weapons;
 
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
-import dev.toma.pubgmc.asm.ASMHooksClient;
+import dev.toma.pubgmc.client.MixinClientHooks;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
 import dev.toma.pubgmc.client.models.atachments.ModelAttachment;
@@ -72,7 +72,7 @@ public abstract class ModelGun extends ModelBase {
     public static void renderBuiltInScope(ModelRenderer scope, ModelRenderer reticle, ModelRenderer overlay, ResourceLocation texture) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
-        float aimProgress = ASMHooksClient.getTransformType() == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? PlayerDataProvider.get(player).getAimInfo().getProgress(ASMHooksClient.getRenderTickTime()) : 0.0F;
+        float aimProgress = MixinClientHooks.getTransformType() == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND ? PlayerDataProvider.get(player).getAimInfo().getProgress(MixinClientHooks.getRenderTickTime()) : 0.0F;
         float invertedAim = 1.0F - aimProgress;
         TextureManager textureManager = mc.getTextureManager();
         GlStateManager.pushMatrix();

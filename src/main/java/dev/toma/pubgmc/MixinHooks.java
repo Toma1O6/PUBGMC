@@ -1,6 +1,5 @@
-package dev.toma.pubgmc.asm;
+package dev.toma.pubgmc;
 
-import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
@@ -13,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public final class ASMHooks {
+public final class MixinHooks {
 
     public static final ResourceLocation LOCKED_SLOT_ICON = Pubgmc.getResource("slot/locked");
 

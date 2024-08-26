@@ -1,0 +1,21 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "package": "dev.toma.pubgmc.mixin",
+  "refmap": "mixins.pubgmc.refmap.json",
+  "mixins": [
+    "SlotMixin"
+  ],
+  "client": [
+    "client.EntityRendererMixin",
+    "client.MinecraftMixin",
+    "client.GuiIngameForgeMixin",
+    "client.ForgeHooksClientMixin",
+    "client.RenderPlayerMixin",
+    "client.ModelBipedMixin"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8.3-SNAPSHOT"
+}

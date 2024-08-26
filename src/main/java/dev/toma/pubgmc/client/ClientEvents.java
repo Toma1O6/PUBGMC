@@ -9,8 +9,7 @@ import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
-import dev.toma.pubgmc.asm.ASMHooks;
-import dev.toma.pubgmc.asm.ASMHooksClient;
+import dev.toma.pubgmc.MixinHooks;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -572,7 +571,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        ASMHooksClient.setRenderTickTime(event.renderTickTime);
+        MixinClientHooks.setRenderTickTime(event.renderTickTime);
         if (event.phase == Phase.START) {
             AnimationProcessor.instance().processFrame(event.renderTickTime);
         }
@@ -581,7 +580,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void stitchTextures(TextureStitchEvent.Pre event) {
         TextureMap map = event.getMap();
-        map.registerSprite(ASMHooks.LOCKED_SLOT_ICON);
+        map.registerSprite(MixinHooks.LOCKED_SLOT_ICON);
         map.registerSprite(ContainerPlayerEquipment.SLOT_NIGHT_VISION);
         map.registerSprite(ContainerPlayerEquipment.SLOT_BACKPACK);
         map.registerSprite(ContainerPlayerEquipment.SLOT_GHILLIE);

@@ -1,16 +1,19 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
+        maven { url "https://repo.spongepowered.org/repository/maven-public/" }
         mavenCentral()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: "org.spongepowered.mixin"
 
 version = "${mod_version}"
 group = 'dev.toma.pubgmc'
@@ -28,7 +31,11 @@ minecraft {
             workingDirectory project.file('run/client')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            property 'fml.coreMods.load', 'dev.toma.pubgmc.asm.PMCPlugin'
+            property 'fml.coreMods.load', 'dev.toma.pubgmc.mixin.PubgmcLaunchPlugin,zone.rong.mixinbooter.MixinBooterPlugin'
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            property "mixin.debug", 'true'
+            arg "-mixin.config=mixins.pubgmc.json"
             arg '--username=User1'
         }
 
@@ -36,7 +43,11 @@ minecraft {
             workingDirectory project.file('run/server')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            property 'fml.coreMods.load', 'dev.toma.pubgmc.asm.PMCPlugin'
+            property 'fml.coreMods.load', 'dev.toma.pubgmc.mixin.PubgmcLaunchPlugin,zone.rong.mixinbooter.MixinBooterPlugin'
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            property "mixin.debug", 'true'
+            arg "-mixin.config=mixins.pubgmc.json"
             arg 'nogui'
         }
     }
@@ -44,12 +55,27 @@ minecraft {
 
 repositories {
     maven { url "https://www.cursemaven.com" }
+    maven { url 'https://maven.cleanroommc.com' }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    // Configuration lib
     compile "curse.maven:configuration-444699:${configuration_version}"
+
+    // JourneyMap API
     compile group: "info.journeymap", name: "journeymap-api", version: "${journeymap_version}", changing: true
+
+    // Mixins
+    compile fg.deobf('zone.rong:mixinbooter:9.3')
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+}
+
+sourceSets {
+    main {
+        ext.refMap = "mixins.pubgmc.refmap.json"
+    }
 }
 
 jar {
@@ -62,9 +88,12 @@ jar {
                 "Implementation-Version"     : "${version}",
                 "Implementation-Vendor"      : "Toma",
                 "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "FMLCorePlugin"              : "dev.toma.pubgmc.asm.PMCPlugin",
+                "FMLCorePlugin"              : "dev.toma.pubgmc.mixin.PubgmcLaunchPlugin",
                 "FMLCorePluginContainsFMLMod": "true",
-                "FMLAT"                      : "accesstransformer.cfg"
+                "FMLAT"                      : "accesstransformer.cfg",
+                "TweakClass"                 : "org.spongepowered.asm.launch.MixinTweaker",
+                "MixinConfigs"               : "mixins.pubgmc.json",
+                "ForceLoadAsMod"             : "true"
         ])
     }
 }
