@@ -29,7 +29,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -145,25 +144,10 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void onTick(PlayerTickEvent ev) {
-        EntityPlayer player = ev.player;
-        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        player.eyeHeight = player.getDefaultEyeHeight();
-        if (data.isProne()) {
-            AxisAlignedBB proneBB = new AxisAlignedBB(player.posX - 0.6, player.posY, player.posZ - 0.6, player.posX + 0.6, player.posY + 0.8, player.posZ + 0.6);
-            player.setEntityBoundingBox(proneBB);
-            player.height = 0.9F;
-            player.eyeHeight = 0.6F;
-        } else if (player.isSneaking()) {
-            float size = 0.3F;
-            float width = player.width / 2.0F;
-            float height = player.height - size;
-            AxisAlignedBB crouchedBB = new AxisAlignedBB(player.posX - width, player.posY, player.posZ - width, player.posX + width, player.posY + height, player.posZ + width);
-            player.setEntityBoundingBox(crouchedBB);
-            player.height = height;
-            player.eyeHeight = player.eyeHeight - size;
-        }
         if (ev.phase == Phase.END)
             return;
+        EntityPlayer player = ev.player;
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         data.tick();
         if ((!player.onGround || player.isSprinting() || player.isSneaking()) && data.isProne() && !player.world.isRemote) {
             data.setProne(false, true);

@@ -3,7 +3,8 @@
   "package": "dev.toma.pubgmc.mixin",
   "refmap": "mixins.pubgmc.refmap.json",
   "mixins": [
-    "SlotMixin"
+    "SlotMixin",
+    "EntityPlayerMixin"
   ],
   "client": [
     "client.EntityRendererMixin",
