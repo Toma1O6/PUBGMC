@@ -68,7 +68,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         super(worldIn);
         this.preventEntitySpawning = true;
         this.enablePersistence();
-        this.setSize(0.6F, 1.95F);
+        this.setSize(0.6F, 1.9F);
         this.variant = worldIn.rand.nextInt(4);
         ((PathNavigateGround) this.navigator).setBreakDoors(true);
 
