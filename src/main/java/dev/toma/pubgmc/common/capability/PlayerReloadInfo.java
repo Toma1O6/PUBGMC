@@ -18,7 +18,7 @@ public class PlayerReloadInfo implements ReloadInfo {
     private boolean reloading;
     private int reloadingSlot;
     private int reloadingTime;
-    private ItemStack reloadingItem;
+    private ItemStack reloadingItem = ItemStack.EMPTY;
 
     public PlayerReloadInfo(IPlayerData data) {
         this.data = data;
