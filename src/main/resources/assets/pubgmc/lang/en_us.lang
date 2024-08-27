@@ -227,7 +227,6 @@ tile.detached_lamp_angled.name=Detached Street Lamp (Angled)
 tile.detached_lamp_pole.name=Detached Street Lamp Pole
 tile.detached_lamp_post.name=Detached Street Lamp Post
 tile.caution_stripes.name=Caution Stripes
-tile.door_closer.name=Door Closer
 tile.modern_light.name=Modern Light
 
 itemGroup.tab_items=PUBGMC: Items

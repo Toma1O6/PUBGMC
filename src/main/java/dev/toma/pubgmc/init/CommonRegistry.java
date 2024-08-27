@@ -215,7 +215,6 @@ public class CommonRegistry {
                 BlockBuilder.create("rocks_diorite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_granite", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
                 BlockBuilder.create("rocks_gravel", Material.ROCK).soundType(SoundType.STONE).setTransparent().nullAABB(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.2, 1.0)).build(),
-                new BlockDoorCloser("door_closer", Material.ROCK),
                 BlockBuilder.create("modern_light", Material.ROCK).soundType(SoundType.STONE).setTransparent().light(1.0F).nullAABB(new AxisAlignedBB(0.2, 0.7, 0.2, 0.8, 1.0, 0.8)).build(),
                 new BlockSecretDoor("old_secret_door", Material.IRON)
                 //new BlockGameDoor("metal_garage_door", Material.IRON)
@@ -1089,7 +1088,6 @@ public class CommonRegistry {
         registerTileEntity(TileEntityWindow.class, "window");
         registerTileEntity(TileEntityGameEntitySpawner.class, "entity_spawner");
         registerTileEntity(TileEntityLootCrate.class, "loot_crate");
-        registerTileEntity(TileEntityDoorCloser.class, "door_closer");
         registerTileEntity(TileEntitySecretDoor.class, "secret_door");
         registerTileEntity(TileEntityGameDoor.class, "game_door");
     }
