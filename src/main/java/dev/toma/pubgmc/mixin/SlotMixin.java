@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Slot.class)
 public abstract class SlotMixin {
 
-    @Shadow protected String backgroundName;
+    @Shadow(remap = false)
+    protected String backgroundName;
 
     @Inject(method = "isItemValid", at = @At("HEAD"), cancellable = true)
     public void pubgmc$isItemValid(ItemStack itemStack, CallbackInfoReturnable<Boolean> ci) {
