@@ -16,7 +16,7 @@ public class PMCItem extends Item {
 
     public void warnPlayer(EntityPlayer player, String warning) {
         if (player != null && !player.world.isRemote) {
-            player.sendMessage(new TextComponentString(TextFormatting.RED + warning));
+            player.sendStatusMessage(new TextComponentString(TextFormatting.RED + warning), true);
         }
     }
 }
