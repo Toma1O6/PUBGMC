@@ -207,7 +207,7 @@ public class ExtendedChunkStorage implements ChunkGameBlockData {
                 ChunkGameBlockData data = optional.get();
                 data.set(result);
                 if (!result.isEmpty()) {
-                    Pubgmc.logger.debug(MARKER, "Saved {} entries for chunk {}", result.size(), chunk.getPos());
+                    Pubgmc.logger.debug(MARKER, "Saved {} game block entries for chunk {}", result.size(), chunk.getPos());
                 }
                 data.markUpToDate();
                 WorldGameBlockHelper.processChunk(chunk);

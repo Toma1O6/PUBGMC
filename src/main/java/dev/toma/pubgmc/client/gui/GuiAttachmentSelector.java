@@ -4,6 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.client.gui.menu.GuiWidgets;
 import dev.toma.pubgmc.client.gui.widget.ButtonWidget;
 import dev.toma.pubgmc.client.gui.widget.Widget;
+import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.items.attachment.AttachmentType;
 import dev.toma.pubgmc.common.items.attachment.ItemAttachment;
 import dev.toma.pubgmc.common.items.guns.GunAttachments;
@@ -25,14 +26,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GuiAttachmentSelector extends GuiWidgets implements ExternalGuiEventListener {
-
-    private ItemStack itemStack;
-    private GunBase gun;
 
     private ITextComponent guiTitle = new TextComponentString("");
 
@@ -48,8 +47,7 @@ public class GuiAttachmentSelector extends GuiWidgets implements ExternalGuiEven
     public void init() {
         ItemStack stack = mc.player.getHeldItemMainhand();
         if (stack.getItem() instanceof GunBase) {
-            this.gun = (GunBase) stack.getItem();
-            this.itemStack = stack;
+            GunBase gun = (GunBase) stack.getItem();
 
             GunAttachments attachments = gun.getAttachments();
             Map<AttachmentType<?>, List<ItemAttachment>> availableAttachments = attachments.getCompatibilityMap();
@@ -62,16 +60,30 @@ public class GuiAttachmentSelector extends GuiWidgets implements ExternalGuiEven
             for (Map.Entry<AttachmentType<?>, List<ItemAttachment>> entry : availableAttachments.entrySet()) {
                 AttachmentType<?> attachmentType = entry.getKey();
                 List<ItemStack> compatibleAttachments = entry.getValue().stream().filter(this::hasInInventory).map(ItemStack::new).collect(Collectors.toList());
-                ItemAttachment attached = gun.getAttachment(attachmentType, itemStack);
+                ItemAttachment attached = gun.getAttachment(attachmentType, stack);
                 AttachmentWidget widget = addWidget(new AttachmentWidget(posX + (index++ * (AttachmentWidget.SIZE + AttachmentWidget.OFFSET)), 20, attachmentType, compatibleAttachments, attached != null ? attached : Items.AIR));
                 widget.setDetachSingleListener(this::detachSingleClicked);
                 widget.setAttachItemListener(this::attachClicked);
             }
 
-            this.guiTitle = new TextComponentTranslation("gui.pubgmc.attachments.title", itemStack.getDisplayName());
+            this.guiTitle = new TextComponentTranslation("gui.pubgmc.attachments.title", stack.getDisplayName());
 
             addWidget(new ButtonWidget(width - 125, height - 50, 120, 20, I18n.format("gui.pubgmc.attachments.detach_all"), (btn, mx, my, mb) -> detachAllClicked(false)));
             addWidget(new ButtonWidget(width - 125, height - 25, 120, 20, I18n.format("gui.pubgmc.attachments.detach_all_close"), (btn, mx, my, mb) -> detachAllClicked(true)));
+            addWidget(new ButtonWidget(5, height - 25, 120, 20, I18n.format("gui.back"), (widget, mouseX, mouseY, button) -> {
+                this.mc.displayGuiScreen(null);
+                this.mc.setIngameFocus();
+            }));
+        }
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (KeyBinds.ATTACHMENT.getKeyCode() == keyCode) {
+            this.mc.displayGuiScreen(null);
+            this.mc.setIngameFocus();
+        } else {
+            super.keyTyped(typedChar, keyCode);
         }
     }
 
