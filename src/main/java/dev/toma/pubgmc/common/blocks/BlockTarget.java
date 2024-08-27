@@ -41,10 +41,10 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
             IBlockState state = bullet.world.getBlockState(pos);
             double delta = hit.y - (int) hit.y;
             boolean headShot = state.getBlock() == PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
-            player.sendStatusMessage(new TextComponentString(headShot
+            player.sendMessage(new TextComponentString(headShot
                     ? TextFormatting.RED + I18n.format("label.pubgmc.target.headshot", bullet.getDamage() * 2.5)
                     : I18n.format("label.pubgmc.target.hit", bullet.getDamage())
-            ), true);
+            ));
         }
     }
 
