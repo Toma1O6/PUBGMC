@@ -23,6 +23,7 @@ import java.util.List;
 
 public class EntityMolotov extends EntityThrowableExplodeable {
 
+    public static final int BURN_DURATION = 200;
     public static final int FIRE_SPREAD_AMOUNT = 6;
     public static final int SPREAD_DELAY = 15;
 
@@ -37,13 +38,13 @@ public class EntityMolotov extends EntityThrowableExplodeable {
     public EntityMolotov(World world) {
         super(world);
         this.fireSpreader = new MolotovFireSpreader();
-        this.timeLeft = 200;
+        this.timeLeft = BURN_DURATION;
     }
 
     public EntityMolotov(World world, EntityLivingBase thrower, EnumEntityThrowState state) {
         super(world, thrower, state, Integer.MAX_VALUE);
         this.fireSpreader = new MolotovFireSpreader();
-        this.timeLeft = 200;
+        this.timeLeft = BURN_DURATION;
     }
 
     @Override

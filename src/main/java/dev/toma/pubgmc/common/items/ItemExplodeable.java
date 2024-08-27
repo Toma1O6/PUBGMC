@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items;
 
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.entity.throwables.*;
@@ -17,16 +18,17 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     private final int maxFuse;
     private final ExplodeableItemAction explodeableItemAction;
-    private List<String> description;
 
     public ItemExplodeable(final String name, final int maxFuse, final ExplodeableItemAction action) {
         super(name);
@@ -34,11 +36,6 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
         this.explodeableItemAction = action;
         this.setMaxStackSize(1);
         this.setCreativeTab(PMCTabs.TAB_GUNS);
-    }
-
-    public ItemExplodeable addAditionalDescription(String... description) {
-        this.description = Arrays.asList(description);
-        return this;
     }
 
     @Override
@@ -116,13 +113,13 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("label.pubgmc.throwable.right_click"));
         tooltip.add(I18n.format("label.pubgmc.throwable.left_click"));
-        if (maxFuse > 0) tooltip.add(I18n.format("label.pubgmc.throwable.fuse", this.maxFuse));
-        if (description != null) {
-            tooltip.addAll(description);
-        }
+        if (maxFuse > 0)
+            tooltip.add(I18n.format("label.pubgmc.throwable.fuse", DevUtil.formatToSingleDecimal(this.maxFuse / 20.0)));
+        this.explodeableItemAction.appendAdditionalTooltipInformation(stack, worldIn, tooltip, flagIn);
     }
 
     public ExplodeableItemAction getExplodeableItemAction() {
@@ -145,54 +142,81 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
         return stack.getTagCompound().getInteger("currentFuse");
     }
 
-    @FunctionalInterface
+    public static boolean validateUsage(ItemStack stack) {
+        boolean missingData = !(stack.getItem() instanceof ItemExplodeable) || (stack.hasTagCompound() && !stack.getTagCompound().hasKey("ownerID"));
+        if (missingData) {
+            Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
+            return false;
+        }
+        return true;
+    }
+
     public interface ExplodeableItemAction {
 
         void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state);
+
+        @SideOnly(Side.CLIENT)
+        default void appendAdditionalTooltipInformation(ItemStack itemStack, World world, List<String> tooltip, ITooltipFlag flag) {
+        }
     }
 
-    public static class Helper {
+    public static final class FragGrenadeHandler implements ExplodeableItemAction {
 
-        public static void onFragRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (validateUsage(stack)) {
-                if (!world.isRemote) {
-                    EntityFragGrenade grenade = new EntityFragGrenade(world, player, state, timeLeft);
-                    world.spawnEntity(grenade);
-                }
+        @Override
+        public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
+            if (validateUsage(stack) && !world.isRemote) {
+                EntityFragGrenade grenade = new EntityFragGrenade(world, player, state, timeLeft);
+                world.spawnEntity(grenade);
+            }
+        }
+    }
+
+    public static final class SmokeGrenadeHandler implements ExplodeableItemAction {
+
+        @Override
+        public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
+            if (validateUsage(stack) && !world.isRemote) {
+                EntitySmokeGrenade smokeGrenade = new EntitySmokeGrenade(world, player, state, timeLeft);
+                world.spawnEntity(smokeGrenade);
             }
         }
 
-        public static void onSmokeRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (validateUsage(stack)) {
-                if (!world.isRemote) {
-                    EntitySmokeGrenade smokeGrenade = new EntitySmokeGrenade(world, player, state, timeLeft);
-                    world.spawnEntity(smokeGrenade);
-                }
+        @SideOnly(Side.CLIENT)
+        @Override
+        public void appendAdditionalTooltipInformation(ItemStack itemStack, World world, List<String> tooltip, ITooltipFlag flag) {
+            String effectDuration = DevUtil.formatToSingleDecimal(EntitySmokeGrenade.SMOKE_EFFECT_DURATION / 20.0);
+            tooltip.add(I18n.format("label.pubgmc.throwable.duration", effectDuration));
+            tooltip.add(TextFormatting.RED + I18n.format("label.pubgmc.throwable.water_cancel"));
+        }
+    }
+
+    public static final class MolotovGrenadeHandler implements ExplodeableItemAction {
+
+        @SideOnly(Side.CLIENT)
+        @Override
+        public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
+            if (validateUsage(stack) && !world.isRemote) {
+                EntityMolotov molotov = new EntityMolotov(world, player, state);
+                world.spawnEntity(molotov);
             }
         }
 
-        public static void onMolotovRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (validateUsage(stack)) {
-                if (!world.isRemote) {
-                    world.spawnEntity(new EntityMolotov(world, player, state));
-                }
-            }
+        @Override
+        public void appendAdditionalTooltipInformation(ItemStack itemStack, World world, List<String> tooltip, ITooltipFlag flag) {
+            String fireDuration = DevUtil.formatToSingleDecimal(EntityMolotov.BURN_DURATION / 20.0);
+            tooltip.add(I18n.format("label.pubgmc.throwable.duration", fireDuration));
+            tooltip.add(TextFormatting.RED + I18n.format("label.pubgmc.throwable.water_cancel"));
         }
+    }
 
-        public static void onFlashBangRemoved(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
-            if (validateUsage(stack)) {
-                if (!world.isRemote)
-                    world.spawnEntity(new EntityFlashBang(world, player, state, timeLeft));
-            }
-        }
+    public static final class FlashGrenadeHandler implements ExplodeableItemAction {
 
-        private static boolean validateUsage(ItemStack stack) {
-            boolean missingData = !(stack.getItem() instanceof ItemExplodeable) || (stack.hasTagCompound() && !stack.getTagCompound().hasKey("ownerID"));
-            if (missingData) {
-                Pubgmc.logger.fatal("Attempted to use {} with invalid NBT data!", stack.getItem().getClass());
-                return false;
+        @Override
+        public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
+            if (validateUsage(stack) && !world.isRemote) {
+                EntityFlashBang flashBang = new EntityFlashBang(world, player, state, timeLeft);
+                world.spawnEntity(flashBang);
             }
-            return true;
         }
     }
 }

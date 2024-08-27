@@ -31,10 +31,10 @@ public class CFGScopes extends ObjectType {
     public void buildStructure(ConfigCreator configCreator) {
         PMCConfigCreator creator = (PMCConfigCreator) configCreator;
         glowingReticles = creator.createBoolean("Glowing reticles", true, "Reticles will be rendered with full brightness");
-        scope2xSensitivity = creator.createDouble("2X scope sensitivity", 0.85F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
-        scope4xSensitivity = creator.createDouble("4X scope sensitivity", 0.6F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
-        scope8xSensitivity = creator.createDouble("8X scope sensitivity", 0.35F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
-        scope15xSensitivity = creator.createDouble("15X scope sensitivity", 0.15F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil._FFF);
+        scope2xSensitivity = creator.createDouble("2X scope sensitivity", 0.85F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);
+        scope4xSensitivity = creator.createDouble("4X scope sensitivity", 0.6F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);
+        scope8xSensitivity = creator.createDouble("8X scope sensitivity", 0.35F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);
+        scope15xSensitivity = creator.createDouble("15X scope sensitivity", 0.15F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);
         redDotColor = creator.createColorARGB("Red dot color", "#FFFF0000", "Manages color of red dot reticle");
         holographicColor = creator.createColorARGB("Holographic color", "#FFFF0000", "Manages color of holographic reticle");
         redDotVariants = creator.createTextureArray("Red dot variant", 0, new TextureType.Entry[]{

@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -12,15 +13,20 @@ import java.util.function.Consumer;
 
 public class DevUtil {
 
-    public static final DecimalFormat _FFF = new DecimalFormat("#.###");
-    public static final DecimalFormat _FF = new DecimalFormat("#.##");
+    public static final DecimalFormat THREE_DECIMALS = new DecimalFormat("#.###");
+    public static final DecimalFormat TWO_DECIMALS = new DecimalFormat("#.##");
+    public static final DecimalFormat SINGLE_DECIMAL = new DecimalFormat("#.#");
 
     public static String formatToThreeDecimals(Number number) {
-        return _FFF.format(number.doubleValue());
+        return THREE_DECIMALS.format(number.doubleValue());
     }
 
     public static String formatToTwoDecimals(Number number) {
-        return _FF.format(number.doubleValue());
+        return TWO_DECIMALS.format(number.doubleValue());
+    }
+
+    public static String formatToSingleDecimal(Number number) {
+        return SINGLE_DECIMAL.format(number.doubleValue());
     }
 
     public static boolean isDev() {
@@ -95,5 +101,14 @@ public class DevUtil {
             }
         }
         return total;
+    }
+
+    static {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+
+        THREE_DECIMALS.setDecimalFormatSymbols(symbols);
+        TWO_DECIMALS.setDecimalFormatSymbols(symbols);
+        SINGLE_DECIMAL.setDecimalFormatSymbols(symbols);
     }
 }
