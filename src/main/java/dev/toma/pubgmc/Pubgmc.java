@@ -1,6 +1,10 @@
 package dev.toma.pubgmc;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import dev.toma.pubgmc.api.PubgmcRegistries;
+import dev.toma.pubgmc.api.capability.ChunkGameBlockData;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PartyData;
@@ -14,16 +18,15 @@ import dev.toma.pubgmc.api.properties.Properties;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.client.content.ContentManager;
 import dev.toma.pubgmc.common.CommonEvents;
-import dev.toma.pubgmc.common.capability.GameDataImpl;
-import dev.toma.pubgmc.common.capability.GamePartyData;
-import dev.toma.pubgmc.common.capability.PlayerData;
-import dev.toma.pubgmc.common.capability.SimpleStorageImpl;
+import dev.toma.pubgmc.common.capability.*;
 import dev.toma.pubgmc.common.commands.AirdropCommand;
 import dev.toma.pubgmc.common.commands.GameCommand;
 import dev.toma.pubgmc.common.commands.GeneratorCommand;
 import dev.toma.pubgmc.common.commands.TeamCommand;
 import dev.toma.pubgmc.common.games.DefaultEntityLoadouts;
 import dev.toma.pubgmc.common.games.util.GameConfigurationManager;
+import dev.toma.pubgmc.common.games.util.WorldGameBlockHelper;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.data.entity.DefaultEntityProviders;
 import dev.toma.pubgmc.data.entity.EntityProviderManager;
 import dev.toma.pubgmc.data.loot.LootManager;
@@ -59,6 +62,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
+import java.util.concurrent.*;
 
 @Mod(modid = Pubgmc.MOD_ID, name = Pubgmc.NAME, version = Pubgmc.VERSION, updateJSON = Pubgmc.UPDATEURL, dependencies = Pubgmc.DEPENDENCIES)
 public class Pubgmc {
@@ -75,6 +79,7 @@ public class Pubgmc {
     public static final DataVersion GAME_CONFIGS_VERSION = DataVersion.of(1, 3);
     public static final DataVersion LOADOUT_DATA_VERSION = DataVersion.of(1, 0);
     public static final DataVersion ENTITY_PROVIDER_VERSION = DataVersion.of(1, 0);
+    private static ListeningExecutorService BACKGROUND_EXECUTOR;
 
     private static final Random RANDOM = new Random();
     public static final Logger logger = LogManager.getLogger(MOD_ID);
@@ -97,10 +102,12 @@ public class Pubgmc {
         PacketHandler.initialize();
 
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
+        MinecraftForge.EVENT_BUS.register(new ExtendedChunkStorage.EventHandler());
 
         CapabilityManager.INSTANCE.register(IPlayerData.class, SimpleStorageImpl.instance(), PlayerData::new);
         CapabilityManager.INSTANCE.register(GameData.class, SimpleStorageImpl.instance(), GameDataImpl::new);
         CapabilityManager.INSTANCE.register(PartyData.class, SimpleStorageImpl.instance(), GamePartyData::new);
+        CapabilityManager.INSTANCE.register(ChunkGameBlockData.class, SimpleStorageImpl.instance(), ExtendedChunkStorage::new);
 
         registerProperties();
         DataVersionManager.register(Pubgmc.getResource("loot_schema"), LootManager.getInstance());
@@ -127,6 +134,8 @@ public class Pubgmc {
         LootManager.load();
         LoadoutManager.load(false);
         EntityProviderManager.load();
+        WorldGameBlockHelper.init();
+        initBackgroundWorkerPool();
     }
 
     @EventHandler
@@ -141,6 +150,10 @@ public class Pubgmc {
         event.registerServerCommand(new GeneratorCommand());
         event.registerServerCommand(new GameCommand());
         event.registerServerCommand(new TeamCommand());
+    }
+
+    public static <T> ListenableFuture<T> runBackgroundTask(Callable<T> task) {
+        return BACKGROUND_EXECUTOR.submit(task);
     }
 
     private static void registerSmeltingRecipes() {
@@ -193,5 +206,19 @@ public class Pubgmc {
 
     public static ContentManager getContentManager() {
         return contentManager;
+    }
+
+    private static void initBackgroundWorkerPool() {
+        int threadCount = ConfigPMC.common.gameConfig.backgroundThreadPoolSize.get();
+        BACKGROUND_EXECUTOR = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(threadCount, new ThreadFactory() {
+            private int number;
+            @Override
+            public Thread newThread(Runnable task) {
+                Thread thread = new Thread(task);
+                thread.setName("Pubgmc Background Worker #" + number++);
+                thread.setDaemon(true);
+                return thread;
+            }
+        }));
     }
 }

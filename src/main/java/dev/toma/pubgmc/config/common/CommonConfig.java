@@ -13,6 +13,7 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
     public CFGVehicles vehicles;
     public CFGWeapons weapons;
     public PlayerConfig players;
+    public GameConfig gameConfig;
 
     public CommonConfig(ConfigPlugin plugin) {
         super("Common");
@@ -25,6 +26,7 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
         vehicles = configCreator.createObject(new CFGVehicles(plugin), plugin);
         weapons = configCreator.createObject(new CFGWeapons(plugin), plugin);
         players = configCreator.createObject(new PlayerConfig(), plugin);
+        gameConfig = configCreator.createObject(new GameConfig(), plugin);
     }
 
     @Override

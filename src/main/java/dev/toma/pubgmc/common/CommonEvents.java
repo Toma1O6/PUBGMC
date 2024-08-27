@@ -34,6 +34,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -133,6 +134,11 @@ public class CommonEvents {
         World world = event.getObject();
         event.addCapability(Pubgmc.getResource("games"), new GameDataProvider(world));
         event.addCapability(Pubgmc.getResource("party"), new PartyDataProvider(world));
+    }
+
+    @SubscribeEvent
+    public void attachChunkCapability(AttachCapabilitiesEvent<Chunk> event) {
+        event.addCapability(Pubgmc.getResource("chunk_data"), new ChunkGameBlockDataProvider());
     }
 
     @SubscribeEvent

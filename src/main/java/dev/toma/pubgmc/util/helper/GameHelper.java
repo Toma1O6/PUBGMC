@@ -18,6 +18,7 @@ import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
 import dev.toma.pubgmc.common.games.NoGame;
+import dev.toma.pubgmc.common.games.util.WorldGameBlockHelper;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
@@ -44,6 +45,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -145,6 +148,12 @@ public final class GameHelper {
                 }
             }
         });
+        if (!world.isRemote && ConfigPMC.common.gameConfig.allowFullChunkScans.get()) {
+            ChunkProviderServer serverChunkProvider = (ChunkProviderServer) world.getChunkProvider();
+            for (Chunk chunk : serverChunkProvider.getLoadedChunks()) {
+                WorldGameBlockHelper.processChunk(chunk);
+            }
+        }
     }
 
     public static <T> Stream<T> mergeTileEntitiesAndEntitiesByRule(World world, Predicate<Object> filter, Function<Object, T> mapper) {
