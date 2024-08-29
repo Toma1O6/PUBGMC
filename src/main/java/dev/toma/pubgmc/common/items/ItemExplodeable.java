@@ -192,7 +192,6 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     public static final class MolotovGrenadeHandler implements ExplodeableItemAction {
 
-        @SideOnly(Side.CLIENT)
         @Override
         public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
             if (validateUsage(stack) && !world.isRemote) {
@@ -201,6 +200,7 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
             }
         }
 
+        @SideOnly(Side.CLIENT)
         @Override
         public void appendAdditionalTooltipInformation(ItemStack itemStack, World world, List<String> tooltip, ITooltipFlag flag) {
             String fireDuration = DevUtil.formatToSingleDecimal(EntityMolotov.BURN_DURATION / 20.0);
