@@ -14,6 +14,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -62,6 +64,7 @@ public class ItemFuelCan extends PMCItem implements Consumable {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("label.pubgmc.fuel_can.tooltip.usage"));
         tooltip.add(I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));

@@ -160,6 +160,7 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("gun.desc.ammo") + ": " + TextFormatting.RED + getAmmo(stack));
         tooltip.add(I18n.format("gun.desc.firemode") + ": " + getFiremode(stack).translatedName());

@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.items.attachment;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Locale;
 
@@ -43,6 +45,7 @@ public final class AttachmentType<I extends ItemAttachment> {
         return name;
     }
 
+    @SideOnly(Side.CLIENT)
     public String getTranslatedName() {
         return I18n.format(this.localizationKey);
     }
