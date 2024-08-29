@@ -10,6 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -45,18 +48,30 @@ public class ItemFuelCan extends PMCItem implements Consumable {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        if (playerIn.isRiding() && playerIn.getRidingEntity() instanceof EntityVehicle) {
-            if (((EntityVehicle) playerIn.getRidingEntity()).currentSpeed == 0) {
-                playerIn.setActiveHand(handIn);
-                return new ActionResult<>(EnumActionResult.PASS, stack);
-            } else warnPlayer(playerIn, I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));
-        } else warnPlayer(playerIn, I18n.format("label.pubgmc.fuel_can.not_in_vehicle"));
-        return new ActionResult<>(EnumActionResult.FAIL, stack);
+        if (!playerIn.isRiding() || !(playerIn.getRidingEntity() instanceof EntityVehicle)) {
+            this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.not_in_vehicle");
+            return ActionResult.newResult(EnumActionResult.FAIL, stack);
+        }
+        EntityVehicle vehicle = (EntityVehicle) playerIn.getRidingEntity();
+        if (vehicle.currentSpeed != 0) {
+            this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.vehicle_not_stationary");
+            return ActionResult.newResult(EnumActionResult.FAIL, stack);
+        }
+        playerIn.setActiveHand(handIn);
+        return ActionResult.newResult(EnumActionResult.PASS, stack);
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("label.pubgmc.fuel_can.tooltip.usage"));
         tooltip.add(I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));
+    }
+
+    private void sendError(EntityPlayer player, World world, String key) {
+        if (world.isRemote)
+            return;
+        ITextComponent component = new TextComponentTranslation(key);
+        component.getStyle().setColor(TextFormatting.RED);
+        player.sendStatusMessage(component, true);
     }
 }
