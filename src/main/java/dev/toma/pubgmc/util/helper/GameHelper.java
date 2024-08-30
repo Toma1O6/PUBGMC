@@ -2,6 +2,7 @@ package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
+import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -36,6 +37,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -469,6 +471,13 @@ public final class GameHelper {
         if (!player.world.isRemote) {
             PacketHandler.sendToClient(new S2C_PacketReloadChunks(), (EntityPlayerMP) player);
         }
+    }
+
+    public static ITextComponent getEntityDisplayName(Entity entity) {
+        if (entity instanceof CustomEntityNametag) {
+            return ((CustomEntityNametag) entity).getComponent();
+        }
+        return entity.getDisplayName();
     }
 
     public interface InventoryProvider {

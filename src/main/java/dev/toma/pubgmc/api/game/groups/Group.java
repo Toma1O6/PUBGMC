@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.api.game.groups;
 
+import net.minecraft.util.text.ITextComponent;
+
 import java.util.UUID;
 
 public interface Group {
@@ -8,5 +10,5 @@ public interface Group {
 
     UUID getLeader();
 
-    String getUsername(UUID uuid);
+    ITextComponent getUsername(UUID uuid);
 }

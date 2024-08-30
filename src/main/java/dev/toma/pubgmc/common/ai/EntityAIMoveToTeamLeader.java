@@ -20,6 +20,7 @@ public class EntityAIMoveToTeamLeader extends EntityAIBase {
         this.living = entity;
         this.maxAllowedDistance = maxAllowedDistance;
         this.moveSpeed = moveSpeed;
+        this.setMutexBits(1);
     }
 
     @Override

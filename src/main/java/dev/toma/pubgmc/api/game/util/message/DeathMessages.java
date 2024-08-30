@@ -9,6 +9,7 @@ import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCDamageSources;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +40,11 @@ public final class DeathMessages {
         ITextComponent tool = getTool(damageSource);
         if (damageSource.getTrueSource() instanceof EntityLivingBase) {
             EntityLivingBase killer = (EntityLivingBase) damageSource.getTrueSource();
-            EntityCausedDeathMessage deathMessage = new EntityCausedDeathMessage(killer.getDisplayName(), victim.getDisplayName(), tool);
+            EntityCausedDeathMessage deathMessage = new EntityCausedDeathMessage(
+                    GameHelper.getEntityDisplayName(killer),
+                    GameHelper.getEntityDisplayName(victim),
+                    tool
+            );
             if (damageSource instanceof DamageSourceGun) {
                 DamageSourceGun gunSource = (DamageSourceGun) damageSource;
                 if (gunSource.wasHeadshot()) {
@@ -49,7 +54,7 @@ public final class DeathMessages {
             deathMessage.addAffectedEntities(killer.getUniqueID(), victim.getUniqueID());
             return deathMessage;
         } else {
-            SelfDeathMessage message = new SelfDeathMessage(victim.getDisplayName(), tool);
+            SelfDeathMessage message = new SelfDeathMessage(GameHelper.getEntityDisplayName(victim), tool);
             message.addAffectedEntities(victim.getUniqueID());
             return message;
         }
@@ -62,7 +67,7 @@ public final class DeathMessages {
             EntityLivingBase killerEntity = (EntityLivingBase) killer;
             Entity vehicle = killerEntity.getRidingEntity();
             if (vehicle instanceof EntityVehicle) {
-                return vehicle.getDisplayName(); // TODO improve resolution
+                return GameHelper.getEntityDisplayName(vehicle); // TODO improve resolution
             }
             if (source instanceof DamageSourceGun) {
                 DamageSourceGun gunSource = (DamageSourceGun) source;
@@ -97,7 +102,7 @@ public final class DeathMessages {
             Team team1 = manager.getEntityTeamByEntityId(killer);
             Team team2 = manager.getEntityTeamByEntityId(victim);
             TeamRelations relations = manager.getTeamRelationship(team1, team2);
-            if (!relations.isFriendlyOrEnemy()) {
+            if (relations == TeamRelations.NEUTRAL) {
                 return MessageRelation.NONE;
             }
             Team myTeam = manager.getEntityTeam(player);
@@ -109,7 +114,7 @@ public final class DeathMessages {
                 return isMe ? MessageRelation.MY_DEATH : MessageRelation.FRIENDLY_DEATH;
             }
             TeamRelations killerTeamRelation = manager.getTeamRelationship(myTeam, team1);
-            if (killerTeamRelation == TeamRelations.FRIENDLY) {
+            if (killerTeamRelation == TeamRelations.FRIENDLY || killerTeamRelation == TeamRelations.UNKNOWN) {
                 return isMe ? MessageRelation.MY_KILL : MessageRelation.FRIENDLY_KILL;
             }
             return MessageRelation.NONE;

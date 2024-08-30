@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.entity;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
+import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.entity.EntityDebuffs;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.Game;
@@ -43,6 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -54,7 +56,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, IEntityAdditionalSpawnData, SpecialInventoryProvider, EntityDebuffs, SynchronizableEntity {
+public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, CustomEntityNametag, IEntityAdditionalSpawnData, SpecialInventoryProvider, EntityDebuffs, SynchronizableEntity {
 
     public static final String DEFAULT_LOADOUT = "default_loadout";
     private final InventoryBasic inventory = new InventoryBasic("container.aiPlayer", false, 9);
@@ -63,6 +65,7 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     private int blindTime;
     private int deafTime;
     private UUID gameId = GameHelper.DEFAULT_UUID;
+    private ITextComponent customName;
 
     public EntityAIPlayer(World worldIn) {
         super(worldIn);
@@ -76,8 +79,14 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     }
 
     public static void setRandomName(EntityAIPlayer aiPlayer) {
-        aiPlayer.setCustomNameTag(RandomBotNameGenerator.generateBotName().getFormattedText());
+        aiPlayer.customName = RandomBotNameGenerator.generateBotName();
+        aiPlayer.setCustomNameTag(aiPlayer.customName.getFormattedText());
         aiPlayer.setAlwaysRenderNameTag(false);
+    }
+
+    @Override
+    public ITextComponent getComponent() {
+        return customName != null ? customName : this.getDisplayName();
     }
 
     @Override
@@ -177,6 +186,8 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         compound.setTag("equipmentInventory", SerializationHelper.inventoryToNbt(specialEquipment));
         compound.setInteger("blindTime", blindTime);
         compound.setInteger("deafTime", deafTime);
+        if (this.customName != null)
+            compound.setString("customNametag", ITextComponent.Serializer.componentToJson(this.customName));
     }
 
     @Override
@@ -188,6 +199,9 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
         SerializationHelper.inventoryFromNbt(specialEquipment, compound.getTagList("equipmentInventory", Constants.NBT.TAG_COMPOUND));
         blindTime = compound.getInteger("blindTime");
         deafTime = compound.getInteger("deafTime");
+        if (compound.hasKey("customNametag", Constants.NBT.TAG_STRING)) {
+            customName = ITextComponent.Serializer.jsonToComponent(compound.getString("customNametag"));
+        }
     }
 
     @Override

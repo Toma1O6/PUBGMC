@@ -226,7 +226,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                         if (winningTeam != null) {
                             Team.Member teamLeader = winningTeam.getTeamLeader();
                             if (teamLeader != null) {
-                                String username = winningTeam.getUsername(teamLeader.getId());
+                                ITextComponent username = winningTeam.getUsername(teamLeader.getId());
                                 winningTeamInfo = new TextComponentTranslation("pubgmc.game.completed.winning_team", username);
                                 winningTeamInfo.getStyle().setColor(TextFormatting.AQUA);
                             }
