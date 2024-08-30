@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.games.util;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
@@ -47,7 +48,7 @@ public class TeamAIManager {
         while (iterator.hasNext()) {
             UUID memberId = iterator.next();
             Team team = teamManager.getEntityTeamByEntityId(memberId);
-            if (team == null) {
+            if (team == null || !team.isMember(memberId)) {
                 // Entity is eliminated
                 allowedAiSpawnCount++;
                 iterator.remove();
@@ -76,6 +77,7 @@ public class TeamAIManager {
             UUID entityId = despawnedIterator.next();
             Entity entity = server.getEntityFromUuid(entityId);
             if (entity != null) {
+                Pubgmc.logger.debug("Removing despawned entity {}", entity);
                 entity.setDead();
                 despawnedIterator.remove();
             }

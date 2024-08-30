@@ -11,8 +11,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface TeamManager extends INBTSerializable<NBTTagCompound>, GroupManager {
@@ -77,6 +79,11 @@ public interface TeamManager extends INBTSerializable<NBTTagCompound>, GroupMana
                 .flatMap(Team::getActiveMemberStream)
                 .filter(Team.Member::isPlayer)
                 .count();
+    }
+
+    default List<Team> getActiveTeams() {
+        return this.getTeams().stream().filter(team -> !team.isTeamEliminated())
+                .collect(Collectors.toList());
     }
 
     @Override

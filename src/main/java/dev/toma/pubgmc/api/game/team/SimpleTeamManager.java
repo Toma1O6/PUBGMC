@@ -58,9 +58,6 @@ public class SimpleTeamManager implements TeamManager {
         Team team = getEntityTeamByEntityId(uuid);
         if (team != null && team.isMember(uuid)) {
             team.eliminate(uuid);
-            if (team.isTeamEliminated()) {
-                teamById.remove(team.getId());
-            }
         }
     }
 

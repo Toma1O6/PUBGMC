@@ -218,7 +218,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 if (isGameCompleted(worldServer)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
-                    List<Team> teams = new ArrayList<>(this.teamManager.getTeams());
+                    List<Team> teams = this.teamManager.getActiveTeams();
                     Team winningTeam = teams.size() == 1 ? teams.get(0) : null;
                     for (EntityPlayerMP player : worldServer.getMinecraftServer().getPlayerList().getPlayers()) {
                         Team team = this.teamManager.getEntityTeam(player);
@@ -346,7 +346,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             return true;
         }
         int notSpawnedBots = this.aiManager.getAiEntitiesToSpawn();
-        int activeTeamCount = this.teamManager.getTeams().size();
+        int activeTeamCount = this.teamManager.getActiveTeams().size();
         // There is still some AI left to be spawned
         if (notSpawnedBots > 0) {
             return false;

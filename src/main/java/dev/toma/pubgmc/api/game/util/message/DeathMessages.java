@@ -102,7 +102,7 @@ public final class DeathMessages {
             Team team1 = manager.getEntityTeamByEntityId(killer);
             Team team2 = manager.getEntityTeamByEntityId(victim);
             TeamRelations relations = manager.getTeamRelationship(team1, team2);
-            if (relations == TeamRelations.NEUTRAL) {
+            if (!relations.isFriendlyOrEnemy()) {
                 return MessageRelation.NONE;
             }
             Team myTeam = manager.getEntityTeam(player);
@@ -114,7 +114,7 @@ public final class DeathMessages {
                 return isMe ? MessageRelation.MY_DEATH : MessageRelation.FRIENDLY_DEATH;
             }
             TeamRelations killerTeamRelation = manager.getTeamRelationship(myTeam, team1);
-            if (killerTeamRelation == TeamRelations.FRIENDLY || killerTeamRelation == TeamRelations.UNKNOWN) {
+            if (killerTeamRelation == TeamRelations.FRIENDLY) {
                 return isMe ? MessageRelation.MY_KILL : MessageRelation.FRIENDLY_KILL;
             }
             return MessageRelation.NONE;
