@@ -69,7 +69,7 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
                 font.drawStringWithShadow(playersText, infoPos.getX() + 5, infoPos.getY() + 16, 0xFFFFFF);
                 font.drawStringWithShadow(" " + playerCount, infoPos.getX() + 5 + font.getStringWidth(playersText), infoPos.getY() + 16, 0x00FFFF);
                 CFG2DCoords dmPos = overlays.deathMessagesPosition;
-                game.getDeathMessageContainer().render(font, dmPos.getX() + 10, dmPos.getY() + 35, 11);
+                game.getDeathMessageContainer().render(font, game, dmPos.getX() + 10, dmPos.getY() + 35, 11);
             }
         }
         return false;

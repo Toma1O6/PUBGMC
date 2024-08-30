@@ -4,6 +4,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
+
 public class EmptyDeathMessage implements DeathMessage {
 
     public static final ITextComponent EMPTY = new TextComponentString("");
@@ -27,12 +31,16 @@ public class EmptyDeathMessage implements DeathMessage {
     }
 
     @Override
-    public void setAttribute(String attribute, String value) {
+    public void addAttribute(ITextComponent message) {
     }
 
     @Override
-    public String getAttribute(String attribute) {
-        return null;
+    public void addAffectedEntities(UUID... uuids) {
+    }
+
+    @Override
+    public Set<UUID> getAffectedEntities() {
+        return Collections.emptySet();
     }
 
     @Override

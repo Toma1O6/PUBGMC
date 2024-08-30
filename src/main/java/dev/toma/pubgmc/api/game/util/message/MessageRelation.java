@@ -2,6 +2,7 @@ package dev.toma.pubgmc.api.game.util.message;
 
 public enum MessageRelation {
 
+    UNSET(0xFFFFFF),
     NONE(0xFFFFFF),
     MY_KILL(0x00AAFF),
     MY_DEATH(0xFF0000),
@@ -16,5 +17,9 @@ public enum MessageRelation {
 
     public int getTextColor() {
         return textColor;
+    }
+
+    public boolean isAssigned() {
+        return this != UNSET;
     }
 }

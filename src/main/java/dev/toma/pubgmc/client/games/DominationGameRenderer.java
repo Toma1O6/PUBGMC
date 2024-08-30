@@ -157,7 +157,7 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         font.drawString(timeText, timePos.getX() + resolution.getScaledWidth() - textWidth - 5, timePos.getY() + 5, 0xFFFFFF, true);
 
         CFG2DCoords dmPos = overlays.deathMessagesPanel;
-        game.getDeathMessageHolder().render(font, dmPos.getX() + 10, dmPos.getY() + 10, 10);
+        game.getDeathMessageHolder().render(font, game, dmPos.getX() + 10, dmPos.getY() + 10, 10);
         if (overlays.showCaptureZoneStatus.get()) {
             renderPointInfo(player, game, resolution, overlays.captureZonePanel);
         }

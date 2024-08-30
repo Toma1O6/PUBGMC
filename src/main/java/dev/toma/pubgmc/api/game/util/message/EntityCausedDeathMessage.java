@@ -3,21 +3,25 @@ package dev.toma.pubgmc.api.game.util.message;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 
-public final class EntityCausedDeathMessage implements DeathMessage {
+public final class EntityCausedDeathMessage extends AbstractDeathMessage {
 
     private final ITextComponent source;
     private final ITextComponent victim;
-    private final ITextComponent tool;
 
-    private final ITextComponent composedMessage;
-    private MessageRelation relation = MessageRelation.NONE;
+    private ITextComponent composedMessage;
 
     public EntityCausedDeathMessage(ITextComponent source, ITextComponent victim, ITextComponent tool) {
+        super(tool);
         this.source = source;
         this.victim = victim;
-        this.tool = tool;
 
-        this.composedMessage = this.compose(source, victim, tool);
+        this.composedMessage = this.compose(source, victim);
+    }
+
+    @Override
+    public void addAttribute(ITextComponent message) {
+        super.addAttribute(message);
+        this.composedMessage = compose(this.source, this.victim);
     }
 
     @Override
@@ -26,32 +30,16 @@ public final class EntityCausedDeathMessage implements DeathMessage {
     }
 
     @Override
-    public void setRelation(MessageRelation relation) {
-        this.relation = relation;
-    }
-
-    @Override
-    public MessageRelation getRelation() {
-        return relation;
-    }
-
-    @Override
-    public void setAttribute(String attribute, String value) {
-
-    }
-
-    @Override
-    public String getAttribute(String attribute) {
-        return null;
-    }
-
-    @Override
     public DeathMessageType<?> getType() {
         return DeathMessages.ENTITY;
     }
 
-    private ITextComponent compose(ITextComponent source, ITextComponent victim, ITextComponent tool) {
-        return source.createCopy().appendSibling(SPACE).appendSibling(L_BRACKET).appendSibling(tool).appendSibling(R_BRACKET).appendSibling(SPACE).appendSibling(victim);
+    private ITextComponent compose(ITextComponent source, ITextComponent victim) {
+        return source.createCopy().appendSibling(SPACE).appendSibling(L_BRACKET).appendSibling(this.composeTool()).appendSibling(R_BRACKET).appendSibling(SPACE).appendSibling(victim);
+    }
+
+    private void refresh() {
+        this.composedMessage = this.compose(this.source, this.victim);
     }
 
     public static final class Serializer implements DeathMessageType.MessageSerializer<EntityCausedDeathMessage> {
@@ -61,8 +49,8 @@ public final class EntityCausedDeathMessage implements DeathMessage {
             NBTTagCompound tag = new NBTTagCompound();
             tag.setString("source", ITextComponent.Serializer.componentToJson(message.source));
             tag.setString("victim", ITextComponent.Serializer.componentToJson(message.victim));
-            tag.setString("tool", ITextComponent.Serializer.componentToJson(message.tool));
-            tag.setInteger("relation", message.getRelation().ordinal());
+            tag.setString("tool", ITextComponent.Serializer.componentToJson(message.getTool()));
+            message.serializeCommon(tag);
             return tag;
         }
 
@@ -72,7 +60,8 @@ public final class EntityCausedDeathMessage implements DeathMessage {
             ITextComponent victim = ITextComponent.Serializer.jsonToComponent(message.getString("victim"));
             ITextComponent tool = ITextComponent.Serializer.jsonToComponent(message.getString("tool"));
             EntityCausedDeathMessage deathMessage = new EntityCausedDeathMessage(source, victim, tool);
-            deathMessage.setRelation(MessageRelation.values()[message.getInteger("relation")]);
+            deathMessage.deserializeCommon(message);
+            deathMessage.refresh();
             return deathMessage;
         }
     }

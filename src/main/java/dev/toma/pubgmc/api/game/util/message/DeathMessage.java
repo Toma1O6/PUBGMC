@@ -4,6 +4,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import java.util.Set;
+import java.util.UUID;
+
 public interface DeathMessage {
 
     ITextComponent SPACE = new TextComponentString(" ");
@@ -20,9 +23,11 @@ public interface DeathMessage {
 
     MessageRelation getRelation();
 
-    void setAttribute(String attribute, String value);
+    void addAttribute(ITextComponent message);
 
-    String getAttribute(String attribute);
+    Set<UUID> getAffectedEntities();
+
+    void addAffectedEntities(UUID... uuids);
 
     DeathMessageType<?> getType();
 }
