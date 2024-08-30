@@ -8,7 +8,6 @@ import dev.toma.pubgmc.common.entity.EntityAirdrop;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -200,16 +199,6 @@ public class PUBGMCUtil {
                 return;
             }
             Pubgmc.logger.debug("Data directory created - " + directory.getPath());
-        }
-    }
-
-    public static void giveItemOrDrop(EntityPlayer player, ItemStack itemStack) {
-        if (!player.addItemStackToInventory(itemStack)) {
-            EntityItem entityitem = player.dropItem(itemStack, false);
-            if (entityitem != null) {
-                entityitem.setNoPickupDelay();
-                entityitem.setOwner(player.getName());
-            }
         }
     }
 }

@@ -6,11 +6,12 @@ import dev.toma.pubgmc.common.items.guns.GunAttachments;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketSendExternalGuiEvent;
-import dev.toma.pubgmc.util.PUBGMCUtil;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -90,6 +91,7 @@ public class C2S_PacketAttachmentRequest implements IMessage {
         public IMessage onMessage(C2S_PacketAttachmentRequest message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServer().addScheduledTask(() -> {
+                World world = player.world;
                 ItemStack heldStack = player.getHeldItemMainhand();
                 if (!(heldStack.getItem() instanceof GunBase)) {
                     return;
@@ -101,7 +103,7 @@ public class C2S_PacketAttachmentRequest implements IMessage {
                     for (AttachmentType<?> type : weaponTypes) {
                         ItemAttachment itemAttachment = gun.getAttachment(type, heldStack);
                         if (itemAttachment != null) {
-                            PUBGMCUtil.giveItemOrDrop(player, new ItemStack(itemAttachment));
+                            this.drop(world, player, new ItemStack(itemAttachment));
                             attachments.detach(heldStack, type);
                         }
                     }
@@ -109,14 +111,14 @@ public class C2S_PacketAttachmentRequest implements IMessage {
                     AttachmentType<?> type = message.attachmentType;
                     ItemAttachment attachment = gun.getAttachment(type, heldStack);
                     if (attachment != null) {
-                        PUBGMCUtil.giveItemOrDrop(player, new ItemStack(attachment));
+                        this.drop(world, player, new ItemStack(attachment));
                         attachments.detach(heldStack, type);
                     }
                 } else {
                     AttachmentType<?> type = message.attachmentType;
                     ItemAttachment oldAttachment = gun.getAttachment(type, heldStack);
                     if (oldAttachment != null) {
-                        PUBGMCUtil.giveItemOrDrop(player, new ItemStack(oldAttachment));
+                        this.drop(world, player, new ItemStack(oldAttachment));
                     }
                     ItemStack inInventoryStack = findItemFromInventory(player, message.itemStack);
                     if (!inInventoryStack.isEmpty() && inInventoryStack.getItem() instanceof ItemAttachment) {
@@ -127,6 +129,16 @@ public class C2S_PacketAttachmentRequest implements IMessage {
                 PacketHandler.sendToClient(new S2C_PacketSendExternalGuiEvent(), player);
             });
             return null;
+        }
+
+        private EntityItem drop(World world, EntityPlayer player, ItemStack itemStack) {
+            EntityItem item = new EntityItem(world, player.posX, player.posY, player.posZ, itemStack.copy());
+            item.setOwner(player.getName());
+            item.setNoPickupDelay();
+            if (!world.isRemote)
+                world.spawnEntity(item);
+            itemStack.setCount(0);
+            return item;
         }
 
         private ItemStack findItemFromInventory(EntityPlayer player, ItemStack itemStack) {

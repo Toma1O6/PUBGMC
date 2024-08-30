@@ -177,6 +177,8 @@ public class Pubgmc {
         PubgmcRegistries.ENTITY_PROVIDERS.lock();
         MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.EntityProcessor());
         PubgmcRegistries.ENTITY_PROCESSORS.lock();
+        MinecraftForge.EVENT_BUS.post(new PubgmcRegistryEvent.DeathMessage());
+        PubgmcRegistries.DEATH_MESSAGES.lock();
 
         MinecraftForge.EVENT_BUS.post(new RegisterGameMutatorEvent(GameMutatorManager.INSTANCE));
         GameConfigurationManager.loadConfigurations(false);
