@@ -16,10 +16,10 @@ import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.message.DeathMessages;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.ai.*;
@@ -563,8 +563,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 Optional<Team.Member> nextTL = team.getAliveTeamMember();
                 nextTL.ifPresent(team::setTeamLeader);
             }
-            DeathMessage deathMessage = GameHelper.createDefaultDeathMessage(entity, source);
-            game.deathMessages.push(deathMessage);
+            game.deathMessages.push(DeathMessages.createMessage(entity, source));
             if (entity instanceof EntityPlayer) {
                 GameHelper.spawnPlayerDeathCrate(game.gameId, (EntityPlayer) entity);
                 MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(game, (EntityPlayer) entity, false));
@@ -575,6 +574,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             }
             GameMutatorHelper.giveKillReward(entity, source);
             Entity killer = source.getTrueSource();
+            // TODO clean up
             if (killer instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) killer;
                 TeamRelations relations = GameHelper.getEntityRelations(player, entity);

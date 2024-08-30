@@ -14,6 +14,8 @@ import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
 import dev.toma.pubgmc.api.game.util.*;
+import dev.toma.pubgmc.api.game.util.message.DeathMessage;
+import dev.toma.pubgmc.api.game.util.message.DeathMessages;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.ai.*;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
@@ -601,7 +603,7 @@ public class DominationGame implements TeamGame<DominationGameConfiguration>, Ga
 
         private void awardKill(@Nullable Entity killer, EntityLivingBase victim, DamageSource source) {
             if (!victim.world.isRemote) {
-                DeathMessage message = GameHelper.createDefaultDeathMessage(victim, source);
+                DeathMessage message = DeathMessages.createMessage(victim, source);
                 game.deathMessages.push(message);
             }
             if (!(killer instanceof EntityLivingBase) || game.completed || !game.started)

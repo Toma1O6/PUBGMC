@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.game.loot.LootProcessorType;
 import dev.toma.pubgmc.api.game.loot.LootProviderType;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
+import dev.toma.pubgmc.api.game.util.message.DeathMessageType;
 import dev.toma.pubgmc.api.util.RegistryObject;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,6 +34,8 @@ public final class PubgmcRegistries {
             .withKeyExtractor(RegistryObject::getIdentifier);
     public static final PubgmcRegistry<EntityProcessorType<?>> ENTITY_PROCESSORS = new Registry<EntityProcessorType<?>>()
             .withKeyExtractor(RegistryObject::getIdentifier);
+    public static final PubgmcRegistry<DeathMessageType<?>> DEATH_MESSAGES = new Registry<DeathMessageType<?>>()
+            .withKeyExtractor(DeathMessageType::getIdentifier);
 
     private static final class Registry<V> implements PubgmcRegistry<V> {
 

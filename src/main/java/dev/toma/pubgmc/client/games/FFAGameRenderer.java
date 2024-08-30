@@ -4,7 +4,6 @@ import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.client.util.ScoreboardRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.games.game.ffa.FFAGame;
@@ -17,7 +16,6 @@ import dev.toma.pubgmc.util.helper.TextComponentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -65,17 +63,7 @@ public class FFAGameRenderer implements GameRenderer<FFAGame> {
             font.drawString(timeText, timePos.getX() + resolution.getScaledWidth() - textWidth - 5, timePos.getY() + 5, 0xFFFFFF, true);
 
             CFG2DCoords dmPos = overlays.deathMessagesPanel;
-            DeathMessage[] deathMessages = game.getDeathMessageHolder().getDeathMessages();
-            for (int i = 0; i < deathMessages.length; i++) {
-                DeathMessage deathMessage = deathMessages[i];
-                DeathMessage.Type type = deathMessage.getType();
-                if (type == null) {
-                    type = DeathMessage.Type.getSoloType(deathMessage, player.world);
-                    deathMessage.setType(type);
-                }
-                font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), dmPos.getX() + 10, dmPos.getY() + 10 + i * 10, type.getColor());
-            }
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            game.getDeathMessageHolder().render(font, dmPos.getX() + 10, dmPos.getY() + 10, 10);
         }
         return false;
     }

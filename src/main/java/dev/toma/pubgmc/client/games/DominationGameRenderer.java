@@ -5,7 +5,6 @@ import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.client.util.ScoreboardRenderer;
 import dev.toma.pubgmc.api.game.CaptureZones;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.client.renderer.poi.CaptureZoneRenderer;
@@ -157,18 +156,8 @@ public class DominationGameRenderer implements GameRenderer<DominationGame> {
         int textWidth = font.getStringWidth(timeText);
         font.drawString(timeText, timePos.getX() + resolution.getScaledWidth() - textWidth - 5, timePos.getY() + 5, 0xFFFFFF, true);
 
-        DeathMessage[] deathMessages = game.getDeathMessageHolder().getDeathMessages();
         CFG2DCoords dmPos = overlays.deathMessagesPanel;
-        for (int i = 0; i < deathMessages.length; i++) {
-            DeathMessage deathMessage = deathMessages[i];
-            DeathMessage.Type type = deathMessage.getType();
-            if (type == null) {
-                type = DeathMessage.Type.getType(deathMessage, player.world, game.getTeamManager());
-                deathMessage.setType(type);
-            }
-            font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), dmPos.getX() + 10, dmPos.getY() + 10 + i * 10, type.getColor());
-        }
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        game.getDeathMessageHolder().render(font, dmPos.getX() + 10, dmPos.getY() + 10, 10);
         if (overlays.showCaptureZoneStatus.get()) {
             renderPointInfo(player, game, resolution, overlays.captureZonePanel);
         }

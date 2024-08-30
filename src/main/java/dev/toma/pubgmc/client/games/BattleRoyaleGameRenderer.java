@@ -3,7 +3,6 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.client.util.TeamPanelRenderer;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -13,7 +12,6 @@ import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -70,18 +68,8 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
                 String playersText = PLAYERS.getFormattedText();
                 font.drawStringWithShadow(playersText, infoPos.getX() + 5, infoPos.getY() + 16, 0xFFFFFF);
                 font.drawStringWithShadow(" " + playerCount, infoPos.getX() + 5 + font.getStringWidth(playersText), infoPos.getY() + 16, 0x00FFFF);
-                DeathMessage[] deathMessages = game.getDeathMessageContainer().getDeathMessages();
                 CFG2DCoords dmPos = overlays.deathMessagesPosition;
-                for (int i = 0; i < deathMessages.length; i++) {
-                    DeathMessage deathMessage = deathMessages[i];
-                    DeathMessage.Type type = deathMessage.getType();
-                    if (type == null) {
-                        type = DeathMessage.Type.getType(deathMessage, player.world, game.getTeamManager());
-                        deathMessage.setType(type);
-                    }
-                    font.drawStringWithShadow(deathMessage.getWholeComponent().getFormattedText(), dmPos.getX() + 10, dmPos.getY() + 35 + i * 11, type.getColor());
-                }
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                game.getDeathMessageContainer().render(font, dmPos.getX() + 10, dmPos.getY() + 35, 11);
             }
         }
         return false;
