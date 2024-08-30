@@ -961,7 +961,7 @@ public class CommonRegistry {
                 registerEntity("bullet", EntityBullet.class, 64, 40),
                 registerEntity("flare", EntityFlare.class, 64, 20),
                 registerEntity("parachute", EntityParachute.class, 256, 1),
-                registerEntity("plane", EntityPlane.class, 128, 25),
+                registerEntity("plane", EntityPlane.class, 256, 1),
                 registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                 registerVehicle("uaz", EntityVehicleUAZ.class),
                 registerVehicle("dacia", EntityVehicleDacia.class),
