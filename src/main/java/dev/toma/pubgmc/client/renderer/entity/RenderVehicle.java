@@ -1,14 +1,14 @@
 package dev.toma.pubgmc.client.renderer.entity;
 
 import dev.toma.pubgmc.client.models.vehicles.ModelVehicle;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class RenderVehicle<V extends EntityVehicle, M extends ModelVehicle<V>> extends Render<V> {
+public abstract class RenderVehicle<V extends EntityDriveable, M extends ModelVehicle<V>> extends Render<V> {
 
     private final M model;
 

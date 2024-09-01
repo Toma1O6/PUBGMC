@@ -119,7 +119,6 @@ public final class PMCItems {
     public static final Item COPPER_INGOT = null;
     public static final Item FUELCAN = null;
     public static final Item VEHICLE_UAZ = null;
-    public static final Item VEHICLE_DACIA = null;
     public static final Item PAN = null;
     public static final Item MACHETE = null;
     public static final Item CROWBAR = null;

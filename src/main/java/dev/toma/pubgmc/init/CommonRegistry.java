@@ -10,12 +10,11 @@ import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
 import dev.toma.pubgmc.common.blocks.*;
 import dev.toma.pubgmc.common.entity.*;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
 import dev.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import dev.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import dev.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
@@ -295,8 +294,7 @@ public class CommonRegistry {
                 new PMCItem("steel_ingot"),
                 new PMCItem("copper_ingot"),
                 new ItemFuelCan("fuelcan"),
-                new ItemVehicleSpawner("vehicle_uaz", ItemVehicleSpawner.Vehicles.UAZ),
-                new ItemVehicleSpawner("vehicle_dacia", ItemVehicleSpawner.Vehicles.DACIA),
+                new ItemVehicleSpawner<>("vehicle_uaz", EntityVehicleUAZ::new),
                 GunBuilder.create("flare_gun", FlareGun::new)
                         .stats(WeaponStats.empty())
                         .firerate(110)
@@ -964,7 +962,6 @@ public class CommonRegistry {
                 registerEntity("plane", EntityPlane.class, 256, 1),
                 registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                 registerVehicle("uaz", EntityVehicleUAZ.class),
-                registerVehicle("dacia", EntityVehicleDacia.class),
                 registerEntity("enemyai", EntityAIPlayer.class, 256, 3, true, 0x000000, 0xFFFFFF),
                 registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
                 registerEntity("molotov", EntityMolotov.class, 64, 1),
@@ -1078,7 +1075,7 @@ public class CommonRegistry {
         return createEntityBuilder(name).entity(entityClass).tracker(trackingRange, updateFrequency, sendVelocityUpdates).egg(eggPrimary, eggSecondary).build();
     }
 
-    private static EntityEntry registerVehicle(String name, Class<? extends EntityVehicle> vehicleClass) {
+    private static EntityEntry registerVehicle(String name, Class<? extends EntityDriveable> vehicleClass) {
         return registerEntity(name, vehicleClass, 256, 1);
     }
 

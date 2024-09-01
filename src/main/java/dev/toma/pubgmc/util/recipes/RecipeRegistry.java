@@ -601,15 +601,6 @@ public final class RecipeRegistry {
                 .ingredient(Items.REDSTONE, 40)
                 .ingredient(Items.GOLD_INGOT, 45)
                 .build());
-        registerRecipe(PMCRecipeBuilder.createVehicle()
-                .result(PMCItems.VEHICLE_DACIA)
-                .ingredient(PMCItems.STEEL_INGOT, 50)
-                .ingredient(Blocks.IRON_BLOCK, 10)
-                .ingredient(Items.LEATHER, 20)
-                .ingredient(Blocks.GLASS, 10)
-                .ingredient(Items.REDSTONE, 40)
-                .ingredient(Items.GOLD_INGOT, 45)
-                .build());
 
         TileEntityGunWorkbench.init();
         Pubgmc.logger.info("Workbench recipes initialized. Recipes: {}, took {} miliseconds.", RECIPES.size(), System.currentTimeMillis() - started);

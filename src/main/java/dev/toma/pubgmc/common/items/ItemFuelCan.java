@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.api.item.Consumable;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,9 +36,9 @@ public class ItemFuelCan extends PMCItem implements Consumable {
         if (entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entityLiving;
 
-            if (player.isRiding() && player.getRidingEntity() instanceof EntityVehicle) {
-                EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-                vehicle.refill(player);
+            if (player.isRiding() && player.getRidingEntity() instanceof EntityDriveable) {
+                EntityDriveable vehicle = (EntityDriveable) player.getRidingEntity();
+                vehicle.addFuel(40.0F);
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
                 }
@@ -50,12 +50,13 @@ public class ItemFuelCan extends PMCItem implements Consumable {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        if (!playerIn.isRiding() || !(playerIn.getRidingEntity() instanceof EntityVehicle)) {
+        if (!playerIn.isRiding() || !(playerIn.getRidingEntity() instanceof EntityDriveable)) {
             this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.not_in_vehicle");
             return ActionResult.newResult(EnumActionResult.FAIL, stack);
         }
-        EntityVehicle vehicle = (EntityVehicle) playerIn.getRidingEntity();
-        if (vehicle.currentSpeed != 0) {
+        EntityDriveable vehicle = (EntityDriveable) playerIn.getRidingEntity();
+        double speed = vehicle.getCurrentMotionSqr();
+        if (speed > 8) {
             this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.vehicle_not_stationary");
             return ActionResult.newResult(EnumActionResult.FAIL, stack);
         }

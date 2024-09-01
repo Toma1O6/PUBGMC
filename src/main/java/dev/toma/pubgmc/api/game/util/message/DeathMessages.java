@@ -5,7 +5,7 @@ import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCDamageSources;
@@ -66,7 +66,7 @@ public final class DeathMessages {
             // TODO extract data from bullet for example for actual owner/weapon
             EntityLivingBase killerEntity = (EntityLivingBase) killer;
             Entity vehicle = killerEntity.getRidingEntity();
-            if (vehicle instanceof EntityVehicle) {
+            if (vehicle instanceof EntityDriveable) {
                 return GameHelper.getEntityDisplayName(vehicle); // TODO improve resolution
             }
             if (source instanceof DamageSourceGun) {

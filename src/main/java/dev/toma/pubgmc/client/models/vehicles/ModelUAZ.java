@@ -309,9 +309,9 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
         mirror.render(1f);
         mirror2.render(1f);
         interior.render(1f);
-        renderSteeringWheel(steering_wheel, vehicle.turnModifier);
-        renderFrontWheel(wheelFR, vehicle.turnModifier);
-        renderFrontWheel(wheelFL, vehicle.turnModifier);
+        renderSteeringWheel(steering_wheel, 0.0F);
+        renderFrontWheel(wheelFR, 0.0F);
+        renderFrontWheel(wheelFL, 0.0F);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

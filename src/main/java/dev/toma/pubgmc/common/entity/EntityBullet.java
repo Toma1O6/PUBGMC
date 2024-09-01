@@ -10,7 +10,7 @@ import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.WeaponStats;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -245,8 +245,9 @@ public class EntityBullet extends Entity {
             damageArmor(isHeadshot, baseDamage, (EntityLivingBase) entity);
         }
 
-        Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
-        if (isLivingEntity || entity instanceof EntityVehicle) {
+        boolean isVehicle = entity instanceof EntityDriveable;
+        Block block = isVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
+        if (isLivingEntity || isVehicle) {
             PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, S2C_PacketMakeParticles.ParticleAction.HIT_EFFECT, 0), this.dimension);
         }
     }

@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.MixinHooks;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.entity.IControllable;
@@ -9,7 +10,6 @@ import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
-import dev.toma.pubgmc.MixinHooks;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -25,7 +25,6 @@ import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
@@ -730,19 +729,22 @@ public class ClientEvents {
         ImageUtil.drawTintedImage(minecraft, texture, left, top, width, height, r, g, b, a);
     }
 
+    // TODO rework
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
+        /*
+        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicleOld) {
+            EntityVehicleOld car = (EntityVehicleOld) player.getRidingEntity();
             double speed = car.getSpeed() * 20;
             mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
-        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
+        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicleOld) {
+            EntityVehicleOld car = (EntityVehicleOld) player.getRidingEntity();
             double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
             ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
         }
+         */
     }
 
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {

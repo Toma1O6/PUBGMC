@@ -1,54 +1,79 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.common.CFGVehicle;
-import dev.toma.pubgmc.init.PMCSounds;
-import net.minecraft.util.SoundEvent;
+import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.common.entity.controllable.EntityLandVehicle;
+import dev.toma.pubgmc.common.entity.util.Seat;
+import dev.toma.pubgmc.common.entity.util.Wheel;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EntityVehicleUAZ extends EntityVehicle {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
 
-    private static final Vec3d[] VECTORS = {new Vec3d(2d, 1.5d, 0), new Vec3d(-1.9d, 0.3, -0.6d)};
+public class EntityVehicleUAZ extends EntityLandVehicle {
+
+    private static final Vec3d ENGINE_POSITION = new Vec3d(2.0, 1.5, 0.0);
+    private static final Vec3d EXHAUST_POSITION = new Vec3d(-1.9, 0.3, -0.6);
+    private static final List<Seat> SEATS = DevUtil.make(new ArrayList<>(), list -> {
+        list.add(Seat.createDriver(0.4, 0.4, 0.2));
+        list.add(Seat.createPassenger(-0.4, 0.4, 0.2));
+    });
 
     public EntityVehicleUAZ(World world) {
         super(world);
-        setSize(2f, 1.5f);
-    }
-
-    public EntityVehicleUAZ(World world, int x, int y, int z) {
-        super(world, x, y, z);
-        setSize(2f, 1.5f);
+        this.setSize(2f, 1.5f);
     }
 
     @Override
-    public CFGVehicle getVehicleConfiguration() {
-        return ConfigPMC.vehicles().uaz;
+    public float getMaxHealth() {
+        return 1.0F; // TODO config
     }
 
     @Override
-    public int getMaximumCapacity() {
-        return 4;
+    public float getFuelTankCapacity() {
+        return 120.0F;
     }
 
     @Override
-    public double getMountedYOffset() {
-        return 0.35d;
+    public void createWheels(Consumer<Wheel> registration) {
+        final float wheelSize = 0.75F;
+        final float wheelHealth = 20.0F;
+
+        Wheel frontRight = new Wheel(this, "fr", new Vec3d(-1.0, 0.0, 1.8), wheelSize, wheelHealth);
+        frontRight.setAccelerationWheel(true);
+        frontRight.setTurnWheel(true);
+        registration.accept(frontRight);
+
+        Wheel frontLeft = new Wheel(this, "fl", new Vec3d(1.0, 0.0, 1.8), wheelSize, wheelHealth);
+        frontLeft.setAccelerationWheel(true);
+        frontLeft.setTurnWheel(true);
+        registration.accept(frontLeft);
+
+        Wheel rearRight = new Wheel(this, "rr", new Vec3d(-1.0, 0.0, -0.8), wheelSize, wheelHealth);
+        rearRight.setAccelerationWheel(true);
+        registration.accept(rearRight);
+
+        Wheel rearLeft = new Wheel(this, "rl", new Vec3d(1.0, 0.0, -0.8), wheelSize, wheelHealth);
+        rearLeft.setAccelerationWheel(true);
+        registration.accept(rearLeft);
     }
 
     @Override
-    public Vec3d getEnginePosition() {
-        return VECTORS[0];
+    public Collection<Seat> getSeats() {
+        return SEATS;
     }
 
     @Override
-    public Vec3d getExhaustPosition() {
-        return VECTORS[1];
+    public void doEngineParticles(Consumer<Vec3d> consumer) {
+        consumer.accept(ENGINE_POSITION);
     }
 
     @Override
-    public SoundEvent vehicleSound() {
-        return PMCSounds.uaz;
+    public void doExhaustParticles(Consumer<Vec3d> consumer) {
+        consumer.accept(EXHAUST_POSITION);
     }
 }

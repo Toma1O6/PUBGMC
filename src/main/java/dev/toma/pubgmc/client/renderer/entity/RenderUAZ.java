@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderUAZ extends RenderVehicle<EntityVehicleUAZ, ModelUAZ> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/vehicle/uaz.png");
+    private static final ResourceLocation TEXTURE = Pubgmc.getResource("textures/vehicle/uaz.png");
 
     public RenderUAZ(RenderManager manager) {
         super(manager, new ModelUAZ());
