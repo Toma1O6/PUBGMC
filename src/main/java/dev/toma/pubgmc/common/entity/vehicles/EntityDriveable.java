@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// TODO optimize entity seat lookup
 public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart {
 
     public static final int KEY_FORWARD = 0b1;
@@ -203,6 +204,16 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         SeatPart seat = seatOptional.get();
         Vec3d position = seat.getWorldPosition();
         passenger.setPosition(position.x, position.y, position.z);
+        // TODO smooth turning
+        //passenger.rotationYaw += rotationDelta;
+        //passenger.setRotationYawHead(passenger.getRotationYawHead() + rotationDelta);
+        this.applyYawRotationToPassenger(passenger);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void applyOrientationToEntity(Entity entityToUpdate) {
+        this.applyYawRotationToPassenger(entityToUpdate);
     }
 
     @Override
@@ -500,6 +511,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.multiplyMotion(0.95F);
     }
 
+    protected float getMaxPassengerRotationAngleDegrees() {
+        return 115.0F;
+    }
+
     protected boolean handleEntityAttack(DamageSource source, float amount) {
         this.removeHealth(amount);
         return true;
@@ -526,6 +541,16 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             this.setPosition(px, py, pz);
             this.setRotation(this.rotationYaw, this.rotationPitch);
         }
+    }
+
+    private void applyYawRotationToPassenger(Entity entity) {
+        entity.setRenderYawOffset(this.rotationYaw);
+        float rotationDelta = MathHelper.wrapDegrees(entity.rotationYaw - this.rotationYaw);
+        float maxAngle = this.getMaxPassengerRotationAngleDegrees();
+        float rotationRange = MathHelper.clamp(rotationDelta, -maxAngle, maxAngle);
+        entity.prevRotationYaw += rotationRange - rotationDelta;
+        entity.rotationYaw += rotationRange - rotationDelta;
+        entity.setRotationYawHead(entity.rotationYaw);
     }
 
     private NBTTagCompound serializeParts() {
