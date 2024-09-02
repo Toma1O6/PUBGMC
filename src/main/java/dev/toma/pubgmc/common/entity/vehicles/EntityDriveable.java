@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.entity.IControllable;
@@ -45,6 +47,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     protected static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FUEL = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Boolean> STARTING = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> STARTED = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN); // TODO implement
 
     // speed smoothing
@@ -55,7 +58,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     private UUID gameId = GameHelper.DEFAULT_UUID;
     // passengers
     private final int seatingCapacity;
-    private final Map<SeatPart, Integer> seatingMap = new IdentityHashMap<>();
+    private final BiMap<Integer, SeatPart> seatingMap = HashBiMap.create();
+    private final SeatPart driverSeat;
+    // engine
+    private int timeStartingLeft;
+    private int engineIdleTimeTotal;
     // smoothing
     private int lerpSteps;
     private double lerpX;
@@ -80,6 +87,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         List<SeatPart> seats = partList.stream().filter(part -> part instanceof SeatPart).map(part -> (SeatPart) part).collect(Collectors.toList());
         this.seatingCapacity = seats.size();
         validate(this, seats);
+        this.driverSeat = seats.stream().filter(SeatPart::isDriver).findFirst().orElseThrow(() -> new IllegalStateException("This cannot happen unless some validation is broken!"));
     }
 
     public abstract EntityVehiclePart getMainBodyPart();
@@ -112,9 +120,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.lastMotionY = this.motionY;
         this.lastMotionZ = this.motionZ;
         super.onEntityUpdate();
+        // Part tick
         for (EntityVehiclePart part : this.parts) {
             part.onUpdate();
         }
+        // Game tick
         if (this.ticksExisted % 50L == 0L && !GameHelper.validateGameEntityStillValid(this)) {
             this.setDead();
         }
@@ -129,11 +139,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Nullable
     @Override
     public Entity getControllingPassenger() {
-        for (Map.Entry<SeatPart, Integer> entry : this.seatingMap.entrySet()) {
-            SeatPart seat = entry.getKey();
-            if (seat.isDriver()) {
-                return this.world.getEntityByID(entry.getValue());
-            }
+        Integer driverEntityId = this.seatingMap.inverse().get(this.driverSeat);
+        if (driverEntityId != null) {
+            return this.world.getEntityByID(driverEntityId);
         }
         return null;
     }
@@ -142,7 +150,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     protected void entityInit() {
         this.dataManager.register(HEALTH, this.getMaxHealth());
         this.dataManager.register(FUEL, this.getFuelTankCapacity());
-        this.dataManager.register(STARTED, false);
+        this.dataManager.register(STARTED, Boolean.FALSE);
+        this.dataManager.register(STARTING, Boolean.FALSE);
     }
 
     @Override
@@ -150,6 +159,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         compound.setFloat("health", this.getHealth());
         compound.setFloat("fuel", this.getFuel());
         compound.setBoolean("started", this.isStarted());
+        compound.setBoolean("starting", this.isStarting());
         compound.setTag("parts", this.serializeParts());
     }
 
@@ -157,7 +167,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     protected void readEntityFromNBT(NBTTagCompound compound) {
         this.setHealth(compound.getFloat("health"));
         this.setFuel(compound.getFloat("fuel"));
-        this.setStarted(compound.getBoolean("started"));
+        this.setStartedState(compound.getBoolean("started"));
+        this.setStarting(compound.getBoolean("starting"));
         this.deserializeParts(compound.getCompoundTag("parts"));
     }
 
@@ -194,14 +205,14 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public void updatePassenger(Entity passenger) {
         if (!this.isPassenger(passenger))
             return;
-        Optional<SeatPart> seatOptional = this.getSeatOccupiedBy(passenger);
-        if (!seatOptional.isPresent()) {
+        int passengerId = passenger.getEntityId();
+        SeatPart seat = this.seatingMap.get(passengerId);
+        if (seat == null) {
             if (!this.world.isRemote) {
                 passenger.dismountRidingEntity();
             }
             return;
         }
-        SeatPart seat = seatOptional.get();
         Vec3d position = seat.getWorldPosition();
         passenger.setPosition(position.x, position.y, position.z);
         // TODO smooth turning
@@ -260,7 +271,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         super.removePassenger(passenger);
         if (this.world.isRemote)
             return;
-        this.getSeatOccupiedBy(passenger).ifPresent(this.seatingMap::remove);
+        this.seatingMap.remove(passenger.getEntityId());
         this.sendClientData();
     }
 
@@ -309,10 +320,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public NBTTagCompound encodeNetworkData() {
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagList seats = new NBTTagList();
-        for (Map.Entry<SeatPart, Integer> entry : this.seatingMap.entrySet()) {
+        for (Map.Entry<Integer, SeatPart> entry : this.seatingMap.entrySet()) {
             NBTTagCompound seatNbt = new NBTTagCompound();
-            seatNbt.setInteger("seat", entry.getKey().getEntityId());
-            seatNbt.setInteger("passenger", entry.getValue());
+            seatNbt.setInteger("passenger", entry.getKey());
+            seatNbt.setInteger("seat", entry.getValue().getEntityId());
             seats.appendTag(seatNbt);
         }
         nbt.setTag("seats", seats);
@@ -326,11 +337,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.seatingMap.clear();
         for (int i = 0; i < seats.tagCount(); i++) {
             NBTTagCompound seatNbt = seats.getCompoundTagAt(i);
-            int seat = seatNbt.getInteger("seat");
             int passenger = seatNbt.getInteger("passenger");
+            int seat = seatNbt.getInteger("seat");
             EntityVehiclePart vehiclePart = this.findPartById(seat);
             if (vehiclePart instanceof SeatPart) {
-                this.seatingMap.put((SeatPart) vehiclePart, passenger);
+                this.seatingMap.put(passenger, (SeatPart) vehiclePart);
             } else {
                 Pubgmc.logger.warn("Failed to resolve seatingMap for vehicle {} as vehicle part ID '{}' is {}", this, seat, vehiclePart);
             }
@@ -356,12 +367,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public boolean boardVehicle(SeatPart seat, EntityLivingBase entity, EnumHand hand) {
         if (this.canEntityBoardVehicle(seat, entity)) {
             if (!this.world.isRemote) {
-                Optional<SeatPart> currentSeat = this.getSeatOccupiedBy(entity);
-                currentSeat.ifPresent(currentSeatPart -> {
-                    this.seatingMap.remove(currentSeatPart);
+                if (this.seatingMap.forcePut(entity.getEntityId(), seat) != null) {
                     entity.dismountRidingEntity();
-                });
-                this.seatingMap.put(seat, entity.getEntityId());
+                }
                 entity.startRiding(this);
                 this.sendClientData();
             }
@@ -373,20 +381,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public boolean canEntityBoardVehicle(SeatPart seat, EntityLivingBase entity) {
         if (entity == null)
             return false;
-        Integer passengerInSeat = this.seatingMap.get(seat);
+        Integer passengerInSeat = this.seatingMap.inverse().get(seat);
         return this.canBeRidden(entity) && this.canFitPassenger(entity) && passengerInSeat == null;
-    }
-
-    public final Optional<SeatPart> getSeatOccupiedBy(@Nullable Entity entity) {
-        if (entity == null)
-            return Optional.empty();
-        int id = entity.getEntityId();
-        for (Map.Entry<SeatPart, Integer> entry : this.seatingMap.entrySet()) {
-            if (entry.getValue() == id) {
-                return Optional.of(entry.getKey());
-            }
-        }
-        return Optional.empty();
     }
 
     public final void setHealth(float health) {
@@ -429,12 +425,33 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return this.getFuel() > 0.0F;
     }
 
-    public final void setStarted(boolean started) {
+    public final void setStartedState(boolean started) {
         this.dataManager.set(STARTED, started);
+    }
+
+    public final void startEngine() {
+        this.setStartedState(true);
+        this.setStarting(false);
+    }
+
+    public final void killEngine() {
+        this.setStartedState(false);
+        this.setStarting(false);
     }
 
     public final boolean isStarted() {
         return this.dataManager.get(STARTED);
+    }
+
+    public final void setStarting(boolean starting) {
+        this.dataManager.set(STARTING, starting);
+        if (starting) {
+            this.timeStartingLeft = 20 + (int) (60 * (this.getHealth() / this.getMaxHealth()));
+        }
+    }
+
+    public final boolean isStarting() {
+        return this.dataManager.get(STARTING);
     }
 
     public final double getCurrentMotionSqr() {
@@ -527,16 +544,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             return;
         }
         this.handleInputUpdate();
+        this.engineTick();
     }
 
     private void tickLerp() {
         if (this.lerpSteps > 0 && !this.canPassengerSteer()) {
-            double px = this.posX + (this.lerpX - this.posX) / (double)this.lerpSteps;
-            double py = this.posY + (this.lerpY - this.posY) / (double)this.lerpSteps;
-            double pz = this.posZ + (this.lerpZ - this.posZ) / (double)this.lerpSteps;
-            double yaw = MathHelper.wrapDegrees(this.lerpYaw - (double)this.rotationYaw);
-            this.rotationYaw = (float)((double)this.rotationYaw + yaw / (double)this.lerpSteps);
-            this.rotationPitch = (float)((double)this.rotationPitch + (this.lerpPitch - (double)this.rotationPitch) / (double)this.lerpSteps);
+            double px = this.posX + (this.lerpX - this.posX) / (double) this.lerpSteps;
+            double py = this.posY + (this.lerpY - this.posY) / (double) this.lerpSteps;
+            double pz = this.posZ + (this.lerpZ - this.posZ) / (double) this.lerpSteps;
+            double yaw = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
+            this.rotationYaw = (float)(this.rotationYaw + yaw / (float) this.lerpSteps);
+            this.rotationPitch = this.rotationPitch + (float) (this.lerpPitch - this.rotationPitch) / (float) this.lerpSteps;
             --this.lerpSteps;
             this.setPosition(px, py, pz);
             this.setRotation(this.rotationYaw, this.rotationPitch);
@@ -556,16 +574,29 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     private NBTTagCompound serializeParts() {
         NBTTagCompound tag = new NBTTagCompound();
         for (EntityVehiclePart part : this.getParts()) {
-            NBTTagCompound partTag = new NBTTagCompound();
-            part.writeEntityToNBT(partTag);
-            tag.setTag(part.partName, partTag);
+            if (!part.hasCustomSaveData())
+                continue;
+            tag.setTag(part.partName, part.savePartData());
         }
         return tag;
     }
 
     private void deserializeParts(NBTTagCompound tag) {
         for (EntityVehiclePart part : this.getParts()) {
-            part.readEntityFromNBT(tag.getCompoundTag(part.partName));
+            if (!part.hasCustomSaveData())
+                continue;
+            part.loadPartData(tag.getCompoundTag(part.partName));
+        }
+    }
+
+    private void engineTick() {
+        // Starting tick
+        if (this.isStarting() && --this.timeStartingLeft <= 0) {
+            this.startEngine();
+        }
+        // Engine idle tick
+        if (this.controllerInput == 0 && this.isStarted() && this.getCurrentMotionSqr() < 0.1 && ++this.engineIdleTimeTotal > 400) {
+            this.killEngine();
         }
     }
 

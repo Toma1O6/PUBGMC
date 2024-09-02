@@ -53,7 +53,12 @@ public abstract class EntityLandVehicle extends EntityVehicle {
             });
         }
         float healthPercentage = this.getHealth() / this.getMaxHealth();
-        if (healthPercentage < 0.35F) {
+        if (this.isBurned()) {
+           this.processEngineParticles(vec -> {
+               Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
+               this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.1), 0.10, randomRange(this.rand, 0.1));
+           });
+        } else if (healthPercentage < 0.35F) {
             this.processEngineParticles(vec -> {
                 Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
                 if (this.isDestroyed()) {

@@ -67,11 +67,23 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    protected final void writeEntityToNBT(NBTTagCompound compound) {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    protected final void readEntityFromNBT(NBTTagCompound compound) {
+    }
+
+    public boolean hasCustomSaveData() {
+        return false;
+    }
+
+    public NBTTagCompound savePartData() {
+        throw new UnsupportedOperationException("Called EntityVehiclePart#savePartData on unsupported vehicle part! Either check your validations or serialization implementation");
+    }
+
+    public void loadPartData(NBTTagCompound nbt) {
+        throw new UnsupportedOperationException("Called EntityVehiclePart#loadPartData on unsupported vehicle part! Either check your validations or deserialization implementation");
     }
 
     @Override

@@ -33,12 +33,19 @@ public abstract class EntityVehicleDamageablePart extends EntityVehiclePart {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        compound.setFloat("health", this.getHealth());
+    public boolean hasCustomSaveData() {
+        return true;
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public NBTTagCompound savePartData() {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setFloat("health", this.getHealth());
+        return compound;
+    }
+
+    @Override
+    public void loadPartData(NBTTagCompound compound) {
         this.setHealth(compound.getFloat("health"));
     }
 
