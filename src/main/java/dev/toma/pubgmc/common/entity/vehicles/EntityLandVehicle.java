@@ -46,7 +46,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     }
 
     protected void particleTick() {
-        if (!this.isStarted()) {
+        if (this.isStarted()) {
             this.processExhaustParticles(vec -> {
                 Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
                 this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.x, pos.y, pos.z, 0.0, 0.01, 0.0);

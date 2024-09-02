@@ -491,9 +491,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     protected void applyGravity() {
         if (this.hasNoGravity())
             return;
-        if (this.motionY < -0.5)
+        if (this.motionY < -2.65)
             return;
-        this.motionY -= 0.05;
+        this.motionY -= 0.04905;
     }
 
     protected void applyDrag() {
