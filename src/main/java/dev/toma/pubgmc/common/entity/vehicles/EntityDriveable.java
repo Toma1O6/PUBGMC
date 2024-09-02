@@ -149,6 +149,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         compound.setFloat("health", this.getHealth());
         compound.setFloat("fuel", this.getFuel());
         compound.setBoolean("started", this.isStarted());
+        compound.setTag("parts", this.serializeParts());
     }
 
     @Override
@@ -156,6 +157,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.setHealth(compound.getFloat("health"));
         this.setFuel(compound.getFloat("fuel"));
         this.setStarted(compound.getBoolean("started"));
+        this.deserializeParts(compound.getCompoundTag("parts"));
     }
 
     @Override
@@ -303,6 +305,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             seats.appendTag(seatNbt);
         }
         nbt.setTag("seats", seats);
+        nbt.setTag("parts", this.serializeParts());
         return nbt;
     }
 
@@ -321,6 +324,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 Pubgmc.logger.warn("Failed to resolve seatingMap for vehicle {} as vehicle part ID '{}' is {}", this, seat, vehiclePart);
             }
         }
+        this.deserializeParts(nbt.getCompoundTag("parts"));
     }
 
     @Override
@@ -521,6 +525,22 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             --this.lerpSteps;
             this.setPosition(px, py, pz);
             this.setRotation(this.rotationYaw, this.rotationPitch);
+        }
+    }
+
+    private NBTTagCompound serializeParts() {
+        NBTTagCompound tag = new NBTTagCompound();
+        for (EntityVehiclePart part : this.getParts()) {
+            NBTTagCompound partTag = new NBTTagCompound();
+            part.writeEntityToNBT(partTag);
+            tag.setTag(part.partName, partTag);
+        }
+        return tag;
+    }
+
+    private void deserializeParts(NBTTagCompound tag) {
+        for (EntityVehiclePart part : this.getParts()) {
+            part.readEntityFromNBT(tag.getCompoundTag(part.partName));
         }
     }
 

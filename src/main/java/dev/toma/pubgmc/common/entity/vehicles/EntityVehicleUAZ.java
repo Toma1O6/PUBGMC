@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 
 public class EntityVehicleUAZ extends EntityLandVehicle {
 
-    private static final Vec3d ENGINE_POSITION = new Vec3d(2.0, 1.5, 0.0);
-    private static final Vec3d EXHAUST_POSITION = new Vec3d(-1.9, 0.3, -0.6);
+    private static final Vec3d ENGINE_POSITION = new Vec3d(0.0, 1.5, 2.0);
+    private static final Vec3d EXHAUST_POSITION = new Vec3d(0.6, 0.3, -1.9);
     private EntityVehiclePart body;
 
     public EntityVehicleUAZ(World world) {
@@ -31,33 +31,30 @@ public class EntityVehicleUAZ extends EntityLandVehicle {
         EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "roof", 2.4F, 0.2F, new Vec3d(0.0, 2.2F, -0.3F)));
         roof.setDamageMultiplier(0.6F);
 
-        final float wheelSize = 0.75F;
-        final float wheelHealth = 20.0F;
-
-        WheelPart frontRight = registration.register(new WheelPart(this, "fr", new Vec3d(-1.0, 0.0, 1.8), wheelSize, wheelHealth));
+        WheelPart frontRight = registration.register(new WheelPart(this, "fr", new Vec3d(-1.0, 0.0, 1.8)));
         frontRight.setAccelerationWheel(true);
         frontRight.setTurnWheel(true);
 
-        WheelPart frontLeft = registration.register(new WheelPart(this, "fl", new Vec3d(1.0, 0.0, 1.8), wheelSize, wheelHealth));
+        WheelPart frontLeft = registration.register(new WheelPart(this, "fl", new Vec3d(1.0, 0.0, 1.8)));
         frontLeft.setAccelerationWheel(true);
         frontLeft.setTurnWheel(true);
 
-        WheelPart rearRight = registration.register(new WheelPart(this, "rr", new Vec3d(-1.0, 0.0, -0.8), wheelSize, wheelHealth));
+        WheelPart rearRight = registration.register(new WheelPart(this, "rr", new Vec3d(-1.0, 0.0, -0.8)));
         rearRight.setAccelerationWheel(true);
 
-        WheelPart rearLeft = registration.register(new WheelPart(this, "rl", new Vec3d(1.0, 0.0, -0.8), wheelSize, wheelHealth));
+        WheelPart rearLeft = registration.register(new WheelPart(this, "rl", new Vec3d(1.0, 0.0, -0.8)));
         rearLeft.setAccelerationWheel(true);
 
-        registration.register(new SeatPart(this, "driverSeat", new Vec3d(0.6, 0.3, 0.2), true));
-        registration.register(new SeatPart(this, "passengerFront", new Vec3d(-0.6, 0.3, 0.2), false));
-        registration.register(new SeatPart(this, "passengerBackLeft", new Vec3d(-0.7, 0.35, -0.8), false));
-        registration.register(new SeatPart(this, "passengerBackCenter", new Vec3d(0.0, 0.35, -0.8), false));
-        registration.register(new SeatPart(this, "passengerBackRight", new Vec3d(0.7, 0.35, -0.8), false));
+        registration.register(new SeatPart(this, "driver", new Vec3d(0.6, 0.3, 0.2), true));
+        registration.register(new SeatPart(this, "passengerFront", new Vec3d(-0.6, 0.3, 0.2)));
+        registration.register(new SeatPart(this, "passengerBackLeft", new Vec3d(-0.7, 0.35, -0.8)));
+        registration.register(new SeatPart(this, "passengerBackCenter", new Vec3d(0.0, 0.35, -0.8)));
+        registration.register(new SeatPart(this, "passengerBackRight", new Vec3d(0.7, 0.35, -0.8)));
     }
 
     @Override
     public float getMaxHealth() {
-        return 50.0F; // TODO config
+        return 250.0F; // TODO config
     }
 
     @Override

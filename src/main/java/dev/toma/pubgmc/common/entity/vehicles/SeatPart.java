@@ -11,6 +11,10 @@ public final class SeatPart extends EntityVehiclePart {
 
     private final boolean driver;
 
+    public SeatPart(EntityDriveable vehicle, String seatName, Vec3d position) {
+        this(vehicle, seatName, position, false);
+    }
+
     public SeatPart(EntityDriveable vehicle, String seatName, Vec3d position, boolean driver) {
         super(vehicle, seatName, 1.0F, 1.5F, position);
         this.driver = driver;

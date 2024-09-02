@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.entity.vehicles;
 
 import dev.toma.pubgmc.api.entity.CustomProjectileBoundingBoxProvider;
 import net.minecraft.entity.MultiPartEntityPart;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -63,6 +64,14 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
 
     protected boolean isDestroyed() {
         return false;
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound compound) {
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound compound) {
     }
 
     @Override
