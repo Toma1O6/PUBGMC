@@ -54,7 +54,7 @@ public class EntityVehicleUAZ extends EntityLandVehicle {
 
     @Override
     public float getMaxHealth() {
-        return 250.0F; // TODO config
+        return 800.0F; // TODO config
     }
 
     @Override

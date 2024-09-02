@@ -56,7 +56,14 @@ public abstract class EntityVehicle extends EntityDriveable {
             this.setDead();
             return true;
         }
+        if (!this.isBurned() && source.isExplosion() && amount >= this.getHealth()) {
+            this.timeOnFire = Math.max(this.getTicksToExplode() - 10, this.timeOnFire);
+        }
         return super.handleEntityAttack(source, amount);
+    }
+
+    public final boolean isFunctional() {
+        return !this.isDestroyed() && !this.isBurned();
     }
 
     public final void setBurned(boolean burned) {
