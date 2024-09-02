@@ -114,6 +114,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         for (EntityVehiclePart part : this.parts) {
             part.onUpdate();
         }
+        if (this.ticksExisted % 50L == 0L && !GameHelper.validateGameEntityStillValid(this)) {
+            this.setDead();
+        }
     }
 
     @Override
