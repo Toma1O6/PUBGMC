@@ -5,7 +5,7 @@ import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
-import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCDamageSources;

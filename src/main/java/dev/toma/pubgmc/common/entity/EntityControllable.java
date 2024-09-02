@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.entity.controllable;
+package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.api.entity.IControllable;
 import net.minecraft.client.settings.GameSettings;

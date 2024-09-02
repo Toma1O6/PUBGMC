@@ -22,7 +22,7 @@ public class RenderUAZ extends RenderVehicle<EntityVehicleUAZ, ModelUAZ> {
 
     @Override
     public void preRenderCallback(EntityVehicleUAZ entity) {
+        GlStateManager.translate(0.0, 1.4, 0.0);
         GlStateManager.scale(0.05F, 0.05F, 0.05F);
-        GlStateManager.translate(0, -29, 0);
     }
 }

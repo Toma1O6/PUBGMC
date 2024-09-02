@@ -1,6 +1,6 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
-import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 

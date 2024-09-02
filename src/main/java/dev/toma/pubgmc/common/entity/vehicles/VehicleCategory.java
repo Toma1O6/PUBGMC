@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.entity.util;
+package dev.toma.pubgmc.common.entity.vehicles;
 
 public enum VehicleCategory {
 

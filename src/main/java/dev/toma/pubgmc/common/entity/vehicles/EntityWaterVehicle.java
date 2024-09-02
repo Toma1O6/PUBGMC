@@ -1,9 +1,8 @@
-package dev.toma.pubgmc.common.entity.controllable;
+package dev.toma.pubgmc.common.entity.vehicles;
 
-import dev.toma.pubgmc.common.entity.util.VehicleCategory;
 import net.minecraft.world.World;
 
-public abstract class EntityWaterVehicle extends EntityDriveable {
+public abstract class EntityWaterVehicle extends EntityVehicle {
 
     public EntityWaterVehicle(World world) {
         super(world);
@@ -12,5 +11,10 @@ public abstract class EntityWaterVehicle extends EntityDriveable {
     @Override
     public VehicleCategory getVehicleCategory() {
         return VehicleCategory.WATER;
+    }
+
+    @Override
+    protected float getStepHeight() {
+        return 0.0F;
     }
 }

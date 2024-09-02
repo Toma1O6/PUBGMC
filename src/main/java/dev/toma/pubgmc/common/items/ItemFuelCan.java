@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.api.item.Consumable;
-import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;

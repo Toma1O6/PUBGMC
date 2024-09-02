@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.client.renderer.entity;
 
 import dev.toma.pubgmc.client.models.vehicles.ModelVehicle;
-import dev.toma.pubgmc.common.entity.controllable.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
@@ -27,8 +27,8 @@ public abstract class RenderVehicle<V extends EntityDriveable, M extends ModelVe
         {
             bindEntityTexture(entity);
             GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(180, 1, 0, 0);
             preRenderCallback(entity);
+            GlStateManager.rotate(180, 1, 0, 0);
             GlStateManager.rotate(entityYaw, 0f, 1f, 0f);
             applyLight();
             model.render(entity);

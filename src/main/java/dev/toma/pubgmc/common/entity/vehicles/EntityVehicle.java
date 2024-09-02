@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.entity.controllable;
+package dev.toma.pubgmc.common.entity.vehicles;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +11,7 @@ public abstract class EntityVehicle extends EntityDriveable {
 
     public EntityVehicle(World world) {
         super(world);
-        this.stepHeight = this.getStepHeight();
+        this.updateStepHeight();
     }
 
     @Override
@@ -29,23 +29,6 @@ public abstract class EntityVehicle extends EntityDriveable {
     protected void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
         this.timeOnFire = compound.getInteger("timeOnFire");
-    }
-
-    @Override
-    public void writeSpawnData(ByteBuf buffer) {
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf additionalData) {
-    }
-
-    @Override
-    public NBTTagCompound encodeNetworkData() {
-        return new NBTTagCompound();
-    }
-
-    @Override
-    public void decodeNetworkData(NBTTagCompound nbt) {
     }
 
     protected float getStepHeight() {
@@ -66,6 +49,10 @@ public abstract class EntityVehicle extends EntityDriveable {
 
     protected float getExplosionPower() {
         return 5.0F;
+    }
+
+    protected final void updateStepHeight() {
+        this.stepHeight = this.getStepHeight();
     }
 
     private void handleDestroyedTick() {

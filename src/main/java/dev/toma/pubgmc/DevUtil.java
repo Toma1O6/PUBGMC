@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
@@ -31,6 +32,10 @@ public class DevUtil {
 
     public static boolean isDev() {
         return Pubgmc.isDevEnvironment;
+    }
+
+    public static double randomRange(Random random, double scale) {
+        return scale * (random.nextDouble() - random.nextDouble());
     }
 
     @SuppressWarnings("unchecked")

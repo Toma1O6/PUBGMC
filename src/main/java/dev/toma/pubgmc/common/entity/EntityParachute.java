@@ -2,7 +2,6 @@ package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.api.event.ParachuteEvent;
-import dev.toma.pubgmc.common.entity.controllable.EntityControllable;
 import dev.toma.pubgmc.init.PMCSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
