@@ -303,6 +303,8 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
     @Override
     public void render(EntityVehicleUAZ vehicle) {
         bone.render(1f);
+        if (vehicle.isBurned())
+            return;
         wheelBR.render(1f);
         wheelBL2.render(1f);
         decorations.render(1f);

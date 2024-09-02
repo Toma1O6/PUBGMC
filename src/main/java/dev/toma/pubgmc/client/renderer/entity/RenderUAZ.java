@@ -10,19 +10,26 @@ import net.minecraft.util.ResourceLocation;
 public class RenderUAZ extends RenderVehicle<EntityVehicleUAZ, ModelUAZ> {
 
     private static final ResourceLocation TEXTURE = Pubgmc.getResource("textures/vehicle/uaz.png");
+    private static final ResourceLocation TEXTURE_BURNED = Pubgmc.getResource("textures/vehicle/uaz_burned.png");
 
     public RenderUAZ(RenderManager manager) {
         super(manager, new ModelUAZ());
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityVehicleUAZ entity) {
+    protected ResourceLocation getTexture(EntityVehicleUAZ vehicle) {
         return TEXTURE;
     }
 
     @Override
+    protected ResourceLocation getBurnedTexture(EntityVehicleUAZ vehicle) {
+        return TEXTURE_BURNED;
+    }
+
+    @Override
     public void preRenderCallback(EntityVehicleUAZ entity) {
-        GlStateManager.translate(0.0, 1.4, 0.0);
+        double yOffset = entity.isBurned() ? 1.0 : 1.4;
+        GlStateManager.translate(0.0, yOffset, 0.0);
         GlStateManager.scale(0.05F, 0.05F, 0.05F);
     }
 }

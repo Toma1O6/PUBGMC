@@ -7,6 +7,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.function.Consumer;
@@ -33,6 +34,8 @@ public class ItemVehicleSpawner<V extends EntityDriveable> extends PMCItem {
         if (!worldIn.isRemote) {
             V vehicle = this.factory.create(worldIn);
             vehicle.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+            vehicle.rotationYaw = MathHelper.wrapDegrees(player.rotationYaw - 90.0F);
+            vehicle.prevRotationYaw = vehicle.rotationYaw;
             this.configuration.accept(vehicle);
             worldIn.spawnEntity(vehicle);
 

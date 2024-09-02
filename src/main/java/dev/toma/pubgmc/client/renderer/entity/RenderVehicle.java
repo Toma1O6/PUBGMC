@@ -1,14 +1,17 @@
 package dev.toma.pubgmc.client.renderer.entity;
 
 import dev.toma.pubgmc.client.models.vehicles.ModelVehicle;
-import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class RenderVehicle<V extends EntityDriveable, M extends ModelVehicle<V>> extends Render<V> {
+import javax.annotation.Nullable;
+
+public abstract class RenderVehicle<V extends EntityVehicle, M extends ModelVehicle<V>> extends Render<V> {
 
     private final M model;
 
@@ -17,8 +20,17 @@ public abstract class RenderVehicle<V extends EntityDriveable, M extends ModelVe
         this.model = vehicleModel;
     }
 
-    public void preRenderCallback(V entity) {
+    @Nullable
+    @Override
+    protected final ResourceLocation getEntityTexture(V entity) {
+        return entity.isBurned() ? this.getBurnedTexture(entity) : this.getTexture(entity);
+    }
 
+    protected abstract ResourceLocation getBurnedTexture(V vehicle);
+
+    protected abstract ResourceLocation getTexture(V vehicle);
+
+    public void preRenderCallback(V entity) {
     }
 
     @Override
