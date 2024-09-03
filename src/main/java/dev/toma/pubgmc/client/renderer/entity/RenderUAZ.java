@@ -27,9 +27,13 @@ public class RenderUAZ extends RenderVehicle<EntityVehicleUAZ, ModelUAZ> {
     }
 
     @Override
-    public void preRenderCallback(EntityVehicleUAZ entity) {
-        double yOffset = entity.isBurned() ? 1.0 : 1.4;
-        GlStateManager.translate(0.0, yOffset, 0.0);
-        GlStateManager.scale(0.05F, 0.05F, 0.05F);
+    protected void setupTranslations(EntityVehicleUAZ entity) {
+        GlStateManager.translate(0.0, 0.7, 0.0);
+    }
+
+    @Override
+    protected void setupRotationsAndScale(EntityVehicleUAZ entity) {
+        double scale = 0.8;
+        GlStateManager.scale(scale, scale, scale);
     }
 }

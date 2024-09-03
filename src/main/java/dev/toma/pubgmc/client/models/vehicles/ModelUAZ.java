@@ -302,18 +302,19 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
 
     @Override
     public void render(EntityVehicleUAZ vehicle) {
-        bone.render(1f);
+        float renderScale = 0.0625F;
+        bone.render(renderScale);
         if (vehicle.isBurned())
             return;
-        wheelBR.render(1f);
-        wheelBL2.render(1f);
-        decorations.render(1f);
-        mirror.render(1f);
-        mirror2.render(1f);
-        interior.render(1f);
-        renderSteeringWheel(steering_wheel, 0.0F);
-        renderFrontWheel(wheelFR, 0.0F);
-        renderFrontWheel(wheelFL, 0.0F);
+        wheelBR.render(renderScale);
+        wheelBL2.render(renderScale);
+        decorations.render(renderScale);
+        mirror.render(renderScale);
+        mirror2.render(renderScale);
+        interior.render(renderScale);
+        renderSteeringWheel(steering_wheel, 0.0F, renderScale);
+        renderFrontWheel(wheelFR, 0.0F, renderScale);
+        renderFrontWheel(wheelFL, 0.0F, renderScale);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
