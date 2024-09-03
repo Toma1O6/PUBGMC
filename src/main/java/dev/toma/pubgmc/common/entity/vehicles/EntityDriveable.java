@@ -12,11 +12,6 @@ import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
-import net.minecraft.block.BlockFenceGate;
-import net.minecraft.block.BlockWall;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -71,13 +66,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     // engine
     private int timeStartingLeft;
     private int engineIdleTimeTotal;
-    // smoothing
-    private int lerpSteps;
-    private double lerpX;
-    private double lerpY;
-    private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
     // subparts
     private final EntityVehiclePart[] parts;
 
@@ -113,7 +101,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Override
     public void onUpdate() {
         this.onEntityUpdate();
-        //this.tickLerp(); // TODO investigate why this desyncs movement
         this.inputTick();
         this.handleVehicleInLava();
         this.runVehicleTick();
@@ -304,17 +291,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Override
     public boolean isInRangeToRenderDist(double distance) {
         return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
-        this.lerpX = x;
-        this.lerpY = y;
-        this.lerpZ = z;
-        this.lerpYaw = yaw;
-        this.lerpPitch = pitch;
-        this.lerpSteps = 10;
     }
 
     @Override
@@ -590,7 +566,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (this.hasNoGravity())
             return;
         if (this.onGround)
-            this.motionY = 0.0F;
+            this.motionY = Math.max(this.motionY, 0.0);
         if (this.motionY < -2.65)
             return;
         this.motionY -= 0.04905;
@@ -617,20 +593,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
         this.handleInputUpdate();
         this.engineTick();
-    }
-
-    private void tickLerp() {
-        if (this.lerpSteps > 0 && !this.canPassengerSteer()) {
-            double px = this.posX + (this.lerpX - this.posX) / (double) this.lerpSteps;
-            double py = this.posY + (this.lerpY - this.posY) / (double) this.lerpSteps;
-            double pz = this.posZ + (this.lerpZ - this.posZ) / (double) this.lerpSteps;
-            double yaw = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float)(this.rotationYaw + yaw / (float) this.lerpSteps);
-            this.rotationPitch = this.rotationPitch + (float) (this.lerpPitch - this.rotationPitch) / (float) this.lerpSteps;
-            --this.lerpSteps;
-            this.setPosition(px, py, pz);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
     }
 
     private void applyYawRotationToPassenger(Entity entity) {

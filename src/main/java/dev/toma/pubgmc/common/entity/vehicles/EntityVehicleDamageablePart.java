@@ -25,6 +25,7 @@ public abstract class EntityVehicleDamageablePart extends EntityVehiclePart {
         if (!destroyed && this.isDestroyed()) {
             this.onDestroyed();
         }
+        this.access.synchronizeClientData();
     }
 
     @Override

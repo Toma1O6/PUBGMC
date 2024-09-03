@@ -295,7 +295,7 @@ public class CommonEvents {
         }
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent // TODO is this actually needed?
     public void getVehicleCollisionBoxes(GetCollisionBoxesEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof EntityDriveable) {

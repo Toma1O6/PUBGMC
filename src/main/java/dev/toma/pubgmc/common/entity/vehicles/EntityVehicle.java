@@ -57,7 +57,7 @@ public abstract class EntityVehicle extends EntityDriveable {
             return true;
         }
         if (!this.isBurned() && source.isExplosion() && amount >= this.getHealth()) {
-            this.timeOnFire = Math.max(this.getTicksToExplode() - 10, this.timeOnFire);
+            this.timeOnFire = Math.max(this.getTicksToExplode() - 5, this.timeOnFire);
         }
         return super.handleEntityAttack(source, amount);
     }
@@ -86,9 +86,8 @@ public abstract class EntityVehicle extends EntityDriveable {
         if (this.world.isRemote)
             return;
         boolean doMobGriefing = ForgeEventFactory.getMobGriefingEvent(this.world, this);
-        this.multiplyMotion(1.1F);
-        if (this.motionY <= 0)
-            this.motionY += 0.82;
+        this.multiplyMotion(1.2F);
+        this.motionY += 0.8F;
         this.removePassengers();
         this.setBurned(true);
         for (EntityVehiclePart part : this.getParts()) {

@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -25,7 +24,7 @@ public final class SeatPart extends EntityVehiclePart {
     }
 
     public Vec3d getDismountPosition() {
-        Entity parent = (Entity) this.parent;
+        EntityDriveable parent = this.access.getParentEntity();
         Vec3d seatPosition = this.getRelativePosition().addVector(this.dismountOffset, -0.2, 0.0);
         return seatPosition.rotateYaw(-parent.rotationYaw * (float) (Math.PI / 180.0F)).add(parent.getPositionVector());
     }
@@ -36,7 +35,7 @@ public final class SeatPart extends EntityVehiclePart {
 
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
-        EntityDriveable driveable = (EntityDriveable) this.parent;
+        EntityDriveable driveable = this.access.getParentEntity();
         return driveable.boardVehicle(this, player, hand);
     }
 

@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
 import dev.toma.pubgmc.api.entity.CustomProjectileBoundingBoxProvider;
+import dev.toma.pubgmc.api.entity.ParentEntityAccess;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -11,12 +12,14 @@ import javax.annotation.Nullable;
 
 public class EntityVehiclePart extends MultiPartEntityPart implements CustomProjectileBoundingBoxProvider {
 
+    public final ParentEntityAccess<EntityDriveable> access;
     private final Vec3d relativePosition;
     private float damageMultiplier = 1.0F;
     private BoundingBoxMode boundingBoxMode = BoundingBoxMode.COLLIDER;
 
     public EntityVehiclePart(EntityDriveable parent, String name, float width, float height, Vec3d relativePosition) {
         super(parent, name, width, height);
+        this.access = createAccessor(parent);
         this.relativePosition = relativePosition;
     }
 
@@ -25,7 +28,7 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     }
 
     public Vec3d getWorldPosition() {
-        EntityDriveable parent = (EntityDriveable) this.parent;
+        EntityDriveable parent = this.access.getParentEntity();
         return parent.getPositionVector().add(this.relativePosition.rotateYaw(-parent.rotationYaw * (float) (Math.PI / 180.0F)));
     }
 
@@ -103,5 +106,19 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     public enum BoundingBoxMode {
         NONE,
         COLLIDER
+    }
+
+    private static ParentEntityAccess<EntityDriveable> createAccessor(EntityDriveable ref) {
+        return new ParentEntityAccess<EntityDriveable>() {
+            @Override
+            public EntityDriveable getParentEntity() {
+                return ref;
+            }
+
+            @Override
+            public void synchronizeClientData() {
+                ref.sendClientData();
+            }
+        };
     }
 }
