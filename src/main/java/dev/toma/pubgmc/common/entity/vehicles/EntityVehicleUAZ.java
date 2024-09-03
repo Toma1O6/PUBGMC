@@ -45,16 +45,16 @@ public class EntityVehicleUAZ extends EntityLandVehicle {
         WheelPart rearLeft = registration.register(new WheelPart(this, "rl", new Vec3d(1.0, 0.0, -0.8)));
         rearLeft.setAccelerationWheel(true);
 
-        registration.register(new SeatPart(this, "driver", new Vec3d(0.6, 0.3, 0.2), true));
-        registration.register(new SeatPart(this, "passengerFront", new Vec3d(-0.6, 0.3, 0.2)));
-        registration.register(new SeatPart(this, "passengerBackLeft", new Vec3d(-0.7, 0.35, -0.8)));
-        registration.register(new SeatPart(this, "passengerBackCenter", new Vec3d(0.0, 0.35, -0.8)));
-        registration.register(new SeatPart(this, "passengerBackRight", new Vec3d(0.7, 0.35, -0.8)));
+        registration.register(new SeatPart(this, "driver", new Vec3d(0.6, 0.3, 0.2), 1.2F, true));
+        registration.register(new SeatPart(this, "passengerFront", new Vec3d(-0.6, 0.3, 0.2), -1.2F));
+        registration.register(new SeatPart(this, "passengerBackLeft", new Vec3d(0.7, 0.35, -0.8), 1.1F));
+        registration.register(new SeatPart(this, "passengerBackCenter", new Vec3d(0.0, 0.35, -0.8), 1.8F));
+        registration.register(new SeatPart(this, "passengerBackRight", new Vec3d(-0.7, 0.35, -0.8), -1.1F));
     }
 
     @Override
     public float getMaxHealth() {
-        return 800.0F; // TODO config
+        return 20.0F; // TODO config
     }
 
     @Override

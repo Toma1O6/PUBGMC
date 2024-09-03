@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -9,15 +10,23 @@ import javax.annotation.Nullable;
 
 public final class SeatPart extends EntityVehiclePart {
 
+    private final float dismountOffset;
     private final boolean driver;
 
-    public SeatPart(EntityDriveable vehicle, String seatName, Vec3d position) {
-        this(vehicle, seatName, position, false);
+    public SeatPart(EntityDriveable vehicle, String seatName, Vec3d position, float dismountOffset) {
+        this(vehicle, seatName, position, dismountOffset, false);
     }
 
-    public SeatPart(EntityDriveable vehicle, String seatName, Vec3d position, boolean driver) {
+    public SeatPart(EntityDriveable vehicle, String seatName, Vec3d position, float dismountOffset, boolean driver) {
         super(vehicle, seatName, 1.0F, 1.5F, position);
+        this.dismountOffset = dismountOffset;
         this.driver = driver;
+    }
+
+    public Vec3d getDismountPosition() {
+        Entity parent = (Entity) this.parent;
+        Vec3d seatPosition = this.getRelativePosition().addVector(this.dismountOffset, -0.2, 0.0);
+        return seatPosition.rotateYaw(-parent.rotationYaw * (float) (Math.PI / 180.0F)).add(parent.getPositionVector());
     }
 
     public boolean isDriver() {

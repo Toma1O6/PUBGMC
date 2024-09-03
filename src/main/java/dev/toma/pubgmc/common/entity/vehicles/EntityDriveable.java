@@ -33,7 +33,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 // TODO optimize entity seat lookup
@@ -271,7 +274,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         super.removePassenger(passenger);
         if (this.world.isRemote)
             return;
-        this.seatingMap.remove(passenger.getEntityId());
+        SeatPart seat = this.seatingMap.remove(passenger.getEntityId());
+        if (seat != null && !this.world.isRemote) {
+            Vec3d dismountPosition = seat.getDismountPosition();
+            GameHelper.teleport(passenger, dismountPosition.x, dismountPosition.y, dismountPosition.z);
+        }
         this.sendClientData();
     }
 
