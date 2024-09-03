@@ -12,6 +12,11 @@ import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFence;
+import net.minecraft.block.BlockFenceGate;
+import net.minecraft.block.BlockWall;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -20,6 +25,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -39,7 +45,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-// TODO optimize entity seat lookup
 public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart {
 
     public static final int KEY_FORWARD = 0b1;
@@ -108,7 +113,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Override
     public void onUpdate() {
         this.onEntityUpdate();
-        this.tickLerp();
+        //this.tickLerp(); // TODO investigate why this desyncs movement
         this.inputTick();
         this.handleVehicleInLava();
         this.runVehicleTick();
@@ -371,6 +376,57 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return true;
     }
 
+    @Override
+    public void move(MoverType type, double x, double y, double z) {
+        this.move(x, y, z);
+    }
+
+    public void move(double x, double y, double z) {
+        this.world.profiler.startSection("moveMultipart");
+        List<AxisAlignedBB> collisionBoxes = this.world.getCollisionBoxes(this, this.getEntityBoundingBox().expand(x, y, z));
+        double xOffset = x;
+        double yOffset = y;
+        double zOffset = z;
+        for (EntityVehiclePart part : this.getParts()) {
+            if (part.getBoundingBoxMode() != EntityVehiclePart.BoundingBoxMode.COLLIDER)
+                continue;
+
+            AxisAlignedBB partBB = part.getEntityBoundingBox();
+            // Y-axis collision
+            if (y != 0.0) {
+                for (AxisAlignedBB collisionBox : collisionBoxes) {
+                    yOffset = collisionBox.calculateYOffset(partBB, yOffset);
+                }
+            }
+
+            // X-axis collision
+            if (x != 0.0) {
+                for (AxisAlignedBB collisionBox : collisionBoxes) {
+                    xOffset = collisionBox.calculateXOffset(partBB, xOffset);
+                }
+            }
+
+            // Z-axis collision
+            if (z != 0.0) {
+                for (AxisAlignedBB collisionBox : collisionBoxes) {
+                    zOffset = collisionBox.calculateZOffset(partBB, zOffset);
+                }
+            }
+
+            // TODO block step - maybe handle as horizontal collision?
+        }
+
+        if (xOffset != 0.0 || yOffset != 0.0 || zOffset != 0.0) {
+            this.setEntityBoundingBox(this.getEntityBoundingBox().offset(xOffset, yOffset, zOffset));
+        }
+
+        this.resetPositionToBB();
+        this.collidedHorizontally = x != xOffset || z != zOffset;
+        this.collidedVertically = y != yOffset;
+        this.onGround = this.collidedVertically && y < 0.0D;
+        this.world.profiler.endSection();
+    }
+
     public boolean boardVehicle(SeatPart seat, EntityLivingBase entity, EnumHand hand) {
         if (this.canEntityBoardVehicle(seat, entity)) {
             if (!this.world.isRemote) {
@@ -490,9 +546,15 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     public final void multiplyMotion(double x, double y, double z) {
-        this.motionX *= x;
-        this.motionY *= y;
-        this.motionZ *= z;
+        if (Math.abs(this.motionX *= x) < 0.0001) {
+            this.motionX = 0.0;
+        }
+        if (Math.abs(this.motionY *= y) < 0.0001) {
+            this.motionY = 0.0;
+        }
+        if (Math.abs(this.motionZ *= z) < 0.0001) {
+            this.motionZ = 0.0;
+        }
     }
 
     public final void multiplyMotion(double multiplier) {
@@ -527,6 +589,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     protected void applyGravity() {
         if (this.hasNoGravity())
             return;
+        if (this.onGround)
+            this.motionY = 0.0F;
         if (this.motionY < -2.65)
             return;
         this.motionY -= 0.04905;

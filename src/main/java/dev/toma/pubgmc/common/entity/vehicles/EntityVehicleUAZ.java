@@ -25,11 +25,13 @@ public class EntityVehicleUAZ extends EntityLandVehicle {
     public void registerVehicleParts(PartRegistration registration) {
         EntityVehiclePart engine = registration.register(new EntityVehiclePart(this, "engine", 2.0F, 1.2F, new Vec3d(0.0, 0.3, 1.7)));
         engine.setDamageMultiplier(ENGINE_DAMAGE_MULTIPLIER);
+        engine.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
 
         this.body = registration.register(new EntityVehiclePart(this, "body0", 2.4F, 1.2F, new Vec3d(0.0, 0.3, -0.3F)));
 
         EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "roof", 2.4F, 0.2F, new Vec3d(0.0, 2.2F, -0.3F)));
         roof.setDamageMultiplier(0.6F);
+        roof.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
 
         WheelPart frontRight = registration.register(new WheelPart(this, "fr", new Vec3d(-1.0, 0.0, 1.8)));
         frontRight.setAccelerationWheel(true);

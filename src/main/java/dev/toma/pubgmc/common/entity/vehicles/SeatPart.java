@@ -21,6 +21,7 @@ public final class SeatPart extends EntityVehiclePart {
         super(vehicle, seatName, 1.0F, 1.5F, position);
         this.dismountOffset = dismountOffset;
         this.driver = driver;
+        this.setBlockCollisionMode(BoundingBoxMode.NONE);
     }
 
     public Vec3d getDismountPosition() {

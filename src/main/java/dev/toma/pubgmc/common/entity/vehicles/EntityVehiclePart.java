@@ -13,6 +13,7 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
 
     private final Vec3d relativePosition;
     private float damageMultiplier = 1.0F;
+    private BoundingBoxMode boundingBoxMode = BoundingBoxMode.COLLIDER;
 
     public EntityVehiclePart(EntityDriveable parent, String name, float width, float height, Vec3d relativePosition) {
         super(parent, name, width, height);
@@ -55,6 +56,14 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
         return this.damageMultiplier;
     }
 
+    public void setBlockCollisionMode(BoundingBoxMode boundingBoxMode) {
+        this.boundingBoxMode = boundingBoxMode;
+    }
+
+    public BoundingBoxMode getBoundingBoxMode() {
+        return boundingBoxMode;
+    }
+
     protected boolean canHurtVehicle(DamageSource source, float damage) {
         return true;
     }
@@ -89,5 +98,10 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     @Override
     public String toString() {
         return "[" + this.getClass().getSimpleName() + "] - Part name: " + this.partName + ", EntityID: " + this.getEntityId();
+    }
+
+    public enum BoundingBoxMode {
+        NONE,
+        COLLIDER
     }
 }

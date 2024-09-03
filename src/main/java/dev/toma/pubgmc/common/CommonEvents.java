@@ -305,7 +305,7 @@ public class CommonEvents {
                 for (EntityVehiclePart part : parts) {
                     AxisAlignedBB collisionBox = part.getCollisionBoundingBox();
                     if (collisionBox != null) {
-                        event.getCollisionBoxesList().add(collisionBox);
+                        //event.getCollisionBoxesList().add(collisionBox);
                     }
                 }
             }
