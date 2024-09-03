@@ -367,10 +367,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public boolean boardVehicle(SeatPart seat, EntityLivingBase entity, EnumHand hand) {
         if (this.canEntityBoardVehicle(seat, entity)) {
             if (!this.world.isRemote) {
-                if (this.seatingMap.forcePut(entity.getEntityId(), seat) != null) {
+                if (this.seatingMap.remove(entity.getEntityId()) != null) {
                     entity.dismountRidingEntity();
                 }
                 entity.startRiding(this);
+                this.seatingMap.put(entity.getEntityId(), seat);
                 this.sendClientData();
             }
             return true;
