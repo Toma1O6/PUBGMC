@@ -13,6 +13,7 @@ import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
@@ -20,6 +21,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -84,6 +86,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.seatingCapacity = seats.size();
         validate(this, seats);
         this.driverSeat = seats.stream().filter(SeatPart::isDriver).findFirst().orElseThrow(() -> new IllegalStateException("This cannot happen unless some validation is broken!"));
+    }
+
+    public static boolean isDriver(Entity entity) {
+        return entity.getRidingEntity() instanceof EntityDriveable && entity.getRidingEntity().getControllingPassenger() == entity;
     }
 
     public abstract EntityVehiclePart getMainBodyPart();
@@ -477,6 +483,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public final void killEngine() {
         this.setStartedState(false);
         this.setStarting(false);
+        this.engineIdleTimeTotal = 0;
     }
 
     public final boolean isStarted() {
@@ -486,12 +493,24 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public final void setStarting(boolean starting) {
         this.dataManager.set(STARTING, starting);
         if (starting) {
-            this.timeStartingLeft = 20 + (int) (60 * (this.getHealth() / this.getMaxHealth()));
+            this.timeStartingLeft = 40 + (int) (1.0F - (30 * (this.getHealth() / this.getMaxHealth())));
+            // TODO play correct starting sound AT THE ENTITY
+            this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_SHEEP_AMBIENT, SoundCategory.MASTER, 1.0F, 1.0F);
         }
     }
 
     public final boolean isStarting() {
         return this.dataManager.get(STARTING);
+    }
+
+    public final void toggleEngine() {
+        if (this.isStarting())
+            return;
+        if (this.isStarted()) {
+            this.killEngine();
+        } else if (this.canStartVehicle()) {
+            this.setStarting(true);
+        }
     }
 
     public final double getCurrentMotionSqr() {
@@ -585,10 +604,21 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return true;
     }
 
+    protected boolean isStartKeyActive() {
+        return this.hasInput(KEY_FORWARD) || this.hasInput(KEY_BACK);
+    }
+
+    protected boolean canStartVehicle() {
+        return this.getHealth() > 0 && this.getFuel() > 0;
+    }
+
     private void inputTick() {
         Entity controller = this.getControllingPassenger();
         if (controller == null || !controller.isEntityAlive()) {
             this.controllerInput = 0;
+            if (this.isStarted()) {
+                this.killEngine();
+            }
             return;
         }
         this.handleInputUpdate();
@@ -624,6 +654,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     private void engineTick() {
+        if (this.world.isRemote)
+            return;
         // Starting tick
         if (this.isStarting() && --this.timeStartingLeft <= 0) {
             this.startEngine();
@@ -631,6 +663,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         // Engine idle tick
         if (this.controllerInput == 0 && this.isStarted() && this.getCurrentMotionSqr() < 0.1 && ++this.engineIdleTimeTotal > 400) {
             this.killEngine();
+        }
+        // Initiate starting sequence
+        if (!this.isStarted() && !this.isStarting() && this.isStartKeyActive() && this.canStartVehicle()) {
+            this.setStarting(true);
         }
     }
 

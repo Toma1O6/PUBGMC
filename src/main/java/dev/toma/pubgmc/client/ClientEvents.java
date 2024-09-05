@@ -25,6 +25,7 @@ import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.AmmoType;
@@ -326,6 +327,7 @@ public class ClientEvents {
                 mc.displayGuiScreen(new GuiHandPlacer());
             }
         }
+
         // Prone
         if (KeyBinds.PRONE.isPressed()) {
             if (!player.onGround)
@@ -339,6 +341,7 @@ public class ClientEvents {
             }
             PacketHandler.sendToServer(new C2S_PacketProneStatus(data.isProne()));
         }
+
         // Attachment menu
         if (KeyBinds.ATTACHMENT.isPressed()) {
             if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
@@ -350,6 +353,14 @@ public class ClientEvents {
                 player.sendStatusMessage(component, true);
             }
         }
+
+        // Vehicle engine controller
+        if (KeyBinds.VEHICLE_ENGINE.isPressed()) {
+            if (EntityDriveable.isDriver(player)) {
+                PacketHandler.sendToServer(new C2S_RequestDriveableEngineToggle());
+            }
+        }
+
         // Reloading
         if (KeyBinds.RELOAD.isPressed()) {
             ItemStack stack = player.getHeldItemMainhand();

@@ -15,6 +15,7 @@ public class KeyBinds {
     public static final KeyBinding PRONE = new KeyBinding(Pubgmc.MOD_ID + ".key.prone", Keyboard.KEY_V, category);
     public static final KeyBinding GAME_MENU = new KeyBinding(Pubgmc.MOD_ID + ".key.game_menu", Keyboard.KEY_L, category);
     public static final KeyBinding EQUIPMENT_INVENTORY = new KeyBinding(Pubgmc.MOD_ID + ".key.equipment_inventory", Keyboard.KEY_I, category);
+    public static final KeyBinding VEHICLE_ENGINE = new KeyBinding(Pubgmc.MOD_ID + "key.vehicle_start_stop", Keyboard.KEY_Y, category);
 
     public static void registerKeybinding() {
         ClientRegistry.registerKeyBinding(RELOAD);
@@ -24,5 +25,6 @@ public class KeyBinds {
         ClientRegistry.registerKeyBinding(PRONE);
         //ClientRegistry.registerKeyBinding(GAME_MENU);
         ClientRegistry.registerKeyBinding(EQUIPMENT_INVENTORY);
+        ClientRegistry.registerKeyBinding(VEHICLE_ENGINE);
     }
 }
