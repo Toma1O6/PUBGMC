@@ -51,6 +51,7 @@ public class PacketHandler {
         registerClientPacket(S2C_PacketSendExternalGuiEvent.Handler.class, S2C_PacketSendExternalGuiEvent.class);
         registerClientPacket(S2C_OpenGameMenuGUI.Handler.class, S2C_OpenGameMenuGUI.class);
         registerClientPacket(S2C_PacketSendPartyData.Handler.class, S2C_PacketSendPartyData.class);
+        registerClientPacket(S2C_VehicleSoundEvent.Handler.class, S2C_VehicleSoundEvent.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

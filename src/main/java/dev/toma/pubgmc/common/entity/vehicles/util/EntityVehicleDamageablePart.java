@@ -1,5 +1,7 @@
-package dev.toma.pubgmc.common.entity.vehicles;
+package dev.toma.pubgmc.common.entity.vehicles.util;
 
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;

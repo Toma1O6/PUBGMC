@@ -1,8 +1,17 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import dev.toma.pubgmc.common.entity.vehicles.sounds.VehicleSound;
+import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
+import dev.toma.pubgmc.common.entity.vehicles.util.VehicleSoundController;
+import dev.toma.pubgmc.network.PacketHandler;
+import dev.toma.pubgmc.network.s2c.S2C_VehicleSoundEvent;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -18,13 +27,23 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     public static final float WHEEL_DAMAGE_MULTIPLIER = 0.2F;
 
+    protected final LandVehicleSoundController soundController;
+    private final LandVehicleSoundPack soundPack;
+
     public EntityLandVehicle(World world) {
         super(world);
+        if (world.isRemote)
+            this.soundController = new LandVehicleSoundController.Client(this);
+        else
+            this.soundController = new LandVehicleSoundController.Server(this);
+        this.soundPack = this.createSoundPack();
     }
 
     public abstract void processEngineParticles(Consumer<Vec3d> particleOriginRegistration);
 
     public abstract void processExhaustParticles(Consumer<Vec3d> particleOriginRegistration);
+
+    public abstract LandVehicleSoundPack createSoundPack();
 
     @Override
     public void onEntityUpdate() {
@@ -85,13 +104,18 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     }
 
     @Override
-    public VehicleCategory getVehicleCategory() {
+    public final VehicleCategory getVehicleCategory() {
         return VehicleCategory.LAND;
     }
 
     @Override
+    public final LandVehicleSoundController getSoundController() {
+        return soundController;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
-    public int encode(GameSettings settings) {
+    public final int encode(GameSettings settings) {
         int result = 0;
         if (settings.keyBindForward.isKeyDown())
             result |= KEY_FORWARD;
@@ -113,5 +137,145 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     @Override
     protected float getStepHeight() {
         return this.isSubmergedInWater() ? 0.5F : super.getStepHeight();
+    }
+
+    public static final class LandVehicleSoundPack {
+
+        private final SoundEvent startingSound;
+        private final SoundEvent startedSound;
+
+        public LandVehicleSoundPack(SoundEvent startingSound, SoundEvent startedSound) {
+            this.startingSound = startingSound;
+            this.startedSound = startedSound;
+        }
+
+        public SoundEvent getStartingSound() {
+            return startingSound;
+        }
+
+        public SoundEvent getStartedSound() {
+            return startedSound;
+        }
+    }
+
+    public static abstract class LandVehicleSoundController extends VehicleSoundController {
+
+        protected final EntityLandVehicle landVehicle;
+
+        public LandVehicleSoundController(EntityLandVehicle landVehicle) {
+            this.landVehicle = landVehicle;
+        }
+
+        @SideOnly(Side.CLIENT)
+        public static final class Client extends LandVehicleSoundController {
+
+            private VehicleSound<EntityLandVehicle> startingSound;
+            private VehicleSound<EntityLandVehicle> startedSound;
+
+            public Client(EntityLandVehicle landVehicle) {
+                super(landVehicle);
+            }
+
+            @Override
+            public void update() {
+                // TODO update engine sound pitch
+            }
+
+            @Override
+            public void play(int eventId) {
+                switch (eventId) {
+                    case SOUND_ENGINE_STARTING:
+                        this.playStartingSound();
+                        break;
+                    case SOUND_ENGINE_STARTED:
+                        this.playStartedSound();
+                        break;
+                }
+            }
+
+            @Override
+            public void stop(int eventId) {
+                switch (eventId) {
+                    case SOUND_ENGINE_STARTING:
+                        this.stop(this.startingSound);
+                        break;
+                    case SOUND_ENGINE_STARTED:
+                        this.stop(this.startedSound);
+                        break;
+                }
+            }
+
+            @Override
+            public void playStartingSound() {
+                this.startingSound = new VehicleSound<>(SOUND_ENGINE_STARTING, this.landVehicle, this.landVehicle.soundPack.getStartingSound());
+                this.startingSound.setPlayCondition(vehicle -> !vehicle.isDestroyed() && vehicle.isStarting());
+                this.startingSound.setRepeating(false);
+                this.startingSound.onSoundStopped(sound -> this.startingSound = null);
+                this.play(this.startingSound, true);
+            }
+
+            @Override
+            public void playStartedSound() {
+                this.startedSound = new VehicleSound<>(SOUND_ENGINE_STARTED, this.landVehicle, this.landVehicle.soundPack.getStartedSound());
+                this.startedSound.setPlayCondition(vehicle -> !vehicle.isDestroyed());
+                this.startedSound.setRepeating(false);
+                this.startedSound.onSoundStopped(sound -> this.startedSound = null);
+                this.play(this.startedSound, true);
+            }
+
+            private void play(ISound sound, boolean force) {
+                Minecraft minecraft = Minecraft.getMinecraft();
+                SoundHandler handler = minecraft.getSoundHandler();
+                if (handler.isSoundPlaying(sound)) {
+                    if (force) {
+                        handler.stopSound(sound);
+                        handler.playSound(sound);
+                    }
+                } else {
+                    handler.playSound(sound);
+                }
+            }
+
+            private void stop(ISound sound) {
+                if (sound == null)
+                    return;
+                Minecraft minecraft = Minecraft.getMinecraft();
+                SoundHandler handler = minecraft.getSoundHandler();
+                if (handler.isSoundPlaying(sound)) {
+                    handler.stopSound(sound);
+                }
+            }
+        }
+
+        public static final class Server extends LandVehicleSoundController {
+
+            public Server(EntityLandVehicle landVehicle) {
+                super(landVehicle);
+            }
+
+            @Override
+            public void update() {
+            }
+
+            @Override
+            public void play(int eventId) {
+                PacketHandler.sendToAllTracking(new S2C_VehicleSoundEvent(true, this.landVehicle.getEntityId(), eventId), this.landVehicle);
+            }
+
+            @Override
+            public void stop(int eventId) {
+                PacketHandler.sendToAllTracking(new S2C_VehicleSoundEvent(false, this.landVehicle.getEntityId(), eventId), this.landVehicle);
+            }
+
+            @Override
+            public void playStartingSound() {
+                this.play(EntityDriveable.SOUND_ENGINE_STARTING);
+            }
+
+            @Override
+            public void playStartedSound() {
+                this.play(EntityDriveable.SOUND_ENGINE_STARTING);
+            }
+        }
     }
 }

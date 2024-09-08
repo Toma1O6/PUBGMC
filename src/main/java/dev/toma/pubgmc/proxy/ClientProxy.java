@@ -34,7 +34,7 @@ import dev.toma.pubgmc.common.entity.throwables.EntityFlashBang;
 import dev.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
 import dev.toma.pubgmc.common.entity.throwables.EntityMolotov;
 import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -179,7 +179,7 @@ public class ClientProxy extends Proxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityFlashBang.class, manager -> new RenderThrowable<>(manager, PMCItems.FLASHBANG));
         RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
+        RenderingRegistry.registerEntityRenderingHandler(VehicleUAZ.class, RenderUAZ::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
     }

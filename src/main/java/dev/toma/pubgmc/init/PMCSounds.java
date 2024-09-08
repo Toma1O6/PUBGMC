@@ -77,6 +77,7 @@ public class PMCSounds {
     public static SoundEvent vehicleIdle;
     public static SoundEvent uaz;
     public static SoundEvent flash, flash_short;
+    public static SoundEvent uazStarting, uazStarted;
 
     /**
      * ========================================[UTIL]==========================================================
@@ -216,6 +217,9 @@ public class PMCSounds {
         uaz = registerSound("vehicle.uaz");
         flash = registerSound("flash.full");
         flash_short = registerSound("flash.short");
+
+        uazStarting = registerSound("vehicle.uaz.starting");
+        uazStarted = registerSound("vehicle.uaz.started");
     }
 
     private static SoundEvent registerSound(String name) {

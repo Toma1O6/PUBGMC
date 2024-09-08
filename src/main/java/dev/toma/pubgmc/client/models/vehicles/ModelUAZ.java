@@ -1,11 +1,11 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
 
-public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
+public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
 
     private final ModelRenderer bone;
     private final ModelRenderer a1;
@@ -301,7 +301,7 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
     }
 
     @Override
-    public void render(EntityVehicleUAZ vehicle) {
+    public void render(VehicleUAZ vehicle) {
         float renderScale = 0.0625F;
         bone.render(renderScale);
         if (vehicle.isBurned())

@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;

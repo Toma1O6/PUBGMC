@@ -1,5 +1,6 @@
-package dev.toma.pubgmc.common.entity.vehicles;
+package dev.toma.pubgmc.common.entity.vehicles.util;
 
+import dev.toma.pubgmc.common.entity.vehicles.EntityLandVehicle;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;

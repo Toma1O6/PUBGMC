@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
 import net.minecraft.world.World;
 
 public abstract class EntityWaterVehicle extends EntityVehicle {

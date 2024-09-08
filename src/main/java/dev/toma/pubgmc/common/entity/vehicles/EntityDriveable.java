@@ -7,6 +7,9 @@ import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.entity.IControllable;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
+import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
+import dev.toma.pubgmc.common.entity.vehicles.util.VehicleSoundController;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
 import dev.toma.pubgmc.util.helper.GameHelper;
@@ -44,16 +47,25 @@ import java.util.stream.Collectors;
 
 public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart {
 
+    // Keybinds
     public static final int KEY_FORWARD = 0b1;
     public static final int KEY_BACK = 0b10;
     public static final int KEY_RIGHT = 0b100;
     public static final int KEY_LEFT = 0b1000;
+
+    // TODO configurable?
     public static final float ENGINE_DAMAGE_MULTIPLIER = 1.5F;
 
+    // Sound events
+    public static final int SOUND_ENGINE_STARTING = 0;
+    public static final int SOUND_ENGINE_STARTED = 1;
+    public static final int SOUND_ENGINE_STOPPED = 2;
+
+    // Synhronized data parameters
     protected static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FUEL = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> STARTING = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> STARTED = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN); // TODO implement
+    protected static final DataParameter<Boolean> STARTED = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN);
 
     // speed smoothing
     protected double lastMotionX, lastMotionY, lastMotionZ;
@@ -84,6 +96,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.parts = partList.toArray(new EntityVehiclePart[0]);
         List<SeatPart> seats = partList.stream().filter(part -> part instanceof SeatPart).map(part -> (SeatPart) part).collect(Collectors.toList());
         this.seatingCapacity = seats.size();
+
         validate(this, seats);
         this.driverSeat = seats.stream().filter(SeatPart::isDriver).findFirst().orElseThrow(() -> new IllegalStateException("This cannot happen unless some validation is broken!"));
     }
@@ -104,6 +117,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     public abstract void runVehicleTick();
 
+    public abstract VehicleSoundController getSoundController();
+
     @Override
     public void onUpdate() {
         this.onEntityUpdate();
@@ -112,6 +127,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.runVehicleTick();
         this.applyDrag();
         this.applyGravity();
+        this.getSoundController().update();
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
     }
 
@@ -494,8 +510,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.dataManager.set(STARTING, starting);
         if (starting) {
             this.timeStartingLeft = 40 + (int) (1.0F - (30 * (this.getHealth() / this.getMaxHealth())));
+            this.getSoundController().playStartingSound();
             // TODO play correct starting sound AT THE ENTITY
-            this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_SHEEP_AMBIENT, SoundCategory.MASTER, 1.0F, 1.0F);
         }
     }
 
@@ -659,6 +675,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         // Starting tick
         if (this.isStarting() && --this.timeStartingLeft <= 0) {
             this.startEngine();
+            this.getSoundController().playStartedSound();
         }
         // Engine idle tick
         if (this.controllerInput == 0 && this.isStarted() && this.getCurrentMotionSqr() < 0.1 && ++this.engineIdleTimeTotal > 400) {
