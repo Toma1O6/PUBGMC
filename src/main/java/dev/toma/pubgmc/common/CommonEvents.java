@@ -7,6 +7,7 @@ import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.content.ContentResult;
 import dev.toma.pubgmc.client.content.ExternalLinks;
+import dev.toma.pubgmc.common.capability.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
@@ -63,7 +64,6 @@ import java.util.UUID;
 public class CommonEvents {
 
     public static final AttributeModifier PRONE_MODIFIER = new AttributeModifier(UUID.fromString("42b68862-2bdc-4df4-9fbe-4ad597cda211"), "Prone modifier", -0.7, 2);
-    Map<UUID, Integer> selectedSlotCache = new HashMap<>();
 
     private static void handleUpdateResults(ForgeVersion.CheckResult result, EntityPlayer player) {
         ExternalLinks links = Pubgmc.getContentManager().getResultOptionally().map(ContentResult::getExternalLinks).orElse(ExternalLinks.DEFAULT);
@@ -120,16 +120,19 @@ public class CommonEvents {
             ItemStack stack = event.getTo();
             IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
             instance.removeModifier(GunBase.EQUIP_MODIFIER_UID);
-            if (stack.getItem() instanceof GunBase) {
-                instance.applyModifier(((GunBase) stack.getItem()).getGunType().getModifier());
-                int last = selectedSlotCache.getOrDefault(player.getUniqueID(), 0);
-                if (last != player.inventory.currentItem) {
-                    PacketHandler.sendToClient(new S2C_PacketAnimation(true, AnimationType.EQUIP_ANIMATION_TYPE), (EntityPlayerMP) player);
+            PlayerDataProvider.getOptional(player).ifPresent(data -> {
+                if (stack.getItem() instanceof GunBase) {
+                    instance.applyModifier(((GunBase) stack.getItem()).getGunType().getModifier());
+                    int last = data.getActiveSlot();
+                    if (last != player.inventory.currentItem) {
+                        PacketHandler.sendToClient(new S2C_PacketAnimation(true, AnimationType.EQUIP_ANIMATION_TYPE), (EntityPlayerMP) player);
+                    }
                 }
-            }
-            if (event.getSlot() == EntityEquipmentSlot.MAINHAND) {
-                selectedSlotCache.put(player.getUniqueID(), player.inventory.currentItem);
-            }
+                if (event.getSlot() == EntityEquipmentSlot.MAINHAND) {
+                    data.setActiveSlot(player.inventory.currentItem);
+                }
+                data.sync();
+            });
         }
     }
 
@@ -181,25 +184,28 @@ public class CommonEvents {
             ForgeVersion.CheckResult version = ForgeVersion.getResult(Loader.instance().activeModContainer());
             handleUpdateResults(version, player);
         }
-        selectedSlotCache.put(event.player.getUniqueID(), event.player.inventory.currentItem);
         PacketHandler.sendToClient(new S2C_PacketReceiveServerConfig(ConfigPMC.common.serializeNBT()), player);
         //We get the last player data and later sync it to client
-        player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        data.getAimInfo().setAiming(false, 1.0F);
+        if (data != null) {
+            data.setActiveSlot(event.player.inventory.currentItem);
+            data.getAimInfo().setAiming(false, 10.0F);
+            data.sync();
+        }
         //Sync some data from capability to client for overlay rendering
-        PacketHandler.syncPlayerDataToClient(data, player);
         PacketHandler.syncGameDataToClient(player);
     }
 
     @SubscribeEvent
-    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent e) {
-        if (e.player instanceof EntityPlayerMP) {
-            selectedSlotCache.remove(e.player.getUniqueID());
-            IPlayerData data = PlayerDataProvider.get(e.player);
-            data.getAimInfo().setAiming(false, 1.0F);
-            data.sync();
-            PacketHandler.sendToClient(new S2C_PacketNotifyRestoreConfig(), (EntityPlayerMP) e.player);
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.player instanceof EntityPlayerMP) {
+            IPlayerData data = PlayerDataProvider.get(event.player);
+            if (data != null) {
+                data.clearActiveSlot();
+                data.getAimInfo().setAiming(false, 1.0F);
+                data.sync();
+            }
+            PacketHandler.sendToClient(new S2C_PacketNotifyRestoreConfig(), (EntityPlayerMP) event.player);
         }
     }
 
