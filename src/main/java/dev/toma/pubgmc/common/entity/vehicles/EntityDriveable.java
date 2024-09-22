@@ -16,7 +16,6 @@ import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
@@ -24,7 +23,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -421,6 +419,12 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.resetPositionToBB();
         this.collidedHorizontally = x != xOffset || z != zOffset;
         this.collidedVertically = y != yOffset;
+        if (x != xOffset)
+            this.collidedX();
+        if (y != yOffset)
+            this.collidedY();
+        if (z != zOffset)
+            this.collidedZ();
         this.onGround = this.collidedVertically && y < 0.0D;
         this.world.profiler.endSection();
     }
@@ -547,13 +551,19 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return last + (current - last) * partialTicks;
     }
 
-    public final void setMotion(double x, double y, double z) {
+    public final void setMotionAndUpdate(double x, double y, double z) {
         this.motionX = x;
         this.motionY = y;
         this.motionZ = z;
         this.lastMotionX = x;
         this.lastMotionY = y;
         this.lastMotionZ = z;
+    }
+
+    public final void setMotion(Vec3d motion) {
+        this.motionX = motion.x;
+        this.motionY = motion.y;
+        this.motionZ = motion.z;
     }
 
     public final void multiplyMotion(double x, double y, double z) {
@@ -628,10 +638,32 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return this.getHealth() > 0 && this.getFuel() > 0;
     }
 
+    protected void handleEmptyInputUpdate() {
+    }
+
+    protected void collidedXZ() {
+
+    }
+
+    protected void collidedX() {
+        this.motionX = 0;
+        this.collidedXZ();
+    }
+
+    protected void collidedY() {
+        this.motionY = 0;
+    }
+
+    protected void collidedZ() {
+        this.motionZ = 0;
+        this.collidedXZ();
+    }
+
     private void inputTick() {
         Entity controller = this.getControllingPassenger();
         if (controller == null || !controller.isEntityAlive()) {
             this.controllerInput = 0;
+            this.handleEmptyInputUpdate();
             if (this.isStarted()) {
                 this.killEngine();
             }

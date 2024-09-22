@@ -103,6 +103,10 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
         return "[" + this.getClass().getSimpleName() + "] - Part name: " + this.partName + ", EntityID: " + this.getEntityId();
     }
 
+    public String getPartInfo() {
+        return "Name: " + this.partName;
+    }
+
     public enum BoundingBoxMode {
         NONE,
         COLLIDER

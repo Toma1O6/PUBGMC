@@ -5,6 +5,7 @@ import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleSoundController;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_VehicleSoundEvent;
+import dev.toma.pubgmc.util.math.Mth;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -30,6 +31,10 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     protected final LandVehicleSoundController soundController;
     private final LandVehicleSoundPack soundPack;
 
+    private float acceleration;
+    private float turn;
+    private Vec3d movement = Vec3d.ZERO;
+
     public EntityLandVehicle(World world) {
         super(world);
         if (world.isRemote)
@@ -53,6 +58,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     @Override
     public void runVehicleTick() {
         super.runVehicleTick();
+        this.updateMotionAndTurning();
         this.updateStepHeight();
         if (this.isInWater()) {
             float multiplier = this.isSubmergedInWater() ? 0.85F : 0.97F;
@@ -62,6 +68,20 @@ public abstract class EntityLandVehicle extends EntityVehicle {
         if (world.isRemote) {
             this.particleTick();
         }
+    }
+
+    protected void updateMotionAndTurning() {
+        Vec3d vehicleFaceVec = this.getLookVec();
+        Vec3d rawTurnVec = new Vec3d(0.0, this.turn, 0.0).rotateYaw(-this.rotationYaw * (float) (Math.PI / 180.0F));
+
+        float enginePwr = 1.4F;
+        float pwr = enginePwr * this.acceleration;
+        Vec3d accelerationVec = new Vec3d(0.0, 0.0, pwr).rotateYaw(-this.rotationYaw * (float) (Math.PI / 180.0F));
+        // TODO update movement vec and vehicle rotation
+
+        this.movement = accelerationVec;
+        this.motionX = this.movement.x;
+        this.motionZ = this.movement.z;
     }
 
     protected void particleTick() {
@@ -95,12 +115,35 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     @Override
     protected void handleInputUpdate() {
         if (this.hasFuel()) {
-            if (!this.isDestroyed()) {
-                // TODO acceleration
+            if (!this.isDestroyed() && this.isStarted() && this.hasInput(KEY_FORWARD)) {
+                this.acceleration = Math.min(1.0F, this.acceleration + 0.05F); // TODO vehicle acceleration rate
+            } else {
+                this.acceleration = Mth.exponentialDecay(this.acceleration, 0.95F); // TODO speed decay
             }
-            // TODO braking
+            if (this.hasInput(KEY_BACK)) {
+                this.acceleration = Math.max(-0.3F, this.acceleration - 0.02F); // TODO brake speed, max reverse speed
+            }
         }
-        // TODO turning
+        float turnDiff = 0.0F;
+        float turnSpeed = 0.05F; // TODO vehicle turn speed
+        float maxTurning = 1.0F; // TODO vehicle controllability
+        if (this.hasInput(KEY_LEFT)) {
+            turnDiff = turnSpeed;
+        }
+        if (this.hasInput(KEY_RIGHT)) {
+            turnDiff = -turnSpeed;
+        }
+        if (turnDiff != 0.0F) {
+            this.turn = MathHelper.clamp(this.turn + turnDiff, -maxTurning, maxTurning);
+        } else {
+            this.turn = Mth.linearDecay(this.turn, 0.1F);
+        }
+    }
+
+    @Override
+    protected void handleEmptyInputUpdate() {
+        this.acceleration = Mth.exponentialDecay(this.acceleration, 0.95F);
+        this.turn = Mth.linearDecay(this.turn, 0.1F);
     }
 
     @Override
@@ -137,6 +180,18 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     @Override
     protected float getStepHeight() {
         return this.isSubmergedInWater() ? 0.5F : super.getStepHeight();
+    }
+
+    public float getAcceleration() {
+        return acceleration;
+    }
+
+    public float getTurn() {
+        return turn;
+    }
+
+    public Vec3d getMovement() {
+        return movement;
     }
 
     public static final class LandVehicleSoundPack {

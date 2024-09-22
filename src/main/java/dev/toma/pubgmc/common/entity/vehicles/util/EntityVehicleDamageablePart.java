@@ -7,6 +7,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Locale;
+
 public abstract class EntityVehicleDamageablePart extends EntityVehiclePart {
 
     protected final float maxHealth;
@@ -69,4 +71,9 @@ public abstract class EntityVehicleDamageablePart extends EntityVehiclePart {
     }
 
     protected void onDestroyed() {}
+
+    @Override
+    public String getPartInfo() {
+        return super.getPartInfo() + String.format(Locale.ROOT, ", Health: %.2f / %.2f", this.getHealth(), this.getMaxHealth());
+    }
 }
