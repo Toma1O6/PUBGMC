@@ -16,6 +16,7 @@ public abstract class EntityLivingBaseMixin extends Entity {
         super(worldIn);
     }
 
+    // Disables automatic dismount position calculation - allows vehicles to implement more realistic dismount positions
     @Inject(method = "dismountEntity", at = @At("HEAD"), cancellable = true)
     private void pubgmc$dismountEntity(Entity entity, CallbackInfo ci) {
         if (entity instanceof EntityDriveable) {
