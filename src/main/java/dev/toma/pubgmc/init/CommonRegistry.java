@@ -4,6 +4,7 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.event.PubgmcRegistryEvent;
 import dev.toma.pubgmc.api.event.RegisterGameMutatorEvent;
 import dev.toma.pubgmc.api.game.mutator.*;
+import dev.toma.pubgmc.api.game.util.message.DeathMessages;
 import dev.toma.pubgmc.client.renderer.item.gun.*;
 import dev.toma.pubgmc.common.BlockBuilder;
 import dev.toma.pubgmc.common.HorizontalBlockBuilder;
@@ -960,7 +961,7 @@ public class CommonRegistry {
                 registerEntity("bullet", EntityBullet.class, 64, 40),
                 registerEntity("flare", EntityFlare.class, 64, 20),
                 registerEntity("parachute", EntityParachute.class, 256, 1),
-                registerEntity("plane", EntityPlane.class, 128, 25),
+                registerEntity("plane", EntityPlane.class, 256, 1),
                 registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                 registerVehicle("uaz", EntityVehicleUAZ.class),
                 registerVehicle("dacia", EntityVehicleDacia.class),
@@ -1048,6 +1049,13 @@ public class CommonRegistry {
         //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.AI_TASKS, new AIPlayerMutator<>(TournamentGame::initAi));
         //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.ARMOR, ArmorMutator.NO_DAMAGE);
         //event.registerMutator(GameTypes.TOURNAMENT, GameMutators.FORCE_RESPAWN, new ForcedRespawnMutator(40));
+    }
+
+    @SubscribeEvent
+    public static void registerDeathMessageType(PubgmcRegistryEvent.DeathMessage event) {
+        event.register(DeathMessages.EMPTY);
+        event.register(DeathMessages.SELF);
+        event.register(DeathMessages.ENTITY);
     }
 
     public static void registerItemBlock(Block block) {

@@ -3,8 +3,8 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.api.client.game.GameRenderer;
 import dev.toma.pubgmc.api.client.util.PlayzoneRenderer;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
-import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.Team;
+import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGame;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGameCaptureManager;
 import dev.toma.pubgmc.common.games.game.tournament.TournamentGameConfiguration;
@@ -17,6 +17,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -68,16 +70,16 @@ public class TournamentGameRenderer implements GameRenderer<TournamentGame> {
         int topOffset = 0;
         for (Team team : teams) {
             ImageUtil.drawShape(left, top + topOffset, left + teamWidth, top + topOffset + 2, 0xFFFFFFFF);
-            String teamName = team.getUsername(team.getId());
+            ITextComponent teamName = team.getUsername(team.getId());
             if (teamName == null) {
-                teamName = "Team";
+                teamName = new TextComponentString( "Team"); // TODO revise
             }
-            font.drawString(TextFormatting.BOLD + teamName, left, top + topOffset + 4, 0xFFFFFF);
+            font.drawString(TextFormatting.BOLD + teamName.getFormattedText(), left, top + topOffset + 4, 0xFFFFFF);
             topOffset += 15;
             Set<UUID> memberIds = team.getAllMembers().keySet();
             for (UUID memberId : memberIds) {
-                String username = team.getUsername(memberId);
-                font.drawString(username, left + 5, top + topOffset, 0xFFFFFF);
+                ITextComponent username = team.getUsername(memberId);
+                font.drawString(username.getFormattedText(), left + 5, top + topOffset, 0xFFFFFF);
                 topOffset += 10;
             }
         }

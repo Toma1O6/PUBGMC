@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.entity.controllable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.config.common.CFGVehicle;
@@ -13,12 +14,15 @@ import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -26,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject, SynchronizableEntity {
+public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag {
     private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
     private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
 
@@ -40,7 +44,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     public EntityVehicle(World world) {
         super(world);
-        stepHeight = 1f;
+        stepHeight = 1.25F;
         preventEntitySpawning = true;
         health = getVehicleConfiguration().maxHealth.getAsFloat();
         fuel = 60 + world.rand.nextInt(40);
@@ -60,6 +64,15 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public abstract SoundEvent vehicleSound();
 
     public abstract CFGVehicle getVehicleConfiguration();
+
+    @Override
+    public ITextComponent getComponent() {
+        String key = EntityList.getEntityString(this);
+        if (key == null) {
+            key = "generic";
+        }
+        return new TextComponentTranslation("entity." + key + ".name");
+    }
 
     @Override
     public void updatePre() {

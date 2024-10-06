@@ -225,7 +225,8 @@ public class ClientEvents {
             }
             if (weaponStack.hasTagCompound()) {
                 int ammo = gun.getAmmo(weaponStack);
-                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(weaponStack) + ": " + gun.getFiremode(weaponStack), x, y - 9, 16777215);
+                GunBase.Firemode firemode = gun.getFiremode(weaponStack);
+                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(weaponStack) + ": " + firemode.translatedName(), x, y - 9, 16777215);
                 String infinity = I18n.format("label.pubgmc.infinite");
                 mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD.toString() + ammo + TextFormatting.RESET + " | " + (isFreeAmmo ? infinity : totalCount), x, y, 16777215);
             }

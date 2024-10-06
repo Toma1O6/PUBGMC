@@ -1,11 +1,17 @@
 package dev.toma.pubgmc.api.game.util;
 
+import dev.toma.pubgmc.api.game.Game;
+import dev.toma.pubgmc.api.game.util.message.DeathMessage;
+import dev.toma.pubgmc.api.game.util.message.DeathMessageType;
+import dev.toma.pubgmc.api.game.util.message.DeathMessages;
+import dev.toma.pubgmc.api.game.util.message.MessageRelation;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.Arrays;
-import java.util.Objects;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DeathMessageContainer {
 
@@ -37,11 +43,21 @@ public class DeathMessageContainer {
         }
     }
 
-    public DeathMessage[] getDeathMessages() {
-        return Arrays.stream(renderingMessages)
-                .filter(Objects::nonNull)
-                .map(Value::getDeathMessage)
-                .toArray(DeathMessage[]::new);
+    @SideOnly(Side.CLIENT)
+    public void render(FontRenderer font, Game<?> game, int x, int y, int spacing) {
+        int index = 0;
+        for (Value message : this.renderingMessages) {
+            if (message == null)
+                continue;
+            DeathMessage deathMessage = message.deathMessage;
+            MessageRelation relation = deathMessage.getRelation();
+            if (!relation.isAssigned()) {
+                relation = DeathMessages.getRelationBetween(game, deathMessage);
+                deathMessage.setRelation(relation);
+            }
+            font.drawStringWithShadow(deathMessage.getTextMessage().getFormattedText(), x, y + index++ * spacing, relation.getTextColor());
+        }
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public NBTTagCompound serialize() {
@@ -75,13 +91,13 @@ public class DeathMessageContainer {
         private NBTTagCompound serialize() {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setInteger("time", timeRemaining);
-            nbt.setTag("message", deathMessage.serialize());
+            nbt.setTag("deathMessage", DeathMessageType.serialize(this.deathMessage));
             return nbt;
         }
 
         private static Value deserialize(NBTTagCompound nbt) {
             int time = nbt.getInteger("time");
-            DeathMessage deathMessage = DeathMessage.deserialize(nbt.getCompoundTag("message"));
+            DeathMessage deathMessage = DeathMessageType.deserialize(nbt.getCompoundTag("deathMessage"));
             return new Value(time, deathMessage);
         }
     }

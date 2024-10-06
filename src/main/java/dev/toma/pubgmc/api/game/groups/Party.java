@@ -3,6 +3,8 @@ package dev.toma.pubgmc.api.game.groups;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
@@ -12,7 +14,7 @@ public final class Party implements Group {
     private final UUID partyId;
     private final UUID owner;
     private final Set<UUID> members;
-    private final Map<UUID, String> usernames;
+    private final Map<UUID, ITextComponent> usernames;
     private final PartyOptions options;
 
     public Party(UUID owner) {
@@ -38,8 +40,8 @@ public final class Party implements Group {
     }
 
     @Override
-    public String getUsername(UUID uuid) {
-        return this.usernames.getOrDefault(uuid, "<< Unknown player >>");
+    public ITextComponent getUsername(UUID uuid) {
+        return this.usernames.getOrDefault(uuid, new TextComponentString("???"));
     }
 
     public PartyOptions getOptions() {
@@ -51,7 +53,7 @@ public final class Party implements Group {
         tag.setString("partyId", this.partyId.toString());
         tag.setString("owner", this.owner.toString());
         tag.setTag("members", SerializationHelper.collectionToNbt(members, uuid -> new NBTTagString(uuid.toString())));
-        tag.setTag("usernames", SerializationHelper.mapToNbt(this.usernames, UUID::toString, NBTTagString::new));
+        tag.setTag("memberUsernames", SerializationHelper.mapToNbt(this.usernames, UUID::toString, comp -> new NBTTagString(ITextComponent.Serializer.componentToJson(comp))));
         // TODO options
         return tag;
     }
@@ -62,7 +64,7 @@ public final class Party implements Group {
         Party party = new Party(partyId, owner, new PartyOptions());
         // TODO options
         SerializationHelper.collectionFromNbt(party.members, tag.getTagList("members", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
-        SerializationHelper.mapFromNbt(party.usernames, tag.getCompoundTag("usernames"), UUID::fromString, nbt -> ((NBTTagString) nbt).getString());
+        SerializationHelper.mapFromNbt(party.usernames, tag.getCompoundTag("memberUsernames"), UUID::fromString, nbt -> ITextComponent.Serializer.jsonToComponent(((NBTTagString) nbt).getString()));
         return party;
     }
 }

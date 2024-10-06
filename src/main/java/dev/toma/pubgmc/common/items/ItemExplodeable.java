@@ -15,6 +15,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
@@ -87,13 +88,13 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
             if (this.maxFuse > 0 && !this.isCooking(stack)) {
                 stack.getTagCompound().setBoolean("isCooking", true);
                 worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
-                return super.onItemRightClick(worldIn, playerIn, handIn);
+                return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
             }
             this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, playerIn, this.maxFuse - this.getFuseTime(stack), EntityThrowableExplodeable.EnumEntityThrowState.LONG);
             playerIn.inventory.removeStackFromSlot(playerIn.inventory.currentItem);
             worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.MASTER, 1.0F, 1.0F);
         }
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
     }
 
     @Override
@@ -192,7 +193,6 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
 
     public static final class MolotovGrenadeHandler implements ExplodeableItemAction {
 
-        @SideOnly(Side.CLIENT)
         @Override
         public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
             if (validateUsage(stack) && !world.isRemote) {
@@ -201,6 +201,7 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
             }
         }
 
+        @SideOnly(Side.CLIENT)
         @Override
         public void appendAdditionalTooltipInformation(ItemStack itemStack, World world, List<String> tooltip, ITooltipFlag flag) {
             String fireDuration = DevUtil.formatToSingleDecimal(EntityMolotov.BURN_DURATION / 20.0);

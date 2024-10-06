@@ -16,10 +16,10 @@ import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.game.team.*;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.message.DeathMessages;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.ai.*;
@@ -218,7 +218,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 if (isGameCompleted(worldServer)) {
                     completed = true;
                     GameHelper.requestClientGameDataSynchronization(world);
-                    List<Team> teams = new ArrayList<>(this.teamManager.getTeams());
+                    List<Team> teams = this.teamManager.getActiveTeams();
                     Team winningTeam = teams.size() == 1 ? teams.get(0) : null;
                     for (EntityPlayerMP player : worldServer.getMinecraftServer().getPlayerList().getPlayers()) {
                         Team team = this.teamManager.getEntityTeam(player);
@@ -226,7 +226,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                         if (winningTeam != null) {
                             Team.Member teamLeader = winningTeam.getTeamLeader();
                             if (teamLeader != null) {
-                                String username = winningTeam.getUsername(teamLeader.getId());
+                                ITextComponent username = winningTeam.getUsername(teamLeader.getId());
                                 winningTeamInfo = new TextComponentTranslation("pubgmc.game.completed.winning_team", username);
                                 winningTeamInfo.getStyle().setColor(TextFormatting.AQUA);
                             }
@@ -346,7 +346,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             return true;
         }
         int notSpawnedBots = this.aiManager.getAiEntitiesToSpawn();
-        int activeTeamCount = this.teamManager.getTeams().size();
+        int activeTeamCount = this.teamManager.getActiveTeams().size();
         // There is still some AI left to be spawned
         if (notSpawnedBots > 0) {
             return false;
@@ -563,8 +563,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 Optional<Team.Member> nextTL = team.getAliveTeamMember();
                 nextTL.ifPresent(team::setTeamLeader);
             }
-            DeathMessage deathMessage = GameHelper.createDefaultDeathMessage(entity, source);
-            game.deathMessages.push(deathMessage);
+            game.deathMessages.push(DeathMessages.createMessage(entity, source));
             if (entity instanceof EntityPlayer) {
                 GameHelper.spawnPlayerDeathCrate(game.gameId, (EntityPlayer) entity);
                 MinecraftForge.EVENT_BUS.post(new GameEvent.PlayerCompleteGame(game, (EntityPlayer) entity, false));
@@ -575,6 +574,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             }
             GameMutatorHelper.giveKillReward(entity, source);
             Entity killer = source.getTrueSource();
+            // TODO clean up
             if (killer instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) killer;
                 TeamRelations relations = GameHelper.getEntityRelations(player, entity);

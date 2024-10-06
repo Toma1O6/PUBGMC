@@ -2,6 +2,7 @@ package dev.toma.pubgmc.util.helper;
 
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
+import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.event.GameEvent;
 import dev.toma.pubgmc.api.game.*;
 import dev.toma.pubgmc.api.game.map.GameMap;
@@ -13,7 +14,6 @@ import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.api.game.team.TeamRelations;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityPlane;
@@ -21,9 +21,7 @@ import dev.toma.pubgmc.common.games.NoGame;
 import dev.toma.pubgmc.common.games.util.WorldGameBlockHelper;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.init.DamageSourceGun;
 import dev.toma.pubgmc.init.PMCBlocks;
-import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketReloadChunks;
 import dev.toma.pubgmc.util.PUBGMCUtil;
@@ -38,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -373,29 +370,6 @@ public final class GameHelper {
         }
     }
 
-    public static DeathMessage createDefaultDeathMessage(EntityLivingBase victim, DamageSource source) {
-        Entity sourceEntity = source.getTrueSource();
-        boolean headshot = false;
-        if (sourceEntity instanceof EntityLivingBase) {
-            EntityLivingBase killer = (EntityLivingBase) sourceEntity;
-            ItemStack killWeapon = killer.getHeldItemMainhand();
-            if (source instanceof DamageSourceGun) {
-                DamageSourceGun damageSourceGun = (DamageSourceGun) source;
-                killWeapon = damageSourceGun.getWeapon();
-                headshot = damageSourceGun.wasHeadshot();
-            }
-            ITextComponent label = killWeapon.isEmpty() ? TextComponentHelper.GENERIC_DEATH_BY_ENTITY : new TextComponentString(killWeapon.getDisplayName());
-            if (source.damageType.equals("vehicle") && killer.getRidingEntity() != null) {
-                label = killer.getRidingEntity().getDisplayName();
-            }
-            return new DeathMessage(killer, victim, label, headshot);
-        }
-        if (source == PMCDamageSources.ZONE) {
-            return new DeathMessage(null, victim, TextComponentHelper.GENERIC_ZONE);
-        }
-        return new DeathMessage(null, victim, TextComponentHelper.GENERIC_DEATH);
-    }
-
     @Nullable
     public static Position2 findLoadedPositionWithinPlayzone(Playzone playzone, World world, List<EntityPlayer> playerList, int minAllowedPlayerDistance, int maxDistanceOffset) {
         return findLoadedPositionWithinPlayzone(playzone, world, playerList, minAllowedPlayerDistance, maxDistanceOffset, false);
@@ -497,6 +471,13 @@ public final class GameHelper {
         if (!player.world.isRemote) {
             PacketHandler.sendToClient(new S2C_PacketReloadChunks(), (EntityPlayerMP) player);
         }
+    }
+
+    public static ITextComponent getEntityDisplayName(Entity entity) {
+        if (entity instanceof CustomEntityNametag) {
+            return ((CustomEntityNametag) entity).getComponent();
+        }
+        return entity.getDisplayName();
     }
 
     public interface InventoryProvider {

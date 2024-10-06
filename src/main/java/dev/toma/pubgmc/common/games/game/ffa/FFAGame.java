@@ -12,10 +12,11 @@ import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
 import dev.toma.pubgmc.api.game.map.GameMap;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
-import dev.toma.pubgmc.api.game.util.DeathMessage;
 import dev.toma.pubgmc.api.game.util.DeathMessageContainer;
 import dev.toma.pubgmc.api.game.util.GameRuleStorage;
 import dev.toma.pubgmc.api.game.util.PlayerPropertyHolder;
+import dev.toma.pubgmc.api.game.util.message.DeathMessage;
+import dev.toma.pubgmc.api.game.util.message.DeathMessages;
 import dev.toma.pubgmc.api.properties.SharedProperties;
 import dev.toma.pubgmc.common.ai.EntityAIGunAttack;
 import dev.toma.pubgmc.common.ai.EntityAIMoveIntoPlayzone;
@@ -459,7 +460,7 @@ public class FFAGame implements Game<FFAGameConfiguration>, GameMenuProvider, Lo
                 deathMessage = true;
             }
             if (deathMessage && !entity.world.isRemote) {
-                DeathMessage message = GameHelper.createDefaultDeathMessage(entity, source);
+                DeathMessage message = DeathMessages.createMessage(entity, source);
                 game.deathMessages.push(message);
             }
             GameHelper.requestClientGameDataSynchronization(entity.world);

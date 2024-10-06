@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.api.game.team;
 
-import dev.toma.pubgmc.api.game.groups.Group;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -59,9 +58,6 @@ public class SimpleTeamManager implements TeamManager {
         Team team = getEntityTeamByEntityId(uuid);
         if (team != null && team.isMember(uuid)) {
             team.eliminate(uuid);
-            if (team.isTeamEliminated()) {
-                teamById.remove(team.getId());
-            }
         }
     }
 

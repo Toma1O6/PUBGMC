@@ -25,7 +25,7 @@ public class RandomBotNameGenerator {
     };
 
     public static ITextComponent generateBotName() {
-        return new TextComponentString(BOT_PREFIX.getFormattedText() + " " + NAMES[RANDOM.nextInt(NAMES.length)]);
+        return BOT_PREFIX.createCopy().appendSibling(new TextComponentString(" " + NAMES[RANDOM.nextInt(NAMES.length)]));
     }
 
     static {

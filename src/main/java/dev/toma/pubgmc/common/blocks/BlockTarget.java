@@ -16,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -41,10 +42,11 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
             IBlockState state = bullet.world.getBlockState(pos);
             double delta = hit.y - (int) hit.y;
             boolean headShot = state.getBlock() == PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
-            player.sendMessage(new TextComponentString(headShot
-                    ? TextFormatting.RED + I18n.format("label.pubgmc.target.headshot", bullet.getDamage() * 2.5)
-                    : I18n.format("label.pubgmc.target.hit", bullet.getDamage())
-            ));
+            ITextComponent message = new TextComponentTranslation(headShot ? "label.pubgmc.target.headshot" : "label.pubgmc.target.hit");
+            if (headShot) {
+                message.getStyle().setColor(TextFormatting.RED);
+            }
+            player.sendMessage(message);
         }
     }
 

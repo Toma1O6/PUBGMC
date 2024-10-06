@@ -1,11 +1,14 @@
 package dev.toma.pubgmc.api.game.team;
 
 import dev.toma.pubgmc.api.game.groups.Group;
+import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -20,7 +23,7 @@ public final class Team implements Iterable<Team.Member>, Group {
     private final UUID teamId;
     private final Map<UUID, Member> members;
     private final Set<UUID> activeMembers;
-    private final Map<UUID, String> usernames;
+    private final Map<UUID, ITextComponent> usernames;
     @Nullable
     private Member teamLeader;
 
@@ -43,7 +46,7 @@ public final class Team implements Iterable<Team.Member>, Group {
         addMember(member);
     }
 
-    private Team(UUID teamId, @Nullable Member teamLeader, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, String> usernames) {
+    private Team(UUID teamId, @Nullable Member teamLeader, Map<UUID, Member> members, Set<UUID> activeMembers, Map<UUID, ITextComponent> usernames) {
         this.teamId = teamId;
         this.teamLeader = teamLeader;
         this.members = members;
@@ -90,7 +93,7 @@ public final class Team implements Iterable<Team.Member>, Group {
         this.activeMembers.add(memberId);
     }
 
-    public void addUsername(UUID memberId, String username) {
+    public void addUsername(UUID memberId, ITextComponent username) {
         this.usernames.put(memberId, username);
     }
 
@@ -155,8 +158,8 @@ public final class Team implements Iterable<Team.Member>, Group {
     }
 
     @Override
-    public String getUsername(UUID memberId) {
-        return usernames.getOrDefault(memberId, "<none>");
+    public ITextComponent getUsername(UUID memberId) {
+        return usernames.getOrDefault(memberId, new TextComponentString("???"));
     }
 
     public boolean isTeamLeader(UUID memberId) {
@@ -194,7 +197,7 @@ public final class Team implements Iterable<Team.Member>, Group {
     }
 
     private void saveUsername(Entity entity) {
-        usernames.put(entity.getUniqueID(), entity.getName());
+        usernames.put(entity.getUniqueID(), GameHelper.getEntityDisplayName(entity));
     }
 
     public NBTTagCompound serialize() {
@@ -205,7 +208,7 @@ public final class Team implements Iterable<Team.Member>, Group {
         }
         nbt.setTag("members", SerializationHelper.mapToNbt(members, UUID::toString, Member::serialize));
         nbt.setTag("active", SerializationHelper.collectionToNbt(activeMembers, uuid -> new NBTTagString(uuid.toString())));
-        nbt.setTag("usernames", SerializationHelper.mapToNbt(usernames, UUID::toString, NBTTagString::new));
+        nbt.setTag("memberNames", SerializationHelper.mapToNbt(usernames, UUID::toString, comp -> new NBTTagString(ITextComponent.Serializer.componentToJson(comp))));
         return nbt;
     }
 
@@ -214,7 +217,7 @@ public final class Team implements Iterable<Team.Member>, Group {
         UUID teamLeader = nbt.hasKey("teamLeader") ? nbt.getUniqueId("teamLeader") : null;
         Map<UUID, Member> memberMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("members"), UUID::fromString, base -> Member.deserialize((NBTTagCompound) base));
         Set<UUID> activeMembers = SerializationHelper.collectionFromNbt(HashSet::new, nbt.getTagList("active", Constants.NBT.TAG_STRING), base -> UUID.fromString(((NBTTagString) base).getString()));
-        Map<UUID, String> usernameMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("usernames"), UUID::fromString, base -> ((NBTTagString) base).getString());
+        Map<UUID, ITextComponent> usernameMap = SerializationHelper.mapFromNbt(HashMap::new, nbt.getCompoundTag("memberNames"), UUID::fromString, base -> ITextComponent.Serializer.jsonToComponent(((NBTTagString) base).getString()));
         Member leader = teamLeader != null ? memberMap.get(teamLeader) : null;
         return new Team(teamId, leader, memberMap, activeMembers, usernameMap);
     }

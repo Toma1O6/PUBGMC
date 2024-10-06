@@ -1,9 +1,9 @@
 package dev.toma.pubgmc.api.client.util;
 
 import dev.toma.pubgmc.api.game.LivingGameEntity;
+import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
-import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -85,7 +86,7 @@ public class TeamPanelRenderer {
 
     private void renderMemberInformation(FontRenderer font, World world, Team team, Team.Member member, int x, int y, int width) {
         boolean alive = team.isMember(member.getId());
-        String username = team.getUsername(member.getId());
+        ITextComponent username = team.getUsername(member.getId());
         ImageUtil.drawShape(x, y, x + width, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
         float health = 1.0F;
         switch (member.getMemberType()) {
@@ -98,7 +99,7 @@ public class TeamPanelRenderer {
         }
         ImageUtil.drawShape(x, y + 13, x + width, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
         ImageUtil.drawShape(x, y + 13, x + (int) (width * health), y + 15, 1.0F, 1.0F, 1.0F, 1.0F);
-        font.drawString(username, x, y + 2, alive ? 0xFFFFFF : 0xFF0000);
+        font.drawString(username.getFormattedText(), x, y + 2, alive ? 0xFFFFFF : 0xFF0000);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
@@ -112,8 +113,8 @@ public class TeamPanelRenderer {
     private void updatePanelWidth(Team team, Collection<Team.Member> members, FontRenderer font) {
         int i = TEAM_PANEL_WIDTH;
         for (Team.Member member : members) {
-            String username = team.getUsername(member.getId());
-            int width = font.getStringWidth(username);
+            ITextComponent username = team.getUsername(member.getId());
+            int width = font.getStringWidth(username.getFormattedText());
             if (width > i) {
                 i = width;
             }

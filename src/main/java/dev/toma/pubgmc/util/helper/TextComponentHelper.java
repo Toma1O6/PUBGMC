@@ -16,9 +16,6 @@ public class TextComponentHelper {
     public static final ITextComponent DECLINE = new TextComponentTranslation("label.pubgmc.decline");
     public static final ITextComponent UNDEFINED = new TextComponentTranslation("label.pubgmc.undefined");
     public static final ITextComponent CLICK_TO_TELEPORT = new TextComponentTranslation("label.pubgmc.click_to_teleport");
-    public static final ITextComponent GENERIC_DEATH = new TextComponentTranslation("label.pubgmc.death_message.generic");
-    public static final ITextComponent GENERIC_DEATH_BY_ENTITY = new TextComponentTranslation("label.pubgmc.death_message.generic.entity");
-    public static final ITextComponent GENERIC_ZONE = new TextComponentTranslation("label.pubgmc.death_message.zone");
     public static final ITextComponent GAME_WON = applyColor(new TextComponentTranslation("pubgmc.game.won.label"), TextFormatting.GREEN);
     public static final ITextComponent GAME_COMPLETED = applyColor(new TextComponentTranslation("pubgmc.game.completed.label"), TextFormatting.AQUA);
     public static final ITextComponent AIRDROP_SPAWNED = applyColor(new TextComponentTranslation("pubgmc.game.airdrop_spawned.label"), TextFormatting.GREEN);

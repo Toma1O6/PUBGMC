@@ -9,6 +9,7 @@ import dev.toma.pubgmc.api.game.loot.LootProviderType;
 import dev.toma.pubgmc.api.game.map.GameMapPointType;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorType;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
+import dev.toma.pubgmc.api.game.util.message.DeathMessageType;
 import dev.toma.pubgmc.api.util.RegistryObject;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -63,6 +64,12 @@ public abstract class PubgmcRegistryEvent<T extends RegistryObject> extends Even
     public static final class EntityProcessor extends PubgmcRegistryEvent<EntityProcessorType<?>> {
         public EntityProcessor() {
             super(PubgmcRegistries.ENTITY_PROCESSORS::register);
+        }
+    }
+
+    public static final class DeathMessage extends PubgmcRegistryEvent<DeathMessageType<?>> {
+        public DeathMessage() {
+            super(PubgmcRegistries.DEATH_MESSAGES::register);
         }
     }
 

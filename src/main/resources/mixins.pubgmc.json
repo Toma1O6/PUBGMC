@@ -12,7 +12,8 @@
     "client.GuiIngameForgeMixin",
     "client.ForgeHooksClientMixin",
     "client.RenderPlayerMixin",
-    "client.ModelBipedMixin"
+    "client.ModelBipedMixin",
+    "client.SlotMixin"
   ],
   "server": [],
   "injectors": {

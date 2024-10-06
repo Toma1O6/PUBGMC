@@ -14,4 +14,8 @@ public enum TeamRelations {
     public boolean isDefaultAttackable() {
         return this == UNKNOWN || this == ENEMY;
     }
+
+    public boolean isFriendlyOrEnemy() {
+        return this == FRIENDLY || this == ENEMY;
+    }
 }

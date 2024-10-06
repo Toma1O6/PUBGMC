@@ -32,7 +32,7 @@ public class SimpleTeamInviteManager implements TeamInviteManager {
         if (!teamManager.canJoinTeam(invitee, team)) {
             return null;
         }
-        TeamInvite teamInvite = new TeamInvite(team.getId(), invitee.getUniqueID(), team.getUsername(sender.getUniqueID()));
+        TeamInvite teamInvite = new TeamInvite(team.getId(), invitee.getUniqueID(), team.getUsername(sender.getUniqueID()).getFormattedText());
         String key = teamInvite.getUniqueKey();
         TeamInvite invite = invites.getOrDefault(key, teamInvite);
         invites.put(key, invite);

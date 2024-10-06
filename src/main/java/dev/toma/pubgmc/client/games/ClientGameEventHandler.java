@@ -3,6 +3,7 @@ package dev.toma.pubgmc.client.games;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.GameData;
 import dev.toma.pubgmc.api.capability.GameDataProvider;
+import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.game.Game;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
@@ -100,7 +101,12 @@ public final class ClientGameEventHandler {
     }
 
     private static void renderEntityName(RenderManager renderManager, EntityLivingBase entity, double x, double y, double z) {
-        String text = entity.getDisplayName().getFormattedText();
+        String text;
+        if (entity instanceof CustomEntityNametag) {
+            text = ((CustomEntityNametag) entity).getComponent().getFormattedText();
+        } else {
+            text = entity.getDisplayName().getFormattedText();
+        }
         GlStateManager.alphaFunc(516, 0.1F);
         boolean flag = entity.isSneaking();
         float f = renderManager.playerViewY;
