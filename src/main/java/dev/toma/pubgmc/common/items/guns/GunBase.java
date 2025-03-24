@@ -117,7 +117,8 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
                     EntityBullet bullet = new EntityBullet(world, player, this);
                     world.spawnEntity(bullet);
                 } else {
-                    for (int i = 0; i < 8; i++) {
+                    // for (int i = 0; i < 8; i++) {
+                    for (int i = 1; i <= 9; i++) {
                         EntityBullet bullet = new EntityBullet(world, player, this);
                         world.spawnEntity(bullet);
                     }
