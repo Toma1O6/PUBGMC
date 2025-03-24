@@ -280,9 +280,16 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     }
 
     public int getReloadTime(ItemStack stack) {
+        float reloadSpeed = 1.0f;
         ItemMagazine mag = this.getAttachment(AttachmentType.MAGAZINE, stack);
+        if (mag != null && mag.isQuickdraw()) {
+            reloadSpeed += mag.isExtended() ? 0.15f : 0.6f;
+        }
         ItemStock stock = this.getAttachment(AttachmentType.STOCK, stack);
-        return getReloadTime(mag != null && mag.isQuickdraw() || stock != null && stock.isFasterReload());
+        if (stock != null && stock.isFasterReload()) {
+            reloadSpeed += 0.3f;
+        }
+        return (int) (reloadTime / reloadSpeed);
     }
 
     public int getReloadTime(boolean quickdraw) {
