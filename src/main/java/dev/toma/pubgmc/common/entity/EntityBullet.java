@@ -140,7 +140,8 @@ public class EntityBullet extends Entity {
                 canBePenetrated = griefingFlag;
             } else if (!block.isReplaceable(world, pos)) {
                 Vec3d vec = rayTraceResult.hitVec;
-                PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+                int hitParticles = (int) damage;
+                PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, hitParticles, vec, pos, S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
                 this.setDead();
             }
