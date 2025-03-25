@@ -50,6 +50,9 @@ public class EntityBullet extends Entity {
     private double velocity;
     private double gravity;
     private float damage;
+    private int damagedropstart;
+    private float damagedrop;
+    private float mindamage;
     private GunBase.GunType type;
     private ItemStack stack;
     private RayTraceResult entityRaytrace;
@@ -70,6 +73,9 @@ public class EntityBullet extends Entity {
         gravity = stats.getGravityModifier();
         velocity = stats.getVelocity();
         damage = stats.getDamage();
+        damagedropstart = stats.getDamagedropEffectStart();
+        damagedrop = stats.getDamagedropModifier();
+        mindamage = stats.getMinDamage();
         type = gun.getGunType();
         stack = new ItemStack(gun);
 
@@ -186,16 +192,16 @@ public class EntityBullet extends Entity {
         }
 
         if (this.ticksExisted > 2 && this.ticksExisted % 2 == 0) {
-            world.playSound(null, posX, posY, posZ, PMCSounds.bullet_whizz, SoundCategory.PLAYERS, 0.1f, 1f);
+            world.playSound(null, posX, posY, posZ, PMCSounds.bullet_whizz, SoundCategory.PLAYERS, 1f, 1f);
         }
-
-        if (type == GunBase.GunType.SHOTGUN && !world.isRemote) {
-            if (this.ticksExisted % 2 == 0 && damage > 1) {
-                damage -= 1;
-
-                if (damage <= 0) {
-                    damage = 1;
-                }
+        //Damagedrop
+        if (this.ticksExisted > damagedropstart && !world.isRemote) {
+            damage -= damagedrop;
+            if (damage <= mindamage) {
+                damage = mindamage;
+            }
+            if (damage <= 0) {
+                this.setDead();
             }
         }
         Entity entity = this.findEntityOnPath(vec3d1, vec3d, raytraceresult);
