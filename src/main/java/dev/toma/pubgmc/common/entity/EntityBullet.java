@@ -98,7 +98,21 @@ public class EntityBullet extends Entity {
         if (entity != null && !world.isRemote) {
             boolean isHeadshot = this.canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
             if (isHeadshot) {
-                damage *= 2.5;
+                if (type.equals(GunBase.GunType.AR) || type.equals(GunBase.GunType.DMR)) {
+                    damage *= 2.35f;
+                } else if (type.equals(GunBase.GunType.SMG)) {
+                    damage *= 2.1f;
+                } else if (type.equals(GunBase.GunType.SHOTGUN)) {
+                    damage *= 1.5f;
+                } else if (type.equals(GunBase.GunType.SR)) {
+                    damage *= 2.5f;
+                } else if (type.equals(GunBase.GunType.PISTOL)) {
+                    damage *= 2.1f;
+                } else if (type.equals(GunBase.GunType.LMG)) {
+                    damage *= 2.3f;
+                } else {
+                    damage *= 2.0f;
+                }
             }
             this.onEntityHit(isHeadshot, entity, rayTraceResult.hitVec);
             entity.hurtResistantTime = 0;
