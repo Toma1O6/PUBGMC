@@ -26,11 +26,12 @@ public class ItemParachute extends PMCItem {
         if (!playerIn.isRiding()) {
             if (!worldIn.isRemote) {
                 float currentFallDistance = playerIn.fallDistance;
-                if (currentFallDistance <= 8.0F) {
+                if (currentFallDistance <= 3.0F) {
                     playerIn.sendStatusMessage(new TextComponentTranslation("message.pubgmc.parachute.cannot_open_yet"), true);
-                    playerIn.getCooldownTracker().setCooldown(this, 10);
+                    playerIn.getCooldownTracker().setCooldown(this, 4);
                     return ActionResult.newResult(EnumActionResult.FAIL, stack);
                 }
+                playerIn.fallDistance = 0F;
                 EntityParachute chute = new EntityParachute(worldIn, playerIn);
                 if (MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Open(chute, playerIn))) {
                     return ActionResult.newResult(EnumActionResult.PASS, stack);

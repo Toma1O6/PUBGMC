@@ -437,7 +437,7 @@ pubgmc.menu.click_to_update=点击更新
 
 message.pubgmc.healing.unreached_threshold=无法恢复高于当前血量值
 message.pubgmc.healing.max_health=血量值已满
-message.pubgmc.parachute.cannot_open_yet=降落8格后才能打开降落伞!
+message.pubgmc.parachute.cannot_open_yet=降落3格后才能打开降落伞!
 message.pubgmc.game.joinable_game_in_progress=有正在进行中的游戏可加入，运行命令"/game join"以加入游戏
 message.pubgmc.game.select_loadout=此游戏要求您选择自定义配置。您现在可以使用"/game menu"命令或单击此消息来选择它
 message.pubgmc.game.ffa.game_ended=你在%s处结束。此处有%s击杀
