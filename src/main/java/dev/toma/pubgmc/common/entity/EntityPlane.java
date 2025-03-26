@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEntityAdditionalSpawnData {
 
-    public static final int PLANE_CAPACITY = 32;
+    public static final int PLANE_CAPACITY = 128;
     private int flightDelay = 20;
     private int flightHeight = 256;
     private Position2 from = Position2.ORIGIN;
@@ -74,8 +74,10 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
             if (!this.getPassengers().isEmpty()) {
                 float f1 = (float) ((this.isDead ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
                 int id = this.getPassengers().indexOf(passenger);
-                float x = id >= 16 ? -6 + (id - 16) * 3 : -6 + id * 3;
-                float z = id < 16 ? 3 : -3;
+                id %= 32; //If this happens, sit on the same seat better than can't sit
+                float x = -6, z = 0;
+                x += (int)(id / 2) * 3;
+                z += id % 2 == 0 ? 3 : -3;
                 Vec3d vec3d = (new Vec3d(x, 0.0D, z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
                 passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
             }
