@@ -21,6 +21,7 @@ public final class CFGOverlaySettings extends ObjectType {
     public CFG2DCoords imgBoostOverlayPos;
     public CFG2DCoords equipmentInventoryButtonPos;
     public BooleanType renderArmorIcons;
+    public BooleanType renderGunCrosshairs;
     public ColorType jmMapBorderColor;
     public ColorType jmBorderColor;
     public ColorType jmShrinkingColor;
@@ -40,6 +41,7 @@ public final class CFGOverlaySettings extends ObjectType {
         imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Image Overlay Coords"), plugin);
         equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
+        renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs while holding gun", false);
         jmMapBorderColor = configCreator.createColorRGB("Map Border Color", "#FF0000", "Map Border color for JourneyMap");
         jmBorderColor = configCreator.createColorRGB("Border Playzone Color", "#FFFFFF", "Border playzone color for JourneyMap");
         jmShrinkingColor = configCreator.createColorRGB("Shrinking Playzone Color", "#0000FF", "Shrinking playzone color for JourneyMap");

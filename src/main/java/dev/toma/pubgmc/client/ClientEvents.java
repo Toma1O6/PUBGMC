@@ -241,8 +241,9 @@ public class ClientEvents {
         ScaledResolution res = new ScaledResolution(mc);
         ItemStack stack = sp.getHeldItemMainhand();
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-        if (e.getType() == ElementType.CROSSHAIRS) {
-            if (!ConfigPMC.developerMode.get() && stack.getItem() instanceof GunBase) {
+        boolean isFirstPersonView = mc.gameSettings.thirdPersonView == 0;
+        if (e.getType() == ElementType.CROSSHAIRS && isFirstPersonView) {
+            if (!ConfigPMC.client.overlays.renderGunCrosshairs.get() && stack.getItem() instanceof GunBase) {
                 e.setCanceled(true);
             }
         }
