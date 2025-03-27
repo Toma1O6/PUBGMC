@@ -224,9 +224,11 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
             return;
         }
         int i = state.ordinal();
-        float sprintModifier = 1.25F;
-        float modifier = i == 2 ? 0 : i == 1 ? 0.7F : 1.8F;
+        float sprintModifier = 1.2F;
+        float jumpModifier = 1.25F;
+        float modifier = (i == EnumEntityThrowState.LONG.ordinal()) ? 1.8F : (i == EnumEntityThrowState.SHORT.ordinal() ? 0.7F : 0);
         if (thrower.isSprinting()) modifier *= sprintModifier;
+        if (!thrower.onGround) modifier *= jumpModifier;
         Vec3d viewVec = thrower.getLookVec();
         this.motionX = viewVec.x * modifier;
         this.motionY = viewVec.y * modifier / sprintModifier;
