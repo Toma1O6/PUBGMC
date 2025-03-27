@@ -130,7 +130,7 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         public void serialize(DataWriter<?> writer) {
             writer.writeFloat("scale", shrinkScale);
             writer.writeFloat("damage", damage);
-            writer.writeInt("interval", damageInterval);
+            writer.writeInt("damageInterval", damageInterval);
             writer.writeInt("shrinkTime", shrinkTime);
             writer.writeInt("shrinkDelay", shrinkDelay);
             writer.writeString("airdropTrigger", airdropTrigger.name());
@@ -139,16 +139,21 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         public static ZonePhaseConfiguration deserialize(DataReader<?> reader) {
             float scale = reader.readFloat("scale", 0.5F);
             float damage = reader.readFloat("damage", 2.0F);
-            int interval = reader.readInt("interval", 20);
+            int damageInterval = 20;
+            try {
+                damageInterval = reader.readInt("damageInterval", 20);
+            } catch (IllegalArgumentException e) {
+                // Compatible with old config
+            }
             int shrinkTime = reader.readInt("shrinkTime", 600);
             int shrinkDelay = reader.readInt("shrinkDelay", 600);
-            AirdropTrigger trigger;
+            AirdropTrigger trigger = AirdropTrigger.ON_SHRINK_END;
             try {
                 trigger = AirdropTrigger.valueOf(reader.readString("airdropTrigger", AirdropTrigger.ON_SHRINK_END.name()));
             } catch (IllegalArgumentException e) {
-                trigger = AirdropTrigger.ON_SHRINK_END;
+                // Compatible with old config
             }
-            return new ZonePhaseConfiguration(scale, damage, interval, shrinkTime, shrinkDelay, trigger);
+            return new ZonePhaseConfiguration(scale, damage, damageInterval, shrinkTime, shrinkDelay, trigger);
         }
     }
 
