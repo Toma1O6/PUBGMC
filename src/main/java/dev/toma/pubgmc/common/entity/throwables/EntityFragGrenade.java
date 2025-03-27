@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
+import dev.toma.pubgmc.config.ConfigPMC;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 
@@ -20,8 +21,9 @@ public class EntityFragGrenade extends EntityThrowableExplodeable {
     @Override
     public void onExplode() {
         if (!world.isRemote) {
+            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
             this.setPosition(this.posX, this.posY + 1, this.posZ);
-            world.createExplosion(getThrower(), this.posX, this.posY, this.posZ, 5.0F, false);
+            world.createExplosion(getThrower(), this.posX, this.posY, this.posZ, 5.0F, canBreakBlocks);
         }
         this.setDead();
     }
