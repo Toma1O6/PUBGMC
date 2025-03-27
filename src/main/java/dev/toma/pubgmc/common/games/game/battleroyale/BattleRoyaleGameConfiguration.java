@@ -17,23 +17,27 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
     public boolean automaticGameJoining = true;
     public int teamSize = 4;
-    public float planeSpeed = 1.0F;
+    public float planeSpeed = 0.667F;
     public int planeFlightDelay = 100;
-    public int planeFlightHeight = 256;
-    public int playzoneGenerationDelay = 2400;
-    public int entityCount = 64;
+    public int planeFlightHeight = 255;
+    public int playzoneGenerationDelay = 1800;
+    public int entityCount = 100;
     public boolean allowAi = true;
     public boolean allowAiCompanions = true;
     public int aiSpawnInterval = 300;
-    public int initialAiSpawnDelay = 1200;
-    public boolean displayChatDeathMessages = false;
+    public int initialAiSpawnDelay = 1800;
+    public boolean displayChatDeathMessages = true;
     public ZonePhaseConfiguration[] zonePhases = {
-            new ZonePhaseConfiguration(0.65F, 1.0F, 60, 2400, 6000, AirdropTrigger.NONE),
-            new ZonePhaseConfiguration(0.75F, 1.0F, 40, 1800, 3600, AirdropTrigger.ANY),
-            new ZonePhaseConfiguration(0.75F, 1.0F, 20, 1200, 2400, AirdropTrigger.ON_SHRINK_END),
-            new ZonePhaseConfiguration(0.50F, 2.0F, 20, 800, 1800, AirdropTrigger.ON_SHRINK_START),
-            new ZonePhaseConfiguration(0.25F, 3.5F, 20, 450, 1200, AirdropTrigger.ON_SHRINK_START),
-            new ZonePhaseConfiguration(0.00F, 5.0F, 20, 1200, 3600, AirdropTrigger.NONE)
+            new ZonePhaseConfiguration(0.441F, 0.08F, 20, 5400, 4800, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.549F, 0.12F, 20, 1800, 2400, AirdropTrigger.ANY),
+            new ZonePhaseConfiguration(0.6F, 0.16F, 20, 1600, 2000, AirdropTrigger.ANY),
+            new ZonePhaseConfiguration(0.6F, 0.2F, 20, 1600, 2000, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.645F, 0.6F, 20, 1200, 2000, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.654F, 1F, 20, 600, 1800, AirdropTrigger.ON_SHRINK_START),
+            new ZonePhaseConfiguration(0.648F, 1.4F, 20, 600, 1400, AirdropTrigger.ANY),
+            new ZonePhaseConfiguration(0.694F, 1.8F, 20, 600, 1200, AirdropTrigger.ON_SHRINK_END),
+            new ZonePhaseConfiguration(0.006F, 2.2F, 20, 600, 1200, AirdropTrigger.NONE),
+            new ZonePhaseConfiguration(0.F, 20F, 20, 100, 100, AirdropTrigger.NONE)
     };
 
     @Override
