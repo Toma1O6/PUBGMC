@@ -23,6 +23,7 @@ public final class CFGOverlaySettings extends ObjectType {
     public BooleanType renderArmorIcons;
     public BooleanType renderGunCrosshairs;
     public BooleanType renderStatusBars;
+    public BooleanType renderBoost;
     public ColorType jmMapBorderColor;
     public ColorType jmBorderColor;
     public ColorType jmShrinkingColor;
@@ -44,6 +45,7 @@ public final class CFGOverlaySettings extends ObjectType {
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
         renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs in first person view", true);
         renderStatusBars = configCreator.createBoolean("Render food and experience bar", false);
+        renderBoost = configCreator.createBoolean("Render boost", true, "Boost provided by energy drink, painkiller, etc.");
         jmMapBorderColor = configCreator.createColorRGB("Map Border Color", "#FF0000", "Map Border color for JourneyMap");
         jmBorderColor = configCreator.createColorRGB("Border Playzone Color", "#FFFFFF", "Border playzone color for JourneyMap");
         jmShrinkingColor = configCreator.createColorRGB("Shrinking Playzone Color", "#0000FF", "Shrinking playzone color for JourneyMap");

@@ -178,30 +178,6 @@ public class ClientEvents {
         EntityPlayerSP sp = mc.player;
         ScaledResolution res = new ScaledResolution(mc);
 
-        //Get the player capability to use the stored data
-        IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-
-        //e.getType() == ElementType.TEXT - this is very important otherwise it will mess all fonts used in mc
-        if (!e.isCancelable() && e.getType() == ElementType.TEXT && !sp.capabilities.isCreativeMode && !sp.isSpectator() && ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.TEXT && !data.getBoostStats().isEmpty()) {
-            mc.entityRenderer.setupOverlayRendering();
-            int width = res.getScaledWidth();
-            int height = res.getScaledHeight();
-            int left = width / 2 + 45;
-            int top = height - 49;
-
-            int color;
-            int boostLevel = data.getBoostStats().getBoostLevel();
-            if (boostLevel >= 10) {
-                color = 14651904;
-            } else {
-                color = 14664960;
-            }
-            if (boostLevel > 9) {
-                left -= 5;
-            }
-            mc.fontRenderer.drawStringWithShadow(boostLevel + " / 20", left + ConfigPMC.client.overlays.textBoostOverlayPos.getX(), top + ConfigPMC.client.overlays.textBoostOverlayPos.getY(), color);
-        }
-
         //Ammo and Firemode info rendering
         if (!e.isCancelable() && e.getType() == ElementType.TEXT && sp.getHeldItemMainhand().getItem() instanceof GunBase) {
             ItemStack weaponStack = sp.getHeldItemMainhand();
@@ -275,7 +251,7 @@ public class ClientEvents {
                 }
             }
 
-            if (!sp.capabilities.isCreativeMode && !sp.isSpectator() && !data.getBoostStats().isEmpty()) {
+            if (!sp.isSpectator() && ConfigPMC.client.overlays.renderBoost.get()) {
                 renderBoost(data.getBoostStats());
             }
 
@@ -646,27 +622,48 @@ public class ClientEvents {
      * Method for rendering the textured boost overlays
      * TODO improve
      */
-
     private static void renderBoost(BoostStats stats) {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
 
+        // Image style
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
-            int left = width / 2 - 91;
-            int top = height - 32 + 4;
-            short barWidth = 182;
-
             CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgBoostOverlayPos;
-            int leftPos = left + overlayPos.getX();
-            int topPos = top + overlayPos.getY();
+            short barWidth = 182;
+            int leftPos = width / 2 - barWidth / 2 + overlayPos.getX();
+            int topPos = height - 32 + 4 + overlayPos.getY();
+            // Backbround
             float color = 0.75F;
             ImageUtil.drawShape(leftPos, topPos, leftPos + barWidth, topPos + 3, color, color, color, 1.0F);
+            // Energy
             int boost = stats.getBoostLevel();
             if (boost > 0) {
                 double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
                 ImageUtil.drawShape(leftPos, topPos, leftPos + (int) sizeX, topPos + 3, 1.0F, 0.8F, 0.0F, 1.0F);
             }
+        }
+        // Text style
+        else {
+            Minecraft mc = Minecraft.getMinecraft();
+            EntityPlayerSP sp = mc.player;
+            IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            mc.entityRenderer.setupOverlayRendering();
+
+            CFG2DCoords overlayPos = ConfigPMC.client.overlays.textBoostOverlayPos;
+            int leftPos = width / 2 + 45 + overlayPos.getX();
+            int topPos = height - 49 + overlayPos.getY();
+            int color;
+            int boostLevel = data.getBoostStats().getBoostLevel();
+            if (boostLevel >= 10) {
+                color = 14651904;
+            } else {
+                color = 14664960;
+            }
+            if (boostLevel > 9) {
+                leftPos -= 5;
+            }
+            mc.fontRenderer.drawStringWithShadow(boostLevel + " / 20", leftPos, topPos, color);
         }
     }
 
