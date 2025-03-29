@@ -248,8 +248,9 @@ public class ClientEvents {
         }
 
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
-            if (e.getType() == ElementType.EXPERIENCE) {
-                if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty()) {
+            if (e.getType() == ElementType.EXPERIENCE || e.getType() == ElementType.FOOD) {
+                if (!ConfigPMC.client.overlays.renderStatusBars.get()) {
+                    // if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty())
                     e.setCanceled(true);
                 }
             }
@@ -645,6 +646,7 @@ public class ClientEvents {
      * Method for rendering the textured boost overlays
      * TODO improve
      */
+
     private static void renderBoost(BoostStats stats) {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         int width = res.getScaledWidth();
