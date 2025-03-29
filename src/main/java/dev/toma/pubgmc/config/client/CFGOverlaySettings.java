@@ -42,7 +42,7 @@ public final class CFGOverlaySettings extends ObjectType {
         imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Image Overlay Coords"), plugin);
         equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
-        renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs while holding gun", false);
+        renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs in first person view", true);
         renderStatusBars = configCreator.createBoolean("Render food and experience bar", false);
         jmMapBorderColor = configCreator.createColorRGB("Map Border Color", "#FF0000", "Map Border color for JourneyMap");
         jmBorderColor = configCreator.createColorRGB("Border Playzone Color", "#FFFFFF", "Border playzone color for JourneyMap");

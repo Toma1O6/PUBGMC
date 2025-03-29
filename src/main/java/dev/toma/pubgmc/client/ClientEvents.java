@@ -242,7 +242,7 @@ public class ClientEvents {
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         boolean isFirstPersonView = mc.gameSettings.thirdPersonView == 0;
         if (e.getType() == ElementType.CROSSHAIRS && isFirstPersonView) {
-            if (!ConfigPMC.client.overlays.renderGunCrosshairs.get() && stack.getItem() instanceof GunBase) {
+            if (!ConfigPMC.client.overlays.renderGunCrosshairs.get() || data.getAimInfo().isAiming()) {
                 e.setCanceled(true);
             }
         }
@@ -334,7 +334,7 @@ public class ClientEvents {
                 return;
             data.setProne(!data.isProne(), false);
             ReloadInfo reloadInfo = data.getReloadInfo();
-            if (data.getAimInfo().isAiming()) this.setAiming(data, false);
+            // if (data.getAimInfo().isAiming()) this.setAiming(data, false);
             if (reloadInfo.isReloading()) {
                 reloadInfo.interrupt();
                 PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
