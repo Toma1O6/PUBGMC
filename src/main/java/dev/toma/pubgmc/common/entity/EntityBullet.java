@@ -176,8 +176,13 @@ public class EntityBullet extends Entity {
         if (this.ticksExisted > gravitystart && !world.isRemote) {
             this.motionY -= gravity;
         }
+        //Sound
         if (this.ticksExisted > 2 && this.ticksExisted % 2 == 0) {
-            world.playSound(null, posX, posY, posZ, PMCSounds.bullet_whizz, SoundCategory.PLAYERS, 1f, 1f);
+            float v = this.getVelocity();
+            if (this.ticksExisted * v > 100) {
+                float volume = this.getDamage() / 40f;
+                world.playSound(null, posX, posY, posZ, PMCSounds.bullet_whizz, SoundCategory.PLAYERS, volume, 1f);
+            }
         }
         //Damagedrop
         if (this.ticksExisted > damagedropstart && !world.isRemote) {
@@ -189,6 +194,7 @@ public class EntityBullet extends Entity {
                 this.setDead();
             }
         }
+
         Entity entity = this.findEntityOnPath(vec3d1, vec3d, raytraceresult);
         if (entity != null) {
             raytraceresult = new RayTraceResult(entity);
@@ -294,23 +300,25 @@ public class EntityBullet extends Entity {
     }
 
     private void calculateBulletHeading(Vec3d rotVec, boolean aim) {
+        float v = this.getVelocity();
         if (aim && type != GunBase.GunType.SHOTGUN) {
-            this.motionX = rotVec.x * velocity;
-            this.motionY = rotVec.y * velocity;
-            this.motionZ = rotVec.z * velocity;
+            this.motionX = rotVec.x * v;
+            this.motionY = rotVec.y * v;
+            this.motionZ = rotVec.z * v;
         } else {
-            this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
-            this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
-            this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+            this.motionX = rotVec.x * v + (rand.nextDouble() - 0.5);
+            this.motionY = rotVec.y * v + (rand.nextDouble() - 0.5);
+            this.motionZ = rotVec.z * v + (rand.nextDouble() - 0.5);
         }
     }
 
     private void calculateBulletHeading(Vec3d rotVec, float inaccuracy) {
         if (inaccuracy == 0)
             inaccuracy = 1;
-        this.motionX = rotVec.x * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
-        this.motionY = rotVec.y * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
-        this.motionZ = rotVec.z * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        float v = this.getVelocity();
+        this.motionX = rotVec.x * v + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        this.motionY = rotVec.y * v + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        this.motionZ = rotVec.z * v + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
     }
 
     private void updateHeading() {
@@ -364,6 +372,10 @@ public class EntityBullet extends Entity {
 
     public float getDamage() {
         return damage;
+    }
+
+    public float getVelocity() {
+        return (float)velocity;
     }
 
     public float getHeadshotMultipler() {
