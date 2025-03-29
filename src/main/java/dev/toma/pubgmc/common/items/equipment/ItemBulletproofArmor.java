@@ -35,7 +35,7 @@ public class ItemBulletproofArmor extends ItemArmor implements BulletproofArmor 
 
         LEVEL_ONE(0.7F, 0.7F),
         LEVEL_TWO(0.6F, 0.6F),
-        LEVEL_THREE(0.4F, 0.5F);
+        LEVEL_THREE(0.45F, 0.45F);
 
         private final float headProtection;
         private final float bodyProtection;
