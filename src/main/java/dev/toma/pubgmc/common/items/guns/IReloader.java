@@ -73,7 +73,7 @@ public interface IReloader {
             int ammoInGun = gun.getAmmo(stack);
             int maxLimit = gun.getWeaponAmmoLimit(stack);
             int space = maxLimit - ammoInGun;
-            if (isFreeReload(player)) {
+            if (IReloader.isFreeReload(player)) {
                 gun.setAmmo(stack, maxLimit);
                 return true;
             }
@@ -82,15 +82,13 @@ public interface IReloader {
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack itemStack = player.inventory.getStackInSlot(i);
                 int fill = 0;
-                if (IReloader.isFreeReload(player)) {
-                    fill = Math.min(space, gun.getWeaponAmmoLimit(stack));
-                } else if (!itemStack.isEmpty() && itemStack.getItem() == targetAmmo) {
+                if (!itemStack.isEmpty() && itemStack.getItem() == targetAmmo) {
                     fill = Math.min(space, itemStack.getCount());
                     itemStack.shrink(fill);
+                    space -= fill;
+                    gun.setAmmo(stack, ammoInGun + fill);
                 }
-                space -= fill;
                 if (space <= 0) break;
-                gun.setAmmo(stack, maxLimit - space);
             }
             return true;
         }
