@@ -12,7 +12,7 @@ public class ItemBandage extends ItemHealing {
 
     public ItemBandage(String name) {
         super(name);
-        setMaxStackSize(5);
+        setMaxStackSize(10);
     }
 
     @Override

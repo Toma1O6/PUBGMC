@@ -12,7 +12,7 @@ public class ItemFirstAidKit extends ItemHealing {
 
     public ItemFirstAidKit(String name) {
         super(name);
-        setMaxStackSize(1);
+        setMaxStackSize(2);
     }
 
     @Override

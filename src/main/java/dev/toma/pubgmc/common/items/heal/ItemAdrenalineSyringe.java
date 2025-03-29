@@ -30,7 +30,7 @@ public class ItemAdrenalineSyringe extends ItemHealing {
             EntityPlayer player = (EntityPlayer) entity;
             PlayerDataProvider.getOptional(player).ifPresent(data -> {
                 BoostStats stats = data.getBoostStats();
-                stats.add(20);
+                stats.addBoost(300); // 100%
                 data.sync();
             });
             if (!player.isCreative()) {

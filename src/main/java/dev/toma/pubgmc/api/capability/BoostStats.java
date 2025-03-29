@@ -17,33 +17,44 @@ public interface BoostStats {
      * Adds specified amount of boost level to this entity
      * @param amount Amount to be added
      */
-    void add(int amount);
+    void addBoost(int amount);
 
     /**
-     * @return Current boost level
+     * @return Current boost
+     */
+    int getBoost();
+
+    /**
+     *
+     * @return boostLimit
+     */
+    int getBoostLimit();
+    /**
+     * Sets boost to provided value
+     * @param percentage Boost to set
+     */
+    void setBoost(float percentage);
+
+    /**
+     * @return Current boost capability level
      */
     int getBoostLevel();
 
     /**
-     * Sets boost level to provided value
-     * @param level Boost level to set
+     *
+     * @param level
+     * @return percentage
      */
-    void setBoostLevel(int level);
-
+    float getLevelPercentage(int level);
     /**
-     * @return Current boost level saturation
-     */
-    float getSaturation();
-
-    /**
-     * Resets boost values to zero values
+     * Resets boost to zero
      */
     void reset();
 
     /**
-     * @return Whether all boost values are equal to zero
+     * @return Whether boost equal to zero
      */
     default boolean isEmpty() {
-        return getBoostLevel() == 0 && getSaturation() == 0.0F;
+        return getBoost() == 0;
     }
 }

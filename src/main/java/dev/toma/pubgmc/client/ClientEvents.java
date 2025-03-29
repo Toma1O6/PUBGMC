@@ -618,10 +618,6 @@ public class ClientEvents {
         PacketHandler.sendToServer(new C2S_PacketSetProperty(aim, C2S_PacketSetProperty.Action.AIM));
     }
 
-    /**
-     * Method for rendering the textured boost overlays
-     * TODO improve
-     */
     private static void renderBoost(BoostStats stats) {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         int width = res.getScaledWidth();
@@ -631,17 +627,44 @@ public class ClientEvents {
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgBoostOverlayPos;
             short barWidth = 182;
+            float singleWidth = 182/100.0f;
             int leftPos = width / 2 - barWidth / 2 + overlayPos.getX();
             int topPos = height - 32 + 4 + overlayPos.getY();
-            // Backbround
-            float color = 0.75F;
-            ImageUtil.drawShape(leftPos, topPos, leftPos + barWidth, topPos + 3, color, color, color, 1.0F);
-            // Energy
-            int boost = stats.getBoostLevel();
-            if (boost > 0) {
-                double sizeX = ((182.0D / 20.0D) * (boost + stats.getSaturation()));
-                ImageUtil.drawShape(leftPos, topPos, leftPos + (int) sizeX, topPos + 3, 1.0F, 0.8F, 0.0F, 1.0F);
-            }
+
+            float barLevel1End = barWidth * stats.getLevelPercentage(1);
+            float barLevel1Limit = barLevel1End - singleWidth;
+            float barLevel2End = barWidth * stats.getLevelPercentage(2);
+            float barLevel2Limit = barLevel2End - singleWidth;
+            float barLevel3End = barWidth * stats.getLevelPercentage(3);
+            float barLevel3Limit = barLevel3End - singleWidth;
+            float barLevel4End = barWidth * stats.getLevelPercentage(4);
+            float barLevel4Limit = barLevel4End;
+
+            // Transparent background
+            ImageUtil.drawShape(leftPos, topPos, leftPos + barLevel1Limit, topPos + 3, 0.577F, 0.577F, 0.577F, 0.3F); // #939393 147,147,147
+            ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + barLevel2Limit, topPos + 3, 0.526F, 0.526F, 0.526F, 0.3F); // #868686 134,134,134
+            ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + barLevel3Limit, topPos + 3, 0.491F, 0.491F, 0.491F, 0.3F); // #7d7d7d 125,125,125
+            ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + barLevel4Limit, topPos + 3, 0.455F, 0.455F, 0.455F, 0.3F); // #747474 116,116,116
+
+            int boostLevel = stats.getBoostLevel();
+            float percentage = (float)stats.getBoost() / stats.getBoostLimit();
+
+            if (boostLevel <= 0) return;
+            // level 1
+            float boost1 = Math.min(percentage * barWidth, barLevel1Limit);
+            ImageUtil.drawShape(leftPos, topPos, leftPos + boost1, topPos+3, 0.91F, 0.78F, 0.146F, 0.8F); // #e8c625 232,198,37
+            if (boostLevel <= 1) return;
+            // level 2
+            float boost2 = Math.min(percentage * barWidth, barLevel2Limit);
+            ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + boost2, topPos+3, 0.883F, 0.64F, 0.11F, 0.8F); // #e1a31c 225,163,28
+            if (boostLevel <= 2) return;
+            // level 3
+            float boost3 = Math.min(percentage * barWidth, barLevel3Limit);
+            ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + boost3, topPos+3, 0.844F, 0.514F, 0.12F, 0.8F); // #d7831e 215,131,30
+            if (boostLevel <= 3) return;
+            // level 4
+            float boost4 = Math.min(percentage * barWidth, barLevel4Limit);
+            ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + boost4, topPos+3, 0.832F, 0.436F, 0.087F, 0.8F); // #d46f16 212,111,22
         }
         // Text style
         else {
@@ -651,19 +674,36 @@ public class ClientEvents {
             mc.entityRenderer.setupOverlayRendering();
 
             CFG2DCoords overlayPos = ConfigPMC.client.overlays.textBoostOverlayPos;
-            int leftPos = width / 2 + 45 + overlayPos.getX();
+            int leftPos = width / 2 + 40 + overlayPos.getX();
             int topPos = height - 49 + overlayPos.getY();
             int color;
+            int boost = data.getBoostStats().getBoost();
             int boostLevel = data.getBoostStats().getBoostLevel();
-            if (boostLevel >= 10) {
-                color = 14651904;
-            } else {
-                color = 14664960;
+            switch (boostLevel) {
+                case 1: {
+                    color = 15208997; break; // #e8c625 232,198,37
+                }
+                case 2: {
+                    color = 14749468; break; // #e1a31c 225,163,28
+                }
+                case 3: {
+                    color = 14107422; break; // #d7831e 215,131,30
+                }
+                case 4: {
+                    color = 13909782; break; // #d46f16 212,111,22
+                }
+                default: {
+                    color = 12566463; break; // #bfbfbf 191,191,191
+                }
             }
-            if (boostLevel > 9) {
+            int percentageInt = (int)( boost / (float)data.getBoostStats().getBoostLimit() ) * 100;
+            if (percentageInt > 99) {
                 leftPos -= 5;
             }
-            mc.fontRenderer.drawStringWithShadow(boostLevel + " / 20", leftPos, topPos, color);
+            if (percentageInt > 9) {
+                leftPos -= 5;
+            }
+            mc.fontRenderer.drawStringWithShadow(percentageInt + " / 100", leftPos, topPos, color);
         }
     }
 
