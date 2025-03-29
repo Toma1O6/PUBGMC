@@ -1,5 +1,7 @@
 package dev.toma.pubgmc;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -101,6 +103,16 @@ public class DevUtil {
             }
         }
         return total;
+    }
+
+    public static boolean hasItem(Item item, IInventory inventory) {
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack itemStack = inventory.getStackInSlot(i);
+            if (itemStack.getItem() == item && itemStack.getCount() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static {

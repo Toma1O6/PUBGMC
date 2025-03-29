@@ -30,25 +30,25 @@ public class PlayerReloadInfo implements ReloadInfo {
             EntityPlayer player = data.getPlayer();
             ItemStack stack = player.getHeldItemMainhand();
             int slot = player.inventory.currentItem;
-            if (stack.getItem() instanceof GunBase) {
-                GunBase gun = (GunBase) stack.getItem();
-                if (slot != reloadingSlot || !ItemStack.areItemsEqual(this.reloadingItem, stack)) {
-                    interrupt();
-                    return;
-                }
-                if (--reloadingTime < 0) {
-                    IReloader reloader = gun.getReloader();
-                    boolean finished = reloader.finishCycle(gun, stack, player);
-                    if (finished) {
-                        reloading = false;
-                        reloadingItem = ItemStack.EMPTY;
-                    } else {
-                        reloadingTime = reloader.getReloadTime(gun, stack);
-                    }
-                    data.sync();
-                }
-            } else {
+            if (!(stack.getItem() instanceof GunBase)) {
                 interrupt();
+                return;
+            }
+            GunBase gun = (GunBase) stack.getItem();
+            if (slot != reloadingSlot || !ItemStack.areItemsEqual(this.reloadingItem, stack)) {
+                interrupt();
+                return;
+            }
+            if (--reloadingTime < 0) {
+                IReloader reloader = gun.getReloader();
+                boolean finished = reloader.finishCycle(gun, stack, player);
+                if (finished) {
+                    reloading = false;
+                    reloadingItem = ItemStack.EMPTY;
+                } else {
+                    reloadingTime = reloader.getReloadTime(gun, stack);
+                }
+                data.sync();
             }
         }
     }

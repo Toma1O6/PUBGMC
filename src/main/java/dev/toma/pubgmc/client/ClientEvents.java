@@ -28,7 +28,6 @@ import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.*;
-import dev.toma.pubgmc.common.items.guns.AmmoType;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -83,7 +82,7 @@ public class ClientEvents {
             EntityEquipmentSlot.CHEST
     };
 
-    private final WeaponCooldownTracker tracker = new WeaponCooldownTracker();
+    private final WeaponCooldownTracker cooldownTracker = new WeaponCooldownTracker();
     private int shotsFired;
     private boolean shooting;
     private int shootingTimer;
@@ -358,35 +357,19 @@ public class ClientEvents {
             ReloadInfo reloadInfo = data.getReloadInfo();
             if (stack.getItem() instanceof GunBase) {
                 GunBase gun = (GunBase) stack.getItem();
+                IReloader reloader = gun.getReloader();
                 if (reloadInfo.isReloading()) {
-                    IReloader reloader = gun.getReloader();
-                    if (reloader.canInterrupt(gun, stack)) {
-                        reloadInfo.setReloading(false);
-                        PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
-                        AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                    if (!reloader.canInterrupt(gun, stack)) {
                         return;
                     }
-                }
-                if (stack.hasTagCompound()) {
-                    int ammo = gun.getAmmo(stack);
-                    AmmoType type = gun.getAmmoType();
-                    if (ammo < gun.getWeaponAmmoLimit(stack)) {
-                        boolean hasAmmo = IReloader.isFreeReload(player);
-                        if (!hasAmmo) {
-                            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                                ItemStack ammoStack = player.inventory.getStackInSlot(i);
-                                if (!ammoStack.isEmpty() && ammoStack.getItem() == type.ammo()) {
-                                    hasAmmo = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (hasAmmo && !reloadInfo.isReloading()) {
-                            AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
-                            reloadInfo.startReload(player, gun, stack);
-                            PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
-                        }
-                    }
+                    reloadInfo.setReloading(false);
+                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
+                    AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                    return;
+                } else if (stack.hasTagCompound() && reloader.canReload(player, gun, stack)) {
+                    AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
+                    reloadInfo.startReload(player, gun, stack);
+                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
                 }
             }
         }
@@ -442,59 +425,63 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getMinecraft();
         GameSettings gs = mc.gameSettings;
         EntityPlayerSP player = mc.player;
-        if (player != null && !player.isSpectator()) {
-            ItemStack stack = player.getHeldItemMainhand();
-            if (stack.getItem() instanceof GunBase) {
-                GunBase gun = (GunBase) stack.getItem();
-                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
-                if (isEquipAnimationDone(mc)) {
-                    if (gs.keyBindAttack.isPressed()) {
-                        if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
-                            if (!isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
-                                if (gun.hasAmmo(stack)) {
-                                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketShoot());
-                                    tracker.add(gun);
-                                    if (gun.getAction() != null) {
-                                        Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 20);
-                                        if (gun.getGunType() == GunBase.GunType.SR) {
-                                            setAiming(data, false);
-                                        }
-                                    }
-                                    applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
-                                } else {
-                                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-                                }
-                            }
-                        } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
-                            if (!shooting && !isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
-                                if (gun.hasAmmo(stack)) {
-                                    shooting = true;
-                                    shotsFired = 0;
-                                } else {
-                                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
-                                }
-                            }
+        if (player == null || player.isSpectator()) {
+            return;
+        }
+        ItemStack stack = player.getHeldItemMainhand();
+        if (!(stack.getItem() instanceof GunBase)) {
+            return;
+        }
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        if (!isEquipAnimationDone(mc)) {
+            return;
+        }
+        GunBase gun = (GunBase) stack.getItem();
+        if (gs.keyBindAttack.isPressed()) {
+            if (interruptCurrentReloading(player, data, gun, stack) || cooldownTracker.isOnCooldown(gun)) {
+                return;
+            }
+            if (gun.getFiremode(stack) == GunBase.Firemode.SINGLE) {
+                if (gun.hasAmmo(stack)) {
+                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketShoot());
+                    cooldownTracker.add(gun);
+                    if (gun.getAction() != null) { //currently only has bolt action
+                        Pubgmc.proxy.playMCDelayedSound(gun.getAction().get(), player.posX, player.posY, player.posZ, 1.0F, 10);
+                        if (gun.getGunType() == GunBase.GunType.SR) {
+                            setAiming(data, false); //TODO add to firemode or holding aiming button
                         }
                     }
+                    applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
+                } else {
+                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                 }
-
-                //Aiming on RMB press
-                if (gs.keyBindUseItem.isPressed() && isEquipAnimationDone(mc)) {
-                    if (!data.getAimInfo().isAiming()) {
-                        player.setSprinting(false);
-                        RenderHandler.restoreAndSaveValues();
-                        ScopeZoom scopeData = gun.getScopeData(stack);
-                        if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
-                            gs.mouseSensitivity *= scopeData.getSensitivity(gun);
-                        }
-                        PacketHandler.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.AIM));
-                        AnimationDispatcher.dispatchAimAnimation(gun, stack);
-                    } else {
-                        RenderHandler.restore();
-                        PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.AIM));
-                    }
+            } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
+                if (shooting) {
+                    return;
+                }
+                if (gun.hasAmmo(stack)) {
+                    shooting = true;
+                    shotsFired = 0;
+                } else {
+                    player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                 }
             }
+        }
+        //Aiming on RMB press
+        else if (gs.keyBindUseItem.isPressed()) {
+            if (data.getAimInfo().isAiming()) {
+                RenderHandler.restore();
+                PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.AIM));
+                return;
+            }
+            player.setSprinting(false);
+            RenderHandler.restoreAndSaveValues();
+            ScopeZoom scopeData = gun.getScopeData(stack);
+            if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
+                gs.mouseSensitivity *= scopeData.getSensitivity(gun);
+            }
+            PacketHandler.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.AIM));
+            AnimationDispatcher.dispatchAimAnimation(gun, stack);
         }
     }
 
@@ -512,7 +499,7 @@ public class ClientEvents {
         }
 
         if (player != null && ev.phase == Phase.END && player.hasCapability(PlayerDataProvider.PLAYER_DATA, null)) {
-            tracker.tick(mc.isGamePaused());
+            cooldownTracker.tick(mc.isGamePaused());
             IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
             if (player.getRidingEntity() instanceof IControllable && player.getRidingEntity().getControllingPassenger() == player) {
                 IControllable controllable = (IControllable) player.getRidingEntity();
@@ -524,11 +511,11 @@ public class ClientEvents {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (!player.isSpectator() && stack.getItem() instanceof GunBase) {
                     GunBase gun = (GunBase) stack.getItem();
-                    if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !isReloading(player, data, gun, stack) && !tracker.isOnCooldown(gun)) {
+                    if (gun.getFiremode(stack) == GunBase.Firemode.AUTO && !interruptCurrentReloading(player, data, gun, stack) && !cooldownTracker.isOnCooldown(gun)) {
                         if (gun.hasAmmo(stack)) {
                             PacketHandler.INSTANCE.sendToServer(new C2S_PacketShoot());
                             this.applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
-                            tracker.add(gun);
+                            cooldownTracker.add(gun);
                         } else {
                             player.playSound(PMCSounds.gun_noammo, 4f, 1f);
                         }
@@ -602,22 +589,23 @@ public class ClientEvents {
         }
     }
 
-    private boolean isReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
+    private boolean interruptCurrentReloading(EntityPlayer player, IPlayerData data, GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
         ReloadInfo info = data.getReloadInfo();
-        if (info.isReloading()) {
-            if (reloader.canInterrupt(gun, stack)) {
-                info.setReloading(false);
-                PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
-                AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
-                return false;
-            }
+        if (!info.isReloading()) {
+            return false;
+        }
+        if (!reloader.canInterrupt(gun, stack)) {
             return true;
         }
+        info.setReloading(false);
+        PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
+        AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
         return false;
     }
 
     private void applyRecoil(EntityPlayer player, ItemStack stack, GunBase gun, boolean aiming) {
+        //TODO improve
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         ItemGrip grip = gun.getAttachment(AttachmentType.GRIP, stack);
         CFGWeapons config = ConfigPMC.guns();
