@@ -91,7 +91,7 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
         scarl = configCreator.createObject(new CFGWeapon("Scar-L", 8.4f, 32.625f, 0.022f, 1,2,0.168f,6.291f), plugin);
         qbz = configCreator.createObject(new CFGWeapon("QBZ", 8.4f, 34.875f, 0.021f, 1,2,0.18f,6.295f), plugin);
         g36c = configCreator.createObject(new CFGWeapon("G36C", 8.2f, 33.0f, 0.022f, 1,2,0.167f,6.145f), plugin);
-        aug = configCreator.createObject(new CFGWeapon("AUG A3", 11.7f, 34.688f, 0.021f, 1,2,0.189f,6.595f), plugin);
+        aug = configCreator.createObject(new CFGWeapon("AUG A3", 8.8f, 34.688f, 0.021f, 1,2,0.189f,6.595f), plugin);
         akm = configCreator.createObject(new CFGWeapon("AKM", 8.6f, 26.813f, 0.027f, 1,2,0.24f,6.438f), plugin);
         m762 = configCreator.createObject(new CFGWeapon("Beryl M762", 8.8f, 27.75f, 0.026f, 1,2,0.261f,6.6f), plugin);
         mk47 = configCreator.createObject(new CFGWeapon("MK-47 Mutant", 9.8f, 29.25f, 0.025f, 1,3,0.238f,7.345f), plugin);
