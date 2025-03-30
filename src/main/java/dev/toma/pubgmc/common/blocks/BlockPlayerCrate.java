@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.tileentity.TileEntityPlayerCrate;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.SoundType;
@@ -96,6 +98,8 @@ public class BlockPlayerCrate extends PMCBlock {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!playerIn.isSneaking() && !worldIn.isRemote) {
+            IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.getAimInfo().setAiming(false, 1.0F);
             playerIn.openGui(Pubgmc.instance, GuiHandler.GUI_CRATE, worldIn, pos.getX(), pos.getY(), pos.getZ());
         }
 

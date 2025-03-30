@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.api.block.IBulletReaction;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.init.PMCBlocks;
 import net.minecraft.block.material.Material;
@@ -95,6 +97,8 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
+            IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.getAimInfo().setAiming(false, 1.0F);
             boolean b = !state.getValue(FEEDBACK);
             EnumFacing facing1 = state.getValue(UPPER) ? EnumFacing.DOWN : EnumFacing.UP;
             worldIn.setBlockState(pos, state.withProperty(FEEDBACK, b));
