@@ -102,13 +102,18 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
         if (!(entityIn instanceof EntityPlayer)) return;
         if (!worldIn.isRemote) {
             if (this.isCooking(stack)) {
-                int timeLeft = this.maxFuse - this.getFuseTime(stack);
-                if (timeLeft < 0) {
-                    this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, (EntityPlayer) entityIn, timeLeft, EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
-                    ((EntityPlayer) entityIn).inventory.removeStackFromSlot(itemSlot);
-                    return;
+                if (isSelected) {
+                    int timeLeft = this.maxFuse - this.getFuseTime(stack);
+                    if (timeLeft < 0) {
+                        this.explodeableItemAction.onRemoveFromInventory(stack, worldIn, (EntityPlayer) entityIn, timeLeft, EntityThrowableExplodeable.EnumEntityThrowState.FORCED);
+                        ((EntityPlayer) entityIn).inventory.removeStackFromSlot(itemSlot);
+                        return;
+                    }
+                    stack.getTagCompound().setInteger("currentFuse", this.getFuseTime(stack) + 1);
+                } else {
+                    stack.getTagCompound().setInteger("currentFuse", 0);
+                    stack.getTagCompound().setBoolean("isCooking", false);
                 }
-                stack.getTagCompound().setInteger("currentFuse", this.getFuseTime(stack) + 1);
             }
         }
     }
