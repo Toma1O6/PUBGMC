@@ -171,9 +171,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             WorldServer worldServer = (WorldServer) world;
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
             Supplier<EntityPlane> planeProvider = () -> {
-                EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, 1200);
+                EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, configuration.flightPathRatio, configuration.adjustPlaneSpeed);
+                plane.setSpeed(configuration.planeSpeed);
                 plane.setFlightDelay(configuration.planeFlightDelay);
-                plane.setMovementSpeedMultiplier(configuration.planeSpeed);
                 plane.setFlightHeight(configuration.planeFlightHeight);
                 return plane;
             };

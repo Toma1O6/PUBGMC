@@ -292,7 +292,7 @@ public final class GameHelper {
     }
 
     // Doesn't actually spawn the plane
-    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, Playzone playzone, int approximateFlightTime) {
+    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, Playzone playzone, double minPathRatio, boolean adjustSpeed) {
         Position2 min = playzone.getPositionMin(1.0F);
         Position2 max = playzone.getPositionMax(1.0F);
         Position2 startPos;
@@ -300,9 +300,6 @@ public final class GameHelper {
         double xDiff = max.getX() - min.getX();
         double zDiff = max.getZ() - min.getZ();
         double borderPerimeter = 2 * (xDiff + zDiff);
-        double baseMinPathRatio = 5/16f;
-        // Maybe should add to config
-        // Recommend min:5/16, max:7/16; actually allowed config: [4/16, 8/16]
         Random random = world.rand;
 
         double startRatioOnBorder = random.nextDouble();
@@ -311,7 +308,7 @@ public final class GameHelper {
         // Exponential decay function to normalize start position based on distance from the center of the border
         double normalizedStartPos = 1 - Math.exp(-1.5 * Math.abs((startDistance % (borderPerimeter / 2)) - (borderPerimeter / 4)) / (borderPerimeter / 4));
         // Dynamically adjust the minimum path ratio based on normalized start position, ranging from 0.95 to 1.0
-        double adjustedMinPathRatio = baseMinPathRatio * (0.95 + 0.05 * normalizedStartPos);
+        double adjustedMinPathRatio = minPathRatio * (0.95 + 0.05 * normalizedStartPos);
         // Calculate the travel distance along the border based on the adjusted minimum path ratio and a random factor
         double travelDistanceOnBorder = borderPerimeter * (adjustedMinPathRatio + ((1.0 - adjustedMinPathRatio) - adjustedMinPathRatio) * random.nextDouble());
 
@@ -320,17 +317,19 @@ public final class GameHelper {
         startPos = getPositionOnBorder(min, max, startDistance, xDiff, zDiff);
         endPos = getPositionOnBorder(min,max, endDistance, xDiff, zDiff);
 
-        double flightPathLength = startPos.length(endPos);
-        float movementSpeed = (float) (flightPathLength / approximateFlightTime);
         EntityPlane plane = new EntityPlane(world);
+        if (adjustSpeed) {
+            double flightPathLength = startPos.length(endPos);
+            plane.setSpeedMultipler( (float) (2 * flightPathLength / (xDiff + zDiff)) );
+        } else {
+            plane.setSpeedMultipler(1.0f);
+        }
         plane.assignGameId(gameId);
         plane.setPath(startPos, endPos);
-        plane.setMovementSpeed(movementSpeed);
         return plane;
     }
 
     private static Position2 getPositionOnBorder(Position2 min, Position2 max, double distance, double xDiff, double zDiff) {
-        double borderLength = 2 * (xDiff + zDiff);
         if (distance < xDiff) {
             return new Position2(min.getX() + distance, min.getZ());
         }

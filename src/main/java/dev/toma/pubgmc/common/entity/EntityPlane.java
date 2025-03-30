@@ -24,8 +24,11 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
     private int flightHeight = 256;
     private Position2 from = Position2.ORIGIN;
     private Position2 to = Position2.ORIGIN;
-    private float movementSpeed;
-    private float movementSpeedMultiplier;
+    private float speed = 1.0f;
+    private float speedMultipler = 1.0f;
+    private float flightSpeed = 1.0f;
+    private boolean preparedHeading = false;
+    private boolean preparedMotion = false;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityPlane(World world) {
@@ -39,6 +42,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         this.to = Objects.requireNonNull(to);
         recalculatePosition();
         updateHeading();
+        preparedHeading = true;
     }
 
     public void setFlightDelay(int flightDelay) {
@@ -50,12 +54,13 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         recalculatePosition();
     }
 
-    public void setMovementSpeed(float movementSpeed) {
-        this.movementSpeed = movementSpeed;
+    public void setSpeed(float planeSpeed) {
+        this.speed = planeSpeed;
+        this.flightSpeed = this.speed * this.speedMultipler;
     }
-
-    public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
-        this.movementSpeedMultiplier = movementSpeedMultiplier;
+    public void setSpeedMultipler(float multipler) {
+        this.speedMultipler = multipler;
+        this.flightSpeed = this.speed * this.speedMultipler;
     }
 
     @Override
@@ -111,11 +116,12 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         }
 
         if (flightDelay <= 0) {
-            updateHeading();
-            Vec3d look = getLookVec();
-            motionX = look.x * movementSpeed * movementSpeedMultiplier;
-            motionZ = look.z * movementSpeed * movementSpeedMultiplier;
-
+            if (!preparedMotion) {
+                Vec3d look = getLookVec();
+                motionX = look.x * flightSpeed;
+                motionZ = look.z * flightSpeed;
+                preparedMotion = true;
+            }
             move(MoverType.SELF, motionX, motionY, motionZ);
         } else {
             --flightDelay;
@@ -152,8 +158,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         compound.setInteger("flightHeight", flightHeight);
         compound.setTag("fromDest", from.toNbt());
         compound.setTag("toDest", to.toNbt());
-        compound.setFloat("flightMovementSpeed", movementSpeed);
-        compound.setFloat("flightMovementSpeedMultiplier", movementSpeedMultiplier);
+        compound.setFloat("flighttSpeed", flightSpeed);
         compound.setUniqueId("gameId", gameId);
     }
 
@@ -163,8 +168,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         flightHeight = compound.getInteger("flightHeight");
         from = new Position2(compound.getCompoundTag("fromDest"));
         to = new Position2(compound.getCompoundTag("toDest"));
-        movementSpeed = compound.getFloat("flightMovementSpeed");
-        movementSpeedMultiplier = compound.getFloat("flightMovementSpeedMultiplier");
+        flightSpeed = compound.getFloat("flightspeed");
         gameId = compound.getUniqueId("gameId");
     }
 

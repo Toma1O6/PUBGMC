@@ -17,7 +17,9 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     public GameWorldConfiguration worldConfiguration = new GameWorldConfiguration();
     public boolean automaticGameJoining = true;
     public int teamSize = 4;
-    public float planeSpeed = 0.667F;
+    public float planeSpeed = 4.445F;
+    public boolean adjustPlaneSpeed = true;
+    public float flightPathRatio = 5/16f;
     public int planeFlightDelay = 100;
     public int planeFlightHeight = 255;
     public int playzoneGenerationDelay = 1800;
@@ -43,7 +45,8 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
     @Override
     public void performCorrections() {
         teamSize = Math.max(1, teamSize);
-        planeSpeed = MathHelper.clamp(planeSpeed, 0.1F, 10.0F);
+        planeSpeed = MathHelper.clamp(planeSpeed, 0.1F, 20.0F); // 20 is 400 blocks per seconds
+        flightPathRatio = MathHelper.clamp(flightPathRatio, 4/16F, 8/16F);
         planeFlightDelay = Math.max(0, planeFlightDelay);
         planeFlightHeight = MathHelper.clamp(planeFlightHeight, 15, 270);
         playzoneGenerationDelay = Math.max(0, playzoneGenerationDelay);
@@ -58,6 +61,8 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         writer.writeInt("teamSize", teamSize);
         writer.writeInt("playzoneGenerationDelay", playzoneGenerationDelay);
         writer.writeFloat("planeSpeed", planeSpeed);
+        writer.writeBoolean("adjustPlaneSpeed", adjustPlaneSpeed);
+        writer.writeFloat("flightPathRatio", flightPathRatio);
         writer.writeInt("planeFlightDelay", planeFlightDelay);
         writer.writeInt("planeFlightHeight", planeFlightHeight);
         writer.writeInt("entityCount", entityCount);
@@ -76,6 +81,8 @@ public class BattleRoyaleGameConfiguration implements TeamGameConfiguration {
         configuration.teamSize = reader.readInt("teamSize", configuration.teamSize);
         configuration.playzoneGenerationDelay = reader.readInt("playzoneGenerationDelay", configuration.playzoneGenerationDelay);
         configuration.planeSpeed = reader.readFloat("planeSpeed", configuration.planeSpeed);
+        configuration.adjustPlaneSpeed = reader.readBoolean("adjustPlaneSpeed", configuration.adjustPlaneSpeed);
+        configuration.flightPathRatio = reader.readFloat("flightPathRatio", configuration.flightPathRatio);
         configuration.planeFlightDelay = reader.readInt("planeFlightDelay", configuration.planeFlightDelay);
         configuration.planeFlightHeight = reader.readInt("planeFlightHeight", configuration.planeFlightHeight);
         configuration.entityCount = reader.readInt("entityCount", configuration.entityCount);
