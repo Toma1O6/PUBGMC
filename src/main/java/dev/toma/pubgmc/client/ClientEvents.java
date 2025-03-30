@@ -631,14 +631,19 @@ public class ClientEvents {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
+        int boost = stats.getBoost();
+        int boostLevel = stats.getBoostLevel();
+        int boostLimit = stats.getBoostLimit();
+        float percentage = boostLimit != 0f ? (float)boost / boostLimit : 0f;
 
         // Image style
         if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
             CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgBoostOverlayPos;
             short barWidth = 182;
-            float singleWidth = 182/100.0f;
+            short barHight = 3;
+            float singleWidth = barWidth/100.0f;
             int leftPos = width / 2 - barWidth / 2 + overlayPos.getX();
-            int topPos = height - 32 + 4 + overlayPos.getY();
+            int topPos = height - 31 + barHight + overlayPos.getY();
 
             float barLevel1End = barWidth * stats.getLevelPercentage(1);
             float barLevel1Limit = barLevel1End - singleWidth;
@@ -654,9 +659,6 @@ public class ClientEvents {
             ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + barLevel2Limit, topPos + barHight, 0.526F, 0.526F, 0.526F, 0.3F); // #868686 134,134,134
             ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + barLevel3Limit, topPos + barHight, 0.491F, 0.491F, 0.491F, 0.3F); // #7d7d7d 125,125,125
             ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + barLevel4Limit, topPos + barHight, 0.455F, 0.455F, 0.455F, 0.3F); // #747474 116,116,116
-
-            int boostLevel = stats.getBoostLevel();
-            float percentage = (float)stats.getBoost() / stats.getBoostLimit();
 
             if (boostLevel <= 0) return;
             // level 1
@@ -686,8 +688,7 @@ public class ClientEvents {
             int leftPos = width / 2 + 40 + overlayPos.getX();
             int topPos = height - 49 + overlayPos.getY();
             int color;
-            int boost = data.getBoostStats().getBoost();
-            int boostLevel = data.getBoostStats().getBoostLevel();
+
             switch (boostLevel) {
                 case 1: {
                     color = 15208997; break; // #e8c625 232,198,37
@@ -705,7 +706,7 @@ public class ClientEvents {
                     color = 12566463; break; // #bfbfbf 191,191,191
                 }
             }
-            int percentageInt = (int)( boost / (float)data.getBoostStats().getBoostLimit() ) * 100;
+            int percentageInt = (int)(percentage * 100);
             if (percentageInt > 99) {
                 leftPos -= 5;
             }

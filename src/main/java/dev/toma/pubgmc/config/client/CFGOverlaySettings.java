@@ -41,8 +41,8 @@ public final class CFGOverlaySettings extends ObjectType {
         ffaOverlays = configCreator.createObject(new FFAOverlays(plugin), plugin);
         dominationOverlays = configCreator.createObject(new DominationOverlays(plugin), plugin);
         imageBoostOverlay = configCreator.createEnum("Boost Overlay", CFGEnumOverlayStyle.IMAGE, "Changes boost overlay render style");
-        textBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Text Overlay Coords"), plugin);
-        imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Image Overlay Coords"), plugin);
+        textBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Boost Text Overlay Coords"), plugin);
+        imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Boost Image Overlay Coords"), plugin);
         imgNewHealthBarOverlayPos = configCreator.createObject(new CFG2DCoords("New Health Bar Coords", "This will also hide food bar"), plugin);
         equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
