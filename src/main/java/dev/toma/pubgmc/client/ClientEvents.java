@@ -217,18 +217,27 @@ public class ClientEvents {
         ItemStack stack = sp.getHeldItemMainhand();
         IPlayerData data = sp.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         boolean isFirstPersonView = mc.gameSettings.thirdPersonView == 0;
+        // Crosshairs
         if (e.getType() == ElementType.CROSSHAIRS && isFirstPersonView) {
             if (!ConfigPMC.client.overlays.renderGunCrosshairs.get() || data.getAimInfo().isAiming()) {
                 e.setCanceled(true);
             }
         }
-
-        if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE) {
-            if (e.getType() == ElementType.EXPERIENCE || e.getType() == ElementType.FOOD) {
-                if (!ConfigPMC.client.overlays.renderStatusBars.get()) {
-                    // if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty())
-                    e.setCanceled(true);
-                }
+        // Experience and Food bar
+        // if (ConfigPMC.client.overlays.imageBoostOverlay.get() == CFGEnumOverlayStyle.IMAGE)
+        if (e.getType() == ElementType.EXPERIENCE || e.getType() == ElementType.FOOD) {
+            if (!ConfigPMC.client.overlays.renderStatusBars.get()) { // The game will automatically replenish saturation and no experience bar required
+                // if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty())
+                e.setCanceled(true);
+            } else if (ConfigPMC.client.overlays.renderNewHealthBar.get()) {
+                e.setCanceled(true);
+            }
+        }
+        // Health bar
+        if (e.getType() == ElementType.HEALTH) {
+            if (ConfigPMC.client.overlays.renderNewHealthBar.get()) {
+                e.setCanceled(true);
+                renderNewHealthBar();
             }
         }
 
@@ -641,10 +650,10 @@ public class ClientEvents {
             float barLevel4Limit = barLevel4End;
 
             // Transparent background
-            ImageUtil.drawShape(leftPos, topPos, leftPos + barLevel1Limit, topPos + 3, 0.577F, 0.577F, 0.577F, 0.3F); // #939393 147,147,147
-            ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + barLevel2Limit, topPos + 3, 0.526F, 0.526F, 0.526F, 0.3F); // #868686 134,134,134
-            ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + barLevel3Limit, topPos + 3, 0.491F, 0.491F, 0.491F, 0.3F); // #7d7d7d 125,125,125
-            ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + barLevel4Limit, topPos + 3, 0.455F, 0.455F, 0.455F, 0.3F); // #747474 116,116,116
+            ImageUtil.drawShape(leftPos, topPos, leftPos + barLevel1Limit, topPos + barHight, 0.577F, 0.577F, 0.577F, 0.3F); // #939393 147,147,147
+            ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + barLevel2Limit, topPos + barHight, 0.526F, 0.526F, 0.526F, 0.3F); // #868686 134,134,134
+            ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + barLevel3Limit, topPos + barHight, 0.491F, 0.491F, 0.491F, 0.3F); // #7d7d7d 125,125,125
+            ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + barLevel4Limit, topPos + barHight, 0.455F, 0.455F, 0.455F, 0.3F); // #747474 116,116,116
 
             int boostLevel = stats.getBoostLevel();
             float percentage = (float)stats.getBoost() / stats.getBoostLimit();
@@ -652,19 +661,19 @@ public class ClientEvents {
             if (boostLevel <= 0) return;
             // level 1
             float boost1 = Math.min(percentage * barWidth, barLevel1Limit);
-            ImageUtil.drawShape(leftPos, topPos, leftPos + boost1, topPos+3, 0.91F, 0.78F, 0.146F, 0.8F); // #e8c625 232,198,37
+            ImageUtil.drawShape(leftPos, topPos, leftPos + boost1, topPos+barHight, 0.91F, 0.78F, 0.146F, 0.8F); // #e8c625 232,198,37
             if (boostLevel <= 1) return;
             // level 2
             float boost2 = Math.min(percentage * barWidth, barLevel2Limit);
-            ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + boost2, topPos+3, 0.883F, 0.64F, 0.11F, 0.8F); // #e1a31c 225,163,28
+            ImageUtil.drawShape(leftPos + barLevel1End, topPos, leftPos + boost2, topPos+barHight, 0.883F, 0.64F, 0.11F, 0.8F); // #e1a31c 225,163,28
             if (boostLevel <= 2) return;
             // level 3
             float boost3 = Math.min(percentage * barWidth, barLevel3Limit);
-            ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + boost3, topPos+3, 0.844F, 0.514F, 0.12F, 0.8F); // #d7831e 215,131,30
+            ImageUtil.drawShape(leftPos + barLevel2End, topPos, leftPos + boost3, topPos+barHight, 0.844F, 0.514F, 0.12F, 0.8F); // #d7831e 215,131,30
             if (boostLevel <= 3) return;
             // level 4
             float boost4 = Math.min(percentage * barWidth, barLevel4Limit);
-            ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + boost4, topPos+3, 0.832F, 0.436F, 0.087F, 0.8F); // #d46f16 212,111,22
+            ImageUtil.drawShape(leftPos + barLevel3End, topPos, leftPos + boost4, topPos+barHight, 0.832F, 0.436F, 0.087F, 0.8F); // #d46f16 212,111,22
         }
         // Text style
         else {
@@ -707,6 +716,43 @@ public class ClientEvents {
         }
     }
 
+    private static void renderNewHealthBar() {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+        CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgNewHealthBarOverlayPos;
+        short barWidth = 182;
+        short barHeight = 9;
+        int leftPos = width / 2 - barWidth / 2 + overlayPos.getX();
+        int topPos = height - 50 + barHeight + overlayPos.getY();
+
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayerSP sp = mc.player;
+        float healthLeft = sp.getHealth() + sp.getAbsorptionAmount();
+
+        for (int raw = 0; healthLeft > 0; raw++, healthLeft -= 20) { // for health over 20
+            int topPosAdjust = raw * (barHeight + 2);
+            int curTopPos = topPos - topPosAdjust;
+            float health = healthLeft <= 20 ? healthLeft : 20;
+            float percentage = health / 20f;
+            // Transparent background
+            ImageUtil.drawShape(leftPos, curTopPos, leftPos+barWidth, curTopPos + barHeight, 0.197f, 0.197f, 0.197f, 0.3f); // #323232 50,50,50
+            if (raw == 0 && percentage < 0.75f) {
+                float split75 = barWidth * 0.75f;
+                ImageUtil.drawShape(leftPos + barWidth * percentage, curTopPos, leftPos+split75, curTopPos + barHeight, 0.346f, 0.346f, 0.346f, 0.3f); // #585858 88,88,88
+            }
+            // health
+            if (raw == 0 && percentage < 0.25f) { // red
+                ImageUtil.drawShape(leftPos, curTopPos, leftPos + barWidth * percentage, curTopPos + barHeight, 0.863f, 0.34f, 0.291f, 0.8f); // #dc564a 220,86,74
+            } else if (raw == 0 && percentage < 0.5f) { // yellow
+                ImageUtil.drawShape(leftPos, curTopPos, leftPos + barWidth * percentage, curTopPos + barHeight, 0.98f, 0.895f, 0.648f, 0.8f); // #f9e4a5 249.228,165
+            } else if (percentage == 1.0f) { // grey
+                ImageUtil.drawShape(leftPos, curTopPos, leftPos + barWidth * percentage, curTopPos + barHeight, 0.648f, 0.648f, 0.648f, 0.8f); // #a5a5a5 165.165,165
+            } else { // white
+                ImageUtil.drawShape(leftPos, curTopPos, leftPos + barWidth * percentage, curTopPos + barHeight, 0.95f, 0.95f, 0.95f, 0.8f); // #f2f2f2 242,242,242
+            }
+        }
+    }
     private static void renderArmorIcons(RenderGameOverlayEvent.Pre e, EntityPlayer player, ScaledResolution res, Minecraft mc, IPlayerData data) {
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();

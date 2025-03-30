@@ -4,13 +4,15 @@ import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.type.IntType;
 import dev.toma.configuration.api.type.ObjectType;
 
+import java.util.HashMap;
+
 public class CFG2DCoords extends ObjectType {
 
     private IntType x;
     private IntType y;
 
-    public CFG2DCoords(String name) {
-        super(name);
+    public CFG2DCoords(String name, String... desc) {
+        super(name, desc);
     }
 
     @Override
