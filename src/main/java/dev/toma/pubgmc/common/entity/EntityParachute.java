@@ -50,30 +50,36 @@ public class EntityParachute extends EntityControllable {
             }
         }
         this.rotationYaw += turningSpeed;
-        if (isBeingRidden()) {
-            if (onGround || collided) {
-                Entity passenger = getControllingPassenger();
-                world.playSound(null, posX, posY, posZ, PMCSounds.chute_land, SoundCategory.MASTER, 1.0F, 1.0F);
-                if (passenger instanceof EntityLivingBase) {
-                    MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Land(this, (EntityLivingBase) passenger));
-                }
-                removePassengers();
-                return;
-            }
-            if (!isDeployed())
-                return;
-            this.fallDistance = 0.0F;
-            Vec3d look = this.getLookVec();
-            double x = look.x / 2;
-            double z = look.z / 2;
-            double speed = 1 + rotationPitch / 30.0F;
-            this.motionX = x;
-            this.motionY = -0.25 * speed;
-            this.motionZ = z;
-        } else {
+        if (!isBeingRidden()) {
             motionX = 0;
             motionY = 0;
             motionZ = 0;
+            return;
+        }
+        if (onGround || collided) {
+            Entity passenger = getControllingPassenger();
+            if (passenger instanceof EntityLivingBase) {
+                MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Land(this, (EntityLivingBase) passenger));
+            }
+            if (isBeingRidden()) { // ensure only trigger once before removePassengers()
+                world.playSound(null, posX, posY, posZ, PMCSounds.chute_land, SoundCategory.MASTER, 1.0F, 1.0F);
+            }
+            removePassengers();
+            return;
+        }
+
+        Vec3d look = this.getLookVec();
+        double x = look.x / 2;
+        double z = look.z / 2;
+        double speed = 1 + rotationPitch / 30.0F;
+        if (!isDeployed()) {
+            this.fallDistance *= 0.9f;
+            this.motionY = Math.min(this.motionY + 0.05f, -0.05f);
+        } else {
+            this.fallDistance = 0.0F;
+            this.motionX = x;
+            this.motionY = Math.max(this.motionY - 0.05f, -0.25 * speed);
+            this.motionZ = z;
         }
     }
 
