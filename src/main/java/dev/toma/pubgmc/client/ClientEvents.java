@@ -272,9 +272,9 @@ public class ClientEvents {
                     drawItemUseOverlay(sp, mc, res, e, stack);
                 }
             }
-        }
 
-        GameRendererManager.INSTANCE.renderCurrentGameHUDOverlay(e);
+            GameRendererManager.INSTANCE.renderCurrentGameHUDOverlay(e);
+        }
     }
 
     @SubscribeEvent

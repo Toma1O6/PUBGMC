@@ -347,7 +347,7 @@ commands.pubgmc.team.member_kick.team.reason=%s被踢出了你的队伍，原因
 
 pubgmc.game.won.label=大吉大利！今晚吃鸡！
 pubgmc.game.completed.label=游戏结束
-pubgmc.game.completed.winning_team=%s的队伍赢得了胜利！
+pubgmc.game.completed.winning_team=%s的队伍赢得胜利！
 pubgmc.game.airdrop_spawned.label=补给箱已刷新
 pubgmc.playzone.label=安全区 
 pubgmc.game.label.alive_players=生存 

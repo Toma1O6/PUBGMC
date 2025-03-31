@@ -36,42 +36,48 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
     }
 
     @Override
-    public boolean renderHudOverlay(EntityPlayer player, BattleRoyaleGame game, ScaledResolution resolution, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
-        if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
-            Minecraft minecraft = Minecraft.getMinecraft();
-            FontRenderer font = minecraft.fontRenderer;
-            BattleRoyaleOverlays overlays = ConfigPMC.client.overlays.battleRoyaleOverlays;
-            if (overlays.showTeamInformation.get()) {
-                CFG2DCoords pos = overlays.teamPanelPosition;
-                teamPanelRenderer.render(minecraft, game, pos.getX(), pos.getY() + resolution.getScaledHeight() - 50);
-            }
-            if (game.isStarted()) {
-                CFG2DCoords infoPos = overlays.gameInfoPanelPosition;
-                String zoneText = ZONE_LABEL.getFormattedText();
-                int zoneTextWidth = font.getStringWidth(zoneText);
-                font.drawStringWithShadow(zoneText, infoPos.getX() + 5, infoPos.getY() + 5, 0xFFFFFF);
-                boolean shrinking = game.isZoneShrinking();
-                int timeToShrinkStart = game.getRemainingTimeBeforeShrinking();
-                if (shrinking) {
-                    int timeToShrinkFinish = game.getRemainingTimeBeforeShrinkComplete();
-                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkFinish), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0xCC0000);
-                } else if (timeToShrinkStart >= 0) {
-                    DynamicPlayzone playzone = game.getPlayzone();
-                    DynamicPlayzone.ResizeTarget target = playzone.getTarget();
-                    boolean isWithin = target != null ? target.isWithinTargetArea(player.posX, player.posZ) : playzone.isWithin(player);
-                    int textColor = !isWithin ? 0xEEEE00 : 0x00CC00;
-                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkStart), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, textColor);
-                } else {
-                    font.drawStringWithShadow(" -", infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0x00CC00);
-                }
-                int playerCount = game.getAlivePlayerCount();
-                String playersText = PLAYERS.getFormattedText();
-                font.drawStringWithShadow(playersText, infoPos.getX() + 5, infoPos.getY() + 16, 0xFFFFFF);
-                font.drawStringWithShadow(" " + playerCount, infoPos.getX() + 5 + font.getStringWidth(playersText), infoPos.getY() + 16, 0x00FFFF);
-                CFG2DCoords dmPos = overlays.deathMessagesPosition;
-                game.getDeathMessageContainer().render(font, game, dmPos.getX() + 10, dmPos.getY() + 35, 11);
-            }
+    public boolean renderHudOverlay(EntityPlayer player, BattleRoyaleGame game, ScaledResolution res, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        FontRenderer font = minecraft.fontRenderer;
+        BattleRoyaleOverlays overlays = ConfigPMC.client.overlays.battleRoyaleOverlays;
+        if (overlays.showTeamInformation.get()) {
+            CFG2DCoords pos = overlays.teamPanelPosition;
+            teamPanelRenderer.render(minecraft, game, pos.getX(), pos.getY() + res.getScaledHeight() - 50);
         }
+        if (!game.isStarted()) {
+            return false;
+        }
+        // {Zone}:
+        CFG2DCoords infoPos = overlays.gameInfoPanelPosition;
+        String zoneText = ZONE_LABEL.getFormattedText();
+        int zoneTextWidth = font.getStringWidth(zoneText);
+        font.drawStringWithShadow(zoneText, infoPos.getX() + 4, infoPos.getY() + 4, 0xFFFFFF);
+        // Zone: {isShrinking}
+        boolean isShrinking = game.isZoneShrinking();
+        int shrinkDelayRemain = game.getShrinkDelayRemain();
+        if (isShrinking) { // Zone: {remaining shrinking time}
+            int shrinkTimeTotal = game.getShrinkTimeTotal();
+            int shrinkTimeRemain = game.getShrinkTimeRemain();
+            font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(shrinkTimeRemain), infoPos.getX() + 4 + zoneTextWidth, infoPos.getY() + 4, 0xCC0000);
+        } else if (shrinkDelayRemain >= 0) { // Zone: {time before shrink}
+            int shrinkDelayTotal = game.getShrinkDelayTotal();
+            DynamicPlayzone playzone = game.getPlayzone();
+            DynamicPlayzone.ResizeTarget target = playzone.getTarget();
+            boolean isWithin = target != null ? target.isWithinTargetArea(player.posX, player.posZ) : playzone.isWithin(player);
+            int textColor = !isWithin ? 0xEEEE00 : 0x00CC00;
+            font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(shrinkDelayRemain), infoPos.getX() + 4 + zoneTextWidth, infoPos.getY() + 4, textColor);
+        } else { // Zone: {initDelay}
+            int initDelayTotal = game.getInitDelayTotal();
+            int initDelayRemain = game.getInitDelayRemain();
+            font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(initDelayRemain), infoPos.getX() + 4 + zoneTextWidth, infoPos.getY() + 4, 0x888888);
+        }
+        // {Alive}: {total}
+        int playerCount = game.getAlivePlayerCount();
+        String playersText = PLAYERS.getFormattedText();
+        font.drawStringWithShadow(playersText, infoPos.getX() + 5, infoPos.getY() + 16, 0xFFFFFF);
+        font.drawStringWithShadow(" " + playerCount, infoPos.getX() + 5 + font.getStringWidth(playersText), infoPos.getY() + 16, 0x00FFFF);
+        CFG2DCoords dmPos = overlays.deathMessagesPosition;
+        game.getDeathMessageContainer().render(font, game, dmPos.getX() + 10, dmPos.getY() + 35, 11);
         return false;
     }
 

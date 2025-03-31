@@ -40,8 +40,8 @@ public final class GameRendererManager {
 
     public <G extends Game<?>> void renderCurrentGameHUDOverlay(RenderGameOverlayEvent.Pre event) {
         Minecraft minecraft = Minecraft.getMinecraft();
-        Profiler profiler = minecraft.mcProfiler;
         World world = minecraft.world;
+        Profiler profiler = minecraft.mcProfiler;
         profiler.startSection("pubgmc:game_hud");
         G game = getActiveGame(world);
         if (game != null) {
@@ -51,8 +51,8 @@ public final class GameRendererManager {
                 return;
             RenderGameOverlayEvent.ElementType elementType = event.getType();
             float partialTicks = event.getPartialTicks();
-            ScaledResolution resolution = event.getResolution();
-            if (renderer.renderHudOverlay(minecraft.player, game, resolution, elementType, partialTicks)) {
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+            if (renderer.renderHudOverlay(minecraft.player, game, res, elementType, partialTicks)) {
                 event.setCanceled(true);
             }
         }
