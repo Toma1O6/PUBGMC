@@ -9,6 +9,7 @@ import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DRatio;
 import dev.toma.pubgmc.config.client.game.BattleRoyaleOverlays;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -70,6 +71,10 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
         CFG2DRatio gameInfoPos = overlays.gameInfoPanelPos;
         float gameInfoX = centerX + halfWidth * (gameInfoPos.getX() + 0.75f); // default x +0.75 (→)
         float gameInfoY = centerY + halfHeight * (gameInfoPos.getY() - 0.1f); // default y -0.1 (↑）
+
+        // background
+        float gameInfoBarLength = halfWidth * 0.23f;
+
         // {Zone}:
         String zoneText = ZONE_LABEL.getFormattedText();
         font.drawStringWithShadow(zoneText, gameInfoX, gameInfoY, 0xFFFFFF);
@@ -80,18 +85,31 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
         if (isShrinking) { // Zone: {remaining shrinking time}
             int shrinkTimeTotal = game.getShrinkTimeTotal();
             int shrinkTimeRemain = game.getShrinkTimeRemain();
+            float percentage = 1 - (float)shrinkTimeRemain / shrinkTimeTotal;
+            int color = ConfigPMC.client.overlays.battleRoyaleOverlays.playzoneColor.getColor();
+            int r = (color >> 16) & 0xFF;
+            int g = (color >> 8) & 0xFF;
+            int b = (color) & 0xFF;
             font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(shrinkTimeRemain), gameInfoX + zoneTextWidth, gameInfoY, 0xCC0000);
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength, gameInfoY + 23, 0.197f, 0.197f, 0.197f, 0.1f); // #323232 50,50,50
+            ImageUtil.drawShape(gameInfoX + gameInfoBarLength * percentage, gameInfoY + 20, gameInfoX + gameInfoBarLength, gameInfoY + 23, 0.95f, 0.95f, 0.95f, 0.8f); // #f2f2f2 242,242,242
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength * percentage, gameInfoY + 23, r/255.0f, g/255.0f, b/255.0f, 0.8f);
         } else if (shrinkDelayRemain >= 0) { // Zone: {time before shrink}
             int shrinkDelayTotal = game.getShrinkDelayTotal();
+            float percentage = 1 - (float)shrinkDelayRemain / shrinkDelayTotal;
             DynamicPlayzone playzone = game.getPlayzone();
             DynamicPlayzone.ResizeTarget target = playzone.getTarget();
             boolean isWithin = target != null ? target.isWithinTargetArea(player) : playzone.isWithin(player);
             int textColor = !isWithin ? 0xEEEE00 : 0x00CC00;
             font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(shrinkDelayRemain), gameInfoX + zoneTextWidth, gameInfoY, textColor);
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength, gameInfoY + 23, 0.197f, 0.197f, 0.197f, 0.3f); // #323232 50,50,50
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength * percentage, gameInfoY + 23, 0.95f, 0.95f, 0.95f, 0.8f); // #f2f2f2 242,242,242
         } else { // Zone: {initDelay}
             int initDelayTotal = game.getInitDelayTotal();
             int initDelayRemain = game.getInitDelayRemain();
+            float percentage = 1 - (float) initDelayRemain / initDelayTotal;
             font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(initDelayRemain), gameInfoX + zoneTextWidth, gameInfoY, 0x888888);
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength * percentage, gameInfoY + 23, 0.197f, 0.197f, 0.197f, 0.3f); // #323232 50,50,50
         }
         // {Alive}: {total}
         int playerCount = game.getAlivePlayerCount();
