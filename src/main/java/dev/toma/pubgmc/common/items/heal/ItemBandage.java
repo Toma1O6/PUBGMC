@@ -22,8 +22,9 @@ public class ItemBandage extends ItemHealing {
 
     @Override
     public boolean canHeal(EntityLivingBase entity, ItemStack stack) {
-        int health = Math.round(entity.getHealth());
-        if (health >= 15) {
+        float healthLimit = entity.getMaxHealth();
+        float health = entity.getHealth();
+        if (health >= healthLimit * 0.75f) {
             if (entity instanceof EntityPlayer) {
                 ITextComponent message = new TextComponentTranslation(UNREACHED_THRESHOLD_KEY, "7.5");
                 message.getStyle().setColor(TextFormatting.RED);
@@ -36,7 +37,9 @@ public class ItemBandage extends ItemHealing {
 
     @Override
     public void heal(EntityLivingBase entity, ItemStack stack, World world) {
-        float toHeal = Math.min(2.0F, 15.0F - entity.getHealth());
+        float healthLimit = entity.getMaxHealth();
+        float health = entity.getHealth();
+        float toHeal = Math.min(2.0F, healthLimit * 0.75f - health);
         entity.heal(toHeal);
         if (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isCreative()) {
             stack.shrink(1);

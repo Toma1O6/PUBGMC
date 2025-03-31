@@ -22,8 +22,9 @@ public class ItemMedkit extends ItemHealing {
 
     @Override
     public boolean canHeal(EntityLivingBase entity, ItemStack stack) {
-        int health = Math.round(entity.getHealth());
-        if (health >= (int) entity.getMaxHealth()) {
+        float healthLimit = entity.getMaxHealth();
+        float health = entity.getHealth();
+        if (health >= healthLimit) {
             if (entity instanceof EntityPlayer) {
                 ITextComponent message = new TextComponentTranslation("message.pubgmc.healing.max_health");
                 message.getStyle().setColor(TextFormatting.RED);
@@ -36,7 +37,10 @@ public class ItemMedkit extends ItemHealing {
 
     @Override
     public void heal(EntityLivingBase entity, ItemStack stack, World world) {
-        entity.setHealth(entity.getMaxHealth());
+        float healthLimit = entity.getMaxHealth();
+        float health = entity.getHealth();
+        float toHeal = healthLimit - health;
+        entity.heal(toHeal);
         if (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isCreative()) {
             stack.shrink(1);
         }
