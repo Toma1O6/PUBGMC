@@ -87,6 +87,7 @@ public interface IReloader {
                     itemStack.shrink(fill);
                     space -= fill;
                     gun.setAmmo(stack, ammoInGun + fill);
+                    ammoInGun += fill;
                 }
                 if (space <= 0) break;
             }
@@ -138,6 +139,7 @@ public interface IReloader {
                     --space;
                     itemStack.shrink(1);
                     gun.setAmmo(stack, ammoInGun + 1);
+                    ammoInGun += 1;
                     if (space > 0) {
                         player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
                     }
