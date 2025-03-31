@@ -1,11 +1,15 @@
 package dev.toma.pubgmc.api.client.util;
 
+import dev.toma.pubgmc.api.capability.BoostStats;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.game.LivingGameEntity;
 import dev.toma.pubgmc.api.game.team.Team;
 import dev.toma.pubgmc.api.game.team.TeamGame;
 import dev.toma.pubgmc.api.game.team.TeamManager;
 import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,6 +18,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -102,11 +107,17 @@ public class TeamPanelRenderer {
             entity = entitiesById.get(member.getId());
         }
 
-        float healthLimit, absorptionHealth, normalHealth;
+        float healthLimit, absorptionHealth, normalHealth, boostPercentage = 0;
         if (entity != null) {
             healthLimit = entity.getMaxHealth();
             absorptionHealth = entity.getAbsorptionAmount();
             normalHealth = entity.getHealth();
+            IPlayerData data = entity.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            if (data != null) {
+                BoostStats boostStats = data.getBoostStats();
+                int boost = boostStats.getBoost();
+                boostPercentage = (float)boost / boostStats.getBoostLimit();
+            }
         } else {
             healthLimit = 20.0f;
             absorptionHealth = 0f;
@@ -138,9 +149,13 @@ public class TeamPanelRenderer {
             float splitPercentage = split75Left / healthLimit;
             ImageUtil.drawShape(x + width * percentage, y + 9, x + width * splitPercentage, y + 11, 0.346f, 0.346f, 0.346f, 0.3f); // #585858 88,88,88
         }
+        // Boost
+        if (boostPercentage > 0) {
+            ImageUtil.drawShape(x, y + 8, x + width * boostPercentage, y + 9, 0.934f, 0.757f, 0.095f, 0.8f); // #eec118 238,193,24
+        }
         // Entity name
         boolean renderShadow = false;
-        font.drawString(username.getFormattedText(), x, y + 1, alive ? 0xFFFFFF : 0x585858, renderShadow);
+        font.drawString(username.getFormattedText(), x, y , alive ? 0xFFFFFF : 0x585858, renderShadow);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 

@@ -48,6 +48,7 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
         float centerY = screenHeight / 2f;
         float halfHeight = centerY;
 
+        // Team Panel
         if (overlays.showTeamInformation.get()) {
             CFG2DRatio teamInfoPos = overlays.teamPanelPosition;
             float teamInfoX = centerX + halfWidth * (teamInfoPos.getX() - 0.95f); // default x -0.95 (←)
