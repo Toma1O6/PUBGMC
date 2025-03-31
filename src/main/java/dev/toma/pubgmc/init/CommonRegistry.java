@@ -289,7 +289,7 @@ public class CommonRegistry {
                 new ItemMagazine("extended_mag_sniper", true, false),
                 new ItemMagazine("extended_quickdraw_mag_sniper", true, true),
                 new ItemStock("bullet_loops", true, 1.0F),
-                new ItemStock("cheekpad", false, 0.8F),
+                new ItemStock("cheekpad", false, 1.25F),
                 new ItemParachute("parachute"),
                 new PMCItem("steel_dust"),
                 new PMCItem("steel_ingot"),
