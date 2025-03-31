@@ -728,45 +728,45 @@ public class ClientEvents {
 
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP sp = mc.player;
-        float LineLimit = ConfigPMC.client.overlays.imgNewHealthBarLimit.getAsFloat(); // may add to config
+        float lineLimit = ConfigPMC.client.overlays.imgNewHealthBarLimit.getAsFloat(); // may add to config
         float healthLimit = sp.getMaxHealth();
         float absorptionHealth = sp.getAbsorptionAmount();
-        float playerHealth = sp.getHealth();
+        float normalHealth = sp.getHealth();
 
-        float healthLeft = playerHealth + absorptionHealth;
+        float healthLeft = normalHealth + absorptionHealth;
         float healthLimitLeft = healthLimit + absorptionHealth;
         float split75Left = healthLimit * 0.75f + absorptionHealth;
         boolean renderSplit75 = healthLeft < split75Left;
         // color
         float r, g, b, a;
-        if (playerHealth < healthLimit * 0.25f) { // red
+        if (normalHealth < healthLimit * 0.25f) { // red
             r = 0.863f; g = 0.34f; b = 0.291f; a = 0.8f; // #dc564a 220,86,74
-        } else if (playerHealth < healthLimit * 0.5f) { // yellow
+        } else if (normalHealth < healthLimit * 0.5f) { // yellow
             r = 0.98f; g = 0.895f; b = 0.648f; a = 0.8f; // #f9e4a5 249.228,165
-        } else if (playerHealth < healthLimit) { // white
+        } else if (normalHealth < healthLimit) { // white
             r = 0.95f; g =0.95f; b = 0.95f; a = 0.8f; // #f2f2f2 242,242,242
         } else { // grey
             r = 0.648f; g = 0.648f; b = 0.648f; a = 0.8f; // #a5a5a5 165.165,165
         }
-        for (int raw = 0; healthLeft > 0 || healthLimit - raw*LineLimit >= 0; raw++) { // for health over 20, healthLimit doesn't include absorption health
+        for (int raw = 0; healthLeft > 0 || healthLimit - raw*lineLimit >= 0; raw++) { // for health over 20, healthLimit doesn't include absorption health
             int topPosAdjust = raw * (barHeight + 2);
             int curTopPos = topPos - topPosAdjust;
 
             // Transparent background
-            float barLimit = DevUtil.wrap(healthLimitLeft, 0, LineLimit);
-            float barPercentage = barLimit / LineLimit;
+            float barLimit = DevUtil.wrap(healthLimitLeft, 0, lineLimit);
+            float barPercentage = barLimit / lineLimit;
             ImageUtil.drawShape(leftPos, curTopPos, leftPos+barWidth*barPercentage, curTopPos + barHeight, 0.197f, 0.197f, 0.197f, 0.3f); // #323232 50,50,50
             healthLimitLeft -= barLimit;
             // health
-            float health = DevUtil.wrap(healthLeft, 0, LineLimit);
-            float percentage = health / LineLimit;
+            float health = DevUtil.wrap(healthLeft, 0, lineLimit);
+            float percentage = health / lineLimit;
             ImageUtil.drawShape(leftPos, curTopPos, leftPos + barWidth * percentage, curTopPos + barHeight, r, g, b, a);
             healthLeft -= health;
             // 75% health
             if (renderSplit75) {
                 if (split75Left > 0 && healthLeft < split75Left) {
-                    float split75 = Math.min(split75Left, LineLimit);
-                    float splitPercentage = split75 / LineLimit;
+                    float split75 = Math.min(split75Left, lineLimit);
+                    float splitPercentage = split75 / lineLimit;
                     ImageUtil.drawShape(leftPos + barWidth * percentage, curTopPos, leftPos + barWidth * splitPercentage, curTopPos + barHeight, 0.346f, 0.346f, 0.346f, 0.3f); // #585858 88,88,88
                     split75Left -= split75;
                 }
