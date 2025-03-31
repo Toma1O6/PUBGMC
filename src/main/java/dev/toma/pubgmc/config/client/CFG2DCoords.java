@@ -4,8 +4,6 @@ import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.type.IntType;
 import dev.toma.configuration.api.type.ObjectType;
 
-import java.util.HashMap;
-
 public class CFG2DCoords extends ObjectType {
 
     private IntType x;

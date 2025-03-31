@@ -50,6 +50,10 @@ public class TeamPanelRenderer {
     }
 
     public void render(Minecraft minecraft, TeamGame<?> teamGame, int x, int y) {
+        render(minecraft, teamGame, (float)x, (float)y);
+    }
+
+    public void render(Minecraft minecraft, TeamGame<?> teamGame, float x, float y) {
         Entity entity = minecraft.getRenderViewEntity();
         if (entity == null) {
             return;
@@ -85,6 +89,10 @@ public class TeamPanelRenderer {
     }
 
     private void renderMemberInformation(FontRenderer font, World world, Team team, Team.Member member, int x, int y, int width) {
+        renderMemberInformation(font, world, team, member, (float)x, (float)y, (float)width);
+    }
+
+    private void renderMemberInformation(FontRenderer font, World world, Team team, Team.Member member, float x, float y, float width) {
         boolean alive = team.isMember(member.getId());
         ITextComponent username = team.getUsername(member.getId());
         ImageUtil.drawShape(x, y, x + width, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
@@ -99,7 +107,8 @@ public class TeamPanelRenderer {
         }
         ImageUtil.drawShape(x, y + 13, x + width, y + 15, 0.0F, 0.0F, 0.0F, 0.4F);
         ImageUtil.drawShape(x, y + 13, x + (int) (width * health), y + 15, 1.0F, 1.0F, 1.0F, 1.0F);
-        font.drawString(username.getFormattedText(), x, y + 2, alive ? 0xFFFFFF : 0xFF0000);
+        boolean renderShadow = false;
+        font.drawString(username.getFormattedText(), x, y + 2, alive ? 0xFFFFFF : 0xFF0000, renderShadow);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 

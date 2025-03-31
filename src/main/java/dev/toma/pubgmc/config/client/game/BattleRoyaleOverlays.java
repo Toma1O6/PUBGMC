@@ -6,15 +6,16 @@ import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.ColorType;
 import dev.toma.configuration.api.type.ObjectType;
 import dev.toma.pubgmc.config.client.CFG2DCoords;
+import dev.toma.pubgmc.config.client.CFG2DRatio;
 
 public final class BattleRoyaleOverlays extends ObjectType {
 
     private final ConfigPlugin plugin;
 
-    public CFG2DCoords gameInfoPanelPosition;
-    public CFG2DCoords deathMessagesPosition;
+    public CFG2DRatio gameInfoPanelPos;
+    public CFG2DRatio deathMessagesPos;
     public BooleanType showTeamInformation;
-    public CFG2DCoords teamPanelPosition;
+    public CFG2DRatio teamPanelPosition;
     public ColorType playzoneColor;
 
     public BattleRoyaleOverlays(ConfigPlugin plugin) {
@@ -24,10 +25,10 @@ public final class BattleRoyaleOverlays extends ObjectType {
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
-        gameInfoPanelPosition = configCreator.createObject(new CFG2DCoords("Game info panel"), plugin);
-        deathMessagesPosition = configCreator.createObject(new CFG2DCoords("Death messages panel"), plugin);
+        gameInfoPanelPos = configCreator.createObject(new CFG2DRatio("Game info panel position"), plugin);
+        deathMessagesPos = configCreator.createObject(new CFG2DRatio("Death messages panel"), plugin);
         showTeamInformation = configCreator.createBoolean("Show team information", true);
-        teamPanelPosition = configCreator.createObject(new CFG2DCoords("Team panel position"), plugin);
+        teamPanelPosition = configCreator.createObject(new CFG2DRatio("Team panel position"), plugin);
         playzoneColor = configCreator.createColorARGB("Playzone color", "#660033FF");
     }
 }

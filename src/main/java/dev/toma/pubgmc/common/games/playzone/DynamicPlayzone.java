@@ -5,6 +5,7 @@ import dev.toma.pubgmc.api.game.playzone.PlayzoneSerializer;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneType;
 import dev.toma.pubgmc.api.util.Position2;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -173,7 +174,9 @@ public class DynamicPlayzone extends AbstractDamagingPlayzone {
             return getAdjustedPosition(current, nextMax, this.getResizeProgress(partialTicks));
         }
 
-        public boolean isWithinTargetArea(double x, double z) {
+        public boolean isWithinTargetArea(EntityPlayer player) {
+            double x = player.posX;
+            double z = player.posZ;
             Position2 currentPos = new Position2(x, z);
             Position2 min = this.getAdjustedPosition(currentPos, nextMin, 1.0F);
             Position2 max = this.getAdjustedPosition(currentPos, nextMax, 1.0F);
