@@ -33,6 +33,7 @@ import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DCoords;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
+import dev.toma.pubgmc.config.client.CFGOverlaySettings;
 import dev.toma.pubgmc.config.common.CFGWeapons;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
@@ -727,7 +728,7 @@ public class ClientEvents {
 
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP sp = mc.player;
-        float LineLimit = 20.0f; // may add to config
+        float LineLimit = ConfigPMC.client.overlays.imgNewHealthBarLimit.getAsFloat(); // may add to config
         float healthLimit = sp.getMaxHealth();
         float absorptionHealth = sp.getAbsorptionAmount();
         float playerHealth = sp.getHealth();

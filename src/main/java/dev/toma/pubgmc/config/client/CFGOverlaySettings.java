@@ -2,10 +2,7 @@ package dev.toma.pubgmc.config.client;
 
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.ConfigPlugin;
-import dev.toma.configuration.api.type.BooleanType;
-import dev.toma.configuration.api.type.ColorType;
-import dev.toma.configuration.api.type.EnumType;
-import dev.toma.configuration.api.type.ObjectType;
+import dev.toma.configuration.api.type.*;
 import dev.toma.pubgmc.config.client.game.BattleRoyaleOverlays;
 import dev.toma.pubgmc.config.client.game.DominationOverlays;
 import dev.toma.pubgmc.config.client.game.FFAOverlays;
@@ -20,6 +17,7 @@ public final class CFGOverlaySettings extends ObjectType {
     public CFG2DCoords textBoostOverlayPos;
     public CFG2DCoords imgBoostOverlayPos;
     public CFG2DCoords imgNewHealthBarOverlayPos;
+    public DoubleType imgNewHealthBarLimit;
     public CFG2DCoords equipmentInventoryButtonPos;
     public BooleanType renderArmorIcons;
     public BooleanType renderGunCrosshairs;
@@ -44,6 +42,7 @@ public final class CFGOverlaySettings extends ObjectType {
         textBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Boost Text Overlay Coords"), plugin);
         imgBoostOverlayPos = configCreator.createObject(new CFG2DCoords("Boost Image Overlay Coords"), plugin);
         imgNewHealthBarOverlayPos = configCreator.createObject(new CFG2DCoords("New Health Bar Coords", "This will also hide food bar"), plugin);
+        imgNewHealthBarLimit = configCreator.createDouble("Maximum health in new health bar in a line", 20.0f, 5f ,100f);
         equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
         renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs in first person view", true);
