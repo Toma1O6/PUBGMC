@@ -321,10 +321,10 @@ public class ClientEvents {
             data.setProne(!data.isProne(), false);
             ReloadInfo reloadInfo = data.getReloadInfo();
             // if (data.getAimInfo().isAiming()) this.setAiming(data, false);
-            if (reloadInfo.isReloading()) {
-                reloadInfo.interrupt();
-                PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
-            }
+//            if (reloadInfo.isReloading()) {
+//                reloadInfo.interrupt();
+//                PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
+//            }
             PacketHandler.sendToServer(new C2S_PacketProneStatus(data.isProne()));
         }
         // Attachment menu
