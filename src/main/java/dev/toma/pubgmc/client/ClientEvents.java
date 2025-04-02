@@ -26,14 +26,13 @@ import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.items.ItemAmmo;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DCoords;
+import dev.toma.pubgmc.config.client.CFG2DRatio;
 import dev.toma.pubgmc.config.client.CFGEnumOverlayStyle;
-import dev.toma.pubgmc.config.client.CFGOverlaySettings;
 import dev.toma.pubgmc.config.common.CFGWeapons;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
@@ -51,6 +50,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
@@ -184,27 +184,33 @@ public class ClientEvents {
             ItemStack weaponStack = sp.getHeldItemMainhand();
             GunBase gun = (GunBase) weaponStack.getItem();
             mc.entityRenderer.setupOverlayRendering();
-            int x = 15;
-            int y = e.getResolution().getScaledHeight() - 15;
+
+            int screenWidth = res.getScaledWidth();
+            int screenHeight = res.getScaledHeight();
+            float centerX = screenWidth / 2f;
+            float halfWidth = centerX;
+            float centerY = screenHeight / 2f;
+            float halfHeight = centerY;
+
+            CFG2DRatio gunInfoPos = ConfigPMC.client.overlays.gunInfoPos;
+            float gunInfoPosX = centerX + halfWidth * (gunInfoPos.getX() - 0.95f);
+            float gunInfoPosY = centerY + halfHeight * (gunInfoPos.getY() + 0.87f);
             int totalCount = 0;
             boolean isFreeAmmo = IReloader.isFreeReload(mc.player);
+            String infinity = I18n.format("label.pubgmc.infinite");
             if (!isFreeAmmo) {
-                for (int i = 0; i < sp.inventory.getSizeInventory(); i++) {
-                    ItemStack stack = sp.inventory.getStackInSlot(i);
-                    if (stack.getItem() instanceof ItemAmmo) {
-                        ItemAmmo ammo = (ItemAmmo) stack.getItem();
-                        if (ammo.type == gun.getAmmoType()) {
-                            totalCount += stack.getCount();
-                        }
-                    }
-                }
+                Item ammoItem =  gun.getAmmoType().ammo();
+                totalCount = DevUtil.getItemCount(ammoItem, sp.inventory);
             }
             if (weaponStack.hasTagCompound()) {
-                int ammo = gun.getAmmo(weaponStack);
+                int ammoInGun = gun.getAmmo(weaponStack);
                 GunBase.Firemode firemode = gun.getFiremode(weaponStack);
-                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(weaponStack) + ": " + firemode.translatedName(), x, y - 9, 16777215);
-                String infinity = I18n.format("label.pubgmc.infinite");
-                mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD.toString() + ammo + TextFormatting.RESET + " | " + (isFreeAmmo ? infinity : totalCount), x, y, 16777215);
+                int ammoInGunColor = ammoInGun > 0 ? 16777215 : 16711680;
+                mc.fontRenderer.drawStringWithShadow(gun.getItemStackDisplayName(weaponStack) + ": " + firemode.translatedName(), gunInfoPosX, gunInfoPosY - 9, 16777215);
+                mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD.toString() + ammoInGun, gunInfoPosX, gunInfoPosY, ammoInGunColor);
+                if (totalCount > 0 || isFreeAmmo) {
+                    mc.fontRenderer.drawStringWithShadow("     | " + (isFreeAmmo ? infinity : totalCount), gunInfoPosX, gunInfoPosY, 16777215);
+                }
             }
         }
         renderVehicleOverlay(sp, mc, res, e);
