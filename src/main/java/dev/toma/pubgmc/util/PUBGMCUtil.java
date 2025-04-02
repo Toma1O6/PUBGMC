@@ -5,6 +5,7 @@ import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.capability.SpecialEquipmentSlot;
 import dev.toma.pubgmc.common.entity.EntityAirdrop;
+import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -73,6 +74,10 @@ public class PUBGMCUtil {
             EntityAirdrop drop = new EntityAirdrop(world, pos, bigDrop);
             drop.assignGameId(GameHelper.getGameUUID(world));
             world.spawnEntity(drop);
+            int x = pos.getX();
+            int y = pos.getY();
+            int z = pos.getZ();
+            world.playSound(null, x, y, z, PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);
         }
     }
 

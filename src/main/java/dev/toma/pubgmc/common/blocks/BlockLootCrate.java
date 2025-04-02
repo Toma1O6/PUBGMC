@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootCrate;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.material.Material;
@@ -65,6 +67,8 @@ public class BlockLootCrate extends PMCBlock {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
+            IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.getAimInfo().setAiming(false, 1.0F);
             if (crateType.canBeLooted() && state.getValue(OPEN)) {
                 playerIn.openGui(Pubgmc.instance, GuiHandler.GUI_LOOT_CRATE, worldIn, pos.getX(), pos.getY(), pos.getZ());
             } else {

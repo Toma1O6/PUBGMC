@@ -1,7 +1,6 @@
 package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.api.game.GameObject;
-import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import net.minecraft.entity.Entity;
@@ -9,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -81,7 +79,7 @@ public class EntityFlare extends Entity implements GameObject {
             world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, posX, posY, posZ, 0, 0, 0, 0);
 
             if (timer >= 400 && !world.isRemote) {
-                world.playSound(null, posX, posY, posZ, PMCSounds.airdrop_plane_fly_by, SoundCategory.MASTER, 15f, 1f);
+
                 world.createExplosion(this, posX, posY, posZ, 3.0f, false);
                 PUBGMCUtil.spawnAirdrop(world, getPosition(), true);
                 this.setDead();

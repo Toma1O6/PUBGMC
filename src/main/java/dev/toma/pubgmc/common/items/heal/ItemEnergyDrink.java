@@ -36,7 +36,7 @@ public class ItemEnergyDrink extends ItemHealing {
             EntityPlayer player = (EntityPlayer) entity;
             PlayerDataProvider.getOptional(player).ifPresent(data -> {
                 BoostStats stats = data.getBoostStats();
-                stats.add(8);
+                stats.addBoost(120); // 40%
                 data.sync();
             });
             if (!player.isCreative()) {

@@ -17,18 +17,24 @@ public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTT
     public DoubleType velocity;
     public DoubleType gravityModifier;
     public IntType gravityEffectStart;
+    public IntType damagedropEffectStart;
+    public DoubleType damagedropModifier;
+    public DoubleType mindamage;
     public DoubleType horizontalRecoilMultiplier;
     public DoubleType verticalRecoilMultiplier;
 
-    float dmg, vel, grav;
-    int t;
+    float dmg, vel, grav, dmgd, mdmg;
+    int gravst, dmgdst;
 
-    public CFGWeapon(String name, float damage, float velocity, float gravity, int time) {
+    public CFGWeapon(String name, float damage, float velocity, float gravity, int gravitystart, int damagedropstart, float damagedrop, float mindamage) {
         super(name);
         this.dmg = damage;
         this.vel = velocity;
         this.grav = gravity;
-        this.t = time;
+        this.gravst = gravitystart;
+        this.dmgdst = damagedropstart;
+        this.dmgd = damagedrop;
+        this.mdmg = mindamage;
     }
 
     @Override
@@ -37,7 +43,10 @@ public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTT
         damage = configCreator.createDouble("Damage", dmg, 1, 100).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(format);
         velocity = configCreator.createDouble("Velocity", vel, 0.1, 50.0, "Velocity applied to bullet each tick").setFormatting(format);
         gravityModifier = configCreator.createDouble("Gravity modifier", grav, 0, 0.2).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(format);
-        gravityEffectStart = configCreator.createInt("Gravity effect delay", t, 0, Integer.MAX_VALUE, "Ticks before gravity effect is applied on bullet");
+        gravityEffectStart = configCreator.createInt("Gravity effect delay", gravst, 0, Integer.MAX_VALUE, "Ticks before gravity effect is applied on bullet");
+        damagedropEffectStart = configCreator.createInt("Damagedrop effect delay", dmgdst, 0, Integer.MAX_VALUE, "Ticks before damagedrop effect is applied on bullet");
+        damagedropModifier = configCreator.createDouble("Damagedrop modifier", dmgd, 0, 100).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(format);
+        mindamage = configCreator.createDouble("Min damage", mdmg, 0, 100).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(format);
         horizontalRecoilMultiplier = configCreator.createDouble("Horizontal recoil multiplier", 1.0, 0.0, 5.0).setFormatting(format);
         verticalRecoilMultiplier = configCreator.createDouble("Vertical recoil multiplier", 1.0, 0.0, 5.0).setFormatting(format);
     }
@@ -74,6 +83,21 @@ public final class CFGWeapon extends ObjectType implements INBTSerializable<NBTT
     @Override
     public int getGravityEffectStart() {
         return gravityEffectStart.get();
+    }
+
+    @Override
+    public int getDamagedropEffectStart() {
+        return damagedropEffectStart.get();
+    }
+
+    @Override
+    public float getDamagedropModifier() {
+        return damagedropModifier.getAsFloat();
+    }
+
+    @Override
+    public float getMinDamage() {
+        return mindamage.getAsFloat();
     }
 
     @Override

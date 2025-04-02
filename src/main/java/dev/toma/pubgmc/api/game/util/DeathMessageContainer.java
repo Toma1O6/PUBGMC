@@ -44,7 +44,7 @@ public class DeathMessageContainer {
     }
 
     @SideOnly(Side.CLIENT)
-    public void render(FontRenderer font, Game<?> game, int x, int y, int spacing) {
+    public void render(FontRenderer font, Game<?> game, float x, float y, float spacing) {
         int index = 0;
         for (Value message : this.renderingMessages) {
             if (message == null)
@@ -58,6 +58,11 @@ public class DeathMessageContainer {
             font.drawStringWithShadow(deathMessage.getTextMessage().getFormattedText(), x, y + index++ * spacing, relation.getTextColor());
         }
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void render(FontRenderer font, Game<?> game, int x, int y, int spacing) {
+        render(font, game, (float)x, (float)y, (float)spacing);
     }
 
     public NBTTagCompound serialize() {

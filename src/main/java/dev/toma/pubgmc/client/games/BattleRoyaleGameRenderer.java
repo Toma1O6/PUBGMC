@@ -6,9 +6,10 @@ import dev.toma.pubgmc.api.client.util.TeamPanelRenderer;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.playzone.DynamicPlayzone;
 import dev.toma.pubgmc.config.ConfigPMC;
-import dev.toma.pubgmc.config.client.CFG2DCoords;
+import dev.toma.pubgmc.config.client.CFG2DRatio;
 import dev.toma.pubgmc.config.client.game.BattleRoyaleOverlays;
 import dev.toma.pubgmc.util.PUBGMCUtil;
+import dev.toma.pubgmc.util.helper.ImageUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -36,42 +37,86 @@ public final class BattleRoyaleGameRenderer implements GameRenderer<BattleRoyale
     }
 
     @Override
-    public boolean renderHudOverlay(EntityPlayer player, BattleRoyaleGame game, ScaledResolution resolution, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
-        if (elementType == RenderGameOverlayEvent.ElementType.ALL) {
-            Minecraft minecraft = Minecraft.getMinecraft();
-            FontRenderer font = minecraft.fontRenderer;
-            BattleRoyaleOverlays overlays = ConfigPMC.client.overlays.battleRoyaleOverlays;
-            if (overlays.showTeamInformation.get()) {
-                CFG2DCoords pos = overlays.teamPanelPosition;
-                teamPanelRenderer.render(minecraft, game, pos.getX(), pos.getY() + resolution.getScaledHeight() - 50);
-            }
-            if (game.isStarted()) {
-                CFG2DCoords infoPos = overlays.gameInfoPanelPosition;
-                String zoneText = ZONE_LABEL.getFormattedText();
-                int zoneTextWidth = font.getStringWidth(zoneText);
-                font.drawStringWithShadow(zoneText, infoPos.getX() + 5, infoPos.getY() + 5, 0xFFFFFF);
-                boolean shrinking = game.isZoneShrinking();
-                int timeToShrinkStart = game.getRemainingTimeBeforeShrinking();
-                if (shrinking) {
-                    int timeToShrinkFinish = game.getRemainingTimeBeforeShrinkComplete();
-                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkFinish), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0xCC0000);
-                } else if (timeToShrinkStart >= 0) {
-                    DynamicPlayzone playzone = game.getPlayzone();
-                    DynamicPlayzone.ResizeTarget target = playzone.getTarget();
-                    boolean isWithin = target != null ? target.isWithinTargetArea(player.posX, player.posZ) : playzone.isWithin(player);
-                    int textColor = !isWithin ? 0xEEEE00 : 0x00CC00;
-                    font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(timeToShrinkStart), infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, textColor);
-                } else {
-                    font.drawStringWithShadow(" -", infoPos.getX() + 5 + zoneTextWidth, infoPos.getY() + 5, 0x00CC00);
-                }
-                int playerCount = game.getAlivePlayerCount();
-                String playersText = PLAYERS.getFormattedText();
-                font.drawStringWithShadow(playersText, infoPos.getX() + 5, infoPos.getY() + 16, 0xFFFFFF);
-                font.drawStringWithShadow(" " + playerCount, infoPos.getX() + 5 + font.getStringWidth(playersText), infoPos.getY() + 16, 0x00FFFF);
-                CFG2DCoords dmPos = overlays.deathMessagesPosition;
-                game.getDeathMessageContainer().render(font, game, dmPos.getX() + 10, dmPos.getY() + 35, 11);
-            }
+    public boolean renderHudOverlay(EntityPlayer player, BattleRoyaleGame game, ScaledResolution res, RenderGameOverlayEvent.ElementType elementType, float partialTicks) {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        FontRenderer font = minecraft.fontRenderer;
+        BattleRoyaleOverlays overlays = ConfigPMC.client.overlays.battleRoyaleOverlays;
+
+        int screenWidth = res.getScaledWidth();
+        int screenHeight = res.getScaledHeight();
+        float centerX = screenWidth / 2f;
+        float halfWidth = centerX;
+        float centerY = screenHeight / 2f;
+        float halfHeight = centerY;
+
+        // Team Panel
+        if (overlays.showTeamInformation.get()) {
+            CFG2DRatio teamInfoPos = overlays.teamPanelPosition;
+            float teamInfoX = centerX + halfWidth * (teamInfoPos.getX() - 0.95f); // default x -0.95 (←)
+            float teamInfoY = centerY + halfHeight * (teamInfoPos.getY() + 0.8f); // default y 0.8 (↓)
+            teamPanelRenderer.render(minecraft, game, teamInfoX, teamInfoY);
         }
+        if (!game.isStarted()) {
+            return false;
+        }
+
+        // Death Messages
+        CFG2DRatio deathMessagePos = overlays.deathMessagesPos;
+        float deathMessageX = centerX + halfWidth * (deathMessagePos.getX() + 0.4f); // default x +0.4 (→)
+        float deathMessageY = centerY + halfHeight * (deathMessagePos.getY() - 0.95f); // default y -0.95 (↑)
+        game.getDeathMessageContainer().render(font, game, deathMessageX, deathMessageY, 8);
+
+
+        // Game Info
+        CFG2DRatio gameInfoPos = overlays.gameInfoPanelPos;
+        float gameInfoX = centerX + halfWidth * (gameInfoPos.getX() + 0.75f); // default x +0.75 (→)
+        float gameInfoY = centerY + halfHeight * (gameInfoPos.getY() - 0.1f); // default y -0.1 (↑）
+
+        // background
+        float gameInfoBarLength = halfWidth * 0.23f;
+
+        // {Zone}:
+        String zoneText = ZONE_LABEL.getFormattedText();
+        font.drawStringWithShadow(zoneText, gameInfoX, gameInfoY, 0xFFFFFF);
+        int zoneTextWidth = font.getStringWidth(zoneText);
+        // Zone: {isShrinking}
+        boolean isShrinking = game.isZoneShrinking();
+        int shrinkDelayRemain = game.getShrinkDelayRemain();
+        if (isShrinking) { // Zone: {remaining shrinking time}
+            int shrinkTimeTotal = game.getShrinkTimeTotal();
+            int shrinkTimeRemain = game.getShrinkTimeRemain();
+            float percentage = 1 - (float)shrinkTimeRemain / shrinkTimeTotal;
+            int color = ConfigPMC.client.overlays.battleRoyaleOverlays.playzoneColor.getColor();
+            int r = (color >> 16) & 0xFF;
+            int g = (color >> 8) & 0xFF;
+            int b = (color) & 0xFF;
+            font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(shrinkTimeRemain), gameInfoX + zoneTextWidth, gameInfoY, 0xCC0000);
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength, gameInfoY + 23, 0.197f, 0.197f, 0.197f, 0.1f); // #323232 50,50,50
+            ImageUtil.drawShape(gameInfoX + gameInfoBarLength * percentage, gameInfoY + 20, gameInfoX + gameInfoBarLength, gameInfoY + 23, 0.95f, 0.95f, 0.95f, 0.8f); // #f2f2f2 242,242,242
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength * percentage, gameInfoY + 23, r/255.0f, g/255.0f, b/255.0f, 0.8f);
+        } else if (shrinkDelayRemain >= 0) { // Zone: {time before shrink}
+            int shrinkDelayTotal = game.getShrinkDelayTotal();
+            float percentage = 1 - (float)shrinkDelayRemain / shrinkDelayTotal;
+            DynamicPlayzone playzone = game.getPlayzone();
+            DynamicPlayzone.ResizeTarget target = playzone.getTarget();
+            boolean isWithin = target != null ? target.isWithinTargetArea(player) : playzone.isWithin(player);
+            int textColor = !isWithin ? 0xEEEE00 : 0x00CC00;
+            font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(shrinkDelayRemain), gameInfoX + zoneTextWidth, gameInfoY, textColor);
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength, gameInfoY + 23, 0.197f, 0.197f, 0.197f, 0.3f); // #323232 50,50,50
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength * percentage, gameInfoY + 23, 0.95f, 0.95f, 0.95f, 0.8f); // #f2f2f2 242,242,242
+        } else { // Zone: {initDelay}
+            int initDelayTotal = game.getInitDelayTotal();
+            int initDelayRemain = game.getInitDelayRemain();
+            float percentage = 1 - (float) initDelayRemain / initDelayTotal;
+            font.drawStringWithShadow(" " + PUBGMCUtil.formatTime(initDelayRemain), gameInfoX + zoneTextWidth, gameInfoY, 0x888888);
+            ImageUtil.drawShape(gameInfoX, gameInfoY + 20, gameInfoX + gameInfoBarLength * percentage, gameInfoY + 23, 0.197f, 0.197f, 0.197f, 0.3f); // #323232 50,50,50
+        }
+        // {Alive}: {total}
+        int playerCount = game.getAlivePlayerCount();
+        String playersText = PLAYERS.getFormattedText();
+        font.drawStringWithShadow(playersText, gameInfoX + 1, gameInfoY + 11, 0xFFFFFF);
+        font.drawStringWithShadow(" " + playerCount, gameInfoX + 1 + font.getStringWidth(playersText), gameInfoY + 11, 0x00FFFF);
+
         return false;
     }
 

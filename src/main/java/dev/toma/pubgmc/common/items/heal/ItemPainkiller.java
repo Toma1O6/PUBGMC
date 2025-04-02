@@ -12,7 +12,7 @@ public class ItemPainkiller extends ItemHealing {
 
     public ItemPainkiller(String name) {
         super(name);
-        setMaxStackSize(4);
+        setMaxStackSize(2);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ItemPainkiller extends ItemHealing {
             EntityPlayer player = (EntityPlayer) entity;
             PlayerDataProvider.getOptional(player).ifPresent(data -> {
                 BoostStats stats = data.getBoostStats();
-                stats.add(12);
+                stats.addBoost(180); // 60%
                 data.sync();
             });
             if (!player.isCreative()) {

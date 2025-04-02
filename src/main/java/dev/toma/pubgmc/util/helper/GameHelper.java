@@ -292,42 +292,57 @@ public final class GameHelper {
     }
 
     // Doesn't actually spawn the plane
-    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, Playzone playzone, int approximateFlightTime) {
+    public static EntityPlane initializePlaneWithPath(UUID gameId, World world, Playzone playzone, double minPathRatio, boolean adjustSpeed) {
         Position2 min = playzone.getPositionMin(1.0F);
         Position2 max = playzone.getPositionMax(1.0F);
+        Position2 startPos;
+        Position2 endPos;
         double xDiff = max.getX() - min.getX();
         double zDiff = max.getZ() - min.getZ();
-        Position2 start;
-        Position2 end;
+        double borderPerimeter = 2 * (xDiff + zDiff);
         Random random = world.rand;
-        double mult0 = random.nextDouble();
-        double mult1 = 1.0 - mult0;
-        switch (random.nextInt(4)) {
-            default:
-            case 0:
-                start = new Position2(min.getX() + mult0 * xDiff, min.getZ());
-                end = new Position2(min.getX() + mult1 * xDiff, max.getZ());
-                break;
-            case 1:
-                start = new Position2(min.getX() + mult0 * xDiff, max.getZ());
-                end = new Position2(min.getX() + mult1 * xDiff, min.getZ());
-                break;
-            case 2:
-                start = new Position2(min.getX(), min.getZ() + mult0 * zDiff);
-                end = new Position2(max.getX(), min.getZ() + mult1 * zDiff);
-                break;
-            case 3:
-                start = new Position2(max.getX(), min.getZ() + mult0 * zDiff);
-                end = new Position2(min.getX(), min.getZ() + mult1 * zDiff);
-                break;
-        }
-        double flightPathLength = start.length(end);
-        float movementSpeed = (float) (flightPathLength / approximateFlightTime);
+
+        double startRatioOnBorder = random.nextDouble();
+        double startDistance = startRatioOnBorder * borderPerimeter;
+
+        // Exponential decay function to normalize start position based on distance from the center of the border
+        double normalizedStartPos = 1 - Math.exp(-1.5 * Math.abs((startDistance % (borderPerimeter / 2)) - (borderPerimeter / 4)) / (borderPerimeter / 4));
+        // Dynamically adjust the minimum path ratio based on normalized start position, ranging from 0.95 to 1.0
+        double adjustedMinPathRatio = minPathRatio * (0.95 + 0.05 * normalizedStartPos);
+        // Calculate the travel distance along the border based on the adjusted minimum path ratio and a random factor
+        double travelDistanceOnBorder = borderPerimeter * (adjustedMinPathRatio + ((1.0 - adjustedMinPathRatio) - adjustedMinPathRatio) * random.nextDouble());
+
+        double endDistance = (startDistance + travelDistanceOnBorder) % borderPerimeter;
+
+        startPos = getPositionOnBorder(min, max, startDistance, xDiff, zDiff);
+        endPos = getPositionOnBorder(min,max, endDistance, xDiff, zDiff);
+
         EntityPlane plane = new EntityPlane(world);
+        if (adjustSpeed) {
+            double flightPathLength = startPos.length(endPos);
+            plane.setSpeedMultipler( (float) (2 * flightPathLength / (xDiff + zDiff)) );
+        } else {
+            plane.setSpeedMultipler(1.0f);
+        }
         plane.assignGameId(gameId);
-        plane.setPath(start, end);
-        plane.setMovementSpeed(movementSpeed);
+        plane.setPath(startPos, endPos);
         return plane;
+    }
+
+    private static Position2 getPositionOnBorder(Position2 min, Position2 max, double distance, double xDiff, double zDiff) {
+        if (distance < xDiff) {
+            return new Position2(min.getX() + distance, min.getZ());
+        }
+        distance -= xDiff;
+        if (distance < zDiff) {
+            return new Position2(max.getX(), min.getZ() + distance);
+        }
+        distance -= zDiff;
+        if (distance < xDiff) {
+            return new Position2(max.getX() - distance, max.getZ());
+        }
+        distance -= xDiff;
+        return new Position2(min.getX(), max.getZ() - distance);
     }
 
     public static void spawnPlanesWithPlayers(TeamManager teamManager, World world, Consumer<EntityPlayer> playerConsumer, Supplier<EntityPlane> planeProvider) {

@@ -1,6 +1,9 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.AimInfo;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.tileentity.TileEntityLootGenerator;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.SoundType;
@@ -43,6 +46,8 @@ public class BlockLootSpawner extends PMCBlock {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote && !playerIn.isSneaking()) {
+            IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.getAimInfo().setAiming(false, 1.0F);
             playerIn.openGui(Pubgmc.instance, GuiHandler.LOOT_SPAWNER, worldIn, pos.getX(), pos.getY(), pos.getZ());
         } else if (playerIn.isSneaking() && playerIn.capabilities.isCreativeMode) {
             this.updateBlockState(worldIn, pos, state);

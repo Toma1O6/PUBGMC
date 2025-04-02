@@ -50,22 +50,16 @@ public interface IReloader {
     }
 
     default boolean canReload(EntityPlayer player, GunBase gun, ItemStack stack) {
-        int count = gun.getAmmo(stack);
-        int max = gun.getWeaponAmmoLimit(stack);
-        if (count >= max)
+        int ammoInGun = gun.getAmmo(stack);
+        int maxLimit = gun.getWeaponAmmoLimit(stack);
+        if (ammoInGun >= maxLimit) {
             return false;
-        AmmoType type = gun.getAmmoType();
-        Item item = type.ammo();
+        }
         if (isFreeReload(player)) {
             return true;
         }
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack itemStack = player.inventory.getStackInSlot(i);
-            if (itemStack.getItem() == item && itemStack.getCount() > 0) {
-                return true;
-            }
-        }
-        return false;
+        Item item =  gun.getAmmoType().ammo();
+        return DevUtil.hasItem(item, player.inventory);
     }
 
     static boolean isFreeReload(EntityPlayer player) {
@@ -76,27 +70,27 @@ public interface IReloader {
 
         @Override
         public boolean finishCycle(GunBase gun, ItemStack stack, EntityPlayer player) {
-            int actual = gun.getAmmo(stack);
-            int max = gun.getWeaponAmmoLimit(stack);
-            int left = max - actual;
-            AmmoType type = gun.getAmmoType();
-            Item target = type.ammo();
-            if (isFreeReload(player)) {
-                gun.setAmmo(stack, max);
-            } else {
-                for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                    ItemStack itemStack = player.inventory.getStackInSlot(i);
-                    if (!itemStack.isEmpty() && itemStack.getItem() == target) {
-                        int count = Math.min(left, itemStack.getCount());
-                        left -= count;
-                        itemStack.shrink(count);
-                        if (left <= 0)
-                            break;
-                    }
-                }
-                gun.setAmmo(stack, max - left);
+            int ammoInGun = gun.getAmmo(stack);
+            int maxLimit = gun.getWeaponAmmoLimit(stack);
+            int space = maxLimit - ammoInGun;
+            if (IReloader.isFreeReload(player)) {
+                gun.setAmmo(stack, maxLimit);
+                return true;
             }
-
+            // Magazine finish cycle
+            Item targetAmmo = gun.getAmmoType().ammo();
+            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                ItemStack itemStack = player.inventory.getStackInSlot(i);
+                int fill = 0;
+                if (!itemStack.isEmpty() && itemStack.getItem() == targetAmmo) {
+                    fill = Math.min(space, itemStack.getCount());
+                    itemStack.shrink(fill);
+                    space -= fill;
+                    gun.setAmmo(stack, ammoInGun + fill);
+                    ammoInGun += fill;
+                }
+                if (space <= 0) break;
+            }
             return true;
         }
 
@@ -126,24 +120,30 @@ public interface IReloader {
 
         @Override
         public boolean finishCycle(GunBase gun, ItemStack stack, EntityPlayer player) {
-            int actual = gun.getAmmo(stack);
-            int max = gun.getWeaponAmmoLimit(stack);
-            int left = max - actual;
-            AmmoType type = gun.getAmmoType();
-            Item target = type.ammo();
-            boolean freeAmmo = isFreeReload(player);
+            int ammoInGun = gun.getAmmo(stack);
+            int maxLimit = gun.getWeaponAmmoLimit(stack);
+            int space = maxLimit - ammoInGun;
+            if (isFreeReload(player)) {
+                --space;
+                gun.setAmmo(stack, ammoInGun + 1);
+                if (space > 0) {
+                    player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
+                }
+                return space <= 0;
+            }
+            // SingleBullet finish cycle
+            Item targetAmmo = gun.getAmmoType().ammo();
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack itemStack = player.inventory.getStackInSlot(i);
-                if (freeAmmo || (!itemStack.isEmpty() && itemStack.getItem() == target)) {
-                    --left;
-                    if (!freeAmmo)
-                        itemStack.shrink(1);
-                    gun.setAmmo(stack, actual + 1);
-                    boolean b = left <= 0;
-                    if (!b) {
+                if (!itemStack.isEmpty() && itemStack.getItem() == targetAmmo) {
+                    --space;
+                    itemStack.shrink(1);
+                    gun.setAmmo(stack, ammoInGun + 1);
+                    ammoInGun += 1;
+                    if (space > 0) {
                         player.world.playSound(null, player.posX, player.posY + 1, player.posZ, gun.getWeaponReloadSound(), SoundCategory.MASTER, 1.0F, 1.0F);
                     }
-                    return b;
+                    return space <= 0;
                 }
             }
             return true;
@@ -156,10 +156,19 @@ public interface IReloader {
 
         @Override
         public int getReloadAnimationTime(GunBase gun, ItemStack stack, EntityPlayer player) {
-            int ammoInInventory = DevUtil.getItemCount(gun.getAmmoType().ammo(), player.inventory);
-            int left = Math.min(ammoInInventory, gun.getWeaponAmmoLimit(stack) - gun.getAmmo(stack));
+            int ammoInGun = gun.getAmmo(stack);
+            int maxLimit = gun.getWeaponAmmoLimit(stack);
+            int totalAmmo = DevUtil.getItemCount(gun.getAmmoType().ammo(), player.inventory);
+            if (isFreeReload(player)) {
+                totalAmmo = maxLimit;
+            }
+            int space = maxLimit - ammoInGun;
+            int reloadTotal = space;
+            if (totalAmmo < space) {
+                reloadTotal = totalAmmo;
+            }
             int reloadTime = getReloadTime(gun, stack);
-            return left * reloadTime;
+            return reloadTotal * reloadTime;
         }
 
         @SideOnly(Side.CLIENT)
@@ -186,8 +195,8 @@ public interface IReloader {
 
         @Override
         public boolean finishCycle(GunBase gun, ItemStack stack, EntityPlayer player) {
-            int actual = gun.getAmmo(stack);
-            return actual == 0 ? MAGAZINE.finishCycle(gun, stack, player) : SINGLE.finishCycle(gun, stack, player);
+            int ammoInGun = gun.getAmmo(stack);
+            return ammoInGun == 0 ? MAGAZINE.finishCycle(gun, stack, player) : SINGLE.finishCycle(gun, stack, player);
         }
 
         @Override

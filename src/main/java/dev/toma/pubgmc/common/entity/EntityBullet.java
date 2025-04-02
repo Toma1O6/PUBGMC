@@ -50,6 +50,9 @@ public class EntityBullet extends Entity {
     private double velocity;
     private double gravity;
     private float damage;
+    private int damagedropstart;
+    private float damagedrop;
+    private float mindamage;
     private GunBase.GunType type;
     private ItemStack stack;
     private RayTraceResult entityRaytrace;
@@ -70,6 +73,9 @@ public class EntityBullet extends Entity {
         gravity = stats.getGravityModifier();
         velocity = stats.getVelocity();
         damage = stats.getDamage();
+        damagedropstart = stats.getDamagedropEffectStart();
+        damagedrop = stats.getDamagedropModifier();
+        mindamage = stats.getMinDamage();
         type = gun.getGunType();
         stack = new ItemStack(gun);
 
@@ -98,7 +104,7 @@ public class EntityBullet extends Entity {
         if (entity != null && !world.isRemote) {
             boolean isHeadshot = this.canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
             if (isHeadshot) {
-                damage *= 2.5;
+                damage *= getHeadshotMultipler();
             }
             this.onEntityHit(isHeadshot, entity, rayTraceResult.hitVec);
             entity.hurtResistantTime = 0;
@@ -126,7 +132,8 @@ public class EntityBullet extends Entity {
                 canBePenetrated = griefingFlag;
             } else if (!block.isReplaceable(world, pos)) {
                 Vec3d vec = rayTraceResult.hitVec;
-                PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 10, vec, pos, S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
+                int hitParticles = (int) damage;
+                PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, hitParticles, vec, pos, S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
                 world.playSound(null, posX, posY, posZ, block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.5F, block.getSoundType().getPitch() * 0.8F);
                 this.setDead();
             }
@@ -161,28 +168,33 @@ public class EntityBullet extends Entity {
         Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
         Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
         RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
+        //Max fly time
+        if (this.ticksExisted >= ConfigPMC.world().bulletTime.get()) {
+            this.setDead();
+        }
         //Gravity
         if (this.ticksExisted > gravitystart && !world.isRemote) {
             this.motionY -= gravity;
         }
-
-        if (this.ticksExisted >= this.velocity * 3) {
-            this.setDead();
-        }
-
+        //Sound
         if (this.ticksExisted > 2 && this.ticksExisted % 2 == 0) {
-            world.playSound(null, posX, posY, posZ, PMCSounds.bullet_whizz, SoundCategory.PLAYERS, 0.1f, 1f);
-        }
-
-        if (type == GunBase.GunType.SHOTGUN && !world.isRemote) {
-            if (this.ticksExisted % 2 == 0 && damage > 1) {
-                damage -= 1;
-
-                if (damage <= 0) {
-                    damage = 1;
-                }
+            float v = this.getVelocity();
+            if (this.ticksExisted * v > 100) {
+                float volume = this.getDamage() / 40f;
+                world.playSound(null, posX, posY, posZ, PMCSounds.bullet_whizz, SoundCategory.PLAYERS, volume, 1f);
             }
         }
+        //Damagedrop
+        if (this.ticksExisted > damagedropstart && !world.isRemote) {
+            damage -= damagedrop;
+            if (damage <= mindamage) {
+                damage = mindamage;
+            }
+            if (damage <= 0) {
+                this.setDead();
+            }
+        }
+
         Entity entity = this.findEntityOnPath(vec3d1, vec3d, raytraceresult);
         if (entity != null) {
             raytraceresult = new RayTraceResult(entity);
@@ -288,23 +300,25 @@ public class EntityBullet extends Entity {
     }
 
     private void calculateBulletHeading(Vec3d rotVec, boolean aim) {
+        float v = this.getVelocity();
         if (aim && type != GunBase.GunType.SHOTGUN) {
-            this.motionX = rotVec.x * velocity;
-            this.motionY = rotVec.y * velocity;
-            this.motionZ = rotVec.z * velocity;
+            this.motionX = rotVec.x * v;
+            this.motionY = rotVec.y * v;
+            this.motionZ = rotVec.z * v;
         } else {
-            this.motionX = rotVec.x * velocity + (rand.nextDouble() - 0.5);
-            this.motionY = rotVec.y * velocity + (rand.nextDouble() - 0.5);
-            this.motionZ = rotVec.z * velocity + (rand.nextDouble() - 0.5);
+            this.motionX = rotVec.x * v + (rand.nextDouble() - 0.5);
+            this.motionY = rotVec.y * v + (rand.nextDouble() - 0.5);
+            this.motionZ = rotVec.z * v + (rand.nextDouble() - 0.5);
         }
     }
 
     private void calculateBulletHeading(Vec3d rotVec, float inaccuracy) {
         if (inaccuracy == 0)
             inaccuracy = 1;
-        this.motionX = rotVec.x * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
-        this.motionY = rotVec.y * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
-        this.motionZ = rotVec.z * velocity + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        float v = this.getVelocity();
+        this.motionX = rotVec.x * v + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        this.motionY = rotVec.y * v + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
+        this.motionZ = rotVec.z * v + (rand.nextDouble() - rand.nextDouble()) * inaccuracy;
     }
 
     private void updateHeading() {
@@ -358,5 +372,27 @@ public class EntityBullet extends Entity {
 
     public float getDamage() {
         return damage;
+    }
+
+    public float getVelocity() {
+        return (float)velocity;
+    }
+
+    public float getHeadshotMultipler() {
+        if (type.equals(GunBase.GunType.AR) || type.equals(GunBase.GunType.DMR)) {
+            return 2.35f;
+        } else if (type.equals(GunBase.GunType.SMG)) {
+            return 2.1f;
+        } else if (type.equals(GunBase.GunType.SHOTGUN)) {
+            return 1.5f;
+        } else if (type.equals(GunBase.GunType.SR)) {
+            return 2.5f;
+        } else if (type.equals(GunBase.GunType.PISTOL)) {
+            return 2.1f;
+        } else if (type.equals(GunBase.GunType.LMG)) {
+            return 2.3f;
+        }
+        //default
+        return 2.0f;
     }
 }

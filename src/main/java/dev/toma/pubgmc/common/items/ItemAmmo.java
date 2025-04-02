@@ -7,10 +7,11 @@ public class ItemAmmo extends PMCItem {
 
     public final AmmoType type;
 
-    public ItemAmmo(String name, AmmoType type) {
+    public ItemAmmo(String name, AmmoType type, int maxStackSize) {
         super(name);
         this.type = type;
         setCreativeTab(PMCTabs.TAB_ACCESSORIES);
+        setMaxStackSize(maxStackSize);
     }
 
     public AmmoType getAmmoType() {

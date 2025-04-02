@@ -105,23 +105,28 @@ public abstract class WeaponRenderer extends TileEntityItemStackRenderer impleme
 
     public AnimationSpec getReloadAnimation(GunBase gun, ItemStack stack) {
         IReloader reloader = gun.getReloader();
-        int ammo = gun.getAmmo(stack);
+        int ammoInGun = gun.getAmmo(stack);
+        int reloadStart;
         if (reloader == IReloader.MAGAZINE) {
-            int i = ammo == 0 ? 0 : 1;
-            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(i));
+            reloadStart = ammoInGun == 0 ? 0 : 1; // 1 for only reload magazine
+            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(reloadStart));
         } else {
             EntityPlayer player = Minecraft.getMinecraft().player;
+            int maxLimit = gun.getWeaponAmmoLimit(stack);
             int totalAmmo = DevUtil.getItemCount(gun.getAmmoType().ammo(), player.inventory);
-            int left = gun.getMaxAmmoExtended() - ammo;
-            int reload;
-            if (ammo == 0 && reloader instanceof IReloader.StripperClip) {
-                reload = ammo;
-            } else if (left > totalAmmo) {
-                reload = gun.getMaxAmmoExtended() - totalAmmo;
-            } else {
-                reload = ammo;
+            int space = maxLimit - ammoInGun;
+            if (IReloader.isFreeReload(player)) {
+                reloadStart = ammoInGun;
+                return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(reloadStart));
             }
-            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(reload));
+            if (ammoInGun == 0 && reloader instanceof IReloader.StripperClip) {
+                reloadStart = ammoInGun;
+            } else if (space > totalAmmo) {
+                reloadStart = maxLimit - totalAmmo;
+            } else {
+                reloadStart = ammoInGun;
+            }
+            return ClientProxy.getAnimationLoader().getAnimationSpecification(reloadAnimations.lookup(reloadStart));
         }
     }
 

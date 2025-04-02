@@ -10,6 +10,12 @@ public interface WeaponStats {
 
     int getGravityEffectStart();
 
+    int getDamagedropEffectStart();
+
+    float getDamagedropModifier();
+
+    float getMinDamage();
+
     float getVerticalRecoil();
 
     float getHorizontalRecoil();
@@ -18,7 +24,11 @@ public interface WeaponStats {
         return true;
     }
 
-    static WeaponStats simple(float damage, float velocity, float gravityModifier, int effectStart, float verticalRecoil, float horizontalRecoil, boolean allowDisplay) {
+    static WeaponStats simple(float damage, float velocity,
+                              float gravityModifier, int gravityStart,
+                              int damagedropStart, float damagedropModifier, float minDamage,
+                              float verticalRecoil, float horizontalRecoil,
+                              boolean allowDisplay) {
         return new WeaponStats() {
             @Override
             public float getDamage() {
@@ -37,7 +47,22 @@ public interface WeaponStats {
 
             @Override
             public int getGravityEffectStart() {
-                return effectStart;
+                return gravityStart;
+            }
+
+            @Override
+            public int getDamagedropEffectStart() {
+                return damagedropStart;
+            }
+
+            @Override
+            public float getDamagedropModifier() {
+                return damagedropModifier;
+            }
+
+            @Override
+            public float getMinDamage() {
+                return minDamage;
             }
 
             @Override
@@ -58,6 +83,6 @@ public interface WeaponStats {
     }
 
     static WeaponStats empty() {
-        return simple(0.0F, 0.0F, 0.0F, 0, 0.0F, 0.0F, false);
+        return simple(0.0F, 0.0F, 0.0F, 0, 0,0F,0F,0.0F, 0.0F, false);
     }
 }

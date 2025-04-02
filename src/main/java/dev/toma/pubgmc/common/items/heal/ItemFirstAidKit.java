@@ -12,7 +12,7 @@ public class ItemFirstAidKit extends ItemHealing {
 
     public ItemFirstAidKit(String name) {
         super(name);
-        setMaxStackSize(1);
+        setMaxStackSize(2);
     }
 
     @Override
@@ -22,8 +22,9 @@ public class ItemFirstAidKit extends ItemHealing {
 
     @Override
     public boolean canHeal(EntityLivingBase entity, ItemStack stack) {
-        int health = Math.round(entity.getHealth());
-        if (health >= 15) {
+        float healthLimit = entity.getMaxHealth();
+        float health = entity.getHealth();
+        if (health >= healthLimit * 0.75f) {
             if (entity instanceof EntityPlayer) {
                 ITextComponent message = new TextComponentTranslation(UNREACHED_THRESHOLD_KEY, "7.5");
                 message.getStyle().setColor(TextFormatting.RED);
@@ -36,7 +37,10 @@ public class ItemFirstAidKit extends ItemHealing {
 
     @Override
     public void heal(EntityLivingBase entity, ItemStack stack, World world) {
-        entity.setHealth(15.0F);
+        float healthLimit = entity.getMaxHealth();
+        float health = entity.getHealth();
+        float toHeal = healthLimit * 0.75f - health;
+        entity.heal(toHeal);
         if (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isCreative()) {
             stack.shrink(1);
         }

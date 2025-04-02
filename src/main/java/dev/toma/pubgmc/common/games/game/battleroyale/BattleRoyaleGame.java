@@ -88,7 +88,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
     private int completedTimer;
     private StaticPlayzone mapPlayzone;
     private DynamicPlayzone playzone;
-    private int firstShrinkDelay;
+    private int initDelay;
+    private int initDelayRemain;
     private long gameTime;
     private boolean playzoneReady;
     private int phase;
@@ -104,7 +105,8 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         this.playerProperties = new PlayerPropertyHolder();
         this.listeners = new ArrayList<>();
         this.airdrops = new ArrayList<>();
-        this.firstShrinkDelay = configuration.playzoneGenerationDelay;
+        this.initDelay = configuration.playzoneGenerationDelay;
+        this.initDelayRemain = this.initDelay;
         this.completedTimer = 200;
 
         this.addListener(new EventListener(this));
@@ -171,9 +173,9 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             WorldServer worldServer = (WorldServer) world;
             GameHelper.clearEmptyTeams((WorldServer) world, teamManager);
             Supplier<EntityPlane> planeProvider = () -> {
-                EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, 1200);
+                EntityPlane plane = GameHelper.initializePlaneWithPath(gameId, world, mapPlayzone, configuration.flightPathRatio, configuration.adjustPlaneSpeed);
+                plane.setSpeed(configuration.planeSpeed);
                 plane.setFlightDelay(configuration.planeFlightDelay);
-                plane.setMovementSpeedMultiplier(configuration.planeSpeed);
                 plane.setFlightHeight(configuration.planeFlightHeight);
                 return plane;
             };
@@ -189,18 +191,22 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
     @Override
     public void onGameTick(World world) {
+        // completed all phases
         if (completed) {
             if (--completedTimer < 0) {
                 GameHelper.stopGame(world);
             }
             return;
         }
-        if (world.getTotalWorldTime() % 200L == 0) {
+        // saturation recover
+        if (gameTime % 200L == 0) {
             teamManager.getAllActivePlayers(world).forEach(GameHelper::fillPlayerHunger);
         }
-        if (!playzoneReady && --firstShrinkDelay <= 0) {
+        // first zone delay
+        if (!playzoneReady && --initDelayRemain <= 0) {
             playzoneReady = true;
             playzoneResizeCompleted(playzone, world);
+            // init zone config
             BattleRoyaleGameConfiguration.ZonePhaseConfiguration[] configurations = configuration.zonePhases;
             if (configurations != null && configurations.length > 0) {
                 playzone.setDamageOptions(configurations[0].getDamageOptions());
@@ -208,40 +214,38 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 playzone.setDamageOptions(AbstractDamagingPlayzone.DamageOptions.BOUNDS);
             }
         }
-        if (!world.isRemote) {
-            // server only tick
+
+        if (!world.isRemote) { // server only tick
             WorldServer worldServer = (WorldServer) world;
             mapPlayzone.hurtAllOutside(worldServer, () -> teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList()));
             playzone.hurtAllOutside(worldServer, () -> teamManager.getAllActiveEntities(worldServer).collect(Collectors.toList()));
             tickAIEntities(worldServer);
-            if (world.getTotalWorldTime() % 20 == 0) {
-                if (isGameCompleted(worldServer)) {
-                    completed = true;
-                    GameHelper.requestClientGameDataSynchronization(world);
-                    List<Team> teams = this.teamManager.getActiveTeams();
-                    Team winningTeam = teams.size() == 1 ? teams.get(0) : null;
-                    for (EntityPlayerMP player : worldServer.getMinecraftServer().getPlayerList().getPlayers()) {
-                        Team team = this.teamManager.getEntityTeam(player);
-                        ITextComponent winningTeamInfo = null;
+            if (gameTime % 20L == 0 && isGameCompleted(worldServer)) {
+                completed = true;
+                GameHelper.requestClientGameDataSynchronization(world);
+                // Display winning team
+                List<Team> teams = this.teamManager.getActiveTeams();
+                Team winningTeam = teams.size() == 1 ? teams.get(0) : null;
+                ITextComponent winningTeamInfo = null;
+                if (winningTeam != null) {
+                    Team.Member teamLeader = winningTeam.getTeamLeader();
+                    ITextComponent username = winningTeam.getUsername(teamLeader.getId());
+                    winningTeamInfo = new TextComponentTranslation("pubgmc.game.completed.winning_team", username);
+                    winningTeamInfo.getStyle().setColor(TextFormatting.AQUA);
+                }
+                // Display game result
+                for (EntityPlayerMP player : worldServer.getMinecraftServer().getPlayerList().getPlayers()) {
+                    Team team = this.teamManager.getEntityTeam(player);
+                    if (team != null && team.isMember(player.getUniqueID())) { // the only team existed && is still in team(alive)
+                        player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_WON, 20, 120, 60));
+                    } else {
+                        player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_COMPLETED, 20, 120, 60));
                         if (winningTeam != null) {
-                            Team.Member teamLeader = winningTeam.getTeamLeader();
-                            if (teamLeader != null) {
-                                ITextComponent username = winningTeam.getUsername(teamLeader.getId());
-                                winningTeamInfo = new TextComponentTranslation("pubgmc.game.completed.winning_team", username);
-                                winningTeamInfo.getStyle().setColor(TextFormatting.AQUA);
-                            }
-                        }
-                        if (team != null && team.isMember(player.getUniqueID())) {
-                            player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_WON, 20, 120, 60));
-                        } else {
-                            player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.TITLE, TextComponentHelper.GAME_COMPLETED, 20, 120, 60));
-                            if (winningTeam != null) {
-                                player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.SUBTITLE, winningTeamInfo, 20, 120, 60));
-                            }
+                            player.connection.sendPacket(new SPacketTitle(SPacketTitle.Type.SUBTITLE, winningTeamInfo, 20, 120, 60));
                         }
                     }
-                    return;
                 }
+                return;
             }
         }
         deathMessages.tick();
@@ -321,12 +325,28 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
         return playzoneReady && playzone.isResizing();
     }
 
-    public int getRemainingTimeBeforeShrinkComplete() {
-        return this.isZoneShrinking() ? playzone.getRemainingResizingTime() : -1;
+    public int getInitDelayTotal() {
+        return initDelay;
     }
 
-    public int getRemainingTimeBeforeShrinking() {
-        return playzoneReady ? playzone.getRemainingStationaryTime() : -1;
+    public int getInitDelayRemain() {
+        return initDelayRemain;
+    }
+
+    public int getShrinkDelayTotal() {
+        return playzoneReady ? playzone.getResizeDelayTotal() : -1;
+    }
+
+    public int getShrinkDelayRemain() {
+        return playzoneReady ? playzone.getResizeDelayRemain() : -1;
+    }
+
+    public int getShrinkTimeTotal() {
+        return this.isZoneShrinking() ? playzone.getResizingTimeTotal() : -1;
+    }
+
+    public int getShrinkTimeRemain() {
+        return this.isZoneShrinking() ? playzone.getResizingTimeRemain() : -1;
     }
 
     public int getAlivePlayerCount() {
@@ -661,7 +681,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
             if (game.playzone != null) {
                 nbt.setTag("playzone", PlayzoneType.serialize(game.playzone));
             }
-            nbt.setInteger("playzoneStart", game.firstShrinkDelay);
+            nbt.setInteger("playzoneStartRemain", game.initDelayRemain);
             nbt.setBoolean("playzoneReady", game.playzoneReady);
             nbt.setInteger("phase", game.phase);
             nbt.setTag("airdrops", SerializationHelper.collectionToNbt(game.airdrops, NBTUtil::createPosTag));
@@ -690,7 +710,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 game.playzone.onResizeStarted(game::playzoneResizeStarted);
                 game.playzone.onResizeCompleted(game::playzoneResizeCompleted);
             }
-            game.firstShrinkDelay = nbt.getInteger("playzoneStart");
+            game.initDelayRemain = nbt.getInteger("playzoneStartRemain");
             game.playzoneReady = nbt.getBoolean("playzoneReady");
             game.phase = nbt.getInteger("phase");
             SerializationHelper.collectionFromNbt(game.airdrops, nbt.getTagList("airdrops", Constants.NBT.TAG_COMPOUND), nbtBase -> NBTUtil.getPosFromTag((NBTTagCompound) nbtBase));

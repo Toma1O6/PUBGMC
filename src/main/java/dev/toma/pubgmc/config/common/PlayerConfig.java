@@ -18,7 +18,7 @@ public class PlayerConfig extends ObjectType {
     @Override
     public void buildStructure(ConfigCreator configCreator) {
         knockbackEnabled = configCreator.createBoolean("Allow knockback", false);
-        forceInventoryRestrictions = configCreator.createBoolean("Force Inventory Restrictions", false);
+        forceInventoryRestrictions = configCreator.createBoolean("Force Inventory Restrictions", true);
         proneCooldown = configCreator.createInt("Prone Cooldown", 30, 0, 100);
     }
 }

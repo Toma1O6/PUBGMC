@@ -19,13 +19,16 @@ import java.util.UUID;
 
 public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEntityAdditionalSpawnData {
 
-    public static final int PLANE_CAPACITY = 32;
+    public static final int PLANE_CAPACITY = 128;
     private int flightDelay = 20;
     private int flightHeight = 256;
     private Position2 from = Position2.ORIGIN;
     private Position2 to = Position2.ORIGIN;
-    private float movementSpeed;
-    private float movementSpeedMultiplier;
+    private float speed = 1.0f;
+    private float speedMultipler = 1.0f;
+    private float flightSpeed = 1.0f;
+    private boolean preparedHeading = false;
+    private boolean preparedMotion = false;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityPlane(World world) {
@@ -39,6 +42,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         this.to = Objects.requireNonNull(to);
         recalculatePosition();
         updateHeading();
+        preparedHeading = true;
     }
 
     public void setFlightDelay(int flightDelay) {
@@ -50,12 +54,13 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         recalculatePosition();
     }
 
-    public void setMovementSpeed(float movementSpeed) {
-        this.movementSpeed = movementSpeed;
+    public void setSpeed(float planeSpeed) {
+        this.speed = planeSpeed;
+        this.flightSpeed = this.speed * this.speedMultipler;
     }
-
-    public void setMovementSpeedMultiplier(float movementSpeedMultiplier) {
-        this.movementSpeedMultiplier = movementSpeedMultiplier;
+    public void setSpeedMultipler(float multipler) {
+        this.speedMultipler = multipler;
+        this.flightSpeed = this.speed * this.speedMultipler;
     }
 
     @Override
@@ -74,8 +79,10 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
             if (!this.getPassengers().isEmpty()) {
                 float f1 = (float) ((this.isDead ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
                 int id = this.getPassengers().indexOf(passenger);
-                float x = id >= 16 ? -6 + (id - 16) * 3 : -6 + id * 3;
-                float z = id < 16 ? 3 : -3;
+                id %= 32; //If this happens, sit on the same seat better than can't sit
+                float x = -6, z = 0;
+                x += (int)(id / 2) * 3;
+                z += id % 2 == 0 ? 3 : -3;
                 Vec3d vec3d = (new Vec3d(x, 0.0D, z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
                 passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
             }
@@ -109,11 +116,12 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         }
 
         if (flightDelay <= 0) {
-            updateHeading();
-            Vec3d look = getLookVec();
-            motionX = look.x * movementSpeed * movementSpeedMultiplier;
-            motionZ = look.z * movementSpeed * movementSpeedMultiplier;
-
+            if (!preparedMotion) {
+                Vec3d look = getLookVec();
+                motionX = look.x * flightSpeed;
+                motionZ = look.z * flightSpeed;
+                preparedMotion = true;
+            }
             move(MoverType.SELF, motionX, motionY, motionZ);
         } else {
             --flightDelay;
@@ -150,8 +158,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         compound.setInteger("flightHeight", flightHeight);
         compound.setTag("fromDest", from.toNbt());
         compound.setTag("toDest", to.toNbt());
-        compound.setFloat("flightMovementSpeed", movementSpeed);
-        compound.setFloat("flightMovementSpeedMultiplier", movementSpeedMultiplier);
+        compound.setFloat("flighttSpeed", flightSpeed);
         compound.setUniqueId("gameId", gameId);
     }
 
@@ -161,8 +168,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         flightHeight = compound.getInteger("flightHeight");
         from = new Position2(compound.getCompoundTag("fromDest"));
         to = new Position2(compound.getCompoundTag("toDest"));
-        movementSpeed = compound.getFloat("flightMovementSpeed");
-        movementSpeedMultiplier = compound.getFloat("flightMovementSpeedMultiplier");
+        flightSpeed = compound.getFloat("flightspeed");
         gameId = compound.getUniqueId("gameId");
     }
 

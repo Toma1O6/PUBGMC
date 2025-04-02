@@ -41,9 +41,9 @@ public class ItemStock extends ItemAttachment {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         if (fastReload)
             tooltip.add(TextFormatting.AQUA + I18n.format("gun.attachment.magazine.quickdraw"));
-        if (ads < 1) {
-            int i = Math.round((1.0F - ads) * 100);
-            tooltip.add(formatProperty(I18n.format("gun.attachment.ads_speed"), "-" + i) + "%");
+        if (ads != 1) {
+            int time = Math.round((1/ads - 1) * 100);
+            tooltip.add(formatProperty(I18n.format("gun.attachment.ads_time"), (time > 0 ? "+" : "") + time) + "%");
         }
     }
 }

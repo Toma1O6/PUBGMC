@@ -1,6 +1,8 @@
 package dev.toma.pubgmc.common.blocks;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.tileentity.TileEntityAirdrop;
 import dev.toma.pubgmc.util.handlers.GuiHandler;
 import net.minecraft.block.material.Material;
@@ -50,6 +52,8 @@ public class BlockBigAirdrop extends BlockAirdrop {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
+            IPlayerData data = playerIn.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.getAimInfo().setAiming(false, 1.0F);
             playerIn.openGui(Pubgmc.instance, GuiHandler.GUI_BIG_AIRDROP, worldIn, pos.getX(), pos.getY(), pos.getZ());
         }
 

@@ -36,11 +36,11 @@ public final class LootConfigurations {
 
     private static void generateAmmoCrate(RegistrationHandler handler, Map<String, LootConfiguration> defaultConfigMap, boolean force) {
         LootProvider pool = new CountLootProvider(1, 5, new RandomLootProvider(Arrays.asList(
-                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_9MM, 30), Collections.emptyList()),
-                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_45ACP, 30), Collections.emptyList()),
-                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_556, 30), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_9MM, 64), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_45ACP, 50), Collections.emptyList()),
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_556, 40), Collections.emptyList()),
                 new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_762, 30), Collections.emptyList()),
-                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_SHOTGUN, 10), Collections.emptyList())
+                new ItemStackLootProvider(new ItemStack(PMCItems.AMMO_SHOTGUN, 16), Collections.emptyList())
         )));
         LootConfiguration configuration = new LootConfiguration(Collections.emptyMap(), pool);
         register(handler, defaultConfigMap, AMMO_CRATE, configuration, force);
@@ -282,7 +282,7 @@ public final class LootConfigurations {
                 ),
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.M249),
-                        Collections.singletonList(new AmmoPackProcessor(50, 2, 4))
+                        Collections.singletonList(new AmmoPackProcessor(40, 2, 4))
                 ),
                 new ItemStackLootProvider(
                         new ItemStack(PMCItems.MK14),

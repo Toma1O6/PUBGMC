@@ -157,14 +157,14 @@ public class GunBuilder {
 
     public GunBase build() {
         checkNotNull(weaponStats);
-        validateFloat(vertical, 0.1f, 10f);
-        validateFloat(horizontal, 0.1f, 10f);
+        validateFloat(vertical, 0.0f, 10f);
+        validateFloat(horizontal, 0.0f, 10f);
         checkNotNull(reloader);
         validateInt(reloadTime, 1, 150);
         validateInt(firerate, 1, 150);
         checkNotNull(ammoType);
-        validateInt(maxAmmo, 1, 100);
-        validateInt(exMaxAmmo, 1, 100);
+        validateInt(maxAmmo, 1, 200);
+        validateInt(exMaxAmmo, 1, 200);
         checkNotNull(defFiremode);
         checkNotNull(firemodeSwitchFunc);
         checkNotNull(weaponType);

@@ -78,6 +78,7 @@ public class C2S_PacketSetProperty implements IMessage {
                 if (aBoolean) {
                     reloadInfo.startReload(player, gun, stack);
                     SoundEvent event = gun.getWeaponReloadSound();
+                    //TODO refactor getWeaponReloadSound
                     if (gun == PMCItems.KAR98K) {
                         int ammo = gun.getAmmo(stack);
                         if (ammo == 0) {
