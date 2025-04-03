@@ -158,7 +158,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         compound.setInteger("flightHeight", flightHeight);
         compound.setTag("fromDest", from.toNbt());
         compound.setTag("toDest", to.toNbt());
-        compound.setFloat("flighttSpeed", flightSpeed);
+        compound.setFloat("flightSpeed", flightSpeed);
         compound.setUniqueId("gameId", gameId);
     }
 
@@ -168,7 +168,7 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
         flightHeight = compound.getInteger("flightHeight");
         from = new Position2(compound.getCompoundTag("fromDest"));
         to = new Position2(compound.getCompoundTag("toDest"));
-        flightSpeed = compound.getFloat("flightspeed");
+        flightSpeed = compound.getFloat("flightSpeed");
         gameId = compound.getUniqueId("gameId");
     }
 
