@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.items.guns;
 
+import dev.toma.configuration.api.type.AbstractConfigType;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.PMCTabs;
 import dev.toma.pubgmc.Pubgmc;
@@ -11,8 +12,10 @@ import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.PMCItem;
 import dev.toma.pubgmc.common.items.attachment.*;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketPlaySoundWithDelay;
+import dev.toma.pubgmc.util.LazyLoad;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -403,24 +406,32 @@ public class GunBase extends PMCItem implements MainHandOnly, HandAnimate {
     static final AttributeModifier HEAVY_GUN_MODIFIER = new AttributeModifier(EQUIP_MODIFIER_UID, "equipModifier", -0.65F, 2).setSaved(false);
 
     public enum GunType {
-        LMG(40, HEAVY_GUN_MODIFIER),
-        PISTOL(100, PISTOL_MODIFIER),
-        SHOTGUN(80, AR_MODIFIER),
-        SMG(70, SMG_MODIFIER),
-        AR(50, AR_MODIFIER),
-        DMR(30, SNIPER_MODIFIER),
-        SR(10, SNIPER_MODIFIER);
+        LMG(40, HEAVY_GUN_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.lmgHeadshotMultiplier),
+        PISTOL(100, PISTOL_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.pistolHeadshotMultiplier),
+        SHOTGUN(80, AR_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.shotgunHeadshotMultiplier),
+        SMG(70, SMG_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.smgHeadshotMultiplier),
+        AR(50, AR_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.arHeadshotMultiplier),
+        DMR(30, SNIPER_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.dmrHeadshotMultiplier),
+        SR(10, SNIPER_MODIFIER, () -> ConfigPMC.guns().globalWeaponDamageConfig.srHeadshotMultiplier);
 
-        final int weight;
-        final AttributeModifier modifier;
+        private final int weight;
+        private final AttributeModifier modifier;
+        private final LazyLoad<AbstractConfigType<Double>> headshotDamageMultiplier;
 
-        GunType(int weight, AttributeModifier modifier) {
+        GunType(int weight, AttributeModifier modifier, Supplier<AbstractConfigType<Double>> valueHolder) {
             this.weight = weight;
             this.modifier = modifier;
+            this.headshotDamageMultiplier = new LazyLoad<>(valueHolder);
         }
 
         public AttributeModifier getModifier() {
             return modifier;
+        }
+
+        public float getHeadshotDamageMultiplier() {
+            AbstractConfigType<Double> holder = headshotDamageMultiplier.get();
+            double configValue = holder.get();
+            return (float) configValue;
         }
 
         public static GunType getTypeFromName(String name) {
