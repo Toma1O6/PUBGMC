@@ -1,9 +1,8 @@
 package dev.toma.pubgmc.common.tileentity;
 
-import dev.toma.pubgmc.util.recipes.ICraftingInventory;
-import dev.toma.pubgmc.util.recipes.PMCIngredient;
-import dev.toma.pubgmc.util.recipes.PMCRecipe;
-import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
+import dev.toma.pubgmc.util.recipes.CraftingIngredient;
+import dev.toma.pubgmc.util.recipes.WorkbenchRecipe;
+import dev.toma.pubgmc.util.recipes.WorkbenchRecipe.CraftingCategory;
 import dev.toma.pubgmc.util.recipes.RecipeRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
@@ -20,16 +19,16 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityGunWorkbench extends TileEntity implements ICraftingInventory {
+public class TileEntityGunWorkbench extends TileEntity implements IInventoryTileEntity {
     private static final int OUTPUT = 8;
-    public static ArrayList<List<PMCRecipe>> RECIPES = new ArrayList<>(CraftingCategory.values().length);
-    private static List<PMCRecipe> GUNS;
-    private static List<PMCRecipe> AMMO;
-    private static List<PMCRecipe> ATTACHMENT;
-    private static List<PMCRecipe> CLOTHING;
-    private static List<PMCRecipe> HEALING;
-    private static List<PMCRecipe> THROWABLES;
-    private static List<PMCRecipe> VEHICLES;
+    public static ArrayList<List<WorkbenchRecipe>> RECIPES = new ArrayList<>(CraftingCategory.values().length);
+    private static List<WorkbenchRecipe> GUNS;
+    private static List<WorkbenchRecipe> AMMO;
+    private static List<WorkbenchRecipe> ATTACHMENT;
+    private static List<WorkbenchRecipe> CLOTHING;
+    private static List<WorkbenchRecipe> HEALING;
+    private static List<WorkbenchRecipe> THROWABLES;
+    private static List<WorkbenchRecipe> VEHICLES;
     public CraftingCategory selectedCat = CraftingCategory.GUNS;
     public int selectedIndex = 0;
     private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(9, ItemStack.EMPTY);
@@ -55,11 +54,6 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
     }
 
     @Override
-    public int getOutputSlot() {
-        return 0;
-    }
-
-    @Override
     public NonNullList<ItemStack> getInventory() {
         return inventory;
     }
@@ -79,24 +73,26 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
         return inventory.size();
     }
 
-    public void craft(PMCRecipe recipe) {
+    public void craft(WorkbenchRecipe recipe) {
         boolean valid = true;
-        for (PMCIngredient ing : recipe.ingredients) {
+        for (CraftingIngredient ingredient : recipe.ingredients) {
             int amount = 0;
-            for (int i = 0; i < 8; i++) {
-                if (this.getStackInSlot(i).getItem() == ing.getIngredient().getItem()) {
-                    amount += this.getStackInSlot(i).getCount();
+            for (int i = 0; i < inventory.size() - 1; i++) {
+                ItemStack stack = inventory.get(i);
+                if (ingredient.isValidInput(stack)) {
+                    amount += stack.getCount();
                 }
             }
-            if (amount < ing.getIngredient().getCount()) {
+            if (amount < ingredient.requiredResourceSize()) {
                 valid = false;
+                break;
             }
         }
         if (valid) {
-            for (PMCIngredient ing : recipe.ingredients) {
-                this.clearItems(ing.getIngredient(), ing.getIngredient().getCount());
+            for (CraftingIngredient ingredient : recipe.ingredients) {
+                this.clearItems(ingredient);
             }
-            this.setInventorySlotContents(8, new ItemStack(recipe.result, recipe.resultCount));
+            this.setInventorySlotContents(8, recipe.result.copy());
             recipe.onCraft(world, pos);
         }
     }
@@ -124,22 +120,18 @@ public class TileEntityGunWorkbench extends TileEntity implements ICraftingInven
         return compound;
     }
 
-    private void clearItems(ItemStack itemStack, final int amount) {
-        int remaining = amount;
+    private void clearItems(CraftingIngredient ingredient) {
+        int remaining = ingredient.requiredResourceSize();
         for (ItemStack stack : this.inventory) {
-            if (stack.getItem() == itemStack.getItem()) {
-                if (remaining > stack.getCount()) {
-                    remaining -= stack.getCount();
-                    stack.shrink(stack.getCount());
-                } else {
-                    stack.setCount(stack.getCount() - remaining);
-                    remaining = 0;
+            if (ingredient.isValidInput(stack)) {
+                int consumeAmount = Math.min(remaining, stack.getCount());
+                stack.shrink(consumeAmount);
+                remaining -= consumeAmount;
+
+                if (remaining == 0) {
                     break;
                 }
             }
-        }
-        if (remaining > 0) {
-            throw new IllegalStateException("Fatal error occured when attempted to remove right item count from inventory. Not enought items");
         }
     }
 }
