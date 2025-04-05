@@ -39,7 +39,8 @@ public abstract class EntityPlayerMixin extends EntityLivingBase {
 
         if (width != this.width || height != this.height) {
             this.setSize(width, height);
-            this.onGround = true; // fix for immediate prone cancellation
+            this.onGround = player.fallDistance <= 4.0; // fix for immediate prone cancellation
+            // Cannot be set to TRUE as that would break fall damage calculation - player could take damage in midair when crouching for some time
         }
 
         FMLCommonHandler.instance().onPlayerPostTick(player);
