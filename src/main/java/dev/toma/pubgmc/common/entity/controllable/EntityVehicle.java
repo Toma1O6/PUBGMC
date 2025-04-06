@@ -49,7 +49,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         stepHeight = 1.25F;
         preventEntitySpawning = true;
         health = getVehicleConfiguration().maxHealth.getAsFloat();
-        fuel = 60 + world.rand.nextInt(40);
+        fuel = 50 + world.rand.nextInt(5) * 10;
     }
 
     public EntityVehicle(World world, int x, int y, int z) {
