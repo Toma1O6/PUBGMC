@@ -840,11 +840,24 @@ public class ClientEvents {
             mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
         } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
+            float barWidth = 120;
+            float fuelPercentage = car.fuel / 100.0f;
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, fuelPercentage * barWidth, 5, 0.0, 0.25, 1.0, 0.375, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, barWidth, 5, 0.0, 0.375, 1.0, 0.5, true);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, barWidth, 5, 0.0, 0.125, 1.0, 0.25, false);
+            float healthPercentage = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat();
+            // color
+            float r, g, b, a;
+            if (healthPercentage < car.getDamageLevel2()) { // red
+                r = 0.863f; g = 0.34f; b = 0.291f; a = 0.8f; // #dc564a 220,86,74
+            } else if (healthPercentage < car.getDamageLevel1()) { // yellow
+                r = 0.98f; g = 0.895f; b = 0.648f; a = 0.8f; // #f9e4a5 249.228,165
+            } else if (healthPercentage < 1.0f) { // white
+                r = 0.95f; g =0.95f; b = 0.95f; a = 0.8f; // #f2f2f2 242,242,242
+            } else { // grey
+                r = 0.648f; g = 0.648f; b = 0.648f; a = 0.8f; // #a5a5a5 165.165,165
+            }
+            ImageUtil.drawShape(15, res.getScaledHeight() - 50, 15 + healthPercentage * barWidth, res.getScaledHeight() - 45, r, g, b, a);
         }
     }
 

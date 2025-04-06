@@ -42,6 +42,8 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public float fuel;
     public boolean isBroken = false;
     private short timeInInvalidState;
+    private float damageLevel1 = 0.45f;
+    private float damageLevel2 = 0.2f;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
@@ -74,6 +76,14 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             key = "generic";
         }
         return new TextComponentTranslation("entity." + key + ".name");
+    }
+    
+    public float getDamageLevel1() {
+        return damageLevel1;
+    }
+
+    public float getDamageLevel2() {
+        return damageLevel2;
     }
 
     @Override
@@ -257,11 +267,11 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     protected void spawnParticles() {
         float max = getVehicleConfiguration().maxHealth.getAsFloat();
         if (world.isRemote) {
-            if (health / max <= 0.35f) {
+            if (health / max <= damageLevel1) {
                 Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
                 world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
 
-                if (health / max <= 0.15f) {
+                if (health / max <= damageLevel2) {
                     double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
                     double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
                     world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
