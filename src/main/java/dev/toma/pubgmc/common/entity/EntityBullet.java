@@ -379,20 +379,6 @@ public class EntityBullet extends Entity {
     }
 
     public float getHeadshotMultipler() {
-        if (type.equals(GunBase.GunType.AR) || type.equals(GunBase.GunType.DMR)) {
-            return 2.35f;
-        } else if (type.equals(GunBase.GunType.SMG)) {
-            return 2.1f;
-        } else if (type.equals(GunBase.GunType.SHOTGUN)) {
-            return 1.5f;
-        } else if (type.equals(GunBase.GunType.SR)) {
-            return 2.5f;
-        } else if (type.equals(GunBase.GunType.PISTOL)) {
-            return 2.1f;
-        } else if (type.equals(GunBase.GunType.LMG)) {
-            return 2.3f;
-        }
-        //default
-        return 2.0f;
+        return type.getHeadshotDamageMultiplier();
     }
 }

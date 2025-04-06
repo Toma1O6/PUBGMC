@@ -8,8 +8,8 @@ import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.c2s.C2S_PacketCraftItem;
 import dev.toma.pubgmc.network.c2s.C2S_PacketUpdateWorkbench;
-import dev.toma.pubgmc.util.recipes.PMCRecipe;
-import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
+import dev.toma.pubgmc.util.recipes.WorkbenchRecipe;
+import dev.toma.pubgmc.util.recipes.WorkbenchRecipe.CraftingCategory;
 import dev.toma.pubgmc.util.recipes.RecipeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -41,7 +41,7 @@ public class GuiGunWorkbench extends GuiContainer {
     }
 
     public void updateButtons() {
-        List<PMCRecipe> list = tileentity.RECIPES.get(tileentity.selectedCat.ordinal());
+        List<WorkbenchRecipe> list = tileentity.RECIPES.get(tileentity.selectedCat.ordinal());
         this.buttonList.clear();
         this.buttonList.add(createPageButton(0, guiLeft + 8, guiTop + 85, false));
         this.buttonList.add(createPageButton(1, guiLeft + 90, guiTop + 85, true));
@@ -79,7 +79,7 @@ public class GuiGunWorkbench extends GuiContainer {
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button instanceof RecipeButton) {
             RecipeButton btn = (RecipeButton) button;
-            PMCRecipe recipe = btn.recipe;
+            WorkbenchRecipe recipe = btn.recipe;
             if (btn.active && timeSinceCraft == 0) {
                 PacketHandler.sendToServer(new C2S_PacketCraftItem(tileentity.getPos(), RecipeRegistry.RECIPES.indexOf(recipe)));
                 this.updateButtons();
@@ -100,7 +100,7 @@ public class GuiGunWorkbench extends GuiContainer {
 
                 case 2:
                 case 3: {
-                    List<PMCRecipe> list = TileEntityGunWorkbench.RECIPES.get(tileentity.selectedCat.ordinal());
+                    List<WorkbenchRecipe> list = TileEntityGunWorkbench.RECIPES.get(tileentity.selectedCat.ordinal());
                     int currentPage = btn.visible ? btn.isRight ? tileentity.selectedIndex + 1 : tileentity.selectedIndex - 1 : tileentity.selectedIndex;
                     update(currentPage, tileentity.selectedCat);
                     this.updateButtons();
@@ -117,7 +117,7 @@ public class GuiGunWorkbench extends GuiContainer {
         return this.buttonList;
     }
 
-    private PageButton createPageButton(int index, int x, int y, boolean right, List<PMCRecipe> recipeCollection) {
+    private PageButton createPageButton(int index, int x, int y, boolean right, List<WorkbenchRecipe> recipeCollection) {
         PageButton button = new PageButton(index, x, y, right);
         int i = tileentity.selectedIndex + 1;
         boolean flag = right ? recipeCollection.size() > i * 4 : tileentity.selectedIndex > 0;

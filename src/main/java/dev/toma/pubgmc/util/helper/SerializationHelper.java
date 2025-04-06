@@ -96,7 +96,7 @@ public class SerializationHelper {
     }
 
     public static <T extends Entity & SynchronizableEntity> void syncEntity(T entity) {
-        if (entity == null)
+        if (entity == null || entity.world.isRemote)
             return;
         PacketHandler.sendToAllTracking(new S2C_PacketSendEntityData(entity), entity);
     }

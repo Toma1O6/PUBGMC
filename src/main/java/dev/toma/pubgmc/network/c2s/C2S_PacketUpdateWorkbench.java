@@ -1,7 +1,7 @@
 package dev.toma.pubgmc.network.c2s;
 
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
-import dev.toma.pubgmc.util.recipes.PMCRecipe.CraftingCategory;
+import dev.toma.pubgmc.util.recipes.WorkbenchRecipe.CraftingCategory;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
