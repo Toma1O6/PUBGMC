@@ -236,12 +236,12 @@ public class ClientEvents {
             if (!ConfigPMC.client.overlays.renderStatusBars.get()) { // The game will automatically replenish saturation and no experience bar required
                 // if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty())
                 e.setCanceled(true);
-            } else if (ConfigPMC.client.overlays.renderNewHealthBar.get()) {
+            } else if (ConfigPMC.client.overlays.renderNewHealthBar.get() && ConfigPMC.client.overlays.newHealthBarLengthRatio.getAsFloat() > 0.5f) {
                 e.setCanceled(true);
             }
         }
-        // Health bar
-        if (e.getType() == ElementType.HEALTH) {
+        // Health and armor bar
+        if (e.getType() == ElementType.HEALTH || e.getType() == ElementType.ARMOR) {
             if (ConfigPMC.client.overlays.renderNewHealthBar.get()) {
                 e.setCanceled(true);
                 renderNewHealthBar();
@@ -468,7 +468,8 @@ public class ClientEvents {
                 return;
             }
             player.setSprinting(false);
-            RenderHandler.restoreAndSaveValues();
+            RenderHandler.saveCurrentOptions();
+            gs.thirdPersonView = 0; // Switch to first person view when aiming, adapts Shoulder Surfing Reloaded
             ScopeZoom scopeData = gun.getScopeData(stack);
             if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
                 gs.mouseSensitivity *= scopeData.getSensitivity(gun);
@@ -727,9 +728,9 @@ public class ClientEvents {
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
         CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgNewHealthBarOverlayPos;
-        short barWidth = 182;
+        int barWidth = Math.round(182 * ConfigPMC.client.overlays.newHealthBarLengthRatio.getAsFloat());
         short barHeight = 9;
-        int leftPos = width / 2 - barWidth / 2 + overlayPos.getX();
+        int leftPos = width / 2 - 91 + overlayPos.getX(); // Hard coded 91 (182/2) to fix the lower left corner, otherwise change newHealthBarLength requires modifying imgNewHealthBarOverlayPos as well
         int topPos = height - 50 + barHeight + overlayPos.getY();
 
         Minecraft mc = Minecraft.getMinecraft();

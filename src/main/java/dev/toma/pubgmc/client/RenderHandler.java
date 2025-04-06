@@ -15,6 +15,7 @@ public class RenderHandler {
 
     private static Float fovBackup;
     private static Float sensBackup;
+    private static int viewBackup = -1;
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
@@ -25,6 +26,7 @@ public class RenderHandler {
         GameSettings settings = minecraft.gameSettings;
         fovBackup = settings.fovSetting;
         sensBackup = settings.mouseSensitivity;
+        viewBackup = settings.thirdPersonView;
     }
 
     public static void restore() {
@@ -35,6 +37,9 @@ public class RenderHandler {
         }
         if (sensBackup != null) {
             settings.mouseSensitivity = sensBackup;
+        }
+        if (viewBackup != -1) {
+            settings.thirdPersonView = viewBackup;
         }
     }
 
