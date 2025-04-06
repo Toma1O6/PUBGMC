@@ -463,13 +463,15 @@ public class ClientEvents {
         //Aiming on RMB press
         else if (gs.keyBindUseItem.isPressed()) {
             if (data.getAimInfo().isAiming()) {
+                // cancel aiming
                 RenderHandler.restore();
                 PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.AIM));
                 return;
             }
+            // aiming
             player.setSprinting(false);
             RenderHandler.saveCurrentOptions();
-            gs.thirdPersonView = 0; // Switch to first person view when aiming, adapts Shoulder Surfing Reloaded
+            gs.thirdPersonView = 0; // Switch to first person view when aiming
             ScopeZoom scopeData = gun.getScopeData(stack);
             if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
                 gs.mouseSensitivity *= scopeData.getSensitivity(gun);

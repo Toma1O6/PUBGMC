@@ -78,7 +78,7 @@ public class S2C_PacketSendPlayerCapability implements IMessage {
                 boolean aim = data.getAimInfo().isAiming();
                 boolean reload = data.getReloadInfo().isReloading();
 
-                if (oldReload != reload && !reload) {
+                if (oldReload && !reload) {
                     AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
                 }
                 if (oldAim && !aim) {

@@ -4,6 +4,8 @@ import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.attachment.ScopeZoom;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.client.CFGOtherSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,14 +40,12 @@ public class RenderHandler {
         if (sensBackup != null) {
             settings.mouseSensitivity = sensBackup;
         }
-        if (viewBackup != -1) {
-            settings.thirdPersonView = viewBackup;
+        if (viewBackup != -1) { // this doesn't work with Shoulder Surfing Reloaded
+            CFGOtherSettings config = ConfigPMC.other();
+            if (config.backupPerspective.get()) {
+                settings.thirdPersonView = viewBackup;
+            }
         }
-    }
-
-    public static void restoreAndSaveValues() {
-        restore();
-        saveCurrentOptions();
     }
 
     @SubscribeEvent
