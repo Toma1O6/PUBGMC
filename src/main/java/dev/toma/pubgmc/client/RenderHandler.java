@@ -4,6 +4,8 @@ import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.items.attachment.ScopeZoom;
 import dev.toma.pubgmc.common.items.guns.GunBase;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.client.CFGOtherSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +17,7 @@ public class RenderHandler {
 
     private static Float fovBackup;
     private static Float sensBackup;
+    private static int viewBackup = -1;
 
     private double interpolate(double current, double previous, double partial) {
         return previous + (current - previous) * partial;
@@ -25,6 +28,7 @@ public class RenderHandler {
         GameSettings settings = minecraft.gameSettings;
         fovBackup = settings.fovSetting;
         sensBackup = settings.mouseSensitivity;
+        viewBackup = settings.thirdPersonView;
     }
 
     public static void restore() {
@@ -36,11 +40,12 @@ public class RenderHandler {
         if (sensBackup != null) {
             settings.mouseSensitivity = sensBackup;
         }
-    }
-
-    public static void restoreAndSaveValues() {
-        restore();
-        saveCurrentOptions();
+        if (viewBackup != -1) { // this doesn't work with Shoulder Surfing Reloaded
+            CFGOtherSettings config = ConfigPMC.other();
+            if (config.backupPerspective.get()) {
+                settings.thirdPersonView = viewBackup;
+            }
+        }
     }
 
     @SubscribeEvent

@@ -58,6 +58,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,7 +70,7 @@ public class Pubgmc {
 
     public static final String MOD_ID = "pubgmc";
     public static final String NAME = "PUBGMC";
-    public static final String VERSION = "1.10.5-alpha.2";
+    public static final String VERSION = "1.10.6-alpha.1";
     public static final String CLIENT_PROXY_CLASS = "dev.toma.pubgmc.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "dev.toma.pubgmc.proxy.ServerProxy";
     public static final String UPDATEURL = "https://raw.githubusercontent.com/Toma1O6/PUBGMC/master/update.json";
@@ -140,6 +141,10 @@ public class Pubgmc {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        OreDictionary.registerOre("oreCopper", PMCBlocks.COPPER_ORE);
+        OreDictionary.registerOre("ingotCopper", PMCItems.COPPER_INGOT);
+        OreDictionary.registerOre("ingotSteel", PMCItems.STEEL_INGOT);
+        OreDictionary.registerOre("dustSteel", PMCItems.STEEL_DUST);
         RecipeRegistry.registerWorkbenchRecipes();
         proxy.postInit(event);
     }

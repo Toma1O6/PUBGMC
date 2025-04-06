@@ -33,6 +33,7 @@ public class PlayerData implements IPlayerData {
     private boolean isProne;
     private boolean areNightVisionGogglesActive;
     private int proneCooldown;
+    private int activeSlot;
 
     public PlayerData() {
         this(null);
@@ -126,6 +127,21 @@ public class PlayerData implements IPlayerData {
     }
 
     @Override
+    public void setActiveSlot(int activeSlot) {
+        this.activeSlot = activeSlot;
+    }
+
+    @Override
+    public void clearActiveSlot() {
+        this.setActiveSlot(-1);
+    }
+
+    @Override
+    public int getActiveSlot() {
+        return activeSlot;
+    }
+
+    @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = new NBTTagCompound();
         c.setTag("boostStats", boostStats.serializeNBT());
@@ -135,6 +151,7 @@ public class PlayerData implements IPlayerData {
         c.setTag("debuffs", debuffs.serializeNBT());
         c.setBoolean("activeNightVision", areNightVisionGogglesActive);
         c.setBoolean("prone", this.isProne);
+        c.setInteger("activeSlot", activeSlot);
         return c;
     }
 
@@ -147,6 +164,7 @@ public class PlayerData implements IPlayerData {
         SerializationHelper.inventoryFromNbt(inventory, nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND));
         areNightVisionGogglesActive = nbt.getBoolean("activeNightVision");
         isProne = nbt.getBoolean("prone");
+        activeSlot = nbt.getInteger("activeSlot");
     }
 
     @Override

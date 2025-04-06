@@ -121,7 +121,7 @@ public class EntityParachute extends EntityControllable {
 
     @Override
     public boolean isInRangeToRenderDist(double distance) {
-        return distance < 256.0D;
+        return true;
     }
 
     @Override

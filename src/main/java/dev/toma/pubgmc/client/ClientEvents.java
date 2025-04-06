@@ -236,12 +236,12 @@ public class ClientEvents {
             if (!ConfigPMC.client.overlays.renderStatusBars.get()) { // The game will automatically replenish saturation and no experience bar required
                 // if (ConfigPMC.client.overlays.imgBoostOverlayPos.getX() == 0 && ConfigPMC.client.overlays.imgBoostOverlayPos.getY() == 0 && !data.getBoostStats().isEmpty())
                 e.setCanceled(true);
-            } else if (ConfigPMC.client.overlays.renderNewHealthBar.get()) {
+            } else if (ConfigPMC.client.overlays.renderNewHealthBar.get() && ConfigPMC.client.overlays.newHealthBarLengthRatio.getAsFloat() > 0.5f) {
                 e.setCanceled(true);
             }
         }
-        // Health bar
-        if (e.getType() == ElementType.HEALTH) {
+        // Health and armor bar
+        if (e.getType() == ElementType.HEALTH || e.getType() == ElementType.ARMOR) {
             if (ConfigPMC.client.overlays.renderNewHealthBar.get()) {
                 e.setCanceled(true);
                 renderNewHealthBar();
@@ -463,12 +463,15 @@ public class ClientEvents {
         //Aiming on RMB press
         else if (gs.keyBindUseItem.isPressed()) {
             if (data.getAimInfo().isAiming()) {
+                // cancel aiming
                 RenderHandler.restore();
                 PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.AIM));
                 return;
             }
+            // aiming
             player.setSprinting(false);
-            RenderHandler.restoreAndSaveValues();
+            RenderHandler.saveCurrentOptions();
+            gs.thirdPersonView = 0; // Switch to first person view when aiming
             ScopeZoom scopeData = gun.getScopeData(stack);
             if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
                 gs.mouseSensitivity *= scopeData.getSensitivity(gun);
@@ -727,9 +730,9 @@ public class ClientEvents {
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
         CFG2DCoords overlayPos = ConfigPMC.client.overlays.imgNewHealthBarOverlayPos;
-        short barWidth = 182;
+        int barWidth = Math.round(182 * ConfigPMC.client.overlays.newHealthBarLengthRatio.getAsFloat());
         short barHeight = 9;
-        int leftPos = width / 2 - barWidth / 2 + overlayPos.getX();
+        int leftPos = width / 2 - 91 + overlayPos.getX(); // Hard coded 91 (182/2) to fix the lower left corner, otherwise change newHealthBarLength requires modifying imgNewHealthBarOverlayPos as well
         int topPos = height - 50 + barHeight + overlayPos.getY();
 
         Minecraft mc = Minecraft.getMinecraft();
@@ -831,17 +834,47 @@ public class ClientEvents {
     }
 
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
+        int screenWidth = res.getScaledWidth();
+        int screenHeight = res.getScaledHeight();
+        float centerX = screenWidth / 2f;
+        float halfWidth = centerX;
+        float centerY = screenHeight / 2f;
+        float halfHeight = centerY;
+        CFG2DRatio vInfoPos = ConfigPMC.client.overlays.vehicleInfoPos;
+        float vInfoX = centerX + halfWidth * (vInfoPos.getX() - 0.95f);
+        float vInfoY = centerY + halfHeight * (vInfoPos.getY() + 0.25f);
+
+        if (!(player.getRidingEntity() instanceof EntityVehicle)) {
+            return;
+        }
+        if (e.getType() == ElementType.TEXT) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
-        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
+            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
+        } else if (e.getType() == ElementType.ALL) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
+
+            int barWidth = 120;
+            short barHeight = 5;
+            float fuelPercentage = car.fuel / 100.0f;
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, fuelPercentage * barWidth, barHeight, 0.0, 0.25, 1.0, 0.375, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
+            // health background
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
+            float healthPercentage = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat();
+            // color
+            float r, g, b, a;
+            if (healthPercentage < car.getDamageLevel2()) { // red
+                r = 0.863f; g = 0.34f; b = 0.291f; a = 0.8f; // #dc564a 220,86,74
+            } else if (healthPercentage < car.getDamageLevel1()) { // yellow
+                r = 0.98f; g = 0.895f; b = 0.648f; a = 0.8f; // #f9e4a5 249.228,165
+            } else if (healthPercentage < 1.0f) { // white
+                r = 0.95f; g =0.95f; b = 0.95f; a = 0.8f; // #f2f2f2 242,242,242
+            } else { // grey
+                r = 0.648f; g = 0.648f; b = 0.648f; a = 0.8f; // #a5a5a5 165.165,165
+            }
+            // health
+            ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 10 + barHeight, r, g, b, a);
         }
     }
 

@@ -15,6 +15,7 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
     public DoubleType globalHorizontalRecoil;
     public DoubleType crouchRecoilScale;
     public DoubleType proneRecoilScale;
+    public GlobalWeaponDamageConfig globalWeaponDamageConfig;
     public AttachmentsConfig attachmentsConfig;
     public CFGWeapon p92;
     public CFGWeapon p1911;
@@ -67,6 +68,7 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
         globalHorizontalRecoil = configCreator.createDouble("Global Horizontal Recoil", 1.0, 0.0, 10.0);
         crouchRecoilScale = configCreator.createDouble("Crouched Recoil Scale", 0.74, 0.0, 1.0).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
         proneRecoilScale = configCreator.createDouble("Prone Recoil Scale", 0.65, 0.0, 1.0).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER);
+        globalWeaponDamageConfig = configCreator.createObject(new GlobalWeaponDamageConfig(), plugin);
         attachmentsConfig = configCreator.createObject(new AttachmentsConfig(plugin), plugin);
         p92 = configCreator.createObject(new CFGWeapon("P92", 7.04f, 14.25f, 0.051f, 0,0,0.121f,0), plugin);
         p1911 = configCreator.createObject(new CFGWeapon("P1911", 8.45f, 9.375f, 0.078f, 1,0,0.071f,0.847f), plugin);
@@ -116,6 +118,7 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
         c.setDouble("horizontal", globalHorizontalRecoil.get());
         c.setDouble("crouched", crouchRecoilScale.get());
         c.setDouble("prone", proneRecoilScale.get());
+        c.setTag("weaponDamage", globalWeaponDamageConfig.serializeNBT());
         c.setTag("attachments", attachmentsConfig.serializeNBT());
         writeToNBT("p92", p92, c);
         writeToNBT("p1911", p1911, c);
@@ -165,6 +168,7 @@ public final class CFGWeapons extends ObjectType implements INBTSerializable<NBT
         globalHorizontalRecoil.set(c.getDouble("horizontal"));
         crouchRecoilScale.set(c.getDouble("crouched"));
         proneRecoilScale.set(c.getDouble("prone"));
+        globalWeaponDamageConfig.deserializeNBT(c.getCompoundTag("weaponDamage"));
         attachmentsConfig.deserializeNBT(c.getCompoundTag("attachments"));
         readFromNBT("p92", p92, c);
         readFromNBT("p1911", p1911, c);

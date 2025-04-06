@@ -3,8 +3,8 @@ package dev.toma.pubgmc.client.util;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.common.tileentity.TileEntityGunWorkbench;
 import dev.toma.pubgmc.util.helper.ImageUtil;
-import dev.toma.pubgmc.util.recipes.PMCIngredient;
-import dev.toma.pubgmc.util.recipes.PMCRecipe;
+import dev.toma.pubgmc.util.recipes.CraftingIngredient;
+import dev.toma.pubgmc.util.recipes.WorkbenchRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
@@ -14,17 +14,17 @@ public class RecipeButton extends GuiButton {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/gui/recipebutton.png");
     public final ItemStack stackToDraw;
-    public final PMCRecipe recipe;
+    public final WorkbenchRecipe recipe;
     public double yTex, yTexE;
     public boolean active;
     private boolean hasIngredients = true;
     private int renderTime;
     private TileEntityGunWorkbench te;
 
-    public RecipeButton(int id, int x, int y, PMCRecipe recipe, TileEntityGunWorkbench te) {
+    public RecipeButton(int id, int x, int y, WorkbenchRecipe recipe, TileEntityGunWorkbench te) {
         super(id, x, y, 99, 16, "");
         this.recipe = recipe;
-        this.stackToDraw = new ItemStack(recipe.result);
+        this.stackToDraw = recipe.result;
         this.te = te;
         this.performIngredientCheck();
     }
@@ -54,15 +54,16 @@ public class RecipeButton extends GuiButton {
 
     public void performIngredientCheck() {
         hasIngredients = true;
-        for (PMCIngredient ing : recipe.ingredients) {
+        for (CraftingIngredient craftingIngredient : recipe.ingredients) {
             int amount = 0;
             for (ItemStack stack : te.getInventory()) {
-                if (!stack.isEmpty() && stack.getItem() == ing.getIngredient().getItem()) {
+                if (craftingIngredient.isValidInput(stack)) {
                     amount += stack.getCount();
                 }
             }
-            if (amount < ing.getIngredient().getCount()) {
-                hasIngredients = false;
+            int requiredResourceSize = craftingIngredient.requiredResourceSize();
+            if (amount < requiredResourceSize) {
+                this.hasIngredients = false;
                 break;
             }
         }

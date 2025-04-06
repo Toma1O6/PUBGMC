@@ -20,11 +20,13 @@ public final class CFGOverlaySettings extends ObjectType {
     public DoubleType imgNewHealthBarLimit;
     public CFG2DCoords equipmentInventoryButtonPos;
     public CFG2DRatio gunInfoPos;
+    public CFG2DRatio vehicleInfoPos;
     public BooleanType renderArmorIcons;
     public BooleanType renderGunCrosshairs;
     public BooleanType renderStatusBars;
     public BooleanType renderBoost;
     public BooleanType renderNewHealthBar;
+    public DoubleType newHealthBarLengthRatio;
     public ColorType jmMapBorderColor;
     public ColorType jmBorderColor;
     public ColorType jmShrinkingColor;
@@ -46,11 +48,13 @@ public final class CFGOverlaySettings extends ObjectType {
         imgNewHealthBarLimit = configCreator.createDouble("Maximum health in new health bar in a line", 20.0f, 5f ,100f);
         equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         gunInfoPos = configCreator.createObject(new CFG2DRatio("Gun info position"), plugin);
+        vehicleInfoPos = configCreator.createObject(new CFG2DRatio("Vehicle info position"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
         renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs in first person view", true);
         renderStatusBars = configCreator.createBoolean("Render food and experience bar", false);
         renderBoost = configCreator.createBoolean("Render boost", true, "Boost provided by energy drink, painkiller, etc.");
-        renderNewHealthBar = configCreator.createBoolean("Render new health bar", true, "Use new health bar instead of the original");
+        renderNewHealthBar = configCreator.createBoolean("Render new health bar", true, "Use new health bar instead of the original", "This will also hide original armor bar");
+        newHealthBarLengthRatio = configCreator.createDouble("New health bar length ratio", 1.0f, 0.01, 2.0f, "Set to value greater than 0.5 will hide food bar");
         jmMapBorderColor = configCreator.createColorRGB("Map Border Color", "#FF0000", "Map Border color for JourneyMap");
         jmBorderColor = configCreator.createColorRGB("Border Playzone Color", "#FFFFFF", "Border playzone color for JourneyMap");
         jmShrinkingColor = configCreator.createColorRGB("Shrinking Playzone Color", "#0000FF", "Shrinking playzone color for JourneyMap");

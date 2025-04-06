@@ -76,6 +76,9 @@ public class ImageUtil {
     }
 
     public static void drawImageWithUV(Minecraft minecraft, ResourceLocation imageLocation, int startX, int startY, double width, double height, double startU, double startV, double u, double v, boolean transparent) {
+        drawImageWithUV(minecraft, imageLocation, (float)startX, (float)startY, width, height, startU, startV, u, v, transparent);
+    }
+    public static void drawImageWithUV(Minecraft minecraft, ResourceLocation imageLocation, float startX, float startY, double width, double height, double startU, double startV, double u, double v, boolean transparent) {
         minecraft.getTextureManager().bindTexture(imageLocation);
         GlStateManager.color(1f, 1f, 1f);
         Tessellator tessellator = Tessellator.getInstance();
