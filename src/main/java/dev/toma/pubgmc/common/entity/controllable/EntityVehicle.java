@@ -3,6 +3,8 @@ package dev.toma.pubgmc.common.entity.controllable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
@@ -219,6 +221,8 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         if (!world.isRemote) {
             if (this.canBeRidden(player) && canFitPassenger(player)) {
                 player.startRiding(this);
+                IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+                data.getAimInfo().setAiming(false, 1.0F);
             }
         }
 
