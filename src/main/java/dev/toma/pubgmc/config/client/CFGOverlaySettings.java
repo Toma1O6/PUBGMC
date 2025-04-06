@@ -20,6 +20,7 @@ public final class CFGOverlaySettings extends ObjectType {
     public DoubleType imgNewHealthBarLimit;
     public CFG2DCoords equipmentInventoryButtonPos;
     public CFG2DRatio gunInfoPos;
+    public CFG2DRatio vehicleInfoPos;
     public BooleanType renderArmorIcons;
     public BooleanType renderGunCrosshairs;
     public BooleanType renderStatusBars;
@@ -47,6 +48,7 @@ public final class CFGOverlaySettings extends ObjectType {
         imgNewHealthBarLimit = configCreator.createDouble("Maximum health in new health bar in a line", 20.0f, 5f ,100f);
         equipmentInventoryButtonPos = configCreator.createObject(new CFG2DCoords("Equipment Inventory Button"), plugin);
         gunInfoPos = configCreator.createObject(new CFG2DRatio("Gun info position"), plugin);
+        vehicleInfoPos = configCreator.createObject(new CFG2DRatio("Vehicle info position"), plugin);
         renderArmorIcons = configCreator.createBoolean("Render Armor Icons", true);
         renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs in first person view", true);
         renderStatusBars = configCreator.createBoolean("Render food and experience bar", false);

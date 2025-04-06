@@ -834,17 +834,33 @@ public class ClientEvents {
     }
 
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
+        int screenWidth = res.getScaledWidth();
+        int screenHeight = res.getScaledHeight();
+        float centerX = screenWidth / 2f;
+        float halfWidth = centerX;
+        float centerY = screenHeight / 2f;
+        float halfHeight = centerY;
+        CFG2DRatio vInfoPos = ConfigPMC.client.overlays.vehicleInfoPos;
+        float vInfoX = centerX + halfWidth * (vInfoPos.getX() - 0.95f);
+        float vInfoY = centerY + halfHeight * (vInfoPos.getY() + 0.25f);
+
+        if (!(player.getRidingEntity() instanceof EntityVehicle)) {
+            return;
+        }
+        if (e.getType() == ElementType.TEXT) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
-        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
+            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
+        } else if (e.getType() == ElementType.ALL) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            float barWidth = 120;
+
+            int barWidth = 120;
+            short barHeight = 5;
             float fuelPercentage = car.fuel / 100.0f;
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, fuelPercentage * barWidth, 5, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, barWidth, 5, 0.0, 0.375, 1.0, 0.5, true);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, barWidth, 5, 0.0, 0.125, 1.0, 0.25, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, fuelPercentage * barWidth, barHeight, 0.0, 0.25, 1.0, 0.375, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
+            // health background
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
             float healthPercentage = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat();
             // color
             float r, g, b, a;
@@ -857,7 +873,8 @@ public class ClientEvents {
             } else { // grey
                 r = 0.648f; g = 0.648f; b = 0.648f; a = 0.8f; // #a5a5a5 165.165,165
             }
-            ImageUtil.drawShape(15, res.getScaledHeight() - 50, 15 + healthPercentage * barWidth, res.getScaledHeight() - 45, r, g, b, a);
+            // health
+            ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 10 + barHeight, r, g, b, a);
         }
     }
 
