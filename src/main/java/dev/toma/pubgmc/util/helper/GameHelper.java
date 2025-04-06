@@ -202,10 +202,14 @@ public final class GameHelper {
 
     public static void resetPlayerData(EntityPlayer player) {
         player.inventory.clear();
-        Collection<PotionEffect> effects = new ArrayList<>(player.getActivePotionEffects());
-        for (PotionEffect effect : effects) {
-            player.removeActivePotionEffect(effect.getPotion());
-        }
+
+        // Clears all active potion effects using the internal Minecraft method.
+        // This method handles Forge events and potion effect completion cleanup.
+        player.clearActivePotions();
+
+        // Clears absorption effect from golden apples, which can be manually configured in loot.
+        player.setAbsorptionAmount(0.0F);
+
         fillPlayerHunger(player);
         player.setHealth(player.getMaxHealth());
         IPlayerData playerData = PlayerDataProvider.get(player);
