@@ -335,24 +335,29 @@ public class EntityBullet extends Entity {
     }
 
     private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot) {
+        ItemStack stack;
+        BulletproofArmor.DamageArea area;
         if (isHeadShot) {
-            ItemStack head = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-            processArmorDamage(head, BulletproofArmor.DamageArea.HEAD, entity);
+            stack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+            area = BulletproofArmor.DamageArea.HEAD;
         } else {
-            ItemStack body = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            processArmorDamage(body, BulletproofArmor.DamageArea.OTHER, entity);
+            stack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            area = BulletproofArmor.DamageArea.OTHER;
         }
-    }
 
-    private void processArmorDamage(ItemStack stack, BulletproofArmor.DamageArea area, EntityLivingBase target) {
         if (stack.isEmpty())
             return;
         if (!(stack.getItem() instanceof BulletproofArmor)) {
             return;
         }
-        BulletproofArmor armor = (BulletproofArmor) stack.getItem();
-        ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
-        damage *= mutator.getDamageMultiplier(armor, area, stack, target);
+
+        if (stack.getItemDamage() == stack.getMaxDamage() - 1) {
+            damage *= 0.8f;
+        } else {
+            BulletproofArmor armor = (BulletproofArmor) stack.getItem();
+            ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
+            damage *= mutator.getDamageMultiplier(armor, area, stack, entity);
+        }
     }
 
     private void damageArmor(boolean headshot, float baseDamage, EntityLivingBase target) {
@@ -366,7 +371,13 @@ public class EntityBullet extends Entity {
         BulletproofArmor.DamageArea area = headshot ? BulletproofArmor.DamageArea.HEAD : BulletproofArmor.DamageArea.OTHER;
         ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
         float itemDamageMultiplier = mutator.getDestructionMultiplier(armor, area, stack, target);
-        int damageAmount = Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier);
+        int damageAmount;
+        if (headshot) {
+            damageAmount = Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier);
+        } else {
+            damageAmount = Math.min(Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier), stack.getMaxDamage() - 1 - stack.getItemDamage());
+        }
+
         stack.damageItem(damageAmount, target);
     }
 
