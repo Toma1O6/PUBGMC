@@ -25,6 +25,7 @@ public final class CFGOverlaySettings extends ObjectType {
     public BooleanType renderStatusBars;
     public BooleanType renderBoost;
     public BooleanType renderNewHealthBar;
+    public DoubleType newHealthBarLengthRatio;
     public ColorType jmMapBorderColor;
     public ColorType jmBorderColor;
     public ColorType jmShrinkingColor;
@@ -50,7 +51,8 @@ public final class CFGOverlaySettings extends ObjectType {
         renderGunCrosshairs = configCreator.createBoolean("Render Crosshairs in first person view", true);
         renderStatusBars = configCreator.createBoolean("Render food and experience bar", false);
         renderBoost = configCreator.createBoolean("Render boost", true, "Boost provided by energy drink, painkiller, etc.");
-        renderNewHealthBar = configCreator.createBoolean("Render new health bar", true, "Use new health bar instead of the original");
+        renderNewHealthBar = configCreator.createBoolean("Render new health bar", true, "Use new health bar instead of the original", "This will also hide original armor bar");
+        newHealthBarLengthRatio = configCreator.createDouble("The length ratio of the new health bar", 1.0f, 0.01, 2.0f, "Set to value greater than 0.5 will hide food bar");
         jmMapBorderColor = configCreator.createColorRGB("Map Border Color", "#FF0000", "Map Border color for JourneyMap");
         jmBorderColor = configCreator.createColorRGB("Border Playzone Color", "#FFFFFF", "Border playzone color for JourneyMap");
         jmShrinkingColor = configCreator.createColorRGB("Shrinking Playzone Color", "#0000FF", "Shrinking playzone color for JourneyMap");
