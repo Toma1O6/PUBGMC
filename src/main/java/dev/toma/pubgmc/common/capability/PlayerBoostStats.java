@@ -76,7 +76,7 @@ public class PlayerBoostStats implements BoostStats {
         // boost
         if (boostDropCooldown <= 0) {
             if (!world.isRemote) {
-                --boost;
+                if (--boost < 0) boost = 0;
                 boostDropCooldown = 20;
                 data.sync();
             }
