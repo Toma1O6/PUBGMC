@@ -468,7 +468,7 @@ public class ClientEvents {
                 return;
             }
             player.setSprinting(false);
-            RenderHandler.restoreAndSaveValues();
+            RenderHandler.saveCurrentOptions();
             gs.thirdPersonView = 0; // Switch to first person view when aiming, adapts Shoulder Surfing Reloaded
             ScopeZoom scopeData = gun.getScopeData(stack);
             if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
