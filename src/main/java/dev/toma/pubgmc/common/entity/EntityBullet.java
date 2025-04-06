@@ -247,14 +247,16 @@ public class EntityBullet extends Entity {
 
     protected void onEntityHit(boolean isHeadshot, Entity entity, Vec3d vec) {
         DamageSource gunsource = new DamageSourceGun(shooter, this, stack, isHeadshot).setDamageBypassesArmor();
-
-        float baseDamage = damage;
         boolean isLivingEntity = entity instanceof EntityLivingBase;
+        float unProtectedDamage = damage;
         if (isLivingEntity) {
-            getCalculatedDamage((EntityLivingBase) entity, isHeadshot);
+            float protectedDamage = getProtectedDamage((EntityLivingBase) entity, isHeadshot);
+            if (protectedDamage != -1) {
+                this.damage = protectedDamage;
+            }
         }
         if (entity.attackEntityFrom(gunsource, damage) && isLivingEntity) {
-            damageArmor(isHeadshot, baseDamage, (EntityLivingBase) entity);
+            damageArmor(isHeadshot, unProtectedDamage, (EntityLivingBase) entity);
         }
 
         Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
@@ -334,7 +336,7 @@ public class EntityBullet extends Entity {
         return PUBGMCUtil.getDistanceToBlockPos3D(new BlockPos(start), new BlockPos(vec));
     }
 
-    private void getCalculatedDamage(EntityLivingBase entity, boolean isHeadShot) {
+    private float getProtectedDamage(EntityLivingBase entity, boolean isHeadShot) {
         ItemStack stack;
         BulletproofArmor.DamageArea area;
         if (isHeadShot) {
@@ -346,17 +348,17 @@ public class EntityBullet extends Entity {
         }
 
         if (stack.isEmpty())
-            return;
+            return -1;
         if (!(stack.getItem() instanceof BulletproofArmor)) {
-            return;
+            return -1;
         }
 
-        if (stack.getItemDamage() == stack.getMaxDamage() - 1) {
-            damage *= 0.8f;
+        if (!isHeadShot && stack.getItemDamage() == stack.getMaxDamage()) {
+            return damage * 0.8f;
         } else {
             BulletproofArmor armor = (BulletproofArmor) stack.getItem();
             ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
-            damage *= mutator.getDamageMultiplier(armor, area, stack, entity);
+            return damage * mutator.getDamageMultiplier(armor, area, stack, entity);
         }
     }
 
@@ -367,17 +369,17 @@ public class EntityBullet extends Entity {
         if (!(stack.getItem() instanceof BulletproofArmor)) {
             return;
         }
+
         BulletproofArmor armor = (BulletproofArmor) stack.getItem();
         BulletproofArmor.DamageArea area = headshot ? BulletproofArmor.DamageArea.HEAD : BulletproofArmor.DamageArea.OTHER;
         ArmorMutator mutator = GameMutatorHelper.getMutator(world, GameMutators.ARMOR).orElse(ArmorMutator.DEFAULT);
-        float itemDamageMultiplier = mutator.getDestructionMultiplier(armor, area, stack, target);
+        float protectionMultiplier = 1.0f - mutator.getDamageMultiplier(armor, area, stack, target);
         int damageAmount;
         if (headshot) {
-            damageAmount = Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier);
+            damageAmount = Math.round(baseDamage * 5 * protectionMultiplier);
         } else {
-            damageAmount = Math.min(Math.round((baseDamage - (baseDamage - damage)) * itemDamageMultiplier), stack.getMaxDamage() - 1 - stack.getItemDamage());
+            damageAmount = Math.min(Math.round(baseDamage * 5 * protectionMultiplier), stack.getMaxDamage() - stack.getItemDamage());
         }
-
         stack.damageItem(damageAmount, target);
     }
 
