@@ -159,16 +159,16 @@ public class EntityAIGunAttack extends EntityAIBase {
         }
         ++firedTotal;
         boolean burstFire = distanceToTarget < EFFECTIVE_RANGE_TABLE[gun.getGunType().ordinal()];
-        int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 9 : 1;
+        int bulletAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 9 : 1;
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         boolean isSilenced = muzzle != null && muzzle.isSilenced();
         SoundEvent event = isSilenced ? gun.getGunSilencedSound() : gun.getGunSound();
         float volume = isSilenced ? gun.getGunSilencedVolume() : gun.getGunVolume();
         PacketHandler.sendToDimension(new S2C_PacketPlaySoundWithDelay(event, volume, aiPlayer.posX, aiPlayer.posY, aiPlayer.posZ), aiPlayer.dimension);
-        for (int i = 0; i < shotAmount; i++) {
+        for (int i = 0; i < bulletAmount; i++) {
             EntityBullet bullet = new EntityBullet(aiPlayer.world, aiPlayer, gun);
             bullet.setPosition(bullet.posX, bullet.posY - 0.5, bullet.posZ);
-            if (shotAmount > 1) {
+            if (bulletAmount > 1) {
                 double d0 = distanceToTarget / 150;
                 bullet.motionY += d0;
             }
