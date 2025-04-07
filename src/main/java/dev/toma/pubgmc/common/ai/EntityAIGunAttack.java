@@ -159,7 +159,7 @@ public class EntityAIGunAttack extends EntityAIBase {
         }
         ++firedTotal;
         boolean burstFire = distanceToTarget < EFFECTIVE_RANGE_TABLE[gun.getGunType().ordinal()];
-        int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 8 : 1;
+        int shotAmount = gun.getGunType() == GunBase.GunType.SHOTGUN ? 9 : 1;
         ItemMuzzle muzzle = gun.getAttachment(AttachmentType.MUZZLE, stack);
         boolean isSilenced = muzzle != null && muzzle.isSilenced();
         SoundEvent event = isSilenced ? gun.getGunSilencedSound() : gun.getGunSound();
