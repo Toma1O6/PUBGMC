@@ -863,7 +863,7 @@ public class ClientEvents {
         if (e.getType() == ElementType.TEXT) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
+            mc.fontRenderer.drawStringWithShadow(I18n.format("label.pubgmc.speed") + ": " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
         } else if (e.getType() == ElementType.ALL) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
 

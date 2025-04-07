@@ -419,6 +419,7 @@ label.pubgmc.throwable.duration=效果持续时间: %s秒
 label.pubgmc.throwable.water_cancel=遇水会导致效果失效！
 label.pubgmc.map_configuration.must_use_on_map=需在地图内使用此物品
 label.pubgmc.must_hold_weapon=手持武器以打开相应的配件界面
+label.pubgmc.speed=速度
 pubgmc.menu.discord=我们的Discord服务器
 pubgmc.menu.curseforge=CurseForge页面
 pubgmc.menu.patreon=捐款支持该项目
