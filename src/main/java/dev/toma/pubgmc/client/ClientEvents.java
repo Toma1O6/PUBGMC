@@ -863,18 +863,18 @@ public class ClientEvents {
             ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
             float healthPercentage = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat();
             // color
-            float r, g, b, a;
+            float r, g, b;
             if (healthPercentage < car.getDamageLevel2()) { // red
-                r = 0.863f; g = 0.34f; b = 0.291f; a = 0.8f; // #dc564a 220,86,74
+                r = 0.863f; g = 0.34f; b = 0.291f; // #dc564a 220,86,74
             } else if (healthPercentage < car.getDamageLevel1()) { // yellow
-                r = 0.98f; g = 0.895f; b = 0.648f; a = 0.8f; // #f9e4a5 249.228,165
+                r = 0.98f; g = 0.895f; b = 0.648f; // #f9e4a5 249.228,165
             } else if (healthPercentage < 1.0f) { // white
-                r = 0.95f; g =0.95f; b = 0.95f; a = 0.8f; // #f2f2f2 242,242,242
+                r = 0.95f; g =0.95f; b = 0.95f; // #f2f2f2 242,242,242
             } else { // grey
-                r = 0.648f; g = 0.648f; b = 0.648f; a = 0.8f; // #a5a5a5 165.165,165
+                r = 0.648f; g = 0.648f; b = 0.648f; // #a5a5a5 165.165,165
             }
             // health
-            ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 10 + barHeight, r, g, b, a);
+            ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 5 + barHeight, r, g, b, 1.0f);
         }
     }
 
