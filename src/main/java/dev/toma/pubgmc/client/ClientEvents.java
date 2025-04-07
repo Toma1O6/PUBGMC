@@ -346,25 +346,7 @@ public class ClientEvents {
         }
         // Reloading
         if (KeyBinds.RELOAD.isPressed()) {
-            ItemStack stack = player.getHeldItemMainhand();
-            ReloadInfo reloadInfo = data.getReloadInfo();
-            if (stack.getItem() instanceof GunBase) {
-                GunBase gun = (GunBase) stack.getItem();
-                IReloader reloader = gun.getReloader();
-                if (reloadInfo.isReloading()) {
-                    if (!reloader.canInterrupt(gun, stack)) {
-                        return;
-                    }
-                    reloadInfo.setReloading(false);
-                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
-                    AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
-                    return;
-                } else if (stack.hasTagCompound() && reloader.canReload(player, gun, stack)) {
-                    AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
-                    reloadInfo.startReload(player, gun, stack);
-                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
-                }
-            }
+            processReloading(player, data);
         }
 
         //Switch firemode
@@ -383,6 +365,28 @@ public class ClientEvents {
         // Equipment inventory
         if (KeyBinds.EQUIPMENT_INVENTORY.isPressed()) {
             PacketHandler.sendToServer(new C2S_PacketOpenPlayerEquipment());
+        }
+    }
+
+    public void processReloading(EntityPlayerSP player, IPlayerData data) {
+        ItemStack stack = player.getHeldItemMainhand();
+        ReloadInfo reloadInfo = data.getReloadInfo();
+        if (stack.getItem() instanceof GunBase) {
+            GunBase gun = (GunBase) stack.getItem();
+            IReloader reloader = gun.getReloader();
+            if (reloadInfo.isReloading()) {
+                if (!reloader.canInterrupt(gun, stack)) {
+                    return;
+                }
+                reloadInfo.setReloading(false);
+                PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
+                AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                return;
+            } else if (stack.hasTagCompound() && reloader.canReload(player, gun, stack)) {
+                AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
+                reloadInfo.startReload(player, gun, stack);
+                PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
+            }
         }
     }
 
@@ -447,6 +451,9 @@ public class ClientEvents {
                     applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                 } else {
                     player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                    if (ConfigPMC.client.other.shootingReload.get()) {
+                        processReloading(player, data);
+                    }
                 }
             } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
                 if (shooting) {
@@ -457,6 +464,9 @@ public class ClientEvents {
                     shotsFired = 0;
                 } else {
                     player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                    if (ConfigPMC.client.other.shootingReload.get()) {
+                        processReloading(player, data);
+                    }
                 }
             }
         }
@@ -484,7 +494,7 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClientTick(TickEvent.ClientTickEvent ev) {
         Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.player;
+        EntityPlayerSP player = mc.player;
         GameSettings gs = mc.gameSettings;
         if (ev.phase == Phase.END) {
             if (mc.currentScreen instanceof ITickable) {
@@ -514,6 +524,9 @@ public class ClientEvents {
                             cooldownTracker.add(gun);
                         } else {
                             player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                            if (ConfigPMC.client.other.shootingReload.get()) {
+                                processReloading(player, data);
+                            }
                         }
                     }
                 }

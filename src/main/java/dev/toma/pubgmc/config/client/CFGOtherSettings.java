@@ -16,6 +16,7 @@ public final class CFGOtherSettings extends ObjectType {
     public IntType maxLootRenderDistance;
     public StringType headshotCharacter;
     public BooleanType backupPerspective;
+    public BooleanType shootingReload;
 
     public CFGOtherSettings() {
         super("Other");
@@ -27,5 +28,6 @@ public final class CFGOtherSettings extends ObjectType {
         maxLootRenderDistance = configCreator.createInt("Loot render distance", 32, 8, 128, "Distance at which is loot being rendered");
         headshotCharacter = configCreator.createString("Headshot character", "\u2316", Restriction.newRestriction(Pattern.compile(".")), "Character to be used for displaying headshot kills");
         backupPerspective = configCreator.createBoolean("Backup Perspective before aiming", false, "This is not compatible with Shoulder Surfing Reloaded");
+        shootingReload = configCreator.createBoolean("Use attack button to reload", true, "Only triggers when the magazine is empty");
     }
 }
