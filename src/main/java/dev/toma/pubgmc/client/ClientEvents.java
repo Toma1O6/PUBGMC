@@ -479,6 +479,7 @@ public class ClientEvents {
                 return;
             }
             // aiming
+            RenderHandler.restore(); // Allow mouse wheel sensitivity adjustment to be restored after zooming
             player.setSprinting(false);
             RenderHandler.saveCurrentOptions();
             gs.thirdPersonView = 0; // Switch to first person view when aiming
