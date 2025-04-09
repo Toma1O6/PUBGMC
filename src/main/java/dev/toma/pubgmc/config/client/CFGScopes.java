@@ -30,7 +30,7 @@ public class CFGScopes extends ObjectType {
     @Override
     public void buildStructure(ConfigCreator configCreator) {
         PMCConfigCreator creator = (PMCConfigCreator) configCreator;
-        glowingReticles = creator.createBoolean("Glowing reticles", true, "Reticles will be rendered with full brightness");
+        // glowingReticles = creator.createBoolean("Glowing reticles", true, "Reticles will be rendered with full brightness");
         scope2xSensitivity = creator.createDouble("2X scope sensitivity", 0.85F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);
         scope4xSensitivity = creator.createDouble("4X scope sensitivity", 0.6F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);
         scope8xSensitivity = creator.createDouble("8X scope sensitivity", 0.35F, 0.01F, 1.0F).setDisplay(NumberDisplayType.TEXT_FIELD_SLIDER).setFormatting(DevUtil.THREE_DECIMALS);

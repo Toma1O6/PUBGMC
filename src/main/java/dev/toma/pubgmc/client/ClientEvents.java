@@ -346,25 +346,7 @@ public class ClientEvents {
         }
         // Reloading
         if (KeyBinds.RELOAD.isPressed()) {
-            ItemStack stack = player.getHeldItemMainhand();
-            ReloadInfo reloadInfo = data.getReloadInfo();
-            if (stack.getItem() instanceof GunBase) {
-                GunBase gun = (GunBase) stack.getItem();
-                IReloader reloader = gun.getReloader();
-                if (reloadInfo.isReloading()) {
-                    if (!reloader.canInterrupt(gun, stack)) {
-                        return;
-                    }
-                    reloadInfo.setReloading(false);
-                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
-                    AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
-                    return;
-                } else if (stack.hasTagCompound() && reloader.canReload(player, gun, stack)) {
-                    AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
-                    reloadInfo.startReload(player, gun, stack);
-                    PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
-                }
-            }
+            processReloading(player, data);
         }
 
         //Switch firemode
@@ -383,6 +365,28 @@ public class ClientEvents {
         // Equipment inventory
         if (KeyBinds.EQUIPMENT_INVENTORY.isPressed()) {
             PacketHandler.sendToServer(new C2S_PacketOpenPlayerEquipment());
+        }
+    }
+
+    public void processReloading(EntityPlayerSP player, IPlayerData data) {
+        ItemStack stack = player.getHeldItemMainhand();
+        ReloadInfo reloadInfo = data.getReloadInfo();
+        if (stack.getItem() instanceof GunBase) {
+            GunBase gun = (GunBase) stack.getItem();
+            IReloader reloader = gun.getReloader();
+            if (reloadInfo.isReloading()) {
+                if (!reloader.canInterrupt(gun, stack)) {
+                    return;
+                }
+                reloadInfo.setReloading(false);
+                PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.RELOAD));
+                AnimationProcessor.instance().stop(AnimationType.RELOAD_ANIMATION_TYPE);
+                return;
+            } else if (stack.hasTagCompound() && reloader.canReload(player, gun, stack)) {
+                AnimationDispatcher.dispatchReloadAnimation(gun, stack, player);
+                reloadInfo.startReload(player, gun, stack);
+                PacketHandler.INSTANCE.sendToServer(new C2S_PacketSetProperty(true, C2S_PacketSetProperty.Action.RELOAD));
+            }
         }
     }
 
@@ -447,6 +451,9 @@ public class ClientEvents {
                     applyRecoil(player, stack, gun, data.getAimInfo().isAiming());
                 } else {
                     player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                    if (ConfigPMC.client.other.shootingReload.get()) {
+                        processReloading(player, data);
+                    }
                 }
             } else if (gun.getFiremode(stack) == GunBase.Firemode.BURST) {
                 if (shooting) {
@@ -457,19 +464,25 @@ public class ClientEvents {
                     shotsFired = 0;
                 } else {
                     player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                    if (ConfigPMC.client.other.shootingReload.get()) {
+                        processReloading(player, data);
+                    }
                 }
             }
         }
         //Aiming on RMB press
         else if (gs.keyBindUseItem.isPressed()) {
             if (data.getAimInfo().isAiming()) {
+                // cancel aiming
                 RenderHandler.restore();
                 PacketHandler.sendToServer(new C2S_PacketSetProperty(false, C2S_PacketSetProperty.Action.AIM));
                 return;
             }
+            // aiming
+            RenderHandler.restore(); // Allow mouse wheel sensitivity adjustment to be restored after zooming
             player.setSprinting(false);
             RenderHandler.saveCurrentOptions();
-            gs.thirdPersonView = 0; // Switch to first person view when aiming, adapts Shoulder Surfing Reloaded
+            gs.thirdPersonView = 0; // Switch to first person view when aiming
             ScopeZoom scopeData = gun.getScopeData(stack);
             if (scopeData != null && scopeData.getSensitivity(gun) < 1.0F) {
                 gs.mouseSensitivity *= scopeData.getSensitivity(gun);
@@ -482,7 +495,7 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClientTick(TickEvent.ClientTickEvent ev) {
         Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.player;
+        EntityPlayerSP player = mc.player;
         GameSettings gs = mc.gameSettings;
         if (ev.phase == Phase.END) {
             if (mc.currentScreen instanceof ITickable) {
@@ -512,6 +525,9 @@ public class ClientEvents {
                             cooldownTracker.add(gun);
                         } else {
                             player.playSound(PMCSounds.gun_noammo, 4f, 1f);
+                            if (ConfigPMC.client.other.shootingReload.get()) {
+                                processReloading(player, data);
+                            }
                         }
                     }
                 }
@@ -832,17 +848,47 @@ public class ClientEvents {
     }
 
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        if (e.getType() == ElementType.TEXT && player.getRidingEntity() instanceof EntityVehicle) {
+        int screenWidth = res.getScaledWidth();
+        int screenHeight = res.getScaledHeight();
+        float centerX = screenWidth / 2f;
+        float halfWidth = centerX;
+        float centerY = screenHeight / 2f;
+        float halfHeight = centerY;
+        CFG2DRatio vInfoPos = ConfigPMC.client.overlays.vehicleInfoPos;
+        float vInfoX = centerX + halfWidth * (vInfoPos.getX() - 0.95f);
+        float vInfoY = centerY + halfHeight * (vInfoPos.getY() + 0.25f);
+
+        if (!(player.getRidingEntity() instanceof EntityVehicle)) {
+            return;
+        }
+        if (e.getType() == ElementType.TEXT) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
             double speed = car.getSpeed() * 20;
-            mc.fontRenderer.drawStringWithShadow("Speed: " + (int) (speed * 3.6) + "km/h", 15, res.getScaledHeight() - 60, 16777215);
-        } else if (e.getType() == ElementType.ALL && player.getRidingEntity() instanceof EntityVehicle) {
+            mc.fontRenderer.drawStringWithShadow(I18n.format("label.pubgmc.speed") + ": " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
+        } else if (e.getType() == ElementType.ALL) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double health = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat() * 100;
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, car.fuel * 1.2, 5, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 40, 120, 5, 0.0, 0.375, 1.0, 0.5, true);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, 120, 5, 0.0, 0.125, 1.0, 0.25, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, 15, res.getScaledHeight() - 50, health * 1.2, 5, 0.0, 0.0, 1.0, 0.125, false);
+
+            int barWidth = 120;
+            short barHeight = 5;
+            float fuelPercentage = car.fuel / 100.0f;
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, fuelPercentage * barWidth, barHeight, 0.0, 0.25, 1.0, 0.375, false);
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
+            // health background
+            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
+            float healthPercentage = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat();
+            // color
+            float r, g, b;
+            if (healthPercentage < car.getDamageLevel2()) { // red
+                r = 0.863f; g = 0.34f; b = 0.291f; // #dc564a 220,86,74
+            } else if (healthPercentage < car.getDamageLevel1()) { // yellow
+                r = 0.98f; g = 0.895f; b = 0.648f; // #f9e4a5 249.228,165
+            } else if (healthPercentage < 1.0f) { // white
+                r = 0.95f; g =0.95f; b = 0.95f; // #f2f2f2 242,242,242
+            } else { // grey
+                r = 0.648f; g = 0.648f; b = 0.648f; // #a5a5a5 165.165,165
+            }
+            // health
+            ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 5 + barHeight, r, g, b, 1.0f);
         }
     }
 
