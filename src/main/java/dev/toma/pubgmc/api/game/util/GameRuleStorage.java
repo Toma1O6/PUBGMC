@@ -28,7 +28,7 @@ public final class GameRuleStorage {
 
     public static void applyDefaultGameRules(World world, GameRuleStorage storage, boolean deathMessagesChatDisplay) {
         storage.storeValueAndSet(world, GameRuleStorage.NATURAL_REGENERATION, GameRuleStorage.FALSE);
-        storage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
+        // storage.storeValueAndSet(world, GameRuleStorage.MOB_SPAWNING, GameRuleStorage.FALSE);
         storage.storeValueAndSet(world, GameRuleStorage.MOB_LOOT, GameRuleStorage.FALSE);
         storage.storeValueAndSet(world, GameRuleStorage.SHOW_DEATH_MESSAGES, String.valueOf(deathMessagesChatDisplay));
     }
