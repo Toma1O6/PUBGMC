@@ -179,10 +179,12 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
                 plane.setFlightHeight(configuration.planeFlightHeight);
                 return plane;
             };
+            GameWorldConfiguration.daytimeBackup = world.getWorldTime();
+            net.minecraft.world.GameType gameType = GameWorldConfiguration.adventureMode ? net.minecraft.world.GameType.ADVENTURE : net.minecraft.world.GameType.SURVIVAL;
             GameHelper.spawnPlanesWithPlayers(teamManager, world, player -> {
                 GameHelper.resetPlayerData(player);
                 LoadoutManager.apply(player, PLAYER_INITIAL_LOOT_PATH);
-                player.setGameType(net.minecraft.world.GameType.ADVENTURE);
+                player.setGameType(gameType);
             }, planeProvider);
             configuration.worldConfiguration.apply(worldServer, ruleStorage);
             GameRuleStorage.applyDefaultGameRules(world, ruleStorage, configuration.displayChatDeathMessages);
@@ -260,6 +262,7 @@ public class BattleRoyaleGame implements TeamGame<BattleRoyaleGameConfiguration>
 
         GameLobby lobby = data.getGameLobby();
         if (lobby != null) {
+            world.setWorldTime(GameWorldConfiguration.daytimeBackup);
             teamManager.getAllActivePlayers(world).forEach(player -> {
                 lobby.teleport(player);
                 GameHelper.resetPlayerData(player);

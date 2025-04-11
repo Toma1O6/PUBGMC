@@ -113,6 +113,9 @@ public class EntityPlane extends Entity implements PlayzoneDeliveryVehicle, IEnt
 
         if (ticksExisted % 20L == 0) {
             GameHelper.validateGameEntityStillValid(this);
+            if (!isBeingRidden()) {
+                setDead();
+            }
         }
 
         if (flightDelay <= 0) {

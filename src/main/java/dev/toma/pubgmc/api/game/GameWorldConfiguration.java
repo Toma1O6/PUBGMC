@@ -16,6 +16,9 @@ public class GameWorldConfiguration {
     public boolean doWeatherCycle = false;
     public WeatherType weatherType = WeatherType.CLEAR;
     public int weatherDuration = 1000000;
+    public boolean doMobSpawning = false;
+    public static boolean adventureMode = true;
+    public static long daytimeBackup = 5000;
 
     public void correct() {
         daytime = MathHelper.clamp(daytime, 0, 23999);
@@ -27,6 +30,7 @@ public class GameWorldConfiguration {
         MinecraftServer server = worldServer.getMinecraftServer();
         storage.storeValueAndSet(worldServer, "doDaylightCycle", Boolean.toString(doDaylightCycle));
         storage.storeValueAndSet(worldServer, "doWeatherCycle", Boolean.toString(doWeatherCycle));
+        storage.storeValueAndSet(worldServer, "doMobSpawning", Boolean.toString(doMobSpawning));
         for (World world : server.worlds) {
             world.setWorldTime(daytime);
         }
@@ -39,6 +43,8 @@ public class GameWorldConfiguration {
         writer.writeInt("daytime", daytime);
         writer.writeInt("weatherTime", weatherDuration);
         writer.writeEnum("weather", weatherType);
+        writer.writeBoolean("mobSpawning", doMobSpawning);
+        writer.writeBoolean("adventureMode", adventureMode);
     }
 
     public static GameWorldConfiguration deserialize(DataReader<?> reader) {
@@ -48,6 +54,8 @@ public class GameWorldConfiguration {
         cfg.daytime = reader.readInt("daytime", cfg.daytime);
         cfg.weatherDuration = reader.readInt("weatherTime", cfg.weatherDuration);
         cfg.weatherType = reader.readEnum("weather", WeatherType.class, cfg.weatherType);
+        cfg.doMobSpawning = reader.readBoolean("mobSpawning", cfg.doMobSpawning);
+        adventureMode = reader.readBoolean("adventureMode", adventureMode);
         return cfg;
     }
 
