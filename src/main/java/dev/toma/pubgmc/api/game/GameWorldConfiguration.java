@@ -18,6 +18,7 @@ public class GameWorldConfiguration {
     public int weatherDuration = 1000000;
     public boolean doMobSpawning = false;
     public static boolean adventureMode = true;
+    public static long daytimeBackup = 5000;
 
     public void correct() {
         daytime = MathHelper.clamp(daytime, 0, 23999);
