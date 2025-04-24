@@ -11,10 +11,7 @@ import dev.toma.pubgmc.common.HorizontalBlockBuilder;
 import dev.toma.pubgmc.common.blocks.*;
 import dev.toma.pubgmc.common.entity.*;
 import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.entity.throwables.EntityFlashBang;
-import dev.toma.pubgmc.common.entity.throwables.EntityFragGrenade;
-import dev.toma.pubgmc.common.entity.throwables.EntityMolotov;
-import dev.toma.pubgmc.common.entity.throwables.EntitySmokeGrenade;
+import dev.toma.pubgmc.common.entity.throwables.*;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
 import dev.toma.pubgmc.common.games.GameTypes;
@@ -248,6 +245,7 @@ public class CommonRegistry {
                 new ItemExplodeable("smoke", 110, new ItemExplodeable.SmokeGrenadeHandler()),
                 new ItemExplodeable("molotov", -1, new ItemExplodeable.MolotovGrenadeHandler()),
                 new ItemExplodeable("flashbang", 60, new ItemExplodeable.FlashGrenadeHandler()),
+                new ItemExplodeable("c4", 40, new ItemExplodeable.C4Handler()),
                 new ItemAmmo("ammo_9mm", AmmoType.AMMO9MM, 64),
                 new ItemAmmo("ammo_45acp", AmmoType.AMMO45ACP, 50),
                 new ItemAmmo("ammo_shotgun", AmmoType.AMMO12G, 16),
@@ -971,6 +969,7 @@ public class CommonRegistry {
                 registerEntity("molotov", EntityMolotov.class, 64, 1),
                 registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
                 registerEntity("flashbang", EntityFlashBang.class, 64, 1),
+                registerEntity("c4", EntityC4.class, 64, 1),
                 registerEntity("item", EntityGameItem.class, 64, 20)
         );
     }

@@ -225,4 +225,15 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
             }
         }
     }
+
+    public static final class C4Handler implements ExplodeableItemAction {
+
+        @Override
+        public void onRemoveFromInventory(ItemStack stack, World world, EntityPlayer player, int timeLeft, EntityThrowableExplodeable.EnumEntityThrowState state) {
+            if (validateUsage(stack) && !world.isRemote) {
+                EntityC4 c4 = new EntityC4(world, player, state, timeLeft);
+                world.spawnEntity(c4);
+            }
+        }
+    }
 }
