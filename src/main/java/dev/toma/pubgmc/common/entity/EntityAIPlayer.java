@@ -31,6 +31,7 @@ import dev.toma.pubgmc.util.RandomBotNameGenerator;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -407,5 +408,12 @@ public class EntityAIPlayer extends EntityCreature implements LivingGameEntity, 
     @Override
     public int getRemainingDeafTime() {
         return deafTime;
+    }
+
+    @Override
+    public void collideWithEntity(Entity otherEntity) {
+        if (!(otherEntity instanceof EntityAIPlayer)) {
+            super.collideWithEntity(otherEntity);
+        }
     }
 }
