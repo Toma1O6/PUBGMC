@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
-import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.util.PUBGMCUtil;
 import net.minecraft.block.state.IBlockState;
@@ -9,30 +8,127 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class EntityC4 extends EntityThrowableExplodeable {
-    protected UUID thrower;
     @Nullable
     private BlockPos stickedBlockPos;
-    @Nullable
-    private Entity stickedEntity;
     @Nullable
     private UUID stickedEntityUUID;
     private Vec3d stickOffset = Vec3d.ZERO;
     private static final int initFuse = 320; // 16 seconds
     private static final List<Integer> SOUND_TICKS = calculateSoundTicks(33);
     private int soundIndex = 0;
+    private static final List<BlockPos> sphereOffsets;
+    private static final double[] blockBreakStrengths;
+    private static final int BOMB_RADIUS = 25;
+    private static final double DAMAGE_RADIUS = 25.0;
+    private static final double MAX_DAMAGE = 1024.0;
+    private static final double KEY_RADIUS = 15.0;
+    private static final double DAMAGE_AT_KEY_RADIUS = 20.0; // a control point, not equals to real damage
+
+    static {
+        sphereOffsets = calculateSphereOffsets(BOMB_RADIUS);
+        blockBreakStrengths = calculateDamageValues(DAMAGE_RADIUS, MAX_DAMAGE, DAMAGE_AT_KEY_RADIUS, sphereOffsets);
+    }
+
+    private static List<BlockPos> calculateSphereOffsets(int radius) {
+        List<BlockPos> offsets = new ArrayList<>();
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    if (x * x + y * y + z * z <= radius * radius) {
+                        offsets.add(new BlockPos(x, y, z));
+                    }
+                }
+            }
+        }
+        return offsets;
+    }
+
+    private static double[] calculateDamageValues(double damageRadius, double maxDamage, double damageAtKeyRadius, List<BlockPos> offsets) {
+        double[] damages = new double[offsets.size()];
+        for (int i = 0; i < offsets.size(); i++) {
+            double distance = MathHelper.sqrt(offsets.get(i).getX() * offsets.get(i).getX() +
+                    offsets.get(i).getY() * offsets.get(i).getY() +
+                    offsets.get(i).getZ() * offsets.get(i).getZ());
+            damages[i] = calculateBombDamage(distance, damageRadius, maxDamage, damageAtKeyRadius);
+        }
+        return damages;
+    }
+
+    private static double calculateBombDamage(double distance, double damageRadius, double maxDamage, double damageAtKeyRadius) {
+        if (distance > damageRadius) {
+            return 0;
+        }
+        double maxDamageRadius = 3F;
+        if (distance < maxDamageRadius) {
+            return maxDamage;
+        }
+        double x1 = -4;
+        double x2 = 4;
+        // y = 2^x
+        if (distance > KEY_RADIUS) { // x -> [-4, 0), y -> [0.0625, 1)
+            double x = ((distance - KEY_RADIUS) / (damageRadius - KEY_RADIUS)) * (x1);
+            return damageAtKeyRadius * Math.pow(2, x); // no need to smooth to 0 damage
+        } else { // x -> [0, 4], y -> [1, 16]
+            double x = (1 - (distance - maxDamageRadius) / (KEY_RADIUS - maxDamageRadius)) * x2;
+            return damageAtKeyRadius + (maxDamage - damageAtKeyRadius) * ((Math.pow(2, x) - 1) / (Math.pow(2,x2) - 1));
+        }
+    }
+
+    @Override
+    public void onExplode() {
+        if (!world.isRemote) {
+            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
+            BlockPos centerPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY + 1), MathHelper.floor(this.posZ));
+            Explosion explosion = new Explosion(world, this, this.posX, this.posY + 1, this.posZ, 0.0F, false, canBreakBlocks);
+
+            if (canBreakBlocks) {
+                for (int i = 0; i < sphereOffsets.size(); i++) {
+                    BlockPos offset = sphereOffsets.get(i);
+                    BlockPos currentPos = centerPos.add(offset);
+                    double strength = blockBreakStrengths[i];
+
+                    if (strength > 0) {
+                        IBlockState state = world.getBlockState(currentPos);
+                        float resistance = state.getBlock().getExplosionResistance(world, currentPos, this, explosion);
+                        if (strength > resistance) {
+                            world.setBlockToAir(currentPos);
+                        }
+                    }
+                }
+            }
+
+            AxisAlignedBB aabb = new AxisAlignedBB(
+                    this.posX - BOMB_RADIUS, this.posY - BOMB_RADIUS, this.posZ - BOMB_RADIUS,
+                    this.posX + BOMB_RADIUS, this.posY + BOMB_RADIUS, this.posZ + BOMB_RADIUS
+            );
+            List<Entity> affectedEntities = world.getEntitiesWithinAABB(Entity.class, aabb);
+
+            for (Entity entity : affectedEntities) {
+                double distSq = entity.getDistanceSq(this.posX, this.posY, this.posZ);
+                if (distSq <= DAMAGE_RADIUS * DAMAGE_RADIUS) {
+                    double distance = MathHelper.sqrt(distSq);
+                    double damageToEntity = calculateBombDamage(distance, DAMAGE_RADIUS, MAX_DAMAGE, DAMAGE_AT_KEY_RADIUS);
+                    EntityLivingBase throwerEntity = (EntityLivingBase) getThrower();
+                    DamageSource damageSource = throwerEntity != null ? DamageSource.causeExplosionDamage(throwerEntity) : DamageSource.causeExplosionDamage(explosion);
+                    entity.attackEntityFrom(damageSource, (float) damageToEntity);
+                }
+            }
+        }
+        this.setDead();
+    }
 
     private static List<Integer> calculateSoundTicks(int soundCount) {
         List<Integer> fuseTicks = new ArrayList<>();
@@ -66,21 +162,34 @@ public class EntityC4 extends EntityThrowableExplodeable {
     }
 
     public EntityC4(World world, EntityLivingBase thrower, EnumEntityThrowState state, int time) {
-        super(world, thrower, state, initFuse); // force refresh to ensure 16s
+        super(world, thrower, state, initFuse); // ensure force refresh
     }
 
-    public void playStickSound() {
+    public void handleStickEffect() {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_SLIME_HIT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.5, 0, 0.5, 0);
+        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.5, 0, -0.5, 0);
+        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, -0.5, 0, 0.5, 0);
+        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, -0.5, 0, -0.5, 0);
+
     }
 
     public void playIntervalSound() {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 3.0F, 1.0F);
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, 1.0F);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 0.5, 0, 0.5, 0);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 0.5, 0, -0.5, 0);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, -0.5, 0, 0.5, 0);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, -0.5, 0, -0.5, 0);
     }
 
     public void playIntervalSound2() {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 3.0F, 1.0F);
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, 1.0F);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 1, 0, 1, 0);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 1, 0, -1, 0);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, -1, 0, 1, 0);
+        world.spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, -1, 0, -1, 0);
     }
 
     public void handleSoundTick() {
@@ -94,28 +203,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
         }
     }
 
-    @Override
-    public void onExplode() {
-        if (!world.isRemote) {
-            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
-            this.setPosition(this.posX, this.posY + 1, this.posZ);
-            world.createExplosion(getThrower(), this.posX, this.posY, this.posZ, 50.0F, canBreakBlocks);
-        }
-        this.setDead();
-    }
-
-    @Override
-    public void onUpdate() {
-        --this.fuse;
-        if (fuse < 0) {
-            this.onExplode();
-        }
-        this.handleSoundTick();
-
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-
+    public boolean stickCheckTick() {
         if (this.stickedBlockPos != null) { // Already has sticked block
             IBlockState state = this.world.getBlockState(this.stickedBlockPos);
             if (state.getBlock().isAir(state, this.world, this.stickedBlockPos)) {
@@ -129,7 +217,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
                 this.motionX = 0;
                 this.motionY = 0;
                 this.motionZ = 0;
-                return;
+                return true;
             }
         }
         if (this.stickedEntityUUID != null) { // Already has sticked entity
@@ -146,7 +234,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
                 this.motionX = 0;
                 this.motionY = 0;
                 this.motionZ = 0;
-                return;
+                return true;
             } else {
                 this.stickedEntityUUID = null;
                 this.stickOffset = Vec3d.ZERO;
@@ -154,78 +242,107 @@ public class EntityC4 extends EntityThrowableExplodeable {
                 this.motionY -= 0.039D;
             }
         }
-        if (!world.isRemote) {
-            Vec3d from = PUBGMCUtil.getPositionVec(this);
-            Vec3d to = PUBGMCUtil.getMotionVec(this);
-            RayTraceResult blockRayTrace = this.world.rayTraceBlocks(from, to, false, true, false);
+        return false;
+    }
 
-            // Stick to block
-            if (blockRayTrace != null && this.stickedBlockPos == null && blockRayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
-                IBlockState hitState = world.getBlockState(blockRayTrace.getBlockPos());
-                boolean isSolidBlock = hitState.isFullCube();
-                if (isSolidBlock) {
-                    this.stickedBlockPos = blockRayTrace.getBlockPos();
-                    this.stickedEntityUUID = null;
-                    this.stickOffset = blockRayTrace.hitVec.subtract(new Vec3d(this.stickedBlockPos.getX() + 0.5, this.stickedBlockPos.getY() + 0.5, this.stickedBlockPos.getZ() + 0.5));
-                    this.motionX = 0;
-                    this.motionY = 0;
-                    this.motionZ = 0;
-                    this.setNoGravity(true);
-                    playStickSound();
-                    return;
-                }
+    public boolean attemptStick(@Nullable RayTraceResult blockRayTrace) {
+        // Stick to block
+        if (blockRayTrace != null && this.stickedBlockPos == null && blockRayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
+            IBlockState hitState = world.getBlockState(blockRayTrace.getBlockPos());
+            boolean isSolidBlock = hitState.isFullCube();
+            if (isSolidBlock) {
+                this.stickedBlockPos = blockRayTrace.getBlockPos();
+                this.stickedEntityUUID = null;
+                this.stickOffset = blockRayTrace.hitVec.subtract(new Vec3d(this.stickedBlockPos.getX() + 0.5, this.stickedBlockPos.getY() + 0.5, this.stickedBlockPos.getZ() + 0.5));
+                this.motionX = 0;
+                this.motionY = 0;
+                this.motionZ = 0;
+                this.setNoGravity(true);
+                handleStickEffect();
+                return true;
             }
-            // Stick to entity
-            if (this.stickedBlockPos == null && this.stickedEntityUUID == null) {
-                List<Entity> collidingEntities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(0.8, 0.8, 0.8), entity -> entity != this && !(entity instanceof EntityPlayer));
-                if (!collidingEntities.isEmpty()) {
-                    Entity hitEntity = collidingEntities.get(0);
-                    this.stickedEntityUUID = hitEntity.getUniqueID();
-                    this.stickedBlockPos = null;
-                    this.stickOffset = this.getPositionVector().subtract(hitEntity.getPositionVector());
-                    this.motionX = 0;
-                    this.motionY = 0;
-                    this.motionZ = 0;
-                    this.setNoGravity(true);
-                    playStickSound();
-                    return;
-                }
-            }
-
-            // Normal move
-            double prevMotionX = motionX;
-            double prevMotionY = motionY;
-            double prevMotionZ = motionZ;
-            if (blockRayTrace != null && blockRayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
-                this.onCollide(from, to, blockRayTrace);
-            }
-            this.move(MoverType.SELF, motionX, motionY, motionZ);
-            if (motionX != prevMotionX) {
-                this.motionX = -BOUNCE_MODIFIER * prevMotionX;
-                this.onGrenadeBounce(BounceAxis.X);
-            }
-            if (motionY != prevMotionY) {
-                this.motionY = -BOUNCE_MODIFIER * prevMotionY;
-                this.onGrenadeBounce(BounceAxis.Y);
-            }
-            if (motionZ != prevMotionZ) {
-                this.motionZ = -BOUNCE_MODIFIER * prevMotionZ;
-                this.onGrenadeBounce(BounceAxis.Z);
-            }
-            if (!this.hasNoGravity()) {
-                this.motionY -= 0.039D;
-            }
-            this.motionX *= AIR_DRAG_MODIFIER;
-            this.motionY *= AIR_DRAG_MODIFIER;
-            this.motionZ *= AIR_DRAG_MODIFIER;
         }
+        // Stick to entity
+        if (this.stickedBlockPos == null && this.stickedEntityUUID == null) {
+            List<Entity> collidingEntities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(0.8, 0.8, 0.8), entity -> entity != this && !(entity instanceof EntityPlayer));
+            if (!collidingEntities.isEmpty()) {
+                Entity hitEntity = collidingEntities.get(0);
+                this.stickedEntityUUID = hitEntity.getUniqueID();
+                this.stickedBlockPos = null;
+                this.stickOffset = this.getPositionVector().subtract(hitEntity.getPositionVector());
+                this.motionX = 0;
+                this.motionY = 0;
+                this.motionZ = 0;
+                this.setNoGravity(true);
+                handleStickEffect();
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public void handleNormalMove(Vec3d from, Vec3d to, @Nullable RayTraceResult blockRayTrace) {
+        double prevMotionX = motionX;
+        double prevMotionY = motionY;
+        double prevMotionZ = motionZ;
+        if (blockRayTrace != null && blockRayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
+            this.onCollide(from, to, blockRayTrace);
+        }
+        this.move(MoverType.SELF, motionX, motionY, motionZ);
+        if (motionX != prevMotionX) {
+            this.motionX = -BOUNCE_MODIFIER * prevMotionX;
+            this.onGrenadeBounce(BounceAxis.X);
+        }
+        if (motionY != prevMotionY) {
+            this.motionY = -BOUNCE_MODIFIER * prevMotionY;
+            this.onGrenadeBounce(BounceAxis.Y);
+        }
+        if (motionZ != prevMotionZ) {
+            this.motionZ = -BOUNCE_MODIFIER * prevMotionZ;
+            this.onGrenadeBounce(BounceAxis.Z);
+        }
+        if (!this.hasNoGravity()) {
+            this.motionY -= 0.039D;
+        }
+        this.motionX *= AIR_DRAG_MODIFIER;
+        this.motionY *= AIR_DRAG_MODIFIER;
+        this.motionZ *= AIR_DRAG_MODIFIER;
+    }
+
+    public void handleRotation() {
         this.lastRotation = this.rotation;
         if (world.isRemote && !this.onGround
                 && this.motionX != 0 && this.motionY != 0 && this.motionZ != 0) {
             this.rotation += 45F;
         }
+    }
 
+    @Override
+    public void onUpdate() {
+        --this.fuse;
+        if (fuse < 0) {
+            this.onExplode();
+        }
+        this.handleSoundTick();
+
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+
+        boolean stuck = stickCheckTick();
+        if (stuck) return;
+
+        if (!world.isRemote) {
+            Vec3d from = PUBGMCUtil.getPositionVec(this);
+            Vec3d to = PUBGMCUtil.getMotionVec(this);
+            RayTraceResult blockRayTrace = this.world.rayTraceBlocks(from, to, false, true, false);
+
+            if (attemptStick(blockRayTrace)) {
+                return;
+            }
+            handleNormalMove(from, to, blockRayTrace);
+        }
+        handleRotation();
         // this.onThrowableTick(); // not for C4
     }
 
