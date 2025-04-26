@@ -171,20 +171,15 @@ public class EntityC4 extends EntityThrowableExplodeable {
 
     public void handleStickEffect(@Nullable RayTraceResult blockRayTrace) {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_SLIME_HIT, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.5, 0, 0.5, 0);
-        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.5, 0, -0.5, 0);
-        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, -0.5, 0, 0.5, 0);
-        world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, -0.5, 0, -0.5, 0);
         if (blockRayTrace != null && blockRayTrace.hitVec != null && blockRayTrace.getBlockPos() != null) {
             PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.SLIME, 20, blockRayTrace.hitVec, blockRayTrace.getBlockPos(), S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
         } else {
             Pubgmc.logger.warn("handleStickEffect received a null or incomplete RayTraceResult.");
+            PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.SLIME, 20, new Vec3d(this.posX, this.posY, this.posZ), new BlockPos(this.posX, Math.round(this.posY), this.posZ), S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
         }
-
     }
 
     public void handleSoundTick() {
-        // if add "!world.isRemote" then every particle should use S2C_PacketMakeParticles
         if (soundIndex < SOUND_TICKS.size() && fuse <= SOUND_TICKS.get(soundIndex)) {
             if (soundIndex % 2 == 0) {
                 this.handleIntervalEffect1();
@@ -193,7 +188,10 @@ public class EntityC4 extends EntityThrowableExplodeable {
             }
             this.soundIndex++;
         } else if (soundIndex >= SOUND_TICKS.size()) {
-            world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE,true, this.posX, this.posY + 1, this.posZ, (rand.nextDouble() - 0.5) * 100, (rand.nextDouble() - 0.5) * 100, (rand.nextDouble() - 0.5) * 100);
+            if (world.isRemote) { // clinet only
+                world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE,true, this.posX, this.posY + 1, this.posZ,
+                        (rand.nextDouble() - 0.5) * 100, (rand.nextDouble() - 0.5) * 100, (rand.nextDouble() - 0.5) * 100);
+            }
             soundIndex++;
         }
     }
@@ -304,7 +302,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
 
     public void handleRotation() {
         this.lastRotation = this.rotation;
-        if (world.isRemote && !this.onGround
+        if (world.isRemote && !this.onGround // client only
                 && this.motionX != 0 && this.motionY != 0 && this.motionZ != 0) {
             this.rotation += 45F;
         }
@@ -312,22 +310,26 @@ public class EntityC4 extends EntityThrowableExplodeable {
 
     public void handleExplodeEffect() {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 3.0F, 1.0F);
-        for (double xOff : new double[]{5, -5}) {
-            for (double zOff: new double[]{5, -5}) {
-                world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE,true, this.posX + xOff, this.posY + 1, this.posZ + zOff, xOff * 2, 0.0D, zOff * 2);
+        if (world.isRemote) { // client only
+            for (double xOff : new double[]{5, -5}) {
+                for (double zOff: new double[]{5, -5}) {
+                    world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE,true, this.posX + xOff, this.posY + 1, this.posZ + zOff, xOff * 2, 0.0D, zOff * 2);
+                }
             }
-        }
-        for (double yOff : new double[]{5, 0, -5}) {
-            world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE,true, this.posX, this.posY + 1 + yOff, this.posZ, 0, 0, 0);
+            for (double yOff : new double[]{5, 0, -5}) {
+                world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE,true, this.posX, this.posY + 1 + yOff, this.posZ, 0, 0, 0);
+            }
         }
     }
 
     public void handleIntervalEffect1() {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 3.0F, 1.0F);
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 1F, 1.0F);
-        for (double xOff : new double[]{0.1, -0.1}) {
-            for (double zOff : new double[]{0.1, -0.1}) {
-                world.spawnParticle(EnumParticleTypes.REDSTONE, true, this.posX + xOff, this.posY + 0.3, this.posZ + zOff, xOff * 100, 20, zOff * 100, 0);
+        if (world.isRemote) { // client only
+            for (double xOff : new double[]{0.1, -0.1}) {
+                for (double zOff : new double[]{0.1, -0.1}) {
+                    world.spawnParticle(EnumParticleTypes.REDSTONE, true, this.posX + xOff, this.posY + 0.3, this.posZ + zOff, xOff * 100, 20, zOff * 100, 0);
+                }
             }
         }
     }
@@ -335,9 +337,11 @@ public class EntityC4 extends EntityThrowableExplodeable {
     public void handleIntervalEffect2() {
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 3.0F, 1.0F);
         world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 1F, 1.0F);
-        for (double xOff : new double[]{0.1, -0.1}) {
-            for (double zOff : new double[]{0.1, -0.1}) {
-                world.spawnParticle(EnumParticleTypes.REDSTONE, true, this.posX + xOff, this.posY + 0.3, this.posZ + zOff, xOff * 100, 20, zOff * 100, 0);
+        if (world.isRemote) { // client only
+            for (double xOff : new double[]{0.1, -0.1}) {
+                for (double zOff : new double[]{0.1, -0.1}) {
+                    world.spawnParticle(EnumParticleTypes.REDSTONE, true, this.posX + xOff, this.posY + 0.3, this.posZ + zOff, xOff * 100, 20, zOff * 100, 0);
+                }
             }
         }
     }
