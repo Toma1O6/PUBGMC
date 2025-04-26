@@ -75,6 +75,7 @@ public final class PMCItems {
     public static final ItemExplodeable SMOKE = null;
     public static final ItemExplodeable MOLOTOV = null;
     public static final ItemExplodeable FLASHBANG = null;
+    public static final ItemExplodeable C4 = null;
     public static final Item AMMO_9MM = null;
     public static final Item AMMO_45ACP = null;
     public static final Item AMMO_SHOTGUN = null;

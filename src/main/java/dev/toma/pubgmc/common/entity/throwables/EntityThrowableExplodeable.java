@@ -39,7 +39,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public int timesBounced = 0;
     public boolean isFrozen = false;
 
-    private UUID thrower;
+    protected UUID thrower;
 
     public EntityThrowableExplodeable(World world) {
         this(world, null, EnumEntityThrowState.FORCED);
@@ -60,7 +60,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         }
         this.fuse = time;
 
-        this.setInitialMotion(state, thrower);
+        setInitialMotion(state, thrower);
     }
 
     public abstract void onExplode();
@@ -219,7 +219,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         SerializationHelper.syncEntity(this);
     }
 
-    private void setInitialMotion(EnumEntityThrowState state, EntityLivingBase thrower) {
+    protected void setInitialMotion(EnumEntityThrowState state, EntityLivingBase thrower) {
         if (thrower == null) {
             return;
         }
@@ -245,7 +245,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
         this.onEntityFrozen();
     }
 
-    private void onGrenadeBounce(BounceAxis axis) {
+    protected void onGrenadeBounce(BounceAxis axis) {
         if (Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ) >= 0.2) {
             this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.BLOCK_ANVIL_BREAK, SoundCategory.MASTER, 1.0F, 1.8F);
         }

@@ -76,6 +76,7 @@ item.grenade.name=Grenade
 item.smoke.name=Smoke Grenade
 item.molotov.name=Molotov
 item.flashbang.name=Flashbang
+item.c4.name=C4
 item.ghilliehelmet.name=Ghillie helmet
 item.ghilliebody.name=Ghillie chestplate
 item.ghillielegs.name=Ghillie leggings

@@ -392,6 +392,13 @@ public final class RecipeRegistry {
                 .ingredient(Items.IRON_INGOT, 3)
                 .ingredient(Blocks.SAND, 1)
                 .build());
+        // TODO C4 recipe
+//        registerRecipe(WorkbenchRecipeBuilder.createGrenade()
+//                .result(PMCItems.C4)
+//                .ingredient(Blocks.TNT, 1)
+//                .ingredient(Items.GUNPOWDER, 10)
+//                .ingredient(Items.IRON_INGOT, 3)
+//                .build());
 
         // Healing
         registerRecipe(WorkbenchRecipeBuilder.createHeal()

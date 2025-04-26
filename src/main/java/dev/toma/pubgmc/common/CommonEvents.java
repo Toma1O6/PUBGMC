@@ -42,6 +42,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -148,6 +149,20 @@ public class CommonEvents {
     public void cancelKnockback(LivingKnockBackEvent event) {
         if (!ConfigPMC.common.players.knockbackEnabled.get()) {
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void cancelFallDamage(LivingFallEvent event) {
+        if (!ConfigPMC.common.players.sneakResetFallDistance.get()) {
+            return;
+        }
+        if (event.getEntity() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) event.getEntity();
+            if (player.isSneaking()) {
+                event.setCanceled(true);
+                player.fallDistance = 0.0F;
+            }
         }
     }
 
