@@ -16,7 +16,7 @@ public class CFGWorld extends ObjectType {
     public BooleanType grenadeGriefing;
     public IntType bulletTime;
     public IntType aiPathFindRange;
-    public ObjectType damages;
+    public DamageConfig damages;
 
     public CFGWorld(ConfigPlugin plugin) {
         super("World");
