@@ -10,6 +10,7 @@ public class DamageConfig extends ObjectType {
     public BooleanType molotovPenetration;
     public BooleanType vehiclePenetration;
     public BooleanType zonePenetration;
+    public BooleanType fuelcanPenetration;
 
     public DamageConfig() {
         super("Damage");
@@ -21,5 +22,6 @@ public class DamageConfig extends ObjectType {
         molotovPenetration = configCreator.createBoolean("Molotov Penetration", true, "Whether molotov should ignore vanilla armor");
         vehiclePenetration = configCreator.createBoolean("Vehicle Penetration", true, "Whether vehicle hit should ignore vanilla armor");
         zonePenetration = configCreator.createBoolean("Zone Penetration", true, "Whether zone damage should ignore vanilla armor");
+        fuelcanPenetration = configCreator.createBoolean("Fuel can Penetration", true, "Whether fuel can should ignore vanilla armor");
     }
 }

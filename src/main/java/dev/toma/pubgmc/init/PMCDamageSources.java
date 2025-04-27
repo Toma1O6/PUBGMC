@@ -26,4 +26,12 @@ public class PMCDamageSources {
         }
         return source;
     }
+
+    public static DamageSource fuelcan(@Nullable Entity owner) {
+        DamageSource source = new ByEntityDamageSource("fuelcan", owner);
+        if (ConfigPMC.common.world.damages.fuelcanPenetration.get()) {
+            source.setDamageBypassesArmor();
+        }
+        return source;
+    }
 }
