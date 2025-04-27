@@ -255,7 +255,8 @@ public final class LootConfigurations {
                 new ItemStackLootProvider(new ItemStack(PMCItems.GRENADE)),
                 new ItemStackLootProvider(new ItemStack(PMCItems.SMOKE)),
                 new ItemStackLootProvider(new ItemStack(PMCItems.MOLOTOV)),
-                new ItemStackLootProvider(new ItemStack(PMCItems.FLASHBANG))
+                new ItemStackLootProvider(new ItemStack(PMCItems.FLASHBANG)),
+                new ItemStackLootProvider(new ItemStack(PMCItems.C4))
         ));
     }
 

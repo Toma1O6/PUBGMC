@@ -16,6 +16,7 @@ public class EntityParachute extends EntityControllable {
 
     float turningSpeed;
     int emptyTicks;
+    private float prefallDistance;
 
     public EntityParachute(World world) {
         super(world);
@@ -25,9 +26,12 @@ public class EntityParachute extends EntityControllable {
         this(world);
         this.setPosition(user.posX, user.posY, user.posZ);
         this.setRotation(user.rotationYaw, 0.0F);
-        this.motionX = user.motionX;
-        this.motionY = user.motionY;
-        this.motionZ = user.motionZ;
+        this.motionX = user.motionX * 0.5F;
+        this.motionY = user.motionY * 0.5F;
+        this.motionZ = user.motionZ * 0.5F;
+        this.fallDistance = user.fallDistance;
+        this.prefallDistance = this.fallDistance;
+        this.onGround = user.onGround;
     }
 
     @Override
@@ -56,8 +60,8 @@ public class EntityParachute extends EntityControllable {
             motionZ = 0;
             return;
         }
+        Entity passenger = getControllingPassenger();
         if (onGround || collided) {
-            Entity passenger = getControllingPassenger();
             if (passenger instanceof EntityLivingBase) {
                 MinecraftForge.EVENT_BUS.post(new ParachuteEvent.Land(this, (EntityLivingBase) passenger));
             }
@@ -72,8 +76,11 @@ public class EntityParachute extends EntityControllable {
         double x = look.x / 2;
         double z = look.z / 2;
         double speed = 1 + rotationPitch / 30.0F;
+        
+        // player's fall damage rely on this.fallDistance
         if (!isDeployed()) {
-            this.fallDistance *= 0.9f;
+            this.fallDistance = this.prefallDistance * 0.95f; // 0.95^10 = 60%, 0.95^20 = 36%
+            this.prefallDistance = this.fallDistance;
             this.motionY = Math.min(this.motionY + 0.05f, -0.05f);
         } else {
             this.fallDistance = 0.0F;
