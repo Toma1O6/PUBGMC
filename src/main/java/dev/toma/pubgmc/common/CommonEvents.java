@@ -171,7 +171,8 @@ public class CommonEvents {
     }
 
     public void autoParachute(PlayerTickEvent ev) {
-        if (!ConfigPMC.common.players.autoParachute.get()) {
+        // server only
+        if (ev.player.world.isRemote || !ConfigPMC.common.players.autoParachute.get()) {
             return;
         }
         EntityPlayer player = ev.player;
