@@ -1,12 +1,14 @@
 package dev.toma.pubgmc.config.common;
 
 import dev.toma.configuration.api.ConfigCreator;
+import dev.toma.configuration.api.ConfigPlugin;
 import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.IntType;
 import dev.toma.configuration.api.type.ObjectType;
 
-public final class CFGWorld extends ObjectType {
+public class CFGWorld extends ObjectType {
 
+    final ConfigPlugin plugin;
     public IntType planeHeight;
     public IntType planeDelay;
     public BooleanType titleZoneNotifications;
@@ -14,9 +16,11 @@ public final class CFGWorld extends ObjectType {
     public BooleanType grenadeGriefing;
     public IntType bulletTime;
     public IntType aiPathFindRange;
+    public ObjectType damages;
 
-    public CFGWorld() {
+    public CFGWorld(ConfigPlugin plugin) {
         super("World");
+        this.plugin = plugin;
     }
 
     @Override
@@ -28,5 +32,6 @@ public final class CFGWorld extends ObjectType {
         grenadeGriefing = configCreator.createBoolean("Grenade griefing", false, "Determines whether blocks can be affected by grenades", "This will break blocks like TNT");
         bulletTime = configCreator.createInt("Bullet time", 100, 0,200,"Ticks before bullet dead");
         aiPathFindRange = configCreator.createInt("AI Pathfinding Range", 256, 32, 2048, "Max pathfinding for AIs", "Large values may lag your server");
+        damages = configCreator.createObject(new DamageConfig(), plugin);
     }
 }

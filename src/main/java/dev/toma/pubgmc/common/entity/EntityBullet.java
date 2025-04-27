@@ -102,11 +102,7 @@ public class EntityBullet extends Entity {
         }
         Entity entity = rayTraceResult.entityHit;
         if (entity != null && !world.isRemote) {
-            boolean isHeadshot = this.canEntityGetHeadshot(entity) && entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
-            if (isHeadshot) {
-                damage *= getHeadshotMultipler();
-            }
-            this.onEntityHit(isHeadshot, entity, rayTraceResult.hitVec);
+            this.onEntityHit(entity, rayTraceResult.hitVec);
             entity.hurtResistantTime = 0;
             this.setDead();
         } else if (!world.isRemote) {
@@ -199,14 +195,16 @@ public class EntityBullet extends Entity {
         if (entity != null) {
             raytraceresult = new RayTraceResult(entity);
         }
-        if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer) {
-            EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
-            if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer)) {
-                raytraceresult = null;
+        if (raytraceresult != null) {
+            if (raytraceresult.entityHit instanceof EntityPlayer) {
+                EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
+                if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer)) {
+                    raytraceresult = null;
+                }
             }
-        }
-        if (raytraceresult != null && !ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-            this.onBulletCollided(raytraceresult);
+            if (!ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                this.onBulletCollided(raytraceresult);
+            }
         }
         move(MoverType.SELF, motionX, motionY, motionZ);
     }
@@ -245,17 +243,25 @@ public class EntityBullet extends Entity {
         return entity;
     }
 
-    protected void onEntityHit(boolean isHeadshot, Entity entity, Vec3d vec) {
-        DamageSource gunsource = new DamageSourceGun(shooter, this, stack, isHeadshot).setDamageBypassesArmor();
+    protected void onEntityHit(Entity entity, Vec3d vec) {
+        boolean isHeadshot = this.canEntityGetHeadshot(entity) && isEntityGetHeadshot(entity);
+        if (isHeadshot) {
+            this.damage *= getHeadshotMultipler();
+        }
+        float unProtectedDamage = this.damage;
+        DamageSource gunsource = new DamageSourceGun(shooter, this, stack, isHeadshot);
+        if (ConfigPMC.common.world.damages.bulletPenetration.get()) {
+            gunsource.setDamageBypassesArmor();
+        }
         boolean isLivingEntity = entity instanceof EntityLivingBase;
-        float unProtectedDamage = damage;
+
         if (isLivingEntity) {
             float protectedDamage = getProtectedDamage((EntityLivingBase) entity, isHeadshot);
             if (protectedDamage != -1) {
                 this.damage = protectedDamage;
             }
         }
-        if (entity.attackEntityFrom(gunsource, damage) && isLivingEntity) {
+        if (entity.attackEntityFrom(gunsource, this.damage) && isLivingEntity) {
             damageArmor(isHeadshot, unProtectedDamage, (EntityLivingBase) entity);
         }
 
@@ -282,8 +288,15 @@ public class EntityBullet extends Entity {
     }
 
     private boolean canEntityGetHeadshot(Entity e) {
+        if (!(e instanceof EntityLivingBase)) { // non-living entity can't get headshot
+            return false;
+        }
         double ratio = e.height / e.width;
         return ratio > 1.0F;
+    }
+
+    private boolean isEntityGetHeadshot(Entity entity) {
+        return entityRaytrace.hitVec.y >= entity.getPosition().getY() + entity.getEyeHeight() - 0.15f;
     }
 
     private float getPitchRotationInaccuracy(EntityLivingBase shooter) {
