@@ -158,7 +158,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void cancelFallDamage(LivingFallEvent event) {
-        if (!ConfigPMC.common.players.sneakResetFallDistance.get()) {
+        if (!ConfigPMC.common.players.parachutes.sneakResetFallDistance.get()) {
             return;
         }
         if (event.getEntity() instanceof EntityPlayer) {
@@ -172,7 +172,7 @@ public class CommonEvents {
 
     public void autoParachute(PlayerTickEvent ev) {
         // server only
-        if (ev.player.world.isRemote || !ConfigPMC.common.players.autoParachute.get()) {
+        if (ev.player.world.isRemote || !ConfigPMC.common.players.parachutes.autoParachute.get()) {
             return;
         }
         EntityPlayer player = ev.player;
@@ -181,15 +181,15 @@ public class CommonEvents {
         }
 
         // FallDistance check
-        int startDistance = ConfigPMC.common.players.autoParachuteStartDistance.get();
+        int startDistance = ConfigPMC.common.players.parachutes.autoParachuteStartDistance.get();
         if (player.fallDistance < startDistance) {
             return;
         }
-        if (!DevUtil.isNearGround(player, ConfigPMC.common.players.autoParachuteHeight.get())) {
+        if (!DevUtil.isNearGround(player, ConfigPMC.common.players.parachutes.autoParachuteHeight.get())) {
             return;
         }
         // Parachute Consumption
-        if (ConfigPMC.common.players.autoParachuteConsumption.get()) {
+        if (ConfigPMC.common.players.parachutes.autoParachuteConsumption.get()) {
             ItemStack itemStack = DevUtil.getFirstItem(PMCItems.PARACHUTE, player.inventory);
             if (itemStack == null) {
                 return;
