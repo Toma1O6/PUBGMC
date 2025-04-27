@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common;
 
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.game.loadout.LoadoutManager;
@@ -7,13 +8,16 @@ import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.client.animation.AnimationType;
 import dev.toma.pubgmc.client.content.ContentResult;
 import dev.toma.pubgmc.client.content.ExternalLinks;
-import dev.toma.pubgmc.common.capability.PlayerData;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
+import dev.toma.pubgmc.common.entity.EntityParachute;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
+import dev.toma.pubgmc.common.items.ItemParachute;
 import dev.toma.pubgmc.common.items.MainHandOnly;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.init.PMCItems;
+import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketAnimation;
 import dev.toma.pubgmc.network.s2c.S2C_PacketNotifyRestoreConfig;
@@ -30,6 +34,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -51,11 +56,10 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class CommonEvents {
@@ -166,10 +170,48 @@ public class CommonEvents {
         }
     }
 
+    public void autoParachute(PlayerTickEvent ev) {
+        if (!ConfigPMC.common.players.autoParachute.get()) {
+            return;
+        }
+        EntityPlayer player = ev.player;
+        if (player.isElytraFlying() || player.onGround || player.isRiding() || player.getCooldownTracker().hasCooldown(PMCItems.PARACHUTE)) {
+            return;
+        }
+
+        // FallDistance check
+        int startDistance = ConfigPMC.common.players.autoParachuteStartDistance.get();
+        if (player.fallDistance < startDistance) {
+            return;
+        }
+        if (!DevUtil.isNearGround(player, ConfigPMC.common.players.autoParachuteHeight.get())) {
+            return;
+        }
+        // Parachute Consumption
+        if (ConfigPMC.common.players.autoParachuteConsumption.get()) {
+            ItemStack itemStack = DevUtil.getFirstItem(PMCItems.PARACHUTE, player.inventory);
+            if (itemStack == null) {
+                return;
+            }
+            if (!player.isCreative()) {
+                itemStack.shrink(1);
+            }
+        }
+        // Deploy parachute
+        World world = player.world;
+        EntityParachute chute = new EntityParachute(world, player);
+        world.playSound(null, player.getPosition(), PMCSounds.chute_open, SoundCategory.MASTER, ItemParachute.soundVolume, 1.0F);
+        world.spawnEntity(chute);
+        player.startRiding(chute);
+        player.getCooldownTracker().setCooldown(PMCItems.PARACHUTE, 100);
+    }
+
     @SubscribeEvent
     public void onTick(PlayerTickEvent ev) {
-        if (ev.phase == Phase.END)
+        if (ev.phase == Phase.END) {
+            this.autoParachute(ev);
             return;
+        }
         EntityPlayer player = ev.player;
         IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
         data.tick();

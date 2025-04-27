@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
+import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
@@ -12,6 +13,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
@@ -39,6 +41,8 @@ public class EntityC4 extends EntityThrowableExplodeable {
     private static final double MAX_DAMAGE = 1024.0;
     private static final double KEY_RADIUS = 15.0;
     private static final double DAMAGE_AT_KEY_RADIUS = 20.0; // a control point, not equals to real damage
+    private static final EnumFacing FRONT = EnumFacing.DOWN;
+    private static final float size = 0.2F; // large size will reduce the probability to stick
 
     static {
         sphereOffsets = calculateSphereOffsets(BOMB_RADIUS);
@@ -159,14 +163,56 @@ public class EntityC4 extends EntityThrowableExplodeable {
 
     public EntityC4(World world) {
         super(world);
+        this.setSize(size, size);
     }
 
     public EntityC4(World world, EntityLivingBase thrower, EnumEntityThrowState state) {
         super(world, thrower, state);
+        this.setSize(size, size);
     }
 
     public EntityC4(World world, EntityLivingBase thrower, EnumEntityThrowState state, int time) {
         super(world, thrower, state, initFuse); // ensure force refresh
+        this.setSize(size, size);
+    }
+
+    // TODO improve
+    public void adjustStickRotation() {
+        // Stick to block
+        if (this.stickedBlockPos != null) {
+            EnumFacing facing = null;
+            Vec3d hitVec = this.getPositionVector().subtract(new Vec3d(this.stickedBlockPos).addVector(0.5, 0.5, 0.5));
+            double minDistanceSq = Double.MAX_VALUE;
+            for (EnumFacing face : EnumFacing.values()) {
+                Vec3d faceVec = new Vec3d(face.getDirectionVec());
+                Vec3d diff = hitVec.subtract(faceVec.scale(hitVec.dotProduct(faceVec)));
+                double distanceSq = diff.lengthSquared();
+                if (distanceSq < minDistanceSq) {
+                    minDistanceSq = distanceSq;
+                    facing = face;
+                }
+            }
+
+            if (facing != null) {
+                EnumFacing targetFront = facing.getOpposite();
+                DevUtil.calculateRotationToBlockFace(this.stickedBlockPos, this, targetFront);
+            }
+            return;
+        }
+        // Stick to entity
+        if (this.stickedEntityUUID != null) {
+            Entity stickedEntity = null;
+            for (Entity entity : this.world.loadedEntityList) {
+                if (entity.getUniqueID().equals(this.stickedEntityUUID)) {
+                    stickedEntity = entity;
+                    break;
+                }
+            }
+
+            if (stickedEntity != null) {
+                DevUtil.calculateRotationToEntity(this, stickedEntity, this, FRONT);
+            }
+        }
     }
 
     public void handleStickEffect(@Nullable RayTraceResult blockRayTrace) {
@@ -177,6 +223,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
             Pubgmc.logger.warn("handleStickEffect received a null or incomplete RayTraceResult.");
             PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.SLIME, 20, new Vec3d(this.posX, this.posY, this.posZ), new BlockPos(this.posX, Math.round(this.posY), this.posZ), S2C_PacketMakeParticles.ParticleAction.SPREAD_RANDOMLY, 0), this.dimension);
         }
+        adjustStickRotation();
     }
 
     public void handleSoundTick() {
@@ -204,6 +251,9 @@ public class EntityC4 extends EntityThrowableExplodeable {
                 this.setNoGravity(false);
                 this.motionY -= 0.039D;
             } else {
+                this.setPosition(this.stickedBlockPos.getX() + 0.5 + this.stickOffset.x + size/2,
+                        this.stickedBlockPos.getY() + 0.5 + this.stickOffset.y + size/2,
+                        this.stickedBlockPos.getZ() + 0.5 + this.stickOffset.z + size/2);
                 this.setPosition(this.stickedBlockPos.getX() + 0.5 + this.stickOffset.x,
                         this.stickedBlockPos.getY() + 0.5 + this.stickOffset.y,
                         this.stickedBlockPos.getZ() + 0.5 + this.stickOffset.z);
@@ -223,6 +273,9 @@ public class EntityC4 extends EntityThrowableExplodeable {
             }
             if (stickedEntity != null && !stickedEntity.isDead) {
                 Vec3d entityPos = stickedEntity.getPositionVector();
+                this.setPosition(entityPos.x + this.stickOffset.x,
+                        entityPos.y + this.stickOffset.y,
+                        entityPos.z + this.stickOffset.z);
                 this.setPosition(entityPos.x + this.stickOffset.x, entityPos.y + this.stickOffset.y, entityPos.z + this.stickOffset.z);
                 this.motionX = 0;
                 this.motionY = 0;
@@ -241,22 +294,44 @@ public class EntityC4 extends EntityThrowableExplodeable {
     public boolean attemptStick(@Nullable RayTraceResult blockRayTrace) {
         // Stick to block
         if (blockRayTrace != null && this.stickedBlockPos == null && blockRayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
-            IBlockState hitState = world.getBlockState(blockRayTrace.getBlockPos());
-            boolean isSolidBlock = hitState.isFullCube();
+            BlockPos hitPos = blockRayTrace.getBlockPos();
+            boolean isSolidBlock = world.getBlockState(hitPos).isFullCube();
             if (isSolidBlock) {
-                this.stickedBlockPos = blockRayTrace.getBlockPos();
+                this.stickedBlockPos = hitPos;
                 this.stickedEntityUUID = null;
-                this.stickOffset = blockRayTrace.hitVec.subtract(new Vec3d(this.stickedBlockPos.getX() + 0.5, this.stickedBlockPos.getY() + 0.5, this.stickedBlockPos.getZ() + 0.5));
                 this.motionX = 0;
                 this.motionY = 0;
                 this.motionZ = 0;
                 this.setNoGravity(true);
+
+                EnumFacing facing = blockRayTrace.sideHit;
+                switch (facing) {
+                    case DOWN:
+                        this.stickOffset = new Vec3d(0, -0.5, 0);
+                        break;
+                    case UP:
+                        this.stickOffset = new Vec3d(0, 0.5, 0);
+                        break;
+                    case NORTH:
+                        this.stickOffset = new Vec3d(0, 0, -0.5);
+                        break;
+                    case SOUTH:
+                        this.stickOffset = new Vec3d(0, 0, 0.5);
+                        break;
+                    case WEST:
+                        this.stickOffset = new Vec3d(-0.5, 0, 0);
+                        break;
+                    case EAST:
+                        this.stickOffset = new Vec3d(0.5, 0, 0);
+                        break;
+                }
+
                 return true;
             }
         }
         // Stick to entity
         if (this.stickedBlockPos == null && this.stickedEntityUUID == null) {
-            List<Entity> collidingEntities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(0.8, 0.8, 0.8), entity -> entity != this && !(entity instanceof EntityPlayer));
+            List<Entity> collidingEntities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(0.1, 0.1, 0.1), entity -> entity != this && !(entity instanceof EntityPlayer));
             if (!collidingEntities.isEmpty()) {
                 Entity hitEntity = collidingEntities.get(0);
                 this.stickedEntityUUID = hitEntity.getUniqueID();
