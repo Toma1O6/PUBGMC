@@ -25,7 +25,7 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
         world = configCreator.createObject(new CFGWorld(), plugin);
         vehicles = configCreator.createObject(new CFGVehicles(plugin), plugin);
         weapons = configCreator.createObject(new CFGWeapons(plugin), plugin);
-        players = configCreator.createObject(new PlayerConfig(), plugin);
+        players = configCreator.createObject(new PlayerConfig(plugin), plugin);
         gameConfig = configCreator.createObject(new GameConfig(), plugin);
     }
 

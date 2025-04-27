@@ -16,8 +16,7 @@ public class EntityParachute extends EntityControllable {
 
     float turningSpeed;
     int emptyTicks;
-    private float fallDist;
-    private float preFallDist;
+    private float prefallDistance;
 
     public EntityParachute(World world) {
         super(world);
@@ -30,8 +29,8 @@ public class EntityParachute extends EntityControllable {
         this.motionX = user.motionX * 0.5F;
         this.motionY = user.motionY * 0.5F;
         this.motionZ = user.motionZ * 0.5F;
-        this.fallDist = user.fallDistance;
-        this.preFallDist = this.fallDist;
+        this.fallDistance = user.fallDistance;
+        this.prefallDistance = this.fallDistance;
         this.onGround = user.onGround;
     }
 
@@ -77,22 +76,17 @@ public class EntityParachute extends EntityControllable {
         double x = look.x / 2;
         double z = look.z / 2;
         double speed = 1 + rotationPitch / 30.0F;
+        
+        // player's fall damage rely on this.fallDistance
         if (!isDeployed()) {
-            if (this.preFallDist != 0) {
-                this.fallDist = this.preFallDist * 0.95f; // 0.95^10 = 60%, 0.95^20 = 36%
-                this.preFallDist = this.fallDist;
-            } else {
-                this.preFallDist = this.fallDist;
-            }
+            this.fallDistance = this.prefallDistance * 0.95f; // 0.95^10 = 60%, 0.95^20 = 36%
+            this.prefallDistance = this.fallDistance;
             this.motionY = Math.min(this.motionY + 0.05f, -0.05f);
         } else {
-            this.fallDist = 0.0F;
+            this.fallDistance = 0.0F;
             this.motionX = x;
             this.motionY = Math.max(this.motionY - 0.05f, -0.25 * speed);
             this.motionZ = z;
-        }
-        if (passenger != null) {
-            passenger.fallDistance = this.fallDist;
         }
     }
 
