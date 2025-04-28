@@ -2,9 +2,11 @@ package dev.toma.pubgmc.common.games.playzone;
 
 import dev.toma.pubgmc.api.game.playzone.Playzone;
 import dev.toma.pubgmc.api.game.playzone.PlayzoneDeliveryVehicle;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.WorldServer;
 
 import java.util.List;
@@ -46,7 +48,11 @@ public abstract class AbstractDamagingPlayzone implements Playzone {
                 return;
             }
         }
-        entity.attackEntityFrom(PMCDamageSources.ZONE, damageOptions.getDamageAmount());
+        DamageSource source = PMCDamageSources.ZONE;
+        if (ConfigPMC.common.world.damages.zonePenetration.get()) {
+            source.setDamageBypassesArmor();
+        }
+        entity.attackEntityFrom(source, damageOptions.getDamageAmount());
     }
 
     public void hurtAllOutside(WorldServer world, List<Entity> entities) {

@@ -970,6 +970,7 @@ public class CommonRegistry {
                 registerEntity("smoke_grenade", EntitySmokeGrenade.class, 256, 1),
                 registerEntity("flashbang", EntityFlashBang.class, 64, 1),
                 registerEntity("c4", EntityC4.class, 64, 1),
+                registerEntity("fuelcan", EntityFuelCan.class, 64, 1),
                 registerEntity("item", EntityGameItem.class, 64, 20)
         );
     }

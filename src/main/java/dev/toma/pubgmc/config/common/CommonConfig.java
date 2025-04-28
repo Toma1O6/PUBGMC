@@ -22,7 +22,7 @@ public final class CommonConfig extends ObjectType implements INBTSerializable<N
 
     @Override
     public void buildStructure(ConfigCreator configCreator) {
-        world = configCreator.createObject(new CFGWorld(), plugin);
+        world = configCreator.createObject(new CFGWorld(plugin), plugin);
         vehicles = configCreator.createObject(new CFGVehicles(plugin), plugin);
         weapons = configCreator.createObject(new CFGWeapons(plugin), plugin);
         players = configCreator.createObject(new PlayerConfig(plugin), plugin);

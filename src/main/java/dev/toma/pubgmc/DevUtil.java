@@ -11,12 +11,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
@@ -210,6 +212,10 @@ public class DevUtil {
 
         targetEntity.rotationPitch = pitch;
         targetEntity.rotationYaw = yaw;
+    }
+
+    public static Entity getEntityByUUID(World world, UUID entityId) {
+        return entityId != null && !world.isRemote ? ((WorldServer) world).getEntityFromUuid(entityId) : null;
     }
 
     static {

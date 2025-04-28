@@ -27,6 +27,7 @@ import dev.toma.pubgmc.common.games.map.*;
 import dev.toma.pubgmc.common.games.playzone.AbstractDamagingPlayzone;
 import dev.toma.pubgmc.common.games.playzone.StaticPlayzone;
 import dev.toma.pubgmc.common.games.util.TeamType;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketLoadoutSelect;
@@ -230,7 +231,11 @@ public class TournamentGame implements TeamGame<TournamentGameConfiguration>, Ga
                 if (matchConfig.endOfRoundDamageInterval > 0 && ++tickTime % matchConfig.endOfRoundDamageInterval == 0) {
                     if (!world.isRemote) {
                         WorldServer server = (WorldServer) world;
-                        teamManager.getActiveMatchEntities(server, activeMatch).forEach(entity -> entity.attackEntityFrom(PMCDamageSources.ZONE, matchConfig.endOfRoundDamage));
+                        DamageSource source = PMCDamageSources.ZONE;
+                        if (ConfigPMC.common.world.damages.zonePenetration.get()) {
+                            source.setDamageBypassesArmor();
+                        }
+                        teamManager.getActiveMatchEntities(server, activeMatch).forEach(entity -> entity.attackEntityFrom(source, matchConfig.endOfRoundDamage));
                     }
                 }
                 if (matchConfig.endRoundAiSpawnInterval > 0 && eventTimer > 0 && eventTimer % matchConfig.endRoundAiSpawnInterval == 0) {
