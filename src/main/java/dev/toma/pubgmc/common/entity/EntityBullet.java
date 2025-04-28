@@ -101,20 +101,21 @@ public class EntityBullet extends Entity {
             return;
         }
         Entity entity = rayTraceResult.entityHit;
-        if (entity != null && !world.isRemote) {
+        if (world.isRemote) {
+            return;
+        }
+        // server only
+        if (entity != null) { // entity hit
             this.onEntityHit(entity, rayTraceResult.hitVec);
             entity.hurtResistantTime = 0;
+            handleBulletReaction(rayTraceResult);
             this.setDead();
-        } else if (!world.isRemote) {
+        } else { // block hit
             BlockPos pos = rayTraceResult.getBlockPos();
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            if (block instanceof IBulletReaction) {
-                IBulletReaction reaction = (IBulletReaction) block;
-                if (reaction.allowBulletInteraction(world, pos, state)) {
-                    reaction.onHit(this, rayTraceResult.hitVec, pos);
-                }
-            }
+            handleBulletReaction(rayTraceResult);
+
             boolean griefingFlag = ConfigPMC.world().weaponGriefing.get();
             boolean canBePenetrated = false;
             if (block instanceof BlockWindow) {
@@ -151,6 +152,31 @@ public class EntityBullet extends Entity {
                 if (trace != null) {
                     // allows shooting through multiple objects
                     this.onBulletCollided(trace);
+                }
+            }
+        }
+    }
+
+    public void handleBulletReaction(RayTraceResult rayTraceResult) {
+        if (world.isRemote) {
+            return;
+        }
+        Entity entity = rayTraceResult.entityHit;
+        if (entity != null) { // entity hit
+            if (entity instanceof IBulletReaction) {
+                IBulletReaction reaction = (IBulletReaction) entity;
+                if (reaction.allowBulletInteraction(world, null, entity)) {
+                    reaction.onHit(this, rayTraceResult.hitVec, null, entity);
+                }
+            }
+        } else { // block hit
+            BlockPos pos = rayTraceResult.getBlockPos();
+            IBlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            if (block instanceof IBulletReaction) {
+                IBulletReaction reaction = (IBulletReaction) block;
+                if (reaction.allowBulletInteraction(world, state, null)) {
+                    reaction.onHit(this, rayTraceResult.hitVec, state, null);
                 }
             }
         }
@@ -221,23 +247,23 @@ public class EntityBullet extends Entity {
         double d0 = 0.0D;
         for (int i = 0; i < list.size(); ++i) {
             Entity entity1 = list.get(i);
-            if (entity1 != this.shooter) {
-                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox();
-                RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
-                if (raytraceresult != null) {
-                    if (trace != null) {
-                        if (this.getDistanceTo(trace.hitVec) < this.getDistanceTo(raytraceresult.hitVec)) {
-                            return entity;
-                        }
-                    }
-                    double d1 = start.squareDistanceTo(raytraceresult.hitVec);
-                    entityRaytrace = raytraceresult;
+            if (entity1 == this.shooter) {
+                continue;
+            }
+            AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox();
+            RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
+            if (raytraceresult == null) {
+                continue;
+            }
+            if (trace != null && this.getDistanceTo(trace.hitVec) < this.getDistanceTo(raytraceresult.hitVec)) {
+                return entity;
+            }
+            double d1 = start.squareDistanceTo(raytraceresult.hitVec);
+            entityRaytrace = raytraceresult;
 
-                    if (d1 < d0 || d0 == 0.0D) {
-                        entity = entity1;
-                        d0 = d1;
-                    }
-                }
+            if (d1 < d0 || d0 == 0.0D) {
+                entity = entity1;
+                d0 = d1;
             }
         }
         return entity;

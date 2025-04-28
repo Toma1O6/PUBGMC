@@ -8,13 +8,12 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -92,10 +91,11 @@ public class ItemFuelCan extends PMCItem implements Consumable {
         if (!worldIn.isRemote) {
             EntityFuelCan fuelCan = new EntityFuelCan(worldIn, playerIn, this.getHealth(stack));
             worldIn.spawnEntity(fuelCan);
-            stack.shrink(1);
+            stack.shrink(1); // actually doesn't shrink in creative mode
             if (stack.isEmpty()) {
                 playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
             }
+            worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.BLOCK_WOOD_PLACE, SoundCategory.BLOCKS ,1.0F, 1.0F);
         }
     }
 
