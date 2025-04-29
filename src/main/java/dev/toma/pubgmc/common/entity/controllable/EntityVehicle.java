@@ -212,12 +212,13 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     protected void handleEmptyInputs() {
         CFGVehicle stats = this.getVehicleConfiguration();
         if (!hasMovementInput() || !hasFuel()) {
-            if (Math.abs(currentSpeed) < 0.01)
+            if (Math.abs(currentSpeed) >= 0.05F) {
+                float autoBrakeMultiplier = 0.3F;
+                currentSpeed = currentSpeed > 0 ?
+                        currentSpeed - stats.acceleration.getAsFloat() * autoBrakeMultiplier
+                        : currentSpeed + stats.acceleration.getAsFloat() * autoBrakeMultiplier;
+            } else {
                 currentSpeed = 0f;
-
-            if (currentSpeed != 0) {
-                float multiplier = this.isBeingRidden() ? 0.1F : 0.5F;
-                currentSpeed = currentSpeed > 0 ? currentSpeed - stats.acceleration.getAsFloat() * multiplier : currentSpeed + stats.acceleration.getAsFloat() * multiplier;
             }
         }
         if (!hasTurnInput()) {
