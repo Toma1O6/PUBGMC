@@ -337,7 +337,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
         if (!world.isRemote) {
-            if (this.canBeRidden(player) && canFitPassenger(player)) {
+            if (this.canBeRidden(player) && canFitPassenger(player) && !player.isSneaking()) {
                 player.startRiding(this);
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 data.getAimInfo().setAiming(false, 1.0F);
