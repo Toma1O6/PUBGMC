@@ -68,13 +68,14 @@ public class EntityMolotov extends EntityThrowableExplodeable {
                         new AxisAlignedBB(this.posX - FIRE_SPREAD_AMOUNT, this.posY - FIRE_SPREAD_AMOUNT, this.posZ - FIRE_SPREAD_AMOUNT, this.posX + FIRE_SPREAD_AMOUNT, this.posY + FIRE_SPREAD_AMOUNT, this.posZ + FIRE_SPREAD_AMOUNT),
                         Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING));
                 for (Entity e : entities) {
+                    e.setFire(5);
                     if (e instanceof EntityLivingBase) {
                         for (MolotovFirePosEntry entry : this.burningBlocks) {
                             BlockPos p0 = new BlockPos(entry.pos.getX(), entry.y, entry.pos.getZ());
                             BlockPos p00 = new BlockPos(p0.getX(), p0.getY() + 1, p0.getZ());
                             BlockPos p1 = e.getPosition();
                             if (p0.equals(p1) || p00.equals(p1)) {
-                                e.setFire(5);
+                                // e.setFire(5);
                                 if (this.ticksExisted % 10 == 0) {
                                     e.attackEntityFrom(PMCDamageSources.molotov(getThrower()), 4);
                                 }
