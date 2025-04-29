@@ -2,6 +2,7 @@ package dev.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.api.block.IBulletReaction;
+import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 import static dev.toma.pubgmc.DevUtil.getEntityByUUID;
 
-public class EntityFuelCan extends Entity implements GameObject, IBulletReaction, SynchronizableEntity {
+public class EntityFuelCan extends Entity implements GameObject, IBulletReaction, SynchronizableEntity, IBombReaction{
     private float health = ItemFuelCan.initHealth;
     private int fuse = 60;
     protected UUID owner;
@@ -93,16 +94,13 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
 
     @Override
     public void onCollideWithPlayer(EntityPlayer player) {
-        if (!this.world.isRemote && !player.onGround && collisionCooldown <= 0) {
-            double kickStrength = player.isSprinting() ? 1.8F : 1.0F;
-
+        if (!this.world.isRemote && !player.onGround && collisionCooldown <= 0 && player.isSprinting()) {
+            double kickStrength = 0.2F;
             if (player.motionY > 0.0D) {
-                this.motionX += player.motionX * kickStrength * 1.5;
-                this.motionZ += player.motionZ * kickStrength * 1.5;
-
-                double relativeHeight = player.posY - this.posY;
-                this.motionY = relativeHeight * 0.2 + kickStrength * 0.1;
-
+                double xz = Math.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ);
+                this.motionX += kickStrength * (player.motionX / xz);
+                this.motionY = kickStrength;
+                this.motionZ += kickStrength * (player.motionZ / xz);
                 this.isAirBorne = true;
                 this.velocityChanged = true;
                 collisionCooldown = COLLISION_COOLDOWN_TIME;
@@ -178,17 +176,32 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
             boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
             this.setPosition(this.posX, this.posY + 1, this.posZ);
             world.createExplosion(getOwner(), this.posX, this.posY, this.posZ, 2.3F, canBreakBlocks);
-            this.notifyNeighboringFuelCans();
-
+            this.notifyNeighboringEntities();
             this.setDead();
         }
     }
-
-    private void notifyNeighboringFuelCans() {
-        AxisAlignedBB burnAABB = new AxisAlignedBB(this.posX - 1.5, this.posY, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5);
-        List<EntityFuelCan> nearbyFuelCans = this.world.getEntitiesWithinAABB(EntityFuelCan.class, burnAABB);
-        for (EntityFuelCan otherFuelCan : nearbyFuelCans) {
-            this.explodeOtherFuelCan(otherFuelCan);
+    private void notifyNeighboringEntities() {
+        if (world.isRemote) {
+            return;
+        }
+        AxisAlignedBB burnAABB = new AxisAlignedBB(this.posX - burnRadius, this.posY, this.posZ - burnRadius,
+                this.posX + burnRadius, this.posY + 1.5, this.posZ + burnRadius);
+        List<Entity> nearbyFuelCans = this.world.getEntitiesWithinAABB(Entity.class, burnAABB);
+        for (Entity e : nearbyFuelCans) {
+            if (e instanceof EntityFuelCan) {
+                this.explodeOtherFuelCan((EntityFuelCan) e);
+            } else if (e instanceof IBombReaction) {
+                IBombReaction reaction = (IBombReaction) e;
+                if (reaction.allowBombInteraction(world, null, e)) {
+                    double vecX = e.posX - this.posX;
+                    double vecY = e.posY - this.posY;
+                    double vecZ = e.posZ - this.posZ;
+                    double distance = Math.sqrt(vecX*vecX + vecY*vecY + vecZ*vecZ);
+                    if (distance < burnRadius) {
+                        reaction.onBomb(this, new Vec3d(vecX, vecY, vecZ).scale(0.4d), null, e);
+                    }
+                }
+            }
         }
     }
 
@@ -247,5 +260,15 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
     @Override
     public void decodeNetworkData(NBTTagCompound nbt) {
         readEntityFromNBT(nbt);
+    }
+
+    @Override
+    public void onBomb(Entity exploder, Vec3d vec3d, @Nullable IBlockState state, @Nullable Entity entity) {
+        this.health = 0;
+    }
+
+    @Override
+    public boolean allowBombInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
+        return this.health > 0;
     }
 }

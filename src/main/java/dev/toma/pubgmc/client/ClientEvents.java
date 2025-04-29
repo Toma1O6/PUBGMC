@@ -863,19 +863,19 @@ public class ClientEvents {
         }
         if (e.getType() == ElementType.TEXT) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double speed = car.getSpeed() * 20;
+            double speed = car.getSpeedPerTick() * 20;
             mc.fontRenderer.drawStringWithShadow(I18n.format("label.pubgmc.speed") + ": " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
         } else if (e.getType() == ElementType.ALL) {
             EntityVehicle car = (EntityVehicle) player.getRidingEntity();
 
             int barWidth = 120;
             short barHeight = 5;
-            float fuelPercentage = car.fuel / 100.0f;
+            float fuelPercentage = car.getFuelPercentage();
             ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, fuelPercentage * barWidth, barHeight, 0.0, 0.25, 1.0, 0.375, false);
             ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
             // health background
             ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
-            float healthPercentage = car.health / car.getVehicleConfiguration().maxHealth.getAsFloat();
+            float healthPercentage = car.getHealthPercentage();
             // color
             float r, g, b;
             if (healthPercentage <= car.getDamageLevel(2)) { // red

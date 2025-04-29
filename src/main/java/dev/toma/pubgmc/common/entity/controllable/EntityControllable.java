@@ -19,7 +19,7 @@ public class EntityControllable extends Entity implements IControllable {
         this.ignoreFrustumCheck = false;
     }
 
-    public double getSpeed() {
+    public double getSpeedPerTick() {
         return Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
     }
 
