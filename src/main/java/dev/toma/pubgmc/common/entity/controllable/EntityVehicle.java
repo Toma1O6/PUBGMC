@@ -20,6 +20,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -44,6 +45,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     private short timeInInvalidState;
     private float damageLevel1 = 0.45f;
     private float damageLevel2 = 0.2f;
+    private float damageLevel3 = 0f;
+    private boolean exploded = false;
+    private int timeBeforeExplode = 100; // 5 seconds
+    private int timeAfterExplode = 400; // 20 seconds
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
@@ -77,17 +82,22 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         }
         return new TextComponentTranslation("entity." + key + ".name");
     }
-    
-    public float getDamageLevel1() {
-        return damageLevel1;
-    }
 
-    public float getDamageLevel2() {
-        return damageLevel2;
+    public float getDamageLevel(int level) {
+        switch (level) {
+            case 1:
+                return damageLevel1;
+            case 2:
+                return damageLevel2;
+            case 3:
+                return damageLevel3;
+        }
+        return -1;
     }
 
     @Override
     public void updatePre() {
+        // handle inputs
         this.handleEmptyInputs();
         fallDistance = 0.0F;
         Vec3d look = this.getLookVec();
@@ -99,6 +109,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         if (!isBeingRidden() || !hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken) {
             reset();
         }
+        // handle collision
         this.handleEntityCollisions();
         this.checkState();
         if (collidedHorizontally) {
@@ -108,11 +119,45 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void updatePost() {
-        move(MoverType.SELF, motionX, motionY, motionZ);
-        playSoundAtVehicle();
-        spawnParticles();
         if (ticksExisted % 20 == 0) {
             GameHelper.validateGameEntityStillValid(this);
+        }
+        handleExplodeTick();
+        if (this.timeAfterExplode < 0) {
+            return;
+        }
+        move(MoverType.SELF, motionX, motionY, motionZ);
+        playSoundAtVehicle();
+        spawnNormalParticles();
+    }
+
+    private void handleExplodeTick() {
+        // Remove exploded vehicle
+        if (this.exploded && --this.timeAfterExplode < 0) {
+            this.setDead();
+            return;
+        }
+
+        if (this.health <= 0) {
+            this.removePassengers(); // force remove from vehicle
+            // sound
+            if (timeBeforeExplode % 10 == 0) {
+                playSound(SoundEvents.ENTITY_BLAZE_BURN, 2f, 1f);
+            }
+            // particles
+            if (world.isRemote) { // client only
+                double rngX = (rand.nextDouble() - 0.5F) * 0.3;
+                double rngZ = (rand.nextDouble() - 0.5F) * 0.3;
+                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + rngX, posY, posZ + rngZ,
+                        rngX, 0.3d, rngZ);
+            }
+            // explode
+            if (--this.timeBeforeExplode < 0 && !this.exploded) {
+                if (!world.isRemote) { // server only
+                    this.world.createExplosion(this, posX, posY, posZ, 5f, false);
+                }
+                this.exploded = true;
+            }
         }
     }
 
@@ -239,13 +284,6 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         return true;
     }
 
-    private void explode() {
-        if (!world.isRemote) {
-            this.world.createExplosion(this, posX, posY, posZ, 5f, false);
-            this.setDead();
-        }
-    }
-
     // Should be running only on server side in case some client doesn't receive packet
     // containing new health value of this vehicle
     protected void checkState() {
@@ -261,32 +299,36 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             isBroken = true;
         }
 
-        if (isInLava() || health <= 0f) explode();
+        if (isInLava()) timeBeforeExplode = 0; // force to explode
     }
 
-    protected void spawnParticles() {
+    protected void spawnNormalParticles() {
+        // client only
+        if (!world.isRemote) {
+            return;
+        }
         float max = getVehicleConfiguration().maxHealth.getAsFloat();
-        if (world.isRemote) {
-            if (health / max <= damageLevel1) {
-                Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
-                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
+        if (health / max <= getDamageLevel(1)) { // engine smoke
+            Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+            world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z,
+                    0d, 0.1d, 0d);
 
-                if (health / max <= damageLevel2) {
-                    double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-                    double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-                    world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
-                }
+            if (health / max <= getDamageLevel(2)) { // engine flame
+                double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+                double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+                world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z,
+                        rngX, 0.02d, rngZ);
             }
+        }
 
-            if (!isBroken && hasFuel()) {
-                Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
-            }
+        if (!isBroken && hasFuel()) {
+            Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
+        }
 
-            if (isBroken) {
-                Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2f));
-                world.spawnParticle(EnumParticleTypes.CLOUD, true, posX + engine.x, posY + engine.y, posZ + engine.z, 0d, 0.05d, 0d);
-            }
+        if (isBroken) {
+            Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2f));
+            world.spawnParticle(EnumParticleTypes.CLOUD, true, posX + engine.x, posY + engine.y, posZ + engine.z, 0d, 0.05d, 0d);
         }
     }
 
@@ -329,7 +371,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public boolean canFitPassenger(Entity passenger) {
-        return this.getPassengers().size() < getMaximumCapacity();
+        return this.getPassengers().size() < getMaximumCapacity() && this.health > 0;
     }
 
     @Override
@@ -354,6 +396,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     private void playSoundAtVehicle() {
+        if (this.health <= 0) {
+            return;
+        }
         if (!isVehicleMoving()) {
             if (ticksExisted % 5 == 0) playSound(PMCSounds.vehicleIdle, 2f, 1f);
         } else {
