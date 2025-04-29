@@ -194,10 +194,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             }
             // particles
             if (world.isRemote) { // client only
-                double rngX = (rand.nextDouble() - 0.5F) * 0.3;
-                double rngZ = (rand.nextDouble() - 0.5F) * 0.3;
-                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + rngX, posY, posZ + rngZ,
-                        rngX, 0.3d, rngZ);
+                double rngX = (rand.nextDouble() - 0.5F);
+                double rngZ = (rand.nextDouble() - 0.5F);
+                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + rngX * 0.5, posY, posZ + rngZ * 0.5,
+                        rngX * 0.2, 0.5d, rngZ * 0.2);
             }
             // explode
             if (--this.timeBeforeExplode < 0 && !this.exploded) {
