@@ -161,10 +161,12 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
         if (!world.isRemote) { // server tick
             if (this.ticksExisted % 5 == 0) {
                 AxisAlignedBB aabb = new AxisAlignedBB(this.posX - burnRadius, this.posY, this.posZ - burnRadius, this.posX + burnRadius, this.posY + 1.5, this.posZ + burnRadius);
-                List<EntityLivingBase> entities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, aabb, Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING));
-                for (EntityLivingBase entity : entities) {
-                    entity.setFire(5);
-                    entity.attackEntityFrom(PMCDamageSources.fuelcan(getOwner()), 1);
+                List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, aabb, Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING));
+                for (Entity e : entities) {
+                    e.setFire(5);
+                    if (e instanceof EntityLivingBase) {
+                        e.attackEntityFrom(PMCDamageSources.fuelcan(getOwner()), 1);
+                    }
                 }
             }
         }
@@ -177,6 +179,7 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
             this.setPosition(this.posX, this.posY + 1, this.posZ);
             world.createExplosion(getOwner(), this.posX, this.posY, this.posZ, 2.3F, canBreakBlocks);
             this.notifyNeighboringFuelCans();
+
             this.setDead();
         }
     }
