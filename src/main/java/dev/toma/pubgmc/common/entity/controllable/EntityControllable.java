@@ -8,6 +8,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+
 public class EntityControllable extends Entity implements IControllable {
 
     protected byte encodedInput;
@@ -17,7 +19,7 @@ public class EntityControllable extends Entity implements IControllable {
         this.ignoreFrustumCheck = false;
     }
 
-    public double getSpeed() {
+    public double getSpeedPerTick() {
         return Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
     }
 

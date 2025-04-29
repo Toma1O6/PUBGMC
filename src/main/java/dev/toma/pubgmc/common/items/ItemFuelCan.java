@@ -25,6 +25,7 @@ import java.util.List;
 
 public class ItemFuelCan extends PMCItem implements Consumable {
     public static float initHealth = 40.0F;
+    public static float fuelPercentage = 0.3F;
 
     public ItemFuelCan(String name) {
         super(name);
@@ -64,7 +65,7 @@ public class ItemFuelCan extends PMCItem implements Consumable {
             return ActionResult.newResult(EnumActionResult.FAIL, stack);
         }
         EntityVehicle vehicle = (EntityVehicle) playerIn.getRidingEntity();
-        if (vehicle.currentSpeed != 0) {
+        if (vehicle.getSpeedPerTick() != 0) {
             this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.vehicle_not_stationary");
             return ActionResult.newResult(EnumActionResult.FAIL, stack);
         }

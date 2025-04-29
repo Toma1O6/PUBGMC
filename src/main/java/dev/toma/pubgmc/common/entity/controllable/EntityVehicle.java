@@ -6,8 +6,10 @@ import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
+import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
+import dev.toma.pubgmc.common.items.ItemFuelCan;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.init.PMCSounds;
@@ -15,11 +17,13 @@ import dev.toma.pubgmc.util.helper.GameHelper;
 import dev.toma.pubgmc.util.helper.SerializationHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -29,21 +33,31 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag {
+public abstract class EntityVehicle extends EntityControllable implements IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IBombReaction {
     private static final Predicate<Entity> TARGET = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
     private static final AxisAlignedBB BOX = new AxisAlignedBB(-0.5d, 0d, -0.5d, 1.5d, 1d, 1.5d);
 
     public float health;
-    public float currentSpeed;
+    private float currentSpeed;
     public float turnModifier;
     public float fuel;
+    public static final float maxFuel = 100F;
     public boolean isBroken = false;
     private short timeInInvalidState;
     private float damageLevel1 = 0.45f;
     private float damageLevel2 = 0.2f;
+    private float damageLevel3 = 0f;
+    private boolean exploded = false;
+    private int timeBeforeExplode = 100; // 5 seconds
+    private int timeAfterExplode = 400; // 20 seconds
+    private boolean bomb = false;
+    private static float bombFuelPercentage = ItemFuelCan.fuelPercentage;
+    private Vec3d bombMotion = Vec3d.ZERO;
+    private static float bombStrength = 0.5F;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
@@ -77,28 +91,51 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         }
         return new TextComponentTranslation("entity." + key + ".name");
     }
-    
-    public float getDamageLevel1() {
-        return damageLevel1;
+
+    public float getDamageLevel(int level) {
+        switch (level) {
+            case 1:
+                return damageLevel1;
+            case 2:
+                return damageLevel2;
+            case 3:
+                return damageLevel3;
+        }
+        return -1;
     }
 
-    public float getDamageLevel2() {
-        return damageLevel2;
+    public float getHealthPercentage() {
+        return this.health / this.getVehicleConfiguration().maxHealth.getAsFloat();
+    }
+
+    public float getFuelPercentage() {
+        return this.fuel / maxFuel;
     }
 
     @Override
     public void updatePre() {
+        // handle inputs
         this.handleEmptyInputs();
         fallDistance = 0.0F;
-        Vec3d look = this.getLookVec();
-        motionX = look.x * currentSpeed;
-        motionZ = look.z * currentSpeed;
+        if (this.bomb || hasBombMotion()) {
+            Pubgmc.logger.debug("Vehicle motion: " + motionX + ", " + motionY + ", " + motionZ);
+            Pubgmc.logger.debug("bombMotion: " + bombMotion.x + ", " + bombMotion.y + ", " + bombMotion.z);
+            motionX += bombMotion.x;
+            motionY += bombMotion.y;
+            motionZ += bombMotion.z;
+            dropBombMotion();
+        } else { // normal motion update
+            Vec3d look = this.getLookVec();
+            motionX = look.x * currentSpeed;
+            motionZ = look.z * currentSpeed;
+        }
         if (currentSpeed != 0) {
             rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
         }
         if (!isBeingRidden() || !hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken) {
             reset();
         }
+        // handle collision
         this.handleEntityCollisions();
         this.checkState();
         if (collidedHorizontally) {
@@ -106,25 +143,82 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         }
     }
 
+    public boolean hasBombMotion() {
+        return Math.abs(bombMotion.x) > 0.05F || Math.abs(bombMotion.y) > 0.05F || Math.abs(bombMotion.z) > 0.05F;
+    }
+
+    private void dropBombMotion() {
+        double x = Math.abs(bombMotion.x) > 0.05F ? bombMotion.x * 0.85 : 0F;
+        double y = Math.abs(bombMotion.y) > 0.05F ? bombMotion.y * 0.8 : 0F;
+        double z = Math.abs(bombMotion.z) > 0.05F ? bombMotion.z * 0.85 : 0F;
+        bombMotion = new Vec3d(x, y, z);
+        if (!hasBombMotion()) {
+            this.bomb = false;
+            this.bombMotion = Vec3d.ZERO;
+        }
+    }
+
     @Override
     public void updatePost() {
-        move(MoverType.SELF, motionX, motionY, motionZ);
-        playSoundAtVehicle();
-        spawnParticles();
         if (ticksExisted % 20 == 0) {
             GameHelper.validateGameEntityStillValid(this);
+        }
+        handleExplodeTick();
+        if (this.timeAfterExplode < 0) {
+            return;
+        }
+        if (this.bomb || hasBombMotion()) {
+            Pubgmc.logger.debug("Vehicle motion: " + motionX + ", " + motionY + ", " + motionZ);
+            Pubgmc.logger.debug("bombMotion: " + bombMotion.x + ", " + bombMotion.y + ", " + bombMotion.z);
+        }
+        move(MoverType.SELF, motionX, motionY, motionZ);
+        playSoundAtVehicle();
+        spawnNormalParticles();
+        if (this.bomb || hasBombMotion()) {
+            Pubgmc.logger.debug("Vehicle Pos: " + posX + ", " + posY + ", " + posZ);
+        }
+    }
+
+    private void handleExplodeTick() {
+        // Remove exploded vehicle
+        if (this.exploded && --this.timeAfterExplode < 0) {
+            this.setDead();
+            return;
+        }
+
+        if (this.health <= 0) {
+            this.removePassengers(); // force remove from vehicle
+            // sound
+            if (timeBeforeExplode % 10 == 0) {
+                playSound(SoundEvents.ENTITY_BLAZE_BURN, 2f, 1f);
+            }
+            // particles
+            if (world.isRemote) { // client only
+                double rngX = (rand.nextDouble() - 0.5F);
+                double rngZ = (rand.nextDouble() - 0.5F);
+                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + rngX * 0.5, posY, posZ + rngZ * 0.5,
+                        rngX * 0.2, 0.5d, rngZ * 0.2);
+            }
+            // explode
+            if (--this.timeBeforeExplode < 0 && !this.exploded) {
+                if (!world.isRemote) { // server only
+                    this.world.createExplosion(this, posX, posY, posZ, 5f, false);
+                }
+                this.exploded = true;
+            }
         }
     }
 
     protected void handleEmptyInputs() {
         CFGVehicle stats = this.getVehicleConfiguration();
         if (!hasMovementInput() || !hasFuel()) {
-            if (Math.abs(currentSpeed) < 0.01)
+            if (Math.abs(currentSpeed) >= 0.05F) {
+                float autoBrakeMultiplier = 0.3F;
+                currentSpeed = currentSpeed > 0 ?
+                        currentSpeed - stats.acceleration.getAsFloat() * autoBrakeMultiplier
+                        : currentSpeed + stats.acceleration.getAsFloat() * autoBrakeMultiplier;
+            } else {
                 currentSpeed = 0f;
-
-            if (currentSpeed != 0) {
-                float multiplier = this.isBeingRidden() ? 0.1F : 0.5F;
-                currentSpeed = currentSpeed > 0 ? currentSpeed - stats.acceleration.getAsFloat() * multiplier : currentSpeed + stats.acceleration.getAsFloat() * multiplier;
             }
         }
         if (!hasTurnInput()) {
@@ -141,15 +235,18 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     public void handleEntityCollisions() {
-        Vec3d vec1 = new Vec3d(posX, posY, posZ);
-        Vec3d vec2 = new Vec3d(vec1.x + motionX, vec1.y + motionY, vec1.z + motionZ);
-        Entity e = findEntityInPath(vec1, vec2);
+        Vec3d from = new Vec3d(posX, posY, posZ);
+        Vec3d to = new Vec3d(from.x + motionX, from.y + motionY, from.z + motionZ);
+        Entity hitEntity = findEntityInPath(from, to);
 
-        if (e != null) {
-            e.motionX += motionX * currentSpeed * 3;
-            e.motionY += currentSpeed;
-            e.motionZ += motionZ * currentSpeed * 3;
-            e.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), Math.abs(currentSpeed) * 15f);
+        if (hitEntity != null) {
+            hitEntity.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), Math.abs(currentSpeed) * 15f);
+            if (hitEntity.isDead) {
+                return;
+            }
+            hitEntity.motionX += motionX * currentSpeed * 3;
+            hitEntity.motionY += currentSpeed;
+            hitEntity.motionZ += motionZ * currentSpeed * 3;
         }
     }
 
@@ -157,6 +254,13 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public void handleForward() {
         if (!isBroken) {
             CFGVehicle cfg = getVehicleConfiguration();
+            if (currentSpeed > 0) {
+                currentSpeed -= 0.2F * cfg.acceleration.getAsFloat();
+                if (currentSpeed < 0) {
+                    currentSpeed = 0;
+                }
+                return;
+            }
             float max = cfg.maxSpeed.getAsFloat();
             if (hasFuel() || currentSpeed < 0) {
                 burnFuel();
@@ -169,6 +273,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     public void handleBackward() {
         if (!isBroken) {
             CFGVehicle cfg = getVehicleConfiguration();
+            if (currentSpeed < 0) {
+                currentSpeed += 0.2F * cfg.acceleration.getAsFloat();
+                return;
+            }
             if (currentSpeed > 0) {
                 currentSpeed -= cfg.acceleration.getAsFloat();
             } else if (hasFuel()) {
@@ -207,18 +315,18 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
         for (int i = 0; i < entityList.size(); i++) {
             Entity entity = entityList.get(i);
+            if (entity == this || isPassenger(entity)) {
+                continue;
+            }
+            AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(0.3d);
+            RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
 
-            if (entity != this && !isPassenger(entity)) {
-                AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(0.30000001192092896D);
-                RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
+            if (raytraceresult != null) {
+                double d1 = start.squareDistanceTo(raytraceresult.hitVec);
 
-                if (raytraceresult != null) {
-                    double d1 = start.squareDistanceTo(raytraceresult.hitVec);
-
-                    if (d1 < d0 || d0 == 0.0D) {
-                        e = entity;
-                        d0 = d1;
-                    }
+                if (d1 < d0 || d0 == 0.0D) {
+                    e = entity;
+                    d0 = d1;
                 }
             }
         }
@@ -229,7 +337,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
         if (!world.isRemote) {
-            if (this.canBeRidden(player) && canFitPassenger(player)) {
+            if (this.canBeRidden(player) && canFitPassenger(player) && !player.isSneaking()) {
                 player.startRiding(this);
                 IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
                 data.getAimInfo().setAiming(false, 1.0F);
@@ -237,13 +345,6 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         }
 
         return true;
-    }
-
-    private void explode() {
-        if (!world.isRemote) {
-            this.world.createExplosion(this, posX, posY, posZ, 5f, false);
-            this.setDead();
-        }
     }
 
     // Should be running only on server side in case some client doesn't receive packet
@@ -261,32 +362,36 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             isBroken = true;
         }
 
-        if (isInLava() || health <= 0f) explode();
+        if (isInLava()) timeBeforeExplode = 0; // force to explode
     }
 
-    protected void spawnParticles() {
+    protected void spawnNormalParticles() {
+        // client only
+        if (!world.isRemote) {
+            return;
+        }
         float max = getVehicleConfiguration().maxHealth.getAsFloat();
-        if (world.isRemote) {
-            if (health / max <= damageLevel1) {
-                Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
-                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z, 0d, 0.1d, 0d);
+        if (health / max <= getDamageLevel(1)) { // engine smoke
+            Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+            world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z,
+                    0d, 0.1d, 0d);
 
-                if (health / max <= damageLevel2) {
-                    double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-                    double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-                    world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z, rngX, 0.02d, rngZ);
-                }
+            if (health / max <= getDamageLevel(2)) { // engine flame
+                double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+                double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
+                world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z,
+                        rngX, 0.02d, rngZ);
             }
+        }
 
-            if (!isBroken && hasFuel()) {
-                Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
-            }
+        if (!isBroken && hasFuel()) {
+            Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
+        }
 
-            if (isBroken) {
-                Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2f));
-                world.spawnParticle(EnumParticleTypes.CLOUD, true, posX + engine.x, posY + engine.y, posZ + engine.z, 0d, 0.05d, 0d);
-            }
+        if (isBroken) {
+            Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2f));
+            world.spawnParticle(EnumParticleTypes.CLOUD, true, posX + engine.x, posY + engine.y, posZ + engine.z, 0d, 0.05d, 0d);
         }
     }
 
@@ -329,7 +434,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public boolean canFitPassenger(Entity passenger) {
-        return this.getPassengers().size() < getMaximumCapacity();
+        return this.getPassengers().size() < getMaximumCapacity() && this.health > 0;
     }
 
     @Override
@@ -354,6 +459,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     private void playSoundAtVehicle() {
+        if (this.health <= 0) {
+            return;
+        }
         if (!isVehicleMoving()) {
             if (ticksExisted % 5 == 0) playSound(PMCSounds.vehicleIdle, 2f, 1f);
         } else {
@@ -421,17 +529,13 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     public void refill(EntityPlayer source) {
         if (this.getPassengers().contains(source))
-            fuel = fuel + 30f < 100f ? fuel + 30f : 100f;
+            fuel = Math.min(fuel + maxFuel * ItemFuelCan.fuelPercentage, maxFuel);
         else
             Pubgmc.logger.warn("{} has attempted to refuel vehicle with ID {}, but he wasn't inside the vehicle!", source, this.getEntityId());
     }
 
     public void burnFuel() {
         fuel = hasFuel() ? fuel - 0.01f : 0f;
-    }
-
-    protected float generateFuel() {
-        return 60F + rand.nextInt(40);
     }
 
     @Override
@@ -459,5 +563,36 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public void onNewGameDetected(UUID newGameId) {
         setDead();
+    }
+
+    @Override
+    public void onBomb(Entity exploder, Vec3d vec3d, @Nullable IBlockState state, @Nullable Entity entity) {
+        if (world.isRemote) {
+            return;
+        }
+        this.bomb = true;
+        double multiplier = bombStrength * ((this.fuel / maxFuel) / ItemFuelCan.fuelPercentage);
+        if (vec3d.y < 0) {
+            vec3d = new Vec3d(vec3d.x, -vec3d.y, vec3d.z);
+        }
+        if (vec3d.y <= 0.4) { // bomb near bottom: additional throw strength
+            double yOff = 0;
+            double xz = Math.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z);
+            if (xz != 0) {
+                yOff += 1 / Math.max(xz - 0.2, 0.03);
+            }
+            vec3d.addVector(0, Math.min(5, yOff + 1), 0);
+        }
+        this.bombMotion = vec3d.scale(multiplier);
+        this.fuel -= ItemFuelCan.fuelPercentage;
+    }
+
+    @Override
+    public boolean allowBombInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
+        if (this.fuel < maxFuel * bombFuelPercentage) { // assume fuel not enough to bomb
+            return false;
+        }
+        // only allow stable vehicle bomb
+        return getSpeedPerTick() < 1;
     }
 }
