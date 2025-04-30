@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 
 public class EntityVehicleUAZ extends EntityVehicle {
 
+    private static final int vehicleWeight = 250;
     private static final Vec3d[] VECTORS = {new Vec3d(2d, 1.5d, 0), new Vec3d(-1.9d, 0.3, -0.6d)};
 
     public EntityVehicleUAZ(World world) {

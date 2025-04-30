@@ -58,6 +58,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     private Vec3d bombMotion = Vec3d.ZERO;
     private float brakeMultiplier = 0.3F;
     private int stableTime = 5;
+    private static final int vehicleWeight = 0;
+    private static final float elasticModulus = 0.6F;
+    private int vehicleCollideCooldown = 5;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
@@ -119,6 +122,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             motionY -= 0.1;
         }
         fallDistance = 0.0F;
+        if (vehicleCollideCooldown > 0) {
+            vehicleCollideCooldown--;
+        }
         Vec3d look = this.getLookVec();
         motionX = look.x * currentSpeed;
         motionZ = look.z * currentSpeed;
@@ -241,6 +247,10 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         Entity hitEntity = findEntityInPath(from, to);
 
         if (hitEntity != null) {
+            if (hitEntity instanceof EntityVehicle) {
+                handleVehicleCollision(this, (EntityVehicle) hitEntity);
+                return;
+            }
             hitEntity.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), Math.abs(currentSpeed) * 15f);
             if (hitEntity.isDead) {
                 return;
@@ -249,6 +259,42 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             hitEntity.motionY += currentSpeed;
             hitEntity.motionZ += motionZ * currentSpeed * 3;
         }
+    }
+
+    public void handleVehicleCollision(EntityVehicle vehicleA, EntityVehicle vehicleB) {
+        // simplified collision: The one with greater momentum hits the other
+        if (vehicleA.vehicleCollideCooldown > 0 || vehicleB.vehicleCollideCooldown > 0) {
+            return;
+        }
+        vehicleA.vehicleCollideCooldown = 5;
+        vehicleB.vehicleCollideCooldown = 5;
+        double mA = vehicleA.getWeight();
+        double mB = vehicleB.getWeight();
+        double vA = vehicleA.getSpeedPerTick() * 20 * 3.6;
+        double vB = vehicleB.getSpeedPerTick() * 20 * 3.6;
+        double pA = mA * vA;
+        double pB = mB * vB;
+        EntityVehicle hitter, target;
+        if (pA > pB) {
+            hitter = vehicleA;
+            target = vehicleB;
+        } else if (pA < pB) {
+            hitter = vehicleB;
+            target = vehicleA;
+        } else {
+            return;
+        }
+        target.motionX += hitter.motionX;
+        target.motionY += Math.abs(hitter.getSpeedPerTick() - target.getSpeedPerTick());
+        target.motionZ += hitter.motionZ;
+        target.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), (float) target.getSpeedPerTick() * 20 * 3.6F);
+        world.playSound(null, target.posX, target.posY, target.posZ, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, target.posX, target.posY + 1, target.posZ, 0, 5, 0);
+    }
+
+
+    public int getWeight() {
+        return getPassengers().size() * 50 + vehicleWeight;
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 
 public class EntityVehicleDacia extends EntityVehicle implements Variants {
 
+    private static final int vehicleWeight = 100;
     private static final Vec3d[] VECTORS = new Vec3d[]{new Vec3d(1.5, 0.5, 0d), new Vec3d(-3.8, 0, -0.6)};
     private static final ResourceLocation[] VARIANTS = {
             Pubgmc.getResource("textures/vehicle/dacia_blue.png"),
