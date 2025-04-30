@@ -30,7 +30,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
     @Nullable
     private UUID stickedEntityUUID;
     private Vec3d stickOffset = Vec3d.ZERO;
-    private static final int initFuse = 320; // 16 seconds
+    public static final int initFuse = 320; // 16 seconds
     private static final List<Integer> SOUND_TICKS = calculateSoundTicks(33);
     private int soundIndex = 0;
     private static final List<BlockPos> sphereOffsets;
