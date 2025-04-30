@@ -56,8 +56,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     private int timeBeforeExplode = 100; // 5 seconds
     private int timeAfterExplode = 400; // 20 seconds
     private boolean bomb = false;
-    private static float bombFuelPercentage = ItemFuelCan.fuelPercentage;
     private Vec3d bombMotion = Vec3d.ZERO;
+    private float brakeMultiplier = 0.3F;
+    private int stableTime = 5;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
@@ -124,6 +125,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         motionZ = look.z * currentSpeed;
         if (currentSpeed != 0) {
             rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
+            stableTime = 5;
+        } else {
+            stableTime--;
         }
         if (!isBeingRidden() || !hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken) {
             reset();
@@ -215,13 +219,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     protected void handleEmptyInputs() {
-        CFGVehicle stats = this.getVehicleConfiguration();
         if (!hasMovementInput() || !hasFuel()) {
             if (Math.abs(currentSpeed) >= 0.01F) {
-                float autoBrakeMultiplier = 0.3F;
-                currentSpeed = currentSpeed > 0 ?
-                        currentSpeed - stats.acceleration.getAsFloat() * autoBrakeMultiplier
-                        : currentSpeed + stats.acceleration.getAsFloat() * autoBrakeMultiplier;
+                brake();
             } else {
                 currentSpeed = 0f;
             }
@@ -255,18 +255,24 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public void handleForward() {
         if (!isBroken) {
-            CFGVehicle cfg = getVehicleConfiguration();
-            if (currentSpeed > 0) {
-                currentSpeed -= 0.2F * cfg.acceleration.getAsFloat();
-                if (currentSpeed < 0) {
-                    currentSpeed = 0;
-                }
+            if (!hasFuel()) {
+                brake();
                 return;
             }
+            CFGVehicle cfg = getVehicleConfiguration();
+            float a = cfg.acceleration.getAsFloat();
             float max = cfg.maxSpeed.getAsFloat();
-            if (hasFuel() || currentSpeed < 0) {
-                burnFuel();
-                currentSpeed = currentSpeed < max ? currentSpeed + cfg.acceleration.getAsFloat() : max;
+            if (shouldStabilize(currentSpeed, a, true)) {
+                currentSpeed = 0;
+            } else {
+                if (currentSpeed >= 0) {
+                    currentSpeed += a;
+                    burnFuel(0.01F);
+                } else {
+                    currentSpeed += a * 0.8F;
+                    burnFuel(0.008F);
+                }
+                currentSpeed = Math.min(max, currentSpeed);
             }
         }
     }
@@ -274,17 +280,24 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     @Override
     public void handleBackward() {
         if (!isBroken) {
-            CFGVehicle cfg = getVehicleConfiguration();
-            if (currentSpeed < 0) {
-                currentSpeed += 0.2F * cfg.acceleration.getAsFloat();
+            if (!hasFuel()) {
+                brake();
                 return;
             }
-            if (currentSpeed > 0) {
-                currentSpeed -= cfg.acceleration.getAsFloat();
-            } else if (hasFuel()) {
-                burnFuel();
-                float reverseMax = -cfg.maxSpeed.getAsFloat() * 0.3F;
-                currentSpeed = currentSpeed > reverseMax ? currentSpeed - 0.02F : reverseMax;
+            CFGVehicle cfg = getVehicleConfiguration();
+            float a = cfg.acceleration.getAsFloat();
+            float max = cfg.maxSpeed.getAsFloat();
+            if (shouldStabilize(currentSpeed, a, false)) {
+                currentSpeed = 0;
+            } else {
+                if (currentSpeed <= 0) {
+                    currentSpeed -= a;
+                    burnFuel(0.01F);
+                } else {
+                    currentSpeed -= a * 0.8F;
+                    burnFuel(0.008F);
+                }
+                currentSpeed = Math.max(-max, currentSpeed);
             }
         }
     }
@@ -307,6 +320,23 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             float partial = cfg.turningSpeed.getAsFloat();
             turnModifier = turnModifier > -max ? turnModifier - partial : -max;
         }
+    }
+
+    public void brake() {
+        CFGVehicle cfg = getVehicleConfiguration();
+        float a = cfg.acceleration.getAsFloat();
+        if (Math.abs(currentSpeed) <= a * brakeMultiplier) {
+            currentSpeed = 0f;
+        } else {
+            currentSpeed += a * (currentSpeed > 0 ? -1 : 1) * brakeMultiplier;
+        }
+
+    }
+
+    private boolean shouldStabilize(float speed, float a, boolean isForward) {
+        return isForward
+                ? (speed <= 0 && speed > -a && stableTime > 0)
+                : (speed >= 0 && speed < a && stableTime > 0);
     }
 
     @Nullable
@@ -487,7 +517,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setFloat("health", this.health);
         compound.setFloat("fuel", this.fuel);
-        compound.setFloat("speed", this.currentSpeed);
+        compound.setFloat("speed", (float)getSpeedPerTick());
         compound.setBoolean("isBroken", this.isBroken);
     }
 
