@@ -10,6 +10,7 @@ import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.items.ItemFuelCan;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.init.PMCSounds;
@@ -57,7 +58,6 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     private boolean bomb = false;
     private static float bombFuelPercentage = ItemFuelCan.fuelPercentage;
     private Vec3d bombMotion = Vec3d.ZERO;
-    private static float bombStrength = 0.5F;
     private UUID gameId = GameHelper.DEFAULT_UUID;
 
     public EntityVehicle(World world) {
@@ -114,28 +114,28 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void updatePre() {
-        // handle inputs
         this.handleEmptyInputs();
-        fallDistance = 0.0F;
-        if (this.bomb || hasBombMotion()) {
-            Pubgmc.logger.debug("Vehicle motion: " + motionX + ", " + motionY + ", " + motionZ);
-            Pubgmc.logger.debug("bombMotion: " + bombMotion.x + ", " + bombMotion.y + ", " + bombMotion.z);
-            motionX += bombMotion.x;
-            motionY += bombMotion.y;
-            motionZ += bombMotion.z;
-            dropBombMotion();
-        } else { // normal motion update
-            Vec3d look = this.getLookVec();
-            motionX = look.x * currentSpeed;
-            motionZ = look.z * currentSpeed;
+        if (!onGround) {
+            motionY -= 0.1;
         }
+        fallDistance = 0.0F;
+        Vec3d look = this.getLookVec();
+        motionX = look.x * currentSpeed;
+        motionZ = look.z * currentSpeed;
         if (currentSpeed != 0) {
             rotationYaw += currentSpeed > 0 ? turnModifier : -turnModifier;
         }
         if (!isBeingRidden() || !hasMovementInput() || !hasTurnInput() || !hasFuel() || isBroken) {
             reset();
         }
-        // handle collision
+        // bomb motion (ignore player input)
+        if (this.bomb || hasBombMotion()) {
+            motionX = bombMotion.x;
+            motionY = bombMotion.y;
+            motionZ = bombMotion.z;
+            dropBombMotion();
+        }
+        handleExplodeTick();
         this.handleEntityCollisions();
         this.checkState();
         if (collidedHorizontally) {
@@ -144,13 +144,29 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     public boolean hasBombMotion() {
-        return Math.abs(bombMotion.x) > 0.05F || Math.abs(bombMotion.y) > 0.05F || Math.abs(bombMotion.z) > 0.05F;
+        return Math.abs(bombMotion.x) > 0.01F || Math.abs(bombMotion.z) > 0.01F;
     }
 
     private void dropBombMotion() {
-        double x = Math.abs(bombMotion.x) > 0.05F ? bombMotion.x * 0.85 : 0F;
-        double y = Math.abs(bombMotion.y) > 0.05F ? bombMotion.y * 0.8 : 0F;
-        double z = Math.abs(bombMotion.z) > 0.05F ? bombMotion.z * 0.85 : 0F;
+        double x = Math.abs(bombMotion.x) > 0.01F ? bombMotion.x * 0.98F : 0F;
+        double z = Math.abs(bombMotion.z) > 0.01F ? bombMotion.z * 0.98F : 0F;
+        double y = bombMotion.y;
+        if (onGround) {
+            if (y < 0) {
+                y = 0;
+            }
+            x *= 0.98F;
+            z *= 0.98F;
+        } else {
+            if (y > 0) {
+                y *= 0.97F;
+            }
+            y -= 0.02F;
+        }
+        if (collided) {
+            x *= 0.98F;
+            z *= 0.98F;
+        }
         bombMotion = new Vec3d(x, y, z);
         if (!hasBombMotion()) {
             this.bomb = false;
@@ -160,22 +176,11 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void updatePost() {
-        if (ticksExisted % 20 == 0) {
-            GameHelper.validateGameEntityStillValid(this);
-        }
-        handleExplodeTick();
-        if (this.timeAfterExplode < 0) {
-            return;
-        }
-        if (this.bomb || hasBombMotion()) {
-            Pubgmc.logger.debug("Vehicle motion: " + motionX + ", " + motionY + ", " + motionZ);
-            Pubgmc.logger.debug("bombMotion: " + bombMotion.x + ", " + bombMotion.y + ", " + bombMotion.z);
-        }
         move(MoverType.SELF, motionX, motionY, motionZ);
         playSoundAtVehicle();
         spawnNormalParticles();
-        if (this.bomb || hasBombMotion()) {
-            Pubgmc.logger.debug("Vehicle Pos: " + posX + ", " + posY + ", " + posZ);
+        if (ticksExisted % 20 == 0) {
+            GameHelper.validateGameEntityStillValid(this);
         }
     }
 
@@ -212,7 +217,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     protected void handleEmptyInputs() {
         CFGVehicle stats = this.getVehicleConfiguration();
         if (!hasMovementInput() || !hasFuel()) {
-            if (Math.abs(currentSpeed) >= 0.05F) {
+            if (Math.abs(currentSpeed) >= 0.01F) {
                 float autoBrakeMultiplier = 0.3F;
                 currentSpeed = currentSpeed > 0 ?
                         currentSpeed - stats.acceleration.getAsFloat() * autoBrakeMultiplier
@@ -228,9 +233,6 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
             if (turnModifier != 0) {
                 turnModifier = turnModifier > 0 ? turnModifier - 0.5f : turnModifier + 0.5f;
             }
-        }
-        if (!onGround) {
-            motionY -= 0.1;
         }
     }
 
@@ -528,14 +530,23 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     public void refill(EntityPlayer source, float percentage) {
-        if (this.getPassengers().contains(source))
-            fuel = Math.min(fuel + maxFuel * ItemFuelCan.fuelPercentage * percentage, maxFuel);
-        else
+        if (this.getPassengers().contains(source)) {
+            fillFuel(ItemFuelCan.fuelPercentage * percentage);
+        } else {
             Pubgmc.logger.warn("{} has attempted to refuel vehicle with ID {}, but he wasn't inside the vehicle!", source, this.getEntityId());
+        }
     }
 
     public void burnFuel() {
         fuel = hasFuel() ? fuel - 0.01f : 0f;
+    }
+
+    public void burnFuel(float amount) {
+        fuel = Math.max(0, fuel - amount);
+    }
+
+    public void fillFuel(float amount) {
+        fuel = Math.min(maxFuel, fuel + amount);
     }
 
     @Override
@@ -566,33 +577,20 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
     }
 
     @Override
-    public void onBomb(Entity exploder, Vec3d vec3d, @Nullable IBlockState state, @Nullable Entity entity) {
+    public void onBomb(Entity exploder, Vec3d bombVec, @Nullable IBlockState state, @Nullable Entity entity) {
         if (world.isRemote) {
             return;
         }
-        this.bomb = true;
-        double multiplier = bombStrength * ((this.fuel / maxFuel) / ItemFuelCan.fuelPercentage);
-        if (vec3d.y < 0) {
-            vec3d = new Vec3d(vec3d.x, -vec3d.y, vec3d.z);
+        double strength = ConfigPMC.common.world.bombs.bombStrength.getAsFloat();
+        this.bombMotion = new Vec3d(this.bombMotion.x + bombVec.x, this.bombMotion.y + bombVec.y, this.bombMotion.z + bombVec.z).scale(strength);
+        // this.bombMotion.add(bombVec.scale(bombStrength)); // this should work but actually not
+        if (hasBombMotion()) {
+            this.bomb = true;
         }
-        if (vec3d.y <= 0.4) { // bomb near bottom: additional throw strength
-            double yOff = 0;
-            double xz = Math.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z);
-            if (xz != 0) {
-                yOff += 1 / Math.max(xz - 0.2, 0.03);
-            }
-            vec3d.addVector(0, Math.min(5, yOff + 1), 0);
-        }
-        this.bombMotion = vec3d.scale(multiplier);
-        this.fuel -= ItemFuelCan.fuelPercentage;
     }
 
     @Override
     public boolean allowBombInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
-        if (this.fuel < maxFuel * bombFuelPercentage) { // assume fuel not enough to bomb
-            return false;
-        }
-        // only allow stable vehicle bomb
         return getSpeedPerTick() < 1;
     }
 }
