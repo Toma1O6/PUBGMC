@@ -527,9 +527,9 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         return fuel > 0;
     }
 
-    public void refill(EntityPlayer source) {
+    public void refill(EntityPlayer source, float percentage) {
         if (this.getPassengers().contains(source))
-            fuel = Math.min(fuel + maxFuel * ItemFuelCan.fuelPercentage, maxFuel);
+            fuel = Math.min(fuel + maxFuel * ItemFuelCan.fuelPercentage * percentage, maxFuel);
         else
             Pubgmc.logger.warn("{} has attempted to refuel vehicle with ID {}, but he wasn't inside the vehicle!", source, this.getEntityId());
     }

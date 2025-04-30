@@ -413,6 +413,7 @@ label.pubgmc.target.hit=Damage: %s
 label.pubgmc.fuel_can.vehicle_not_stationary=Vehicle must be stationary!
 label.pubgmc.fuel_can.not_in_vehicle=You must sit inside vehicle to refill fuel!
 label.pubgmc.fuel_can.tooltip.usage=Hold right click while driving vehicle
+label.pubgmc.fuel_can.fuel=Fuel: %s%%
 label.pubgmc.throwable.right_click=Right-click: Long throw
 label.pubgmc.throwable.left_click=Left-click: Short throw
 label.pubgmc.throwable.fuse=Fuse: %ss

@@ -44,7 +44,7 @@ public class ItemFuelCan extends PMCItem implements Consumable {
 
             if (player.isRiding() && player.getRidingEntity() instanceof EntityVehicle) {
                 EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-                vehicle.refill(player);
+                vehicle.refill(player, getHealth(stack) / initHealth);
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
                 }
@@ -78,6 +78,7 @@ public class ItemFuelCan extends PMCItem implements Consumable {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("label.pubgmc.fuel_can.tooltip.usage"));
         tooltip.add(I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));
+        tooltip.add(I18n.format("label.pubgmc.fuel_can.fuel", (int)(fuelPercentage * 100 * (getHealth(stack) / initHealth))));
     }
 
     private void sendError(EntityPlayer player, World world, String key) {
