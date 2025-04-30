@@ -34,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -297,7 +296,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
                     currentSpeed -= a * 0.8F;
                     burnFuel(0.008F);
                 }
-                currentSpeed = Math.max(-max, currentSpeed);
+                currentSpeed = Math.max(-max * 0.3F, currentSpeed);
             }
         }
     }
@@ -497,7 +496,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
         if (!isVehicleMoving()) {
             if (ticksExisted % 5 == 0) playSound(PMCSounds.vehicleIdle, 2f, 1f);
         } else {
-            if (ticksExisted % 18 == 0) playSound(vehicleSound(), currentSpeed * 5f, 1f);
+            if (ticksExisted % 18 == 0) playSound(vehicleSound(), Math.abs(currentSpeed) * 5f, 1f);
         }
     }
 
