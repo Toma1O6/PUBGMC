@@ -30,7 +30,7 @@ public class EntityFragGrenade extends EntityThrowableExplodeable {
     @Override
     public void onExplode() {
         if (!world.isRemote) {
-            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
+            boolean canBreakBlocks = ConfigPMC.world().bombs.grenadeGriefing.get();
             this.setPosition(this.posX, this.posY + 1, this.posZ);
             world.createExplosion(getThrower(), this.posX, this.posY, this.posZ, 5.0F, canBreakBlocks);
             handleExplodeInteraction();
@@ -51,7 +51,11 @@ public class EntityFragGrenade extends EntityThrowableExplodeable {
                     double vecZ = e.posZ - this.posZ;
                     double distance = Math.sqrt(vecX*vecX + vecY*vecY + vecZ*vecZ);
                     if (distance < explodeInteractRadius) {
-                        reaction.onBomb(this, new Vec3d(0, new Vec3d(e.posX, e.posY, e.posZ).normalize().y, 0), null, e);
+                        // Only provides a slight vertical bounce
+                        // Expected: y=0.3
+                        double bombStrength = Math.min(1.2 - distance / explodeInteractRadius, 1);
+                        vecY = 0.3F * bombStrength;
+                        reaction.onBomb(this, new Vec3d(0, vecY, 0), null, e);
                     }
                 }
             }

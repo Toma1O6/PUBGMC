@@ -1,7 +1,10 @@
 package dev.toma.pubgmc.common.entity;
 
 import com.google.common.base.Predicates;
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.block.IBulletReaction;
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
@@ -173,8 +176,8 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
     public void onExplode() {
         if (!this.world.isRemote && !this.isDead) {
             this.fuse = -1;
-            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
             this.setPosition(this.posX, this.posY + 1, this.posZ);
+            boolean canBreakBlocks = ConfigPMC.world().bombs.grenadeGriefing.get();
             world.createExplosion(getOwner(), this.posX, this.posY, this.posZ, 2.3F, canBreakBlocks);
             this.notifyNeighboringEntities();
             this.setDead();
@@ -198,7 +201,15 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
                     double vecZ = e.posZ - this.posZ;
                     double distance = Math.sqrt(vecX*vecX + vecY*vecY + vecZ*vecZ);
                     if (distance < burnRadius) {
-                        reaction.onBomb(this, new Vec3d(vecX, vecY, vecZ).scale(0.4d), null, e);
+                        // Provides high vertical thrust, moderate horizontal thrust
+                        double bombStrength = Math.min(1.3 - distance / burnRadius, 1);
+                        double xz = Math.sqrt(vecX * vecX + vecZ * vecZ);
+                        // Expected: xz=1.3, y=2.3, sqrt(1.3)=1.14
+                        vecX = (1.3 * vecX / xz) * bombStrength;
+                        vecY = 2.3 * bombStrength;
+                        vecZ = (1.3 * vecZ / xz) * bombStrength;
+                        double multiplier = 1.4F; // already checked the maximum effect
+                        reaction.onBomb(this, new Vec3d(vecX, vecY, vecZ).scale(multiplier), null, e);
                     }
                 }
             }
@@ -229,6 +240,8 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
             nbt.setFloat("health", this.health);
             itemStack.setTagCompound(nbt);
             player.inventory.addItemStackToInventory(itemStack);
+            IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+            data.getAimInfo().setAiming(false, 1.0F);
             this.setDead();
         }
         return true;

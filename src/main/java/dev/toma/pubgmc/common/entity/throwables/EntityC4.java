@@ -30,7 +30,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
     @Nullable
     private UUID stickedEntityUUID;
     private Vec3d stickOffset = Vec3d.ZERO;
-    private static final int initFuse = 320; // 16 seconds
+    public static final int initFuse = 320; // 16 seconds
     private static final List<Integer> SOUND_TICKS = calculateSoundTicks(33);
     private int soundIndex = 0;
     private static final List<BlockPos> sphereOffsets;
@@ -98,7 +98,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
     public void onExplode() {
         handleExplodeEffect();
         if (!world.isRemote) {
-            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
+            boolean canBreakBlocks = ConfigPMC.world().bombs.grenadeGriefing.get();
             BlockPos centerPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY + 1), MathHelper.floor(this.posZ));
             Explosion explosion = new Explosion(world, this, this.posX, this.posY + 1, this.posZ, 0.0F, false, canBreakBlocks);
 
@@ -152,7 +152,15 @@ public class EntityC4 extends EntityThrowableExplodeable {
                     double vecZ = e.posZ - this.posZ;
                     double distance = Math.sqrt(vecX*vecX + vecY*vecY + vecZ*vecZ);
                     if (distance < explodeInteractRadius) {
-                        reaction.onBomb(this, new Vec3d(vecX, vecY, vecZ).scale(calculateBombDamage(distance, 5, 3, 0.75F, 0.45F)), null, e);
+                        // Provides moderate vertical thrust, high horizontal thrust
+                        double bombStrength = Math.min(1.2 - distance / explodeInteractRadius, 1);
+                        double xz = Math.sqrt(vecX * vecX + vecZ * vecZ);
+                        // Expected: xz=2.8, y=1.5, sqrt(2.8)=1.67
+                        vecX = (2.8 * vecX / xz) * bombStrength;
+                        vecY = 1.5 * bombStrength * ((1.5 + vecY) > 0 ? 1 : -1);
+                        vecZ = (2.8 * vecZ / xz) * bombStrength;
+                        double multiplier = 1.3F; // already checked the maximum effect
+                        reaction.onBomb(this, new Vec3d(vecX, vecY, vecZ).scale(multiplier), null, e);
                     }
                 }
             }
