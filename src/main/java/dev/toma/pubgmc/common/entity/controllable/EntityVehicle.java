@@ -349,7 +349,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void handleRight() {
-        if (!isBroken) {
+        if (!isBroken && onGround) {
             CFGVehicle cfg = getVehicleConfiguration();
             float max = cfg.maxTurningAngle.getAsFloat();
             float partial = cfg.turningSpeed.getAsFloat();
@@ -359,7 +359,7 @@ public abstract class EntityVehicle extends EntityControllable implements IEntit
 
     @Override
     public void handleLeft() {
-        if (!isBroken) {
+        if (!isBroken && onGround) {
             CFGVehicle cfg = getVehicleConfiguration();
             float max = cfg.maxTurningAngle.getAsFloat();
             float partial = cfg.turningSpeed.getAsFloat();
