@@ -1,11 +1,11 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
 
-public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
+public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
 
     private final ModelRenderer bone;
     private final ModelRenderer a1;
@@ -301,17 +301,20 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
     }
 
     @Override
-    public void render(EntityVehicleUAZ vehicle) {
-        bone.render(1f);
-        wheelBR.render(1f);
-        wheelBL2.render(1f);
-        decorations.render(1f);
-        mirror.render(1f);
-        mirror2.render(1f);
-        interior.render(1f);
-        renderSteeringWheel(steering_wheel, vehicle.turnModifier);
-        renderFrontWheel(wheelFR, vehicle.turnModifier);
-        renderFrontWheel(wheelFL, vehicle.turnModifier);
+    public void render(VehicleUAZ vehicle) {
+        float renderScale = 0.0625F;
+        bone.render(renderScale);
+        if (vehicle.isBurned())
+            return;
+        wheelBR.render(renderScale);
+        wheelBL2.render(renderScale);
+        decorations.render(renderScale);
+        mirror.render(renderScale);
+        mirror2.render(renderScale);
+        interior.render(renderScale);
+        renderSteeringWheel(steering_wheel, 0.0F, renderScale);
+        renderFrontWheel(wheelFR, 0.0F, renderScale);
+        renderFrontWheel(wheelFL, 0.0F, renderScale);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

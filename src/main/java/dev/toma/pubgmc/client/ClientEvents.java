@@ -1,6 +1,7 @@
 package dev.toma.pubgmc.client;
 
 import dev.toma.pubgmc.DevUtil;
+import dev.toma.pubgmc.MixinHooks;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.capability.*;
 import dev.toma.pubgmc.api.entity.IControllable;
@@ -9,7 +10,6 @@ import dev.toma.pubgmc.api.item.Backpack;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.api.item.NightVisionGoggles;
-import dev.toma.pubgmc.MixinHooks;
 import dev.toma.pubgmc.client.animation.AnimationDispatcher;
 import dev.toma.pubgmc.client.animation.AnimationElement;
 import dev.toma.pubgmc.client.animation.AnimationProcessor;
@@ -23,9 +23,11 @@ import dev.toma.pubgmc.client.gui.hands.GuiGunConfig;
 import dev.toma.pubgmc.client.gui.hands.GuiHandPlacer;
 import dev.toma.pubgmc.client.gui.menu.GuiMenu;
 import dev.toma.pubgmc.client.gui.widget.EquipmentInventoryButton;
+import dev.toma.pubgmc.client.renderer.overlay.DriveableOverlay;
+import dev.toma.pubgmc.client.renderer.overlay.DriveableOverlayManager;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
@@ -76,7 +78,6 @@ import java.text.DecimalFormatSymbols;
 
 public class ClientEvents {
 
-    private static final ResourceLocation VEHICLE = new ResourceLocation(Pubgmc.MOD_ID + ":textures/overlay/vehicle.png");
     private static final DecimalFormat CONSUMABLE_USE_FORMAT = new DecimalFormat("#,#0.0");
     private static final EntityEquipmentSlot[] ARMOR_SLOTS = {
             EntityEquipmentSlot.HEAD,
@@ -320,6 +321,7 @@ public class ClientEvents {
                 mc.displayGuiScreen(new GuiHandPlacer());
             }
         }
+
         // Prone
         if (KeyBinds.PRONE.isPressed()) {
             if (!player.onGround)
@@ -333,6 +335,7 @@ public class ClientEvents {
 //            }
             PacketHandler.sendToServer(new C2S_PacketProneStatus(data.isProne()));
         }
+
         // Attachment menu
         if (KeyBinds.ATTACHMENT.isPressed()) {
             if (player.getHeldItemMainhand().getItem() instanceof GunBase) {
@@ -344,6 +347,14 @@ public class ClientEvents {
                 player.sendStatusMessage(component, true);
             }
         }
+
+        // Vehicle engine controller
+        if (KeyBinds.VEHICLE_ENGINE.isPressed()) {
+            if (EntityDriveable.isDriver(player)) {
+                PacketHandler.sendToServer(new C2S_RequestDriveableEngineToggle());
+            }
+        }
+
         // Reloading
         if (KeyBinds.RELOAD.isPressed()) {
             processReloading(player, data);
@@ -848,48 +859,13 @@ public class ClientEvents {
     }
 
     private static void renderVehicleOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Post e) {
-        int screenWidth = res.getScaledWidth();
-        int screenHeight = res.getScaledHeight();
-        float centerX = screenWidth / 2f;
-        float halfWidth = centerX;
-        float centerY = screenHeight / 2f;
-        float halfHeight = centerY;
-        CFG2DRatio vInfoPos = ConfigPMC.client.overlays.vehicleInfoPos;
-        float vInfoX = centerX + halfWidth * (vInfoPos.getX() - 0.95f);
-        float vInfoY = centerY + halfHeight * (vInfoPos.getY() + 0.25f);
-
-        if (!(player.getRidingEntity() instanceof EntityVehicle)) {
+        if (!(player.getRidingEntity() instanceof EntityDriveable)) {
             return;
         }
-        if (e.getType() == ElementType.TEXT) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-            double speed = car.getSpeedPerTick() * 20;
-            mc.fontRenderer.drawStringWithShadow(I18n.format("label.pubgmc.speed") + ": " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
-        } else if (e.getType() == ElementType.ALL) {
-            EntityVehicle car = (EntityVehicle) player.getRidingEntity();
-
-            int barWidth = 120;
-            short barHeight = 5;
-            float fuelPercentage = car.getFuelPercentage();
-            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, fuelPercentage * barWidth, barHeight, 0.0, 0.25, 1.0, 0.375, false);
-            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
-            // health background
-            ImageUtil.drawImageWithUV(mc, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
-            float healthPercentage = car.getHealthPercentage();
-            // color
-            float r, g, b;
-            if (healthPercentage <= car.getDamageLevel(2)) { // red
-                r = 0.863f; g = 0.34f; b = 0.291f; // #dc564a 220,86,74
-            } else if (healthPercentage <= car.getDamageLevel(1)) { // yellow
-                r = 0.98f; g = 0.895f; b = 0.648f; // #f9e4a5 249.228,165
-            } else if (healthPercentage < 1.0f) { // white
-                r = 0.95f; g =0.95f; b = 0.95f; // #f2f2f2 242,242,242
-            } else { // grey
-                r = 0.648f; g = 0.648f; b = 0.648f; // #a5a5a5 165.165,165
-            }
-            // health
-            ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 5 + barHeight, r, g, b, 1.0f);
-        }
+        EntityDriveable driveable = (EntityDriveable) player.getRidingEntity();
+        DriveableOverlayManager manager = DriveableOverlayManager.INSTANCE;
+        DriveableOverlay<EntityDriveable> overlay = manager.getOverlay(driveable);
+        overlay.renderOverlay(driveable, mc, res, e);
     }
 
     private static void drawItemUseOverlay(EntityPlayer player, Minecraft mc, ScaledResolution res, RenderGameOverlayEvent.Pre e, ItemStack stack) {

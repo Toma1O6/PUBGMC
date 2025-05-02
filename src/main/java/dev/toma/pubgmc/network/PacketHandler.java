@@ -35,6 +35,7 @@ public class PacketHandler {
         registerServerPacket(C2S_PacketAdjustPartialPlayZone.Handler.class, C2S_PacketAdjustPartialPlayZone.class);
         registerServerPacket(C2S_PacketAttachmentRequest.Handler.class, C2S_PacketAttachmentRequest.class);
         registerServerPacket(C2S_RequestGameMenuGUI.Handler.class, C2S_RequestGameMenuGUI.class);
+        registerServerPacket(C2S_RequestDriveableEngineToggle.Handler.class, C2S_RequestDriveableEngineToggle.class);
 
         registerClientPacket(S2C_PacketPlaySoundWithDelay.Handler.class, S2C_PacketPlaySoundWithDelay.class);
         registerClientPacket(S2C_PacketMakeParticles.Handler.class, S2C_PacketMakeParticles.class);
@@ -50,6 +51,7 @@ public class PacketHandler {
         registerClientPacket(S2C_PacketSendExternalGuiEvent.Handler.class, S2C_PacketSendExternalGuiEvent.class);
         registerClientPacket(S2C_OpenGameMenuGUI.Handler.class, S2C_OpenGameMenuGUI.class);
         registerClientPacket(S2C_PacketSendPartyData.Handler.class, S2C_PacketSendPartyData.class);
+        registerClientPacket(S2C_VehicleSoundEvent.Handler.class, S2C_VehicleSoundEvent.class);
     }
 
     public static void sendToClient(IMessage packet, EntityPlayerMP player) {

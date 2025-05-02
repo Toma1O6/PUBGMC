@@ -4,7 +4,8 @@
   "refmap": "mixins.pubgmc.refmap.json",
   "mixins": [
     "SlotMixin",
-    "EntityPlayerMixin"
+    "EntityPlayerMixin",
+    "EntityLivingBaseMixin"
   ],
   "client": [
     "client.EntityRendererMixin",
