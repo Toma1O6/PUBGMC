@@ -177,7 +177,7 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
         if (!this.world.isRemote && !this.isDead) {
             this.fuse = -1;
             this.setPosition(this.posX, this.posY + 1, this.posZ);
-            boolean canBreakBlocks = ConfigPMC.world().bombs.grenadeGriefing.get();
+            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
             world.createExplosion(getOwner(), this.posX, this.posY, this.posZ, 2.3F, canBreakBlocks);
             this.notifyNeighboringEntities();
             this.setDead();
@@ -248,7 +248,7 @@ public class EntityFuelCan extends Entity implements GameObject, IBulletReaction
     }
 
     @Override
-    public void onHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity) {
+    public void onBulletHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity) {
         if (!this.world.isRemote) {
             float damage = bullet.getDamage();
             this.health = Math.max(this.health - damage, 0);

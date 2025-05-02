@@ -15,6 +15,7 @@ import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -37,10 +38,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart {
@@ -51,33 +49,19 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public static final int KEY_RIGHT = 0b100;
     public static final int KEY_LEFT = 0b1000;
 
-    // TODO configurable?
-    public static final float ENGINE_DAMAGE_MULTIPLIER = 1.5F;
-
-    // Sound events
-    public static final int SOUND_ENGINE_STARTING = 0;
-    public static final int SOUND_ENGINE_STARTED = 1;
-    public static final int SOUND_ENGINE_STOPPED = 2;
-
     // Synhronized data parameters
     protected static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Float> FUEL = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Boolean> STARTING = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> STARTED = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.BOOLEAN);
 
     // speed smoothing
     protected double lastMotionX, lastMotionY, lastMotionZ;
     // input
-    private byte controllerInput;
+    protected byte controllerInput;
     // game compatibility
     private UUID gameId = GameHelper.DEFAULT_UUID;
     // passengers
     private final int seatingCapacity;
     private final BiMap<Integer, SeatPart> seatingMap = HashBiMap.create();
     private final SeatPart driverSeat;
-    // engine
-    private int timeStartingLeft;
-    private int engineIdleTimeTotal;
     // subparts
     private final EntityVehiclePart[] parts;
 
@@ -99,15 +83,15 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.driverSeat = seats.stream().filter(SeatPart::isDriver).findFirst().orElseThrow(() -> new IllegalStateException("This cannot happen unless some validation is broken!"));
     }
 
-    public static boolean isDriver(Entity entity) {
-        return entity.getRidingEntity() instanceof EntityDriveable && entity.getRidingEntity().getControllingPassenger() == entity;
-    }
-
     public abstract EntityVehiclePart getMainBodyPart();
 
     public abstract void registerVehicleParts(PartRegistration registration);
 
     public abstract float getMaxHealth();
+
+    public final float getHealthPercentage() {
+        return getHealth() / getMaxHealth();
+    }
 
     public abstract float getFuelTankCapacity();
 
@@ -119,11 +103,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     @Override
     public void onUpdate() {
-        this.onEntityUpdate();
+        this.onEntityUpdate(); // backup motion, update vehicle parts
         this.inputTick();
-        this.handleVehicleInLava();
         this.runVehicleTick();
-        this.applyDrag();
         this.applyGravity();
         this.getSoundController().update();
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
@@ -148,9 +130,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Override
     public boolean canFitPassenger(Entity passenger) {
         int currentPassengers = this.seatingMap.size();
-        // TODO this.isPassenger(passenger) // When the seat is full, is it mandatory to switch seats?
-        // return this.isPassenger(passenger) || currentPassengers < this.seatingCapacity;
-        return currentPassengers < this.seatingCapacity;
+        return this.isPassenger(passenger) || currentPassengers < this.seatingCapacity;
     }
 
     @Nullable
@@ -166,27 +146,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Override
     protected void entityInit() {
         this.dataManager.register(HEALTH, this.getMaxHealth());
-        this.dataManager.register(FUEL, this.getFuelTankCapacity());
-        this.dataManager.register(STARTED, Boolean.FALSE);
-        this.dataManager.register(STARTING, Boolean.FALSE);
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         compound.setFloat("health", this.getHealth());
-        compound.setFloat("fuel", this.getFuel());
-        compound.setBoolean("started", this.isStarted());
-        compound.setBoolean("starting", this.isStarting());
         compound.setTag("parts", this.serializeParts());
-        // TODO check whether the old property is no longer needed: speed, isBroken
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
         this.setHealth(compound.getFloat("health"));
-        this.setFuel(compound.getFloat("fuel"));
-        this.setStartedState(compound.getBoolean("started"));
-        this.setStarting(compound.getBoolean("starting"));
         this.deserializeParts(compound.getCompoundTag("parts"));
     }
 
@@ -375,62 +345,143 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return true;
     }
 
-    @Override
-    public void move(MoverType type, double x, double y, double z) {
-        this.move(x, y, z);
+    protected void resetCollide() {
+        this.collided = false;
+        this.collidedHorizontally = false;
+        this.collidedVertically = false;
     }
 
-    public void move(double x, double y, double z) {
+    @Override
+    public void move(MoverType type, double x, double y, double z) {
+        switch (type) {
+            case PISTON:
+                this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
+                this.resetPositionToBB();
+                break;
+            case SELF:
+            case PLAYER:
+            default:
+                moveMultipart(x, y, z);
+                break;
+        }
+    }
+
+    public void moveMultipart(double x, double y, double z) {
         this.world.profiler.startSection("moveMultipart");
-        List<AxisAlignedBB> collisionBoxes = this.world.getCollisionBoxes(this, this.getEntityBoundingBox().expand(x, y, z));
-        double xOffset = x;
-        double yOffset = y;
-        double zOffset = z;
+
+        AxisAlignedBB originalBB = this.getEntityBoundingBox();
+
+        AxisAlignedBB queryBB = null;
         for (EntityVehiclePart part : this.getParts()) {
-            if (part.getBoundingBoxMode() != EntityVehiclePart.BoundingBoxMode.COLLIDER)
-                continue;
-
-            AxisAlignedBB partBB = part.getEntityBoundingBox();
-            // Y-axis collision
-            if (y != 0.0) {
-                for (AxisAlignedBB collisionBox : collisionBoxes) {
-                    yOffset = collisionBox.calculateYOffset(partBB, yOffset);
-                }
+            if (part != null && part.getBoundingBoxMode() == EntityVehiclePart.BoundingBoxMode.COLLIDER) {
+                AxisAlignedBB expanded = part.getEntityBoundingBox().expand(x, y, z);
+                queryBB = (queryBB == null) ? expanded : queryBB.union(expanded);
             }
-
-            // X-axis collision
-            if (x != 0.0) {
-                for (AxisAlignedBB collisionBox : collisionBoxes) {
-                    xOffset = collisionBox.calculateXOffset(partBB, xOffset);
-                }
-            }
-
-            // Z-axis collision
-            if (z != 0.0) {
-                for (AxisAlignedBB collisionBox : collisionBoxes) {
-                    zOffset = collisionBox.calculateZOffset(partBB, zOffset);
-                }
-            }
-
-            // TODO block step - maybe handle as horizontal collision?
         }
 
-        if (xOffset != 0.0 || yOffset != 0.0 || zOffset != 0.0) {
-            this.setEntityBoundingBox(this.getEntityBoundingBox().offset(xOffset, yOffset, zOffset));
+        List<AxisAlignedBB> collisionBoxes = (queryBB != null)
+                ? this.world.getCollisionBoxes(this, queryBB)
+                : Collections.emptyList();
+
+        // Try normal movement
+        Vec3d normalMotion = calculateAxisOffset(x, y, z, collisionBoxes);
+
+        // Try step-up
+        Vec3d finalMotion = normalMotion;
+        if ((x != normalMotion.x || z != normalMotion.z) && getStepHeight() > 0.0F) {
+            Vec3d steppedMotion = tryStepUp(x, y, z, collisionBoxes);
+            if (steppedMotion.squareDistanceTo(0, 0, 0) > finalMotion.squareDistanceTo(0, 0, 0)) {
+                finalMotion = steppedMotion;
+            }
+        }
+
+        // Apply motion
+        if (finalMotion.lengthSquared() > 0.0) {
+            this.setEntityBoundingBox(originalBB.offset(finalMotion.x, finalMotion.y, finalMotion.z));
         }
 
         this.resetPositionToBB();
-        this.collidedHorizontally = x != xOffset || z != zOffset;
-        this.collidedVertically = y != yOffset;
-        if (x != xOffset)
-            this.collidedX();
-        if (y != yOffset)
-            this.collidedY();
-        if (z != zOffset)
-            this.collidedZ();
-        this.onGround = this.collidedVertically && y < 0.0D;
+
+        this.collidedHorizontally = x != finalMotion.x || z != finalMotion.z;
+        this.collidedVertically = y != finalMotion.y;
+        this.onGround = this.collidedVertically && y < 0.0;
+
+        resetCollide();
+        if (x != finalMotion.x) this.collidedX();
+        if (y != finalMotion.y) this.collidedY();
+        if (z != finalMotion.z) this.collidedZ();
+
+        if (this.onGround) {
+            final double STICK_TO_GROUND = -0.05D;
+            AxisAlignedBB bb = this.getEntityBoundingBox();
+            AxisAlignedBB downBB = bb.offset(0.0, STICK_TO_GROUND, 0.0);
+
+            boolean canLower = true;
+            for (AxisAlignedBB box : collisionBoxes) {
+                if (box.intersects(downBB)) {
+                    canLower = false;
+                    break;
+                }
+            }
+
+            if (canLower) {
+                this.setEntityBoundingBox(downBB);
+                this.resetPositionToBB();
+            }
+        }
+
         this.world.profiler.endSection();
     }
+
+    protected Vec3d calculateAxisOffset(double x, double y, double z, List<AxisAlignedBB> collisionBoxes) {
+        double xOffset = x;
+        double yOffset = y;
+        double zOffset = z;
+
+        EntityVehiclePart[] parts = this.getParts();
+        if (parts == null) return new Vec3d(xOffset, yOffset, zOffset);
+
+        for (EntityVehiclePart part : parts) {
+            if (part == null || part.getBoundingBoxMode() != EntityVehiclePart.BoundingBoxMode.COLLIDER)
+                continue;
+
+            AxisAlignedBB bb = part.getEntityBoundingBox();
+
+            if (yOffset != 0.0) {
+                for (AxisAlignedBB box : collisionBoxes) {
+                    yOffset = box.calculateYOffset(bb, yOffset);
+                }
+                bb = bb.offset(0.0, yOffset, 0.0);
+            }
+            if (xOffset != 0.0) {
+                for (AxisAlignedBB box : collisionBoxes) {
+                    xOffset = box.calculateXOffset(bb, xOffset);
+                }
+                bb = bb.offset(xOffset, 0.0, 0.0);
+            }
+            if (zOffset != 0.0) {
+                for (AxisAlignedBB box : collisionBoxes) {
+                    zOffset = box.calculateZOffset(bb, zOffset);
+                }
+                bb = bb.offset(0.0, 0.0, zOffset);
+            }
+        }
+
+        return new Vec3d(xOffset, yOffset, zOffset);
+    }
+
+    protected Vec3d tryStepUp(double x, double y, double z, List<AxisAlignedBB> collisionBoxes) {
+        double stepHeight = getStepHeight();
+        if (stepHeight <= 0) return Vec3d.ZERO;
+
+        Vec3d offset = calculateAxisOffset(x, stepHeight, z, collisionBoxes);
+        if (offset.y > 0.0 && (offset.x != 0.0 || offset.z != 0.0)) {
+            return offset;
+        }
+        return Vec3d.ZERO;
+    }
+
+    protected abstract float getStepHeight();
 
     public boolean boardVehicle(SeatPart seat, EntityLivingBase entity, EnumHand hand) {
         if (this.canEntityBoardVehicle(seat, entity)) {
@@ -474,69 +525,15 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return this.getHealth() <= 0.0F;
     }
 
-    public final void setFuel(float fuel) {
-        this.dataManager.set(FUEL, MathHelper.clamp(fuel, 0.0F, this.getFuelTankCapacity()));
+    public final double getSpeedPerTick() {
+        return Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
     }
 
-    public final void addFuel(float amount) {
-        this.setFuel(this.getFuel() + amount);
+    public final double getLastSpeedPerTick() {
+        return Math.sqrt(lastMotionX * lastMotionX + lastMotionY * lastMotionY + lastMotionZ * lastMotionZ);
     }
 
-    public final void removeFuel(float amount) {
-        this.addFuel(-amount);
-    }
-
-    public final float getFuel() {
-        return this.dataManager.get(FUEL);
-    }
-
-    public final boolean hasFuel() {
-        return this.getFuel() > 0.0F;
-    }
-
-    public final void setStartedState(boolean started) {
-        this.dataManager.set(STARTED, started);
-    }
-
-    public final void startEngine() {
-        this.setStartedState(true);
-        this.setStarting(false);
-    }
-
-    public final void killEngine() {
-        this.setStartedState(false);
-        this.setStarting(false);
-        this.engineIdleTimeTotal = 0;
-    }
-
-    public final boolean isStarted() {
-        return this.dataManager.get(STARTED);
-    }
-
-    public final void setStarting(boolean starting) {
-        this.dataManager.set(STARTING, starting);
-        if (starting) {
-            this.timeStartingLeft = 40 + (int) (1.0F - (30 * (this.getHealth() / this.getMaxHealth())));
-            this.getSoundController().playStartingSound();
-            // TODO play correct starting sound AT THE ENTITY
-        }
-    }
-
-    public final boolean isStarting() {
-        return this.dataManager.get(STARTING);
-    }
-
-    public final void toggleEngine() {
-        if (this.isStarting())
-            return;
-        if (this.isStarted()) {
-            this.killEngine();
-        } else if (this.canStartVehicle()) {
-            this.setStarting(true);
-        }
-    }
-
-    public final double getCurrentMotionSqr() {
+    public final double getMotionSqr() {
         return this.motionX * this.motionX + this.motionZ * this.motionZ;
     }
 
@@ -549,7 +546,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     public final double getSmoothMotionSqr(float partialTicks) {
-        double current = this.getCurrentMotionSqr();
+        double current = this.getMotionSqr();
         double last = this.getLastMotionSqr();
         return last + (current - last) * partialTicks;
     }
@@ -604,24 +601,14 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     protected void handleInputUpdate() {
     }
 
-    protected void handleVehicleInLava() {
-        if (this.world.isRemote || this.ticksExisted % 10 != 0 || !this.isInLava())
-            return;
-        this.attackEntityFrom(DamageSource.LAVA, 10.0F);
-    }
-
     protected void applyGravity() {
         if (this.hasNoGravity())
             return;
         if (this.onGround)
-            this.motionY = Math.max(this.motionY, 0.0);
-        if (this.motionY < -2.65) // -53m/s
-            return;
-        this.motionY -= 0.04905; // 9.8m/s^2 / 20ticks = 0.490005, use 1/10 of g?
-    }
-
-    protected void applyDrag() {
-        this.multiplyMotion(0.95F);
+            this.motionY = Math.max(this.motionY, 0.0); // TODO tiny bounce
+        if (!onGround)
+            this.motionY *= 0.98F;
+        this.motionY -= 0.08;
     }
 
     protected float getMaxPassengerRotationAngleDegrees() {
@@ -633,19 +620,13 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return true;
     }
 
-    protected boolean isStartKeyActive() {
-        return this.hasInput(KEY_FORWARD) || this.hasInput(KEY_BACK);
-    }
 
-    protected boolean canStartVehicle() {
-        return this.getHealth() > 0 && this.getFuel() > 0;
-    }
 
     protected void handleEmptyInputUpdate() {
     }
 
     protected void collidedXZ() {
-
+        this.collidedHorizontally = true;
     }
 
     protected void collidedX() {
@@ -655,6 +636,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     protected void collidedY() {
         this.motionY = 0;
+        this.collidedVertically = true;
     }
 
     protected void collidedZ() {
@@ -667,13 +649,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (controller == null || !controller.isEntityAlive()) {
             this.controllerInput = 0;
             this.handleEmptyInputUpdate();
-            if (this.isStarted()) {
-                this.killEngine();
-            }
             return;
         }
         this.handleInputUpdate();
-        this.engineTick();
     }
 
     private void applyYawRotationToPassenger(Entity entity) {
@@ -704,24 +682,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
     }
 
-    private void engineTick() {
-        if (this.world.isRemote)
-            return;
-        // Starting tick
-        if (this.isStarting() && --this.timeStartingLeft <= 0) {
-            this.startEngine();
-            this.getSoundController().playStartedSound();
-        }
-        // Engine idle tick
-        if (this.controllerInput == 0 && this.isStarted() && this.getCurrentMotionSqr() < 0.1 && ++this.engineIdleTimeTotal > 400) {
-            this.killEngine();
-        }
-        // Initiate starting sequence
-        if (!this.isStarted() && !this.isStarting() && this.isStartKeyActive() && this.canStartVehicle()) {
-            this.setStarting(true);
-        }
-    }
-
     private static void validate(EntityDriveable vehicle, List<SeatPart> seats) {
         long driverPositions = seats.stream().filter(SeatPart::isDriver).count();
         if (driverPositions != 1) {
@@ -732,5 +692,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @FunctionalInterface
     public interface PartRegistration {
         <P extends EntityVehiclePart> P register(P part);
+    }
+
+    public boolean isSubmergedInWater() {
+        int top = MathHelper.floor(this.posY + this.height);
+        IBlockState state = this.world.getBlockState(new BlockPos(this.posX, top, this.posZ));
+        return state.getMaterial().isLiquid();
+    }
+
+    public boolean isMovingForward() {
+        Vec3d lookVec = this.getLookVec();
+        double horizontalDotProduct  = this.motionX * lookVec.x + this.motionZ * lookVec.z;
+        return horizontalDotProduct > 0.001;
     }
 }

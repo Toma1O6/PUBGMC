@@ -122,7 +122,7 @@ public class EntityBullet extends Entity {
             Block block = state.getBlock();
             handleBulletReaction(rayTraceResult);
 
-            boolean griefingFlag = ConfigPMC.world().weaponGriefing.get();
+            boolean griefingFlag = ConfigPMC.world().gunGriefing.get();
             boolean canBePenetrated = false;
             if (block instanceof BlockWindow) {
                 canBePenetrated = true;
@@ -172,7 +172,7 @@ public class EntityBullet extends Entity {
             if (entity instanceof IBulletReaction) {
                 IBulletReaction reaction = (IBulletReaction) entity;
                 if (reaction.allowBulletInteraction(world, null, entity)) {
-                    reaction.onHit(this, rayTraceResult.hitVec, null, entity);
+                    reaction.onBulletHit(this, rayTraceResult.hitVec, null, entity);
                 }
             }
         } else { // block hit
@@ -182,7 +182,7 @@ public class EntityBullet extends Entity {
             if (block instanceof IBulletReaction) {
                 IBulletReaction reaction = (IBulletReaction) block;
                 if (reaction.allowBulletInteraction(world, state, null)) {
-                    reaction.onHit(this, rayTraceResult.hitVec, state, null);
+                    reaction.onBulletHit(this, rayTraceResult.hitVec, state, null);
                 }
             }
         }

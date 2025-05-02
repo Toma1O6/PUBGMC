@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static dev.toma.pubgmc.common.entity.EntityBullet.BOUNDING_BOX_PROVIDER;
+
 public class EntityC4 extends EntityThrowableExplodeable {
     @Nullable
     private BlockPos stickedBlockPos;
@@ -98,7 +100,7 @@ public class EntityC4 extends EntityThrowableExplodeable {
     public void onExplode() {
         handleExplodeEffect();
         if (!world.isRemote) {
-            boolean canBreakBlocks = ConfigPMC.world().bombs.grenadeGriefing.get();
+            boolean canBreakBlocks = ConfigPMC.world().grenadeGriefing.get();
             BlockPos centerPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY + 1), MathHelper.floor(this.posZ));
             Explosion explosion = new Explosion(world, this, this.posX, this.posY + 1, this.posZ, 0.0F, false, canBreakBlocks);
 
@@ -360,20 +362,25 @@ public class EntityC4 extends EntityThrowableExplodeable {
         }
         // Stick to entity
         if (this.stickedBlockPos == null && this.stickedEntityUUID == null) {
-            List<Entity> collidingEntities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(0.1, 0.1, 0.1), entity -> entity != this && !(entity instanceof EntityPlayer));
-            if (!collidingEntities.isEmpty()) {
-                Entity hitEntity = collidingEntities.get(0);
-                this.stickedEntityUUID = hitEntity.getUniqueID();
-                this.stickedBlockPos = null;
-                this.stickOffset = this.getPositionVector().subtract(hitEntity.getPositionVector());
-                this.motionX = 0;
-                this.motionY = 0;
-                this.motionZ = 0;
-                this.setNoGravity(true);
-                return true;
+            AxisAlignedBB searchBox = this.getEntityBoundingBox().expand(0.1, 0.1, 0.1);
+            List<Entity> candidates = this.world.getEntitiesInAABBexcluding(this, searchBox.grow(0.3), entity -> entity != this && !(entity instanceof EntityPlayer));
+
+            for (Entity candidate : candidates) {
+                AxisAlignedBB targetBB = BOUNDING_BOX_PROVIDER.apply(candidate);
+                if (targetBB != null && targetBB.intersects(searchBox)) {
+                    this.stickedEntityUUID = candidate.getUniqueID();
+                    this.stickedBlockPos = null;
+                    this.stickOffset = this.getPositionVector().subtract(candidate.getPositionVector());
+                    this.motionX = 0;
+                    this.motionY = 0;
+                    this.motionZ = 0;
+                    this.setNoGravity(true);
+                    return true;
+                }
             }
         }
         return false;
+
     }
 
     public void handleNormalMove(Vec3d from, Vec3d to, @Nullable RayTraceResult blockRayTrace) {

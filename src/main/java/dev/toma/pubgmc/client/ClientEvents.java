@@ -28,6 +28,7 @@ import dev.toma.pubgmc.client.renderer.overlay.DriveableOverlayManager;
 import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.common.container.ContainerPlayerEquipment;
 import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
 import dev.toma.pubgmc.common.items.attachment.*;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.IReloader;
@@ -350,8 +351,8 @@ public class ClientEvents {
 
         // Vehicle engine controller
         if (KeyBinds.VEHICLE_ENGINE.isPressed()) {
-            if (EntityDriveable.isDriver(player)) {
-                PacketHandler.sendToServer(new C2S_RequestDriveableEngineToggle());
+            if (EntityVehicle.isDriver(player)) {
+                PacketHandler.sendToServer(new C2S_RequestVehicleEngineToggle());
             }
         }
 

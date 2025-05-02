@@ -304,7 +304,7 @@ public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
     public void render(VehicleUAZ vehicle) {
         float renderScale = 0.0625F;
         bone.render(renderScale);
-        if (vehicle.isBurned())
+        if (vehicle.isExploded())
             return;
         wheelBR.render(renderScale);
         wheelBL2.render(renderScale);

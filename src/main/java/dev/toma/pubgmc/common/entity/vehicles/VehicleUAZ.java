@@ -2,7 +2,10 @@ package dev.toma.pubgmc.common.entity.vehicles;
 
 import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
 import dev.toma.pubgmc.common.entity.vehicles.util.WheelPart;
+import dev.toma.pubgmc.config.ConfigPMC;
+import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCSounds;
+import dev.toma.pubgmc.util.math.Mth;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -10,13 +13,22 @@ import java.util.function.Consumer;
 
 public class VehicleUAZ extends EntityLandVehicle {
 
+    private static final float FUEL_TANK_CAPACITY = 120F;
     private static final Vec3d ENGINE_POSITION = new Vec3d(0.0, 1.5, 2.0);
     private static final Vec3d EXHAUST_POSITION = new Vec3d(0.6, 0.3, -1.9);
+    private static final int TOTAL_TURN_WHEEL = 2;
+    private static final int TOTAL_ACCELERATION_WHEEL = 2;
+    private static final int TOTAL_WHEELS = 4;
     private EntityVehiclePart body;
 
     public VehicleUAZ(World world) {
         super(world);
         this.setSize(5.5F, 3.0F);
+    }
+
+    @Override
+    public CFGVehicle getVehicleConfiguration() {
+        return ConfigPMC.vehicles().uaz;
     }
 
     @Override
@@ -43,17 +55,19 @@ public class VehicleUAZ extends EntityLandVehicle {
         roof.setDamageMultiplier(0.6F);
 
         WheelPart frontRight = registration.register(new WheelPart(this, "wheelFrontRight", new Vec3d(-1.0, 0.0, 1.8)));
-        frontRight.setAccelerationWheel(true);
         frontRight.setTurnWheel(true);
+        frontRight.setAccelerationWheel(false);
 
         WheelPart frontLeft = registration.register(new WheelPart(this, "wheelFrontLeft", new Vec3d(1.0, 0.0, 1.8)));
-        frontLeft.setAccelerationWheel(true);
         frontLeft.setTurnWheel(true);
+        frontLeft.setAccelerationWheel(false);
 
         WheelPart rearRight = registration.register(new WheelPart(this, "wheelRearRight", new Vec3d(-1.0, 0.0, -0.8)));
+        rearRight.setTurnWheel(false);
         rearRight.setAccelerationWheel(true);
 
         WheelPart rearLeft = registration.register(new WheelPart(this, "wheelRearLeft", new Vec3d(1.0, 0.0, -0.8)));
+        rearLeft.setTurnWheel(false);
         rearLeft.setAccelerationWheel(true);
 
         registration.register(new SeatPart(this, "seatDriver", new Vec3d(0.6, 0.3, 0.2), 1.2F, true));
@@ -63,14 +77,73 @@ public class VehicleUAZ extends EntityLandVehicle {
         registration.register(new SeatPart(this, "seatPassengerBackRight", new Vec3d(-0.7, 0.35, -0.8), -1.1F));
     }
 
+    // TODO wheels on two sides has different affect
+    @Override
+    protected float getTurnSpeed() {
+        float base = getVehicleConfiguration().turningSpeed.getAsFloat();
+        EntityVehiclePart[] parts = this.getParts();
+        if (parts == null) {
+            return 0F;
+        }
+        int good = 0;
+        for (EntityVehiclePart part : this.getParts()) {
+            if (part instanceof WheelPart && ((WheelPart) part).isTurnWheel()) {
+                if (!part.isDead && !part.isDestroyed()) {
+                    good++;
+                }
+            }
+        }
+        base = Mth.exponentialDecay(base, 0.6F + 0.4F * ((float) good / TOTAL_TURN_WHEEL));
+        return base;
+    }
+
+    @Override
+    protected float getAcceleration() {
+        float base = getVehicleConfiguration().acceleration.getAsFloat();
+        EntityVehiclePart[] parts = this.getParts();
+        if (parts == null) {
+            return 0F;
+        }
+        int good = 0;
+        for (EntityVehiclePart part : this.getParts()) {
+            if (part instanceof WheelPart && ((WheelPart) part).isAccelerationWheel()) {
+                if (!part.isDead && !part.isDestroyed()) {
+                    good++;
+                }
+            }
+        }
+        base = Mth.exponentialDecay(base, 0.4F + 0.6F * ((float) good / TOTAL_ACCELERATION_WHEEL));
+        return base;
+    }
+
+    @Override
+    protected float getMaxSpeed() {
+        float base = getVehicleConfiguration().maxSpeed.getAsFloat();
+        EntityVehiclePart[] parts = this.getParts();
+        if (parts == null) {
+            return 0F;
+        }
+        int good = 0;
+        for (EntityVehiclePart part : this.getParts()) {
+            if (part instanceof WheelPart) {
+                if (!part.isDead && !part.isDestroyed()) {
+                    good++;
+                }
+            }
+        }
+        base = Mth.exponentialDecay(base, 0.2F + 0.8F * ((float) good / TOTAL_WHEELS));
+        return base;
+    }
+
     @Override
     public float getMaxHealth() {
-        return 20.0F; // TODO config
+        CFGVehicle cfg = getVehicleConfiguration();
+        return cfg.maxHealth.getAsFloat();
     }
 
     @Override
     public float getFuelTankCapacity() {
-        return 120.0F;
+        return FUEL_TANK_CAPACITY;
     }
 
     @Override

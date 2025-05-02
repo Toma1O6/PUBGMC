@@ -3,6 +3,7 @@ package dev.toma.pubgmc.common.items;
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.common.entity.EntityFuelCan;
 import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
 import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,8 +43,8 @@ public class ItemFuelCan extends PMCItem implements Consumable {
         if (entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entityLiving;
 
-            if (player.isRiding() && player.getRidingEntity() instanceof EntityDriveable) {
-                EntityDriveable vehicle = (EntityDriveable) player.getRidingEntity();
+            if (player.isRiding() && player.getRidingEntity() instanceof EntityVehicle) {
+                EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
                 vehicle.addFuel(getHealth(stack) / initHealth);
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
@@ -60,11 +61,11 @@ public class ItemFuelCan extends PMCItem implements Consumable {
             placeFuelCanEntity(worldIn, playerIn, stack);
             return ActionResult.newResult(EnumActionResult.PASS, stack);
         }
-        if (!playerIn.isRiding() || !(playerIn.getRidingEntity() instanceof EntityDriveable)) {
+        if (!playerIn.isRiding() || !(playerIn.getRidingEntity() instanceof EntityVehicle)) {
             this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.not_in_vehicle");
             return ActionResult.newResult(EnumActionResult.FAIL, stack);
         }
-        EntityDriveable vehicle = (EntityDriveable) playerIn.getRidingEntity();
+        EntityVehicle vehicle = (EntityVehicle) playerIn.getRidingEntity();
         if (vehicle.isStarted()) { // based on whether engine is started instead of speed
             this.sendError(playerIn, worldIn, "label.pubgmc.fuel_can.vehicle_not_stationary");
             return ActionResult.newResult(EnumActionResult.FAIL, stack);

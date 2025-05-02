@@ -3,14 +3,17 @@ package dev.toma.pubgmc.common.entity.vehicles;
 import dev.toma.pubgmc.common.entity.vehicles.sounds.VehicleSound;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleSoundController;
+import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_VehicleSoundEvent;
 import dev.toma.pubgmc.util.math.Mth;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -31,9 +34,8 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     protected final LandVehicleSoundController soundController;
     private final LandVehicleSoundPack soundPack;
 
-    private float acceleration;
+    private float velocity;
     private float turn;
-    private Vec3d movement = Vec3d.ZERO;
 
     public EntityLandVehicle(World world) {
         super(world);
@@ -52,6 +54,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     @Override
     public void onEntityUpdate() {
+        this.fallDistance = 0F;
         super.onEntityUpdate();
     }
 
@@ -60,28 +63,55 @@ public abstract class EntityLandVehicle extends EntityVehicle {
         super.runVehicleTick();
         this.updateMotionAndTurning();
         this.updateStepHeight();
-        if (this.isInWater()) {
-            float multiplier = this.isSubmergedInWater() ? 0.85F : 0.97F;
-            this.multiplyMotion(multiplier);
-        }
 
         if (world.isRemote) {
             this.particleTick();
         }
     }
 
+    protected void handleVehicleState() {
+        super.handleVehicleState();
+        handleSpecialEffect();
+    }
+
     protected void updateMotionAndTurning() {
-        Vec3d vehicleFaceVec = this.getLookVec();
-        Vec3d rawTurnVec = new Vec3d(0.0, this.turn, 0.0).rotateYaw(-this.rotationYaw * (float) (Math.PI / 180.0F));
+        if (this.turn != 0.0F) {
+            this.rotationYaw -= this.turn;
+            if (this.rotationYaw > 180.0F) {
+                this.rotationYaw -= 360.0F;
+            }
+            if (this.rotationYaw <= -180.0F) {
+                this.rotationYaw += 360.0F;
+            }
+        }
+        if (this.bomb || hasBombMotion()) {
+            motionX = bombMotion.x;
+            motionY = bombMotion.y;
+            motionZ = bombMotion.z;
+            dropBombMotion();
+            return;
+        }
 
-        float enginePwr = 1.4F;
-        float pwr = enginePwr * this.acceleration;
-        Vec3d accelerationVec = new Vec3d(0.0, 0.0, pwr).rotateYaw(-this.rotationYaw * (float) (Math.PI / 180.0F));
-        // TODO update movement vec and vehicle rotation
+        float yawRad = (float) Math.toRadians(this.rotationYaw);
+        Vec3d direction = new Vec3d(-MathHelper.sin(yawRad), 0.0, MathHelper.cos(yawRad)).normalize();
 
-        this.movement = accelerationVec;
-        this.motionX = this.movement.x;
-        this.motionZ = this.movement.z;
+        float enginePwr = getEnginePower();
+        float speed = enginePwr * this.velocity;
+        Vec3d velocity = direction.scale(speed);
+        this.motionX = velocity.x;
+        this.motionZ = velocity.z;
+    }
+
+    @Override
+    protected float getEnginePower() {
+        float percentage = this.getHealthPercentage();
+        if (percentage >= 0.45) {
+            return 1.0F + 0.2F * (percentage-0.45F) / 0.65F;
+        } else if (percentage >= 0.2F) {
+            return 1.0F;
+        } else {
+            return 0.8F;
+        }
     }
 
     protected void particleTick() {
@@ -91,58 +121,154 @@ public abstract class EntityLandVehicle extends EntityVehicle {
                 this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.x, pos.y, pos.z, 0.0, 0.01, 0.0);
             });
         }
-        float healthPercentage = this.getHealth() / this.getMaxHealth();
-        if (this.isBurned()) {
+        float healthPercentage = this.getHealthPercentage();
+        if (this.isExploded()) {
            this.processEngineParticles(vec -> {
                Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
                this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.1), 0.10, randomRange(this.rand, 0.1));
                this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.1), 0.15, randomRange(this.rand, 0.1));
                this.world.spawnParticle(EnumParticleTypes.FLAME, true, pos.x + randomRange(this.rand, 1.0), pos.y, pos.z + randomRange(this.rand, 1.0), randomRange(this.rand, 0.03), 0.15, randomRange(this.rand, 0.03));
            });
-        } else if (healthPercentage < 0.35F) {
+           return;
+        }
+        if (healthPercentage < 0.45F) {
             this.processEngineParticles(vec -> {
                 Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
-                if (this.isDestroyed()) {
-                    this.world.spawnParticle(EnumParticleTypes.FLAME, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.05), 0.01, randomRange(this.rand, 0.05));
+                this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.05), 0.1, randomRange(this.rand, 0.05));
+                if (healthPercentage < 0.2F) {
                     this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.1), 0.05, randomRange(this.rand, 0.1));
                     this.world.spawnParticle(EnumParticleTypes.CLOUD, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.1), 0.05, randomRange(this.rand, 0.1));
+                    if (this.isDestroyed()) {
+                        this.world.spawnParticle(EnumParticleTypes.FLAME, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.05), 0.01, randomRange(this.rand, 0.05));
+                    }
                 }
-                this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.05), 0.1, randomRange(this.rand, 0.05));
             });
         }
     }
 
     @Override
     protected void handleInputUpdate() {
-        if (this.hasFuel()) {
-            if (!this.isDestroyed() && this.isStarted() && this.hasInput(KEY_FORWARD)) {
-                this.acceleration = Math.min(1.0F, this.acceleration + 0.05F); // TODO vehicle acceleration rate
-            } else {
-                this.acceleration = Mth.exponentialDecay(this.acceleration, 0.95F); // TODO speed decay
+        // Turn
+        if (getMotionSqr() > 1) {
+            float turnDiff = 0.0F;
+            float turnSpeed = getTurnSpeed();
+            if (this.hasInput(KEY_LEFT)) {
+                turnDiff = turnSpeed;
             }
-            if (this.hasInput(KEY_BACK)) {
-                this.acceleration = Math.max(-0.3F, this.acceleration - 0.02F); // TODO brake speed, max reverse speed
+            if (this.hasInput(KEY_RIGHT)) {
+                turnDiff = -turnSpeed;
             }
+            turnVehicle(turnDiff);
         }
-        float turnDiff = 0.0F;
-        float turnSpeed = 0.05F; // TODO vehicle turn speed
-        float maxTurning = 1.0F; // TODO vehicle controllability
-        if (this.hasInput(KEY_LEFT)) {
-            turnDiff = turnSpeed;
+        // accelerator, brake
+        boolean forward = this.hasInput(KEY_FORWARD);
+        boolean back = this.hasInput(KEY_BACK);
+        boolean currentForward = this.isMovingForward();
+        if (this.isDestroyed() || !this.isStarted() || !hasFuel()) {
+            if (forward) {
+                brake(true, currentForward);
+            }
+            if (back) {
+                brake(false, currentForward);
+            }
+            return;
         }
-        if (this.hasInput(KEY_RIGHT)) {
-            turnDiff = -turnSpeed;
-        }
-        if (turnDiff != 0.0F) {
-            this.turn = MathHelper.clamp(this.turn + turnDiff, -maxTurning, maxTurning);
+
+        float acc = getAcceleration();
+        if (this.isDestroyed() || !this.isStarted()) {
+            this.velocity = Mth.linearDecay(this.velocity, acc);
+            this.velocity = Mth.exponentialDecay(this.velocity, 0.95F);
         } else {
-            this.turn = Mth.linearDecay(this.turn, 0.1F);
+            float max = getMaxSpeed();
+            if (forward) {
+                if (currentForward) {
+                    this.velocity = Math.min(max, this.velocity + acc);
+                    removeFuel(0.01F);
+                } else {
+                    brake(true);
+                }
+                return; // doesn't allow move in both side
+            }
+            if (back) {
+                if (currentForward) {
+                    this.velocity = Math.max(-0.3F * max, this.velocity - 0.02F);
+                    removeFuel(0.01F);
+                } else {
+                    brake(false);
+                }
+            }
+        }
+    }
+
+    protected void turnVehicle(float turnDiff) {
+        float mx = getVehicleConfiguration().maxTurningAngle.getAsFloat();
+        turnVehicle(turnDiff, mx);
+    }
+
+    protected void turnVehicle(float turnDiff, float maxTurn) {
+        if (turnDiff != 0.0F) {
+            this.turn = MathHelper.clamp(this.turn + turnDiff, -maxTurn, maxTurn);
+        } else {
+            this.turn = Mth.exponentialDecay(this.turn, 0.95F);
+            this.turn = Mth.linearDecay(this.turn, 0.05F);
+        }
+    }
+
+    protected void brake() {
+        brake(false);
+    }
+
+    protected void brake(boolean inputForward) {
+        brake(inputForward, !inputForward);
+    }
+
+    protected void brake(boolean inputForward, boolean vehicleForward) {
+        if (inputForward == vehicleForward) {
+            return;
+        }
+        float brakeMultiplier = getBrakeStrength();
+        CFGVehicle cfg = getVehicleConfiguration();
+        float acc = cfg.acceleration.getAsFloat() * brakeMultiplier;
+        this.velocity += acc * (inputForward ? 1 : -1);
+    }
+
+    public float getBrakeStrength() {
+        float weatherMultiplier = getWeatherBrakeMultiplier();
+        float surfaceMultiplier = getSurfaceBrakeMultiplier();
+        return 0.4F * weatherMultiplier * surfaceMultiplier;
+    }
+
+    private float getWeatherBrakeMultiplier() {
+        if (this.world.isThundering()) {
+            return 0.85F;
+        } else if (this.world.isRaining()) {
+            return 0.9F;
+        } else {
+            return 1.0F;
+        }
+    }
+
+    private float getSurfaceBrakeMultiplier() {
+        BlockPos below = this.getPosition().down();
+        IBlockState state = this.world.getBlockState(below);
+        Block block = state.getBlock();
+
+        if (block == Blocks.ICE || block == Blocks.PACKED_ICE) {
+            return 0.6F;
+        } else if (block == Blocks.SAND || block == Blocks.GRAVEL) {
+            return 1.1F;
+        } else if (block == Blocks.SLIME_BLOCK) {
+            return 0.8F;
+        } else if (block == Blocks.GRASS || block == Blocks.DIRT) {
+            return 1.0F;
+        } else {
+            return 0.95F;
         }
     }
 
     @Override
     protected void handleEmptyInputUpdate() {
-        this.acceleration = Mth.exponentialDecay(this.acceleration, 0.95F);
+        this.velocity = Mth.exponentialDecay(this.velocity, 0.95F);
         this.turn = Mth.linearDecay(this.turn, 0.1F);
     }
 
@@ -171,27 +297,13 @@ public abstract class EntityLandVehicle extends EntityVehicle {
         return result;
     }
 
-    public final boolean isSubmergedInWater() {
-        int top = MathHelper.floor(this.posY + this.height);
-        IBlockState state = this.world.getBlockState(new BlockPos(this.posX, top, this.posZ));
-        return state.getMaterial().isLiquid();
-    }
-
     @Override
     protected float getStepHeight() {
         return this.isSubmergedInWater() ? 0.5F : super.getStepHeight();
     }
 
-    public float getAcceleration() {
-        return acceleration;
-    }
-
     public float getTurn() {
         return turn;
-    }
-
-    public Vec3d getMovement() {
-        return movement;
     }
 
     public static final class LandVehicleSoundPack {
@@ -210,6 +322,16 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
         public SoundEvent getStartedSound() {
             return startedSound;
+        }
+    }
+
+    public void handleSpecialEffect() {
+    }
+
+    @Override
+    protected void applyGravity() {
+        if (!bomb) {
+            super.applyGravity();
         }
     }
 
@@ -324,12 +446,12 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
             @Override
             public void playStartingSound() {
-                this.play(EntityDriveable.SOUND_ENGINE_STARTING);
+                this.play(EntityVehicle.SOUND_ENGINE_STARTING);
             }
 
             @Override
             public void playStartedSound() {
-                this.play(EntityDriveable.SOUND_ENGINE_STARTING);
+                this.play(EntityVehicle.SOUND_ENGINE_STARTING);
             }
         }
     }

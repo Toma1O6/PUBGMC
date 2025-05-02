@@ -21,12 +21,12 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
 
     @Override
     public void renderOverlay(D driveable, Minecraft client, ScaledResolution window, RenderGameOverlayEvent e) {
-        this.renderDebugInfo(driveable, client, window); // TODO disable before PROD build
-        // TODO health, fuel, speed, seats
+        // this.renderDebugInfo(driveable, client, window);
+
 //        if (e instanceof RenderGameOverlayEvent.Post) {
 //            float partialTicks = e.getPartialTicks();
 //        }
-
+        // TODO seats
         int screenWidth = window.getScaledWidth();
         int screenHeight = window.getScaledHeight();
         float centerX = screenWidth / 2f;
@@ -38,7 +38,7 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
         float vInfoY = centerY + halfHeight * (vInfoPos.getY() + 0.25f);
 
         if (e.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
-            double speed = driveable.getCurrentMotionSqr() * 20;
+            double speed = driveable.getSpeedPerTick() * 20;
             client.fontRenderer.drawStringWithShadow(I18n.format("label.pubgmc.speed") + ": " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
         } else if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
 
@@ -49,7 +49,7 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
             ImageUtil.drawImageWithUV(client, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
             // health background
             ImageUtil.drawImageWithUV(client, VEHICLE, vInfoX, vInfoY - 5, barWidth, barHeight, 0.0, 0.125, 1.0, 0.25, false);
-            float healthPercentage = driveable.getHealth() / driveable.getMaxHealth();
+            float healthPercentage = driveable.getHealthPercentage();
             // color
             float r, g, b;
             if (healthPercentage <= 0.2F) { // red

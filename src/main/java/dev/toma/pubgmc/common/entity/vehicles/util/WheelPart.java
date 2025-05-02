@@ -12,8 +12,8 @@ public final class WheelPart extends EntityVehicleDamageablePart {
     public static final float DEFAULT_WHEEL_HEALTH = 3.0F;
     public static final float DEFAULT_WHEEL_SIZE = 0.75F;
 
-    private boolean isTurnWheel;
-    private boolean isAccelerationWheel;
+    private boolean isTurnWheel = false;
+    private boolean isAccelerationWheel = false;
 
     public WheelPart(EntityLandVehicle owner, String name, Vec3d position) {
         this(owner, name, position, DEFAULT_WHEEL_SIZE);
