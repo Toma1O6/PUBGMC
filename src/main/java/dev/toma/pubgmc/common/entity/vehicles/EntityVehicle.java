@@ -1,9 +1,11 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGVehicle;
+import dev.toma.pubgmc.util.math.Mth;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,7 +24,10 @@ import javax.annotation.Nullable;
 public abstract class EntityVehicle extends EntityDriveable implements IBombReaction {
 
     // TODO configurable?
-    public static final float ENGINE_DAMAGE_MULTIPLIER = 1.5F;
+    public static float ENGINE_DAMAGE_MULTIPLIER = 1.0F;
+    public static float ROOF_DAMAGE_MULTIPLIER = 0.5F;
+    public static float BODY_DAMAGE_MULTIPLIER = 0.75F;
+    public static float WHEEL_DAMAGE_MULTIPLIER = 0.5F;
     // engine
     protected int timeStartingLeft;
     protected int engineIdleTimeTotal;
@@ -37,6 +42,8 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     protected static final DataParameter<Boolean> STARTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> STARTED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
 
+    protected float velocity;
+    protected float turn;
     protected int timeBeforeExplode = 100;
     protected boolean bomb = false;
     protected Vec3d bombMotion = Vec3d.ZERO;
@@ -46,13 +53,30 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         this.updateStepHeight();
     }
 
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        this.dataManager.register(FUEL, this.getFuelTankCapacity());
+        this.dataManager.register(EXPLODED, Boolean.FALSE);
+        this.dataManager.register(STARTED, Boolean.FALSE);
+        this.dataManager.register(STARTING, Boolean.FALSE);
+    }
+
     public abstract CFGVehicle getVehicleConfiguration();
+
+    @Override
+    protected void handleEmptyInputUpdate() {
+        if (isStarted()) {this.engineIdleTimeTotal++;}
+    }
 
     @Override
     public void runVehicleTick() {
         this.engineTick();
         this.handleVehicleState();
         this.handleDestroyedTick();
+        this.updateMotionAndTurning();
+        this.updateStepHeight();
+        this.particleTick();
     }
 
     protected void engineTick() {
@@ -68,17 +92,29 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
             this.getSoundController().playStartedSound();
         }
         // Engine idle tick
-        if ((this.controllerInput == 0 && this.isStarted() && this.getMotionSqr() < 0.1) || this.engineIdleTimeTotal > MAX_ENGINE_IDLE_TIME) {
+        if (this.engineIdleTimeTotal > MAX_ENGINE_IDLE_TIME) {
             this.killEngine();
         }
         // Initiate starting sequence
-        if (!this.isStarted() && !this.isStarting() && this.isStartKeyActive() && this.canStartVehicle() && !this.bomb) {
+        if (!this.isStarted() && !this.isStarting() && this.canStartVehicle() && !this.bomb) {
             this.setStarting(true);
         }
     }
 
-    protected float getEnginePower() {
-        return 1.0F;
+    protected void setStartedState(boolean started) {
+        this.dataManager.set(STARTED, started);
+    }
+
+    protected void startEngine() {
+        this.setStartedState(true);
+        this.setStarting(false);
+        this.engineIdleTimeTotal = 0;
+    }
+
+    protected void killEngine() {
+        this.setStartedState(false);
+        this.setStarting(false);
+        this.engineIdleTimeTotal = 0;
     }
 
     protected boolean isStartKeyActive() {
@@ -86,7 +122,153 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     protected boolean canStartVehicle() {
-        return this.getHealth() > 0 && this.getFuel() > 0;
+        return this.isStartKeyActive() && !this.isDestroyed() && this.hasFuel();
+    }
+
+    public boolean isStarted() {
+        return this.dataManager.get(STARTED);
+    }
+
+    protected void setStarting(boolean starting) {
+        this.dataManager.set(STARTING, starting);
+        if (starting) {
+            this.engineIdleTimeTotal = 0;
+            this.timeStartingLeft = getEngineStartTime();
+            this.getSoundController().playStartingSound();
+            // TODO play correct starting sound AT THE ENTITY
+        }
+    }
+
+    public int getEngineStartTime() {
+        return 70 - (int) (30 * this.getEnginePower());
+    }
+
+    public boolean isStarting() {
+        return this.dataManager.get(STARTING);
+    }
+
+    public void toggleEngine() {
+        if (this.isStarting())
+            return;
+        if (this.isStarted()) {
+            this.killEngine();
+        } else if (this.canStartVehicle()) {
+            this.setStarting(true);
+        }
+    }
+
+    protected void handleVehicleState() {
+        this.handleVehicleInLava();
+        this.handleVehicleInWater();
+        if (isStarted()) {
+            removeFuel(0.01F);
+        }
+    }
+
+    protected void handleVehicleInLava() {
+        if (this.world.isRemote || this.ticksExisted % 10 != 0 || !this.isInLava())
+            return;
+        this.attackEntityFrom(DamageSource.LAVA, 10.0F);
+    }
+
+    protected void handleVehicleInWater() {
+        if (this.isInWater()) {
+            float multiplier = this.isSubmergedInWater() ? 0.85F : 0.97F;
+            this.multiplyMotion(multiplier);
+        }
+    }
+
+    protected void handleDestroyedTick() {
+        if (!this.isDestroyed()) {
+            return;
+        }
+        this.killEngine();
+        this.timeBeforeExplode--;
+        if (this.shouldExplode()) {
+            this.explode();
+        }
+    }
+
+    private boolean shouldExplode() {
+        if (this.isExploded()) { // only allow vehicle itself to explode once
+            return false;
+        }
+
+        if (!this.isDestroyed()) {
+            return false;
+        } else {
+            return this.timeBeforeExplode < 0;
+        }
+    }
+
+    public final boolean isExploded() {
+        return this.dataManager.get(EXPLODED);
+    }
+
+    protected void updateMotionAndTurning() {
+        if (this.turn != 0.0F) {
+            this.rotationYaw -= this.turn;
+            if (this.rotationYaw > 180F) {
+                this.rotationYaw -= 360F;
+            } else if (this.rotationYaw < -180F) {
+                this.rotationYaw += 360F;
+            }
+        }
+        if (this.bomb || hasBombMotion()) {
+            setMotionAndUpdate(bombMotion);
+            dropBombMotion();
+            return;
+        }
+        if (collidedHorizontally) {
+            this.velocity *= 0.6F;
+        }
+        float yawRad = (float) Math.toRadians(this.rotationYaw);
+        Vec3d direction = new Vec3d(-MathHelper.sin(yawRad), 0.0, MathHelper.cos(yawRad)).normalize();
+        Vec3d v;
+        if (isMovingForward()) {
+            v = direction.scale(Math.min(this.velocity, getMaxSpeed()));
+        } else {
+            v = direction.scale(Math.max(this.velocity, getReverseMaxSpeed()));
+        }
+        this.motionX = v.x;
+        if (collidedVertically)
+            this.motionY = 0;
+        this.motionZ = v.z;
+    }
+
+    protected float getEnginePower() {
+        return 1.0F;
+    }
+
+    protected final void updateStepHeight() {
+        this.stepHeight = this.getStepHeight();
+    }
+
+    @Override
+    public float getStepHeight() {
+        return 1.25F;
+    }
+
+    protected void particleTick() {
+        ;
+    }
+
+    @Override
+    protected void applyDrag() {
+        this.applyGravity();
+        // ground drag
+        if (onGround) {
+            decelerate(0.00347F); // 1 second to drop 5 km/h
+        }
+    }
+
+    protected void decelerate(float amount) {
+        this.velocity = Mth.linearDecay(this.velocity, amount);
+    }
+
+    @Override
+    public boolean canEntityBoardVehicle(SeatPart seat, EntityLivingBase entity) {
+        return super.canEntityBoardVehicle(seat, entity) && !this.isExploded() && this.getHealth() > 0;
     }
 
     public final void setFuel(float fuel) {
@@ -109,42 +291,20 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         return this.getFuel() > 0.0F;
     }
 
-    protected void handleVehicleState() {
-        this.applyDrag();
-        this.handleVehicleInLava();
-        this.handleVehicleInWater();
-    }
-
-    protected void applyDrag() {
-        if (onGround) {
-            // 0.985^120 = 0.16, 0.99^120 = 0.30
-            this.multiplyMotion(0.985F);
-        }
-    }
-
-    protected void handleVehicleInLava() {
-        if (this.world.isRemote || this.ticksExisted % 10 != 0 || !this.isInLava())
-            return;
-        this.attackEntityFrom(DamageSource.LAVA, 10.0F);
-    }
-
-    protected void handleVehicleInWater() {
-        if (this.isInWater()) {
-            float multiplier = this.isSubmergedInWater() ? 0.85F : 0.97F;
-            this.multiplyMotion(multiplier);
-        }
-    }
-
-    protected float getTurnSpeed() {
+    public float getTurnSpeed() {
         return getVehicleConfiguration().turningSpeed.getAsFloat();
     }
 
-    protected float getAcceleration() {
+    public float getAcceleration() {
         return getVehicleConfiguration().acceleration.getAsFloat();
     }
 
-    protected float getMaxSpeed() {
+    public float getMaxSpeed() {
         return getVehicleConfiguration().maxSpeed.getAsFloat();
+    }
+
+    public float getReverseMaxSpeed() {
+        return -0.3F * getVehicleConfiguration().maxSpeed.getAsFloat();
     }
 
     protected void handleVehicleStuck() {
@@ -153,12 +313,20 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
 //        }
     }
 
-    protected void getVehicleWeight() {
+    public void getVehicleWeight() {
         ;
     }
 
-    protected float getSpeedPercentage() {
+    public float getSpeedPercentage() {
         return (float) (this.getMotionSqr() / getVehicleConfiguration().maxSpeed.getAsFloat());
+    }
+
+    public int getEngineIdleTimeTotal() {
+        return engineIdleTimeTotal;
+    }
+
+    public static boolean isDriver(Entity entity) {
+        return entity.getRidingEntity() instanceof EntityDriveable && entity.getRidingEntity().getControllingPassenger() == entity;
     }
 
     @Override
@@ -182,65 +350,6 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     @Override
-    public boolean canEntityBoardVehicle(SeatPart seat, EntityLivingBase entity) {
-        return super.canEntityBoardVehicle(seat, entity) && !this.isExploded() && this.getHealth() > 0;
-    }
-
-    @Override
-    protected void entityInit() {
-        super.entityInit();
-        this.dataManager.register(FUEL, this.getFuelTankCapacity());
-        this.dataManager.register(EXPLODED, Boolean.FALSE);
-        this.dataManager.register(STARTED, Boolean.FALSE);
-        this.dataManager.register(STARTING, Boolean.FALSE);
-    }
-    protected void setStartedState(boolean started) {
-        this.dataManager.set(STARTED, started);
-    }
-
-    protected void startEngine() {
-        this.setStartedState(true);
-        this.setStarting(false);
-    }
-
-    protected void killEngine() {
-        this.setStartedState(false);
-        this.setStarting(false);
-        this.engineIdleTimeTotal = 0;
-    }
-
-    public boolean isStarted() {
-        return this.dataManager.get(STARTED);
-    }
-
-    protected void setStarting(boolean starting) {
-        this.dataManager.set(STARTING, starting);
-        if (starting) {
-            this.timeStartingLeft = 40 + (int) (1.0F - (30 * this.getHealthPercentage()));
-            this.getSoundController().playStartingSound();
-            // TODO play correct starting sound AT THE ENTITY
-        }
-    }
-
-    public boolean isStarting() {
-        return this.dataManager.get(STARTING);
-    }
-
-    public void toggleEngine() {
-        if (this.isStarting())
-            return;
-        if (this.isStarted()) {
-            this.killEngine();
-        } else if (this.canStartVehicle()) {
-            this.setStarting(true);
-        }
-    }
-
-    public static boolean isDriver(Entity entity) {
-        return entity.getRidingEntity() instanceof EntityDriveable && entity.getRidingEntity().getControllingPassenger() == entity;
-    }
-
-    @Override
     protected boolean handleEntityAttack(DamageSource source, float amount) {
         // Remove by creative player
         if (this.isExploded() && !this.world.isRemote && source.isCreativePlayer()) {
@@ -252,19 +361,6 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
 
     public final boolean isFunctional() {
         return !this.isDestroyed() && !this.isExploded();
-    }
-
-    public final void setExploded(boolean exploded) {
-        this.dataManager.set(EXPLODED, exploded);
-    }
-
-    public final boolean isExploded() {
-        return this.dataManager.get(EXPLODED);
-    }
-
-    @Override
-    protected float getStepHeight() {
-        return 1.25F;
     }
 
     protected int getTicksBeforeExplode() {
@@ -289,31 +385,8 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         return 4.0F;
     }
 
-    protected final void updateStepHeight() {
-        this.stepHeight = this.getStepHeight();
-    }
-
-    private void handleDestroyedTick() {
-        if (!this.isDestroyed()) {
-            return;
-        }
-        this.killEngine();
-        this.timeBeforeExplode--;
-        if (this.shouldExplode()) {
-            this.explode();
-        }
-    }
-
-    private boolean shouldExplode() {
-        if (this.isExploded()) { // only allow vehicle itself to explode once
-            return false;
-        }
-
-        if (!this.isDestroyed()) {
-            return false;
-        } else {
-            return this.timeBeforeExplode < 0;
-        }
+    public final void setExploded(boolean exploded) {
+        this.dataManager.set(EXPLODED, exploded);
     }
 
     public void onBomb(Entity exploder, Vec3d bombVec, @Nullable IBlockState state, @Nullable Entity entity) {

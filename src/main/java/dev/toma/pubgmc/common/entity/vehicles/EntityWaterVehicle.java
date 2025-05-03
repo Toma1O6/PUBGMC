@@ -15,7 +15,7 @@ public abstract class EntityWaterVehicle extends EntityVehicle {
     }
 
     @Override
-    protected float getStepHeight() {
+    public float getStepHeight() {
         return 0.0F;
     }
 }

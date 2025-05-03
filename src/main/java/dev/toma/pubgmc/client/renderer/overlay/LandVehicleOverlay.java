@@ -1,8 +1,10 @@
 package dev.toma.pubgmc.client.renderer.overlay;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.entity.vehicles.EntityLandVehicle;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DRatio;
 import dev.toma.pubgmc.util.helper.ImageUtil;
@@ -21,7 +23,7 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
 
     @Override
     public void renderOverlay(D driveable, Minecraft client, ScaledResolution window, RenderGameOverlayEvent e) {
-        // this.renderDebugInfo(driveable, client, window);
+        this.renderDebugInfo(driveable, client, window);
 
 //        if (e instanceof RenderGameOverlayEvent.Post) {
 //            float partialTicks = e.getPartialTicks();
@@ -66,19 +68,43 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
         }
     }
 
-    private void renderDebugInfo(D driveable, Minecraft client, ScaledResolution window) {
+    private void renderDebugInfo(D dr, Minecraft client, ScaledResolution window) {
         FontRenderer font = client.fontRenderer;
         int y = -5;
+        VehicleUAZ driveable;
+        if (dr instanceof VehicleUAZ) {
+            driveable = (VehicleUAZ) dr;
+        } else {
+            return;
+        }
         // Statistics
         font.drawString(String.format(Locale.ROOT, "Health: %.2f / %.2f", driveable.getHealth(), driveable.getMaxHealth()), 5, y += 10, 0xFFFFFF);
+        boolean w = driveable.hasInput(EntityDriveable.KEY_FORWARD);
+        boolean s = driveable.hasInput(EntityDriveable.KEY_BACK);
+        boolean a = driveable.hasInput(EntityDriveable.KEY_LEFT);
+        boolean d = driveable.hasInput(EntityDriveable.KEY_RIGHT);
+        font.drawString("W: " + (w ? "true" : "false"), 5, y += 10, w ? 0xFFFFFF : 0xFF0000);
+        font.drawString("S: " + (s ? "true" : "false"), 5, y += 10, s ? 0xFFFFFF : 0xFF0000);
+        font.drawString("A: " + (a ? "true" : "false"), 5, y += 10, a ? 0xFFFFFF : 0xFF0000);
+        font.drawString("D: " + (d ? "true" : "false"), 5, y += 10, d ? 0xFFFFFF : 0xFF0000);
+        font.drawString("isStarting(): " + (driveable.isStarting() ? "true" : "false"), 5, y += 10, driveable.isStarting() ? 0x0000FF : 0xFFFFFF);
+        font.drawString("isStarted(): " + (driveable.isStarted() ? "true" : "false"), 5, y += 10, driveable.isStarted() ? 0x00FF00 : 0xFFFFFF);
         font.drawString(String.format(Locale.ROOT, "Fuel: %.2f / %.2f", driveable.getFuel(), driveable.getFuelTankCapacity()), 5, y += 10, 0xFFFFFF);
-        font.drawString(String.format(Locale.ROOT, "Starting / Started: %s / %s", driveable.isStarting(), driveable.isStarted()), 5, y += 10, 0xFFFFFF);
-
-        // parts
-        EntityVehiclePart[] parts = driveable.getParts();
-        font.drawString("Parts", 5, y += 10, 0xFFFFFF);
-        for (EntityVehiclePart part : parts) {
-            font.drawString(part.getPartInfo(), 10, y += 10, 0xFFFFFF);
-        }
+        font.drawString("engineIdleTimeTotal: " + driveable.getEngineIdleTimeTotal(), 5, y += 10, 0xFFFFFF);
+        font.drawString("turn: " + driveable.getTurn(), 5, y += 10, 0xFFFFFF);
+        font.drawString("getTurnSpeed: " + driveable.getTurnSpeed(), 5, y += 10, 0xFFFFFF);
+        font.drawString("getAcceleration: " + driveable.getAcceleration(), 5, y += 10, 0xFFFFFF);
+        font.drawString("getMaxSpeed: " + driveable.getMaxSpeed(), 5, y += 10, 0xFFFFFF);
+        font.drawString("getVelocity: " + driveable.getVelocity(), 5, y += 10, 0xFFFFFF);
+        font.drawString("isMovingForward: " + driveable.isMovingForward(), 5, y += 10, 0xFFFFFF);
+//        EntityVehiclePart[] parts = driveable.getParts();
+//        for (EntityVehiclePart part : parts) {
+//            font.drawString(part.getPartInfo(), 10, y += 10, part.isDestroyed() ? 0xFF0000 : 0xFFFFFF);
+//        }
+        font.drawString("collideVertically: " + (driveable.collidedVertically ? "true" : "false"), 5, y += 10, driveable.collidedVertically ? 0x00FF00 : 0xFF0000);
+        font.drawString("collidedHorizontally: " + (driveable.collidedHorizontally ? "true" : "false"), 5, y += 10, driveable.collidedHorizontally ? 0x00FF00 : 0xFF0000);
+        font.drawString("onGround: " + (driveable.onGround ? "true" : "false"), 5, y += 10, driveable.onGround ? 0x00FF00 : 0xFF0000);
+        font.drawString("isSubmergedInWater: " + (driveable.isSubmergedInWater() ? "true" : "false"), 5, y += 10, driveable.isSubmergedInWater() ? 0x00FF00 : 0xFF0000);
+        font.drawString("stepHeight: " + driveable.getStepHeight(), 5, y += 10, 0xFFFFFF);
     }
 }

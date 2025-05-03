@@ -29,13 +29,10 @@ import static dev.toma.pubgmc.DevUtil.randomRange;
 
 public abstract class EntityLandVehicle extends EntityVehicle {
 
-    public static final float WHEEL_DAMAGE_MULTIPLIER = 0.2F;
+    public static int TOTAL_ENGINE = 1;
 
     protected final LandVehicleSoundController soundController;
     private final LandVehicleSoundPack soundPack;
-
-    private float velocity;
-    private float turn;
 
     public EntityLandVehicle(World world) {
         super(world);
@@ -54,18 +51,176 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     @Override
     public void onEntityUpdate() {
-        this.fallDistance = 0F;
         super.onEntityUpdate();
     }
 
     @Override
-    public void runVehicleTick() {
-        super.runVehicleTick();
-        this.updateMotionAndTurning();
-        this.updateStepHeight();
+    protected float getEnginePower() {
+        float percentage = this.getHealthPercentage();
+        if (percentage >= 0.45) {
+            return 0.9F + 0.2F * (percentage-0.45F) / 0.65F;
+        } else if (percentage >= 0.2F) {
+            return 0.9F;
+        } else {
+            return 0.7F;
+        }
+    }
 
-        if (world.isRemote) {
-            this.particleTick();
+    @Override
+    protected void handleEmptyInputUpdate() {
+        handleEmptyTurnInput();
+        handleEmptyAcceleratorInput();
+    }
+
+    protected void handleEmptyTurnInput() {
+        this.turn = Mth.exponentialDecay(this.turn, 0.8F);
+        this.turn = Mth.linearDecay(this.turn, 0.04F);
+    }
+
+    protected void handleEmptyAcceleratorInput() {
+        if (isStarted()) {
+            engineIdleTimeTotal++;
+        }
+        decelerate(0.00347F); // 1 second to drop 5 km/h
+    }
+
+    @Override
+    protected void handleInputUpdate() {
+        handleTurnInputUpdate();
+        handleAcceleratorInputUpdate();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public final int encode(GameSettings settings) {
+        int result = 0;
+        if (settings.keyBindForward.isKeyDown())
+            result |= KEY_FORWARD;
+        if (settings.keyBindBack.isKeyDown())
+            result |= KEY_BACK;
+        if (settings.keyBindRight.isKeyDown())
+            result |= KEY_RIGHT;
+        if (settings.keyBindLeft.isKeyDown())
+            result |= KEY_LEFT;
+        return result;
+    }
+
+    protected void handleTurnInputUpdate() {
+        if (isStarted() || getMotionSqr() > 0.069F) {
+            boolean left = this.hasInput(KEY_LEFT);
+            boolean right = this.hasInput(KEY_RIGHT);
+            if (!left && !right) {
+                handleEmptyTurnInput();
+                return;
+            }
+            boolean currentForward = this.isMovingForward();
+            float turnDiff = 0.0F;
+            float turnSpeed = getTurnSpeed();
+            if (left) {
+                if (this.turn < 0)
+                    turnSpeed *= 1.2F;
+                turnDiff = turnSpeed;
+            }
+            if (right) {
+                if (this.turn > 0)
+                    turnSpeed *= 1.2F;
+                turnDiff = -turnSpeed;
+            }
+            turnVehicle(turnDiff, currentForward);
+        }
+    }
+
+    protected void turnVehicle(float turnDiff, boolean isForward) {
+        float mx = getVehicleConfiguration().maxTurningAngle.getAsFloat();
+        turnVehicle(turnDiff, isForward, mx);
+    }
+
+    protected void turnVehicle(float turnDiff, boolean isForward, float maxAngle) {
+        if (turnDiff == 0) {
+            this.turn = Mth.exponentialDecay(this.turn, 0.7F);
+            return;
+        }
+        if (!isForward) turnDiff *= -1;
+        this.turn = MathHelper.clamp(this.turn + turnDiff, -maxAngle, maxAngle);
+    }
+
+    protected void handleAcceleratorInputUpdate() {
+        boolean forward = this.hasInput(KEY_FORWARD);
+        boolean back = this.hasInput(KEY_BACK);
+        if (this.isDestroyed() || !this.isStarted() || (!forward && !back)) {
+            handleEmptyAcceleratorInput();
+            return;
+        }
+        boolean currentForward = this.isMovingForward();
+        float acc = getAcceleration() * getEnginePower();
+        engineIdleTimeTotal++;
+        if (forward) {
+            if (currentForward && hasFuel()) {
+                this.velocity = Math.min(getMaxSpeed(), this.velocity + acc);
+                engineIdleTimeTotal = 0;
+            } else {
+                brake(true);
+            }
+        }
+        if (back) { // allow to accelerate and brake at the same time
+            if (!currentForward && hasFuel()) {
+                this.velocity = Math.max(getReverseMaxSpeed(), this.velocity - acc);
+                engineIdleTimeTotal = 0;
+            } else {
+                brake(false);
+            }
+        }
+    }
+
+    protected void brake() {
+        brake(false);
+    }
+
+    protected void brake(boolean inputForward) {
+        brake(inputForward, !inputForward);
+    }
+
+    protected void brake(boolean inputForward, boolean vehicleForward) {
+        if (inputForward == vehicleForward) {
+            return;
+        }
+        float brakeMultiplier = getBrakeStrength();
+        CFGVehicle cfg = getVehicleConfiguration();
+        float acc = cfg.acceleration.getAsFloat() * brakeMultiplier;
+        this.velocity += acc * (inputForward ? 1 : -1);
+    }
+
+    public float getBrakeStrength() {
+        float weatherMultiplier = getWeatherBrakeMultiplier();
+        float surfaceMultiplier = getSurfaceBrakeMultiplier();
+        return 0.5F * weatherMultiplier * surfaceMultiplier;
+    }
+
+    private float getWeatherBrakeMultiplier() {
+        if (this.world.isThundering()) {
+            return 0.85F;
+        } else if (this.world.isRaining()) {
+            return 0.9F;
+        } else {
+            return 1.0F;
+        }
+    }
+
+    private float getSurfaceBrakeMultiplier() {
+        BlockPos below = this.getPosition().down();
+        IBlockState state = this.world.getBlockState(below);
+        Block block = state.getBlock();
+
+        if (block == Blocks.ICE || block == Blocks.PACKED_ICE) {
+            return 0.6F;
+        } else if (block == Blocks.SAND || block == Blocks.GRAVEL) {
+            return 1.1F;
+        } else if (block == Blocks.SLIME_BLOCK) {
+            return 0.8F;
+        } else if (block == Blocks.GRASS || block == Blocks.DIRT) {
+            return 1.0F;
+        } else {
+            return 0.95F;
         }
     }
 
@@ -74,46 +229,17 @@ public abstract class EntityLandVehicle extends EntityVehicle {
         handleSpecialEffect();
     }
 
-    protected void updateMotionAndTurning() {
-        if (this.turn != 0.0F) {
-            this.rotationYaw -= this.turn;
-            if (this.rotationYaw > 180.0F) {
-                this.rotationYaw -= 360.0F;
-            }
-            if (this.rotationYaw <= -180.0F) {
-                this.rotationYaw += 360.0F;
-            }
-        }
-        if (this.bomb || hasBombMotion()) {
-            motionX = bombMotion.x;
-            motionY = bombMotion.y;
-            motionZ = bombMotion.z;
-            dropBombMotion();
-            return;
-        }
-
-        float yawRad = (float) Math.toRadians(this.rotationYaw);
-        Vec3d direction = new Vec3d(-MathHelper.sin(yawRad), 0.0, MathHelper.cos(yawRad)).normalize();
-
-        float enginePwr = getEnginePower();
-        float speed = enginePwr * this.velocity;
-        Vec3d velocity = direction.scale(speed);
-        this.motionX = velocity.x;
-        this.motionZ = velocity.z;
+    public void handleSpecialEffect() {
     }
 
     @Override
-    protected float getEnginePower() {
-        float percentage = this.getHealthPercentage();
-        if (percentage >= 0.45) {
-            return 1.0F + 0.2F * (percentage-0.45F) / 0.65F;
-        } else if (percentage >= 0.2F) {
-            return 1.0F;
-        } else {
-            return 0.8F;
+    protected void applyGravity() {
+        if (!bomb) {
+            super.applyGravity();
         }
     }
 
+    @Override
     protected void particleTick() {
         if (this.isStarted()) {
             this.processExhaustParticles(vec -> {
@@ -147,132 +273,6 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     }
 
     @Override
-    protected void handleInputUpdate() {
-        // Turn
-        if (getMotionSqr() > 1) {
-            float turnDiff = 0.0F;
-            float turnSpeed = getTurnSpeed();
-            if (this.hasInput(KEY_LEFT)) {
-                turnDiff = turnSpeed;
-            }
-            if (this.hasInput(KEY_RIGHT)) {
-                turnDiff = -turnSpeed;
-            }
-            turnVehicle(turnDiff);
-        }
-        // accelerator, brake
-        boolean forward = this.hasInput(KEY_FORWARD);
-        boolean back = this.hasInput(KEY_BACK);
-        boolean currentForward = this.isMovingForward();
-        if (this.isDestroyed() || !this.isStarted() || !hasFuel()) {
-            if (forward) {
-                brake(true, currentForward);
-            }
-            if (back) {
-                brake(false, currentForward);
-            }
-            return;
-        }
-
-        float acc = getAcceleration();
-        if (this.isDestroyed() || !this.isStarted()) {
-            this.velocity = Mth.linearDecay(this.velocity, acc);
-            this.velocity = Mth.exponentialDecay(this.velocity, 0.95F);
-        } else {
-            float max = getMaxSpeed();
-            if (forward) {
-                if (currentForward) {
-                    this.velocity = Math.min(max, this.velocity + acc);
-                    removeFuel(0.01F);
-                } else {
-                    brake(true);
-                }
-                return; // doesn't allow move in both side
-            }
-            if (back) {
-                if (currentForward) {
-                    this.velocity = Math.max(-0.3F * max, this.velocity - 0.02F);
-                    removeFuel(0.01F);
-                } else {
-                    brake(false);
-                }
-            }
-        }
-    }
-
-    protected void turnVehicle(float turnDiff) {
-        float mx = getVehicleConfiguration().maxTurningAngle.getAsFloat();
-        turnVehicle(turnDiff, mx);
-    }
-
-    protected void turnVehicle(float turnDiff, float maxTurn) {
-        if (turnDiff != 0.0F) {
-            this.turn = MathHelper.clamp(this.turn + turnDiff, -maxTurn, maxTurn);
-        } else {
-            this.turn = Mth.exponentialDecay(this.turn, 0.95F);
-            this.turn = Mth.linearDecay(this.turn, 0.05F);
-        }
-    }
-
-    protected void brake() {
-        brake(false);
-    }
-
-    protected void brake(boolean inputForward) {
-        brake(inputForward, !inputForward);
-    }
-
-    protected void brake(boolean inputForward, boolean vehicleForward) {
-        if (inputForward == vehicleForward) {
-            return;
-        }
-        float brakeMultiplier = getBrakeStrength();
-        CFGVehicle cfg = getVehicleConfiguration();
-        float acc = cfg.acceleration.getAsFloat() * brakeMultiplier;
-        this.velocity += acc * (inputForward ? 1 : -1);
-    }
-
-    public float getBrakeStrength() {
-        float weatherMultiplier = getWeatherBrakeMultiplier();
-        float surfaceMultiplier = getSurfaceBrakeMultiplier();
-        return 0.4F * weatherMultiplier * surfaceMultiplier;
-    }
-
-    private float getWeatherBrakeMultiplier() {
-        if (this.world.isThundering()) {
-            return 0.85F;
-        } else if (this.world.isRaining()) {
-            return 0.9F;
-        } else {
-            return 1.0F;
-        }
-    }
-
-    private float getSurfaceBrakeMultiplier() {
-        BlockPos below = this.getPosition().down();
-        IBlockState state = this.world.getBlockState(below);
-        Block block = state.getBlock();
-
-        if (block == Blocks.ICE || block == Blocks.PACKED_ICE) {
-            return 0.6F;
-        } else if (block == Blocks.SAND || block == Blocks.GRAVEL) {
-            return 1.1F;
-        } else if (block == Blocks.SLIME_BLOCK) {
-            return 0.8F;
-        } else if (block == Blocks.GRASS || block == Blocks.DIRT) {
-            return 1.0F;
-        } else {
-            return 0.95F;
-        }
-    }
-
-    @Override
-    protected void handleEmptyInputUpdate() {
-        this.velocity = Mth.exponentialDecay(this.velocity, 0.95F);
-        this.turn = Mth.linearDecay(this.turn, 0.1F);
-    }
-
-    @Override
     public final VehicleCategory getVehicleCategory() {
         return VehicleCategory.LAND;
     }
@@ -283,27 +283,16 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public final int encode(GameSettings settings) {
-        int result = 0;
-        if (settings.keyBindForward.isKeyDown())
-            result |= KEY_FORWARD;
-        if (settings.keyBindBack.isKeyDown())
-            result |= KEY_BACK;
-        if (settings.keyBindRight.isKeyDown())
-            result |= KEY_RIGHT;
-        if (settings.keyBindLeft.isKeyDown())
-            result |= KEY_LEFT;
-        return result;
-    }
-
-    @Override
-    protected float getStepHeight() {
+    public float getStepHeight() {
         return this.isSubmergedInWater() ? 0.5F : super.getStepHeight();
     }
 
     public float getTurn() {
         return turn;
+    }
+
+    public float getVelocity() {
+        return velocity;
     }
 
     public static final class LandVehicleSoundPack {
@@ -325,15 +314,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
         }
     }
 
-    public void handleSpecialEffect() {
-    }
 
-    @Override
-    protected void applyGravity() {
-        if (!bomb) {
-            super.applyGravity();
-        }
-    }
 
     public static abstract class LandVehicleSoundController extends VehicleSoundController {
 

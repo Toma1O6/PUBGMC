@@ -9,7 +9,7 @@ import static dev.toma.pubgmc.DevUtil.randomRange;
 
 public final class WheelPart extends EntityVehicleDamageablePart {
 
-    public static final float DEFAULT_WHEEL_HEALTH = 3.0F;
+    public static final float DEFAULT_WHEEL_HEALTH = 7.5F;
     public static final float DEFAULT_WHEEL_SIZE = 0.75F;
 
     private boolean isTurnWheel = false;

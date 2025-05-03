@@ -1,6 +1,5 @@
 package dev.toma.pubgmc.config.client;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import dev.toma.configuration.api.ConfigCreator;
 import dev.toma.configuration.api.type.BooleanType;
 import dev.toma.configuration.api.type.IntType;

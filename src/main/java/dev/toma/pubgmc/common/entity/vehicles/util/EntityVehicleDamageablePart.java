@@ -33,7 +33,7 @@ public abstract class EntityVehicleDamageablePart extends EntityVehiclePart {
     }
 
     @Override
-    protected boolean isDestroyed() {
+    public boolean isDestroyed() {
         return this.getHealth() <= 0;
     }
 

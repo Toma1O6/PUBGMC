@@ -23,7 +23,7 @@ public class VehicleUAZ extends EntityLandVehicle {
 
     public VehicleUAZ(World world) {
         super(world);
-        this.setSize(5.5F, 3.0F);
+        this.setSize(4.5F, 2.4F);
     }
 
     @Override
@@ -47,12 +47,13 @@ public class VehicleUAZ extends EntityLandVehicle {
     @Override
     public void registerVehicleParts(PartRegistration registration) {
         this.body = registration.register(new EntityVehiclePart(this, "bodyMain", 2.4F, 1.2F, new Vec3d(0.0, 0.3, -0.3F)));
+        this.body.setDamageMultiplier(BODY_DAMAGE_MULTIPLIER);
 
         EntityVehiclePart engine = registration.register(new EntityVehiclePart(this, "bodyEngine", 2.0F, 1.2F, new Vec3d(0.0, 0.3, 1.7)));
         engine.setDamageMultiplier(ENGINE_DAMAGE_MULTIPLIER);
 
         EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "bodyRoof", 2.4F, 0.2F, new Vec3d(0.0, 2.2F, -0.3F)));
-        roof.setDamageMultiplier(0.6F);
+        roof.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
 
         WheelPart frontRight = registration.register(new WheelPart(this, "wheelFrontRight", new Vec3d(-1.0, 0.0, 1.8)));
         frontRight.setTurnWheel(true);
@@ -77,9 +78,8 @@ public class VehicleUAZ extends EntityLandVehicle {
         registration.register(new SeatPart(this, "seatPassengerBackRight", new Vec3d(-0.7, 0.35, -0.8), -1.1F));
     }
 
-    // TODO wheels on two sides has different affect
     @Override
-    protected float getTurnSpeed() {
+    public float getTurnSpeed() {
         float base = getVehicleConfiguration().turningSpeed.getAsFloat();
         EntityVehiclePart[] parts = this.getParts();
         if (parts == null) {
@@ -87,18 +87,15 @@ public class VehicleUAZ extends EntityLandVehicle {
         }
         int good = 0;
         for (EntityVehiclePart part : this.getParts()) {
-            if (part instanceof WheelPart && ((WheelPart) part).isTurnWheel()) {
-                if (!part.isDead && !part.isDestroyed()) {
-                    good++;
-                }
+            if (part instanceof WheelPart && ((WheelPart) part).isTurnWheel() && !part.isDead && !part.isDestroyed()) {
+                good++;
             }
         }
-        base = Mth.exponentialDecay(base, 0.6F + 0.4F * ((float) good / TOTAL_TURN_WHEEL));
-        return base;
+        return Mth.exponentialDecay(base, 0.6F + 0.4F * ((float) good / TOTAL_TURN_WHEEL));
     }
 
     @Override
-    protected float getAcceleration() {
+    public float getAcceleration() {
         float base = getVehicleConfiguration().acceleration.getAsFloat();
         EntityVehiclePart[] parts = this.getParts();
         if (parts == null) {
@@ -106,33 +103,36 @@ public class VehicleUAZ extends EntityLandVehicle {
         }
         int good = 0;
         for (EntityVehiclePart part : this.getParts()) {
-            if (part instanceof WheelPart && ((WheelPart) part).isAccelerationWheel()) {
-                if (!part.isDead && !part.isDestroyed()) {
-                    good++;
-                }
+            if (part instanceof WheelPart && ((WheelPart) part).isAccelerationWheel() && !part.isDead && !part.isDestroyed()) {
+                good++;
             }
         }
-        base = Mth.exponentialDecay(base, 0.4F + 0.6F * ((float) good / TOTAL_ACCELERATION_WHEEL));
-        return base;
+        return Mth.exponentialDecay(base, 0.4F + 0.6F * ((float) good / TOTAL_ACCELERATION_WHEEL));
     }
 
     @Override
-    protected float getMaxSpeed() {
+    public float getMaxSpeed() {
         float base = getVehicleConfiguration().maxSpeed.getAsFloat();
         EntityVehiclePart[] parts = this.getParts();
         if (parts == null) {
             return 0F;
         }
-        int good = 0;
+        int turn = TOTAL_TURN_WHEEL;
+        int acc = TOTAL_ACCELERATION_WHEEL;
         for (EntityVehiclePart part : this.getParts()) {
-            if (part instanceof WheelPart) {
-                if (!part.isDead && !part.isDestroyed()) {
-                    good++;
-                }
+            if (part instanceof WheelPart && !part.isDead && part.isDestroyed()) {
+                if (((WheelPart) part).isTurnWheel())
+                    turn--;
+                if (((WheelPart) part).isAccelerationWheel())
+                    acc--;
             }
         }
-        base = Mth.exponentialDecay(base, 0.2F + 0.8F * ((float) good / TOTAL_WHEELS));
-        return base;
+        return Mth.exponentialDecay(base, Math.min(0.2F + 0.2F * turn + 0.6F * acc, 1));
+    }
+
+    @Override
+    public float getReverseMaxSpeed() {
+        return -0.3F * this.getMaxSpeed();
     }
 
     @Override

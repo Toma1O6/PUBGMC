@@ -55,8 +55,12 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
         this.damageMultiplier = damageMultiplier;
     }
 
-    protected float getDamageMultiplier(DamageSource source) {
+    protected float getDamageMultiplier() {
         return this.damageMultiplier;
+    }
+
+    protected float getDamageMultiplier(DamageSource source) {
+        return getDamageMultiplier();
     }
 
     public void setBlockCollisionMode(BoundingBoxMode boundingBoxMode) {
@@ -68,13 +72,13 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     }
 
     protected boolean canHurtVehicle(DamageSource source, float damage) {
-        return true;
+        return !isDestroyed();
     }
 
     protected void hurt(DamageSource source, float damage) {
     }
 
-    protected boolean isDestroyed() {
+    public boolean isDestroyed() {
         return false;
     }
 
