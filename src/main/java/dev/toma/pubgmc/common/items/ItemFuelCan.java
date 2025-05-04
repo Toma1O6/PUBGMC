@@ -2,17 +2,13 @@ package dev.toma.pubgmc.common.items;
 
 import dev.toma.pubgmc.api.item.Consumable;
 import dev.toma.pubgmc.common.entity.EntityFuelCan;
-import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
-import dev.toma.pubgmc.init.PMCItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
@@ -26,7 +22,7 @@ import java.util.List;
 
 public class ItemFuelCan extends PMCItem implements Consumable {
     public static float initHealth = 40.0F;
-    public static float fuelPercentage = 0.3F;
+    public static float fuel = 30F;
 
     public ItemFuelCan(String name) {
         super(name);
@@ -45,7 +41,7 @@ public class ItemFuelCan extends PMCItem implements Consumable {
 
             if (player.isRiding() && player.getRidingEntity() instanceof EntityVehicle) {
                 EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-                vehicle.addFuel(getHealth(stack) / initHealth);
+                vehicle.addFuel(fuel * getHealthPercentage(stack));
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
                 }
@@ -79,7 +75,7 @@ public class ItemFuelCan extends PMCItem implements Consumable {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.add(I18n.format("label.pubgmc.fuel_can.tooltip.usage"));
         tooltip.add(I18n.format("label.pubgmc.fuel_can.vehicle_not_stationary"));
-        tooltip.add(I18n.format("label.pubgmc.fuel_can.fuel", (int)(fuelPercentage * 100 * (getHealth(stack) / initHealth))));
+        tooltip.add(I18n.format("label.pubgmc.fuel_can.fuel", (int)(fuel * getHealthPercentage(stack))));
     }
 
     private void sendError(EntityPlayer player, World world, String key) {
@@ -115,5 +111,9 @@ public class ItemFuelCan extends PMCItem implements Consumable {
             nbt.setFloat("health", initHealth);
         }
         return nbt.getFloat("health");
+    }
+
+    public float getHealthPercentage(ItemStack stack) {
+        return getHealth(stack) / initHealth;
     }
 }

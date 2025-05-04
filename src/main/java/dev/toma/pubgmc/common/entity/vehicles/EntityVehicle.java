@@ -99,6 +99,12 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         if (!this.isStarted() && !this.isStarting() && this.canStartVehicle() && !this.bomb) {
             this.setStarting(true);
         }
+        // Engine idle fuel
+        if (isStarted()) {
+            removeFuel(0.004F); // 20.83 minutes to burn 100.0F fuel
+            if (this.velocity > 0)
+                removeFuel(0.008F * velocity);
+        }
     }
 
     protected void setStartedState(boolean started) {
@@ -161,9 +167,6 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         this.collisionCooldown--;
         this.handleVehicleInLava();
         this.handleVehicleInWater();
-        if (isStarted()) {
-            removeFuel(0.01F);
-        }
     }
 
     protected void handleVehicleInLava() {
