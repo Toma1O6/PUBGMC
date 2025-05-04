@@ -33,6 +33,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     protected final LandVehicleSoundController soundController;
     private final LandVehicleSoundPack soundPack;
+    protected boolean reverseTurn = false;
 
     public EntityLandVehicle(World world) {
         super(world);
@@ -68,6 +69,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     @Override
     protected void handleEmptyInputUpdate() {
+        reverseTurn = false;
         handleEmptyTurnInput();
         handleEmptyAcceleratorInput();
     }
@@ -86,6 +88,8 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     @Override
     protected void handleInputUpdate() {
+        if (!this.hasInput(KEY_FORWARD) && this.hasInput(KEY_BACK))
+            reverseTurn = true;
         handleTurnInputUpdate();
         handleAcceleratorInputUpdate();
     }
@@ -140,7 +144,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
             this.turn = Mth.exponentialDecay(this.turn, 0.7F);
             return;
         }
-        if (!isForward) turnDiff *= -1;
+        if (reverseTurn) turnDiff = -turnDiff;
         this.turn = MathHelper.clamp(this.turn + turnDiff, -maxAngle, maxAngle);
     }
 
@@ -270,6 +274,10 @@ public abstract class EntityLandVehicle extends EntityVehicle {
                 }
             });
         }
+    }
+
+    public final boolean isReverseTurn() {
+        return this.reverseTurn;
     }
 
     @Override

@@ -6,6 +6,7 @@ import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public class RenderUAZ extends RenderVehicle<VehicleUAZ, ModelUAZ> {
 
@@ -28,12 +29,16 @@ public class RenderUAZ extends RenderVehicle<VehicleUAZ, ModelUAZ> {
 
     @Override
     protected void setupTranslations(VehicleUAZ entity) {
-        GlStateManager.translate(0.0, 0.7, 0.0);
+        GlStateManager.translate(0, VehicleUAZ.modelOffset.y, 0);
     }
 
     @Override
-    protected void setupRotationsAndScale(VehicleUAZ entity) {
+    protected void setupRotationsAndScale(VehicleUAZ entity, float entityYaw) {
         double scale = 0.8;
         GlStateManager.scale(scale, scale, scale);
+        float yawRadian = (float) Math.toRadians(entityYaw);
+        Vec3d offsetVec = new Vec3d(VehicleUAZ.modelOffset.x * VehicleUAZ.modelRotation.x, 0.0D, VehicleUAZ.modelOffset.z * VehicleUAZ.modelRotation.z);
+        offsetVec.rotateYaw(-yawRadian);
+        GlStateManager.translate(offsetVec.x, 0.0D, offsetVec.z);
     }
 }

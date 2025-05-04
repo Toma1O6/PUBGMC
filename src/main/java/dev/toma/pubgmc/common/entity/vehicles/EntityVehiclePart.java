@@ -52,7 +52,7 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     @Nullable
     @Override
     public AxisAlignedBB getBoundingBoxForProjectiles() {
-        if (canBulletHit && getBoundingBoxMode() == BoundingBoxMode.COLLIDER)
+        if (canBulletHit)
             return this.getCollisionBoundingBox();
         Pubgmc.logger.warn("use getBoundingBoxForProjectiles() at a none COLLIDER: {}", toString());
         return null;

@@ -6,6 +6,7 @@ import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.math.Mth;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -20,10 +21,12 @@ public class VehicleUAZ extends EntityLandVehicle {
     private static final int TOTAL_ACCELERATION_WHEEL = 2;
     private static final int TOTAL_WHEELS = 4;
     private EntityVehiclePart body;
+    public static final Vec3d modelRotation = new Vec3d(-1, -1, 1);
+    public static final Vec3d modelOffset = new Vec3d(0, 1.4F, 0.6F); // at 0° yaw
 
     public VehicleUAZ(World world) {
         super(world);
-        this.setSize(4.5F, 2.4F);
+        this.setSize(3.35F, 2.4F);
     }
 
     @Override
@@ -46,36 +49,49 @@ public class VehicleUAZ extends EntityLandVehicle {
 
     @Override
     public void registerVehicleParts(PartRegistration registration) {
-        this.body = registration.register(new EntityVehiclePart(this, "bodyMain", 2.4F, 1.2F, new Vec3d(0.0, 0.3, -0.3F)));
-        this.body.setDamageMultiplier(BODY_DAMAGE_MULTIPLIER);
-
-        EntityVehiclePart engine = registration.register(new EntityVehiclePart(this, "bodyEngine", 2.0F, 1.2F, new Vec3d(0.0, 0.3, 1.7)));
+        EntityVehiclePart engine = registration.register(new EntityVehiclePart(this, "bodyEngine", 2.0F, 1.2F, new Vec3d(0.0, 0.3, 1.2F)));
         engine.setDamageMultiplier(ENGINE_DAMAGE_MULTIPLIER);
 
-        EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "bodyRoof", 2.4F, 0.2F, new Vec3d(0.0, 2.2F, -0.3F)));
+        WheelPart wheelFL = registration.register(new WheelPart(this, "wheelFrontLeft", new Vec3d(1.0, 0.0, 1.3F)));
+        wheelFL.setTurnWheel(true);
+        wheelFL.setAccelerationWheel(false);
+        WheelPart wheelFR = registration.register(new WheelPart(this, "wheelFrontRight", new Vec3d(-1.0, 0.0, 1.3F)));
+        wheelFR.setTurnWheel(true);
+        wheelFR.setAccelerationWheel(false);
+
+        this.body = registration.register(new EntityVehiclePart(this, "bodyMain", 2.7F, 1.2F, new Vec3d(0.0, 0.3, -0.95F)));
+        this.body.setDamageMultiplier(BODY_DAMAGE_MULTIPLIER);
+        EntityVehiclePart aPillarL = registration.register(new EntityVehiclePart(this, "aPillarLeft", 0.1F, 0.7F, new Vec3d(1.3F, 1.5F, 0.6F)));
+        aPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        EntityVehiclePart aPillarR = registration.register(new EntityVehiclePart(this, "aPillarRight", 0.1F, 0.7F, new Vec3d(-1.3F, 1.5F, 0.6F)));
+        aPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        registration.register(new SeatPart(this, "seatDriver", new Vec3d(0.6, 0.35, -0.3F), 0.9F, 1.3F, new Vec3d(2.3F, -0.2F, -1), true));
+        registration.register(new SeatPart(this, "seatPassengerFront", new Vec3d(-0.6, 0.35, -0.3F), 0.9F, 1.3F, new Vec3d(-2.3F, -0.2F, 0)));
+        EntityVehiclePart bPillarL = registration.register(new EntityVehiclePart(this, "bPillarLeft", 0.1F, 0.7F, new Vec3d(1.3F, 1.5F, -0.3F)));
+        bPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        EntityVehiclePart bPillarR = registration.register(new EntityVehiclePart(this, "bPillarRight", 0.1F, 0.7F, new Vec3d(-1.3F, 1.5F, -0.3F)));
+        bPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        registration.register(new SeatPart(this, "seatPassengerBackLeft", new Vec3d(0.6, 0.35, -1.3F), 1.0F, 1.5F, new Vec3d(2.3F, -0.2F, 0)));
+        registration.register(new SeatPart(this, "seatPassengerBackRight", new Vec3d(-0.6, 0.35, -1.3F), 1.0F, 1.5F, new Vec3d(-2.3F, -0.2F, 0)));
+        EntityVehiclePart cPillarL = registration.register(new EntityVehiclePart(this, "cPillarLeft", 0.1F, 0.7F, new Vec3d(1.3F, 1.5F, -1.2F)));
+        cPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        EntityVehiclePart cPillarR = registration.register(new EntityVehiclePart(this, "cPillarRight", 0.1F, 0.7F, new Vec3d(-1.3F, 1.5F, -1.2F)));
+        cPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        EntityVehiclePart dPillarL = registration.register(new EntityVehiclePart(this, "dPillarLeft", 0.3F, 0.7F, new Vec3d(1.2F, 1.5F, -2F)));
+        dPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        EntityVehiclePart dPillarR = registration.register(new EntityVehiclePart(this, "dPillarRight", 0.3F, 0.7F, new Vec3d(-1.2F, 1.5F, -2F)));
+        dPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
+        EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "bodyRoof", 2.7F, 0.2F, new Vec3d(0.0, 2.2F, -0.95F)));
         roof.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
 
-        WheelPart frontRight = registration.register(new WheelPart(this, "wheelFrontRight", new Vec3d(-1.0, 0.0, 1.8)));
-        frontRight.setTurnWheel(true);
-        frontRight.setAccelerationWheel(false);
-
-        WheelPart frontLeft = registration.register(new WheelPart(this, "wheelFrontLeft", new Vec3d(1.0, 0.0, 1.8)));
-        frontLeft.setTurnWheel(true);
-        frontLeft.setAccelerationWheel(false);
-
-        WheelPart rearRight = registration.register(new WheelPart(this, "wheelRearRight", new Vec3d(-1.0, 0.0, -0.8)));
-        rearRight.setTurnWheel(false);
-        rearRight.setAccelerationWheel(true);
-
-        WheelPart rearLeft = registration.register(new WheelPart(this, "wheelRearLeft", new Vec3d(1.0, 0.0, -0.8)));
-        rearLeft.setTurnWheel(false);
-        rearLeft.setAccelerationWheel(true);
-
-        registration.register(new SeatPart(this, "seatDriver", new Vec3d(0.6, 0.3, 0.2), 1.2F, true));
-        registration.register(new SeatPart(this, "seatPassengerFront", new Vec3d(-0.6, 0.3, 0.2), -1.2F));
-        registration.register(new SeatPart(this, "seatPassengerBackLeft", new Vec3d(0.7, 0.35, -0.8), 1.1F));
-        registration.register(new SeatPart(this, "seatPassengerBackCenter", new Vec3d(0.0, 0.35, -0.8), 1.8F));
-        registration.register(new SeatPart(this, "seatPassengerBackRight", new Vec3d(-0.7, 0.35, -0.8), -1.1F));
+        WheelPart wheelRL = registration.register(new WheelPart(this, "wheelRearLeft", new Vec3d(1.1, 0.0, -1.3F)));
+        wheelRL.setTurnWheel(false);
+        wheelRL.setAccelerationWheel(true);
+        wheelRL.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
+        WheelPart wheelRR = registration.register(new WheelPart(this, "wheelRearRight", new Vec3d(-1.1, 0.0, -1.3F)));
+        wheelRR.setTurnWheel(false);
+        wheelRR.setAccelerationWheel(true);
+        wheelRR.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
     }
 
     @Override

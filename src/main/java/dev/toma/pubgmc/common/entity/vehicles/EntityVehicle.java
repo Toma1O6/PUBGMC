@@ -33,6 +33,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     protected int engineIdleTimeTotal;
     protected int MAX_ENGINE_IDLE_TIME = 160;
     protected static final DataParameter<Float> FUEL = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    protected static float FUEL_TANK_CAPACITY = 100F;
     // Sound events
     public static final int SOUND_ENGINE_STARTING = 0;
     public static final int SOUND_ENGINE_STARTED = 1;

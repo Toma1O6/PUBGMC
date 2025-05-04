@@ -4,6 +4,9 @@ import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
+import static dev.toma.pubgmc.common.entity.vehicles.EntityDriveable.KEY_BACK;
+import static dev.toma.pubgmc.common.entity.vehicles.EntityDriveable.KEY_FORWARD;
+
 
 public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
 
@@ -312,9 +315,12 @@ public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
         mirror.render(renderScale);
         mirror2.render(renderScale);
         interior.render(renderScale);
-        renderSteeringWheel(steering_wheel, 0.0F, renderScale);
-        renderFrontWheel(wheelFR, 0.0F, renderScale);
-        renderFrontWheel(wheelFL, 0.0F, renderScale);
+        float turn = (float) (vehicle.getTurn() * VehicleUAZ.modelRotation.x);
+        if (vehicle.isReverseTurn())
+            turn = -turn;
+        renderSteeringWheel(steering_wheel, turn, renderScale);
+        renderFrontWheel(wheelFR, turn, renderScale);
+        renderFrontWheel(wheelFL, turn, renderScale);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
