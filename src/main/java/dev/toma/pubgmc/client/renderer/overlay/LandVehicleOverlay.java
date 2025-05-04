@@ -23,7 +23,8 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
 
     @Override
     public void renderOverlay(D driveable, Minecraft client, ScaledResolution window, RenderGameOverlayEvent e) {
-        this.renderDebugInfo(driveable, client, window);
+        if (ConfigPMC.developerMode.get())
+            this.renderDebugInfo(driveable, client, window);
 
 //        if (e instanceof RenderGameOverlayEvent.Post) {
 //            float partialTicks = e.getPartialTicks();

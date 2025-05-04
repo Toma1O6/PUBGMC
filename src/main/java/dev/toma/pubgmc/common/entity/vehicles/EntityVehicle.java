@@ -158,6 +158,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     protected void handleVehicleState() {
+        this.collisionCooldown--;
         this.handleVehicleInLava();
         this.handleVehicleInWater();
         if (isStarted()) {
@@ -215,7 +216,9 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
             }
         }
         if (this.bomb || hasBombMotion()) {
-            setMotionAndUpdate(bombMotion);
+            if (!onGround)
+                this.setNoGravity(true);
+            setMotion(bombMotion);
             dropBombMotion();
             return;
         }
@@ -432,6 +435,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         if (!hasBombMotion()) {
             this.bomb = false;
             this.bombMotion = Vec3d.ZERO;
+            this.setNoGravity(false);
         }
     }
 

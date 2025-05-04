@@ -1,20 +1,23 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.client.game.CustomEntityNametag;
+import dev.toma.pubgmc.api.entity.CustomProjectileBoundingBoxProvider;
 import dev.toma.pubgmc.api.entity.IControllable;
 import dev.toma.pubgmc.api.entity.SynchronizableEntity;
 import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleSoundController;
+import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
 import dev.toma.pubgmc.util.helper.GameHelper;
 import io.netty.buffer.ByteBuf;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -24,14 +27,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.*;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ReportedException;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -48,6 +50,11 @@ import java.util.stream.Collectors;
 
 public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart, CustomProjectileBoundingBoxProvider {
 
+    public static final Predicate<Entity> TARGET = Predicates.and(
+            EntitySelectors.NOT_SPECTATING,
+            EntitySelectors.IS_ALIVE,
+            Entity::canBeCollidedWith);
+    protected int collisionCooldown = 10;
     // Keybinds
     public static final int KEY_FORWARD = 0b1;
     public static final int KEY_BACK = 0b10;
@@ -56,7 +63,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     // Synhronized data parameters
     protected static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityDriveable.class, DataSerializers.FLOAT);
-
     // speed smoothing
     protected double lastMotionX, lastMotionY, lastMotionZ;
     // input
@@ -185,14 +191,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     @Override
     public void move(MoverType type, double desiredX, double desiredY, double desiredZ) {
+        Vec3d from = new Vec3d(posX, posY, posZ);
         // Minecraft default move
         if (this.noClip) {
             this.setEntityBoundingBox(super.getEntityBoundingBox().offset(desiredX, desiredY, desiredZ));
             this.resetPositionToBB();
+            handleCollisions(from, new Vec3d(posX, posY, posZ));
             return;
         }
         if (type == MoverType.PISTON) {
             super.move(MoverType.PISTON, desiredX, desiredY, desiredZ);
+            handleCollisions(from, new Vec3d(posX, posY, posZ));
             return;
         }
 
@@ -224,10 +233,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 //        d22:stepPath2Z
 //        d23:stepPath1SqDist
 //        d9:stepPath2SqDist
-
-//        // the center of green box is different with white box, apply the offset calculated with the green box to the white box will cause entity to keep moving
-//        // during calculation assumes the green is the original white box, and finally offset back
-//        Vec3d w2gOff = getWhiteBoxOffsetToGreen();
 
         double movedX = desiredX, movedY = desiredY, movedZ = desiredZ;
         List<AxisAlignedBB> initialCollisions = this.world.getCollisionBoxes(this, this.getEntityBoundingBox().expand(desiredX, desiredY, desiredZ));
@@ -388,21 +393,26 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
         // water related, some private variable occurred (handle submerge in other places)
 
-        // offest back in the end
-
         this.world.profiler.endSection();
+        handleCollisions(from, new Vec3d(posX, posY, posZ));
     }
 
+// the center of green box is different with white box, apply the offset calculated with the green box to the white box will cause entity to keep moving
+// Originally planned is, during calculation assumes the green is the original white box
+// but currently not implement this, encountered many things
 //    @Override
 //    public AxisAlignedBB getEntityBoundingBox() {
 //        return getColliderBox();
 //    }
 
-    public AxisAlignedBB getEntityBoundingBox(Vec3d off) {
-        return getColliderBox().offset(off);
+    @Override
+    public final AxisAlignedBB getCollisionBoundingBox() {
+        // can't override this, otherwise it will only use one single box for collision
+        // if not override this, player can step on the engine and roof
+        return super.getCollisionBoundingBox();
     }
 
-    protected AxisAlignedBB getColliderBox() { // return the minimum union green collider box
+    public AxisAlignedBB getColliderBox() { // return the minimum union green collider box
         AxisAlignedBB box = null;
         for (EntityVehiclePart part : this.getParts()) {
             if (part != null && part.getBoundingBoxMode() == EntityVehiclePart.BoundingBoxMode.COLLIDER) {
@@ -419,7 +429,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     @Nullable
-    protected List<AxisAlignedBB> getColliderBoxes() {
+    public List<AxisAlignedBB> getColliderBoxes() {
         List<AxisAlignedBB> boxes = new ArrayList<>(Collections.emptyList());
         for (EntityVehiclePart part : this.getParts()) {
             if (part != null && part.getBoundingBoxMode() == EntityVehiclePart.BoundingBoxMode.COLLIDER) {
@@ -429,7 +439,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return boxes;
     }
 
-    protected Vec3d getWhiteBoxOffsetToGreen() {
+    public Vec3d getGreenToWhiteOffset() { // green box center to white box center
         AxisAlignedBB whiteBox = super.getEntityBoundingBox();
         AxisAlignedBB greenBox = getColliderBox();
         Vec3d whiteCenter = new Vec3d((whiteBox.minX + whiteBox.maxX) / 2, (whiteBox.minY + whiteBox.maxY) / 2, (whiteBox.minZ + whiteBox.maxZ) / 2);
@@ -437,8 +447,83 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return greenCenter.subtract(whiteCenter);
     }
 
-
     public abstract float getStepHeight();
+
+    protected void handleCollisions(Vec3d from, Vec3d to) {
+        if (this.collisionCooldown > 0)
+            return;
+        List<Entity> entities = findEntityInPath(from, to);
+        if (entities != null) {
+            double speed = getSpeedPerTick();
+            for (Entity e : entities) {
+                handleEntityCollisions(e, speed);
+            }
+        }
+    }
+
+    protected List<Entity> findEntityInPath(Vec3d start, Vec3d end) {
+        List<Entity> entities = new ArrayList<>();
+        AxisAlignedBB collider = this.getColliderBox();
+        if (collider == null)
+            return entities;
+        double halfHeight = (collider.maxY - collider.minY) / 2;
+        double widthX = (collider.maxX - collider.minX) / 2 + 0.1D;
+        double widthY = halfHeight / 2 + 0.1D;
+        double widthZ = (collider.maxZ - collider.minZ) / 2 + 0.1D;
+        start.addVector(0, halfHeight, 0);
+        end.addVector(0, halfHeight, 0);
+
+        List<Entity> entityList = this.world.getEntitiesInAABBexcluding(this, this.getColliderBox().expand(motionX, motionY, motionZ).grow(0.1D), TARGET);
+        for (Entity e : entityList) {
+            if (e == this || isPassenger(e))
+                continue;
+            AxisAlignedBB entityAABB = e.getEntityBoundingBox().grow(widthX, widthY, widthZ);
+            RayTraceResult rayTraceResult = entityAABB.calculateIntercept(start, end);
+            if (rayTraceResult != null || this.isCollidedWith(e)) {
+                entities.add(e);
+            }
+        }
+        return entities;
+    }
+
+    public boolean isCollidedWith(Entity e) {
+        List<AxisAlignedBB> colliderBoxes = this.getColliderBoxes();
+        if (colliderBoxes == null)
+            return false;
+        AxisAlignedBB entityBB = e.getEntityBoundingBox().expand(0.1D, 0.1D, 0.1D);
+        boolean collided = false;
+        for (AxisAlignedBB colliderBox : colliderBoxes) {
+            if (entityBB.intersects(colliderBox)) {
+                collided = true;
+                break;
+            }
+        }
+        return collided;
+    }
+
+    protected void handleEntityCollisions(Entity e, double speed) {
+        e.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), calculateCollisionDamage(e));
+        if (e.isDead)
+            return;
+        e.motionX += this.motionX * speed * 3F;
+        e.motionY += this.motionY;
+        e.motionZ += this.motionZ * speed * 3F;
+    }
+
+    protected float calculateCollisionDamage(Entity e) {
+        float kmh = (float) (getSpeedPerTick() * 20F);
+        return kmh * 4; // 5km/h -> 20 health
+    }
+
+    @Override
+    public void onCollideWithPlayer(EntityPlayer entityIn) {
+        super.onCollideWithPlayer(entityIn);
+    }
+
+    @Override
+    public void applyEntityCollision(Entity entityIn) {
+        super.applyEntityCollision(entityIn);
+    }
 
     public boolean boardVehicle(SeatPart seat, EntityLivingBase entity, EnumHand hand) {
         if (this.canEntityBoardVehicle(seat, entity)) {
@@ -743,33 +828,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         Vec3d lookVec = this.getLookVec();
         double horizontalDotProduct  = this.motionX * lookVec.x + this.motionZ * lookVec.z;
         return horizontalDotProduct > 0.001;
-    }
-
-    protected void resetCollide() {
-        this.collided = false;
-        this.collidedHorizontally = false;
-        this.collidedVertically = false;
-    }
-
-    protected void collidedXZ() {
-        this.collided = true;
-        this.collidedHorizontally = true;
-    }
-
-    protected void collidedX() {
-        this.motionX = 0;
-        this.collidedXZ();
-    }
-
-    protected void collidedY() {
-        this.motionY = 0;
-        this.collided = true;
-        this.collidedVertically = true;
-    }
-
-    protected void collidedZ() {
-        this.motionZ = 0;
-        this.collidedXZ();
     }
 
     @Override

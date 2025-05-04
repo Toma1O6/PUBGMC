@@ -71,21 +71,6 @@
 //        fuel = 50 + world.rand.nextInt(5) * 10;
 //    }
 //
-//    public EntityVehicle(World world, int x, int y, int z) {
-//        this(world);
-//        setPosition(x, y, z);
-//    }
-//
-//    public abstract int getMaximumCapacity();
-//
-//    public abstract Vec3d getEnginePosition();
-//
-//    public abstract Vec3d getExhaustPosition();
-//
-//    public abstract SoundEvent vehicleSound();
-//
-//    public abstract CFGVehicle getVehicleConfiguration();
-//
 //    @Override
 //    public ITextComponent getComponent() {
 //        String key = EntityList.getEntityString(this);
@@ -93,26 +78,6 @@
 //            key = "generic";
 //        }
 //        return new TextComponentTranslation("entity." + key + ".name");
-//    }
-//
-//    public float getDamageLevel(int level) {
-//        switch (level) {
-//            case 1:
-//                return damageLevel1;
-//            case 2:
-//                return damageLevel2;
-//            case 3:
-//                return damageLevel3;
-//        }
-//        return -1;
-//    }
-//
-//    public float getHealthPercentage() {
-//        return this.health / this.getVehicleConfiguration().maxHealth.getAsFloat();
-//    }
-//
-//    public float getFuelPercentage() {
-//        return this.fuel / maxFuel;
 //    }
 //
 //    @Override
@@ -152,37 +117,6 @@
 //        }
 //    }
 //
-//    public boolean hasBombMotion() {
-//        return Math.abs(bombMotion.x) > 0.01F || Math.abs(bombMotion.z) > 0.01F;
-//    }
-//
-//    private void dropBombMotion() {
-//        double x = Math.abs(bombMotion.x) > 0.01F ? bombMotion.x * 0.98F : 0F;
-//        double z = Math.abs(bombMotion.z) > 0.01F ? bombMotion.z * 0.98F : 0F;
-//        double y = bombMotion.y;
-//        if (onGround) {
-//            if (y < 0) {
-//                y = 0;
-//            }
-//            x *= 0.98F;
-//            z *= 0.98F;
-//        } else {
-//            if (y > 0) {
-//                y *= 0.97F;
-//            }
-//            y -= 0.02F;
-//        }
-//        if (collided) {
-//            x *= 0.98F;
-//            z *= 0.98F;
-//        }
-//        bombMotion = new Vec3d(x, y, z);
-//        if (!hasBombMotion()) {
-//            this.bomb = false;
-//            this.bombMotion = Vec3d.ZERO;
-//        }
-//    }
-//
 //    @Override
 //    public void updatePost() {
 //        move(MoverType.SELF, motionX, motionY, motionZ);
@@ -190,54 +124,6 @@
 //        spawnNormalParticles();
 //        if (ticksExisted % 20 == 0) {
 //            GameHelper.validateGameEntityStillValid(this);
-//        }
-//    }
-//
-//    private void handleExplodeTick() {
-//        // Remove exploded vehicle
-//        if (this.exploded && --this.timeAfterExplode < 0) {
-//            this.setDead();
-//            return;
-//        }
-//
-//        if (this.health <= 0) {
-//            this.removePassengers(); // force remove from vehicle
-//            // sound
-//            if (timeBeforeExplode % 10 == 0) {
-//                playSound(SoundEvents.ENTITY_BLAZE_BURN, 2f, 1f);
-//            }
-//            // particles
-//            if (world.isRemote) { // client only
-//                double rngX = (rand.nextDouble() - 0.5F);
-//                double rngZ = (rand.nextDouble() - 0.5F);
-//                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + rngX * 0.5, posY, posZ + rngZ * 0.5,
-//                        rngX * 0.2, 0.5d, rngZ * 0.2);
-//            }
-//            // explode
-//            if (--this.timeBeforeExplode < 0 && !this.exploded) {
-//                if (!world.isRemote) { // server only
-//                    this.world.createExplosion(this, posX, posY, posZ, 5f, false);
-//                }
-//                this.exploded = true;
-//            }
-//        }
-//    }
-//
-//    protected void handleEmptyInputs() {
-//        if (!hasMovementInput() || !hasFuel()) {
-//            if (Math.abs(currentSpeed) >= 0.01F) {
-//                brake();
-//            } else {
-//                currentSpeed = 0f;
-//            }
-//        }
-//        if (!hasTurnInput()) {
-//            if (Math.abs(turnModifier) <= 0.5f)
-//                turnModifier = 0f;
-//
-//            if (turnModifier != 0) {
-//                turnModifier = turnModifier > 0 ? turnModifier - 0.5f : turnModifier + 0.5f;
-//            }
 //        }
 //    }
 //
@@ -297,87 +183,6 @@
 //        return getPassengers().size() * 50 + vehicleWeight;
 //    }
 //
-//    @Override
-//    public void handleForward() {
-//        if (!isBroken) {
-//            if (!hasFuel()) {
-//                brake();
-//                return;
-//            }
-//            CFGVehicle cfg = getVehicleConfiguration();
-//            float a = cfg.acceleration.getAsFloat();
-//            float max = cfg.maxSpeed.getAsFloat();
-//            if (shouldStabilize(currentSpeed, a, true)) {
-//                currentSpeed = 0;
-//            } else {
-//                if (currentSpeed >= 0) {
-//                    currentSpeed += a;
-//                    burnFuel(0.01F);
-//                } else {
-//                    currentSpeed += a * 0.8F;
-//                    burnFuel(0.008F);
-//                }
-//                currentSpeed = Math.min(max, currentSpeed);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void handleBackward() {
-//        if (!isBroken) {
-//            if (!hasFuel()) {
-//                brake();
-//                return;
-//            }
-//            CFGVehicle cfg = getVehicleConfiguration();
-//            float a = cfg.acceleration.getAsFloat();
-//            float max = cfg.maxSpeed.getAsFloat();
-//            if (shouldStabilize(currentSpeed, a, false)) {
-//                currentSpeed = 0;
-//            } else {
-//                if (currentSpeed <= 0) {
-//                    currentSpeed -= a;
-//                    burnFuel(0.01F);
-//                } else {
-//                    currentSpeed -= a * 0.8F;
-//                    burnFuel(0.008F);
-//                }
-//                currentSpeed = Math.max(-max * 0.3F, currentSpeed);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void handleRight() {
-//        if (!isBroken && onGround) {
-//            CFGVehicle cfg = getVehicleConfiguration();
-//            float max = cfg.maxTurningAngle.getAsFloat();
-//            float partial = cfg.turningSpeed.getAsFloat();
-//            turnModifier = turnModifier < max ? turnModifier + partial : max;
-//        }
-//    }
-//
-//    @Override
-//    public void handleLeft() {
-//        if (!isBroken && onGround) {
-//            CFGVehicle cfg = getVehicleConfiguration();
-//            float max = cfg.maxTurningAngle.getAsFloat();
-//            float partial = cfg.turningSpeed.getAsFloat();
-//            turnModifier = turnModifier > -max ? turnModifier - partial : -max;
-//        }
-//    }
-//
-//    public void brake() {
-//        CFGVehicle cfg = getVehicleConfiguration();
-//        float a = cfg.acceleration.getAsFloat();
-//        if (Math.abs(currentSpeed) <= a * brakeMultiplier) {
-//            currentSpeed = 0f;
-//        } else {
-//            currentSpeed += a * (currentSpeed > 0 ? -1 : 1) * brakeMultiplier;
-//        }
-//
-//    }
-//
 //    private boolean shouldStabilize(float speed, float a, boolean isForward) {
 //        return isForward
 //                ? (speed <= 0 && speed > -a && stableTime > 0)
@@ -424,54 +229,6 @@
 //        return true;
 //    }
 //
-//    // Should be running only on server side in case some client doesn't receive packet
-//    // containing new health value of this vehicle
-//    protected void checkState() {
-//        // if whole vehicle is under water -> can drive in shallow water
-//        if (this.isInWater() && world.getBlockState(getPosition().up()).getMaterial().isLiquid()) {
-//            timeInInvalidState++;
-//            motionX *= 0.1d;
-//            motionZ *= 0.1d;
-//            motionY = -0.15d;
-//        }
-//
-//        if (timeInInvalidState > 30) {
-//            isBroken = true;
-//        }
-//
-//        if (isInLava()) timeBeforeExplode = 0; // force to explode
-//    }
-//
-//    protected void spawnNormalParticles() {
-//        // client only
-//        if (!world.isRemote) {
-//            return;
-//        }
-//        float max = getVehicleConfiguration().maxHealth.getAsFloat();
-//        if (health / max <= getDamageLevel(1)) { // engine smoke
-//            Vec3d engineVec = (new Vec3d(getEnginePosition().x, getEnginePosition().y + 0.25d, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
-//            world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, posX + engineVec.x, posY + engineVec.y, posZ + engineVec.z,
-//                    0d, 0.1d, 0d);
-//
-//            if (health / max <= getDamageLevel(2)) { // engine flame
-//                double rngX = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-//                double rngZ = (rand.nextDouble() - rand.nextDouble()) * 0.1;
-//                world.spawnParticle(EnumParticleTypes.FLAME, true, posX + engineVec.x, posY + engineVec.y - 0.2, posZ + engineVec.z,
-//                        rngX, 0.02d, rngZ);
-//            }
-//        }
-//
-//        if (!isBroken && hasFuel()) {
-//            Vec3d exhaustVec = (new Vec3d(getExhaustPosition().x, getExhaustPosition().y + 0.25d, getExhaustPosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
-//            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, posX + exhaustVec.x, posY + exhaustVec.y, posZ + exhaustVec.z, 0, 0.02d, 0);
-//        }
-//
-//        if (isBroken) {
-//            Vec3d engine = (new Vec3d(getEnginePosition().x, getEnginePosition().y, getEnginePosition().z)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2f));
-//            world.spawnParticle(EnumParticleTypes.CLOUD, true, posX + engine.x, posY + engine.y, posZ + engine.z, 0d, 0.05d, 0d);
-//        }
-//    }
-//
 //    @Override
 //    public boolean attackEntityFrom(DamageSource source, float amount) {
 //        if (source == DamageSource.FALL)
@@ -509,32 +266,6 @@
 //        }
 //    }
 //
-//    @Override
-//    public boolean canFitPassenger(Entity passenger) {
-//        return this.getPassengers().size() < getMaximumCapacity() && this.health > 0;
-//    }
-//
-//    @Override
-//    protected void playStepSound(BlockPos pos, Block blockIn) {
-//    }
-//
-//    @Override
-//    public boolean isInRangeToRenderDist(double distance) {
-//        return true;
-//    }
-//
-//    private boolean isVehicleMoving() {
-//        return currentSpeed != 0;
-//    }
-//
-//    private boolean isVehicleMovingForward() {
-//        return currentSpeed > 0;
-//    }
-//
-//    private boolean isVehicleMovingBackward() {
-//        return currentSpeed < 0;
-//    }
-//
 //    private void playSoundAtVehicle() {
 //        if (this.health <= 0) {
 //            return;
@@ -547,48 +278,8 @@
 //    }
 //
 //    @Override
-//    protected void entityInit() {
-//    }
-//
-//    @Override
-//    protected void readEntityFromNBT(NBTTagCompound compound) {
-//        health = compound.getFloat("health");
-//        fuel = compound.getFloat("fuel");
-//        currentSpeed = compound.getFloat("speed");
-//        isBroken = compound.getBoolean("isBroken");
-//    }
-//
-//    @Override
-//    protected void writeEntityToNBT(NBTTagCompound compound) {
-//        compound.setFloat("health", this.health);
-//        compound.setFloat("fuel", this.fuel);
-//        compound.setFloat("speed", (float)getSpeedPerTick());
-//        compound.setBoolean("isBroken", this.isBroken);
-//    }
-//
-//    @Override
-//    public NBTTagCompound encodeNetworkData() {
-//        NBTTagCompound nbt = new NBTTagCompound();
-//        writeEntityToNBT(nbt);
-//        return nbt;
-//    }
-//
-//    @Override
-//    public void decodeNetworkData(NBTTagCompound nbt) {
-//        readEntityFromNBT(nbt);
-//    }
-//
-//    @Override
 //    public boolean canBeCollidedWith() {
 //        return true;
-//    }
-//
-//    protected float getPassengerXOffset(int passengerIndex) {
-//        return passengerIndex % 2 == 0 ? 0.5f : -0.8f;
-//    }
-//
-//    protected float getPassengerZOffset(int passengerIndex) {
-//        return passengerIndex < 2 ? -0.55f : 0.55f;
 //    }
 //
 //    protected void applyYawToEntity(Entity entityToUpdate) {
@@ -600,72 +291,4 @@
 //        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
 //    }
 //
-//    public boolean hasFuel() {
-//        return fuel > 0;
-//    }
-//
-//    public void refill(EntityPlayer source, float percentage) {
-//        if (this.getPassengers().contains(source)) {
-//            fillFuel(ItemFuelCan.fuelPercentage * percentage);
-//        } else {
-//            Pubgmc.logger.warn("{} has attempted to refuel vehicle with ID {}, but he wasn't inside the vehicle!", source, this.getEntityId());
-//        }
-//    }
-//
-//    public void burnFuel() {
-//        fuel = hasFuel() ? fuel - 0.01f : 0f;
-//    }
-//
-//    public void burnFuel(float amount) {
-//        fuel = Math.max(0, fuel - amount);
-//    }
-//
-//    public void fillFuel(float amount) {
-//        fuel = Math.min(maxFuel, fuel + amount);
-//    }
-//
-//    @Override
-//    public void writeSpawnData(ByteBuf buf) {
-//        buf.writeFloat(health);
-//        buf.writeFloat(fuel);
-//    }
-//
-//    @Override
-//    public void readSpawnData(ByteBuf buf) {
-//        health = buf.readFloat();
-//        fuel = buf.readFloat();
-//    }
-//
-//    @Override
-//    public UUID getCurrentGameId() {
-//        return gameId;
-//    }
-//
-//    @Override
-//    public void assignGameId(UUID gameId) {
-//        this.gameId = gameId;
-//    }
-//
-//    @Override
-//    public void onNewGameDetected(UUID newGameId) {
-//        setDead();
-//    }
-//
-//    @Override
-//    public void onBomb(Entity exploder, Vec3d bombVec, @Nullable IBlockState state, @Nullable Entity entity) {
-//        if (world.isRemote) {
-//            return;
-//        }
-//        double strength = ConfigPMC.common.world.bombs.bombStrength.getAsFloat();
-//        this.bombMotion = new Vec3d(this.bombMotion.x + bombVec.x, this.bombMotion.y + bombVec.y, this.bombMotion.z + bombVec.z).scale(strength);
-//        // this.bombMotion.add(bombVec.scale(bombStrength)); // this should work but actually not
-//        if (hasBombMotion()) {
-//            this.bomb = true;
-//        }
-//    }
-//
-//    @Override
-//    public boolean allowBombInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
-//        return getSpeedPerTick() < 1;
-//    }
 //}

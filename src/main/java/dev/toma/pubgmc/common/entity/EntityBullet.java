@@ -50,7 +50,10 @@ public class EntityBullet extends Entity {
             CustomProjectileBoundingBoxProvider ?
             ((CustomProjectileBoundingBoxProvider) entity).getBoundingBoxForProjectiles()
             : entity.getEntityBoundingBox();
-    private static final Predicate<Entity> TARGET_FILTER = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
+    private static final Predicate<Entity> TARGET_FILTER = Predicates.and(
+            EntitySelectors.NOT_SPECTATING,
+            EntitySelectors.IS_ALIVE,
+            Entity::canBeCollidedWith);
     private EntityLivingBase shooter;
     private int gravitystart;
     private double velocity;
