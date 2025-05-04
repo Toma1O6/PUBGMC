@@ -4,10 +4,8 @@ import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.Nullable;
 
 public final class SeatPart extends EntityVehiclePart {
 
@@ -22,7 +20,8 @@ public final class SeatPart extends EntityVehiclePart {
         super(vehicle, seatName, 1.0F, 1.5F, position);
         this.dismountOffset = dismountOffset;
         this.driver = driver;
-        this.setBlockCollisionMode(BoundingBoxMode.NONE);
+        this.setBlockCollisionMode(BoundingBoxMode.COLLIDER); // doesn't take bullet damage, but prevent hiding below roof
+        this.disableBulletHit();
     }
 
     public Vec3d getDismountPosition() {
@@ -40,11 +39,5 @@ public final class SeatPart extends EntityVehiclePart {
         // TODO cancel aiming when interact
         EntityDriveable driveable = this.access.getParentEntity();
         return driveable.boardVehicle(this, player, hand);
-    }
-
-    @Nullable
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
-        return null;
     }
 }

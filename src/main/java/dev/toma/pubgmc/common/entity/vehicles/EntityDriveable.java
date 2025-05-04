@@ -46,7 +46,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart {
+public abstract class EntityDriveable extends Entity implements IControllable, IEntityAdditionalSpawnData, GameObject, SynchronizableEntity, CustomEntityNametag, IEntityMultiPart, CustomProjectileBoundingBoxProvider {
 
     // Keybinds
     public static final int KEY_FORWARD = 0b1;
@@ -872,5 +872,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     @Override
     public void handle(byte inputs) {
         this.controllerInput = inputs;
+    }
+
+    @Nullable
+    public AxisAlignedBB getBoundingBoxForProjectiles() {
+        // this is needed, otherwise the white collision box will take damage
+        return null;
     }
 }

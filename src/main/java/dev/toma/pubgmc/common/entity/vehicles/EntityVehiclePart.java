@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.entity.CustomProjectileBoundingBoxProvider;
 import dev.toma.pubgmc.api.entity.ParentEntityAccess;
 import net.minecraft.entity.MultiPartEntityPart;
@@ -16,6 +17,7 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     private final Vec3d relativePosition;
     private float damageMultiplier = 1.0F;
     private BoundingBoxMode boundingBoxMode = BoundingBoxMode.COLLIDER;
+    protected boolean canBulletHit = true;
 
     public EntityVehiclePart(EntityDriveable parent, String name, float width, float height, Vec3d relativePosition) {
         super(parent, name, width, height);
@@ -39,16 +41,21 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
         this.setPosition(worldPosition.x, worldPosition.y, worldPosition.z);
     }
 
-    @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getEntityBoundingBox();
+        if (getBoundingBoxMode() == BoundingBoxMode.COLLIDER)
+            return this.getEntityBoundingBox();
+        Pubgmc.logger.warn("use getCollisionBoundingBox() at a none COLLIDER: {}", toString());
+        return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
     @Nullable
     @Override
     public AxisAlignedBB getBoundingBoxForProjectiles() {
-        return this.getCollisionBoundingBox();
+        if (canBulletHit && getBoundingBoxMode() == BoundingBoxMode.COLLIDER)
+            return this.getCollisionBoundingBox();
+        Pubgmc.logger.warn("use getBoundingBoxForProjectiles() at a none COLLIDER: {}", toString());
+        return null;
     }
 
     public void setDamageMultiplier(float damageMultiplier) {
@@ -61,6 +68,10 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
 
     protected float getDamageMultiplier(DamageSource source) {
         return getDamageMultiplier();
+    }
+
+    protected void disableBulletHit() {
+        this.canBulletHit = false;
     }
 
     public void setBlockCollisionMode(BoundingBoxMode boundingBoxMode) {
