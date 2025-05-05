@@ -1,9 +1,15 @@
 package dev.toma.pubgmc.common.entity.vehicles.util;
 
 import dev.toma.pubgmc.common.entity.vehicles.EntityLandVehicle;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+
+import javax.annotation.Nullable;
 
 import static dev.toma.pubgmc.DevUtil.randomRange;
 
@@ -52,5 +58,10 @@ public final class WheelPart extends EntityVehicleDamageablePart {
         float halfWidth = this.width / 2.0F;
         Vec3d pos = this.getWorldPosition().addVector(halfWidth, this.height / 2.0F, halfWidth);
         server.spawnParticle(EnumParticleTypes.CLOUD, true, pos.x, pos.y, pos.z, 25, randomRange(this.rand, 0.25), randomRange(this.rand, 0.05), randomRange(this.rand, 0.25), 0.05F);
+    }
+
+    @Override
+    public boolean allowBulletInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
+        return false;
     }
 }

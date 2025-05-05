@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.block.IBulletReaction;
 import dev.toma.pubgmc.api.entity.IBombReaction;
+import dev.toma.pubgmc.common.entity.EntityBullet;
 import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGVehicle;
@@ -9,15 +11,20 @@ import dev.toma.pubgmc.util.math.Mth;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 
@@ -191,29 +198,26 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     protected void handleDestroyedTick() {
-        if (!this.isDestroyed()) {
+        if (!this.isDestroyed() || this.hasExploded()) {
             return;
         }
         this.killEngine();
-        this.timeBeforeExplode--;
+        if (this.timeBeforeExplode-- % 10 == 0) {
+            playSound(SoundEvents.ENTITY_BLAZE_BURN, 2F, 1F);
+        }
         if (this.shouldExplode()) {
             this.explode();
         }
     }
 
     private boolean shouldExplode() {
-        if (this.isExploded()) { // only allow vehicle itself to explode once
+        if (!this.isDestroyed() || this.hasExploded()) { // only allow vehicle itself to explode once
             return false;
         }
-
-        if (!this.isDestroyed()) {
-            return false;
-        } else {
-            return this.timeBeforeExplode < 0;
-        }
+        return this.timeBeforeExplode < 0;
     }
 
-    public final boolean isExploded() {
+    public final boolean hasExploded() {
         return this.dataManager.get(EXPLODED);
     }
 
@@ -234,7 +238,22 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
             return;
         }
         if (collidedHorizontally) {
-            this.velocity *= 0.6F;
+            this.velocity = Mth.exponentialDecay(this.velocity, 0.6F);
+            if (!world.isRemote && ConfigPMC.common.world.classicss.vulnerableVehicle.get()) {
+                double lastSpeed = getLastSpeedPerTick();
+                this.removeHealth((float) lastSpeed * 20F * 3.6F / 2F);
+                double random = this.rand.nextDouble();
+                double pass = 1 - Math.pow(2, -1.245 + lastSpeed) / 4F; // 1.245m/tick -> 89km/h, 25% to trigger
+                if (random > pass) {
+                    playSound(SoundEvents.BLOCK_ANVIL_LAND, 2.0F, 1.0F);
+                    this.setHealth(0);
+                    this.timeBeforeExplode = -1;
+                    this.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, posX, posY, posZ, 0, 0.5, 0);
+                    this.explode();
+                    Pubgmc.logger.log(Level.INFO, "Triggered vulnerable vehicle at [{},{},{}], random: {}, pass: {}", posX, posY, posZ, random, pass);
+                    return;
+                }
+            }
         }
         float yawRad = (float) Math.toRadians(this.rotationYaw);
         Vec3d direction = new Vec3d(-MathHelper.sin(yawRad), 0.0, MathHelper.cos(yawRad)).normalize();
@@ -282,7 +301,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
 
     @Override
     public boolean canEntityBoardVehicle(SeatPart seat, EntityLivingBase entity) {
-        return super.canEntityBoardVehicle(seat, entity) && !this.isExploded() && this.getHealth() > 0;
+        return super.canEntityBoardVehicle(seat, entity) && !this.hasExploded() && this.getHealth() > 0;
     }
 
     public final void setFuel(float fuel) {
@@ -357,7 +376,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         super.writeEntityToNBT(compound);
         compound.setFloat("fuel", this.getFuel());
         compound.setInteger("timeBeforeExplode", this.timeBeforeExplode);
-        compound.setBoolean("exploded", this.isExploded());
+        compound.setBoolean("exploded", this.hasExploded());
         compound.setBoolean("started", this.isStarted());
         compound.setBoolean("starting", this.isStarting());
     }
@@ -375,7 +394,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     @Override
     protected boolean handleEntityAttack(DamageSource source, float amount) {
         // Remove by creative player
-        if (this.isExploded() && !this.world.isRemote && source.isCreativePlayer()) {
+        if (this.hasExploded() && !this.world.isRemote && source.isCreativePlayer()) {
             this.setDead();
             return true;
         }
@@ -383,7 +402,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     public final boolean isFunctional() {
-        return !this.isDestroyed() && !this.isExploded();
+        return !this.isDestroyed() && !this.hasExploded();
     }
 
     protected int getTicksBeforeExplode() {
@@ -393,13 +412,13 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     protected void explode() {
         if (this.world.isRemote)
             return;
-        boolean doMobGriefing = ForgeEventFactory.getMobGriefingEvent(this.world, this);
-        this.multiplyMotion(1.2F);
-        this.motionY += 0.8F;
+        boolean canBreakBlocks = ConfigPMC.world().vehicleGriefing.get();
+        this.multiplyMotion(1.1F);
+        this.motionY += 0.1F;
         for (EntityVehiclePart part : this.getParts()) {
             part.hurt(DamageSource.GENERIC, Integer.MAX_VALUE);
         }
-        this.world.createExplosion(this, this.posX, this.posY, this.posZ, this.getExplosionPower(), doMobGriefing);
+        this.world.createExplosion(getControllingPassenger(), this.posX, this.posY, this.posZ, this.getExplosionPower(), canBreakBlocks);
         this.removePassengers(); // should remove passenger after explode
         this.setExploded(true);
     }

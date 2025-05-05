@@ -1,5 +1,7 @@
 package dev.toma.pubgmc.common.entity.vehicles.util;
 
+import dev.toma.pubgmc.api.capability.IPlayerData;
+import dev.toma.pubgmc.api.capability.PlayerDataProvider;
 import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,7 +45,8 @@ public final class SeatPart extends EntityVehiclePart {
 
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
-        // TODO cancel aiming when interact
+        IPlayerData data = player.getCapability(PlayerDataProvider.PLAYER_DATA, null);
+        data.getAimInfo().setAiming(false, 1.0F);
         EntityDriveable driveable = this.access.getParentEntity();
         return driveable.boardVehicle(this, player, hand);
     }

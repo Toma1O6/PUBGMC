@@ -65,35 +65,36 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
             // health
             ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 5 + barHeight, r, g, b, 1.0f);
             // TODO seats
-//            // speed
-//            int halfBarWidth = barWidth / 2;
-//            double speedPercentage = MathHelper.clamp(driveable.getMotionSqr() / driveable.getMaxSpeed(), 0, 1.0F); // ignore motionY
-//            if (driveable.isMovingForward()) {
-//                ImageUtil.drawShape(vInfoX, vInfoY - barHeight,
-//                        (float) (vInfoX + halfBarWidth * speedPercentage), vInfoY - barHeight - 2,
-//                        0, 1.0F, 1.0F, 0.5F); // 0x00FFFF
-//            } else {
-//                ImageUtil.drawShape(vInfoX, vInfoY - barHeight,
-//                        (float) (vInfoX + halfBarWidth * speedPercentage), vInfoY - barHeight - 2,
-//                        0, 0, 1.0F, 0.5F); // 0x0000FF
-//            }
-//            // engine power
-//            EntityVehicle vehicle = (EntityVehicle) driveable;
-//            if (vehicle.isStarted()) {
-//                float enginePower = vehicle.getEnginePower();
-//                ImageUtil.drawShape(vInfoX + halfBarWidth, vInfoY - barHeight,
-//                        vInfoX + halfBarWidth + halfBarWidth * enginePower, vInfoY - barHeight - 2,
-//                        1.0F, 1.0F, 0F, 0.5F); // 0xFFFF00
-//            }
+            // speed
+            int halfBarWidth = barWidth / 2;
+            double speedPercentage = MathHelper.clamp(driveable.getMotionSqr() / driveable.getMaxSpeed(), 0, 1.0F); // ignore motionY
+            if (driveable.isMovingForward()) {
+                ImageUtil.drawShape(vInfoX, vInfoY - barHeight - 2,
+                        (float) (vInfoX + halfBarWidth * speedPercentage), vInfoY - barHeight,
+                        0, 1.0F, 1.0F, 0.5F); // 0x00FFFF
+            } else {
+                ImageUtil.drawShape(vInfoX, vInfoY - barHeight,
+                        (float) (vInfoX + halfBarWidth * speedPercentage), vInfoY - barHeight,
+                        0, 0, 1.0F, 0.5F); // 0x0000FF
+            }
+            // engine power
+            assert driveable instanceof EntityVehicle;
+            EntityVehicle vehicle = (EntityVehicle) driveable;
+            if (vehicle.isStarted()) {
+                float enginePower = vehicle.getEnginePower();
+                ImageUtil.drawShape(vInfoX + halfBarWidth, vInfoY - barHeight - 2,
+                        vInfoX + halfBarWidth + halfBarWidth * enginePower, vInfoY - barHeight,
+                        1.0F, 1.0F, 0F, 0.5F); // 0xFFFF00
+            }
         }
     }
 
     private void renderDebugInfo(D dr, Minecraft client, ScaledResolution window) {
         FontRenderer font = client.fontRenderer;
         int y = -5;
-        VehicleUAZ driveable;
-        if (dr instanceof VehicleUAZ) {
-            driveable = (VehicleUAZ) dr;
+        EntityLandVehicle driveable;
+        if (dr != null) {
+            driveable = (EntityLandVehicle) dr;
         } else {
             return;
         }
@@ -127,5 +128,6 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
         font.drawString("isSubmergedInWater: " + (driveable.isSubmergedInWater() ? "true" : "false"), 5, y += 10, driveable.isSubmergedInWater() ? 0x00FF00 : 0xFF0000);
         font.drawString("stepHeight: " + driveable.getStepHeight(), 5, y += 10, 0xFFFFFF);
         font.drawString("hasCollisionCooldown: " + (driveable.hasCollisionCooldown() ? "true" : "false"), 5, y += 10, driveable.hasCollisionCooldown() ? 0xFF0000 : 0x00FF00);
+        font.drawString("hasExploded: " + (driveable.hasExploded() ? "true" : "false"), 5, y += 10, driveable.hasExploded() ? 0x00FF00 : 0xFF0000);
     }
 }

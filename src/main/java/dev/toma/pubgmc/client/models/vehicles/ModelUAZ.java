@@ -316,7 +316,7 @@ public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
     public void render(VehicleUAZ vehicle) {
         float renderScale = 0.0625F;
         bone.render(renderScale);
-        if (vehicle.isExploded())
+        if (vehicle.hasExploded())
             return;
         decorations.render(renderScale);
         mirror.render(renderScale);
