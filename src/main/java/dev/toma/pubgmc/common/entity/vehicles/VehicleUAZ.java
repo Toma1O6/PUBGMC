@@ -14,8 +14,8 @@ import java.util.function.Consumer;
 public class VehicleUAZ extends EntityLandVehicle {
 
     private static final float FUEL_TANK_CAPACITY = 120F;
-    private static final Vec3d ENGINE_POSITION = new Vec3d(0.0, 1.5, 2.0);
-    private static final Vec3d EXHAUST_POSITION = new Vec3d(-0.6, 0.3, -1.9);
+    private static final Vec3d ENGINE_POSITION = new Vec3d(0.0, 1.4F, 1.4F);
+    private static final Vec3d EXHAUST_POSITION = new Vec3d(0.7F, 0.3F, -2.4F);
     private static final int TOTAL_TURN_WHEEL = 2;
     private static final int TOTAL_ACCELERATION_WHEEL = 2;
     private static final int TOTAL_WHEELS = 4;
