@@ -15,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class ItemParachute extends PMCItem {
     public static int itemCoolDown = 4;
+    public static int fallDistanceToOpen = 3;
     public static float soundVolume = 3.0F;
 
     public ItemParachute(String name) {
@@ -28,8 +29,8 @@ public class ItemParachute extends PMCItem {
         if (!playerIn.isRiding()) {
             if (!worldIn.isRemote) {
                 float currentFallDistance = playerIn.fallDistance;
-                if (currentFallDistance <= 3.0F) {
-                    playerIn.sendStatusMessage(new TextComponentTranslation("message.pubgmc.parachute.cannot_open_yet"), true);
+                if (currentFallDistance <= fallDistanceToOpen) {
+                    playerIn.sendStatusMessage(new TextComponentTranslation("message.pubgmc.parachute.cannot_open_yet", fallDistanceToOpen), true);
                     playerIn.getCooldownTracker().setCooldown(this, itemCoolDown);
                     return ActionResult.newResult(EnumActionResult.FAIL, stack);
                 }

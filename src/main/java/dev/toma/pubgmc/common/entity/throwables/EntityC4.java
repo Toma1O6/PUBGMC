@@ -1,7 +1,9 @@
 package dev.toma.pubgmc.common.entity.throwables;
 
+import com.google.common.base.Predicates;
 import dev.toma.pubgmc.DevUtil;
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketMakeParticles;
@@ -12,10 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -25,13 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static dev.toma.pubgmc.common.entity.EntityBullet.BOUNDING_BOX_PROVIDER;
+
 public class EntityC4 extends EntityThrowableExplodeable {
     @Nullable
     private BlockPos stickedBlockPos;
     @Nullable
     private UUID stickedEntityUUID;
     private Vec3d stickOffset = Vec3d.ZERO;
-    private static final int initFuse = 320; // 16 seconds
+    public static final int initFuse = 320; // 16 seconds
     private static final List<Integer> SOUND_TICKS = calculateSoundTicks(33);
     private int soundIndex = 0;
     private static final List<BlockPos> sphereOffsets;
@@ -43,10 +44,11 @@ public class EntityC4 extends EntityThrowableExplodeable {
     private static final double DAMAGE_AT_KEY_RADIUS = 20.0; // a control point, not equals to real damage
     private static final EnumFacing FRONT = EnumFacing.DOWN;
     private static final float size = 0.2F; // large size will reduce the probability to stick
+    private static final float explodeInteractRadius = 5F;
 
     static {
         sphereOffsets = calculateSphereOffsets(BOMB_RADIUS);
-        blockBreakStrengths = calculateDamageValues(DAMAGE_RADIUS, MAX_DAMAGE, DAMAGE_AT_KEY_RADIUS, sphereOffsets);
+        blockBreakStrengths = calculateDamageValues(DAMAGE_RADIUS, KEY_RADIUS, MAX_DAMAGE, DAMAGE_AT_KEY_RADIUS, sphereOffsets);
     }
 
     private static List<BlockPos> calculateSphereOffsets(int radius) {
@@ -63,18 +65,18 @@ public class EntityC4 extends EntityThrowableExplodeable {
         return offsets;
     }
 
-    private static double[] calculateDamageValues(double damageRadius, double maxDamage, double damageAtKeyRadius, List<BlockPos> offsets) {
+    private static double[] calculateDamageValues(double damageRadius, double damageKeyRadius,double maxDamage, double damageAtKeyRadius, List<BlockPos> offsets) {
         double[] damages = new double[offsets.size()];
         for (int i = 0; i < offsets.size(); i++) {
             double distance = MathHelper.sqrt(offsets.get(i).getX() * offsets.get(i).getX() +
                     offsets.get(i).getY() * offsets.get(i).getY() +
                     offsets.get(i).getZ() * offsets.get(i).getZ());
-            damages[i] = calculateBombDamage(distance, damageRadius, maxDamage, damageAtKeyRadius);
+            damages[i] = calculateBombDamage(distance, damageRadius, damageKeyRadius, maxDamage, damageAtKeyRadius);
         }
         return damages;
     }
 
-    private static double calculateBombDamage(double distance, double damageRadius, double maxDamage, double damageAtKeyRadius) {
+    private static double calculateBombDamage(double distance, double damageRadius, double damageKeyRadius,double maxDamage, double damageAtKeyRadius) {
         if (distance > damageRadius) {
             return 0;
         }
@@ -85,11 +87,11 @@ public class EntityC4 extends EntityThrowableExplodeable {
         double x1 = -4;
         double x2 = 4;
         // y = 2^x
-        if (distance > KEY_RADIUS) { // x -> [-4, 0), y -> [0.0625, 1)
-            double x = ((distance - KEY_RADIUS) / (damageRadius - KEY_RADIUS)) * (x1);
+        if (distance > damageKeyRadius) { // x -> [-4, 0), y -> [0.0625, 1)
+            double x = ((distance - damageKeyRadius) / (damageRadius - damageKeyRadius)) * (x1);
             return damageAtKeyRadius * Math.pow(2, x); // no need to smooth to 0 damage
         } else { // x -> [0, 4], y -> [1, 16]
-            double x = (1 - (distance - maxDamageRadius) / (KEY_RADIUS - maxDamageRadius)) * x2;
+            double x = (1 - (distance - maxDamageRadius) / (damageKeyRadius - maxDamageRadius)) * x2;
             return damageAtKeyRadius + (maxDamage - damageAtKeyRadius) * ((Math.pow(2, x) - 1) / (Math.pow(2,x2) - 1));
         }
     }
@@ -128,14 +130,43 @@ public class EntityC4 extends EntityThrowableExplodeable {
                 double distSq = entity.getDistanceSq(this.posX, this.posY, this.posZ);
                 if (distSq <= DAMAGE_RADIUS * DAMAGE_RADIUS) {
                     double distance = MathHelper.sqrt(distSq);
-                    double damageToEntity = calculateBombDamage(distance, DAMAGE_RADIUS, MAX_DAMAGE, DAMAGE_AT_KEY_RADIUS);
+                    double damageToEntity = calculateBombDamage(distance, DAMAGE_RADIUS, KEY_RADIUS, MAX_DAMAGE, DAMAGE_AT_KEY_RADIUS);
                     EntityLivingBase throwerEntity = (EntityLivingBase) getThrower();
                     DamageSource damageSource = throwerEntity != null ? DamageSource.causeExplosionDamage(throwerEntity) : DamageSource.causeExplosionDamage(explosion);
                     entity.attackEntityFrom(damageSource, (float) damageToEntity);
                 }
             }
+            handleExplodeInteraction();
         }
         this.setDead();
+    }
+
+    public void handleExplodeInteraction() {
+        AxisAlignedBB aabb = new AxisAlignedBB(this.posX - explodeInteractRadius, this.posY - explodeInteractRadius, this.posZ - explodeInteractRadius,
+                this.posX + explodeInteractRadius, this.posY + explodeInteractRadius, this.posZ + explodeInteractRadius);
+        List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, aabb, Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.NOT_SPECTATING));
+        for (Entity e : entities) {
+            if (e instanceof IBombReaction) {
+                IBombReaction reaction = (IBombReaction) e;
+                if (reaction.allowBombInteraction(world, null, e)) {
+                    double vecX = e.posX - this.posX;
+                    double vecY = e.posY - this.posY;
+                    double vecZ = e.posZ - this.posZ;
+                    double distance = Math.sqrt(vecX*vecX + vecY*vecY + vecZ*vecZ);
+                    if (distance < explodeInteractRadius) {
+                        // Provides moderate vertical thrust, high horizontal thrust
+                        double bombStrength = Math.min(1.2 - distance / explodeInteractRadius, 1);
+                        double xz = Math.sqrt(vecX * vecX + vecZ * vecZ);
+                        // Expected: xz=2.8, y=1.5, sqrt(2.8)=1.67
+                        vecX = (2.8 * vecX / xz) * bombStrength;
+                        vecY = 1.5 * bombStrength * ((1.5 + vecY) > 0 ? 1 : -1);
+                        vecZ = (2.8 * vecZ / xz) * bombStrength;
+                        double multiplier = 1.3F; // already checked the maximum effect
+                        reaction.onBomb(this, new Vec3d(vecX, vecY, vecZ).scale(multiplier), null, e);
+                    }
+                }
+            }
+        }
     }
 
     private static List<Integer> calculateSoundTicks(int soundCount) {
@@ -331,20 +362,25 @@ public class EntityC4 extends EntityThrowableExplodeable {
         }
         // Stick to entity
         if (this.stickedBlockPos == null && this.stickedEntityUUID == null) {
-            List<Entity> collidingEntities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(0.1, 0.1, 0.1), entity -> entity != this && !(entity instanceof EntityPlayer));
-            if (!collidingEntities.isEmpty()) {
-                Entity hitEntity = collidingEntities.get(0);
-                this.stickedEntityUUID = hitEntity.getUniqueID();
-                this.stickedBlockPos = null;
-                this.stickOffset = this.getPositionVector().subtract(hitEntity.getPositionVector());
-                this.motionX = 0;
-                this.motionY = 0;
-                this.motionZ = 0;
-                this.setNoGravity(true);
-                return true;
+            AxisAlignedBB searchBox = this.getEntityBoundingBox().expand(0.1, 0.1, 0.1);
+            List<Entity> candidates = this.world.getEntitiesInAABBexcluding(this, searchBox.grow(0.3), entity -> entity != this && !(entity instanceof EntityPlayer));
+
+            for (Entity candidate : candidates) {
+                AxisAlignedBB targetBB = BOUNDING_BOX_PROVIDER.apply(candidate);
+                if (targetBB != null && targetBB.intersects(searchBox)) {
+                    this.stickedEntityUUID = candidate.getUniqueID();
+                    this.stickedBlockPos = null;
+                    this.stickOffset = this.getPositionVector().subtract(candidate.getPositionVector());
+                    this.motionX = 0;
+                    this.motionY = 0;
+                    this.motionZ = 0;
+                    this.setNoGravity(true);
+                    return true;
+                }
             }
         }
         return false;
+
     }
 
     public void handleNormalMove(Vec3d from, Vec3d to, @Nullable RayTraceResult blockRayTrace) {

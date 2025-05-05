@@ -11,6 +11,7 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +24,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class BlockTarget extends PMCBlock implements IBulletReaction {
 
@@ -38,10 +41,12 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
 
     @SuppressWarnings("ConstantValue")
     @Override
-    public void onHit(EntityBullet bullet, Vec3d hit, BlockPos pos) {
+    public void onBulletHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity) {
+        if (state == null) {
+            return;
+        }
         if (bullet.getShooter() != null && bullet.getShooter() instanceof EntityPlayerMP) {
             EntityPlayer player = (EntityPlayer) bullet.getShooter();
-            IBlockState state = bullet.world.getBlockState(pos);
             float damage = bullet.getDamage();
             double delta = hit.y - (int) hit.y;
             boolean headShot = state.getBlock() == PMCBlocks.TARGET && state.getValue(UPPER) && delta > 0.5;
@@ -57,7 +62,10 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
     }
 
     @Override
-    public boolean allowBulletInteraction(World world, BlockPos pos, IBlockState state) {
+    public boolean allowBulletInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
+        if (state == null) {
+            return false;
+        }
         return state.getValue(FEEDBACK);
     }
 

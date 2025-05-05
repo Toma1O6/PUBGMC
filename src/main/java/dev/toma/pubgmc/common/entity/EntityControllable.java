@@ -1,4 +1,4 @@
-package dev.toma.pubgmc.common.entity.controllable;
+package dev.toma.pubgmc.common.entity;
 
 import dev.toma.pubgmc.api.entity.IControllable;
 import net.minecraft.client.settings.GameSettings;
@@ -17,7 +17,7 @@ public class EntityControllable extends Entity implements IControllable {
         this.ignoreFrustumCheck = false;
     }
 
-    public double getSpeed() {
+    public double getSpeedPerTick() {
         return Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
     }
 

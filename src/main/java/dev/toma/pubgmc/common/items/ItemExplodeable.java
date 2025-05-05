@@ -235,5 +235,12 @@ public class ItemExplodeable extends PMCItem implements MainHandOnly {
                 world.spawnEntity(c4);
             }
         }
+
+        @SideOnly(Side.CLIENT)
+        @Override
+        public void appendAdditionalTooltipInformation(ItemStack itemStack, World world, List<String> tooltip, ITooltipFlag flag) {
+            tooltip.add(TextFormatting.RED + I18n.format("label.pubgmc.throwable.bomb_fuse", DevUtil.formatToSingleDecimal(EntityC4.initFuse / 20)));
+            tooltip.add(TextFormatting.GREEN + I18n.format("label.pubgmc.throwable.stick"));
+        }
     }
 }
