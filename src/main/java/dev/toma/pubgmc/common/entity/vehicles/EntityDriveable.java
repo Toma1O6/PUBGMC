@@ -13,6 +13,7 @@ import dev.toma.pubgmc.api.game.GameObject;
 import dev.toma.pubgmc.common.entity.vehicles.util.SeatPart;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleCategory;
 import dev.toma.pubgmc.common.entity.vehicles.util.VehicleSoundController;
+import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.init.PMCDamageSources;
 import dev.toma.pubgmc.network.PacketHandler;
 import dev.toma.pubgmc.network.s2c.S2C_PacketSendEntityData;
@@ -55,7 +56,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             EntitySelectors.NOT_SPECTATING,
             EntitySelectors.IS_ALIVE,
             Entity::canBeCollidedWith);
-    protected int collisionCooldown = 10;
+    protected int collisionCooldown = 40;
     // Keybinds
     public static final int KEY_FORWARD = 0b1;
     public static final int KEY_BACK = 0b10;
@@ -468,7 +469,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     protected void resetCollisionCooldown() {
-        this.collisionCooldown = 10;
+        if (ConfigPMC.common.world.classicss.vulnerableVehicle.get()) {
+            this.collisionCooldown = 5;
+        } else {
+            this.collisionCooldown = 40;
+        }
     }
 
     protected List<Entity> findEntityInPath(Vec3d start, Vec3d end) {

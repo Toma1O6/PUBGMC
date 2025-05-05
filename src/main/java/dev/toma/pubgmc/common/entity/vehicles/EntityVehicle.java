@@ -1,5 +1,6 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
+import dev.toma.pubgmc.Pubgmc;
 import dev.toma.pubgmc.api.block.IBulletReaction;
 import dev.toma.pubgmc.api.entity.IBombReaction;
 import dev.toma.pubgmc.common.entity.EntityBullet;
@@ -16,12 +17,14 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 
@@ -208,7 +211,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     private boolean shouldExplode() {
-        if (this.hasExploded() || !this.isDestroyed()) { // only allow vehicle itself to explode once
+        if (!this.isDestroyed() || this.hasExploded()) { // only allow vehicle itself to explode once
             return false;
         }
         return this.timeBeforeExplode < 0;
@@ -236,6 +239,21 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         }
         if (collidedHorizontally) {
             this.velocity = Mth.exponentialDecay(this.velocity, 0.6F);
+            if (!world.isRemote && ConfigPMC.common.world.classicss.vulnerableVehicle.get()) {
+                double lastSpeed = getLastSpeedPerTick();
+                this.removeHealth((float) lastSpeed * 20F * 3.6F / 2F);
+                double random = this.rand.nextDouble();
+                double pass = 1 - Math.pow(2, -1.245 + lastSpeed) / 4F; // 1.245m/tick -> 89km/h, 25% to trigger
+                if (random > pass) {
+                    playSound(SoundEvents.BLOCK_ANVIL_LAND, 2.0F, 1.0F);
+                    this.setHealth(0);
+                    this.timeBeforeExplode = -1;
+                    this.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, posX, posY, posZ, 0, 0.5, 0);
+                    this.explode();
+                    Pubgmc.logger.log(Level.INFO, "Triggered vulnerable vehicle at [{},{},{}], random: {}, pass: {}", posX, posY, posZ, random, pass);
+                    return;
+                }
+            }
         }
         float yawRad = (float) Math.toRadians(this.rotationYaw);
         Vec3d direction = new Vec3d(-MathHelper.sin(yawRad), 0.0, MathHelper.cos(yawRad)).normalize();
@@ -395,8 +413,8 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         if (this.world.isRemote)
             return;
         boolean canBreakBlocks = ConfigPMC.world().vehicleGriefing.get();
-        this.multiplyMotion(1.2F);
-        this.motionY += 0.4F;
+        this.multiplyMotion(1.1F);
+        this.motionY += 0.1F;
         for (EntityVehiclePart part : this.getParts()) {
             part.hurt(DamageSource.GENERIC, Integer.MAX_VALUE);
         }
