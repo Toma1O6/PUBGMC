@@ -12,7 +12,9 @@ import dev.toma.pubgmc.common.blocks.*;
 import dev.toma.pubgmc.common.entity.*;
 import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import dev.toma.pubgmc.common.entity.throwables.*;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleDacia;
 import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleDacia;
 import dev.toma.pubgmc.common.games.GameTypes;
 import dev.toma.pubgmc.common.games.game.battleroyale.BattleRoyaleGame;
 import dev.toma.pubgmc.common.games.game.domination.DominationGame;
@@ -293,6 +295,7 @@ public class CommonRegistry {
                 new PMCItem("copper_ingot"),
                 new ItemFuelCan("fuelcan"),
                 new ItemVehicleSpawner<>("vehicle_uaz", VehicleUAZ::new),
+                new ItemVehicleSpawner<>("vehicle_dacia", VehicleDacia::new),
                 GunBuilder.create("flare_gun", FlareGun::new)
                         .stats(WeaponStats.empty())
                         .firerate(3)
@@ -961,6 +964,7 @@ public class CommonRegistry {
                 registerEntity("plane", EntityPlane.class, 256, 1),
                 registerEntity("dropEntity", EntityAirdrop.class, 256, 4),
                 registerVehicle("uaz", VehicleUAZ.class),
+                registerVehicle("dacia", VehicleDacia.class),
                 registerEntity("enemyai", EntityAIPlayer.class, 256, 3, true, 0x000000, 0xFFFFFF),
                 registerEntity("frag_grenade", EntityFragGrenade.class, 64, 1),
                 registerEntity("molotov", EntityMolotov.class, 64, 1),
