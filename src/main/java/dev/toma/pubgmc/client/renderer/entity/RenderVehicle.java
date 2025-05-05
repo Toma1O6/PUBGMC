@@ -2,7 +2,6 @@ package dev.toma.pubgmc.client.renderer.entity;
 
 import dev.toma.pubgmc.client.models.vehicles.ModelVehicle;
 import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
-import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -23,7 +22,7 @@ public abstract class RenderVehicle<V extends EntityVehicle, M extends ModelVehi
     @Nullable
     @Override
     protected ResourceLocation getEntityTexture(V entity) {
-        return entity.isExploded() ? this.getBurnedTexture(entity) : this.getTexture(entity);
+        return entity.hasExploded() ? this.getBurnedTexture(entity) : this.getTexture(entity);
     }
 
     protected abstract ResourceLocation getBurnedTexture(V vehicle);

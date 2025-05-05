@@ -17,6 +17,6 @@ public abstract class RenderVariableVehicle<V extends EntityVehicle & Variants, 
     @Nullable
     @Override
     protected ResourceLocation getEntityTexture(V entity) {
-        return entity.isExploded() ? this.getBurnedTexture(entity) : entity.getTextures()[entity.getActualTexture()];
+        return entity.hasExploded() ? this.getBurnedTexture(entity) : entity.getTextures()[entity.getActualTexture()];
     }
 }

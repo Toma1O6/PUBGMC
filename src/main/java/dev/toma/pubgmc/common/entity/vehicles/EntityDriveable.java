@@ -28,6 +28,7 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
@@ -511,7 +512,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     protected void handleEntityCollisions(Entity e, double speed) {
+        float damage = calculateCollisionDamage(e);
         e.attackEntityFrom(PMCDamageSources.vehicle(getControllingPassenger()), calculateCollisionDamage(e));
+        if (damage > 5)
+            playSound(SoundEvents.BLOCK_ANVIL_LAND, 1.0F, 1.0F);
         if (e.isDead)
             return;
         e.motionX += this.motionX * speed * 3F;

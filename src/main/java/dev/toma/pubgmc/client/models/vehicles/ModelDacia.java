@@ -374,7 +374,7 @@ public class ModelDacia extends ModelVehicle<VehicleDacia> {
     public void render(VehicleDacia vehicle) {
         float renderScale = 0.0857F;
         bone.render(renderScale);
-        if (vehicle.isExploded())
+        if (vehicle.hasExploded())
             return;
         decorations.render(renderScale);
         interior.render(renderScale);

@@ -1,17 +1,23 @@
 package dev.toma.pubgmc.common.entity.vehicles;
 
 import dev.toma.pubgmc.Pubgmc;
+import dev.toma.pubgmc.api.block.IBulletReaction;
 import dev.toma.pubgmc.api.entity.CustomProjectileBoundingBoxProvider;
 import dev.toma.pubgmc.api.entity.ParentEntityAccess;
+import dev.toma.pubgmc.common.entity.EntityBullet;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.MultiPartEntityPart;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class EntityVehiclePart extends MultiPartEntityPart implements CustomProjectileBoundingBoxProvider {
+public class EntityVehiclePart extends MultiPartEntityPart implements IBulletReaction, CustomProjectileBoundingBoxProvider {
 
     public final ParentEntityAccess<EntityDriveable> access;
     private final Vec3d relativePosition;
@@ -139,5 +145,18 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
                 ref.sendClientData();
             }
         };
+    }
+
+    @Override
+    public void onBulletHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity) {
+        playSound(SoundEvents.BLOCK_ANVIL_LAND, bullet.getDamage() / 8F, 1.0F);
+    }
+
+    @Override
+    public boolean allowBulletInteraction(World world, @Nullable IBlockState state, @Nullable Entity entity) {
+        Entity e = access.getParentEntity();
+        if (e instanceof EntityVehicle)
+            return !((EntityVehicle) e).hasExploded();
+        return false;
     }
 }

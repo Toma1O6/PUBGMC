@@ -246,6 +246,8 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     @Override
     protected void particleTick() {
+        if (hasExploded())
+            return;
         if (this.isStarted()) {
             this.processExhaustParticles(vec -> {
                 Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
@@ -253,7 +255,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
             });
         }
         float healthPercentage = this.getHealthPercentage();
-        if (this.isExploded()) {
+        if (this.hasExploded()) {
            this.processEngineParticles(vec -> {
                Vec3d pos = vec.rotateYaw(-this.rotationYaw * (float) (Math.PI / 180F)).add(this.getPositionVector());
                this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, true, pos.x, pos.y, pos.z, randomRange(this.rand, 0.1), 0.10, randomRange(this.rand, 0.1));

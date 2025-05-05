@@ -16,6 +16,7 @@ public class CFGWorld extends ObjectType {
     public IntType aiPathFindRange;
     public DamageConfig damages;
     public BooleanType grenadeGriefing;
+    public BooleanType vehicleGriefing;
     public ClassicConfig classicss;
 
     public CFGWorld(ConfigPlugin plugin) {
@@ -29,6 +30,7 @@ public class CFGWorld extends ObjectType {
         planeDelay = configCreator.createInt("Plane start delay", 5, 0, 60, "Define how many seconds plane will wait before flying");
         gunGriefing = configCreator.createBoolean("Gun griefing", false, "Determines whether blocks can be affected by bullets", "This will for example cause glass breaking");
         grenadeGriefing = configCreator.createBoolean("Grenade griefing", false, "Determine whether blocks can be affected by grenades", "This will break blocks like TNT");
+        vehicleGriefing = configCreator.createBoolean("Vehicle griefing", false, "Determine whether blocks can be affected by vehicle");
         bulletTime = configCreator.createInt("Bullet time", 100, 0,200,"Ticks before bullet dead");
         aiPathFindRange = configCreator.createInt("AI Pathfinding Range", 256, 32, 2048, "Max pathfinding for AIs", "Large values may lag your server");
         damages = configCreator.createObject(new DamageConfig(), plugin);
