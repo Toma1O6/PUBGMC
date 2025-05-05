@@ -6,7 +6,6 @@ import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.common.CFGVehicle;
 import dev.toma.pubgmc.init.PMCSounds;
 import dev.toma.pubgmc.util.math.Mth;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -16,12 +15,12 @@ public class VehicleUAZ extends EntityLandVehicle {
 
     private static final float FUEL_TANK_CAPACITY = 120F;
     private static final Vec3d ENGINE_POSITION = new Vec3d(0.0, 1.5, 2.0);
-    private static final Vec3d EXHAUST_POSITION = new Vec3d(0.6, 0.3, -1.9);
+    private static final Vec3d EXHAUST_POSITION = new Vec3d(-0.6, 0.3, -1.9);
     private static final int TOTAL_TURN_WHEEL = 2;
     private static final int TOTAL_ACCELERATION_WHEEL = 2;
     private static final int TOTAL_WHEELS = 4;
     private EntityVehiclePart body;
-    public static final Vec3d modelRotation = new Vec3d(-1, -1, 1);
+    public static final Vec3d modelScale = new Vec3d(-1, -1, 1);
     public static final Vec3d modelOffset = new Vec3d(0, 1.4F, 0.6F); // at 0° yaw
 
     public VehicleUAZ(World world) {
@@ -49,15 +48,24 @@ public class VehicleUAZ extends EntityLandVehicle {
 
     @Override
     public void registerVehicleParts(PartRegistration registration) {
-        EntityVehiclePart engine = registration.register(new EntityVehiclePart(this, "bodyEngine", 2.0F, 1.2F, new Vec3d(0.0, 0.3, 1.2F)));
-        engine.setDamageMultiplier(ENGINE_DAMAGE_MULTIPLIER);
-
+        // Register wheel first, used in ModelUAZ render
         WheelPart wheelFL = registration.register(new WheelPart(this, "wheelFrontLeft", new Vec3d(1.0, 0.0, 1.3F)));
         wheelFL.setTurnWheel(true);
         wheelFL.setAccelerationWheel(false);
         WheelPart wheelFR = registration.register(new WheelPart(this, "wheelFrontRight", new Vec3d(-1.0, 0.0, 1.3F)));
         wheelFR.setTurnWheel(true);
         wheelFR.setAccelerationWheel(false);
+        WheelPart wheelRL = registration.register(new WheelPart(this, "wheelRearLeft", new Vec3d(1.1, 0.0, -1.3F)));
+        wheelRL.setTurnWheel(false);
+        wheelRL.setAccelerationWheel(true);
+        wheelRL.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
+        WheelPart wheelRR = registration.register(new WheelPart(this, "wheelRearRight", new Vec3d(-1.1, 0.0, -1.3F)));
+        wheelRR.setTurnWheel(false);
+        wheelRR.setAccelerationWheel(true);
+        wheelRR.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
+
+        EntityVehiclePart engine = registration.register(new EntityVehiclePart(this, "bodyEngine", 2.0F, 1.2F, new Vec3d(0.0, 0.3, 1.2F)));
+        engine.setDamageMultiplier(ENGINE_DAMAGE_MULTIPLIER);
 
         this.body = registration.register(new EntityVehiclePart(this, "bodyMain", 2.7F, 1.2F, new Vec3d(0.0, 0.3, -0.95F)));
         this.body.setDamageMultiplier(BODY_DAMAGE_MULTIPLIER);
@@ -83,15 +91,6 @@ public class VehicleUAZ extends EntityLandVehicle {
         dPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
         EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "bodyRoof", 2.7F, 0.2F, new Vec3d(0.0, 2.2F, -0.95F)));
         roof.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
-
-        WheelPart wheelRL = registration.register(new WheelPart(this, "wheelRearLeft", new Vec3d(1.1, 0.0, -1.3F)));
-        wheelRL.setTurnWheel(false);
-        wheelRL.setAccelerationWheel(true);
-        wheelRL.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
-        WheelPart wheelRR = registration.register(new WheelPart(this, "wheelRearRight", new Vec3d(-1.1, 0.0, -1.3F)));
-        wheelRR.setTurnWheel(false);
-        wheelRR.setAccelerationWheel(true);
-        wheelRR.setBlockCollisionMode(EntityVehiclePart.BoundingBoxMode.NONE);
     }
 
     @Override

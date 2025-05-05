@@ -21,7 +21,7 @@ public abstract class RenderVehicle<V extends EntityVehicle, M extends ModelVehi
 
     @Nullable
     @Override
-    protected final ResourceLocation getEntityTexture(V entity) {
+    protected ResourceLocation getEntityTexture(V entity) {
         return entity.isExploded() ? this.getBurnedTexture(entity) : this.getTexture(entity);
     }
 
@@ -54,7 +54,7 @@ public abstract class RenderVehicle<V extends EntityVehicle, M extends ModelVehi
 
     private void rotateModel(V entity, float entityYaw) {
         GlStateManager.rotate(180.0F - entityYaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.scale(VehicleUAZ.modelRotation.x, VehicleUAZ.modelRotation.y, VehicleUAZ.modelRotation.z);
+        GlStateManager.scale(V.modelScale.x, V.modelScale.y, V.modelScale.z);
         this.setupRotationsAndScale(entity, entityYaw);
     }
 }

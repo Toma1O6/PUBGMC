@@ -25,7 +25,7 @@ public abstract class ModelVehicle<V extends EntityDriveable> extends ModelBase 
         steeringWheel.render(scale);
     }
 
-    public void renderFrontWheel(ModelRenderer wheelRenderer, float turnModifier, float scale) {
+    public void renderTurnWheel(ModelRenderer wheelRenderer, float turnModifier, float scale) {
         setRendererRotation(wheelRenderer, 0f, turnModifier / 5f, 0f);
         wheelRenderer.render(scale);
     }

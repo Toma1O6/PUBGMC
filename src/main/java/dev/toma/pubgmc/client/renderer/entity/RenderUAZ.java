@@ -37,7 +37,7 @@ public class RenderUAZ extends RenderVehicle<VehicleUAZ, ModelUAZ> {
         double scale = 0.8;
         GlStateManager.scale(scale, scale, scale);
         float yawRadian = (float) Math.toRadians(entityYaw);
-        Vec3d offsetVec = new Vec3d(VehicleUAZ.modelOffset.x * VehicleUAZ.modelRotation.x, 0.0D, VehicleUAZ.modelOffset.z * VehicleUAZ.modelRotation.z);
+        Vec3d offsetVec = new Vec3d(VehicleUAZ.modelOffset.x * VehicleUAZ.modelScale.x, 0.0D, VehicleUAZ.modelOffset.z * VehicleUAZ.modelScale.z);
         offsetVec.rotateYaw(-yawRadian);
         GlStateManager.translate(offsetVec.x, 0.0D, offsetVec.z);
     }
