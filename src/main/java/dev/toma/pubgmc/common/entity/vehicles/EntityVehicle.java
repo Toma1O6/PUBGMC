@@ -43,8 +43,8 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     protected static final DataParameter<Boolean> STARTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> STARTED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
 
-    public static Vec3d modelScale = Vec3d.ZERO;
-    public static Vec3d modelOffset = Vec3d.ZERO;
+    protected static Vec3d modelScale = Vec3d.ZERO;
+    protected static Vec3d modelOffset = Vec3d.ZERO;
 
     protected float velocity;
     protected float turn;
@@ -56,6 +56,10 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         super(world);
         this.updateStepHeight();
     }
+
+    public abstract Vec3d getModelScale();
+
+    public abstract Vec3d getModelOffset();
 
     @Override
     protected void entityInit() {

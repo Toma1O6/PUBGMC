@@ -29,7 +29,7 @@ public class RenderUAZ extends RenderVehicle<VehicleUAZ, ModelUAZ> {
 
     @Override
     protected void setupTranslations(VehicleUAZ entity) {
-        GlStateManager.translate(0, VehicleUAZ.modelOffset.y, 0);
+        GlStateManager.translate(0, entity.getModelOffset().y, 0);
     }
 
     @Override
@@ -37,7 +37,9 @@ public class RenderUAZ extends RenderVehicle<VehicleUAZ, ModelUAZ> {
         double scale = 0.8;
         GlStateManager.scale(scale, scale, scale);
         float yawRadian = (float) Math.toRadians(entityYaw);
-        Vec3d offsetVec = new Vec3d(VehicleUAZ.modelOffset.x * VehicleUAZ.modelScale.x, 0.0D, VehicleUAZ.modelOffset.z * VehicleUAZ.modelScale.z);
+        Vec3d modelScale = entity.getModelScale();
+        Vec3d modelOffset = entity.getModelOffset();
+        Vec3d offsetVec = new Vec3d(modelOffset.x * modelScale.x, 0.0D, modelOffset.z * modelScale.z);
         offsetVec.rotateYaw(-yawRadian);
         GlStateManager.translate(offsetVec.x, 0.0D, offsetVec.z);
     }

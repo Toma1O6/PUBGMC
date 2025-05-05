@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
@@ -54,7 +55,8 @@ public abstract class RenderVehicle<V extends EntityVehicle, M extends ModelVehi
 
     private void rotateModel(V entity, float entityYaw) {
         GlStateManager.rotate(180.0F - entityYaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.scale(V.modelScale.x, V.modelScale.y, V.modelScale.z);
+        Vec3d modelScale = entity.getModelScale();
+        GlStateManager.scale(modelScale.x, modelScale.y, modelScale.z);
         this.setupRotationsAndScale(entity, entityYaw);
     }
 }

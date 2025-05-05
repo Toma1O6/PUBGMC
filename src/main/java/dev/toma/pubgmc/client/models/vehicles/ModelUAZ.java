@@ -323,7 +323,7 @@ public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
         mirror2.render(renderScale);
         interior.render(renderScale);
         // wheels
-        float turn = (float) (vehicle.getTurn() * VehicleUAZ.modelScale.x);
+        float turn = (float) (vehicle.getTurn() * vehicle.getModelScale().x);
         if (vehicle.isReverseTurn())
             turn = -turn;
         renderSteeringWheel(steering_wheel, turn, renderScale);

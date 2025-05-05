@@ -20,12 +20,22 @@ public class VehicleUAZ extends EntityLandVehicle {
     private static final int TOTAL_ACCELERATION_WHEEL = 2;
     private static final int TOTAL_WHEELS = 4;
     private EntityVehiclePart body;
-    public static final Vec3d modelScale = new Vec3d(-1, -1, 1);
-    public static final Vec3d modelOffset = new Vec3d(0, 1.4F, 0.6F); // at 0° yaw
+    protected static final Vec3d modelScale = new Vec3d(-1, -1, 1);
+    protected static final Vec3d modelOffset = new Vec3d(0, 1.4F, 0.6F); // at 0° yaw
 
     public VehicleUAZ(World world) {
         super(world);
         this.setSize(3.35F, 2.4F);
+    }
+
+    @Override
+    public final Vec3d getModelScale() {
+        return modelScale;
+    }
+
+    @Override
+    public final Vec3d getModelOffset() {
+        return modelOffset;
     }
 
     @Override
