@@ -1,25 +1,30 @@
 package dev.toma.pubgmc.common.items;
 
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-// TODO registry factories for new vehicle entities so that it can be used in generators properly
-public class ItemVehicleSpawner extends PMCItem {
+import java.util.function.Consumer;
 
-    private final Vehicles car;
+public class ItemVehicleSpawner<V extends EntityDriveable> extends PMCItem {
 
-    public ItemVehicleSpawner(String name, Vehicles vehicle) {
+    private final VehicleFactory<V> factory;
+    private final Consumer<V> configuration;
+
+    public ItemVehicleSpawner(String name, VehicleFactory<V> factory) {
+        this(name, factory, vehicle -> {});
+    }
+
+    public ItemVehicleSpawner(String name, VehicleFactory<V> factory, Consumer<V> configuration) {
         super(name);
-        this.car = vehicle;
+        this.factory = factory;
+        this.configuration = configuration;
     }
 
     @Override
@@ -27,7 +32,12 @@ public class ItemVehicleSpawner extends PMCItem {
         ItemStack stack = player.getHeldItem(hand);
 
         if (!worldIn.isRemote) {
-            car.spawnEntity(worldIn, pos);
+            V vehicle = this.factory.create(worldIn);
+            vehicle.setPosition(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5);
+            vehicle.rotationYaw = MathHelper.wrapDegrees(player.rotationYaw - 90.0F);
+            vehicle.prevRotationYaw = vehicle.rotationYaw;
+            this.configuration.accept(vehicle);
+            worldIn.spawnEntity(vehicle);
 
             if (!player.capabilities.isCreativeMode) {
                 stack.shrink(1);
@@ -36,31 +46,8 @@ public class ItemVehicleSpawner extends PMCItem {
         return EnumActionResult.PASS;
     }
 
-    public enum Vehicles {
-
-        UAZ,
-        DACIA;
-
-        public void spawnEntity(World world, BlockPos pos) {
-            EntityVehicle vehicle = null;
-            switch (this) {
-                case UAZ:
-                    vehicle = new EntityVehicleUAZ(world, pos.getX(), pos.getY() + 1, pos.getZ());
-                    break;
-                case DACIA:
-                    vehicle = new EntityVehicleDacia(world, pos.getX(), pos.getY() + 1, pos.getZ());
-                    break;
-                default:
-                    break;
-            }
-
-            if (!world.isRemote) {
-                if (vehicle == null) {
-                    throw new IllegalArgumentException("Fatal error occured while spawning vehicle!");
-                }
-
-                world.spawnEntity(vehicle);
-            }
-        }
+    @FunctionalInterface
+    public interface VehicleFactory<V extends EntityDriveable> {
+        V create(World world);
     }
 }

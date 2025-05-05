@@ -608,7 +608,7 @@ public final class RecipeRegistry {
                 .build());
         registerRecipe(WorkbenchRecipeBuilder.createVehicle()
                 .result(PMCItems.VEHICLE_DACIA)
-                .ingredient(new OreDictEntryCraftingIngredient("ingotSteel", 50))
+                .ingredient(PMCItems.STEEL_INGOT, 50)
                 .ingredient(Blocks.IRON_BLOCK, 10)
                 .ingredient(Items.LEATHER, 20)
                 .ingredient(Blocks.GLASS, 10)

@@ -15,7 +15,12 @@ import dev.toma.pubgmc.client.models.equipment.LargeBackpackModel;
 import dev.toma.pubgmc.client.models.equipment.MediumBackpackModel;
 import dev.toma.pubgmc.client.models.equipment.NightVisionModel;
 import dev.toma.pubgmc.client.models.equipment.SmallBackpackModel;
-import dev.toma.pubgmc.client.renderer.entity.*;
+import dev.toma.pubgmc.client.renderer.entity.RenderEnemyAIPlayer;
+import dev.toma.pubgmc.client.renderer.entity.RenderFuelCan;
+import dev.toma.pubgmc.client.renderer.entity.RenderParachute;
+import dev.toma.pubgmc.client.renderer.entity.RenderPlane;
+import dev.toma.pubgmc.client.renderer.entity.RenderUAZ;
+import dev.toma.pubgmc.client.renderer.entity.RenderDacia;
 import dev.toma.pubgmc.client.renderer.item.attachment.*;
 import dev.toma.pubgmc.client.renderer.item.gun.WeaponRenderer;
 import dev.toma.pubgmc.client.renderer.throwable.RenderThrowable;
@@ -25,8 +30,8 @@ import dev.toma.pubgmc.client.util.KeyBinds;
 import dev.toma.pubgmc.client.util.RecipeButton;
 import dev.toma.pubgmc.common.entity.*;
 import dev.toma.pubgmc.common.entity.throwables.*;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleDacia;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleDacia;
 import dev.toma.pubgmc.common.items.attachment.ItemMuzzle;
 import dev.toma.pubgmc.common.items.equipment.ItemBackpack;
 import dev.toma.pubgmc.common.items.guns.GunBase;
@@ -175,9 +180,9 @@ public class ClientProxy extends Proxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityFuelCan.class, RenderFuelCan::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityParachute.class, RenderParachute::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAirdrop.class, RenderAirdrop::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleUAZ.class, RenderUAZ::new);
+        RenderingRegistry.registerEntityRenderingHandler(VehicleUAZ.class, RenderUAZ::new);
+        RenderingRegistry.registerEntityRenderingHandler(VehicleDacia.class, RenderDacia::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityPlane.class, RenderPlane::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleDacia.class, RenderDacia::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAIPlayer.class, RenderEnemyAIPlayer::new);
     }
 

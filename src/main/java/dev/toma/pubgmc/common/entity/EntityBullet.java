@@ -1,16 +1,17 @@
 package dev.toma.pubgmc.common.entity;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import dev.toma.pubgmc.api.block.IBulletReaction;
 import dev.toma.pubgmc.api.capability.IPlayerData;
 import dev.toma.pubgmc.api.capability.PlayerDataProvider;
+import dev.toma.pubgmc.api.entity.CustomProjectileBoundingBoxProvider;
 import dev.toma.pubgmc.api.game.mutator.ArmorMutator;
 import dev.toma.pubgmc.api.game.mutator.GameMutatorHelper;
 import dev.toma.pubgmc.api.game.mutator.GameMutators;
 import dev.toma.pubgmc.api.item.BulletproofArmor;
 import dev.toma.pubgmc.common.blocks.BlockWindow;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
 import dev.toma.pubgmc.common.items.guns.GunBase;
 import dev.toma.pubgmc.common.items.guns.WeaponStats;
 import dev.toma.pubgmc.config.ConfigPMC;
@@ -44,7 +45,15 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class EntityBullet extends Entity {
-    private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
+
+    public static final Function<Entity, AxisAlignedBB> BOUNDING_BOX_PROVIDER = entity -> entity instanceof
+            CustomProjectileBoundingBoxProvider ?
+            ((CustomProjectileBoundingBoxProvider) entity).getBoundingBoxForProjectiles()
+            : entity.getEntityBoundingBox();
+    private static final Predicate<Entity> TARGET_FILTER = Predicates.and(
+            EntitySelectors.NOT_SPECTATING,
+            EntitySelectors.IS_ALIVE,
+            Entity::canBeCollidedWith);
     private EntityLivingBase shooter;
     private int gravitystart;
     private double velocity;
@@ -116,7 +125,7 @@ public class EntityBullet extends Entity {
             Block block = state.getBlock();
             handleBulletReaction(rayTraceResult);
 
-            boolean griefingFlag = ConfigPMC.world().weaponGriefing.get();
+            boolean griefingFlag = ConfigPMC.world().gunGriefing.get();
             boolean canBePenetrated = false;
             if (block instanceof BlockWindow) {
                 canBePenetrated = true;
@@ -166,7 +175,7 @@ public class EntityBullet extends Entity {
             if (entity instanceof IBulletReaction) {
                 IBulletReaction reaction = (IBulletReaction) entity;
                 if (reaction.allowBulletInteraction(world, null, entity)) {
-                    reaction.onHit(this, rayTraceResult.hitVec, null, entity);
+                    reaction.onBulletHit(this, rayTraceResult.hitVec, null, entity);
                 }
             }
         } else { // block hit
@@ -176,7 +185,7 @@ public class EntityBullet extends Entity {
             if (block instanceof IBulletReaction) {
                 IBulletReaction reaction = (IBulletReaction) block;
                 if (reaction.allowBulletInteraction(world, state, null)) {
-                    reaction.onHit(this, rayTraceResult.hitVec, state, null);
+                    reaction.onBulletHit(this, rayTraceResult.hitVec, state, null);
                 }
             }
         }
@@ -243,14 +252,16 @@ public class EntityBullet extends Entity {
     @Nullable
     protected Entity findEntityOnPath(Vec3d start, Vec3d end, RayTraceResult trace) {
         Entity entity = null;
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D), ARROW_TARGETS);
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D), TARGET_FILTER);
         double d0 = 0.0D;
         for (int i = 0; i < list.size(); ++i) {
             Entity entity1 = list.get(i);
             if (entity1 == this.shooter) {
                 continue;
             }
-            AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox();
+            AxisAlignedBB axisalignedbb = BOUNDING_BOX_PROVIDER.apply(entity1);
+            if (axisalignedbb == null) // this check is needed
+                continue;
             RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(start, end);
             if (raytraceresult == null) {
                 continue;
@@ -291,10 +302,10 @@ public class EntityBullet extends Entity {
             damageArmor(isHeadshot, unProtectedDamage, (EntityLivingBase) entity);
         }
 
-        Block block = entity instanceof EntityVehicle ? Blocks.GOLD_BLOCK : Blocks.REDSTONE_BLOCK;
-        if (isLivingEntity || entity instanceof EntityVehicle) {
-            PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage), vec.x, entityRaytrace.hitVec.y, vec.z, block, S2C_PacketMakeParticles.ParticleAction.HIT_EFFECT, 0), this.dimension);
-        }
+        Block block = isLivingEntity ? Blocks.REDSTONE_BLOCK : Blocks.IRON_BLOCK;
+        PacketHandler.sendToDimension(new S2C_PacketMakeParticles(EnumParticleTypes.BLOCK_CRACK, 2 * Math.round(damage),
+                vec.x, entityRaytrace.hitVec.y, vec.z,
+                block, S2C_PacketMakeParticles.ParticleAction.HIT_EFFECT, 0), this.dimension);
     }
 
     @Override

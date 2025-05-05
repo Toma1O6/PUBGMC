@@ -11,6 +11,8 @@ import dev.toma.pubgmc.client.content.ExternalLinks;
 import dev.toma.pubgmc.common.entity.EntityAIPlayer;
 import dev.toma.pubgmc.common.entity.EntityParachute;
 import dev.toma.pubgmc.common.entity.throwables.EntityThrowableExplodeable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
 import dev.toma.pubgmc.common.items.ItemExplodeable;
 import dev.toma.pubgmc.common.items.ItemParachute;
 import dev.toma.pubgmc.common.items.MainHandOnly;
@@ -34,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -51,12 +54,12 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.GetCollisionBoxesEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
@@ -352,6 +355,23 @@ public class CommonEvents {
         }
         if (!canInsert) {
             event.setCanceled(true);
+        }
+    }
+
+    //@SubscribeEvent // TODO is this actually needed?
+    public void getVehicleCollisionBoxes(GetCollisionBoxesEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof EntityDriveable) {
+            EntityDriveable driveable = (EntityDriveable) entity;
+            EntityVehiclePart[] parts = driveable.getParts();
+            if (parts != null) {
+                for (EntityVehiclePart part : parts) {
+                    AxisAlignedBB collisionBox = part.getCollisionBoundingBox();
+                    if (collisionBox != null) {
+                        //event.getCollisionBoxesList().add(collisionBox);
+                    }
+                }
+            }
         }
     }
 

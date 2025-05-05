@@ -19,4 +19,23 @@ public final class Mth {
         double z = origin.z + moveZ;
         return new BlockPos(x, world.getHeight((int) x, (int) z), z);
     }
+
+    public static float linearDecay(float val, float rate) {
+        if (Math.abs(val) < rate)
+            return 0.0F;
+        if (val < 0.0F)
+            return Math.min(0.0F, val + rate);
+        else
+            return Math.max(0.0F, val - rate);
+    }
+
+    public static float exponentialDecay(float val, float rate) {
+        return exponentialDecay(val, rate, 0.001F);
+    }
+
+    public static float exponentialDecay(float val, float rate, float cutOff) {
+        if (Math.abs(val) < cutOff)
+            return 0.0F;
+        return val * rate;
+    }
 }
