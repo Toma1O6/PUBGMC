@@ -53,7 +53,7 @@ public class EntityVehiclePart extends MultiPartEntityPart implements CustomProj
     @Override
     public AxisAlignedBB getBoundingBoxForProjectiles() {
         if (canBulletHit)
-            return this.getCollisionBoundingBox();
+            return this.getEntityBoundingBox();
         Pubgmc.logger.warn("use getBoundingBoxForProjectiles() at a none COLLIDER: {}", toString());
         return null;
     }
