@@ -23,10 +23,10 @@ public interface IBulletReaction {
      * @param state Interaction block state
      * @param entity Intraction entity
      */
-    void onHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity);
+    void onBulletHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity);
 
     /**
-     * Determines whether {@link IBulletReaction#onHit(EntityBullet, Vec3d, IBlockState, Entity)} can be called.
+     * Determines whether {@link IBulletReaction#onBulletHit(EntityBullet, Vec3d, IBlockState, Entity)} can be called.
      * @param world Interaction world
      * @param state Interaction block state
      * @param entity Intraction entity

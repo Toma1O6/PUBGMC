@@ -11,12 +11,12 @@ public class CFGWorld extends ObjectType {
     final ConfigPlugin plugin;
     public IntType planeHeight;
     public IntType planeDelay;
-    public BooleanType titleZoneNotifications;
-    public BooleanType weaponGriefing;
+    public BooleanType gunGriefing;
     public IntType bulletTime;
     public IntType aiPathFindRange;
     public DamageConfig damages;
-    public BombConfig bombs;
+    public BooleanType grenadeGriefing;
+    public ClassicConfig classicss;
 
     public CFGWorld(ConfigPlugin plugin) {
         super("World");
@@ -27,11 +27,11 @@ public class CFGWorld extends ObjectType {
     public void buildStructure(ConfigCreator configCreator) {
         planeHeight = configCreator.createInt("Plane Y position", 150, 40, 255);
         planeDelay = configCreator.createInt("Plane start delay", 5, 0, 60, "Define how many seconds plane will wait before flying");
-        // titleZoneNotifications = configCreator.createBoolean("Zone notifications", true, "Toggle sending zone status to players");
-        weaponGriefing = configCreator.createBoolean("Weapon griefing", false, "Determines whether blocks can be affected by bullets", "This will for example cause glass breaking");
+        gunGriefing = configCreator.createBoolean("Gun griefing", false, "Determines whether blocks can be affected by bullets", "This will for example cause glass breaking");
+        grenadeGriefing = configCreator.createBoolean("Grenade griefing", false, "Determine whether blocks can be affected by grenades", "This will break blocks like TNT");
         bulletTime = configCreator.createInt("Bullet time", 100, 0,200,"Ticks before bullet dead");
         aiPathFindRange = configCreator.createInt("AI Pathfinding Range", 256, 32, 2048, "Max pathfinding for AIs", "Large values may lag your server");
         damages = configCreator.createObject(new DamageConfig(), plugin);
-        bombs = configCreator.createObject(new BombConfig(), plugin);
+        classicss = configCreator.createObject(new ClassicConfig(), plugin);
     }
 }

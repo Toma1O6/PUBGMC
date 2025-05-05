@@ -122,7 +122,7 @@ public abstract class EntityThrowableExplodeable extends Entity implements IEnti
     public final void onCollide(Vec3d from, Vec3d to, RayTraceResult result) {
         BlockPos pos = result.getBlockPos();
         IBlockState state = this.world.getBlockState(pos);
-        boolean flag = ConfigPMC.world().weaponGriefing.get();
+        boolean flag = ConfigPMC.world().gunGriefing.get();
         if (flag) {
             boolean hasBrokenGlass = false;
             if (state.getBlock() instanceof BlockWindow) {

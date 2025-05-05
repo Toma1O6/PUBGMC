@@ -1,26 +1,29 @@
 package dev.toma.pubgmc.client.models.vehicles;
 
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
+import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 
-
-public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
+public class ModelUAZ extends ModelVehicle<VehicleUAZ> {
 
     private final ModelRenderer bone;
     private final ModelRenderer a1;
     private final ModelRenderer engineC;
     private final ModelRenderer a2;
     private final ModelRenderer bone4;
-    private final ModelRenderer wheelC1;
-    private final ModelRenderer wheelC2;
+    private final ModelRenderer wheelCover1;
+    private final ModelRenderer wheelCover2;
     private final ModelRenderer wheelFR;
+    private final ModelRenderer tireFR;
     private final ModelRenderer a3;
     private final ModelRenderer a4;
     private final ModelRenderer wheelFL;
+    private final ModelRenderer tireFL;
     private final ModelRenderer a10;
     private final ModelRenderer a5;
-    private final ModelRenderer wheelBR;
+    private final ModelRenderer wheelRR;
+    private final ModelRenderer tireRR;
     private final ModelRenderer a6;
     private final ModelRenderer a9;
     private final ModelRenderer decorations;
@@ -34,7 +37,8 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
     private final ModelRenderer steering_wheel;
     private final ModelRenderer sh0;
     private final ModelRenderer sh1;
-    private final ModelRenderer wheelBL2;
+    private final ModelRenderer wheelRL;
+    private final ModelRenderer tireRL;
     private final ModelRenderer a12;
     private final ModelRenderer a8;
 
@@ -92,83 +96,89 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
         bone4.setRotationPoint(0.0F, 0.0F, 0.0F);
         bone.addChild(bone4);
 
-        wheelC1 = new ModelRenderer(this);
-        wheelC1.setRotationPoint(0.0F, 0.0F, 0.0F);
-        setRotationAngle(wheelC1, -0.2618F, 0.0F, 0.0F);
-        bone.addChild(wheelC1);
-        wheelC1.cubeList.add(new ModelBox(wheelC1, 0, 0, -27.0F, -2.0F, -49.0F, 54, 10, 3, 0.0F, false));
-        wheelC1.cubeList.add(new ModelBox(wheelC1, 0, 0, -27.0F, -17.0F, 1.0F, 54, 12, 3, 0.0F, false));
+        wheelCover1 = new ModelRenderer(this);
+        wheelCover1.setRotationPoint(0.0F, 0.0F, 0.0F);
+        setRotationAngle(wheelCover1, -0.2618F, 0.0F, 0.0F);
+        bone.addChild(wheelCover1);
+        wheelCover1.cubeList.add(new ModelBox(wheelCover1, 0, 0, -27.0F, -2.0F, -49.0F, 54, 10, 3, 0.0F, false));
+        wheelCover1.cubeList.add(new ModelBox(wheelCover1, 0, 0, -27.0F, -17.0F, 1.0F, 54, 12, 3, 0.0F, false));
 
-        wheelC2 = new ModelRenderer(this);
-        wheelC2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        setRotationAngle(wheelC2, 0.2618F, 0.0F, 0.0F);
-        bone.addChild(wheelC2);
-        wheelC2.cubeList.add(new ModelBox(wheelC2, 0, 0, -27.0F, -7.0F, 27.0F, 54, 10, 3, 0.0F, false));
-        wheelC2.cubeList.add(new ModelBox(wheelC2, 0, 0, -27.0F, -21.0F, -24.0F, 54, 11, 4, 0.0F, false));
+        wheelCover2 = new ModelRenderer(this);
+        wheelCover2.setRotationPoint(0.0F, 0.0F, 0.0F);
+        setRotationAngle(wheelCover2, 0.2618F, 0.0F, 0.0F);
+        bone.addChild(wheelCover2);
+        wheelCover2.cubeList.add(new ModelBox(wheelCover2, 0, 0, -27.0F, -7.0F, 27.0F, 54, 10, 3, 0.0F, false));
+        wheelCover2.cubeList.add(new ModelBox(wheelCover2, 0, 0, -27.0F, -21.0F, -24.0F, 54, 11, 4, 0.0F, false));
 
         wheelFR = new ModelRenderer(this);
         wheelFR.setRotationPoint(-21.0F, 20.0F, -36.0F);
         wheelFR.cubeList.add(new ModelBox(wheelFR, 467, 358, -4.0F, -6.0F, -6.0F, 8, 12, 12, 0.0F, false));
-        wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
-        wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelFR.cubeList.add(new ModelBox(wheelFR, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
+        tireFR = new ModelRenderer(this);
+        tireFR.setRotationPoint(-21.0F, 20.0F, -36.0F);
+        tireFR.cubeList.add(new ModelBox(tireFR, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
+        tireFR.cubeList.add(new ModelBox(tireFR, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireFR.cubeList.add(new ModelBox(tireFR, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireFR.cubeList.add(new ModelBox(tireFR, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
 
         a3 = new ModelRenderer(this);
         a3.setRotationPoint(21.0F, 4.0F, 36.0F);
         setRotationAngle(a3, -0.7854F, 0.0F, 0.0F);
-        wheelFR.addChild(a3);
+        tireFR.addChild(a3);
         a3.cubeList.add(new ModelBox(a3, 249, 222, -26.0F, 20.5985F, -22.0843F, 10, 4, 3, 0.0F, false));
         a3.cubeList.add(new ModelBox(a3, 249, 222, -26.0F, 20.5985F, -37.4843F, 10, 4, 3, 0.0F, false));
 
         a4 = new ModelRenderer(this);
         a4.setRotationPoint(21.0F, 4.0F, 36.0F);
         setRotationAngle(a4, 0.7854F, 0.0F, 0.0F);
-        wheelFR.addChild(a4);
+        tireFR.addChild(a4);
         a4.cubeList.add(new ModelBox(a4, 249, 222, -26.0F, -30.2843F, -16.4985F, 10, 4, 3, 0.0F, false));
         a4.cubeList.add(new ModelBox(a4, 249, 222, -26.0F, -30.2843F, -31.7985F, 10, 4, 3, 0.0F, false));
 
         wheelFL = new ModelRenderer(this);
         wheelFL.setRotationPoint(21.0F, 20.0F, -36.0F);
         wheelFL.cubeList.add(new ModelBox(wheelFL, 468, 360, -4.0F, -6.0F, -6.0F, 8, 12, 12, 0.0F, false));
-        wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
-        wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelFL.cubeList.add(new ModelBox(wheelFL, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
+        tireFL = new ModelRenderer(this);
+        tireFL.setRotationPoint(21.0F, 20.0F, -36.0F);
+        tireFL.cubeList.add(new ModelBox(tireFL, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
+        tireFL.cubeList.add(new ModelBox(tireFL, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireFL.cubeList.add(new ModelBox(tireFL, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireFL.cubeList.add(new ModelBox(tireFL, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
 
         a10 = new ModelRenderer(this);
         a10.setRotationPoint(-21.0F, 4.0F, 36.0F);
         setRotationAngle(a10, -0.7854F, 0.0F, 0.0F);
-        wheelFL.addChild(a10);
+        tireFL.addChild(a10);
         a10.cubeList.add(new ModelBox(a10, 249, 222, 16.0F, 20.5985F, -22.0843F, 10, 4, 3, 0.0F, false));
         a10.cubeList.add(new ModelBox(a10, 249, 222, 16.0F, 20.5985F, -37.4843F, 10, 4, 3, 0.0F, false));
 
         a5 = new ModelRenderer(this);
         a5.setRotationPoint(-21.0F, 4.0F, 36.0F);
         setRotationAngle(a5, 0.7854F, 0.0F, 0.0F);
-        wheelFL.addChild(a5);
+        tireFL.addChild(a5);
         a5.cubeList.add(new ModelBox(a5, 249, 222, 16.0F, -30.2843F, -16.4985F, 10, 4, 3, 0.0F, false));
         a5.cubeList.add(new ModelBox(a5, 249, 222, 16.0F, -30.2843F, -31.7985F, 10, 4, 3, 0.0F, false));
 
-        wheelBR = new ModelRenderer(this);
-        wheelBR.setRotationPoint(-21.0F, 20.0F, 16.0F);
-        wheelBR.cubeList.add(new ModelBox(wheelBR, 470, 356, -4.0F, -6.0F, -6.0F, 8, 12, 12, 0.0F, false));
-        wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
-        wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelBR.cubeList.add(new ModelBox(wheelBR, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
+        wheelRR = new ModelRenderer(this);
+        wheelRR.setRotationPoint(-21.0F, 20.0F, 16.0F);
+        wheelRR.cubeList.add(new ModelBox(wheelRR, 470, 356, -4.0F, -6.0F, -6.0F, 8, 12, 12, 0.0F, false));
+        tireRR = new ModelRenderer(this);
+        tireRR.setRotationPoint(-21.0F, 20.0F, 16.0F);
+        tireRR.cubeList.add(new ModelBox(tireRR, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
+        tireRR.cubeList.add(new ModelBox(tireRR, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireRR.cubeList.add(new ModelBox(tireRR, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireRR.cubeList.add(new ModelBox(tireRR, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
 
         a6 = new ModelRenderer(this);
         a6.setRotationPoint(21.0F, 4.0F, -16.0F);
         setRotationAngle(a6, -0.7854F, 0.0F, 0.0F);
-        wheelBR.addChild(a6);
+        tireRR.addChild(a6);
         a6.cubeList.add(new ModelBox(a6, 249, 222, -26.0F, -16.1711F, 14.6853F, 10, 4, 3, 0.0F, false));
         a6.cubeList.add(new ModelBox(a6, 249, 222, -26.0F, -16.1711F, -0.7147F, 10, 4, 3, 0.0F, false));
 
         a9 = new ModelRenderer(this);
         a9.setRotationPoint(21.0F, 4.0F, -16.0F);
         setRotationAngle(a9, 0.7854F, 0.0F, 0.0F);
-        wheelBR.addChild(a9);
+        tireRR.addChild(a9);
         a9.cubeList.add(new ModelBox(a9, 249, 222, -26.0F, 6.4853F, 20.2711F, 10, 4, 3, 0.0F, false));
         a9.cubeList.add(new ModelBox(a9, 249, 222, -26.0F, 6.4853F, 4.9711F, 10, 4, 3, 0.0F, false));
 
@@ -277,41 +287,61 @@ public class ModelUAZ extends ModelVehicle<EntityVehicleUAZ> {
         sh1.cubeList.add(new ModelBox(sh1, 382, 355, -9.747F, -13.5873F, -23.0F, 4, 1, 1, 0.0F, false));
         sh1.cubeList.add(new ModelBox(sh1, 382, 355, -9.097F, -33.1873F, -23.0F, 4, 1, 1, 0.0F, false));
 
-        wheelBL2 = new ModelRenderer(this);
-        wheelBL2.setRotationPoint(21.0F, 20.0F, 16.0F);
-        wheelBL2.cubeList.add(new ModelBox(wheelBL2, 471, 356, -4.0F, -6.0F, -6.0F, 8, 12, 12, 0.0F, false));
-        wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
-        wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
-        wheelBL2.cubeList.add(new ModelBox(wheelBL2, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
+        wheelRL = new ModelRenderer(this);
+        wheelRL.setRotationPoint(21.0F, 20.0F, 16.0F);
+        wheelRL.cubeList.add(new ModelBox(wheelRL, 471, 356, -4.0F, -6.0F, -6.0F, 8, 12, 12, 0.0F, false));
+        tireRL = new ModelRenderer(this);
+        tireRL.setRotationPoint(21.0F, 20.0F, 16.0F);
+        tireRL.cubeList.add(new ModelBox(tireRL, 249, 222, -5.0F, -5.0F, 5.0F, 10, 10, 3, 0.0F, false));
+        tireRL.cubeList.add(new ModelBox(tireRL, 249, 222, -5.0F, -8.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireRL.cubeList.add(new ModelBox(tireRL, 249, 222, -5.0F, 5.0F, -5.0F, 10, 3, 10, 0.0F, false));
+        tireRL.cubeList.add(new ModelBox(tireRL, 249, 222, -5.0F, -5.0F, -8.0F, 10, 10, 3, 0.0F, false));
 
         a12 = new ModelRenderer(this);
         a12.setRotationPoint(-21.0F, 4.0F, -16.0F);
         setRotationAngle(a12, -0.7854F, 0.0F, 0.0F);
-        wheelBL2.addChild(a12);
+        tireRL.addChild(a12);
         a12.cubeList.add(new ModelBox(a12, 249, 222, 16.0F, -16.1711F, 14.6853F, 10, 4, 3, 0.0F, false));
         a12.cubeList.add(new ModelBox(a12, 249, 222, 16.0F, -16.1711F, -0.7147F, 10, 4, 3, 0.0F, false));
 
         a8 = new ModelRenderer(this);
         a8.setRotationPoint(-21.0F, 4.0F, -16.0F);
         setRotationAngle(a8, 0.7854F, 0.0F, 0.0F);
-        wheelBL2.addChild(a8);
+        tireRL.addChild(a8);
         a8.cubeList.add(new ModelBox(a8, 249, 222, 16.0F, 6.4853F, 20.2711F, 10, 4, 3, 0.0F, false));
         a8.cubeList.add(new ModelBox(a8, 249, 222, 16.0F, 6.4853F, 4.9711F, 10, 4, 3, 0.0F, false));
     }
 
     @Override
-    public void render(EntityVehicleUAZ vehicle) {
-        bone.render(1f);
-        wheelBR.render(1f);
-        wheelBL2.render(1f);
-        decorations.render(1f);
-        mirror.render(1f);
-        mirror2.render(1f);
-        interior.render(1f);
-        renderSteeringWheel(steering_wheel, vehicle.turnModifier);
-        renderFrontWheel(wheelFR, vehicle.turnModifier);
-        renderFrontWheel(wheelFL, vehicle.turnModifier);
+    public void render(VehicleUAZ vehicle) {
+        float renderScale = 0.0625F;
+        bone.render(renderScale);
+        if (vehicle.isExploded())
+            return;
+        decorations.render(renderScale);
+        mirror.render(renderScale);
+        mirror2.render(renderScale);
+        interior.render(renderScale);
+        // wheels
+        float turn = (float) (vehicle.getTurn() * vehicle.getModelScale().x);
+        if (vehicle.isReverseTurn())
+            turn = -turn;
+        renderSteeringWheel(steering_wheel, turn, renderScale);
+        EntityVehiclePart[] parts = vehicle.getParts();
+        if (parts == null || parts.length < 4)
+            return;
+        renderTurnWheel(wheelFL, turn, renderScale);
+        if (!parts[0].isDestroyed())
+            renderTurnWheel(tireFL, turn, renderScale);
+        renderTurnWheel(wheelFR, turn, renderScale);
+        if (!parts[1].isDestroyed())
+            renderTurnWheel(tireFR, turn, renderScale);
+        wheelRL.render(renderScale);
+        if (!parts[2].isDestroyed())
+            tireRL.render(renderScale);
+        wheelRR.render(renderScale);
+        if (!parts[3].isDestroyed())
+            tireRR.render(renderScale);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

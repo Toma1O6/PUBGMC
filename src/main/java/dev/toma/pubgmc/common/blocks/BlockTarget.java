@@ -41,7 +41,7 @@ public class BlockTarget extends PMCBlock implements IBulletReaction {
 
     @SuppressWarnings("ConstantValue")
     @Override
-    public void onHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity) {
+    public void onBulletHit(EntityBullet bullet, Vec3d hit, @Nullable IBlockState state, @Nullable Entity entity) {
         if (state == null) {
             return;
         }

@@ -1,10 +1,12 @@
 package dev.toma.pubgmc.client.renderer.entity;
 
 import dev.toma.pubgmc.client.models.vehicles.ModelVehicle;
-import dev.toma.pubgmc.common.entity.controllable.EntityVehicle;
+import dev.toma.pubgmc.common.entity.vehicles.EntityVehicle;
 import dev.toma.pubgmc.common.entity.vehicles.Variants;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
 
 public abstract class RenderVariableVehicle<V extends EntityVehicle & Variants, M extends ModelVehicle<V>> extends RenderVehicle<V, M> {
 
@@ -12,8 +14,9 @@ public abstract class RenderVariableVehicle<V extends EntityVehicle & Variants, 
         super(manager, vehicleModel);
     }
 
+    @Nullable
     @Override
     protected ResourceLocation getEntityTexture(V entity) {
-        return entity.getTextures()[entity.getActualTexture()];
+        return entity.isExploded() ? this.getBurnedTexture(entity) : entity.getTextures()[entity.getActualTexture()];
     }
 }
