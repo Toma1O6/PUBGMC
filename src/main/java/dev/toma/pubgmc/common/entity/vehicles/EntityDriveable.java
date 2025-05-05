@@ -450,15 +450,24 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public abstract float getStepHeight();
 
     protected void handleCollisions(Vec3d from, Vec3d to) {
-        if (this.collisionCooldown > 0)
+        if (this.hasCollisionCooldown())
             return;
         List<Entity> entities = findEntityInPath(from, to);
         if (entities != null) {
             double speed = getSpeedPerTick();
             for (Entity e : entities) {
                 handleEntityCollisions(e, speed);
+                resetCollisionCooldown();
             }
         }
+    }
+
+    public boolean hasCollisionCooldown() {
+        return this.collisionCooldown > 0;
+    }
+
+    protected void resetCollisionCooldown() {
+        this.collisionCooldown = 10;
     }
 
     protected List<Entity> findEntityInPath(Vec3d start, Vec3d end) {
@@ -511,7 +520,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
 
     protected float calculateCollisionDamage(Entity e) {
-        float kmh = (float) (getSpeedPerTick() * 20F);
+        float kmh = (float) (getSpeedPerTick() * 20F * 3.6F); // include motionY
         return kmh * 4; // 5km/h -> 20 health
     }
 

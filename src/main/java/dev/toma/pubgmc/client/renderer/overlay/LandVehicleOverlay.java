@@ -107,5 +107,6 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
         font.drawString("onGround: " + (driveable.onGround ? "true" : "false"), 5, y += 10, driveable.onGround ? 0x00FF00 : 0xFF0000);
         font.drawString("isSubmergedInWater: " + (driveable.isSubmergedInWater() ? "true" : "false"), 5, y += 10, driveable.isSubmergedInWater() ? 0x00FF00 : 0xFF0000);
         font.drawString("stepHeight: " + driveable.getStepHeight(), 5, y += 10, 0xFFFFFF);
+        font.drawString("hasCollisionCooldown: " + (driveable.hasCollisionCooldown() ? "true" : "false"), 5, y += 10, driveable.hasCollisionCooldown() ? 0xFF0000 : 0x00FF00);
     }
 }

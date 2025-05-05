@@ -344,6 +344,14 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
     }
 
     @Override
+    protected float calculateCollisionDamage(Entity e) {
+        if (!(e instanceof EntityVehicle)) {
+            return super.calculateCollisionDamage(e);
+        }
+        return (float) (getSpeedPerTick() * 20F * 3.6F); // include motionY
+    }
+
+    @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
         compound.setFloat("fuel", this.getFuel());
