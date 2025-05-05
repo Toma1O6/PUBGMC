@@ -16,8 +16,8 @@ import java.util.function.Consumer;
 public class VehicleDacia extends EntityLandVehicle implements Variants{
 
     private static final float FUEL_TANK_CAPACITY = 100F;
-    private static final Vec3d ENGINE_POSITION = new Vec3d(0,0.5,1.5);
-    private static final Vec3d EXHAUST_POSITION = new Vec3d(-0.6,0,-3.8);
+    private static final Vec3d ENGINE_POSITION = new Vec3d(0,1.21F,2.04F);
+    private static final Vec3d EXHAUST_POSITION = new Vec3d(0.7F,0.35,-3.35F);
     private static final int TOTAL_TURN_WHEEL = 2;
     private static final int TOTAL_ACCELERATION_WHEEL = 2;
     private static final int TOTAL_WHEELS = 4;
