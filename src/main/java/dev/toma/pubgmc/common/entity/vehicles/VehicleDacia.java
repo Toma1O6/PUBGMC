@@ -116,9 +116,9 @@ public class VehicleDacia extends EntityLandVehicle implements Variants{
         registration.register(seatFR);
         EntityVehiclePart roof = registration.register(new EntityVehiclePart(this, "bodyRoof", 2.1F, 0.1F, new Vec3d(0.0, 2.0F, -0.25F)));
         roof.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
-        EntityVehiclePart bPillarL = registration.register(new EntityVehiclePart(this, "bPillarLeft", 0.12F, 0.79F, new Vec3d(1.044F, 1.31F, -0.28F)));
+        EntityVehiclePart bPillarL = registration.register(new EntityVehiclePart(this, "bPillarLeft", 0.12F, 0.79F, new Vec3d(1.035F, 1.31F, -0.28F)));
         bPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
-        EntityVehiclePart bPillarR = registration.register(new EntityVehiclePart(this, "bPillarRight", 0.12F, 0.79F, new Vec3d(-1.044F, 1.31F, -0.28F)));
+        EntityVehiclePart bPillarR = registration.register(new EntityVehiclePart(this, "bPillarRight", 0.12F, 0.79F, new Vec3d(-1.035F, 1.31F, -0.28F)));
         bPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
         SeatPart seatRL = new SeatPart(this, "seatPassengerBackLeft", new Vec3d(0.5F, 0.15, -0.84F), 0.9F, 1.5F,
                 new Vec3d(2.3F, 0.35F, 0));

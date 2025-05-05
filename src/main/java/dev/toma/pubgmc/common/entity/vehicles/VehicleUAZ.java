@@ -83,7 +83,7 @@ public class VehicleUAZ extends EntityLandVehicle {
         aPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
         EntityVehiclePart aPillarR = registration.register(new EntityVehiclePart(this, "aPillarRight", 0.1F, 0.7F, new Vec3d(-1.3F, 1.5F, 0.6F)));
         aPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
-        registration.register(new SeatPart(this, "seatDriver", new Vec3d(0.6, 0.3, -0.3F), 0.9F, 1.35F,
+        registration.register(new SeatPart(this, "seatDriver", new Vec3d(0.65, 0.3, -0.3F), 0.9F, 1.35F,
                 new Vec3d(2.3F, 0.25F, -1), true));
         registration.register(new SeatPart(this, "seatPassengerFront", new Vec3d(-0.6, 0.3, -0.3F), 0.9F, 1.35F,
                 new Vec3d(-2.3F, 0.25F, 0)));
@@ -91,7 +91,7 @@ public class VehicleUAZ extends EntityLandVehicle {
         bPillarL.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
         EntityVehiclePart bPillarR = registration.register(new EntityVehiclePart(this, "bPillarRight", 0.1F, 0.7F, new Vec3d(-1.3F, 1.5F, -0.28F)));
         bPillarR.setDamageMultiplier(ROOF_DAMAGE_MULTIPLIER);
-        registration.register(new SeatPart(this, "seatPassengerBackLeft", new Vec3d(0.6, 0.3, -1.3F), 1.0F, 1.45F,
+        registration.register(new SeatPart(this, "seatPassengerBackLeft", new Vec3d(0.65, 0.3, -1.3F), 1.0F, 1.45F,
                 new Vec3d(2.3F, 0.25F, 0)));
         registration.register(new SeatPart(this, "seatPassengerBackRight", new Vec3d(-0.6, 0.3, -1.3F), 1.0F, 1.45F,
                 new Vec3d(-2.3F, 0.25F, 0)));

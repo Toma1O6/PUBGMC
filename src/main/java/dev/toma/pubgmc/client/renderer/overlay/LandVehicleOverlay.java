@@ -1,10 +1,7 @@
 package dev.toma.pubgmc.client.renderer.overlay;
 
 import dev.toma.pubgmc.Pubgmc;
-import dev.toma.pubgmc.common.entity.vehicles.EntityDriveable;
-import dev.toma.pubgmc.common.entity.vehicles.EntityLandVehicle;
-import dev.toma.pubgmc.common.entity.vehicles.EntityVehiclePart;
-import dev.toma.pubgmc.common.entity.vehicles.VehicleUAZ;
+import dev.toma.pubgmc.common.entity.vehicles.*;
 import dev.toma.pubgmc.config.ConfigPMC;
 import dev.toma.pubgmc.config.client.CFG2DRatio;
 import dev.toma.pubgmc.util.helper.ImageUtil;
@@ -13,6 +10,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.Locale;
@@ -29,7 +27,6 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
 //        if (e instanceof RenderGameOverlayEvent.Post) {
 //            float partialTicks = e.getPartialTicks();
 //        }
-        // TODO seats
         int screenWidth = window.getScaledWidth();
         int screenHeight = window.getScaledHeight();
         float centerX = screenWidth / 2f;
@@ -44,9 +41,10 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
             double speed = driveable.getSpeedPerTick() * 20;
             client.fontRenderer.drawStringWithShadow(I18n.format("label.pubgmc.speed") + ": " + (int) (speed * 3.6) + "km/h", vInfoX, vInfoY - 15, 16777215);
         } else if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-
             int barWidth = 120;
             short barHeight = 5;
+
+            // fuel
             float fuelPercentage = driveable.getFuel() / driveable.getFuelTankCapacity();
             ImageUtil.drawImageWithUV(client, VEHICLE, vInfoX, vInfoY, fuelPercentage * barWidth, barHeight, 0.0, 0.25, 1.0, 0.375, false);
             ImageUtil.drawImageWithUV(client, VEHICLE, vInfoX, vInfoY, barWidth, barHeight, 0.0, 0.375, 1.0, 0.5, true);
@@ -66,6 +64,27 @@ public class LandVehicleOverlay<D extends EntityLandVehicle> implements Driveabl
             }
             // health
             ImageUtil.drawShape(vInfoX, vInfoY - 5, vInfoX + barWidth * healthPercentage, vInfoY - 5 + barHeight, r, g, b, 1.0f);
+            // TODO seats
+//            // speed
+//            int halfBarWidth = barWidth / 2;
+//            double speedPercentage = MathHelper.clamp(driveable.getMotionSqr() / driveable.getMaxSpeed(), 0, 1.0F); // ignore motionY
+//            if (driveable.isMovingForward()) {
+//                ImageUtil.drawShape(vInfoX, vInfoY - barHeight,
+//                        (float) (vInfoX + halfBarWidth * speedPercentage), vInfoY - barHeight - 2,
+//                        0, 1.0F, 1.0F, 0.5F); // 0x00FFFF
+//            } else {
+//                ImageUtil.drawShape(vInfoX, vInfoY - barHeight,
+//                        (float) (vInfoX + halfBarWidth * speedPercentage), vInfoY - barHeight - 2,
+//                        0, 0, 1.0F, 0.5F); // 0x0000FF
+//            }
+//            // engine power
+//            EntityVehicle vehicle = (EntityVehicle) driveable;
+//            if (vehicle.isStarted()) {
+//                float enginePower = vehicle.getEnginePower();
+//                ImageUtil.drawShape(vInfoX + halfBarWidth, vInfoY - barHeight,
+//                        vInfoX + halfBarWidth + halfBarWidth * enginePower, vInfoY - barHeight - 2,
+//                        1.0F, 1.0F, 0F, 0.5F); // 0xFFFF00
+//            }
         }
     }
 

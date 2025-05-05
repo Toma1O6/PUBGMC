@@ -250,7 +250,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         this.motionZ = v.z;
     }
 
-    protected float getEnginePower() {
+    public float getEnginePower() {
         return 1.0F;
     }
 
@@ -313,6 +313,7 @@ public abstract class EntityVehicle extends EntityDriveable implements IBombReac
         return getVehicleConfiguration().acceleration.getAsFloat();
     }
 
+    @Override
     public float getMaxSpeed() {
         return getVehicleConfiguration().maxSpeed.getAsFloat();
     }

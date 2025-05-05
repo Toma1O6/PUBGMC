@@ -56,10 +56,12 @@ public abstract class EntityLandVehicle extends EntityVehicle {
     }
 
     @Override
-    protected float getEnginePower() {
+    public float getEnginePower() {
         float percentage = this.getHealthPercentage();
+        if (percentage >= 1.0F)
+            return 1.05F;
         if (percentage >= 0.45) {
-            return 0.9F + 0.2F * (percentage-0.45F) / 0.65F;
+            return 0.9F + 0.1F * (percentage-0.45F) / 0.65F;
         } else if (percentage >= 0.2F) {
             return 0.9F;
         } else {
@@ -88,8 +90,7 @@ public abstract class EntityLandVehicle extends EntityVehicle {
 
     @Override
     protected void handleInputUpdate() {
-        if (!this.hasInput(KEY_FORWARD) && this.hasInput(KEY_BACK))
-            reverseTurn = true;
+        reverseTurn = !this.hasInput(KEY_FORWARD) && this.hasInput(KEY_BACK);
         handleTurnInputUpdate();
         handleAcceleratorInputUpdate();
     }

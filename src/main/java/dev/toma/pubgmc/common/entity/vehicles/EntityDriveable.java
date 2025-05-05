@@ -526,12 +526,12 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
 
     @Override
     public void onCollideWithPlayer(EntityPlayer entityIn) {
-        super.onCollideWithPlayer(entityIn);
+        return;
     }
 
     @Override
     public void applyEntityCollision(Entity entityIn) {
-        super.applyEntityCollision(entityIn);
+        return;
     }
 
     public boolean boardVehicle(SeatPart seat, EntityLivingBase entity, EnumHand hand) {
@@ -838,6 +838,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         double horizontalDotProduct  = this.motionX * lookVec.x + this.motionZ * lookVec.z;
         return horizontalDotProduct > 0.001;
     }
+
+    public abstract float getMaxSpeed();
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
